@@ -1,0 +1,24 @@
+C *****************************************************************************
+C     SENSOR TABLE
+      PARAMETER ( MAXSEN=8000 )                                         H
+C     PARAMETER ( MAXSEN=1000 )                                         M
+c     PARAMETER ( MAXSEN=5000 )
+      COMMON /SENSR1/ NSEN, SINTL, IDURAC
+      COMMON /SENSR2/ SENSOR, GROUP, LOCAT
+      COMMON /SENSR3/ CFPRT, UID
+      CHARACTER SENSOR(MAXSEN)*10,GROUP(MAXSEN)*16,LOCAT(MAXSEN)*16,
+     1   CFPRT(MAXSEN)*16,UID(MAXSEN)*8
+C     INTEGER SINTL(MAXSEN)                                             H
+      INTEGER*4 SINTL(MAXSEN),IDURAC(MAXSEN)                            M
+C
+C        NSEN    ---  NUMBER OF SENSORS IN TABLE
+C        SENSOR  ---  DATA ACQUISITION DEVICE DEFINED BY STATION IDENTIFIER
+C                     AND PE CODE --- KEY TO SENSOR TABLE
+C        SINTL   ---  DSS REGULAR-INTERVAL TIME SERIES OBSERVATION INTERVAL
+C                     FOR INSTANTANEOUS DATA FOR SENSOR
+C        GROUP   ---  OPTIONAL LABEL FOR DSS PATHNAME PART A FOR SENSOR
+C        LOCAT   ---  OPTIONAL LABEL FOR DSS PATHNAME PART B  FOR SENSOR
+C        CFPRT   ---  OPTIONAL LABEL FOR DSS PATHNAME PART F FOR SENSOR
+C        UID     ---  OPTIONAL PASSWORD FOR SENSOR
+c        IDURAC  ---  DURATION CODE
+C

@@ -1,0 +1,1097 @@
+FWARNINGS=-Warray-bounds -Wc-binding-type -Wcharacter-truncation
+FDEBUG=-fcheck=all
+FFLAGS=-c -g -cpp -m64 -fPIC $(FWARNINGS) $(FDEBUG) -I../Dss6/Fortran -I../headers  -D__linux__
+FORTRAN=gfortran
+
+# all warnings:
+#-Waliasing -Wall -Wampersand -Wargument-mismatch -Warray-bounds -Wc-binding-type -Wcharacter-truncation -Wconversion -Wdo-subscript -Wfunction-elimination -Wimplicit-interface
+#           -Wimplicit-procedure -Wintrinsic-shadow -Wuse-without-only -Wintrinsics-std -Wline-truncation -Wno-align-commons -Wno-tabs -Wreal-q-constant -Wsurprising -Wunderflow
+#           -Wunused-parameter -Wrealloc-lhs -Wrealloc-lhs-all -Wfrontend-loop-interchange -Wtarget-lifetime -fmax-errors=n -fsyntax-only -pedantic -pedantic-errors
+
+all:heclib_f.a 
+
+clean:
+	$(RM) Output/*.o Output/heclib_f.a  
+
+Output/abort.o:../Dss6/Fortran/Support/abort.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/abort.f -o Output/abort.o
+Output/attach.o:../Dss6/Fortran/Deprecated/attach.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Deprecated/attach.f -o Output/attach.o
+Output/attcrk.o:../Dss6/Fortran/Deprecated/attcrk.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Deprecated/attcrk.f -o Output/attcrk.o
+Output/attdcd.o:../Dss6/Fortran/Deprecated/attdcd.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Deprecated/attdcd.f -o Output/attdcd.o
+Output/attmat.o:../Dss6/Fortran/Deprecated/attmat.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Deprecated/attmat.f -o Output/attmat.o
+Output/attopn.o:../Dss6/Fortran/Deprecated/attopn.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Deprecated/attopn.f -o Output/attopn.o
+Output/attsub.o:../Dss6/Fortran/Deprecated/attsub.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Deprecated/attsub.f -o Output/attsub.o
+Output/bits.o:../Dss6/Fortran/Support/bits.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/bits.f -o Output/bits.o
+Output/bkdatw.o:../Dss6/Fortran/Support/bkdatw.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/bkdatw.f -o Output/bkdatw.o
+Output/cdelet.o:../Dss6/Fortran/Support/cdelet.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/cdelet.f -o Output/cdelet.o
+Output/ch2hol.o:../Dss6/Fortran/Support/ch2hol.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/ch2hol.f -o Output/ch2hol.o
+Output/chdlm.o:../Dss6/Fortran/Support/chdlm.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/chdlm.f -o Output/chdlm.o
+Output/chgtyp.o:../Dss6/Fortran/Support/chgtyp.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/chgtyp.f -o Output/chgtyp.o
+Output/chrblk.o:../Dss6/Fortran/Support/chrblk.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/chrblk.f -o Output/chrblk.o
+Output/chrfil.o:../Dss6/Fortran/Support/chrfil.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/chrfil.f -o Output/chrfil.o
+Output/chrflb.o:../Dss6/Fortran/Support/chrflb.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/chrflb.f -o Output/chrflb.o
+Output/chrhol.o:../Dss6/Fortran/Support/chrhol.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/chrhol.f -o Output/chrhol.o
+Output/chrlnb.o:../Dss6/Fortran/Support/chrlnb.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/chrlnb.f -o Output/chrlnb.o
+Output/cjchr.o:../Dss6/Fortran/Support/cjchr.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/cjchr.f -o Output/cjchr.o
+Output/clines.o:../Dss6/Fortran/Deprecated/clines.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Deprecated/clines.f -o Output/clines.o
+Output/convi4toi8.o:../Dss6/Fortran/Support/convi4toi8.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/convi4toi8.f -o Output/convi4toi8.o
+Output/convi8toi4.o:../Dss6/Fortran/Support/convi8toi4.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/convi8toi4.f -o Output/convi8toi4.o
+Output/cparms.o:../Dss6/Fortran/Deprecated/cparms.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Deprecated/cparms.f -o Output/cparms.o
+Output/curtim.o:../Dss6/Fortran/Support/curtim.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/curtim.f -o Output/curtim.o
+Output/datcll.o:../Dss6/Fortran/Support/datcll.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/datcll.f -o Output/datcll.o
+Output/datcln.o:../Dss6/Fortran/Support/datcln.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/datcln.f -o Output/datcln.o
+Output/datime.o:../Dss6/Fortran/Support/datime.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/datime.f -o Output/datime.o
+Output/datjul.o:../Dss6/Fortran/Support/datjul.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/datjul.f -o Output/datjul.o
+Output/datymd.o:../Dss6/Fortran/Support/datymd.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/datymd.f -o Output/datymd.o
+Output/dcdltr.o:../Dss6/Fortran/Support/dcdltr.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/dcdltr.f -o Output/dcdltr.o
+Output/dcinfo.o:../Dss6/Fortran/Support/dcinfo.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/dcinfo.f -o Output/dcinfo.o
+Output/dcreal.o:../Dss6/Fortran/Support/dcreal.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/dcreal.f -o Output/dcreal.o
+Output/dcrept.o:../Dss6/Fortran/Support/dcrept.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/dcrept.f -o Output/dcrept.o
+Output/dcsd3r.o:../Dss6/Fortran/Support/dcsd3r.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/dcsd3r.f -o Output/dcsd3r.o
+Output/dhchek.o:../Dss6/Fortran/Support/dhchek.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/dhchek.f -o Output/dhchek.o
+Output/dhinfo.o:../Dss6/Fortran/Support/dhinfo.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/dhinfo.f -o Output/dhinfo.o
+Output/dhinit.o:../Dss6/Fortran/Support/dhinit.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/dhinit.f -o Output/dhinit.o
+Output/dmreal.o:../Dss6/Fortran/Support/dmreal.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/dmreal.f -o Output/dmreal.o
+Output/dssCopyStatus.o:../Dss6/Fortran/dssCopyStatus.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/dssCopyStatus.f -o Output/dssCopyStatus.o
+Output/dudltr.o:../Dss6/Fortran/Support/dudltr.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/dudltr.f -o Output/dudltr.o
+Output/dureal.o:../Dss6/Fortran/Support/dureal.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/dureal.f -o Output/dureal.o
+Output/durept.o:../Dss6/Fortran/Support/durept.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/durept.f -o Output/durept.o
+Output/dusd3r.o:../Dss6/Fortran/Support/dusd3r.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/dusd3r.f -o Output/dusd3r.o
+Output/findlm.o:../Dss6/Fortran/Support/findlm.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/findlm.f -o Output/findlm.o
+Output/flush.o:../Dss6/Fortran/Support/flush.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/flush.f -o Output/flush.o
+Output/fortranclose.o:../DssInterface/v6and7/Fortran/fortranclose.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/fortranclose.f -o Output/fortranclose.o
+Output/fortranopen.o:../DssInterface/v6and7/Fortran/fortranopen.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/fortranopen.f -o Output/fortranopen.o
+Output/fortranread.o:../DssInterface/v6and7/Fortran/fortranread.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/fortranread.f -o Output/fortranread.o
+Output/fortranrewind.o:../DssInterface/v6and7/Fortran/fortranrewind.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/fortranrewind.f -o Output/fortranrewind.o
+Output/fortranwrite.o:../DssInterface/v6and7/Fortran/fortranwrite.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/fortranwrite.f -o Output/fortranwrite.o
+Output/fortranwrite2.o:../DssInterface/v6and7/Fortran/fortranwrite2.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/fortranwrite2.f -o Output/fortranwrite2.o
+Output/fortranwriteLC.o:../DssInterface/v6and7/Fortran/fortranwriteLC.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/fortranwriteLC.f -o Output/fortranwriteLC.o
+Output/getCurrentRec.o:../Dss6/Fortran/getCurrentRec.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/getCurrentRec.f -o Output/getCurrentRec.o
+Output/gethol.o:../Dss6/Fortran/Support/gethol.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/gethol.f -o Output/gethol.o
+Output/getime.o:../Dss6/Fortran/Support/getime.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/getime.f -o Output/getime.o
+Output/getnam.o:../Dss6/Fortran/Deprecated/getnam.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Deprecated/getnam.f -o Output/getnam.o
+Output/hol2ch.o:../Dss6/Fortran/Support/hol2ch.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/hol2ch.f -o Output/hol2ch.o
+Output/holchr.o:../Dss6/Fortran/Support/holchr.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/holchr.f -o Output/holchr.o
+Output/ictime.o:../Dss6/Fortran/Support/ictime.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/ictime.f -o Output/ictime.o
+Output/idaywk.o:../Dss6/Fortran/Support/idaywk.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/idaywk.f -o Output/idaywk.o
+Output/ihm2m.o:../Dss6/Fortran/Support/ihm2m.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/ihm2m.f -o Output/ihm2m.o
+Output/ihm2s.o:../Dss6/Fortran/Support/ihm2s.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/ihm2s.f -o Output/ihm2s.o
+Output/ihms2s.o:../Dss6/Fortran/Support/ihms2s.for
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/ihms2s.for -o Output/ihms2s.o
+Output/inctim.o:../Dss6/Fortran/Support/inctim.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/inctim.f -o Output/inctim.o
+Output/inctim2.o:../Dss6/Fortran/Support/inctim2.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/inctim2.f -o Output/inctim2.o
+Output/indexr.o:../Dss6/Fortran/Support/indexr.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/indexr.f -o Output/indexr.o
+Output/int8to4.o:../Dss6/Fortran/Support/int8to4.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/int8to4.f -o Output/int8to4.o
+Output/intchr.o:../Dss6/Fortran/Support/intchr.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/intchr.f -o Output/intchr.o
+Output/intgr.o:../Dss6/Fortran/Support/intgr.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/intgr.f -o Output/intgr.o
+Output/intgrc.o:../Dss6/Fortran/Support/intgrc.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/intgrc.f -o Output/intgrc.o
+Output/iscan.o:../Dss6/Fortran/Support/iscan.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/iscan.f -o Output/iscan.o
+Output/isunitconnected.o:../Dss6/Fortran/Support/isunitconnected.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/isunitconnected.f -o Output/isunitconnected.o
+Output/iymdjl.o:../Dss6/Fortran/Support/iymdjl.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/iymdjl.f -o Output/iymdjl.o
+Output/jliymd.o:../Dss6/Fortran/Support/jliymd.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/jliymd.f -o Output/jliymd.o
+Output/juldat.o:../Dss6/Fortran/Support/juldat.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/juldat.f -o Output/juldat.o
+Output/lbtest.o:../Dss6/Fortran/Support/lbtest.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/lbtest.f -o Output/lbtest.o
+Output/lcompar.o:../Dss6/Fortran/Support/lcompar.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/lcompar.f -o Output/lcompar.o
+Output/leqner.o:../Dss6/Fortran/Support/leqner.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/leqner.f -o Output/leqner.o
+Output/leqnerd.o:../Dss6/Fortran/Support/leqnerd.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/leqnerd.f -o Output/leqnerd.o
+Output/lflnb.o:../Dss6/Fortran/Support/lflnb.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/lflnb.f -o Output/lflnb.o
+Output/lisfil.o:../Dss6/Fortran/Support/lisfil.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/lisfil.f -o Output/lisfil.o
+Output/lisnum.o:../Dss6/Fortran/Support/lisnum.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/lisnum.f -o Output/lisnum.o
+Output/ljstr.o:../Dss6/Fortran/Support/ljstr.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/ljstr.f -o Output/ljstr.o
+Output/lpopt.o:../Dss6/Fortran/Deprecated/lpopt.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Deprecated/lpopt.f -o Output/lpopt.o
+Output/m2ihm.o:../Dss6/Fortran/Support/m2ihm.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/m2ihm.f -o Output/m2ihm.o
+Output/makedsscatalog.o:../Dss6/Fortran/Support/makedsscatalog.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/makedsscatalog.f -o Output/makedsscatalog.o
+Output/match.o:../Dss6/Fortran/Support/match.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/match.f -o Output/match.o
+Output/nindx.o:../Dss6/Fortran/Support/nindx.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/nindx.f -o Output/nindx.o
+Output/nindxr.o:../Dss6/Fortran/Support/nindxr.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/nindxr.f -o Output/nindxr.o
+Output/nopers.o:../Dss6/Fortran/Support/nopers.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/nopers.f -o Output/nopers.o
+Output/nscan.o:../Dss6/Fortran/Support/nscan.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/nscan.f -o Output/nscan.o
+Output/parseq.o:../Dss6/Fortran/Support/parseq.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/parseq.f -o Output/parseq.o
+Output/parsli.o:../Dss6/Fortran/Support/parsli.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/parsli.f -o Output/parsli.o
+Output/posfl.o:../Dss6/Fortran/Deprecated/posfl.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Deprecated/posfl.f -o Output/posfl.o
+Output/prtary.o:../Dss6/Fortran/Support/prtary.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/prtary.f -o Output/prtary.o
+Output/prtwrd.o:../Dss6/Fortran/Support/prtwrd.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/prtwrd.f -o Output/prtwrd.o
+Output/puthol.o:../Dss6/Fortran/Support/puthol.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/puthol.f -o Output/puthol.o
+Output/r2sd3.o:../Dss6/Fortran/Support/r2sd3.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/r2sd3.f -o Output/r2sd3.o
+Output/rattim.o:../Dss6/Fortran/Support/rattim.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/rattim.f -o Output/rattim.o
+Output/remblk.o:../Dss6/Fortran/Support/remblk.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/remblk.f -o Output/remblk.o
+Output/rjstr.o:../Dss6/Fortran/Support/rjstr.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/rjstr.f -o Output/rjstr.o
+Output/sd32r.o:../Dss6/Fortran/Support/sd32r.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/sd32r.f -o Output/sd32r.o
+Output/setdlm.o:../Dss6/Fortran/Support/setdlm.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/setdlm.f -o Output/setdlm.o
+Output/sortfilesfort.o:../DssInterface/v6and7/Fortran/sortfilesfort.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/sortfilesfort.f -o Output/sortfilesfort.o
+Output/strcpy.o:../Dss6/Fortran/Support/strcpy.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/strcpy.f -o Output/strcpy.o
+Output/systim.o:../Dss6/Fortran/Support/systim.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/systim.f -o Output/systim.o
+Output/tempname.o:../Dss6/Fortran/Support/tempname.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/tempname.f -o Output/tempname.o
+Output/upcase.o:../Dss6/Fortran/Support/upcase.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/upcase.f -o Output/upcase.o
+Output/wait.o:../Dss6/Fortran/Deprecated/wait.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Deprecated/wait.f -o Output/wait.o
+Output/when.o:../Dss6/Fortran/Support/when.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/when.f -o Output/when.o
+Output/wind.o:../Dss6/Fortran/Support/wind.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/wind.f -o Output/wind.o
+Output/xdoubc.o:../Dss6/Fortran/Support/xdoubc.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/xdoubc.f -o Output/xdoubc.o
+Output/xreal.o:../Dss6/Fortran/Support/xreal.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/xreal.f -o Output/xreal.o
+Output/xrealc.o:../Dss6/Fortran/Support/xrealc.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/xrealc.f -o Output/xrealc.o
+Output/xreald.o:../Dss6/Fortran/Support/xreald.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/xreald.f -o Output/xreald.o
+Output/ymddat.o:../Dss6/Fortran/Support/ymddat.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/Support/ymddat.f -o Output/ymddat.o
+Output/zabort6.o:../Dss6/Fortran/zabort6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zabort6.f -o Output/zabort6.o
+Output/zbdump6.o:../Dss6/Fortran/zbdump6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zbdump6.f -o Output/zbdump6.o
+Output/zbegdt6.o:../Dss6/Fortran/zbegdt6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zbegdt6.f -o Output/zbegdt6.o
+Output/zbegdt7.o:../DssInterface/CandFortran/Fortran/zbegdt7.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/CandFortran/Fortran/zbegdt7.f -o Output/zbegdt7.o
+Output/zbegdtInterface.o:../DssInterface/v6and7/Fortran/zbegdtInterface.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/zbegdtInterface.f -o Output/zbegdtInterface.o
+Output/zcaout6.o:../Dss6/Fortran/zcaout6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zcaout6.f -o Output/zcaout6.o
+Output/zcat6.o:../Dss6/Fortran/zcat6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zcat6.f -o Output/zcat6.o
+Output/zcatalogFile6.o:../Dss6/Fortran/zcatalogFile6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zcatalogFile6.f -o Output/zcatalogFile6.o
+Output/zcatalogFileInterface.o:../DssInterface/v6and7/Fortran/zcatalogFileInterface.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/zcatalogFileInterface.f -o Output/zcatalogFileInterface.o
+Output/zcatdr6.o:../Dss6/Fortran/zcatdr6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zcatdr6.f -o Output/zcatdr6.o
+Output/zcatfi6.o:../Dss6/Fortran/zcatfi6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zcatfi6.f -o Output/zcatfi6.o
+Output/zcatit.o:../Dss6/Fortran/zcatit.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zcatit.f -o Output/zcatit.o
+Output/zcatlg.o:../DssInterface/v6and7/Fortran/zcatlg.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/zcatlg.f -o Output/zcatlg.o
+Output/zcatlg6.o:../Dss6/Fortran/zcatlg6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zcatlg6.f -o Output/zcatlg6.o
+Output/zcheck6.o:../Dss6/Fortran/zcheck6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zcheck6.f -o Output/zcheck6.o
+Output/zcheckInterface.o:../DssInterface/v6and7/Fortran/zcheckInterface.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/zcheckInterface.f -o Output/zcheckInterface.o
+Output/zchkpn6.o:../Dss6/Fortran/zchkpn6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zchkpn6.f -o Output/zchkpn6.o
+Output/zcklnk6.o:../Dss6/Fortran/zcklnk6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zcklnk6.f -o Output/zcklnk6.o
+Output/zckmul6.o:../Dss6/Fortran/zckmul6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zckmul6.f -o Output/zckmul6.o
+Output/zckmulInterface.o:../DssInterface/v6and7/Fortran/zckmulInterface.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/zckmulInterface.f -o Output/zckmulInterface.o
+Output/zckpat6.o:../Dss6/Fortran/zckpat6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zckpat6.f -o Output/zckpat6.o
+Output/zckpdd6.o:../Dss6/Fortran/zckpdd6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zckpdd6.f -o Output/zckpdd6.o
+Output/zckpnb6.o:../Dss6/Fortran/zckpnb6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zckpnb6.f -o Output/zckpnb6.o
+Output/zckts6.o:../Dss6/Fortran/zckts6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zckts6.f -o Output/zckts6.o
+Output/zclose6.o:../Dss6/Fortran/zclose6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zclose6.f -o Output/zclose6.o
+Output/zcloseInterface.o:../DssInterface/v6and7/Fortran/zcloseInterface.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/zcloseInterface.f -o Output/zcloseInterface.o
+Output/zcofil6.o:../Dss6/Fortran/zcofil6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zcofil6.f -o Output/zcofil6.o
+Output/zcofilInterface.o:../DssInterface/v6and7/Fortran/zcofilInterface.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/zcofilInterface.f -o Output/zcofilInterface.o
+Output/zcolist6.o:../Dss6/Fortran/zcolist6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zcolist6.f -o Output/zcolist6.o
+Output/zcolpath6.o:../Dss6/Fortran/zcolpath6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zcolpath6.f -o Output/zcolpath6.o
+Output/zcopyFile6.o:../Dss6/Fortran/zcopyFile6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zcopyFile6.f -o Output/zcopyFile6.o
+Output/zcopyRecord6.o:../Dss6/Fortran/zcopyRecord6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zcopyRecord6.f -o Output/zcopyRecord6.o
+Output/zcorec6.o:../Dss6/Fortran/zcorec6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zcorec6.f -o Output/zcorec6.o
+Output/zcut6.o:../Dss6/Fortran/zcut6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zcut6.f -o Output/zcut6.o
+Output/zcutsz6.o:../Dss6/Fortran/zcutsz6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zcutsz6.f -o Output/zcutsz6.o
+Output/zdblook6.o:../Dss6/Fortran/zdblook6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zdblook6.f -o Output/zdblook6.o
+Output/zdbmod6.o:../Dss6/Fortran/zdbmod6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zdbmod6.f -o Output/zdbmod6.o
+Output/zdcinf.o:../Dss6/Fortran/zdcinf.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zdcinf.f -o Output/zdcinf.o
+Output/zdebug.o:../Dss6/Fortran/zdebug.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zdebug.f -o Output/zdebug.o
+Output/zdebug1.o:../Dss6/Fortran/zdebug1.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zdebug1.f -o Output/zdebug1.o
+Output/zdebug7.o:../DssInterface/CandFortran/Fortran/zdebug7.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/CandFortran/Fortran/zdebug7.f -o Output/zdebug7.o
+Output/zdebugout7.o:../DssInterface/CandFortran/Fortran/zdebugout7.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/CandFortran/Fortran/zdebugout7.f -o Output/zdebugout7.o
+Output/zdelet6.o:../Dss6/Fortran/zdelet6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zdelet6.f -o Output/zdelet6.o
+Output/zdeletInterface.o:../DssInterface/v6and7/Fortran/zdeletInterface.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/zdeletInterface.f -o Output/zdeletInterface.o
+Output/zdssVersion.o:../DssInterface/v6and7/Fortran/zdssVersion.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/zdssVersion.f -o Output/zdssVersion.o
+Output/zdswap.o:../DssInterface/CandFortran/Fortran/zdswap.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/CandFortran/Fortran/zdswap.f -o Output/zdswap.o
+Output/zdswap6.o:../Dss6/Fortran/zdswap6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zdswap6.f -o Output/zdswap6.o
+Output/zdtype.o:../DssInterface/CandFortran/Fortran/zdtype.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/CandFortran/Fortran/zdtype.f -o Output/zdtype.o
+Output/zdtype6.o:../Dss6/Fortran/zdtype6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zdtype6.f -o Output/zdtype6.o
+Output/zdtypeInterface.o:../DssInterface/v6and7/Fortran/zdtypeInterface.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/zdtypeInterface.f -o Output/zdtypeInterface.o
+Output/zerror6.o:../Dss6/Fortran/zerror6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zerror6.f -o Output/zerror6.o
+Output/zfilst6.o:../Dss6/Fortran/zfilst6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zfilst6.f -o Output/zfilst6.o
+Output/zfname6.o:../Dss6/Fortran/zfname6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zfname6.f -o Output/zfname6.o
+Output/zfpn.o:../Dss6/Fortran/zfpn.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zfpn.f -o Output/zfpn.o
+Output/zfsize6.o:../Dss6/Fortran/zfsize6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zfsize6.f -o Output/zfsize6.o
+Output/zfver6.o:../Dss6/Fortran/zfver6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zfver6.f -o Output/zfver6.o
+Output/zgetad6.o:../Dss6/Fortran/zgetad6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zgetad6.f -o Output/zgetad6.o
+Output/zgetag6.o:../Dss6/Fortran/zgetag6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zgetag6.f -o Output/zgetag6.o
+Output/zgetci6.o:../Dss6/Fortran/zgetci6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zgetci6.f -o Output/zgetci6.o
+Output/zgetInfo6.o:../Dss6/Fortran/zgetInfo6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zgetInfo6.f -o Output/zgetInfo6.o
+Output/zgetInfoInterface.o:../DssInterface/v6and7/Fortran/zgetInfoInterface.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/zgetInfoInterface.f -o Output/zgetInfoInterface.o
+Output/zgetRecSize6.o:../Dss6/Fortran/zgetRecSize6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zgetRecSize6.f -o Output/zgetRecSize6.o
+Output/zgetrw6.o:../Dss6/Fortran/zgetrw6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zgetrw6.f -o Output/zgetrw6.o
+Output/zgetTimezone.o:../Dss6/Fortran/zgetTimezone.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zgetTimezone.f -o Output/zgetTimezone.o
+Output/zgintl6.o:../Dss6/Fortran/zgintl6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zgintl6.f -o Output/zgintl6.o
+Output/zgintlInterface.o:../DssInterface/v6and7/Fortran/zgintlInterface.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/zgintlInterface.f -o Output/zgintlInterface.o
+Output/zgirts6.o:../Dss6/Fortran/zgirts6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zgirts6.f -o Output/zgirts6.o
+Output/zgpnp.o:../Dss6/Fortran/zgpnp.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zgpnp.f -o Output/zgpnp.o
+Output/zgtags6.o:../Dss6/Fortran/zgtags6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zgtags6.f -o Output/zgtags6.o
+Output/zgtdts.o:../Dss6/Fortran/zgtdts.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zgtdts.f -o Output/zgtdts.o
+Output/zgtpfd.o:../Dss6/Fortran/zgtpfd.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zgtpfd.f -o Output/zgtpfd.o
+Output/zgtrec6.o:../Dss6/Fortran/zgtrec6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zgtrec6.f -o Output/zgtrec6.o
+Output/zhash6.o:../Dss6/Fortran/zhash6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zhash6.f -o Output/zhash6.o
+Output/zincbk6.o:../Dss6/Fortran/zincbk6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zincbk6.f -o Output/zincbk6.o
+Output/zincbk7.o:../DssInterface/CandFortran/Fortran/zincbk7.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/CandFortran/Fortran/zincbk7.f -o Output/zincbk7.o
+Output/zincbkInterface.o:../DssInterface/v6and7/Fortran/zincbkInterface.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/zincbkInterface.f -o Output/zincbkInterface.o
+Output/zinit6.o:../Dss6/Fortran/zinit6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zinit6.f -o Output/zinit6.o
+Output/zinqir6.o:../Dss6/Fortran/zinqir6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zinqir6.f -o Output/zinqir6.o
+Output/zinqirInterface.o:../DssInterface/v6and7/Fortran/zinqirInterface.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/zinqirInterface.f -o Output/zinqirInterface.o
+Output/zintbk6.o:../Dss6/Fortran/zintbk6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zintbk6.f -o Output/zintbk6.o
+Output/zirbeg6.o:../Dss6/Fortran/zirbeg6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zirbeg6.f -o Output/zirbeg6.o
+Output/zirbegInterface.o:../DssInterface/v6and7/Fortran/zirbegInterface.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/zirbegInterface.f -o Output/zirbegInterface.o
+Output/zircpy6.o:../Dss6/Fortran/zircpy6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zircpy6.f -o Output/zircpy6.o
+Output/zirdbl6.o:../Dss6/Fortran/zirdbl6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zirdbl6.f -o Output/zirdbl6.o
+Output/zirdow6.o:../Dss6/Fortran/zirdow6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zirdow6.f -o Output/zirdow6.o
+Output/zloadcache6.o:../Dss6/Fortran/zloadcache6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zloadcache6.f -o Output/zloadcache6.o
+Output/zlockrd.o:../Dss6/Fortran/zlockrd.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zlockrd.f -o Output/zlockrd.o
+Output/zmatca6.o:../Dss6/Fortran/zmatca6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zmatca6.f -o Output/zmatca6.o
+Output/zmaxpart6.o:../Dss6/Fortran/zmaxpart6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zmaxpart6.f -o Output/zmaxpart6.o
+Output/zmin2r.o:../Dss6/Fortran/zmin2r.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zmin2r.f -o Output/zmin2r.o
+Output/zmovbk6.o:../Dss6/Fortran/zmovbk6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zmovbk6.f -o Output/zmovbk6.o
+Output/zmovwd6.o:../Dss6/Fortran/zmovwd6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zmovwd6.f -o Output/zmovwd6.o
+Output/zmultu6.o:../Dss6/Fortran/zmultu6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zmultu6.f -o Output/zmultu6.o
+Output/zndata6.o:../Dss6/Fortran/zndata6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zndata6.f -o Output/zndata6.o
+Output/zneedsq.o:../Dss6/Fortran/zneedsq.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zneedsq.f -o Output/zneedsq.o
+Output/znextts.o:../DssInterface/CandFortran/Fortran/znextts.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/CandFortran/Fortran/znextts.f -o Output/znextts.o
+Output/znextts6.o:../Dss6/Fortran/znextts6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/znextts6.f -o Output/znextts6.o
+Output/znexttsInterface.o:../DssInterface/v6and7/Fortran/znexttsInterface.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/znexttsInterface.f -o Output/znexttsInterface.o
+Output/znwbin6.o:../Dss6/Fortran/znwbin6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/znwbin6.f -o Output/znwbin6.o
+Output/znwrit6.o:../Dss6/Fortran/znwrit6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/znwrit6.f -o Output/znwrit6.o
+Output/zofset.o:../DssInterface/CandFortran/Fortran/zofset.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/CandFortran/Fortran/zofset.f -o Output/zofset.o
+Output/zofset6.o:../Dss6/Fortran/zofset6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zofset6.f -o Output/zofset6.o
+Output/zofsetInterface.o:../DssInterface/v6and7/Fortran/zofsetInterface.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/zofsetInterface.f -o Output/zofsetInterface.o
+Output/zopcat6.o:../Dss6/Fortran/zopcat6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zopcat6.f -o Output/zopcat6.o
+Output/zopen6Int.o:../Dss6/Fortran/zopen6Int.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zopen6Int.f -o Output/zopen6Int.o
+Output/zopnca6.o:../Dss6/Fortran/zopnca6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zopnca6.f -o Output/zopnca6.o
+Output/zordpn6.o:../Dss6/Fortran/zordpn6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zordpn6.f -o Output/zordpn6.o
+Output/zowrit6.o:../Dss6/Fortran/zowrit6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zowrit6.f -o Output/zowrit6.o
+Output/zpaste6.o:../Dss6/Fortran/zpaste6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zpaste6.f -o Output/zpaste6.o
+Output/zpath.o:../Dss6/Fortran/zpath.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zpath.f -o Output/zpath.o
+Output/zpirts6.o:../Dss6/Fortran/zpirts6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zpirts6.f -o Output/zpirts6.o
+Output/zplist6.o:../Dss6/Fortran/zplist6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zplist6.f -o Output/zplist6.o
+Output/zplistInterface.o:../DssInterface/v6and7/Fortran/zplistInterface.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/zplistInterface.f -o Output/zplistInterface.o
+Output/zprtc6.o:../Dss6/Fortran/zprtc6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zprtc6.f -o Output/zprtc6.o
+Output/zprtci6.o:../Dss6/Fortran/zprtci6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zprtci6.f -o Output/zprtci6.o
+Output/zpseudorts6.o:../Dss6/Fortran/zpseudorts6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zpseudorts6.f -o Output/zpseudorts6.o
+Output/zptdts.o:../Dss6/Fortran/zptdts.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zptdts.f -o Output/zptdts.o
+Output/zptpfd.o:../Dss6/Fortran/zptpfd.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zptpfd.f -o Output/zptpfd.o
+Output/zptrec6.o:../Dss6/Fortran/zptrec6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zptrec6.f -o Output/zptrec6.o
+Output/zputInfo6.o:../Dss6/Fortran/zputInfo6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zputInfo6.f -o Output/zputInfo6.o
+Output/zputInfoInterface.o:../DssInterface/v6and7/Fortran/zputInfoInterface.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/zputInfoInterface.f -o Output/zputInfoInterface.o
+Output/zquery6.o:../Dss6/Fortran/zquery6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zquery6.f -o Output/zquery6.o
+Output/zqueryInterface.o:../DssInterface/v6and7/Fortran/zqueryInterface.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/zqueryInterface.f -o Output/zqueryInterface.o
+Output/zr2min.o:../Dss6/Fortran/zr2min.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zr2min.f -o Output/zr2min.o
+Output/zrdbuf6.o:../Dss6/Fortran/zrdbuf6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zrdbuf6.f -o Output/zrdbuf6.o
+Output/zrdcat.o:../Dss6/Fortran/zrdcat.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zrdcat.f -o Output/zrdcat.o
+Output/zrdinf6.o:../Dss6/Fortran/zrdinf6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zrdinf6.f -o Output/zrdinf6.o
+Output/zrdpat.o:../Dss6/Fortran/zrdpat.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zrdpat.f -o Output/zrdpat.o
+Output/zrdpn.o:../Dss6/Fortran/zrdpn.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zrdpn.f -o Output/zrdpn.o
+Output/zrdprm6.o:../Dss6/Fortran/zrdprm6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zrdprm6.f -o Output/zrdprm6.o
+Output/zread6.o:../Dss6/Fortran/zread6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zread6.f -o Output/zread6.o
+Output/zreadInterface.o:../DssInterface/v6and7/Fortran/zreadInterface.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/zreadInterface.f -o Output/zreadInterface.o
+Output/zreadx6.o:../Dss6/Fortran/zreadx6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zreadx6.f -o Output/zreadx6.o
+Output/zrecadd6.o:../Dss6/Fortran/zrecadd6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zrecadd6.f -o Output/zrecadd6.o
+Output/zrecAddInterface.o:../DssInterface/v6and7/Fortran/zrecAddInterface.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/zrecAddInterface.f -o Output/zrecAddInterface.o
+Output/zrecin6.o:../Dss6/Fortran/zrecin6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zrecin6.f -o Output/zrecin6.o
+Output/zrecordInfo6.o:../Dss6/Fortran/zrecordInfo6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zrecordInfo6.f -o Output/zrecordInfo6.o
+Output/zrenam6.o:../Dss6/Fortran/zrenam6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zrenam6.f -o Output/zrenam6.o
+Output/zrenameInterface.o:../DssInterface/v6and7/Fortran/zrenameInterface.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/zrenameInterface.f -o Output/zrenameInterface.o
+Output/zretag6.o:../Dss6/Fortran/zretag6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zretag6.f -o Output/zretag6.o
+Output/zrinfo6.o:../Dss6/Fortran/zrinfo6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zrinfo6.f -o Output/zrinfo6.o
+Output/zrinfo7.o:../DssInterface/CandFortran/Fortran/zrinfo7.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/CandFortran/Fortran/zrinfo7.f -o Output/zrinfo7.o
+Output/zrinfoInterface.o:../DssInterface/v6and7/Fortran/zrinfoInterface.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/zrinfoInterface.f -o Output/zrinfoInterface.o
+Output/zristcInterface.o:../DssInterface/v6and7/Fortran/zristcInterface.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/zristcInterface.f -o Output/zristcInterface.o
+Output/zrits.o:../DssInterface/v6and7/Fortran/zrits.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/zrits.f -o Output/zrits.o
+Output/zritsc6.o:../Dss6/Fortran/zritsc6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zritsc6.f -o Output/zritsc6.o
+Output/zritsc7.o:../DssInterface/CandFortran/Fortran/zritsc7.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/CandFortran/Fortran/zritsc7.f -o Output/zritsc7.o
+Output/zritsi6.o:../Dss6/Fortran/zritsi6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zritsi6.f -o Output/zritsi6.o
+Output/zritsiInterface.o:../DssInterface/v6and7/Fortran/zritsiInterface.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/zritsiInterface.f -o Output/zritsiInterface.o
+Output/zritsx.o:../DssInterface/v6and7/Fortran/zritsx.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/zritsx.f -o Output/zritsx.o
+Output/zritsxd.o:../DssInterface/v6and7/Fortran/zritsxd.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/zritsxd.f -o Output/zritsxd.o
+Output/zrpd.o:../DssInterface/v6and7/Fortran/zrpd.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/zrpd.f -o Output/zrpd.o
+Output/zrpdd.o:../DssInterface/v6and7/Fortran/zrpdd.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/zrpdd.f -o Output/zrpdd.o
+Output/zrpdi6.o:../Dss6/Fortran/zrpdi6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zrpdi6.f -o Output/zrpdi6.o
+Output/zrpdiInterface.o:../DssInterface/v6and7/Fortran/zrpdiInterface.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/zrpdiInterface.f -o Output/zrpdiInterface.o
+Output/zrrec6.o:../Dss6/Fortran/zrrec6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zrrec6.f -o Output/zrrec6.o
+Output/zrrst.o:../Dss6/Fortran/zrrst.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zrrst.f -o Output/zrrst.o
+Output/zrrsti.o:../Dss6/Fortran/zrrsti.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zrrsti.f -o Output/zrrsti.o
+Output/zrrtpa6.o:../Dss6/Fortran/zrrtpa6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zrrtpa6.f -o Output/zrrtpa6.o
+Output/zrrts.o:../DssInterface/v6and7/Fortran/zrrts.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/zrrts.f -o Output/zrrts.o
+Output/zrrtsb6.o:../Dss6/Fortran/zrrtsb6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zrrtsb6.f -o Output/zrrtsb6.o
+Output/zrrtsc.o:../DssInterface/CandFortran/Fortran/zrrtsc.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/CandFortran/Fortran/zrrtsc.f -o Output/zrrtsc.o
+Output/zrrtsc6.o:../Dss6/Fortran/zrrtsc6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zrrtsc6.f -o Output/zrrtsc6.o
+Output/zrrtscInterface.o:../DssInterface/v6and7/Fortran/zrrtscInterface.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/zrrtscInterface.f -o Output/zrrtscInterface.o
+Output/zrrtsd.o:../DssInterface/v6and7/Fortran/zrrtsd.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/zrrtsd.f -o Output/zrrtsd.o
+Output/zrrtsi.o:../Dss6/Fortran/zrrtsi.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zrrtsi.f -o Output/zrrtsi.o
+Output/zrrtsiInterface.o:../DssInterface/v6and7/Fortran/zrrtsiInterface.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/zrrtsiInterface.f -o Output/zrrtsiInterface.o
+Output/zrrtsn6.o:../Dss6/Fortran/zrrtsn6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zrrtsn6.f -o Output/zrrtsn6.o
+Output/zrrtsx.o:../DssInterface/v6and7/Fortran/zrrtsx.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/zrrtsx.f -o Output/zrrtsx.o
+Output/zrrtsxd.o:../DssInterface/v6and7/Fortran/zrrtsxd.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/zrrtsxd.f -o Output/zrrtsxd.o
+Output/zrtall6.o:../Dss6/Fortran/zrtall6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zrtall6.f -o Output/zrtall6.o
+Output/zrtext6.o:../Dss6/Fortran/zrtext6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zrtext6.f -o Output/zrtext6.o
+Output/zrtxta6.o:../Dss6/Fortran/zrtxta6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zrtxta6.f -o Output/zrtxta6.o
+Output/zrtxtaInterface.o:../DssInterface/v6and7/Fortran/zrtxtaInterface.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/zrtxtaInterface.f -o Output/zrtxtaInterface.o
+Output/zrtxts6.o:../Dss6/Fortran/zrtxts6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zrtxts6.f -o Output/zrtxts6.o
+Output/zrtxtsInterface.o:../DssInterface/v6and7/Fortran/zrtxtsInterface.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/zrtxtsInterface.f -o Output/zrtxtsInterface.o
+Output/zscomp6.o:../Dss6/Fortran/zscomp6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zscomp6.f -o Output/zscomp6.o
+Output/zselca6.o:../Dss6/Fortran/zselca6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zselca6.f -o Output/zselca6.o
+Output/zset6.o:../Dss6/Fortran/zset6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zset6.f -o Output/zset6.o
+Output/zsetca6.o:../Dss6/Fortran/zsetca6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zsetca6.f -o Output/zsetca6.o
+Output/zsetci6.o:../Dss6/Fortran/zsetci6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zsetci6.f -o Output/zsetci6.o
+Output/zsetfi6.o:../Dss6/Fortran/zsetfi6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zsetfi6.f -o Output/zsetfi6.o
+Output/zsetfiInterface.o:../DssInterface/v6and7/Fortran/zsetfiInterface.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/zsetfiInterface.f -o Output/zsetfiInterface.o
+Output/zsetInterface.o:../DssInterface/v6and7/Fortran/zsetInterface.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/zsetInterface.f -o Output/zsetInterface.o
+Output/zsetpr6.o:../Dss6/Fortran/zsetpr6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zsetpr6.f -o Output/zsetpr6.o
+Output/zsetTimezone.o:../Dss6/Fortran/zsetTimezone.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zsetTimezone.f -o Output/zsetTimezone.o
+Output/zsits.o:../DssInterface/v6and7/Fortran/zsits.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/zsits.f -o Output/zsits.o
+Output/zsitsc.o:../DssInterface/CandFortran/Fortran/zsitsc.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/CandFortran/Fortran/zsitsc.f -o Output/zsitsc.o
+Output/zsitsc6.o:../Dss6/Fortran/zsitsc6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zsitsc6.f -o Output/zsitsc6.o
+Output/zsitscInterface.o:../DssInterface/v6and7/Fortran/zsitscInterface.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/zsitscInterface.f -o Output/zsitscInterface.o
+Output/zsitsi6.o:../Dss6/Fortran/zsitsi6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zsitsi6.f -o Output/zsitsi6.o
+Output/zsitsiInterface.o:../DssInterface/v6and7/Fortran/zsitsiInterface.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/zsitsiInterface.f -o Output/zsitsiInterface.o
+Output/zsitsx.o:../DssInterface/v6and7/Fortran/zsitsx.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/zsitsx.f -o Output/zsitsx.o
+Output/zsitsxd.o:../DssInterface/v6and7/Fortran/zsitsxd.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/zsitsxd.f -o Output/zsitsxd.o
+Output/zspd.o:../DssInterface/v6and7/Fortran/zspd.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/zspd.f -o Output/zspd.o
+Output/zspdd.o:../DssInterface/v6and7/Fortran/zspdd.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/zspdd.f -o Output/zspdd.o
+Output/zspdi6.o:../Dss6/Fortran/zspdi6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zspdi6.f -o Output/zspdi6.o
+Output/zspdiInterface.o:../DssInterface/v6and7/Fortran/zspdiInterface.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/zspdiInterface.f -o Output/zspdiInterface.o
+Output/zsqprm6.o:../Dss6/Fortran/zsqprm6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zsqprm6.f -o Output/zsqprm6.o
+Output/zsqueeze6.o:../Dss6/Fortran/zsqueeze6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zsqueeze6.f -o Output/zsqueeze6.o
+Output/zsrst.o:../Dss6/Fortran/zsrst.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zsrst.f -o Output/zsrst.o
+Output/zsrsti.o:../Dss6/Fortran/zsrsti.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zsrsti.f -o Output/zsrsti.o
+Output/zsrtpa6.o:../Dss6/Fortran/zsrtpa6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zsrtpa6.f -o Output/zsrtpa6.o
+Output/zsrts.o:../DssInterface/v6and7/Fortran/zsrts.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/zsrts.f -o Output/zsrts.o
+Output/zsrtsc.o:../DssInterface/CandFortran/Fortran/zsrtsc.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/CandFortran/Fortran/zsrtsc.f -o Output/zsrtsc.o
+Output/zsrtsc6.o:../Dss6/Fortran/zsrtsc6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zsrtsc6.f -o Output/zsrtsc6.o
+Output/zsrtscInterface.o:../DssInterface/v6and7/Fortran/zsrtscInterface.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/zsrtscInterface.f -o Output/zsrtscInterface.o
+Output/zsrtsd.o:../DssInterface/v6and7/Fortran/zsrtsd.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/zsrtsd.f -o Output/zsrtsd.o
+Output/zsrtsi6.o:../Dss6/Fortran/zsrtsi6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zsrtsi6.f -o Output/zsrtsi6.o
+Output/zsrtsiInterface.o:../DssInterface/v6and7/Fortran/zsrtsiInterface.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/zsrtsiInterface.f -o Output/zsrtsiInterface.o
+Output/zsrtsx.o:../DssInterface/v6and7/Fortran/zsrtsx.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/zsrtsx.f -o Output/zsrtsx.o
+Output/zsrtsxd.o:../DssInterface/v6and7/Fortran/zsrtsxd.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/zsrtsxd.f -o Output/zsrtsxd.o
+Output/zstags6.o:../Dss6/Fortran/zstags6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zstags6.f -o Output/zstags6.o
+Output/zstext6.o:../Dss6/Fortran/zstext6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zstext6.f -o Output/zstext6.o
+Output/zstfh.o:../Dss6/Fortran/zstfh.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zstfh.f -o Output/zstfh.o
+Output/zstxta6.o:../Dss6/Fortran/zstxta6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zstxta6.f -o Output/zstxta6.o
+Output/zswap6.o:../Dss6/Fortran/zswap6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zswap6.f -o Output/zswap6.o
+Output/ztagfi6.o:../Dss6/Fortran/ztagfi6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/ztagfi6.f -o Output/ztagfi6.o
+Output/ztagpa6.o:../Dss6/Fortran/ztagpa6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/ztagpa6.f -o Output/ztagpa6.o
+Output/ztsends.o:../Dss6/Fortran/ztsends.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/ztsends.f -o Output/ztsends.o
+Output/ztsinfo6.o:../Dss6/Fortran/ztsinfo6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/ztsinfo6.f -o Output/ztsinfo6.o
+Output/ztsinfoInterface.o:../DssInterface/v6and7/Fortran/ztsinfoInterface.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/ztsinfoInterface.f -o Output/ztsinfoInterface.o
+Output/ztsint6.o:../Dss6/Fortran/ztsint6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/ztsint6.f -o Output/ztsint6.o
+Output/ztsrange.o:../Dss6/Fortran/ztsrange.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/ztsrange.f -o Output/ztsrange.o
+Output/ztssrch6.o:../Dss6/Fortran/ztssrch6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/ztssrch6.f -o Output/ztssrch6.o
+Output/ztssrchInterface.o:../DssInterface/v6and7/Fortran/ztssrchInterface.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/ztssrchInterface.f -o Output/ztssrchInterface.o
+Output/ztstqp.o:../DssInterface/CandFortran/Fortran/ztstqp.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/CandFortran/Fortran/ztstqp.f -o Output/ztstqp.o
+Output/ztstqp6.o:../Dss6/Fortran/ztstqp6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/ztstqp6.f -o Output/ztstqp6.o
+Output/zudall6.o:../Dss6/Fortran/zudall6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zudall6.f -o Output/zudall6.o
+Output/zudava6.o:../Dss6/Fortran/zudava6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zudava6.f -o Output/zudava6.o
+Output/zufpn.o:../Dss6/Fortran/zufpn.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zufpn.f -o Output/zufpn.o
+Output/zundel6.o:../Dss6/Fortran/zundel6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zundel6.f -o Output/zundel6.o
+Output/zupath.o:../Dss6/Fortran/zupath.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zupath.f -o Output/zupath.o
+Output/zuprts6.o:../Dss6/Fortran/zuprts6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zuprts6.f -o Output/zuprts6.o
+Output/zustfh.o:../Dss6/Fortran/zustfh.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zustfh.f -o Output/zustfh.o
+Output/zwlock6.o:../Dss6/Fortran/zwlock6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zwlock6.f -o Output/zwlock6.o
+Output/zwrbuf6.o:../Dss6/Fortran/zwrbuf6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zwrbuf6.f -o Output/zwrbuf6.o
+Output/zwrec6.o:../Dss6/Fortran/zwrec6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zwrec6.f -o Output/zwrec6.o
+Output/zwrite6.o:../Dss6/Fortran/zwrite6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zwrite6.f -o Output/zwrite6.o
+Output/zwritex6.o:../Dss6/Fortran/zwritex6.f
+	$(FORTRAN) $(FFLAGS) ../Dss6/Fortran/zwritex6.f -o Output/zwritex6.o
+Output/zwritx.o:../DssInterface/v6and7/Fortran/zwritx.f
+	$(FORTRAN) $(FFLAGS) ../DssInterface/v6and7/Fortran/zwritx.f -o Output/zwritx.o
+Output/checks.o:../DssInterface/CandFortran/Fortran/checks.f90
+	$(FORTRAN) $(FFLAGS) ../DssInterface/CandFortran/Fortran/checks.f90 -o Output/checks.o
+
+OBJS=\
+Output/abort.o\
+Output/attach.o\
+Output/attcrk.o\
+Output/attdcd.o\
+Output/attmat.o\
+Output/attopn.o\
+Output/attsub.o\
+Output/bits.o\
+Output/bkdatw.o\
+Output/cdelet.o\
+Output/ch2hol.o\
+Output/chdlm.o\
+Output/chgtyp.o\
+Output/chrblk.o\
+Output/chrfil.o\
+Output/chrflb.o\
+Output/chrhol.o\
+Output/chrlnb.o\
+Output/cjchr.o\
+Output/clines.o\
+Output/convi4toi8.o\
+Output/convi8toi4.o\
+Output/cparms.o\
+Output/curtim.o\
+Output/datcll.o\
+Output/datcln.o\
+Output/datime.o\
+Output/datjul.o\
+Output/datymd.o\
+Output/dcdltr.o\
+Output/dcinfo.o\
+Output/dcreal.o\
+Output/dcrept.o\
+Output/dcsd3r.o\
+Output/dhchek.o\
+Output/dhinfo.o\
+Output/dhinit.o\
+Output/dmreal.o\
+Output/dssCopyStatus.o\
+Output/dudltr.o\
+Output/dureal.o\
+Output/durept.o\
+Output/dusd3r.o\
+Output/findlm.o\
+Output/flush.o\
+Output/fortranclose.o\
+Output/fortranopen.o\
+Output/fortranread.o\
+Output/fortranrewind.o\
+Output/fortranwrite.o\
+Output/fortranwrite2.o\
+Output/fortranwriteLC.o\
+Output/getCurrentRec.o\
+Output/gethol.o\
+Output/getime.o\
+Output/getnam.o\
+Output/hol2ch.o\
+Output/holchr.o\
+Output/ictime.o\
+Output/idaywk.o\
+Output/ihm2m.o\
+Output/ihm2s.o\
+Output/ihms2s.o\
+Output/inctim.o\
+Output/inctim2.o\
+Output/indexr.o\
+Output/int8to4.o\
+Output/intchr.o\
+Output/intgr.o\
+Output/intgrc.o\
+Output/iscan.o\
+Output/isunitconnected.o\
+Output/iymdjl.o\
+Output/jliymd.o\
+Output/juldat.o\
+Output/lbtest.o\
+Output/lcompar.o\
+Output/leqner.o\
+Output/leqnerd.o\
+Output/lflnb.o\
+Output/lisfil.o\
+Output/lisnum.o\
+Output/ljstr.o\
+Output/lpopt.o\
+Output/m2ihm.o\
+Output/makedsscatalog.o\
+Output/match.o\
+Output/nindx.o\
+Output/nindxr.o\
+Output/nopers.o\
+Output/nscan.o\
+Output/parseq.o\
+Output/parsli.o\
+Output/posfl.o\
+Output/prtary.o\
+Output/prtwrd.o\
+Output/puthol.o\
+Output/r2sd3.o\
+Output/rattim.o\
+Output/remblk.o\
+Output/rjstr.o\
+Output/sd32r.o\
+Output/setdlm.o\
+Output/sortfilesfort.o\
+Output/strcpy.o\
+Output/systim.o\
+Output/tempname.o\
+Output/upcase.o\
+Output/wait.o\
+Output/when.o\
+Output/wind.o\
+Output/xdoubc.o\
+Output/xreal.o\
+Output/xrealc.o\
+Output/xreald.o\
+Output/ymddat.o\
+Output/zabort6.o\
+Output/zbdump6.o\
+Output/zbegdt6.o\
+Output/zbegdt7.o\
+Output/zbegdtInterface.o\
+Output/zcaout6.o\
+Output/zcat6.o\
+Output/zcatalogFile6.o\
+Output/zcatalogFileInterface.o\
+Output/zcatdr6.o\
+Output/zcatfi6.o\
+Output/zcatit.o\
+Output/zcatlg.o\
+Output/zcatlg6.o\
+Output/zcheck6.o\
+Output/zcheckInterface.o\
+Output/zchkpn6.o\
+Output/zcklnk6.o\
+Output/zckmul6.o\
+Output/zckmulInterface.o\
+Output/zckpat6.o\
+Output/zckpdd6.o\
+Output/zckpnb6.o\
+Output/zckts6.o\
+Output/zclose6.o\
+Output/zcloseInterface.o\
+Output/zcofil6.o\
+Output/zcofilInterface.o\
+Output/zcolist6.o\
+Output/zcolpath6.o\
+Output/zcopyFile6.o\
+Output/zcopyRecord6.o\
+Output/zcorec6.o\
+Output/zcut6.o\
+Output/zcutsz6.o\
+Output/zdblook6.o\
+Output/zdbmod6.o\
+Output/zdcinf.o\
+Output/zdebug.o\
+Output/zdebug1.o\
+Output/zdebug7.o\
+Output/zdebugout7.o\
+Output/zdelet6.o\
+Output/zdeletInterface.o\
+Output/zdssVersion.o\
+Output/zdswap.o\
+Output/zdswap6.o\
+Output/zdtype.o\
+Output/zdtype6.o\
+Output/zdtypeInterface.o\
+Output/zerror6.o\
+Output/zfilst6.o\
+Output/zfname6.o\
+Output/zfpn.o\
+Output/zfsize6.o\
+Output/zfver6.o\
+Output/zgetad6.o\
+Output/zgetag6.o\
+Output/zgetci6.o\
+Output/zgetInfo6.o\
+Output/zgetInfoInterface.o\
+Output/zgetRecSize6.o\
+Output/zgetrw6.o\
+Output/zgetTimezone.o\
+Output/zgintl6.o\
+Output/zgintlInterface.o\
+Output/zgirts6.o\
+Output/zgpnp.o\
+Output/zgtags6.o\
+Output/zgtdts.o\
+Output/zgtpfd.o\
+Output/zgtrec6.o\
+Output/zhash6.o\
+Output/zincbk6.o\
+Output/zincbk7.o\
+Output/zincbkInterface.o\
+Output/zinit6.o\
+Output/zinqir6.o\
+Output/zinqirInterface.o\
+Output/zintbk6.o\
+Output/zirbeg6.o\
+Output/zirbegInterface.o\
+Output/zircpy6.o\
+Output/zirdbl6.o\
+Output/zirdow6.o\
+Output/zloadcache6.o\
+Output/zlockrd.o\
+Output/zmatca6.o\
+Output/zmaxpart6.o\
+Output/zmin2r.o\
+Output/zmovbk6.o\
+Output/zmovwd6.o\
+Output/zmultu6.o\
+Output/zndata6.o\
+Output/zneedsq.o\
+Output/znextts.o\
+Output/znextts6.o\
+Output/znexttsInterface.o\
+Output/znwbin6.o\
+Output/znwrit6.o\
+Output/zofset.o\
+Output/zofset6.o\
+Output/zofsetInterface.o\
+Output/zopcat6.o\
+Output/zopen6Int.o\
+Output/zopnca6.o\
+Output/zordpn6.o\
+Output/zowrit6.o\
+Output/zpaste6.o\
+Output/zpath.o\
+Output/zpirts6.o\
+Output/zplist6.o\
+Output/zplistInterface.o\
+Output/zprtc6.o\
+Output/zprtci6.o\
+Output/zpseudorts6.o\
+Output/zptdts.o\
+Output/zptpfd.o\
+Output/zptrec6.o\
+Output/zputInfo6.o\
+Output/zputInfoInterface.o\
+Output/zquery6.o\
+Output/zqueryInterface.o\
+Output/zr2min.o\
+Output/zrdbuf6.o\
+Output/zrdcat.o\
+Output/zrdinf6.o\
+Output/zrdpat.o\
+Output/zrdpn.o\
+Output/zrdprm6.o\
+Output/zread6.o\
+Output/zreadInterface.o\
+Output/zreadx6.o\
+Output/zrecadd6.o\
+Output/zrecAddInterface.o\
+Output/zrecin6.o\
+Output/zrecordInfo6.o\
+Output/zrenam6.o\
+Output/zrenameInterface.o\
+Output/zretag6.o\
+Output/zrinfo6.o\
+Output/zrinfo7.o\
+Output/zrinfoInterface.o\
+Output/zristcInterface.o\
+Output/zrits.o\
+Output/zritsc6.o\
+Output/zritsc7.o\
+Output/zritsi6.o\
+Output/zritsiInterface.o\
+Output/zritsx.o\
+Output/zritsxd.o\
+Output/zrpd.o\
+Output/zrpdd.o\
+Output/zrpdi6.o\
+Output/zrpdiInterface.o\
+Output/zrrec6.o\
+Output/zrrst.o\
+Output/zrrsti.o\
+Output/zrrtpa6.o\
+Output/zrrts.o\
+Output/zrrtsb6.o\
+Output/zrrtsc.o\
+Output/zrrtsc6.o\
+Output/zrrtscInterface.o\
+Output/zrrtsd.o\
+Output/zrrtsi.o\
+Output/zrrtsiInterface.o\
+Output/zrrtsn6.o\
+Output/zrrtsx.o\
+Output/zrrtsxd.o\
+Output/zrtall6.o\
+Output/zrtext6.o\
+Output/zrtxta6.o\
+Output/zrtxtaInterface.o\
+Output/zrtxts6.o\
+Output/zrtxtsInterface.o\
+Output/zscomp6.o\
+Output/zselca6.o\
+Output/zset6.o\
+Output/zsetca6.o\
+Output/zsetci6.o\
+Output/zsetfi6.o\
+Output/zsetfiInterface.o\
+Output/zsetInterface.o\
+Output/zsetpr6.o\
+Output/zsetTimezone.o\
+Output/zsits.o\
+Output/zsitsc.o\
+Output/zsitsc6.o\
+Output/zsitscInterface.o\
+Output/zsitsi6.o\
+Output/zsitsiInterface.o\
+Output/zsitsx.o\
+Output/zsitsxd.o\
+Output/zspd.o\
+Output/zspdd.o\
+Output/zspdi6.o\
+Output/zspdiInterface.o\
+Output/zsqprm6.o\
+Output/zsqueeze6.o\
+Output/zsrst.o\
+Output/zsrsti.o\
+Output/zsrtpa6.o\
+Output/zsrts.o\
+Output/zsrtsc.o\
+Output/zsrtsc6.o\
+Output/zsrtscInterface.o\
+Output/zsrtsd.o\
+Output/zsrtsi6.o\
+Output/zsrtsiInterface.o\
+Output/zsrtsx.o\
+Output/zsrtsxd.o\
+Output/zstags6.o\
+Output/zstext6.o\
+Output/zstfh.o\
+Output/zstxta6.o\
+Output/zswap6.o\
+Output/ztagfi6.o\
+Output/ztagpa6.o\
+Output/ztsends.o\
+Output/ztsinfo6.o\
+Output/ztsinfoInterface.o\
+Output/ztsint6.o\
+Output/ztsrange.o\
+Output/ztssrch6.o\
+Output/ztssrchInterface.o\
+Output/ztstqp.o\
+Output/ztstqp6.o\
+Output/zudall6.o\
+Output/zudava6.o\
+Output/zufpn.o\
+Output/zundel6.o\
+Output/zupath.o\
+Output/zuprts6.o\
+Output/zustfh.o\
+Output/zwlock6.o\
+Output/zwrbuf6.o\
+Output/zwrec6.o\
+Output/zwrite6.o\
+Output/zwritex6.o\
+Output/zwritx.o\
+Output/checks.o
+
+#tail of makefile
+
+
+heclib_f.a:$(OBJS)
+	$(AR) -r Output/heclib_f.a Output/*.o

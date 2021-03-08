@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VisualStudioProject ProjectType="typeDynamicLibrary" ProjectCreator="Intel Fortran" Keyword="Dll" Version="11.0" ProjectIdGuid="{85B5FB94-F839-490B-9663-8B503A17BAAE}">
+	<Platforms>
+		<Platform Name="Win32"/>
+		<Platform Name="x64"/></Platforms>
+	<Configurations>
+		<Configuration Name="Debug|Win32" OutputDirectory="$(ProjectDir)\$(PlatformName)\$(ConfigurationName)" IntermediateDirectory="$(ProjectDir)\$(PlatformName)\$(ConfigurationName)_intermediate" TargetName="heclib" ConfigurationType="typeDynamicLibrary">
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" AdditionalIncludeDirectories=".\headers\" Diagnostics="diagnosticsShowAll" ExternalNameInterpretation="extNameLowerCase" CallingConvention="callConventionCRef" ExternalNameUnderscore="true" Traceback="true" BoundsCheck="true" StackFrameCheck="true" RuntimeLibrary="rtMultiThreadedDebugDLL"/>
+				<Tool Name="VFLinkerTool" OutputFile="$(OutDir)\heclib.dll" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" AdditionalLibraryDirectories="..\heclib_c_v6v7\$(PlatformName)\$(ConfigurationName);..\heclib_f_v6v7\$(PlatformName)\$(ConfigurationName)" IgnoreDefaultLibraryNames="LIBCMTD" GenerateDebugInformation="true" SubSystem="subSystemWindows" LinkDLL="true" AdditionalDependencies="heclib_c_v6v7.lib heclib_f_v6v7.lib"/>
+				<Tool Name="VFResourceCompilerTool"/>
+				<Tool Name="VFMidlTool" SuppressStartupBanner="true"/>
+				<Tool Name="VFCustomBuildTool"/>
+				<Tool Name="VFPreLinkEventTool"/>
+				<Tool Name="VFPreBuildEventTool"/>
+				<Tool Name="VFPostBuildEventTool"/>
+				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
+		<Configuration Name="Release|Win32" OutputDirectory="$(ProjectDir)\$(PlatformName)\$(ConfigurationName)" IntermediateDirectory="$(ProjectDir)\$(PlatformName)\$(ConfigurationName)_intermediate" TargetName="heclib" ConfigurationType="typeDynamicLibrary">
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" Optimization="optimizeDisabled" AdditionalIncludeDirectories=".\headers\" ExternalNameInterpretation="extNameLowerCase" CallingConvention="callConventionCRef" ExternalNameUnderscore="true" RuntimeLibrary="rtMultiThreadedDLL"/>
+				<Tool Name="VFLinkerTool" OutputFile="$(OutDir)\heclib.dll" SuppressStartupBanner="true" AdditionalLibraryDirectories="..\heclib_c_v6v7\$(PlatformName)\$(ConfigurationName);..\heclib_f_v6v7\$(PlatformName)\$(ConfigurationName)" IgnoreDefaultLibraryNames="LIBCMTD" SubSystem="subSystemWindows" LinkDLL="true" AdditionalDependencies="heclib_c_v6v7.lib heclib_f_v6v7.lib"/>
+				<Tool Name="VFResourceCompilerTool"/>
+				<Tool Name="VFMidlTool" SuppressStartupBanner="true"/>
+				<Tool Name="VFCustomBuildTool"/>
+				<Tool Name="VFPreLinkEventTool"/>
+				<Tool Name="VFPreBuildEventTool"/>
+				<Tool Name="VFPostBuildEventTool"/>
+				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
+		<Configuration Name="Debug|x64" OutputDirectory="$(ProjectDir)\$(PlatformName)\$(ConfigurationName)" IntermediateDirectory="$(ProjectDir)\$(PlatformName)\$(ConfigurationName)_intermediate" TargetName="heclib" ConfigurationType="typeDynamicLibrary">
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" AdditionalIncludeDirectories=".\headers\" Diagnostics="diagnosticsShowAll" ExternalNameInterpretation="extNameLowerCase" CallingConvention="callConventionCRef" ExternalNameUnderscore="true" Traceback="true" BoundsCheck="true" StackFrameCheck="true" RuntimeLibrary="rtMultiThreadedDebugDLL"/>
+				<Tool Name="VFLinkerTool" OutputFile="$(OutDir)\heclib.dll" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" AdditionalLibraryDirectories="..\heclib_c_v6v7\$(PlatformName)\$(ConfigurationName);..\heclib_f_v6v7\$(PlatformName)\$(ConfigurationName)" IgnoreDefaultLibraryNames="LIBCMTD" GenerateDebugInformation="true" SubSystem="subSystemWindows" LinkDLL="true" AdditionalDependencies="heclib_c_v6v7.lib heclib_f_v6v7.lib"/>
+				<Tool Name="VFResourceCompilerTool"/>
+				<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
+				<Tool Name="VFCustomBuildTool"/>
+				<Tool Name="VFPreLinkEventTool"/>
+				<Tool Name="VFPreBuildEventTool"/>
+				<Tool Name="VFPostBuildEventTool"/>
+				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
+		<Configuration Name="Release|x64" OutputDirectory="$(ProjectDir)\$(PlatformName)\$(ConfigurationName)" IntermediateDirectory="$(ProjectDir)\$(PlatformName)\$(ConfigurationName)_intermediate" TargetName="heclib" ConfigurationType="typeDynamicLibrary">
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" Optimization="optimizeDisabled" AdditionalIncludeDirectories=".\headers\" ExternalNameInterpretation="extNameLowerCase" CallingConvention="callConventionCRef" ExternalNameUnderscore="true" RuntimeLibrary="rtMultiThreadedDLL"/>
+				<Tool Name="VFLinkerTool" OutputFile="$(OutDir)\heclib.dll" SuppressStartupBanner="true" AdditionalLibraryDirectories="..\heclib_c_v6v7\$(PlatformName)\$(ConfigurationName);..\heclib_f_v6v7\$(PlatformName)\$(ConfigurationName)" IgnoreDefaultLibraryNames="LIBCMT" SubSystem="subSystemWindows" LinkDLL="true" AdditionalDependencies="heclib_c_v6v7.lib heclib_f_v6v7.lib"/>
+				<Tool Name="VFResourceCompilerTool"/>
+				<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
+				<Tool Name="VFCustomBuildTool"/>
+				<Tool Name="VFPreLinkEventTool"/>
+				<Tool Name="VFPreBuildEventTool"/>
+				<Tool Name="VFPostBuildEventTool"/>
+				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration></Configurations>
+	<Files>
+		<Filter Name="Header Files" Filter="fi;fd;h;inc"/>
+		<Filter Name="Resource Files" Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"/>
+		<Filter Name="Source Files" Filter="f90;for;f;fpp;ftn;def;odl;idl">
+		<File RelativePath=".\DLL_Stubs.for"/>
+		<File RelativePath="vb declarations.txt"/></Filter>
+		<Filter Name="Win32">
+		<File RelativePath="..\..\..\..\Program Files (x86)\IntelSWTools\compilers_and_libraries_2019.3.203\windows\redist\ia32_win\compiler\libifcoremdd.dll"/>
+		<File RelativePath="..\..\..\..\Program Files (x86)\IntelSWTools\compilers_and_libraries_2019.3.203\windows\redist\ia32_win\compiler\libifportmd.dll"/>
+		<File RelativePath="..\..\..\..\Program Files (x86)\IntelSWTools\compilers_and_libraries_2019.3.203\windows\redist\ia32_win\compiler\libmmd.dll"/>
+		<File RelativePath="..\..\..\..\Program Files (x86)\IntelSWTools\compilers_and_libraries_2019.3.203\windows\redist\ia32_win\compiler\libmmdd.dll"/>
+		<File RelativePath="..\..\..\..\Program Files (x86)\Windows Kits\10\bin\10.0.17763.0\x86\ucrt\ucrtbased.dll"/></Filter>
+		<Filter Name="x64">
+		<File RelativePath="..\..\..\..\Program Files (x86)\IntelSWTools\compilers_and_libraries_2019.3.203\windows\redist\intel64_win\compiler\libifcoremdd.dll"/>
+		<File RelativePath="..\..\..\..\Program Files (x86)\IntelSWTools\compilers_and_libraries_2019.3.203\windows\redist\intel64_win\compiler\libifportmd.dll"/>
+		<File RelativePath="..\..\..\..\Program Files (x86)\IntelSWTools\compilers_and_libraries_2019.3.203\windows\redist\intel64_win\compiler\libmmd.dll"/>
+		<File RelativePath="..\..\..\..\Program Files (x86)\IntelSWTools\compilers_and_libraries_2019.3.203\windows\redist\intel64_win\compiler\libmmdd.dll"/>
+		<File RelativePath="..\..\..\..\Program Files (x86)\Windows Kits\10\bin\10.0.17763.0\x64\ucrt\ucrtbased.dll"/></Filter></Files>
+	<Globals/></VisualStudioProject>

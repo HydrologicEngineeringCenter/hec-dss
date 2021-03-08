@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VisualStudioProject ProjectType="typeStaticLibrary" ProjectCreator="Intel Fortran" Keyword="Static Library" Version="11.0" ProjectIdGuid="{CA614CEF-1ADF-4D64-A926-2F725EE07697}">
+	<Platforms>
+		<Platform Name="Win32"/>
+		<Platform Name="x64"/></Platforms>
+	<Configurations>
+		<Configuration Name="Debug|Win32" OutputDirectory="$(ProjectDir)$(Platform)\$(Configuration)\" IntermediateDirectory="$(ProjectDir)$(Platform)\$(Configuration)_intermediate\" TargetName="javaShefDssLib" DeleteExtensionsOnClean="*.obj;*.mod;*.pdb;*.asm;*.map;*.dyn;*.dpi;*.tmp;*.log;*.lib;$(TargetPath)" ConfigurationType="typeStaticLibrary">
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" LocalVariableStorage="localStorageSave" LocalSavedScalarsZero="true" ExternalNameInterpretation="extNameLowerCase" CallingConvention="callConventionCRef" ExternalNameUnderscore="true" Traceback="true" RuntimeLibrary="rtMultiThreadedDebug"/>
+				<Tool Name="VFLibrarianTool" OutputFile="$(OUTDIR)javaShefDssLib.lib"/>
+				<Tool Name="VFResourceCompilerTool"/>
+				<Tool Name="VFMidlTool" SuppressStartupBanner="true" TypeLibraryName="$(IntDir)/$(InputName).tlb"/>
+				<Tool Name="VFCustomBuildTool"/>
+				<Tool Name="VFPreLinkEventTool"/>
+				<Tool Name="VFPreBuildEventTool"/>
+				<Tool Name="VFPostBuildEventTool"/></Configuration>
+		<Configuration Name="Release|Win32" OutputDirectory="$(ProjectDir)$(Platform)\$(Configuration)\" IntermediateDirectory="$(ProjectDir)$(Platform)\$(Configuration)_intermediate\" TargetName="javaShefDssLib" DeleteExtensionsOnClean="*.obj;*.mod;*.pdb;*.asm;*.map;*.dyn;*.dpi;*.tmp;*.log;*.lib;$(TargetPath)" ConfigurationType="typeStaticLibrary">
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" Optimization="optimizeDisabled" ExternalNameInterpretation="extNameLowerCase" CallingConvention="callConventionCRef" ExternalNameUnderscore="true" ModulePath="$(INTDIR)/" ObjectFile="$(INTDIR)/" DisableDefaultLibSearch="true"/>
+				<Tool Name="VFLibrarianTool" OutputFile="$(OUTDIR)javaShefDssLib.lib"/>
+				<Tool Name="VFResourceCompilerTool"/>
+				<Tool Name="VFMidlTool" SuppressStartupBanner="true" TypeLibraryName="$(IntDir)/$(InputName).tlb"/>
+				<Tool Name="VFCustomBuildTool"/>
+				<Tool Name="VFPreLinkEventTool"/>
+				<Tool Name="VFPreBuildEventTool"/>
+				<Tool Name="VFPostBuildEventTool"/></Configuration>
+		<Configuration Name="Debug|x64" OutputDirectory="$(ProjectDir)$(Platform)\$(Configuration)\" IntermediateDirectory="$(ProjectDir)$(Platform)\$(Configuration)_intermediate\" TargetName="javaShefDssLib" DeleteExtensionsOnClean="*.obj;*.mod;*.pdb;*.asm;*.map;*.dyn;*.dpi;*.tmp;*.log;*.lib;$(TargetPath)" ConfigurationType="typeStaticLibrary">
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" LocalVariableStorage="localStorageSave" LocalSavedScalarsZero="true" ExternalNameInterpretation="extNameLowerCase" CallingConvention="callConventionCRef" ExternalNameUnderscore="true" Traceback="true" RuntimeLibrary="rtMultiThreadedDebug"/>
+				<Tool Name="VFLinkerTool" SuppressStartupBanner="true"/>
+				<Tool Name="VFLibrarianTool" OutputFile="$(OUTDIR)javaShefDssLib.lib" LinkLibraryDependencies="true"/>
+				<Tool Name="VFResourceCompilerTool"/>
+				<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
+				<Tool Name="VFCustomBuildTool"/>
+				<Tool Name="VFPreLinkEventTool"/>
+				<Tool Name="VFPreBuildEventTool"/>
+				<Tool Name="VFPostBuildEventTool"/>
+				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
+		<Configuration Name="Release|x64" OutputDirectory="$(ProjectDir)$(Platform)\$(Configuration)\" IntermediateDirectory="$(ProjectDir)$(Platform)\$(Configuration)_intermediate\" TargetName="javaShefDssLib" DeleteExtensionsOnClean="*.obj;*.mod;*.pdb;*.asm;*.map;*.dyn;*.dpi;*.tmp;*.log;*.lib;$(TargetPath)" ConfigurationType="typeStaticLibrary">
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" LocalVariableStorage="localStorageSave" LocalSavedScalarsZero="true" ExternalNameInterpretation="extNameLowerCase" CallingConvention="callConventionCRef" ExternalNameUnderscore="true" ModulePath="$(INTDIR)/" ObjectFile="$(INTDIR)/" Traceback="true" RuntimeLibrary="rtMultiThreadedDebug"/>
+				<Tool Name="VFLinkerTool" SuppressStartupBanner="true"/>
+				<Tool Name="VFLibrarianTool" OutputFile="$(OUTDIR)javaShefDssLib.lib"/>
+				<Tool Name="VFResourceCompilerTool"/>
+				<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
+				<Tool Name="VFCustomBuildTool"/>
+				<Tool Name="VFPreLinkEventTool"/>
+				<Tool Name="VFPreBuildEventTool"/>
+				<Tool Name="VFPostBuildEventTool"/>
+				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration></Configurations>
+	<Files>
+		<Filter Name="Header Files" Filter="fi;fd">
+		<File RelativePath="century.h"/>
+		<File RelativePath="pstbls.h"/>
+		<File RelativePath="sdcntl.h"/>
+		<File RelativePath="sddata.h"/>
+		<File RelativePath="sdmisc.h"/>
+		<File RelativePath="sensrs.h"/>
+		<File RelativePath="shefitc.h"/>
+		<File RelativePath="shfids.h"/>
+		<File RelativePath="shfram.h"/></Filter>
+		<Filter Name="Resource Files" Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"/>
+		<Filter Name="Source Files" Filter="f90;for;f;fpp;ftn;def;odl;idl">
+		<File RelativePath="addsen.f"/>
+		<File RelativePath="aplnb.f"/>
+		<File RelativePath="bsrch.f"/>
+		<File RelativePath="chrono.f"/>
+		<File RelativePath="ckmiss.f"/>
+		<File RelativePath="dbgout.f"/>
+		<File RelativePath="getdes.f"/>
+		<File RelativePath="getext.f"/>
+		<File RelativePath="getint.f"/>
+		<File RelativePath="getsen.f"/>
+		<File RelativePath="j2sdt.f"/>
+		<File RelativePath="loadparam.f"/>
+		<File RelativePath="lodpar.f"/>
+		<File RelativePath="lodsen.f"/>
+		<File RelativePath="lodsta.f"/>
+		<File RelativePath="lsrch.f"/>
+		<File RelativePath="magn.f"/>
+		<File RelativePath="putdss.f"/>
+		<File RelativePath="putshf.f"/>
+		<File RelativePath="rd2cd.f"/>
+		<File RelativePath="round.f"/>
+		<File RelativePath="rptscr.f"/>
+		<File RelativePath="rt2ct.f"/>
+		<File RelativePath="RunShefDss.for"/>
+		<File RelativePath="sdbuff.f"/>
+		<File RelativePath="sdflsh.f"/>
+		<File RelativePath="sdinit.f"/>
+		<File RelativePath="sdmain.f"/>
+		<File RelativePath="sh2adj.f"/>
+		<File RelativePath="sh2beg.f"/>
+		<File RelativePath="sh2bla.f"/>
+		<File RelativePath="sh2dt2.f"/>
+		<File RelativePath="sh2fnd.f"/>
+		<File RelativePath="sh2loc.f"/>
+		<File RelativePath="sh2nu2.f"/>
+		<File RelativePath="sh2num.f"/>
+		<File RelativePath="sh2nxd.f"/>
+		<File RelativePath="sh2skp.f"/>
+		<File RelativePath="sh2st1.f"/>
+		<File RelativePath="sh2st2.f"/>
+		<File RelativePath="sh2tya.f"/>
+		<File RelativePath="sh2tyd.f"/>
+		<File RelativePath="sh3ad7.f"/>
+		<File RelativePath="sh3add.f"/>
+		<File RelativePath="sh3adh.f"/>
+		<File RelativePath="sh3adk.f"/>
+		<File RelativePath="sh3adt.f"/>
+		<File RelativePath="sh3ady.f"/>
+		<File RelativePath="sh3dec.f"/>
+		<File RelativePath="sh3dlm.f"/>
+		<File RelativePath="sh3dt0.f"/>
+		<File RelativePath="sh3dt1.f"/>
+		<File RelativePath="sh3dt2.f"/>
+		<File RelativePath="sh3dt3.f"/>
+		<File RelativePath="sh3dt4.f"/>
+		<File RelativePath="sh3dt5.f"/>
+		<File RelativePath="sh3dt6.f"/>
+		<File RelativePath="sh3dt7.f"/>
+		<File RelativePath="sh3dt8.f"/>
+		<File RelativePath="sh3tz0.f"/>
+		<File RelativePath="sh4dt0.f"/>
+		<File RelativePath="sh4dt2.f"/>
+		<File RelativePath="shcdat.f"/>
+		<File RelativePath="shctim.f"/>
+		<File RelativePath="shcurd.for"/>
+		<File RelativePath="shdble.f"/>
+		<File RelativePath="shdcod.f"/>
+		<File RelativePath="shdeca.f"/>
+		<File RelativePath="shdecb.f"/>
+		<File RelativePath="shdece.f"/>
+		<File RelativePath="shdotb.f"/>
+		<File RelativePath="shdriv.f"/>
+		<File RelativePath="shdura.f"/>
+		<File RelativePath="shedln.f"/>
+		<File RelativePath="sherr.f"/>
+		<File RelativePath="sherrk.f"/>
+		<File RelativePath="sherrm.f"/>
+		<File RelativePath="sherrs.f"/>
+		<File RelativePath="shexcd.f"/>
+		<File RelativePath="shfact.f"/>
+		<File RelativePath="shfdi.f"/>
+		<File RelativePath="shfdur.f"/>
+		<File RelativePath="shfmt1.f"/>
+		<File RelativePath="shfmt2.f"/>
+		<File RelativePath="shgcal.f"/>
+		<File RelativePath="shgetk.f"/>
+		<File RelativePath="shgjul.f"/>
+		<File RelativePath="shhrfx.f"/>
+		<File RelativePath="shieom.f"/>
+		<File RelativePath="shihr.f"/>
+		<File RelativePath="shijul.f"/>
+		<File RelativePath="shimn.f"/>
+		<File RelativePath="shimo.f"/>
+		<File RelativePath="shise.f"/>
+		<File RelativePath="shiyr.f"/>
+		<File RelativePath="shline.f"/>
+		<File RelativePath="shmaxe.f"/>
+		<File RelativePath="shout.f"/>
+		<File RelativePath="shoza1.f"/>
+		<File RelativePath="shoze1.f"/>
+		<File RelativePath="shoze2.f"/>
+		<File RelativePath="shpabg.f"/>
+		<File RelativePath="shpcod.f"/>
+		<File RelativePath="shpdec.f"/>
+		<File RelativePath="shpos.f"/>
+		<File RelativePath="shprob.f"/>
+		<File RelativePath="shqual.f"/>
+		<File RelativePath="shquot.f"/>
+		<File RelativePath="shsava.f"/>
+		<File RelativePath="shsavd.f"/>
+		<File RelativePath="shsavi.f"/>
+		<File RelativePath="shsavj.f"/>
+		<File RelativePath="shsavk.f"/>
+		<File RelativePath="shsavl.f"/>
+		<File RelativePath="shsavm.f"/>
+		<File RelativePath="shsavn.f"/>
+		<File RelativePath="shsavp.f"/>
+		<File RelativePath="shsavq.f"/>
+		<File RelativePath="shsavs.f"/>
+		<File RelativePath="shsavu.f"/>
+		<File RelativePath="shsend.f"/>
+		<File RelativePath="shtscd.f"/>
+		<File RelativePath="shtypa.f"/>
+		<File RelativePath="shtypd.f"/>
+		<File RelativePath="shtype.f"/>
+		<File RelativePath="shvern.f"/>
+		<File RelativePath="shyear.f"/>
+		<File RelativePath="tasg.f"/>
+		<File RelativePath="toshef.f"/>
+		<File RelativePath="tzshft.f"/></Filter></Files>
+	<Globals/></VisualStudioProject>

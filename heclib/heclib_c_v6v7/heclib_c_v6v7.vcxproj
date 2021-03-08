@@ -1,0 +1,642 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{DD025A40-2426-4CCE-B43A-380466B80A9A}</ProjectGuid>
+    <RootNamespace>heclib_c_v6v7x64</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>heclib_c_v6v7</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir)$(Platform)\$(Configuration)_intermediate\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)$(Platform)\$(Configuration)_intermediate\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectDir)$(Platform)\$(Configuration)_intermediate\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)$(Platform)\$(Configuration)_intermediate\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <TargetName>heclib_c_v6v7</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <TargetName>heclib_c_v6v7</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <TargetName>heclib_c_v6v7</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <TargetName>heclib_c_v6v7</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <CallingConvention>Cdecl</CallingConvention>
+      <CompileAs>CompileAsC</CompileAs>
+      <AdditionalIncludeDirectories>..\headers;..\headers\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CallingConvention>Cdecl</CallingConvention>
+      <CompileAs>CompileAsC</CompileAs>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalIncludeDirectories>..\headers;..\headers\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)heclib_c_v6v7.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>CompileAsC</CompileAs>
+      <AdditionalIncludeDirectories>..\headers;..\headers\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>CompileAsC</CompileAs>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <AdditionalIncludeDirectories>..\headers;..\headers\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Lib>
+      <LinkTimeCodeGeneration>true</LinkTimeCodeGeneration>
+      <Verbose>true</Verbose>
+    </Lib>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\headers\hecdss7.h" />
+    <ClInclude Include="..\headers\hecdssFort.h" />
+    <ClInclude Include="..\headers\hecdssInternal.h" />
+    <ClInclude Include="..\headers\heclib.h" />
+    <ClInclude Include="..\headers\heclib6.h" />
+    <ClInclude Include="..\headers\heclib7.h" />
+    <ClInclude Include="..\headers\heclibDate.h" />
+    <ClInclude Include="..\headers\zcontrol.h" />
+    <ClInclude Include="..\headers\zdssKeys.h" />
+    <ClInclude Include="..\headers\zdssLocking.h" />
+    <ClInclude Include="..\headers\zdssMessages.h" />
+    <ClInclude Include="..\headers\zdataTypeDescriptions.h" />
+    <ClInclude Include="..\headers\zdssMessagesFort.h" />
+    <ClInclude Include="..\headers\zdssRecordDiscriptions.h" />
+    <ClInclude Include="..\headers\zdssShared.h" />
+    <ClInclude Include="..\headers\zdssVals.h" />
+    <ClInclude Include="..\headers\zerrorCodes.h" />
+    <ClInclude Include="..\headers\zopenDefault.h" />
+    <ClInclude Include="..\headers\zprogress.h" />
+    <ClInclude Include="..\headers\zStructAllocation.h" />
+    <ClInclude Include="..\headers\zStructArray.h" />
+    <ClInclude Include="..\headers\zStructBasic.h" />
+    <ClInclude Include="..\headers\zStructCatalog.h" />
+    <ClInclude Include="..\headers\zStructLocation.h" />
+    <ClInclude Include="..\headers\zStructPairedData.h" />
+    <ClInclude Include="..\headers\zStructRecordAddresses.h" />
+    <ClInclude Include="..\headers\zStructRecordBasics.h" />
+    <ClInclude Include="..\headers\zStructRecordSize.h" />
+    <ClInclude Include="..\headers\zStructSpatialGrid.h" />
+    <ClInclude Include="..\headers\zStructSpatialTin.h" />
+    <ClInclude Include="..\headers\zStructText.h" />
+    <ClInclude Include="..\headers\zStructTimeSeries.h" />
+    <ClInclude Include="..\headers\zStructTransfer.h" />
+    <ClInclude Include="..\headers\zStructTsTimeWindow.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\Dss6\C\closf.c" />
+    <ClCompile Include="..\Dss6\C\deleteFile.c" />
+    <ClCompile Include="..\Dss6\C\filesize.c" />
+    <ClCompile Include="..\Dss6\C\flushf.c" />
+    <ClCompile Include="..\Dss6\C\isonlocaldrive.c" />
+    <ClCompile Include="..\Dss6\C\lockdss.c" />
+    <ClCompile Include="..\Dss6\C\openf.c" />
+    <ClCompile Include="..\Dss6\C\readf.c" />
+    <ClCompile Include="..\Dss6\C\seekf.c" />
+    <ClCompile Include="..\Dss6\C\waits.c" />
+    <ClCompile Include="..\Dss6\C\writf.c" />
+    <ClCompile Include="..\Dss6\C\zcatalog6Internal.c" />
+    <ClCompile Include="..\Dss6\C\zgetRecordBasics6.c" />
+    <ClCompile Include="..\Dss6\C\zgetRecordSize6.c" />
+    <ClCompile Include="..\Dss6\C\ztsGetSizes6.c" />
+    <ClCompile Include="..\Dss6\C\ztsRetrieveIrreg6.c" />
+    <ClCompile Include="..\Dss6\C\ztsRetrieveReg6.c" />
+    <ClCompile Include="..\Dss6\C\ztsStoreIrreg6.c" />
+    <ClCompile Include="..\Dss6\C\ztsStoreReg6.c" />
+    <ClCompile Include="..\Dss7\Internal\charInt.c" />
+    <ClCompile Include="..\Dss7\Internal\charLong.c" />
+    <ClCompile Include="..\Dss7\Internal\zbinNew.c" />
+    <ClCompile Include="..\Dss7\Internal\zbinUpdate.c" />
+    <ClCompile Include="..\Dss7\Internal\zcatalogInternal.c" />
+    <ClCompile Include="..\Dss7\Internal\zcatComparePath.c" />
+    <ClCompile Include="..\Dss7\Internal\zcatInternalSort.c" />
+    <ClCompile Include="..\Dss7\Internal\zcatParsePath.c" />
+    <ClCompile Include="..\Dss7\Internal\zcatSortPath.c" />
+    <ClCompile Include="..\Dss7\Internal\zcharTo8Byte.c" />
+    <ClCompile Include="..\Dss7\Internal\zcheckInternal.c" />
+    <ClCompile Include="..\Dss7\Internal\zcheckKeys.c" />
+    <ClCompile Include="..\Dss7\Internal\zcheckMultiUser.c" />
+    <ClCompile Include="..\Dss7\Internal\zcloseInternal.c" />
+    <ClCompile Include="..\Dss7\Internal\zcheckAccessReset.c" />
+    <ClCompile Include="..\Dss7\Internal\zcollectionsPath.c" />
+    <ClCompile Include="..\Dss7\Internal\zcompareRecordStatus.c" />
+    <ClCompile Include="..\Dss7\Internal\zcopyRecordInternal.c" />
+    <ClCompile Include="..\Dss7\Internal\zdeleteInternal.c" />
+    <ClCompile Include="..\Dss7\Internal\zerrorDecode.c" />
+    <ClCompile Include="..\Dss7\Internal\zerrorEncode.c" />
+    <ClCompile Include="..\Dss7\Internal\zerrorEncodeHigh.c" />
+    <ClCompile Include="..\Dss7\Internal\zerrorMessage.c" />
+    <ClCompile Include="..\Dss7\Internal\zerrorProcessing.c" />
+    <ClCompile Include="..\Dss7\Internal\zerrorSave.c" />
+    <ClCompile Include="..\Dss7\Internal\zerrorSeverity.c" />
+    <ClCompile Include="..\Dss7\Internal\zerrorUpdate.c" />
+    <ClCompile Include="..\Dss7\Internal\zflushBuffers.c" />
+    <ClCompile Include="..\Dss7\Internal\zflushToDisk.c" />
+    <ClCompile Include="..\Dss7\Internal\zget.c" />
+    <ClCompile Include="..\Dss7\Internal\zgetBuff.c" />
+    <ClCompile Include="..\Dss7\Internal\zgetCatalogSortAddresses.c" />
+    <ClCompile Include="..\Dss7\Internal\zgetFileSpace.c" />
+    <ClCompile Include="..\Dss7\Internal\zgetFunctionName.c" />
+    <ClCompile Include="..\Dss7\Internal\zgetInternalPath.c" />
+    <ClCompile Include="..\Dss7\Internal\zgetRecordBasics7.c" />
+    <ClCompile Include="..\Dss7\Internal\zgetRecordSize7.c" />
+    <ClCompile Include="..\Dss7\Internal\zhash.c" />
+    <ClCompile Include="..\Dss7\Internal\zinit.c" />
+    <ClCompile Include="..\Dss7\Internal\zinitIfltab.c" />
+    <ClCompile Include="..\Dss7\Internal\zisaCollection.c" />
+    <ClCompile Include="..\Dss7\Internal\zloadCache.c" />
+    <ClCompile Include="..\Dss7\Internal\zlocationUpdatePerm.c" />
+    <ClCompile Include="..\Dss7\Internal\zlockActive.c" />
+    <ClCompile Include="..\Dss7\Internal\zlockingOld.c" />
+    <ClCompile Include="..\Dss7\Internal\zlockPassive.c" />
+    <ClCompile Include="..\Dss7\Internal\zmemoryFree.c" />
+    <ClCompile Include="..\Dss7\Internal\zmemoryGet.c" />
+    <ClCompile Include="..\Dss7\Internal\zmessage.c" />
+    <ClCompile Include="..\Dss7\Internal\zmessageDebug.c" />
+    <ClCompile Include="..\Dss7\Internal\zmessageInterface.c" />
+    <ClCompile Include="..\Dss7\Internal\zmessageLevel.c" />
+    <ClCompile Include="..\Dss7\Internal\zmessageZget.c" />
+    <ClCompile Include="..\Dss7\Internal\zmessageZput.c" />
+    <ClCompile Include="..\Dss7\Internal\zmessConcat.c" />
+    <ClCompile Include="..\Dss7\Internal\znewFileSize.c" />
+    <ClCompile Include="..\Dss7\Internal\zopenInternal.c" />
+    <ClCompile Include="..\Dss7\Internal\zpdUnitsToHead.c" />
+    <ClCompile Include="..\Dss7\Internal\zpermCreate.c" />
+    <ClCompile Include="..\Dss7\Internal\zpermRead.c" />
+    <ClCompile Include="..\Dss7\Internal\zpermWrite.c" />
+    <ClCompile Include="..\Dss7\Internal\zpidWrite.c" />
+    <ClCompile Include="..\Dss7\Internal\zprintFileInfo.c" />
+    <ClCompile Include="..\Dss7\Internal\zprintKeys.c" />
+    <ClCompile Include="..\Dss7\Internal\zput.c" />
+    <ClCompile Include="..\Dss7\Internal\zputBuff.c" />
+    <ClCompile Include="..\Dss7\Internal\zreadInfo.c" />
+    <ClCompile Include="..\Dss7\Internal\zreadInfoBlock.c" />
+    <ClCompile Include="..\Dss7\Internal\zreadInternal.c" />
+    <ClCompile Include="..\Dss7\Internal\zreclaimRead.c" />
+    <ClCompile Include="..\Dss7\Internal\zreclaimSet.c" />
+    <ClCompile Include="..\Dss7\Internal\zreclaimWrite.c" />
+    <ClCompile Include="..\Dss7\Internal\zreleaseFileSpace.c" />
+    <ClCompile Include="..\Dss7\Internal\zsetCatalogSortAddresses.c" />
+    <ClCompile Include="..\Dss7\Internal\zsetMessageLevel.c" />
+    <ClCompile Include="..\Dss7\Internal\ztsAggregate.c" />
+    <ClCompile Include="..\Dss7\Internal\ztsDateMessage.c" />
+    <ClCompile Include="..\Dss7\Internal\ztsDisaggregate.c" />
+    <ClCompile Include="..\Dss7\Internal\ztsFirstLastValidValues.c" />
+    <ClCompile Include="..\Dss7\Internal\ztsGetSizesInternal.c" />
+    <ClCompile Include="..\Dss7\Internal\ztsIncrementBlock.c" />
+    <ClCompile Include="..\Dss7\Internal\ztsInternalHeaderPack.c" />
+    <ClCompile Include="..\Dss7\Internal\ztsInternalHeaderUnpack.c" />
+    <ClCompile Include="..\Dss7\Internal\ztsIrregGetBlockStart.c" />
+    <ClCompile Include="..\Dss7\Internal\ztsIrregMergeBlocks.c" />
+    <ClCompile Include="..\Dss7\Internal\ztsIrregMessage.c" />
+    <ClCompile Include="..\Dss7\Internal\ztsIrregReadBlock.c" />
+    <ClCompile Include="..\Dss7\Internal\ztsIrregStoreBlock.c" />
+    <ClCompile Include="..\Dss7\Internal\ztsMessTimeWindow.c" />
+    <ClCompile Include="..\Dss7\Internal\ztsPathCompatible.c" />
+    <ClCompile Include="..\Dss7\Internal\ztsProcessTimes.c" />
+    <ClCompile Include="..\Dss7\Internal\ztsRegAddTimes.c" />
+    <ClCompile Include="..\Dss7\Internal\ztsRegGetBlockStart.c" />
+    <ClCompile Include="..\Dss7\Internal\ztsRegReadBlock.c" />
+    <ClCompile Include="..\Dss7\Internal\ztsRegRepeatCompress.c" />
+    <ClCompile Include="..\Dss7\Internal\ztsRegRepeatUncompress.c" />
+    <ClCompile Include="..\Dss7\Internal\ztsRegStoreBlock.c" />
+    <ClCompile Include="..\Dss7\Internal\ztsRetrieveIrreg7.c" />
+    <ClCompile Include="..\Dss7\Internal\ztsRetrieveReg7.c" />
+    <ClCompile Include="..\Dss7\Internal\ztsStoreIrreg7.c" />
+    <ClCompile Include="..\Dss7\Internal\ztsStoreReg7.c" />
+    <ClCompile Include="..\Dss7\Internal\ztsTimeMessage.c" />
+    <ClCompile Include="..\Dss7\Internal\ztsTrim.c" />
+    <ClCompile Include="..\Dss7\Internal\ztsTrimAdjustTimeWindow.c" />
+    <ClCompile Include="..\Dss7\Internal\ztsWriteBlock.c" />
+    <ClCompile Include="..\Dss7\Internal\zupdatePathStats.c" />
+    <ClCompile Include="..\Dss7\Internal\zwriteEOF.c" />
+    <ClCompile Include="..\Dss7\Internal\zwriteEOFandFlush.c" />
+    <ClCompile Include="..\Dss7\Internal\zwriteInternal.c" />
+    <ClCompile Include="..\Dss7\Internal\zwriteNew.c" />
+    <ClCompile Include="..\Dss7\Internal\zwriteOld.c" />
+    <ClCompile Include="..\Dss7\Public\zaliasAdd.c" />
+    <ClCompile Include="..\Dss7\Public\zaliasGetPrimary.c" />
+    <ClCompile Include="..\Dss7\Public\zaliasNumber.c" />
+    <ClCompile Include="..\Dss7\Public\zaliasList.c" />
+    <ClCompile Include="..\Dss7\Public\zaliasRemove.c" />
+    <ClCompile Include="..\Dss7\Public\zaliasRemoveAll.c" />
+    <ClCompile Include="..\Dss7\Public\zanalyzeFile.c" />
+    <ClCompile Include="..\Dss7\Public\zarrayRetrieve.c" />
+    <ClCompile Include="..\Dss7\Public\zarrayStore.c" />
+    <ClCompile Include="..\Dss7\Public\zbinaryRetrieveToFile.c" />
+    <ClCompile Include="..\Dss7\Public\zbinaryStoreFromFile.c" />
+    <ClCompile Include="..\Dss7\Public\zcatalog.c" />
+    <ClCompile Include="..\Dss7\Public\zcatalogFile.c" />
+    <ClCompile Include="..\Dss7\Public\zcatalogToFile.c" />
+    <ClCompile Include="..\Dss7\Public\zcheckFile.c" />
+    <ClCompile Include="..\Dss7\Public\zcollectionCat.c" />
+    <ClCompile Include="..\Dss7\Public\zcopyFile.c" />
+    <ClCompile Include="..\Dss7\Public\zduplicateRecord.c" />
+    <ClCompile Include="..\Dss7\Public\zfindString.c" />
+    <ClCompile Include="..\Dss7\Public\zgetDataCRC.c" />
+    <ClCompile Include="..\Dss7\Public\zgetFileVersion.c" />
+    <ClCompile Include="..\Dss7\Public\zgetLastWriteTimeRec.c" />
+    <ClCompile Include="..\Dss7\Public\zgetLastWriteTimeFile.c" />
+    <ClCompile Include="..\Dss7\Public\zgetMyLastWriteTime.c" />
+    <ClCompile Include="..\Dss7\Public\zgetVersion.c" />
+    <ClCompile Include="..\Dss7\Public\zinquire.c" />
+    <ClCompile Include="..\Dss7\Public\zinquireChar.c" />
+    <ClCompile Include="..\Dss7\Public\zlibcompress.c" />
+    <ClCompile Include="..\Dss7\Public\zlocationDelete.c" />
+    <ClCompile Include="..\Dss7\Public\zlocationPath.c" />
+    <ClCompile Include="..\Dss7\Public\zlocationRetrieve.c" />
+    <ClCompile Include="..\Dss7\Public\zlocationStore.c" />
+    <ClCompile Include="..\Dss7\Public\zopenLog.c" />
+    <ClCompile Include="..\Dss7\Public\zpathnameAddPart.c" />
+    <ClCompile Include="..\Dss7\Public\zpathnameClean.c" />
+    <ClCompile Include="..\Dss7\Public\zpathnameCompare.c" />
+    <ClCompile Include="..\Dss7\Public\zpathnameCompareCollection.c" />
+    <ClCompile Include="..\Dss7\Public\zpathnameForm.c" />
+    <ClCompile Include="..\Dss7\Public\zpathnameGetPart.c" />
+    <ClCompile Include="..\Dss7\Public\zpathnamePartLengths.c" />
+    <ClCompile Include="..\Dss7\Public\zpathnamePartPositions.c" />
+    <ClCompile Include="..\Dss7\Public\zpathnameSetPart.c" />
+    <ClCompile Include="..\Dss7\Public\zpdRetrieve.c" />
+    <ClCompile Include="..\Dss7\Public\zpdStore.c" />
+    <ClCompile Include="..\Dss7\Public\zquery.c" />
+    <ClCompile Include="..\Dss7\Public\zrename.c" />
+    <ClCompile Include="..\Dss7\Public\zset7.c" />
+    <ClCompile Include="..\Dss7\Public\zsetCollectionSequence.c" />
+    <ClCompile Include="..\Dss7\Public\zsetFile.c" />
+    <ClCompile Include="..\Dss7\Public\zspatialGridRetrieve.c" />
+    <ClCompile Include="..\Dss7\Public\zspatialGridStore.c" />
+    <ClCompile Include="..\Dss7\Public\zspatialTinRetrieve.c" />
+    <ClCompile Include="..\Dss7\Public\zspatialTinStore.c" />
+    <ClCompile Include="..\Dss7\Public\zsqueeze7.c" />
+    <ClCompile Include="..\Dss7\Public\zsqueezeNeeded.c" />
+    <ClCompile Include="..\Dss7\Public\zstructArrayNew.c" />
+    <ClCompile Include="..\Dss7\Public\zstructCatalogNew.c" />
+    <ClCompile Include="..\Dss7\Public\zstructFree.c" />
+    <ClCompile Include="..\Dss7\Public\zstructLocationNew.c" />
+    <ClCompile Include="..\Dss7\Public\zstructPdNew.c" />
+    <ClCompile Include="..\Dss7\Public\zstructPdNewDoubles.c" />
+    <ClCompile Include="..\Dss7\Public\zstructPdNewFloats.c" />
+    <ClCompile Include="..\Dss7\Public\zstructRecordBasicsNew.c" />
+    <ClCompile Include="..\Dss7\Public\zstructRecordSizeNew.c" />
+    <ClCompile Include="..\Dss7\Public\zstructSpatialGridNew.c" />
+    <ClCompile Include="..\Dss7\Public\zstructSpatialTinNew.c" />
+    <ClCompile Include="..\Dss7\Public\zstructTextNew.c" />
+    <ClCompile Include="..\Dss7\Public\zstructTextStringNew.c" />
+    <ClCompile Include="..\Dss7\Public\zstructTransferNew.c" />
+    <ClCompile Include="..\Dss7\Public\zstructTsClone.c" />
+    <ClCompile Include="..\Dss7\Public\zstructTsCloneNewTimes.c" />
+    <ClCompile Include="..\Dss7\Public\zstructTsNew.c" />
+    <ClCompile Include="..\Dss7\Public\zstructTsNewIrregDoubles.c" />
+    <ClCompile Include="..\Dss7\Public\zstructTsNewIrregFloats.c" />
+    <ClCompile Include="..\Dss7\Public\zstructTsNewRegDoubles.c" />
+    <ClCompile Include="..\Dss7\Public\zstructTsNewRegFloats.c" />
+    <ClCompile Include="..\Dss7\Public\zstructTsNewTimes.c" />
+    <ClCompile Include="..\Dss7\Public\zstructTsNewTimeWindow.c" />
+    <ClCompile Include="..\Dss7\Public\ztextRetrieve.c" />
+    <ClCompile Include="..\Dss7\Public\ztextRetrieveToFile.c" />
+    <ClCompile Include="..\Dss7\Public\ztextStore.c" />
+    <ClCompile Include="..\Dss7\Public\ztextStoreFromFile.c" />
+    <ClCompile Include="..\Dss7\Public\ztextStructPrint.c" />
+    <ClCompile Include="..\Dss7\Public\ztsGetDateRange.c" />
+    <ClCompile Include="..\Dss7\Public\ztsGetDateTimeRange.c" />
+    <ClCompile Include="..\Dss7\Public\ztsGetEPartFromInterval.c" />
+    <ClCompile Include="..\Dss7\Public\ztsGetInterval.c" />
+    <ClCompile Include="..\Dss7\Public\ztsOffset.c" />
+    <ClCompile Include="..\Dss7\Public\ztsOffsetAdjustToOffset.c" />
+    <ClCompile Include="..\Dss7\Public\ztsOffsetAdjustToStandard.c" />
+    <ClCompile Include="..\Dss7\Public\ztsPathCheckInterval.c" />
+    <ClCompile Include="..\Dss7\Public\ztsRetrieve.c" />
+    <ClCompile Include="..\Dss7\Public\ztsRetrievePattern.c" />
+    <ClCompile Include="..\Dss7\Public\ztsStore.c" />
+    <ClCompile Include="..\Dss7\Public\ztypeName.c" />
+    <ClCompile Include="..\Dss7\Public\zundeleteAll.c" />
+    <ClCompile Include="..\Dss7\Public\zwhatChanged.c" />
+    <ClCompile Include="..\Dss7\Public\zwhatChangedCompare.c" />
+    <ClCompile Include="..\Dss7\Public\zwhatChangedSetStart.c" />
+    <ClCompile Include="..\Dss7\SemiPublic\zcheckHashTable.c" />
+    <ClCompile Include="..\Dss7\SemiPublic\zcheckInfo.c" />
+    <ClCompile Include="..\Dss7\SemiPublic\zcheckLinks.c" />
+    <ClCompile Include="..\Dss7\SemiPublic\zcheckPathnameBins.c" />
+    <ClCompile Include="..\Dss7\SemiPublic\zcheckPathnames.c" />
+    <ClCompile Include="..\Dss7\SemiPublic\zcompareDataSets.c" />
+    <ClCompile Include="..\Dss7\SemiPublic\zerror.c" />
+    <ClCompile Include="..\Dss7\SemiPublic\zerrorSpecifics.c" />
+    <ClCompile Include="..\Dss7\SemiPublic\zfileAccessInfo.c" />
+    <ClCompile Include="..\Dss7\SemiPublic\zgetProgress.c" />
+    <ClCompile Include="..\Dss7\SemiPublic\zgetRecordAddresses.c" />
+    <ClCompile Include="..\Dss7\SemiPublic\zisError.c" />
+    <ClCompile Include="..\Dss7\SemiPublic\zlocationStructValid.c" />
+    <ClCompile Include="..\Dss7\SemiPublic\zmaxPart.c" />
+    <ClCompile Include="..\Dss7\SemiPublic\zmessageCombined.c" />
+    <ClCompile Include="..\Dss7\SemiPublic\zplist7.c" />
+    <ClCompile Include="..\Dss7\SemiPublic\zresetProgress.c" />
+    <ClCompile Include="..\Dss7\SemiPublic\zsetInterrupt.c" />
+    <ClCompile Include="..\Dss7\SemiPublic\zstructGetType.c" />
+    <ClCompile Include="..\Dss7\SemiPublic\ztsGetFirstLastPathnames.c" />
+    <ClCompile Include="..\Dss7\SemiPublic\ztsGetFirstLastRecordTimes.c" />
+    <ClCompile Include="..\Dss7\SemiPublic\ztsGetPathTimeWindow.c" />
+    <ClCompile Include="..\Dss7\SemiPublic\ztsGetStandardInterval.c" />
+    <ClCompile Include="..\Dss7\SemiPublic\ztsIsCurrentTimeSeries.c" />
+    <ClCompile Include="..\Dss7\SemiPublic\ztsStorePattern.c" />
+    <ClCompile Include="..\Dss7\System\closeFile.c" />
+    <ClCompile Include="..\Dss7\System\flushFile.c" />
+    <ClCompile Include="..\Dss7\System\getEndian.c" />
+    <ClCompile Include="..\Dss7\System\readBytes.c" />
+    <ClCompile Include="..\Dss7\System\writeBytes.c" />
+    <ClCompile Include="..\Dss7\System\zfileSize.c" />
+    <ClCompile Include="..\Dss7\System\getCurrentDateTime.c" />
+    <ClCompile Include="..\Dss7\System\getCurrentTimeMillis.c" />
+    <ClCompile Include="..\Dss7\System\zfileName.c" />
+    <ClCompile Include="..\Dss7\System\zlockdss.c" />
+    <ClCompile Include="..\Dss7\System\zopendisk.c" />
+    <ClCompile Include="..\Dss7\System\zopenFile.c" />
+    <ClCompile Include="..\Dss7\System\zreaddisk.c" />
+    <ClCompile Include="..\Dss7\System\zswap.c" />
+    <ClCompile Include="..\Dss7\System\zswitchDoubles.c" />
+    <ClCompile Include="..\Dss7\System\zswitchInts.c" />
+    <ClCompile Include="..\Dss7\System\zwritedisk.c" />
+    <ClCompile Include="..\Dss7\Utilities\catsort.c" />
+    <ClCompile Include="..\Dss7\Utilities\convertDataArray.c" />
+    <ClCompile Include="..\Dss7\Utilities\convertDataLength.c" />
+    <ClCompile Include="..\Dss7\Utilities\convertDataType.c" />
+    <ClCompile Include="..\Dss7\Utilities\convertIntArray.c" />
+    <ClCompile Include="..\Dss7\Utilities\copyAndTrim.c" />
+    <ClCompile Include="..\Dss7\Utilities\copyLines.c" />
+    <ClCompile Include="..\Dss7\Utilities\DateTime\addCentury.c" />
+    <ClCompile Include="..\Dss7\Utilities\DateTime\cleanTime.c" />
+    <ClCompile Include="..\Dss7\Utilities\DateTime\compareTimes.c" />
+    <ClCompile Include="..\Dss7\Utilities\DateTime\dateToJulian.c" />
+    <ClCompile Include="..\Dss7\Utilities\DateTime\dateToYearMonthDay.c" />
+    <ClCompile Include="..\Dss7\Utilities\DateTime\dayOfWeek.c" />
+    <ClCompile Include="..\Dss7\Utilities\DateTime\getCurrentDateString.c" />
+    <ClCompile Include="..\Dss7\Utilities\DateTime\getCurrentDateTimeString.c" />
+    <ClCompile Include="..\Dss7\Utilities\DateTime\getCurrentTimeString.c" />
+    <ClCompile Include="..\Dss7\Utilities\DateTime\getDateAndTime.c" />
+    <ClCompile Include="..\Dss7\Utilities\DateTime\getDateTimeString.c" />
+    <ClCompile Include="..\Dss7\Utilities\DateTime\incrementTime.c" />
+    <ClCompile Include="..\Dss7\Utilities\DateTime\isLeapYear.c" />
+    <ClCompile Include="..\Dss7\Utilities\DateTime\isTimeDefined.c" />
+    <ClCompile Include="..\Dss7\Utilities\DateTime\isTimeInRange.c" />
+    <ClCompile Include="..\Dss7\Utilities\DateTime\julianToDate.c" />
+    <ClCompile Include="..\Dss7\Utilities\DateTime\julianToYearMonthDay.c" />
+    <ClCompile Include="..\Dss7\Utilities\DateTime\millsToDateTime.c" />
+    <ClCompile Include="..\Dss7\Utilities\DateTime\minsToDateTime.c" />
+    <ClCompile Include="..\Dss7\Utilities\DateTime\minutesToHourMin.c" />
+    <ClCompile Include="..\Dss7\Utilities\DateTime\numberPeriods.c" />
+    <ClCompile Include="..\Dss7\Utilities\DateTime\secondsToTimeString.c" />
+    <ClCompile Include="..\Dss7\Utilities\DateTime\spatialDateTime.c" />
+    <ClCompile Include="..\Dss7\Utilities\DateTime\timeStringToSeconds.c" />
+    <ClCompile Include="..\Dss7\Utilities\DateTime\timeStringToSecondsMills.c" />
+    <ClCompile Include="..\Dss7\Utilities\DateTime\yearMonthDayToDate.c" />
+    <ClCompile Include="..\Dss7\Utilities\DateTime\yearMonthDayToJulian.c" />
+    <ClCompile Include="..\Dss7\Utilities\doublesToFloats.c" />
+    <ClCompile Include="..\Dss7\Utilities\doubleToFloat.c" />
+    <ClCompile Include="..\Dss7\Utilities\f4toi8.c" />
+    <ClCompile Include="..\Dss7\Utilities\fillArray.c" />
+    <ClCompile Include="..\Dss7\Utilities\findInt.c" />
+    <ClCompile Include="..\Dss7\Utilities\floatsToDoubles.c" />
+    <ClCompile Include="..\Dss7\Utilities\floatToDouble.c" />
+    <ClCompile Include="..\Dss7\Utilities\getFileFromPath.c" />
+    <ClCompile Include="..\Dss7\Utilities\getLastInt.c" />
+    <ClCompile Include="..\Dss7\Utilities\i4toi8.c" />
+    <ClCompile Include="..\Dss7\Utilities\i8tof4.c" />
+    <ClCompile Include="..\Dss7\Utilities\i8toi4.c" />
+    <ClCompile Include="..\Dss7\Utilities\intTo2char.c" />
+    <ClCompile Include="..\Dss7\Utilities\intTo4char.c" />
+    <ClCompile Include="..\Dss7\Utilities\isOdd.c" />
+    <ClCompile Include="..\Dss7\Utilities\isValidChar.c" />
+    <ClCompile Include="..\Dss7\Utilities\itoa.c" />
+    <ClCompile Include="..\Dss7\Utilities\longWithCommas.c" />
+    <ClCompile Include="..\Dss7\Utilities\lowerCase.c" />
+    <ClCompile Include="..\Dss7\Utilities\mallocAndCopy.c" />
+    <ClCompile Include="..\Dss7\Utilities\mallocAndCopyPath.c" />
+    <ClCompile Include="..\Dss7\Utilities\mallocAndCopyTrim.c" />
+    <ClCompile Include="..\Dss7\Utilities\numberBytesInCharArray.c" />
+    <ClCompile Include="..\Dss7\Utilities\numberIntsInBytes.c" />
+    <ClCompile Include="..\Dss7\Utilities\numberIntsInLongs.c" />
+    <ClCompile Include="..\Dss7\Utilities\numberLongsInBytes.c" />
+    <ClCompile Include="..\Dss7\Utilities\numberLongsInInts.c" />
+    <ClCompile Include="..\Dss7\Utilities\printCurrentTime.c" />
+    <ClCompile Include="..\Dss7\Utilities\printDoubles.c" />
+    <ClCompile Include="..\Dss7\Utilities\reverseNonNumeric.c" />
+    <ClCompile Include="..\Dss7\Utilities\sortfiles.c" />
+    <ClCompile Include="..\Dss7\Utilities\stringCat.c" />
+    <ClCompile Include="..\Dss7\Utilities\stringCopy.c" />
+    <ClCompile Include="..\Dss7\Utilities\stringCToFort.c" />
+    <ClCompile Include="..\Dss7\Utilities\stringFill.c" />
+    <ClCompile Include="..\Dss7\Utilities\stringFortToC.c" />
+    <ClCompile Include="..\Dss7\Utilities\stringHeaderUtility.c" />
+    <ClCompile Include="..\Dss7\Utilities\stringLastNonBlank.c" />
+    <ClCompile Include="..\Dss7\Utilities\strnlen_hec.c" />
+    <ClCompile Include="..\Dss7\Utilities\toFixedFields.c" />
+    <ClCompile Include="..\Dss7\Utilities\trimLength.c" />
+    <ClCompile Include="..\Dss7\Utilities\trimPositions.c" />
+    <ClCompile Include="..\Dss7\Utilities\upperCase.c" />
+    <ClCompile Include="..\Dss7\Utilities\zeroFill.c" />
+    <ClCompile Include="..\Dss7\Utilities\zmissingFlag.c" />
+    <ClCompile Include="..\DssInterface\CandFortran\C\missingFlag_.c" />
+    <ClCompile Include="..\DssInterface\CandFortran\C\secondsToTimeString_.c" />
+    <ClCompile Include="..\DssInterface\CandFortran\C\timeStringToSeconds_.c" />
+    <ClCompile Include="..\DssInterface\CandFortran\C\zcheckfilever_.c" />
+    <ClCompile Include="..\DssInterface\CandFortran\C\zclose_.c" />
+    <ClCompile Include="..\DssInterface\CandFortran\C\zdebugout7.c" />
+    <ClCompile Include="..\DssInterface\CandFortran\C\zdelete_.c" />
+    <ClCompile Include="..\DssInterface\CandFortran\C\zerrorDecode_.c" />
+    <ClCompile Include="..\DssInterface\CandFortran\C\zfname.c" />
+    <ClCompile Include="..\DssInterface\CandFortran\C\zgetinterval_.c" />
+    <ClCompile Include="..\DssInterface\CandFortran\C\zgetVersion_.c" />
+    <ClCompile Include="..\DssInterface\CandFortran\C\zget_.c" />
+    <ClCompile Include="..\DssInterface\CandFortran\C\zirbeg7_.c" />
+    <ClCompile Include="..\DssInterface\CandFortran\C\zopenExtended_.c" />
+    <ClCompile Include="..\DssInterface\CandFortran\C\zopen_.c" />
+    <ClCompile Include="..\DssInterface\CandFortran\C\zpathnameFormFortran_.c" />
+    <ClCompile Include="..\DssInterface\CandFortran\C\zpathnameGetPart_.c" />
+    <ClCompile Include="..\DssInterface\CandFortran\C\zpdStore_.c" />
+    <ClCompile Include="..\DssInterface\CandFortran\C\zquery7_.c" />
+    <ClCompile Include="..\DssInterface\CandFortran\C\zritsi7_.c" />
+    <ClCompile Include="..\DssInterface\CandFortran\C\zrpdi7_.c" />
+    <ClCompile Include="..\DssInterface\CandFortran\C\zrtxts7_.c" />
+    <ClCompile Include="..\DssInterface\CandFortran\C\zsits7_.c" />
+    <ClCompile Include="..\DssInterface\CandFortran\C\zspdi7_.c" />
+    <ClCompile Include="..\DssInterface\CandFortran\C\ztextRetrieveArray_.c" />
+    <ClCompile Include="..\DssInterface\CandFortran\C\ztextRetrieveString_.c" />
+    <ClCompile Include="..\DssInterface\CandFortran\C\ztextRetrieveUnit_.c" />
+    <ClCompile Include="..\DssInterface\CandFortran\C\ztextstorearray_.c" />
+    <ClCompile Include="..\DssInterface\CandFortran\C\ztextStoreUnit_.c" />
+    <ClCompile Include="..\DssInterface\CandFortran\C\ztsends_.c" />
+    <ClCompile Include="..\DssInterface\CandFortran\C\ztsinfo7_.c" />
+    <ClCompile Include="..\DssInterface\CandFortran\C\ztsIrregRetrieveFull_.c" />
+    <ClCompile Include="..\DssInterface\CandFortran\C\ztsIrregStoreFull_.c" />
+    <ClCompile Include="..\DssInterface\CandFortran\C\ztsRetrieveIrregArgs.c" />
+    <ClCompile Include="..\DssInterface\CandFortran\C\ztsRetrieveRegArgs.c" />
+    <ClCompile Include="..\DssInterface\CandFortran\C\ztssrch7_.c" />
+    <ClCompile Include="..\DssInterface\CandFortran\C\ztsStoreIrregArgs.c" />
+    <ClCompile Include="..\DssInterface\CandFortran\C\ztsStoreRegArgs.c" />
+    <ClCompile Include="..\DssInterface\CandFortran\C\ztsStoreStuff.c" />
+    <ClCompile Include="..\DssInterface\CandFortran\C\zundelete_.c" />
+    <ClCompile Include="..\DssInterface\v6and7\C\zcheck.c" />
+    <ClCompile Include="..\DssInterface\v6and7\C\zclose.c" />
+    <ClCompile Include="..\DssInterface\v6and7\C\zconvertVersion.c" />
+    <ClCompile Include="..\DssInterface\v6and7\C\zcopyRecord.c" />
+    <ClCompile Include="..\DssInterface\v6and7\C\zdataType.c" />
+    <ClCompile Include="..\DssInterface\v6and7\C\zdelete.c" />
+    <ClCompile Include="..\DssInterface\v6and7\C\zgetInfo.c" />
+    <ClCompile Include="..\DssInterface\v6and7\C\zgetRecordBasics.c" />
+    <ClCompile Include="..\DssInterface\v6and7\C\zgetRecordSize.c" />
+    <ClCompile Include="..\DssInterface\v6and7\C\zhandle.c" />
+    <ClCompile Include="..\DssInterface\v6and7\C\zopen.c" />
+    <ClCompile Include="..\DssInterface\v6and7\C\zopenExtended.c" />
+    <ClCompile Include="..\DssInterface\v6and7\C\zpdRetrieve6.c" />
+    <ClCompile Include="..\DssInterface\v6and7\C\zpdStore6.c" />
+    <ClCompile Include="..\DssInterface\v6and7\C\zputInfo.c" />
+    <ClCompile Include="..\DssInterface\v6and7\C\zread.c" />
+    <ClCompile Include="..\DssInterface\v6and7\C\zreada.c" />
+    <ClCompile Include="..\DssInterface\v6and7\C\zreadc.c" />
+    <ClCompile Include="..\DssInterface\v6and7\C\zreadx.c" />
+    <ClCompile Include="..\DssInterface\v6and7\C\zrecordAddresses.c" />
+    <ClCompile Include="..\DssInterface\v6and7\C\zset.c" />
+    <ClCompile Include="..\DssInterface\v6and7\C\zsqueeze.c" />
+    <ClCompile Include="..\DssInterface\v6and7\C\ztsGetSizes.c" />
+    <ClCompile Include="..\DssInterface\v6and7\C\ztsOtherStuff.c" />
+    <ClCompile Include="..\DssInterface\v6and7\C\zundelete.c" />
+    <ClCompile Include="..\DssInterface\v6and7\C\zwrite.c" />
+    <ClCompile Include="..\DssInterface\v6and7\C\zwritea.c" />
+    <ClCompile Include="..\DssInterface\v6and7\C\zwritec.c" />
+    <ClCompile Include="..\DssInterface\v6and7\C\zwritex.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Makefile.Linux" />
+    <None Include="Makefile.Solaris" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

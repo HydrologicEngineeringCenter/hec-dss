@@ -1,0 +1,67 @@
+      SUBROUTINE zsrtsc7 ( IFLTAB, CPATH, CDATE, CTIME, NVALS,
+     * LDOUBLE, VALUES, DVALUES, JQUAL, LQUAL, CUNITS, CTYPE,
+     * COORDS, NCOORDS, ICDESC, NCDESC, CSUPP, ITZONE,
+     * CTZONE, IPLAN, JCOMP, BASEV, LBASEV, LDHIGH, NPREC, ISTAT)
+C
+      implicit none
+C
+C     Z-Store Regular interval Time-Series data
+C     Data is stored according to the
+C     time window set from CDATE/CTIME and NVALS.
+C
+cccccccccccc     FIX ME - call zinquir to get precision??????
+
+C     Argument Dimensions
+      CHARACTER CPATH*(*), CTYPE*(*), CUNITS*(*), CDATE*(*), CTIME*(*)
+      CHARACTER CTZONE*(*), CSUPP*(*)
+      INTEGER IFLTAB(*), JQUAL(*), NSUPP, JCOMP
+      REAL BASEV
+      INTEGER IPLAN, ISTAT, NVALS, ITZONE, MAXHEAD, NUHEAD
+      INTEGER IGNORE1, IGNORE2, IGNORE3, IGNORE4, NPREC
+      LOGICAL LQUAL, LBASEV, LDHIGH, LDOUBLE
+C
+      REAL VALUES(*)
+C
+      DOUBLE PRECISION DVALUES(*), COORDS(*)
+      INTEGER NCOORDS, ICDESC(*), NCDESC
+C
+      INTEGER, PARAMETER :: KUHEAD=400
+      INTEGER INTBUF(KUHEAD)
+
+      CHARACTER CRTZONE*24, CWTZONE*24
+      INTEGER IRTZONE, IWTZONE
+      COMMON /ZDSSTZC/ CRTZONE, CWTZONE
+      COMMON /ZDSSTZI/ IRTZONE, IWTZONE
+C
+C
+      CWTZONE = CTZONE
+      IWTZONE = ITZONE
+      NPREC = -1
+C
+      CALL CHRLNB(CSUPP, NSUPP)
+C
+      IF (NSUPP.GT.0) THEN
+         NUHEAD = ((NSUPP - 1) / 4) + 1
+         NUHEAD = MIN(NUHEAD, KUHEAD)
+         MAXHEAD = NUHEAD * 4
+	   IF (NSUPP.GE.MAXHEAD) THEN
+            CALL CH2HOL(CSUPP, INTBUF, NUHEAD)
+         ELSE
+C           Be sure the last word is blank filled
+            CALL CH2HOL('    ', INTBUF(NUHEAD), 1)
+            CALL CHRHOL(CSUPP, 1, NSUPP, INTBUF, 1)
+         ENDIF
+      ELSE
+         NUHEAD = 0
+      ENDIF
+C
+C
+      CALL zsrtsi7 (IFLTAB, CPATH, CDATE, CTIME, NVALS,
+     * LDOUBLE, VALUES, DVALUES, JQUAL, LQUAL, CUNITS, CTYPE,
+     * INTBUF, NUHEAD, COORDS, NCOORDS, ICDESC, NCDESC,
+     * IPLAN, IGNORE1, IGNORE2, IGNORE3, IGNORE4, NPREC, ISTAT)
+C
+      RETURN
+C
+      END
+

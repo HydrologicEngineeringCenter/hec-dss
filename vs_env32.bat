@@ -1,0 +1,1 @@
+call "%IFORT_COMPILER19%bin\compilervars.bat" ia32 vs2019

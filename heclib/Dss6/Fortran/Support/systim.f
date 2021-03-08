@@ -1,0 +1,12 @@
+      SUBROUTINE SYSTIM ( JUL, ISECONDS)
+C
+C     PROVIDES CURRENT HEC JULIAN DATE AND
+C     TIME IN SECONDSS PAST MIDNIGHT WHEN CALLED
+
+      INTEGER secondsPastMidnight, mills
+
+      CALL getCurrentDateTime (JUL, ISECONDS, mills)
+
+      RETURN
+      END
+

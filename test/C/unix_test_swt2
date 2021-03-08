@@ -1,0 +1,28 @@
+#!/bin/bash
+
+declare -a arr=("expected_error" "ExampleTimeSeries1" "ExampleMinuteGranularity" "ExampleTimeSeries2"
+"ts_write" "zopenExample" "SamplePairedData" "endian" "ts_write_irregular")
+
+mkdir -p ./Output
+
+for test in "${arr[@]}"
+do
+echo "Testing with $test"
+
+cc -c -I../headers -m64 -mt -xcode=pic32 -xstrconst -xc99=all -xCC -g -xs -o ./Output/${test}.o ${test}.c > ./Output${test}.log
+f95 -mt -m64 -xcode=pic32 -xpagesize=4M -lrt -g -xs ./Output/${test}.o ./heclib7.a -o ./Output/${test}  >> ./Output/${test}.log
+
+rm -f ${test}.dss
+
+./Output/${test} >> ./Output/${test}.log
+status=$?
+if [ $status -ne 0 ]; then
+ echo "Error with ${test}"
+fi
+
+echo "Running ${test} again "
+./Output/${test} >> ./Output/${test}_again.log
+
+done
+
+./Output/endian

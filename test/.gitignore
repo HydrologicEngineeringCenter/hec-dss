@@ -1,0 +1,19 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+*.tlog
+/C/Core/Debug
+/Java/bin
+*.dll
+/Java/Sample7.dss
+*.pdb
+*.exe
+*.ilk
+*.obj
+*.jar
+/C/Workbench/x64/Debug
+*.class
+*.log
+JavaUnitTests/Sample7.dss
+*.dss

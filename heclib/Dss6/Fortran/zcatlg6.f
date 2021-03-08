@@ -1,0 +1,23 @@
+      SUBROUTINE zcatlg6 (IFLTAB, ICUNIT, INUNIT, CINSTR, IBEG, ILEN,
+     *  LABREV, LDOSRT, NORECS)
+C
+C
+C     Substituted by subroutine zcat6
+C
+      INTEGER IFLTAB(*)
+      CHARACTER CINSTR*(*)
+      LOGICAL LABREV, LDOSRT, LCDCAT
+C
+C
+      IF (ILEN.GT.IBEG) THEN
+      IEND = IBEG + ILEN - 1
+      CALL zcat6 (IFLTAB, ICUNIT, 0 , INUNIT, CINSTR(IBEG:IEND),
+     *  LABREV, LDOSRT, LCDCAT, NORECS)
+      ELSE
+      CALL zcat6 (IFLTAB, ICUNIT, 0 , INUNIT, ' ',
+     *  LABREV, LDOSRT, LCDCAT, NORECS)
+      ENDIF
+C
+      RETURN
+      END
+

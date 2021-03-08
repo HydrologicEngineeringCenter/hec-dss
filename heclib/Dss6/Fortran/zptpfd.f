@@ -1,0 +1,28 @@
+      SUBROUTINE zptpfd (IFLTAB, CPATH, NPATH, NORD, NCURVE, IHORIZ,
+     * C1UNIT, C2UNIT, C1TYPE, C2TYPE, CLABEL, KLABEL, NLABEL, IBUFF,
+     * KBUFF, NBUFF, VALUES, KVALS, NVALS, IPLAN, ISTAT)
+C
+C
+C     Replaced by zspd
+C     ------------------------------------------------------------------
+C
+C
+      CHARACTER *(*) CPATH,C1UNIT,C2UNIT,C1TYPE,C2TYPE,CLABEL(*)
+      REAL VALUES(*)
+      INTEGER IFLTAB(*), IBUFF(*)
+      LOGICAL LABEL
+C
+C
+      IF (NLABEL.GT.0) THEN
+      LABEL = .TRUE.
+      ELSE
+      LABEL = .FALSE.
+      ENDIF
+C
+      CALL zspd (IFLTAB, CPATH(1:NPATH), NORD, NCURVE, IHORIZ,
+     * C1UNIT, C1TYPE, C2UNIT, C2TYPE, VALUES, CLABEL, LABEL,
+     * IUHEAD, 0, IPLAN, ISTAT)
+C
+      RETURN
+      END
+

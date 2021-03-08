@@ -1,0 +1,420 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{2CB4806F-7544-4788-93EC-A9D19AB8ECEA}</ProjectGuid>
+    <RootNamespace>javaHeclibx64</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>javaHeclib</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)$(Platform)\$(Configuration)_intermediate\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)$(Platform)\$(Configuration)_intermediate\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectDir)$(Platform)\$(Configuration)_intermediate\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">javaHeclib</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">javaHeclib</TargetName>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir)$(Platform)\$(Configuration)\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">javaHeclib</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.dll</TargetExt>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.dll</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LibraryPath>$(IFORT_COMPILER19)compiler\lib\ia32_win;$(LibraryPath)</LibraryPath>
+    <OutDir>$(ProjectDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(ProjectDir)$(Platform)\$(Configuration)_intermediate\</IntDir>
+    <TargetExt>.dll</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LibraryPath>$(LibraryPath)</LibraryPath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(IFORT_COMPILER19)compiler\include</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <TargetName>javaHeclib</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(NETFXKitsDir)Lib\um\x64;$(IFORT_COMPILER19)\compiler\lib\intel64_win</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>C:\Programs\java\jdk1.8.0\include;C:\Programs\java\jdk1.8.0\include\win32;..\..\heclib\headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;JAVAHECLIB_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>CompileAsC</CompileAs>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>javaShefDssLib.lib;heclib_f_v6v7.lib;heclib_c_v6v7.lib;zlibstatic.lib</AdditionalDependencies>
+      <OutputFile>$(ProjectDir)$(Platform)\$(Configuration)\javaHeclib.dll</OutputFile>
+      <AdditionalLibraryDirectories>..\heclib_c_v6v7\$(PlatformName)\$(ConfigurationName);..\heclib_f_v6v7\$(PlatformName)\$(ConfigurationName);..\..\lib\$(PlatformName);$(IFORT_COMPILER19)compiler\lib\intel64_win</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>MSVCRT</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX64</TargetMachine>
+      <LinkStatus>
+      </LinkStatus>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+    </Link>
+    <ProjectReference>
+      <UseLibraryDependencyInputs>
+      </UseLibraryDependencyInputs>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Programs\java\jdk1.8.0\include;C:\Programs\java\jdk1.8.0\include\win32;..\..\heclib\headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <OmitFramePointers>
+      </OmitFramePointers>
+      <BasicRuntimeChecks>
+      </BasicRuntimeChecks>
+      <CompileAs>CompileAsC</CompileAs>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_USRDLL;JAVAHECLIB_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>javaShefDssLib.lib;heclib_f_v6v7.lib;heclib_c_v6v7.lib;zlibstatic.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(ProjectDir)$(Platform)\$(Configuration)\javaHeclib.dll</OutputFile>
+      <AdditionalLibraryDirectories>..\heclib_c_v6v7\$(PlatformName)\$(ConfigurationName);..\heclib_f_v6v7\$(PlatformName)\$(ConfigurationName);..\..\lib\$(PlatformName);$(IFORT_COMPILER19)compiler\lib\intel64</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>
+      </OptimizeReferences>
+      <EnableCOMDATFolding>
+      </EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX64</TargetMachine>
+      <IgnoreSpecificDefaultLibraries>LIBCMTD;LIBCMT</IgnoreSpecificDefaultLibraries>
+      <LinkStatus>
+      </LinkStatus>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
+    </Link>
+    <ProjectReference>
+      <UseLibraryDependencyInputs>
+      </UseLibraryDependencyInputs>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;JAVAHECLIB_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <AdditionalIncludeDirectories>C:\Programs\java\jdk1.8.0_x86\include;C:\Programs\java\jdk1.8.0_x86\include\win32;..\..\heclib\headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>Disabled</Optimization>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX86</TargetMachine>
+      <AdditionalDependencies>javaShefDssLib.lib;heclib_f_v6v7.lib;heclib_c_v6v7.lib;zlibstatic.lib;ifconsol.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\heclib_c_v6v7\$(PlatformName)\$(ConfigurationName);..\heclib_f_v6v7\$(PlatformName)\$(ConfigurationName);..\..\lib\$(PlatformName);$(IFORT_COMPILER19)compiler\lib\ia32_win;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Programs\java\jdk1.8.0_x86\include;C:\Programs\java\jdk1.8.0_x86\include\win32;..\..\heclib\headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <WarningLevel>Level3</WarningLevel>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <CompileAs>CompileAsC</CompileAs>
+      <Optimization>Disabled</Optimization>
+      <UndefinePreprocessorDefinitions>
+      </UndefinePreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>..\heclib_c_v6v7\$(PlatformName)\$(ConfigurationName);..\heclib_f_v6v7\$(PlatformName)\$(ConfigurationName);..\..\lib\$(PlatformName);$(IFORT_COMPILER19)compiler\lib\ia32_win;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ShowProgress>LinkVerboseLib</ShowProgress>
+      <OutputFile>$(OutDir)javaHeclib.dll</OutputFile>
+      <AdditionalDependencies>javaShefDssLib.lib;heclib_f_v6v7.lib;heclib_c_v6v7.lib;zlibstatic.lib;ifconsol.lib</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>MSVCRT</IgnoreSpecificDefaultLibraries>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\headers\hecdssInternal.h" />
+    <ClInclude Include="..\headers\heclib.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="source\javaHeclib.h" />
+    <ClInclude Include="version.h" />
+    <ClInclude Include="version_build.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\C_CatalogToJava.c" />
+    <ClCompile Include="source\Hec_closescratchdsscatalog.c" />
+    <ClCompile Include="source\Hec_datjul.c" />
+    <ClCompile Include="source\Hec_dssCopyStatus.c" />
+    <ClCompile Include="source\Hec_fortranClose.c" />
+    <ClCompile Include="source\Hec_fortranFlush.c" />
+    <ClCompile Include="source\Hec_fortranOpen.c" />
+    <ClCompile Include="source\Hec_fortranWind.c" />
+    <ClCompile Include="source\Hec_fortranWrite.c" />
+    <ClCompile Include="source\Hec_getCurrentRec.c" />
+    <ClCompile Include="source\Hec_getEPartFromInterval.c" />
+    <ClCompile Include="source\Hec_getime.c" />
+    <ClCompile Include="source\Hec_getProcessName.c" />
+    <ClCompile Include="source\Hec_holString.c" />
+    <ClCompile Include="source\Hec_i4toi8.c" />
+    <ClCompile Include="source\Hec_idaywk.c" />
+    <ClCompile Include="source\Hec_ihm2m.c" />
+    <ClCompile Include="source\Hec_inctim.c" />
+    <ClCompile Include="source\Hec_isUnitConnected.c" />
+    <ClCompile Include="source\Hec_iymdjl.c" />
+    <ClCompile Include="source\Hec_jliymd.c" />
+    <ClCompile Include="source\Hec_juldat.c" />
+    <ClCompile Include="source\Hec_LoadParam.c" />
+    <ClCompile Include="source\Hec_m2ihm.c" />
+    <ClCompile Include="source\Hec_makedsscatalog.c" />
+    <ClCompile Include="source\Hec_nopers.c" />
+    <ClCompile Include="source\Hec_obsolete.c" />
+    <ClCompile Include="source\Hec_openf.c" />
+    <ClCompile Include="source\Hec_readf.c" />
+    <ClCompile Include="source\Hec_zaliasAdd.c" />
+    <ClCompile Include="source\Hec_zaliasGetPrimary.c" />
+    <ClCompile Include="source\Hec_zaliasList.c" />
+    <ClCompile Include="source\Hec_zaliasRemove.c" />
+    <ClCompile Include="source\Hec_zcheckAccessReset.c" />
+    <ClCompile Include="source\Hec_zgetRecordBasics.c" />
+    <ClCompile Include="source\Hec_zgridRetrieve.c" />
+    <ClCompile Include="source\Hec_zgridStore.c" />
+    <ClCompile Include="source\Hec_zinquire.c" />
+    <ClCompile Include="source\Hec_zmessage.c" />
+    <ClCompile Include="source\Hec_zreadRawRecord.c" />
+    <ClCompile Include="source\Hec_RunShefDss.c" />
+    <ClCompile Include="source\Hec_StringHol.c" />
+    <ClCompile Include="source\Hec_systim.c" />
+    <ClCompile Include="source\Hec_ToShef.c" />
+    <ClCompile Include="source\Hec_zwriteRawRecord.c" />
+    <ClCompile Include="source\Hec_zarrayRetrieve.c" />
+    <ClCompile Include="source\Hec_zarrayStore.c" />
+    <ClCompile Include="source\Hec_zbegdt.c" />
+    <ClCompile Include="source\Hec_zcatalog.c" />
+    <ClCompile Include="source\Hec_zcatalogFile.c" />
+    <ClCompile Include="source\Hec_zcheck.c" />
+    <ClCompile Include="source\Hec_zcheckFile.c" />
+    <ClCompile Include="source\Hec_zcklnk.c" />
+    <ClCompile Include="source\Hec_zckmul.c" />
+    <ClCompile Include="source\Hec_zckpat.c" />
+    <ClCompile Include="source\Hec_zckpnb.c" />
+    <ClCompile Include="source\Hec_zclose.c" />
+    <ClCompile Include="source\Hec_zcofil.c" />
+    <ClCompile Include="source\Hec_zcolist.c" />
+    <ClCompile Include="source\Hec_zconvertVersion.c" />
+    <ClCompile Include="source\Hec_zcopyFile.c" />
+    <ClCompile Include="source\Hec_zcorec.c" />
+    <ClCompile Include="source\Hec_zdblook.c" />
+    <ClCompile Include="source\Hec_zdbmod.c" />
+    <ClCompile Include="source\Hec_zdcinf.c" />
+    <ClCompile Include="source\Hec_zdebug1.c" />
+    <ClCompile Include="source\Hec_zdebug7.c" />
+    <ClCompile Include="source\Hec_zdelet.c" />
+    <ClCompile Include="source\Hec_zdtype.c" />
+    <ClCompile Include="source\Hec_zerror.c" />
+    <ClCompile Include="source\Hec_zfileAccessInfo.c" />
+    <ClCompile Include="source\Hec_zfilst.c" />
+    <ClCompile Include="source\Hec_zflush.c" />
+    <ClCompile Include="source\Hec_zfname.c" />
+    <ClCompile Include="source\Hec_zget.c" />
+    <ClCompile Include="source\Hec_zgetCatalogSortAddresses.c" />
+    <ClCompile Include="source\Hec_zgetDssVersion.c" />
+    <ClCompile Include="source\Hec_zgetFileVersion.c" />
+    <ClCompile Include="source\Hec_zgetInterval.c" />
+    <ClCompile Include="source\Hec_zgetMessageLevel.c" />
+    <ClCompile Include="source\Hec_zgetProgress.c" />
+    <ClCompile Include="source\Hec_zgetrw.c" />
+    <ClCompile Include="source\Hec_zgintl.c" />
+    <ClCompile Include="source\Hec_zgpnp.c" />
+    <ClCompile Include="source\Hec_zgtrec.c" />
+    <ClCompile Include="source\Hec_zincbk.c" />
+    <ClCompile Include="source\Hec_zinqir.c" />
+    <ClCompile Include="source\Hec_zirbeg.c" />
+    <ClCompile Include="source\Hec_zlastWriteTime.c" />
+    <ClCompile Include="source\Hec_zlastWriteTimeFile.c" />
+    <ClCompile Include="source\Hec_zloadcache.c" />
+    <ClCompile Include="source\Hec_zlocationFromStruct.c" />
+    <ClCompile Include="source\Hec_zlocationRetrieve.c" />
+    <ClCompile Include="source\Hec_zlocationStore.c" />
+    <ClCompile Include="source\Hec_zlocationToStruct.c" />
+    <ClCompile Include="source\Hec_zmaxpart.c" />
+    <ClCompile Include="source\Hec_zmessageGroups.c" />
+    <ClCompile Include="source\Hec_zndata.c" />
+    <ClCompile Include="source\Hec_znextts.c" />
+    <ClCompile Include="source\Hec_zofset.c" />
+    <ClCompile Include="source\Hec_zopen.c" />
+    <ClCompile Include="source\Hec_zpath.c" />
+    <ClCompile Include="source\Hec_zpathnameListJava.c" />
+    <ClCompile Include="source\Hec_zpdRetrieve.c" />
+    <ClCompile Include="source\Hec_zpdStore.c" />
+    <ClCompile Include="source\Hec_zplist.c" />
+    <ClCompile Include="source\Hec_zpseudorts.c" />
+    <ClCompile Include="source\Hec_zquery.c" />
+    <ClCompile Include="source\Hec_zrdpat.c" />
+    <ClCompile Include="source\Hec_zread.c" />
+    <ClCompile Include="source\Hec_zreadx.c" />
+    <ClCompile Include="source\Hec_zreadxBytes.c" />
+    <ClCompile Include="source\Hec_zrecadd.c" />
+    <ClCompile Include="source\Hec_zrecInfo.c" />
+    <ClCompile Include="source\Hec_zrenam.c" />
+    <ClCompile Include="source\Hec_zrinfo.c" />
+    <ClCompile Include="source\Hec_zrits.c" />
+    <ClCompile Include="source\Hec_zritsc.c" />
+    <ClCompile Include="source\Hec_zritsx.c" />
+    <ClCompile Include="source\Hec_zritsxd.c" />
+    <ClCompile Include="source\Hec_zrpd.c" />
+    <ClCompile Include="source\Hec_zrpdd.c" />
+    <ClCompile Include="source\Hec_zrrst.c" />
+    <ClCompile Include="source\Hec_zrrsti.c" />
+    <ClCompile Include="source\Hec_zrrts.c" />
+    <ClCompile Include="source\Hec_zrrtsc.c" />
+    <ClCompile Include="source\Hec_zrrtsx.c" />
+    <ClCompile Include="source\Hec_zrrtsxd.c" />
+    <ClCompile Include="source\Hec_zrtxts.c" />
+    <ClCompile Include="source\Hec_zset.c" />
+    <ClCompile Include="source\Hec_zsetCatalogSortAddresses.c" />
+    <ClCompile Include="source\Hec_zsetfi.c" />
+    <ClCompile Include="source\Hec_zsetInterrupt.c" />
+    <ClCompile Include="source\Hec_zsetMessageLevel.c" />
+    <ClCompile Include="source\Hec_zsits.c" />
+    <ClCompile Include="source\Hec_zsitsc.c" />
+    <ClCompile Include="source\Hec_zsitsx.c" />
+    <ClCompile Include="source\Hec_zsitsxd.c" />
+    <ClCompile Include="source\Hec_zspd.c" />
+    <ClCompile Include="source\Hec_zspdd.c" />
+    <ClCompile Include="source\Hec_zsqueeze.c" />
+    <ClCompile Include="source\Hec_zsrst.c" />
+    <ClCompile Include="source\Hec_zsrsti.c" />
+    <ClCompile Include="source\Hec_zsrts.c" />
+    <ClCompile Include="source\Hec_zsrtsc.c" />
+    <ClCompile Include="source\Hec_zsrtsx.c" />
+    <ClCompile Include="source\Hec_zsrtsxd.c" />
+    <ClCompile Include="source\Hec_zstfh.c" />
+    <ClCompile Include="source\Hec_zstxta.c" />
+    <ClCompile Include="source\Hec_ztextRetrieve.c" />
+    <ClCompile Include="source\Hec_ztextStore.c" />
+    <ClCompile Include="source\Hec_ztinRetrieve.c" />
+    <ClCompile Include="source\Hec_ztinStore.c" />
+    <ClCompile Include="source\Hec_ztsends.c" />
+    <ClCompile Include="source\Hec_ztsGetStandardInterval.c" />
+    <ClCompile Include="source\Hec_ztsinfo.c" />
+    <ClCompile Include="source\Hec_ztsrange.c" />
+    <ClCompile Include="source\Hec_ztsRetrieve.c" />
+    <ClCompile Include="source\Hec_ztsStore.c" />
+    <ClCompile Include="source\Hec_zundel.c" />
+    <ClCompile Include="source\Hec_zupath.c" />
+    <ClCompile Include="source\Hec_zustfh.c" />
+    <ClCompile Include="source\Hec_zwhatChanged.c" />
+    <ClCompile Include="source\Hec_zwhatChangedCompare.c" />
+    <ClCompile Include="source\Hec_zwhatChangedSetStart.c" />
+    <ClCompile Include="source\Hec_zwritx.c" />
+    <ClCompile Include="source\Hec_zwritxBytes.c" />
+    <ClCompile Include="source\JavaCatalogToC.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\heclib_c_v6v7\heclib_c_v6v7.vcxproj">
+      <Project>{dd025a40-2426-4cce-b43a-380466b80a9a}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="version.rc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -1,0 +1,11 @@
+      INTEGER FUNCTION  IBITS(IW,IBIT,NBITS)
+      IX=0
+      DO 10 I=0,NBITS-1
+10    IX=IBSET(IX,I)
+      IY=ISHFT(IW,-IBIT)
+      IBITS=IAND(IX,IY)
+      RETURN
+C
+C
+      END
+

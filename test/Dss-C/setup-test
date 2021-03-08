@@ -1,0 +1,6 @@
+#!/bin/bash
+
+rm -f ./Output/*.ds*
+rm -f ./Output/testmultiuser.log
+cp ../../dss-test-data/samp*.dss ./Output/
+ls -la Output/*.ds*

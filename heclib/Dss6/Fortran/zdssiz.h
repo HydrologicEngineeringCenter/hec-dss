@@ -1,0 +1,14 @@
+C     ---------------------------------------
+C
+C     DSS integer values common block
+      COMMON /ZDSSIZ/ IHASH, JPNBIN, IPNBIN, INFO,
+     * IPBADD, NPPWRD, NPMWRD, IPLOOP, IRENAM, IRNTYP, IBVER, IZERO,
+     * JTAGFL, ITYPE, IHSIZE, IPREC, IPASS,
+     * IINTYP, NINTYP, IEXTYP, NEXTYP, INTL_PSEUDO
+	 integer IHASH, JPNBIN, IPNBIN(NBSIZE+4), INFO(150),
+     * IPBADD, NPPWRD, NPMWRD, IPLOOP, IRENAM, IRNTYP, IBVER, IZERO,
+     * JTAGFL, ITYPE, IHSIZE, IPREC, IPASS(3),
+     * IINTYP(10), NINTYP, IEXTYP(10), NEXTYP, INTL_PSEUDO
+C
+C     ---------------------------------------
+

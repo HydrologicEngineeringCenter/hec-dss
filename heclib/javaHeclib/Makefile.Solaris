@@ -1,0 +1,537 @@
+CFLAGS=-m64 -c -mt -xmemalign=2i -xcode=pic32 -xstrconst -xc99=all -xCC -g -xs -I"${JAVA_HOME}/include" -I"${JAVA_HOME}/include/solaris" -I../headers 
+ 
+#-m64   memory model 64
+#-c   compile only
+#-mt Macro option that expands to -D_REENTRANT -lthread. (The option —mt is equivalent to —mt=yes.)
+#-g debugger support
+#-xs allow debugging
+#-xcode=abs64   64 bit absolute code address space 
+#-xstrconst   -- duplicate strings eleminated by sharing references
+#-xmemalign=ab  -- set ab for memory alingn options
+#-xcheck     adds runtime check for stack overflow
+#-xbuiltin=%none    
+#-xc99=all    support C99 language features
+#-xCC    allow c++ style comments  //   
+
+all: libjavaHeclib.so
+
+clean:
+	$(RM) Output/*.o Output/javaHeclib.a  Output/libjavaHeclib.so 
+
+Output/C_CatalogToJava.o:source/C_CatalogToJava.c
+	$(CC) $(CFLAGS) source/C_CatalogToJava.c -o Output/C_CatalogToJava.o
+Output/Hec_closescratchdsscatalog.o:source/Hec_closescratchdsscatalog.c
+	$(CC) $(CFLAGS) source/Hec_closescratchdsscatalog.c -o Output/Hec_closescratchdsscatalog.o
+Output/Hec_datjul.o:source/Hec_datjul.c
+	$(CC) $(CFLAGS) source/Hec_datjul.c -o Output/Hec_datjul.o
+Output/Hec_dssCopyStatus.o:source/Hec_dssCopyStatus.c
+	$(CC) $(CFLAGS) source/Hec_dssCopyStatus.c -o Output/Hec_dssCopyStatus.o
+Output/Hec_fortranClose.o:source/Hec_fortranClose.c
+	$(CC) $(CFLAGS) source/Hec_fortranClose.c -o Output/Hec_fortranClose.o
+Output/Hec_fortranFlush.o:source/Hec_fortranFlush.c
+	$(CC) $(CFLAGS) source/Hec_fortranFlush.c -o Output/Hec_fortranFlush.o
+Output/Hec_fortranOpen.o:source/Hec_fortranOpen.c
+	$(CC) $(CFLAGS) source/Hec_fortranOpen.c -o Output/Hec_fortranOpen.o
+Output/Hec_fortranWind.o:source/Hec_fortranWind.c
+	$(CC) $(CFLAGS) source/Hec_fortranWind.c -o Output/Hec_fortranWind.o
+Output/Hec_fortranWrite.o:source/Hec_fortranWrite.c
+	$(CC) $(CFLAGS) source/Hec_fortranWrite.c -o Output/Hec_fortranWrite.o
+Output/Hec_getCurrentRec.o:source/Hec_getCurrentRec.c
+	$(CC) $(CFLAGS) source/Hec_getCurrentRec.c -o Output/Hec_getCurrentRec.o
+Output/Hec_getEPartFromInterval.o:source/Hec_getEPartFromInterval.c
+	$(CC) $(CFLAGS) source/Hec_getEPartFromInterval.c -o Output/Hec_getEPartFromInterval.o
+Output/Hec_getime.o:source/Hec_getime.c
+	$(CC) $(CFLAGS) source/Hec_getime.c -o Output/Hec_getime.o
+Output/Hec_getProcessName.o:source/Hec_getProcessName.c
+	$(CC) $(CFLAGS) source/Hec_getProcessName.c -o Output/Hec_getProcessName.o
+Output/Hec_holString.o:source/Hec_holString.c
+	$(CC) $(CFLAGS) source/Hec_holString.c -o Output/Hec_holString.o
+Output/Hec_i4toi8.o:source/Hec_i4toi8.c
+	$(CC) $(CFLAGS) source/Hec_i4toi8.c -o Output/Hec_i4toi8.o
+Output/Hec_idaywk.o:source/Hec_idaywk.c
+	$(CC) $(CFLAGS) source/Hec_idaywk.c -o Output/Hec_idaywk.o
+Output/Hec_ihm2m.o:source/Hec_ihm2m.c
+	$(CC) $(CFLAGS) source/Hec_ihm2m.c -o Output/Hec_ihm2m.o
+Output/Hec_inctim.o:source/Hec_inctim.c
+	$(CC) $(CFLAGS) source/Hec_inctim.c -o Output/Hec_inctim.o
+Output/Hec_isUnitConnected.o:source/Hec_isUnitConnected.c
+	$(CC) $(CFLAGS) source/Hec_isUnitConnected.c -o Output/Hec_isUnitConnected.o
+Output/Hec_iymdjl.o:source/Hec_iymdjl.c
+	$(CC) $(CFLAGS) source/Hec_iymdjl.c -o Output/Hec_iymdjl.o
+Output/Hec_jliymd.o:source/Hec_jliymd.c
+	$(CC) $(CFLAGS) source/Hec_jliymd.c -o Output/Hec_jliymd.o
+Output/Hec_juldat.o:source/Hec_juldat.c
+	$(CC) $(CFLAGS) source/Hec_juldat.c -o Output/Hec_juldat.o
+Output/Hec_LoadParam.o:source/Hec_LoadParam.c
+	$(CC) $(CFLAGS) source/Hec_LoadParam.c -o Output/Hec_LoadParam.o
+Output/Hec_m2ihm.o:source/Hec_m2ihm.c
+	$(CC) $(CFLAGS) source/Hec_m2ihm.c -o Output/Hec_m2ihm.o
+Output/Hec_makedsscatalog.o:source/Hec_makedsscatalog.c
+	$(CC) $(CFLAGS) source/Hec_makedsscatalog.c -o Output/Hec_makedsscatalog.o
+Output/Hec_nopers.o:source/Hec_nopers.c
+	$(CC) $(CFLAGS) source/Hec_nopers.c -o Output/Hec_nopers.o
+Output/Hec_obsolete.o:source/Hec_obsolete.c
+	$(CC) $(CFLAGS) source/Hec_obsolete.c -o Output/Hec_obsolete.o
+Output/Hec_openf.o:source/Hec_openf.c
+	$(CC) $(CFLAGS) source/Hec_openf.c -o Output/Hec_openf.o
+Output/Hec_readf.o:source/Hec_readf.c
+	$(CC) $(CFLAGS) source/Hec_readf.c -o Output/Hec_readf.o
+Output/Hec_zaliasAdd.o:source/Hec_zaliasAdd.c
+	$(CC) $(CFLAGS) source/Hec_zaliasAdd.c -o Output/Hec_zaliasAdd.o
+Output/Hec_zaliasGetPrimary.o:source/Hec_zaliasGetPrimary.c
+	$(CC) $(CFLAGS) source/Hec_zaliasGetPrimary.c -o Output/Hec_zaliasGetPrimary.o
+Output/Hec_zaliasList.o:source/Hec_zaliasList.c
+	$(CC) $(CFLAGS) source/Hec_zaliasList.c -o Output/Hec_zaliasList.o
+Output/Hec_zaliasRemove.o:source/Hec_zaliasRemove.c
+	$(CC) $(CFLAGS) source/Hec_zaliasRemove.c -o Output/Hec_zaliasRemove.o
+Output/Hec_zcheckAccessReset.o:source/Hec_zcheckAccessReset.c
+	$(CC) $(CFLAGS) source/Hec_zcheckAccessReset.c -o Output/Hec_zcheckAccessReset.o
+Output/Hec_zgetRecordBasics.o:source/Hec_zgetRecordBasics.c
+	$(CC) $(CFLAGS) source/Hec_zgetRecordBasics.c -o Output/Hec_zgetRecordBasics.o
+Output/Hec_zgridRetrieve.o:source/Hec_zgridRetrieve.c
+	$(CC) $(CFLAGS) source/Hec_zgridRetrieve.c -o Output/Hec_zgridRetrieve.o
+Output/Hec_zgridStore.o:source/Hec_zgridStore.c
+	$(CC) $(CFLAGS) source/Hec_zgridStore.c -o Output/Hec_zgridStore.o
+Output/Hec_zinquire.o:source/Hec_zinquire.c
+	$(CC) $(CFLAGS) source/Hec_zinquire.c -o Output/Hec_zinquire.o
+Output/Hec_zreadRawRecord.o:source/Hec_zreadRawRecord.c
+	$(CC) $(CFLAGS) source/Hec_zreadRawRecord.c -o Output/Hec_zreadRawRecord.o
+Output/Hec_RunShefDss.o:source/Hec_RunShefDss.c
+	$(CC) $(CFLAGS) source/Hec_RunShefDss.c -o Output/Hec_RunShefDss.o
+Output/Hec_StringHol.o:source/Hec_StringHol.c
+	$(CC) $(CFLAGS) source/Hec_StringHol.c -o Output/Hec_StringHol.o
+Output/Hec_systim.o:source/Hec_systim.c
+	$(CC) $(CFLAGS) source/Hec_systim.c -o Output/Hec_systim.o
+Output/Hec_ToShef.o:source/Hec_ToShef.c
+	$(CC) $(CFLAGS) source/Hec_ToShef.c -o Output/Hec_ToShef.o
+Output/Hec_zwriteRawRecord.o:source/Hec_zwriteRawRecord.c
+	$(CC) $(CFLAGS) source/Hec_zwriteRawRecord.c -o Output/Hec_zwriteRawRecord.o
+Output/Hec_zarrayRetrieve.o:source/Hec_zarrayRetrieve.c
+	$(CC) $(CFLAGS) source/Hec_zarrayRetrieve.c -o Output/Hec_zarrayRetrieve.o
+Output/Hec_zarrayStore.o:source/Hec_zarrayStore.c
+	$(CC) $(CFLAGS) source/Hec_zarrayStore.c -o Output/Hec_zarrayStore.o
+Output/Hec_zbegdt.o:source/Hec_zbegdt.c
+	$(CC) $(CFLAGS) source/Hec_zbegdt.c -o Output/Hec_zbegdt.o
+Output/Hec_zcatalog.o:source/Hec_zcatalog.c
+	$(CC) $(CFLAGS) source/Hec_zcatalog.c -o Output/Hec_zcatalog.o
+Output/Hec_zcatalogFile.o:source/Hec_zcatalogFile.c
+	$(CC) $(CFLAGS) source/Hec_zcatalogFile.c -o Output/Hec_zcatalogFile.o
+Output/Hec_zcheck.o:source/Hec_zcheck.c
+	$(CC) $(CFLAGS) source/Hec_zcheck.c -o Output/Hec_zcheck.o
+Output/Hec_zcheckFile.o:source/Hec_zcheckFile.c
+	$(CC) $(CFLAGS) source/Hec_zcheckFile.c -o Output/Hec_zcheckFile.o
+Output/Hec_zcklnk.o:source/Hec_zcklnk.c
+	$(CC) $(CFLAGS) source/Hec_zcklnk.c -o Output/Hec_zcklnk.o
+Output/Hec_zckmul.o:source/Hec_zckmul.c
+	$(CC) $(CFLAGS) source/Hec_zckmul.c -o Output/Hec_zckmul.o
+Output/Hec_zckpat.o:source/Hec_zckpat.c
+	$(CC) $(CFLAGS) source/Hec_zckpat.c -o Output/Hec_zckpat.o
+Output/Hec_zckpnb.o:source/Hec_zckpnb.c
+	$(CC) $(CFLAGS) source/Hec_zckpnb.c -o Output/Hec_zckpnb.o
+Output/Hec_zclose.o:source/Hec_zclose.c
+	$(CC) $(CFLAGS) source/Hec_zclose.c -o Output/Hec_zclose.o
+Output/Hec_zcofil.o:source/Hec_zcofil.c
+	$(CC) $(CFLAGS) source/Hec_zcofil.c -o Output/Hec_zcofil.o
+Output/Hec_zcolist.o:source/Hec_zcolist.c
+	$(CC) $(CFLAGS) source/Hec_zcolist.c -o Output/Hec_zcolist.o
+Output/Hec_zconvertVersion.o:source/Hec_zconvertVersion.c
+	$(CC) $(CFLAGS) source/Hec_zconvertVersion.c -o Output/Hec_zconvertVersion.o
+Output/Hec_zcopyFile.o:source/Hec_zcopyFile.c
+	$(CC) $(CFLAGS) source/Hec_zcopyFile.c -o Output/Hec_zcopyFile.o
+Output/Hec_zcorec.o:source/Hec_zcorec.c
+	$(CC) $(CFLAGS) source/Hec_zcorec.c -o Output/Hec_zcorec.o
+Output/Hec_zdblook.o:source/Hec_zdblook.c
+	$(CC) $(CFLAGS) source/Hec_zdblook.c -o Output/Hec_zdblook.o
+Output/Hec_zdbmod.o:source/Hec_zdbmod.c
+	$(CC) $(CFLAGS) source/Hec_zdbmod.c -o Output/Hec_zdbmod.o
+Output/Hec_zdcinf.o:source/Hec_zdcinf.c
+	$(CC) $(CFLAGS) source/Hec_zdcinf.c -o Output/Hec_zdcinf.o
+Output/Hec_zdebug1.o:source/Hec_zdebug1.c
+	$(CC) $(CFLAGS) source/Hec_zdebug1.c -o Output/Hec_zdebug1.o
+Output/Hec_zdebug7.o:source/Hec_zdebug7.c
+	$(CC) $(CFLAGS) source/Hec_zdebug7.c -o Output/Hec_zdebug7.o
+Output/Hec_zdelet.o:source/Hec_zdelet.c
+	$(CC) $(CFLAGS) source/Hec_zdelet.c -o Output/Hec_zdelet.o
+Output/Hec_zdtype.o:source/Hec_zdtype.c
+	$(CC) $(CFLAGS) source/Hec_zdtype.c -o Output/Hec_zdtype.o
+Output/Hec_zerror.o:source/Hec_zerror.c
+	$(CC) $(CFLAGS) source/Hec_zerror.c -o Output/Hec_zerror.o
+Output/Hec_zfileAccessInfo.o:source/Hec_zfileAccessInfo.c
+	$(CC) $(CFLAGS) source/Hec_zfileAccessInfo.c -o Output/Hec_zfileAccessInfo.o
+Output/Hec_zfilst.o:source/Hec_zfilst.c
+	$(CC) $(CFLAGS) source/Hec_zfilst.c -o Output/Hec_zfilst.o
+Output/Hec_zflush.o:source/Hec_zflush.c
+	$(CC) $(CFLAGS) source/Hec_zflush.c -o Output/Hec_zflush.o
+Output/Hec_zfname.o:source/Hec_zfname.c
+	$(CC) $(CFLAGS) source/Hec_zfname.c -o Output/Hec_zfname.o
+Output/Hec_zget.o:source/Hec_zget.c
+	$(CC) $(CFLAGS) source/Hec_zget.c -o Output/Hec_zget.o
+Output/Hec_zgetCatalogSortAddresses.o:source/Hec_zgetCatalogSortAddresses.c
+	$(CC) $(CFLAGS) source/Hec_zgetCatalogSortAddresses.c -o Output/Hec_zgetCatalogSortAddresses.o
+Output/Hec_zgetDssVersion.o:source/Hec_zgetDssVersion.c
+	$(CC) $(CFLAGS) source/Hec_zgetDssVersion.c -o Output/Hec_zgetDssVersion.o
+Output/Hec_zgetFileVersion.o:source/Hec_zgetFileVersion.c
+	$(CC) $(CFLAGS) source/Hec_zgetFileVersion.c -o Output/Hec_zgetFileVersion.o
+Output/Hec_zgetInterval.o:source/Hec_zgetInterval.c
+	$(CC) $(CFLAGS) source/Hec_zgetInterval.c -o Output/Hec_zgetInterval.o
+Output/Hec_zgetMessageLevel.o:source/Hec_zgetMessageLevel.c
+	$(CC) $(CFLAGS) source/Hec_zgetMessageLevel.c -o Output/Hec_zgetMessageLevel.o
+Output/Hec_zgetProgress.o:source/Hec_zgetProgress.c
+	$(CC) $(CFLAGS) source/Hec_zgetProgress.c -o Output/Hec_zgetProgress.o
+Output/Hec_zgetrw.o:source/Hec_zgetrw.c
+	$(CC) $(CFLAGS) source/Hec_zgetrw.c -o Output/Hec_zgetrw.o
+Output/Hec_zgintl.o:source/Hec_zgintl.c
+	$(CC) $(CFLAGS) source/Hec_zgintl.c -o Output/Hec_zgintl.o
+Output/Hec_zgpnp.o:source/Hec_zgpnp.c
+	$(CC) $(CFLAGS) source/Hec_zgpnp.c -o Output/Hec_zgpnp.o
+Output/Hec_zgtrec.o:source/Hec_zgtrec.c
+	$(CC) $(CFLAGS) source/Hec_zgtrec.c -o Output/Hec_zgtrec.o
+Output/Hec_zincbk.o:source/Hec_zincbk.c
+	$(CC) $(CFLAGS) source/Hec_zincbk.c -o Output/Hec_zincbk.o
+Output/Hec_zinqir.o:source/Hec_zinqir.c
+	$(CC) $(CFLAGS) source/Hec_zinqir.c -o Output/Hec_zinqir.o
+Output/Hec_zirbeg.o:source/Hec_zirbeg.c
+	$(CC) $(CFLAGS) source/Hec_zirbeg.c -o Output/Hec_zirbeg.o
+Output/Hec_zlastWriteTime.o:source/Hec_zlastWriteTime.c
+	$(CC) $(CFLAGS) source/Hec_zlastWriteTime.c -o Output/Hec_zlastWriteTime.o
+Output/Hec_zlastWriteTimeFile.o:source/Hec_zlastWriteTimeFile.c
+	$(CC) $(CFLAGS) source/Hec_zlastWriteTimeFile.c -o Output/Hec_zlastWriteTimeFile.o
+Output/Hec_zloadcache.o:source/Hec_zloadcache.c
+	$(CC) $(CFLAGS) source/Hec_zloadcache.c -o Output/Hec_zloadcache.o
+Output/Hec_zlocationFromStruct.o:source/Hec_zlocationFromStruct.c
+	$(CC) $(CFLAGS) source/Hec_zlocationFromStruct.c -o Output/Hec_zlocationFromStruct.o
+Output/Hec_zlocationRetrieve.o:source/Hec_zlocationRetrieve.c
+	$(CC) $(CFLAGS) source/Hec_zlocationRetrieve.c -o Output/Hec_zlocationRetrieve.o
+Output/Hec_zlocationStore.o:source/Hec_zlocationStore.c
+	$(CC) $(CFLAGS) source/Hec_zlocationStore.c -o Output/Hec_zlocationStore.o
+Output/Hec_zlocationToStruct.o:source/Hec_zlocationToStruct.c
+	$(CC) $(CFLAGS) source/Hec_zlocationToStruct.c -o Output/Hec_zlocationToStruct.o
+Output/Hec_zmaxpart.o:source/Hec_zmaxpart.c
+	$(CC) $(CFLAGS) source/Hec_zmaxpart.c -o Output/Hec_zmaxpart.o
+Output/Hec_zmessageGroups.o:source/Hec_zmessageGroups.c
+	$(CC) $(CFLAGS) source/Hec_zmessageGroups.c -o Output/Hec_zmessageGroups.o
+Output/Hec_zndata.o:source/Hec_zndata.c
+	$(CC) $(CFLAGS) source/Hec_zndata.c -o Output/Hec_zndata.o
+Output/Hec_znextts.o:source/Hec_znextts.c
+	$(CC) $(CFLAGS) source/Hec_znextts.c -o Output/Hec_znextts.o
+Output/Hec_zofset.o:source/Hec_zofset.c
+	$(CC) $(CFLAGS) source/Hec_zofset.c -o Output/Hec_zofset.o
+Output/Hec_zopen.o:source/Hec_zopen.c
+	$(CC) $(CFLAGS) source/Hec_zopen.c -o Output/Hec_zopen.o
+Output/Hec_zpath.o:source/Hec_zpath.c
+	$(CC) $(CFLAGS) source/Hec_zpath.c -o Output/Hec_zpath.o
+Output/Hec_zpathnameListJava.o:source/Hec_zpathnameListJava.c
+	$(CC) $(CFLAGS) source/Hec_zpathnameListJava.c -o Output/Hec_zpathnameListJava.o
+Output/Hec_zpdRetrieve.o:source/Hec_zpdRetrieve.c
+	$(CC) $(CFLAGS) source/Hec_zpdRetrieve.c -o Output/Hec_zpdRetrieve.o
+Output/Hec_zpdStore.o:source/Hec_zpdStore.c
+	$(CC) $(CFLAGS) source/Hec_zpdStore.c -o Output/Hec_zpdStore.o
+Output/Hec_zplist.o:source/Hec_zplist.c
+	$(CC) $(CFLAGS) source/Hec_zplist.c -o Output/Hec_zplist.o
+Output/Hec_zpseudorts.o:source/Hec_zpseudorts.c
+	$(CC) $(CFLAGS) source/Hec_zpseudorts.c -o Output/Hec_zpseudorts.o
+Output/Hec_zquery.o:source/Hec_zquery.c
+	$(CC) $(CFLAGS) source/Hec_zquery.c -o Output/Hec_zquery.o
+Output/Hec_zrdpat.o:source/Hec_zrdpat.c
+	$(CC) $(CFLAGS) source/Hec_zrdpat.c -o Output/Hec_zrdpat.o
+Output/Hec_zread.o:source/Hec_zread.c
+	$(CC) $(CFLAGS) source/Hec_zread.c -o Output/Hec_zread.o
+Output/Hec_zreadx.o:source/Hec_zreadx.c
+	$(CC) $(CFLAGS) source/Hec_zreadx.c -o Output/Hec_zreadx.o
+Output/Hec_zreadxBytes.o:source/Hec_zreadxBytes.c
+	$(CC) $(CFLAGS) source/Hec_zreadxBytes.c -o Output/Hec_zreadxBytes.o
+Output/Hec_zrecadd.o:source/Hec_zrecadd.c
+	$(CC) $(CFLAGS) source/Hec_zrecadd.c -o Output/Hec_zrecadd.o
+Output/Hec_zrecInfo.o:source/Hec_zrecInfo.c
+	$(CC) $(CFLAGS) source/Hec_zrecInfo.c -o Output/Hec_zrecInfo.o
+Output/Hec_zrenam.o:source/Hec_zrenam.c
+	$(CC) $(CFLAGS) source/Hec_zrenam.c -o Output/Hec_zrenam.o
+Output/Hec_zrinfo.o:source/Hec_zrinfo.c
+	$(CC) $(CFLAGS) source/Hec_zrinfo.c -o Output/Hec_zrinfo.o
+Output/Hec_zrits.o:source/Hec_zrits.c
+	$(CC) $(CFLAGS) source/Hec_zrits.c -o Output/Hec_zrits.o
+Output/Hec_zritsc.o:source/Hec_zritsc.c
+	$(CC) $(CFLAGS) source/Hec_zritsc.c -o Output/Hec_zritsc.o
+Output/Hec_zritsx.o:source/Hec_zritsx.c
+	$(CC) $(CFLAGS) source/Hec_zritsx.c -o Output/Hec_zritsx.o
+Output/Hec_zritsxd.o:source/Hec_zritsxd.c
+	$(CC) $(CFLAGS) source/Hec_zritsxd.c -o Output/Hec_zritsxd.o
+Output/Hec_zrpd.o:source/Hec_zrpd.c
+	$(CC) $(CFLAGS) source/Hec_zrpd.c -o Output/Hec_zrpd.o
+Output/Hec_zrpdd.o:source/Hec_zrpdd.c
+	$(CC) $(CFLAGS) source/Hec_zrpdd.c -o Output/Hec_zrpdd.o
+Output/Hec_zrrst.o:source/Hec_zrrst.c
+	$(CC) $(CFLAGS) source/Hec_zrrst.c -o Output/Hec_zrrst.o
+Output/Hec_zrrsti.o:source/Hec_zrrsti.c
+	$(CC) $(CFLAGS) source/Hec_zrrsti.c -o Output/Hec_zrrsti.o
+Output/Hec_zrrts.o:source/Hec_zrrts.c
+	$(CC) $(CFLAGS) source/Hec_zrrts.c -o Output/Hec_zrrts.o
+Output/Hec_zrrtsc.o:source/Hec_zrrtsc.c
+	$(CC) $(CFLAGS) source/Hec_zrrtsc.c -o Output/Hec_zrrtsc.o
+Output/Hec_zrrtsx.o:source/Hec_zrrtsx.c
+	$(CC) $(CFLAGS) source/Hec_zrrtsx.c -o Output/Hec_zrrtsx.o
+Output/Hec_zrrtsxd.o:source/Hec_zrrtsxd.c
+	$(CC) $(CFLAGS) source/Hec_zrrtsxd.c -o Output/Hec_zrrtsxd.o
+Output/Hec_zrtxts.o:source/Hec_zrtxts.c
+	$(CC) $(CFLAGS) source/Hec_zrtxts.c -o Output/Hec_zrtxts.o
+Output/Hec_zset.o:source/Hec_zset.c
+	$(CC) $(CFLAGS) source/Hec_zset.c -o Output/Hec_zset.o
+Output/Hec_zsetCatalogSortAddresses.o:source/Hec_zsetCatalogSortAddresses.c
+	$(CC) $(CFLAGS) source/Hec_zsetCatalogSortAddresses.c -o Output/Hec_zsetCatalogSortAddresses.o
+Output/Hec_zsetfi.o:source/Hec_zsetfi.c
+	$(CC) $(CFLAGS) source/Hec_zsetfi.c -o Output/Hec_zsetfi.o
+Output/Hec_zsetInterrupt.o:source/Hec_zsetInterrupt.c
+	$(CC) $(CFLAGS) source/Hec_zsetInterrupt.c -o Output/Hec_zsetInterrupt.o
+Output/Hec_zsetMessageLevel.o:source/Hec_zsetMessageLevel.c
+	$(CC) $(CFLAGS) source/Hec_zsetMessageLevel.c -o Output/Hec_zsetMessageLevel.o
+Output/Hec_zsits.o:source/Hec_zsits.c
+	$(CC) $(CFLAGS) source/Hec_zsits.c -o Output/Hec_zsits.o
+Output/Hec_zsitsc.o:source/Hec_zsitsc.c
+	$(CC) $(CFLAGS) source/Hec_zsitsc.c -o Output/Hec_zsitsc.o
+Output/Hec_zsitsx.o:source/Hec_zsitsx.c
+	$(CC) $(CFLAGS) source/Hec_zsitsx.c -o Output/Hec_zsitsx.o
+Output/Hec_zsitsxd.o:source/Hec_zsitsxd.c
+	$(CC) $(CFLAGS) source/Hec_zsitsxd.c -o Output/Hec_zsitsxd.o
+Output/Hec_zspd.o:source/Hec_zspd.c
+	$(CC) $(CFLAGS) source/Hec_zspd.c -o Output/Hec_zspd.o
+Output/Hec_zspdd.o:source/Hec_zspdd.c
+	$(CC) $(CFLAGS) source/Hec_zspdd.c -o Output/Hec_zspdd.o
+Output/Hec_zsqueeze.o:source/Hec_zsqueeze.c
+	$(CC) $(CFLAGS) source/Hec_zsqueeze.c -o Output/Hec_zsqueeze.o
+Output/Hec_zsrst.o:source/Hec_zsrst.c
+	$(CC) $(CFLAGS) source/Hec_zsrst.c -o Output/Hec_zsrst.o
+Output/Hec_zsrsti.o:source/Hec_zsrsti.c
+	$(CC) $(CFLAGS) source/Hec_zsrsti.c -o Output/Hec_zsrsti.o
+Output/Hec_zsrts.o:source/Hec_zsrts.c
+	$(CC) $(CFLAGS) source/Hec_zsrts.c -o Output/Hec_zsrts.o
+Output/Hec_zsrtsc.o:source/Hec_zsrtsc.c
+	$(CC) $(CFLAGS) source/Hec_zsrtsc.c -o Output/Hec_zsrtsc.o
+Output/Hec_zsrtsx.o:source/Hec_zsrtsx.c
+	$(CC) $(CFLAGS) source/Hec_zsrtsx.c -o Output/Hec_zsrtsx.o
+Output/Hec_zsrtsxd.o:source/Hec_zsrtsxd.c
+	$(CC) $(CFLAGS) source/Hec_zsrtsxd.c -o Output/Hec_zsrtsxd.o
+Output/Hec_zstfh.o:source/Hec_zstfh.c
+	$(CC) $(CFLAGS) source/Hec_zstfh.c -o Output/Hec_zstfh.o
+Output/Hec_zstxta.o:source/Hec_zstxta.c
+	$(CC) $(CFLAGS) source/Hec_zstxta.c -o Output/Hec_zstxta.o
+Output/Hec_ztextRetrieve.o:source/Hec_ztextRetrieve.c
+	$(CC) $(CFLAGS) source/Hec_ztextRetrieve.c -o Output/Hec_ztextRetrieve.o
+Output/Hec_ztextStore.o:source/Hec_ztextStore.c
+	$(CC) $(CFLAGS) source/Hec_ztextStore.c -o Output/Hec_ztextStore.o
+Output/Hec_ztinRetrieve.o:source/Hec_ztinRetrieve.c
+	$(CC) $(CFLAGS) source/Hec_ztinRetrieve.c -o Output/Hec_ztinRetrieve.o
+Output/Hec_ztinStore.o:source/Hec_ztinStore.c
+	$(CC) $(CFLAGS) source/Hec_ztinStore.c -o Output/Hec_ztinStore.o
+Output/Hec_ztsends.o:source/Hec_ztsends.c
+	$(CC) $(CFLAGS) source/Hec_ztsends.c -o Output/Hec_ztsends.o
+Output/Hec_ztsGetStandardInterval.o:source/Hec_ztsGetStandardInterval.c
+	$(CC) $(CFLAGS) source/Hec_ztsGetStandardInterval.c -o Output/Hec_ztsGetStandardInterval.o
+Output/Hec_ztsinfo.o:source/Hec_ztsinfo.c
+	$(CC) $(CFLAGS) source/Hec_ztsinfo.c -o Output/Hec_ztsinfo.o
+Output/Hec_ztsrange.o:source/Hec_ztsrange.c
+	$(CC) $(CFLAGS) source/Hec_ztsrange.c -o Output/Hec_ztsrange.o
+Output/Hec_ztsRetrieve.o:source/Hec_ztsRetrieve.c
+	$(CC) $(CFLAGS) source/Hec_ztsRetrieve.c -o Output/Hec_ztsRetrieve.o
+Output/Hec_ztsStore.o:source/Hec_ztsStore.c
+	$(CC) $(CFLAGS) source/Hec_ztsStore.c -o Output/Hec_ztsStore.o
+Output/Hec_zundel.o:source/Hec_zundel.c
+	$(CC) $(CFLAGS) source/Hec_zundel.c -o Output/Hec_zundel.o
+Output/Hec_zupath.o:source/Hec_zupath.c
+	$(CC) $(CFLAGS) source/Hec_zupath.c -o Output/Hec_zupath.o
+Output/Hec_zustfh.o:source/Hec_zustfh.c
+	$(CC) $(CFLAGS) source/Hec_zustfh.c -o Output/Hec_zustfh.o
+Output/Hec_zwhatChanged.o:source/Hec_zwhatChanged.c
+	$(CC) $(CFLAGS) source/Hec_zwhatChanged.c -o Output/Hec_zwhatChanged.o
+Output/Hec_zwhatChangedCompare.o:source/Hec_zwhatChangedCompare.c
+	$(CC) $(CFLAGS) source/Hec_zwhatChangedCompare.c -o Output/Hec_zwhatChangedCompare.o
+Output/Hec_zwhatChangedSetStart.o:source/Hec_zwhatChangedSetStart.c
+	$(CC) $(CFLAGS) source/Hec_zwhatChangedSetStart.c -o Output/Hec_zwhatChangedSetStart.o
+Output/Hec_zwritx.o:source/Hec_zwritx.c
+	$(CC) $(CFLAGS) source/Hec_zwritx.c -o Output/Hec_zwritx.o
+Output/Hec_zwritxBytes.o:source/Hec_zwritxBytes.c
+	$(CC) $(CFLAGS) source/Hec_zwritxBytes.c -o Output/Hec_zwritxBytes.o
+Output/JavaCatalogToC.o:source/JavaCatalogToC.c
+	$(CC) $(CFLAGS) source/JavaCatalogToC.c -o Output/JavaCatalogToC.o
+Output/Hec_zmessage.o:source/Hec_zmessage.c
+	$(CC) $(CFLAGS) source/Hec_zmessage.c -o Output/Hec_zmessage.o
+
+OBJS=\
+Output/C_CatalogToJava.o\
+Output/Hec_closescratchdsscatalog.o\
+Output/Hec_datjul.o\
+Output/Hec_dssCopyStatus.o\
+Output/Hec_fortranClose.o\
+Output/Hec_fortranFlush.o\
+Output/Hec_fortranOpen.o\
+Output/Hec_fortranWind.o\
+Output/Hec_fortranWrite.o\
+Output/Hec_getCurrentRec.o\
+Output/Hec_getEPartFromInterval.o\
+Output/Hec_getime.o\
+Output/Hec_getProcessName.o\
+Output/Hec_holString.o\
+Output/Hec_i4toi8.o\
+Output/Hec_idaywk.o\
+Output/Hec_ihm2m.o\
+Output/Hec_inctim.o\
+Output/Hec_isUnitConnected.o\
+Output/Hec_iymdjl.o\
+Output/Hec_jliymd.o\
+Output/Hec_juldat.o\
+Output/Hec_LoadParam.o\
+Output/Hec_m2ihm.o\
+Output/Hec_makedsscatalog.o\
+Output/Hec_nopers.o\
+Output/Hec_obsolete.o\
+Output/Hec_openf.o\
+Output/Hec_readf.o\
+Output/Hec_zaliasAdd.o\
+Output/Hec_zaliasGetPrimary.o\
+Output/Hec_zaliasList.o\
+Output/Hec_zaliasRemove.o\
+Output/Hec_zcheckAccessReset.o\
+Output/Hec_zgetRecordBasics.o\
+Output/Hec_zgridRetrieve.o\
+Output/Hec_zgridStore.o\
+Output/Hec_zinquire.o\
+Output/Hec_zreadRawRecord.o\
+Output/Hec_RunShefDss.o\
+Output/Hec_StringHol.o\
+Output/Hec_systim.o\
+Output/Hec_ToShef.o\
+Output/Hec_zwriteRawRecord.o\
+Output/Hec_zarrayRetrieve.o\
+Output/Hec_zarrayStore.o\
+Output/Hec_zbegdt.o\
+Output/Hec_zcatalog.o\
+Output/Hec_zcatalogFile.o\
+Output/Hec_zcheck.o\
+Output/Hec_zcheckFile.o\
+Output/Hec_zcklnk.o\
+Output/Hec_zckmul.o\
+Output/Hec_zckpat.o\
+Output/Hec_zckpnb.o\
+Output/Hec_zclose.o\
+Output/Hec_zcofil.o\
+Output/Hec_zcolist.o\
+Output/Hec_zconvertVersion.o\
+Output/Hec_zcopyFile.o\
+Output/Hec_zcorec.o\
+Output/Hec_zdblook.o\
+Output/Hec_zdbmod.o\
+Output/Hec_zdcinf.o\
+Output/Hec_zdebug1.o\
+Output/Hec_zdebug7.o\
+Output/Hec_zdelet.o\
+Output/Hec_zdtype.o\
+Output/Hec_zerror.o\
+Output/Hec_zfileAccessInfo.o\
+Output/Hec_zfilst.o\
+Output/Hec_zflush.o\
+Output/Hec_zfname.o\
+Output/Hec_zget.o\
+Output/Hec_zgetCatalogSortAddresses.o\
+Output/Hec_zgetDssVersion.o\
+Output/Hec_zgetFileVersion.o\
+Output/Hec_zgetInterval.o\
+Output/Hec_zgetMessageLevel.o\
+Output/Hec_zgetProgress.o\
+Output/Hec_zgetrw.o\
+Output/Hec_zgintl.o\
+Output/Hec_zgpnp.o\
+Output/Hec_zgtrec.o\
+Output/Hec_zincbk.o\
+Output/Hec_zinqir.o\
+Output/Hec_zirbeg.o\
+Output/Hec_zlastWriteTime.o\
+Output/Hec_zlastWriteTimeFile.o\
+Output/Hec_zloadcache.o\
+Output/Hec_zlocationFromStruct.o\
+Output/Hec_zlocationRetrieve.o\
+Output/Hec_zlocationStore.o\
+Output/Hec_zlocationToStruct.o\
+Output/Hec_zmaxpart.o\
+Output/Hec_zmessageGroups.o\
+Output/Hec_zndata.o\
+Output/Hec_znextts.o\
+Output/Hec_zofset.o\
+Output/Hec_zopen.o\
+Output/Hec_zpath.o\
+Output/Hec_zpathnameListJava.o\
+Output/Hec_zpdRetrieve.o\
+Output/Hec_zpdStore.o\
+Output/Hec_zplist.o\
+Output/Hec_zpseudorts.o\
+Output/Hec_zquery.o\
+Output/Hec_zrdpat.o\
+Output/Hec_zread.o\
+Output/Hec_zreadx.o\
+Output/Hec_zreadxBytes.o\
+Output/Hec_zrecadd.o\
+Output/Hec_zrecInfo.o\
+Output/Hec_zrenam.o\
+Output/Hec_zrinfo.o\
+Output/Hec_zrits.o\
+Output/Hec_zritsc.o\
+Output/Hec_zritsx.o\
+Output/Hec_zritsxd.o\
+Output/Hec_zrpd.o\
+Output/Hec_zrpdd.o\
+Output/Hec_zrrst.o\
+Output/Hec_zrrsti.o\
+Output/Hec_zrrts.o\
+Output/Hec_zrrtsc.o\
+Output/Hec_zrrtsx.o\
+Output/Hec_zrrtsxd.o\
+Output/Hec_zrtxts.o\
+Output/Hec_zset.o\
+Output/Hec_zsetCatalogSortAddresses.o\
+Output/Hec_zsetfi.o\
+Output/Hec_zsetInterrupt.o\
+Output/Hec_zsetMessageLevel.o\
+Output/Hec_zsits.o\
+Output/Hec_zsitsc.o\
+Output/Hec_zsitsx.o\
+Output/Hec_zsitsxd.o\
+Output/Hec_zspd.o\
+Output/Hec_zspdd.o\
+Output/Hec_zsqueeze.o\
+Output/Hec_zsrst.o\
+Output/Hec_zsrsti.o\
+Output/Hec_zsrts.o\
+Output/Hec_zsrtsc.o\
+Output/Hec_zsrtsx.o\
+Output/Hec_zsrtsxd.o\
+Output/Hec_zstfh.o\
+Output/Hec_zstxta.o\
+Output/Hec_ztextRetrieve.o\
+Output/Hec_ztextStore.o\
+Output/Hec_ztinRetrieve.o\
+Output/Hec_ztinStore.o\
+Output/Hec_ztsends.o\
+Output/Hec_ztsGetStandardInterval.o\
+Output/Hec_ztsinfo.o\
+Output/Hec_ztsrange.o\
+Output/Hec_ztsRetrieve.o\
+Output/Hec_ztsStore.o\
+Output/Hec_zundel.o\
+Output/Hec_zupath.o\
+Output/Hec_zustfh.o\
+Output/Hec_zwhatChanged.o\
+Output/Hec_zwhatChangedCompare.o\
+Output/Hec_zwhatChangedSetStart.o\
+Output/Hec_zwritx.o\
+Output/Hec_zwritxBytes.o\
+Output/JavaCatalogToC.o\
+Output/Hec_zmessage.o
+
+#tail of makefile
+
+javaHeclib.a:$(OBJS)
+	$(AR) -r Output/javaHeclib.a Output/*.o
+
+libjavaHeclib.so:$(OBJS)
+#Linux_	gcc -m64 -shared -o Output/libjavaHeclib.so  Output/*.o ../heclib_c_v6v7/Output/*.o ../heclib_f_v6v7/Output/*.o ../../nws_shef/Output/*.o  -lz -lrt -lgfortran -lm
+#	cc -m64 -G -o Output/libjavaHeclib.so -h Output/libjavaHeclib.so Output/*.o ../heclib_c_v6v7/Output/*.o ../heclib_f_v6v7/Output/*.o ../../nws_shef/Output/*.o -lrt -lz -lfsu -m
+	cc -m64 -G -o Output/libjavaHeclib.so -h Output/libjavaHeclib.so Output/*.o ../heclib_c_v6v7/Output/*.o ../heclib_f_v6v7/Output/*.o  -lrt -lz -lfsu 
+
