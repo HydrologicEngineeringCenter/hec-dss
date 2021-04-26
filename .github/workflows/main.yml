@@ -35,17 +35,18 @@ jobs:
 #      - name: install java 8
 #        run: sudo apt install openjdk-8-jdk
             
-      - name: build
-        run: |
-          cd heclib
-          make -f Makefile.Linux
+#      - name: build
+#        run: |
+#          cd heclib
+#          make -f Makefile.Linux
 
       # Runs a single command using the runners shell
       - name: Run a one-line script
-        run: echo Hello, world!
+        run: java 
 
       # Runs a set of commands using the runners shell
       - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
+        run: get java version
+          java -version
+          echo $JAVA_HOME
           echo test, and deploy your project.
