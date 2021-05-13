@@ -16,7 +16,7 @@ JNIEXPORT jstring JNICALL Java_hec_heclib_util_Heclib_Hec_1zcolist
     int *ifltab;    
     int *filePos;
 
-    char pathname[393];
+    char pathname[MAX_PATHNAME_LENGTH];
 	const char *cpathname;
 
     int nPathname=0;
@@ -27,7 +27,7 @@ JNIEXPORT jstring JNICALL Java_hec_heclib_util_Heclib_Hec_1zcolist
 	cpathname = (const char *)(*env)->GetStringUTFChars(env, j_pathname, 0);
 
 	if (cpathname) {
-		stringCopy(pathname, 393, cpathname, strlen(cpathname));
+		stringCopy(pathname, MAX_PATHNAME_LENGTH, cpathname, strlen(cpathname));
 	}
 	else {
 		pathname[0] = '\0';
@@ -37,7 +37,8 @@ JNIEXPORT jstring JNICALL Java_hec_heclib_util_Heclib_Hec_1zcolist
 	nPathname = (int)strlen(pathname);	
 
 	if (zgetVersion((long long*)ifltab) == 6) {
-		zcolist6_ ((long long*)ifltab, filePos, pathname, &nPathname, &status, sizeof(pathname)-1);
+		zcolist6_ ((long long*)ifltab, filePos, pathname, &nPathname, &status, sizeof(pathname));
+		stringLastNonBlank(pathname, MAX_PATHNAME_LENGTH);
 		if (status || (nPathname == 0)) {
 			filePos[0] = -1;
 		}
