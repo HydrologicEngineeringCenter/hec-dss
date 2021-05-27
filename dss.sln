@@ -178,7 +178,6 @@ Global
 		{D6A7BCBD-1640-4C63-A247-8DEE68FA5F6D}.Release|Win32.ActiveCfg = Release|Any CPU
 		{D6A7BCBD-1640-4C63-A247-8DEE68FA5F6D}.Release|Win32.Build.0 = Release|Any CPU
 		{D6A7BCBD-1640-4C63-A247-8DEE68FA5F6D}.Release|x64.ActiveCfg = Release|x64
-		{D6A7BCBD-1640-4C63-A247-8DEE68FA5F6D}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
