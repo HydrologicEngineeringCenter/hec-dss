@@ -57,6 +57,8 @@ Output/ztsStoreIrreg6.o:../Dss6/C/ztsStoreIrreg6.c
 	$(CC) $(CFLAGS) ../Dss6/C/ztsStoreIrreg6.c -o Output/ztsStoreIrreg6.o
 Output/ztsStoreReg6.o:../Dss6/C/ztsStoreReg6.c
 	$(CC) $(CFLAGS) ../Dss6/C/ztsStoreReg6.c -o Output/ztsStoreReg6.o
+Output/powf_wrap.o:../Dss7/Internal/powf_wrap.c
+	$(CC) $(CFLAGS) ../Dss7/Internal/powf_wrap.c -o Output/powf_wrap.o
 Output/charInt.o:../Dss7/Internal/charInt.c
 	$(CC) $(CFLAGS) ../Dss7/Internal/charInt.c -o Output/charInt.o
 Output/charLong.o:../Dss7/Internal/charLong.c
@@ -869,6 +871,7 @@ Output/ztsRetrieveIrreg6.o\
 Output/ztsRetrieveReg6.o\
 Output/ztsStoreIrreg6.o\
 Output/ztsStoreReg6.o\
+Output/powf_wrap.o\
 Output/charInt.o\
 Output/charLong.o\
 Output/zbinNew.o\
