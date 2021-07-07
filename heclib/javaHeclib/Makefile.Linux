@@ -522,4 +522,4 @@ javaHeclib.a:$(OBJS)
 	$(AR) -r Output/javaHeclib.a Output/*.o
 
 libjavaHeclib.so:$(OBJS)
-	gcc -m64 -shared -o Output/libjavaHeclib.so  Output/*.o ../heclib_c_v6v7/Output/*.o ../heclib_f_v6v7/Output/*.o ../../nws_shef/Output/*.o  -Wl,-z,defs -lz -lrt -lgfortran -lm
+	gcc -m64 -shared -o Output/libjavaHeclib.so  Output/*.o ../heclib_c_v6v7/Output/*.o ../heclib_f_v6v7/Output/*.o ../../nws_shef/Output/*.o  -Wl,-z,defs,--wrap=powf -lz -lrt -lgfortran -lm
