@@ -135,3 +135,6 @@ fort.8
 /dss-test-data
 test/VB/obj/*
 test/VB/bin/*
+*.dll
+
+packages/
