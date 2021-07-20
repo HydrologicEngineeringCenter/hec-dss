@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Hec.Dss</id>
+    <version>1.0.26.19</version>
+    <authors>Hydrologic Engineering Center</authors>
+    <owners>HEC</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>API for DSS operations</description>
+    <releaseNotes>support for Version 7 DSS files</releaseNotes>
+    <copyright>Copyright 2019</copyright>
+    <dependencies>
+      <group targetFramework="net472"/>
+    </dependencies>
+    <tags>Hec.dss Hec Dss</tags>
+  </metadata>
+  <files>
+    <file src="obj\Release\net472\Hec.Dss.dll" target="lib\net472\Hec.Dss.dll"/>
+    <file src="..\Hec.Dss.Native\x64\Release\Hec.Dss.Native.dll" target="build\x64\Hec.Dss.Native.dll"/>
+    <file src="..\Hec.Dss.Native\Win32\Release\Hec.Dss.Native.dll" target="build\x86\Hec.Dss.Native.dll"/>
+    <file src="build\Hec.Dss.targets" target="build\Hec.Dss.targets"/>
+  </files>
+</package>

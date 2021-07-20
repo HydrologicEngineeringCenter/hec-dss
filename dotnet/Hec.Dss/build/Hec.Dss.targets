@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <ItemGroup>
+      <None Include="$(MSBuildThisFileDirectory)x86\Hec.Dss.Native.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>bin32\%(FileName)%(Extension)</Link>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+      <None Include="$(MSBuildThisFileDirectory)x64\Hec.Dss.Native.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>bin64\%(FileName)%(Extension)</Link>
+    </None>
+  </ItemGroup>
+
+   <Target Name="AfterBuild">
+    <Exec Command="del &quot;$(OutDir)Hec.Dss.Native.dll&quot;"/>
+  </Target>
+  <Target Name="AfterRebuild">
+    <Exec Command="del &quot;$(OutDir)Hec.Dss.Native.dll&quot;"/>
+  </Target>
+
+</Project>

@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net472</TargetFrameworks>
+    <Platforms>AnyCPU</Platforms>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <AssemblyName>Hec.Dss</AssemblyName>
+    <RootNamespace>Hec.Dss</RootNamespace>
+  </PropertyGroup>
+  
+  <!-- DSS reference needed because it's managed C++. Postbuild event should move it to the bin32/bin64 subdirectory -->
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="xcopy /Y /I &quot;StandaloneReferences\x64\$(ConfigurationName)&quot; $(OutDir)bin64&#xD;&#xA;xcopy /Y /I &quot;StandaloneReferences\x86\$(ConfigurationName)&quot; $(OutDir)bin32" />
+  </Target>
+  <ItemGroup>
+    <ProjectReference Include="..\Hec.Dss.Native\Hec.Dss.Native.vcxproj" />
+  </ItemGroup>
+</Project>
