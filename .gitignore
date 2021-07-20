@@ -117,7 +117,7 @@ test/Fortran/interop
 /heclib/grid/Win32/Release/intermediate
 /heclib/grid/Win32/Debug_intermediate
 /heclib/grid/x64/Debug_intermediate
-/dotnet/
+
 /heclib/VB_interface/heclib.dll.u2d
 /heclib/VB_interface/TestVB/obj/x64/Debug
 /heclib/VB_interface/TestVB/bin/x64/Debug
