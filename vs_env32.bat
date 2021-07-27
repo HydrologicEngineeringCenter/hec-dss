@@ -1,1 +1,1 @@
-call "%IFORT_COMPILER19%bin\compilervars.bat" ia32 vs2019
+call "%IFORT_COMPILER21%bin\compilervars.bat" ia32 vs2019
