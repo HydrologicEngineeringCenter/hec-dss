@@ -120,7 +120,7 @@
     <Link>
       <AdditionalDependencies>javaShefDssLib.lib;heclib_f_v6v7.lib;heclib_c_v6v7.lib;zlibstatic.lib</AdditionalDependencies>
       <OutputFile>$(ProjectDir)$(Platform)\$(Configuration)\javaHeclib.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\heclib_c_v6v7\$(PlatformName)\$(ConfigurationName);..\heclib_f_v6v7\$(PlatformName)\$(ConfigurationName);..\..\lib\$(PlatformName);$(IFORT_COMPILER19)compiler\lib\intel64_win</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\heclib_c_v6v7\$(PlatformName)\$(ConfigurationName);..\heclib_f_v6v7\$(PlatformName)\$(ConfigurationName);..\..\lib\$(PlatformName);$(IFORT_COMPILER21)compiler\lib\intel64_win</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>MSVCRT</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
@@ -161,7 +161,7 @@
     <Link>
       <AdditionalDependencies>javaShefDssLib.lib;heclib_f_v6v7.lib;heclib_c_v6v7.lib;zlibstatic.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(ProjectDir)$(Platform)\$(Configuration)\javaHeclib.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\heclib_c_v6v7\$(PlatformName)\$(ConfigurationName);..\heclib_f_v6v7\$(PlatformName)\$(ConfigurationName);..\..\lib\$(PlatformName);$(IFORT_COMPILER19)compiler\lib\intel64</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\heclib_c_v6v7\$(PlatformName)\$(ConfigurationName);..\heclib_f_v6v7\$(PlatformName)\$(ConfigurationName);..\..\lib\$(PlatformName);$(IFORT_COMPILER21)compiler\lib\intel64</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>
@@ -205,7 +205,7 @@
       </DataExecutionPrevention>
       <TargetMachine>MachineX86</TargetMachine>
       <AdditionalDependencies>javaShefDssLib.lib;heclib_f_v6v7.lib;heclib_c_v6v7.lib;zlibstatic.lib;ifconsol.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\heclib_c_v6v7\$(PlatformName)\$(ConfigurationName);..\heclib_f_v6v7\$(PlatformName)\$(ConfigurationName);..\..\lib\$(PlatformName);$(IFORT_COMPILER19)compiler\lib\ia32_win;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\heclib_c_v6v7\$(PlatformName)\$(ConfigurationName);..\heclib_f_v6v7\$(PlatformName)\$(ConfigurationName);..\..\lib\$(PlatformName);$(IFORT_COMPILER21)compiler\lib\ia32_win;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -221,7 +221,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>..\heclib_c_v6v7\$(PlatformName)\$(ConfigurationName);..\heclib_f_v6v7\$(PlatformName)\$(ConfigurationName);..\..\lib\$(PlatformName);$(IFORT_COMPILER19)compiler\lib\ia32_win;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\heclib_c_v6v7\$(PlatformName)\$(ConfigurationName);..\heclib_f_v6v7\$(PlatformName)\$(ConfigurationName);..\..\lib\$(PlatformName);$(IFORT_COMPILER21)compiler\lib\ia32_win;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ShowProgress>LinkVerboseLib</ShowProgress>
       <OutputFile>$(OutDir)javaHeclib.dll</OutputFile>
       <AdditionalDependencies>javaShefDssLib.lib;heclib_f_v6v7.lib;heclib_c_v6v7.lib;zlibstatic.lib;ifconsol.lib</AdditionalDependencies>
