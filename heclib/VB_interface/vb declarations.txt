@@ -103,13 +103,4 @@ Declare Sub ZGPNP Lib "heclib.dll" Alias "ZGPNP_" _
     ByVal CC As String, ByVal LCC As Long, ByVal Cd As String, ByVal LCD As Long, _
     ByVal CE As String, ByVal LCE As Long, ByVal cf As String, ByVal LCF As Long, _
     NPARTS As Long)
-'
-'   Routine that computes the axis labeling for a date axis
-Declare Sub DETTAXIS Lib "heclib.dll" _
-    (JULS As Long, ISTIME As Long, JULE As Long, IETIME As Long, _
-    JMINTIC As Long, ITMINTIC As Long, NMINTIC As Long, _
-    JMAJTIC As Long, ITMAJTIC As Long, NMAJTIC As Long, _
-    J2AXIS As Long, IT2AXIS As Long, NC2AXISL As Long, _
-    ByVal CoLMAJTIC As String, ByVal L_CoLMAJTIC As Long, _
-    ByVal C2oAXISL As String, ByVal L_C2oAXISL As Long, _
-    ISTAT As Long)
+

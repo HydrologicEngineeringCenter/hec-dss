@@ -20,7 +20,6 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1zarrayStore
 
     int *ifltab;
 	int status;
-	int done;
 	
 	zStructArray *arrayStruct;
 	

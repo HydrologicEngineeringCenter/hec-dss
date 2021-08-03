@@ -1,1 +1,1 @@
-call "%IFORT_COMPILER19%bin\compilervars.bat" ia32 vs2019
+call "%%ONEAPI_ROOT%%compiler\latest\env\vars.bat" ia32 vs2019
