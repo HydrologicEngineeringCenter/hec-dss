@@ -1,3 +1,4 @@
+// lockdss is called by Fortran (DSS6)
 #ifdef _MSC_VER
 
 #include <stdio.h>
@@ -5,8 +6,7 @@
 #include <errno.h>
 #include <io.h>
 
-void
-lockdss_(int *ihandle, int *mode, int *position, int *nbytes, int *istat)
+void lockdss_(int *ihandle, int *mode, int *position, int *nbytes, int *istat)
 {
 	long lbytes;
 	long lposition;

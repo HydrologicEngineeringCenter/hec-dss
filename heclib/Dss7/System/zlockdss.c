@@ -176,6 +176,27 @@ int zlockDss (long long *ifltab, int ihandle, int mode, long long wordAddress, i
 #include <unistd.h>
 #include <stdint.h>
 
+void testLock(long long* ifltab, int ihandle)
+{
+	long long address;
+	long long jpos;
+	int status;
+	int i;
+
+	for (i = 100; i < 120; i++) {
+		address = i * 8;
+		jpos = lseek64(ihandle, address, SEEK_SET);
+		status = lockf(ihandle, F_TLOCK, 8);
+		if (status == 0) {
+			lockf(ihandle, F_ULOCK, 8);
+		}
+		if (status) {
+			zmessageDebugInt(ifltab, DSS_FUNCTION_zlocking_ID, "*** Lock on at word ", i);
+		}
+	}
+}
+
+
 int zlockDss(long long *ifltab, int ihandle, int mode, long long wordAddress, int nbytes)
 {
 	long long address;

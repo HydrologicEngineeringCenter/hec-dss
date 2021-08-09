@@ -242,7 +242,7 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1zgridRetrieve(
 		jnumber = (jint)gridStruct->_structVersion;
 		(*env)->SetIntField(env, j_gridContainer, fid, jnumber);
 		if (zmessageLevel((long long*)ifltab, MESS_METHOD_JNI_ID, MESS_LEVEL_USER_DIAG)) {
-			zmessageDebugInt((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "_gridType read:  ", gridStruct->_structVersion);
+			zmessageDebugInt((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "_structVersion read:  ", gridStruct->_structVersion);
 		}
 	}
 	else {
