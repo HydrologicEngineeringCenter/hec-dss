@@ -130,6 +130,7 @@ Output/TestDssC.o:TestDssC.c
 	$(CC) $(CFLAGS) TestDssC.c -o Output/TestDssC.o
 
 OBJS=\
+Output/TestUtility.o\
 Output/Bulletin_17C_SSP_Issue.o\
 Output/testDateFunctions.o\
 Output/addLocation.o\
