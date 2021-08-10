@@ -74,5 +74,19 @@ int testIO_Interface(long long *ifltab7, long long *ifltab6);
 int inctim2_(int *interval, int *nperiods, int *juls, int *issecs, int *jule, int *iesecs);
 int testDateFunctions();
 int Bulletin_17C_SSP_Issue();
+int writeDoubleArray();
+int multipleWriteDeleteSlowDown();
+int SolarisTesting();
+int UnitPaddingIssue();
+void decodeError(int errorCode);
+int Lock(char* dssFileName, int sleepSeconds);
+int CheckLocking(char* dssFileName);
+int Workout(char* exe, char* version, char* timeSeriesCount,char* timeSeriesLength, char* dssFileName);
+int CheckLinks(char* dssFileName);
+int CheckPathnames(char* dssFileName);
+int PrintCatalog(char* dssFileName);
+int Zqueeze(char* dssFileName);
+int CheckFile(char* dssFileName);
+void usage(char* exeName);
 
 #endif

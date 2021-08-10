@@ -6,11 +6,7 @@
 #include "TestDssC.h"
 
 
-int writeDoubleArray();
-int multipleWriteDeleteSlowDown();
-int SolarisTesting();
-int UnitPaddingIssue();
-void decodeError(int errorCode);
+
 
 
 void usage(char* exeName)
