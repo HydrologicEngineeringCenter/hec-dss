@@ -290,7 +290,7 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1zgridRetrieve(
 		jnumber = (jint)gridStruct->_dataType;
 		(*env)->SetIntField(env, j_gridContainer, fid, jnumber);
 		if (zmessageLevel((long long*)ifltab, MESS_METHOD_JNI_ID, MESS_LEVEL_USER_DIAG)) {
-			zmessageDebugInt((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "_dataType read:  ", gridStruct->_version);
+			zmessageDebugInt((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "_dataType read:  ", gridStruct->_dataType);
 		}
 	}
 	else {
@@ -306,7 +306,7 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1zgridRetrieve(
 		jnumber = (jint)gridStruct->_lowerLeftCellX;
 		(*env)->SetIntField(env, j_gridContainer, fid, jnumber);
 		if (zmessageLevel((long long*)ifltab, MESS_METHOD_JNI_ID, MESS_LEVEL_USER_DIAG)) {
-			zmessageDebugInt((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "_lowerLeftCellX read:  ", gridStruct->_version);
+			zmessageDebugInt((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "_lowerLeftCellX read:  ", gridStruct->_lowerLeftCellX);
 		}
 	}
 	else {
@@ -322,7 +322,7 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1zgridRetrieve(
 		jnumber = (jint)gridStruct->_lowerLeftCellY;
 		(*env)->SetIntField(env, j_gridContainer, fid, jnumber);
 		if (zmessageLevel((long long*)ifltab, MESS_METHOD_JNI_ID, MESS_LEVEL_USER_DIAG)) {
-			zmessageDebugInt((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "_lowerLeftCellY read:  ", gridStruct->_version);
+			zmessageDebugInt((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "_lowerLeftCellY read:  ", gridStruct->_lowerLeftCellY);
 		}
 	}
 	else {
@@ -338,7 +338,7 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1zgridRetrieve(
 		jnumber = (jint)gridStruct->_numberOfCellsX;
 		(*env)->SetIntField(env, j_gridContainer, fid, jnumber);
 		if (zmessageLevel((long long*)ifltab, MESS_METHOD_JNI_ID, MESS_LEVEL_USER_DIAG)) {
-			zmessageDebugInt((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "_numberOfCellsX read:  ", gridStruct->_version);
+			zmessageDebugInt((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "_numberOfCellsX read:  ", gridStruct->_numberOfCellsX);
 		}
 	}
 	else {
@@ -354,7 +354,7 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1zgridRetrieve(
 		jnumber = (jint)gridStruct->_numberOfCellsY;
 		(*env)->SetIntField(env, j_gridContainer, fid, jnumber);
 		if (zmessageLevel((long long*)ifltab, MESS_METHOD_JNI_ID, MESS_LEVEL_USER_DIAG)) {
-			zmessageDebugInt((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "_numberOfCellsY read:  ", gridStruct->_version);
+			zmessageDebugInt((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "_numberOfCellsY read:  ", gridStruct->_numberOfCellsY);
 		}
 	}
 	else {
@@ -370,7 +370,7 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1zgridRetrieve(
 		jnumber = (jint)gridStruct->_compressionMethod;
 		(*env)->SetIntField(env, j_gridContainer, fid, jnumber);
 		if (zmessageLevel((long long*)ifltab, MESS_METHOD_JNI_ID, MESS_LEVEL_USER_DIAG)) {
-			zmessageDebugInt((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "zgridRetrieve _compressionMethod:  ", gridStruct->_version);
+			zmessageDebugInt((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "zgridRetrieve _compressionMethod:  ", gridStruct->_compressionMethod);
 		}
 	}
 	else {
@@ -403,7 +403,7 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1zgridRetrieve(
 		jnumber = (jint)gridStruct->_numberOfRanges;
 		(*env)->SetIntField(env, j_gridContainer, fid, jnumber);
 		if (zmessageLevel((long long*)ifltab, MESS_METHOD_JNI_ID, MESS_LEVEL_USER_DIAG)) {
-			zmessageDebugInt((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "zgridRetrieve _numberOfRanges:  ", gridStruct->_version);
+			zmessageDebugInt((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "zgridRetrieve _numberOfRanges:  ", gridStruct->_numberOfRanges);
 		}
 	}
 	else {
@@ -419,7 +419,7 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1zgridRetrieve(
 		jnumber = (jint)gridStruct->_srsDefinitionType;
 		(*env)->SetIntField(env, j_gridContainer, fid, jnumber);
 		if (zmessageLevel((long long*)ifltab, MESS_METHOD_JNI_ID, MESS_LEVEL_USER_DIAG)) {
-			zmessageDebugInt((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "zgridRetrieve _srsDefinitionType:  ", gridStruct->_version);
+			zmessageDebugInt((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "zgridRetrieve _srsDefinitionType:  ", gridStruct->_srsDefinitionType);
 		}
 	}
 	else {
@@ -435,7 +435,7 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1zgridRetrieve(
 		jnumber = (jint)gridStruct->_timeZoneRawOffset;
 		(*env)->SetIntField(env, j_gridContainer, fid, jnumber);
 		if (zmessageLevel((long long*)ifltab, MESS_METHOD_JNI_ID, MESS_LEVEL_USER_DIAG)) {
-			zmessageDebugInt((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "zgridRetrieve _timeZoneRawOffset:  ", gridStruct->_version);
+			zmessageDebugInt((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "zgridRetrieve _timeZoneRawOffset:  ", gridStruct->_timeZoneRawOffset);
 		}
 	}
 	else {
@@ -451,7 +451,7 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1zgridRetrieve(
 		jnumber = (jint)gridStruct->_isInterval;
 		(*env)->SetIntField(env, j_gridContainer, fid, jnumber);
 		if (zmessageLevel((long long*)ifltab, MESS_METHOD_JNI_ID, MESS_LEVEL_USER_DIAG)) {
-			zmessageDebugInt((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "zgridRetrieve _isInterval:  ", gridStruct->_version);
+			zmessageDebugInt((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "zgridRetrieve _isInterval:  ", gridStruct->_isInterval);
 		}
 	}
 	else {
@@ -467,7 +467,7 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1zgridRetrieve(
 		jnumber = (jint)gridStruct->_isTimeStamped;
 		(*env)->SetIntField(env, j_gridContainer, fid, jnumber);
 		if (zmessageLevel((long long*)ifltab, MESS_METHOD_JNI_ID, MESS_LEVEL_USER_DIAG)) {
-			zmessageDebugInt((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "zgridRetrieve _isTimeStamped:  ", gridStruct->_version);
+			zmessageDebugInt((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "zgridRetrieve _isTimeStamped:  ", gridStruct->_isTimeStamped);
 		}
 	}
 	else {
@@ -483,7 +483,7 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1zgridRetrieve(
 		jflnumber = (jfloat)gridStruct->_cellSize;
 		(*env)->SetFloatField(env, j_gridContainer, fid, jflnumber);
 		if (zmessageLevel((long long*)ifltab, MESS_METHOD_JNI_ID, MESS_LEVEL_USER_DIAG)) {
-			zmessageDebugInt((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "zgridRetrieve _cellSize:  ", gridStruct->_version);
+			zmessageDebugFloat((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "zgridRetrieve _cellSize:  ", gridStruct->_cellSize);
 		}
 	}
 	else {
@@ -500,7 +500,7 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1zgridRetrieve(
 		jflnumber = *(jfloat*)gridStruct->_maxDataValue;
 		(*env)->SetFloatField(env, j_gridContainer, fid, jflnumber);
 		if (zmessageLevel((long long*)ifltab, MESS_METHOD_JNI_ID, MESS_LEVEL_USER_DIAG)) {
-			zmessageDebugInt((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "zgridRetrieve _maxDataValue:  ", gridStruct->_version);
+			zmessageDebugFloat((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "zgridRetrieve _maxDataValue:  ", *((float*)gridStruct->_maxDataValue));
 		}
 	}
 	else {
@@ -516,7 +516,7 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1zgridRetrieve(
 		jflnumber = *(jfloat*)gridStruct->_minDataValue;
 		(*env)->SetFloatField(env, j_gridContainer, fid, jflnumber);
 		if (zmessageLevel((long long*)ifltab, MESS_METHOD_JNI_ID, MESS_LEVEL_USER_DIAG)) {
-			zmessageDebugInt((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "zgridRetrieve _minDataValue:  ", gridStruct->_version);
+			zmessageDebugFloat((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "zgridRetrieve _minDataValue:  ",*((float*) gridStruct->_minDataValue));
 		}
 	}
 	else {
@@ -532,7 +532,7 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1zgridRetrieve(
 		jflnumber = *(jfloat*)gridStruct->_meanDataValue;
 		(*env)->SetFloatField(env, j_gridContainer, fid, jflnumber);
 		if (zmessageLevel((long long*)ifltab, MESS_METHOD_JNI_ID, MESS_LEVEL_USER_DIAG)) {
-			zmessageDebugInt((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "zgridRetrieve _meanDataValue:  ", gridStruct->_version);
+			zmessageDebugFloat((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "zgridRetrieve _meanDataValue:  ", (*(float*)gridStruct->_meanDataValue));
 		}
 	}
 	else {
@@ -548,7 +548,7 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1zgridRetrieve(
 		jflnumber = (jfloat)gridStruct->_xCoordOfGridCellZero;
 		(*env)->SetFloatField(env, j_gridContainer, fid, jflnumber);
 		if (zmessageLevel((long long*)ifltab, MESS_METHOD_JNI_ID, MESS_LEVEL_USER_DIAG)) {
-			zmessageDebugInt((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "zgridRetrieve _xCoordOfGridCellZero:  ", gridStruct->_version);
+			zmessageDebugFloat((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "zgridRetrieve _xCoordOfGridCellZero:  ", gridStruct->_xCoordOfGridCellZero);
 		}
 	}
 	else {
@@ -564,7 +564,7 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1zgridRetrieve(
 		jflnumber = (jfloat)gridStruct->_yCoordOfGridCellZero;
 		(*env)->SetFloatField(env, j_gridContainer, fid, jflnumber);
 		if (zmessageLevel((long long*)ifltab, MESS_METHOD_JNI_ID, MESS_LEVEL_USER_DIAG)) {
-			zmessageDebugInt((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "zgridRetrieve _yCoordOfGridCellZero:  ", gridStruct->_version);
+			zmessageDebugFloat((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "zgridRetrieve _yCoordOfGridCellZero:  ", gridStruct->_yCoordOfGridCellZero);
 		}
 	}
 	else {
@@ -580,7 +580,7 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1zgridRetrieve(
 		jflnumber = (jfloat)gridStruct->_nullValue;
 		(*env)->SetFloatField(env, j_gridContainer, fid, jflnumber);
 		if (zmessageLevel((long long*)ifltab, MESS_METHOD_JNI_ID, MESS_LEVEL_USER_DIAG)) {
-			zmessageDebugInt((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "zgridRetrieve _nullValue:  ", gridStruct->_version);
+			zmessageDebugFloat((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "zgridRetrieve _nullValue:  ", gridStruct->_nullValue);
 		}
 	}
 	else {
@@ -596,7 +596,7 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1zgridRetrieve(
 		jnumber = (jint)gridStruct->_sizeofCompressedElements;
 		(*env)->SetIntField(env, j_gridContainer, fid, jnumber);
 		if (zmessageLevel((long long*)ifltab, MESS_METHOD_JNI_ID, MESS_LEVEL_USER_DIAG)) {
-			zmessageDebugInt((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "zgridRetrieve _sizeofCompressedElements:  ", gridStruct->_version);
+			zmessageDebugInt((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "zgridRetrieve _sizeofCompressedElements:  ", gridStruct->_sizeofCompressedElements);
 		}
 	}
 	else {
@@ -643,25 +643,27 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1zgridRetrieve(
 		zstructFree(gridStruct);
 		return status;
 	}
-
-	fid = (*env)->GetFieldID(env, cls, "_data", "[F");
-	if (boolRetrieveData && fid) {
-		int gridSize = gridStruct->_numberOfCellsX*gridStruct->_numberOfCellsY;
-		flArray = (float *)calloc(gridSize, 4);
-		if (gridSize) {
-			convertDataArray((void *)gridStruct->_data, (void *)flArray, gridSize, 1, 1);
-			jflArray = (*env)->NewFloatArray(env, (jint)gridSize);
-			(*env)->SetFloatArrayRegion(env, jflArray, 0, (jint)gridSize, gridStruct->_data);
-			(*env)->SetObjectField(env, j_gridContainer, fid, jflArray);
-			(*env)->DeleteLocalRef(env, jflArray);
+	if (boolRetrieveData)
+	{
+		fid = (*env)->GetFieldID(env, cls, "_data", "[F");
+		if (fid) {
+			int gridSize = gridStruct->_numberOfCellsX * gridStruct->_numberOfCellsY;
+			flArray = (float*)calloc(gridSize, 4);
+			if (gridSize) {
+				convertDataArray((void*)gridStruct->_data, (void*)flArray, gridSize, 1, 1);
+				jflArray = (*env)->NewFloatArray(env, (jint)gridSize);
+				(*env)->SetFloatArrayRegion(env, jflArray, 0, (jint)gridSize, gridStruct->_data);
+				(*env)->SetObjectField(env, j_gridContainer, fid, jflArray);
+				(*env)->DeleteLocalRef(env, jflArray);
+			}
 		}
-	}
-	else {
-		status = zerrorProcessing((long long*)ifltab, MESS_METHOD_JNI_ID, zdssErrorCodes.INVALID_NUMBER,
-			0, 0, zdssErrorSeverity.WARNING, gridStruct->pathname, "zgridRetrieve, no data");
-		(*env)->ReleaseIntArrayElements(env, j_ifltab, ifltab, 0);
-		zstructFree(gridStruct);
-		return status;
+		else {
+			status = zerrorProcessing((long long*)ifltab, MESS_METHOD_JNI_ID, zdssErrorCodes.INVALID_NUMBER,
+				0, 0, zdssErrorSeverity.WARNING, gridStruct->pathname, "zgridRetrieve, no data");
+			(*env)->ReleaseIntArrayElements(env, j_ifltab, ifltab, 0);
+			zstructFree(gridStruct);
+			return status;
+		}
 	}
 	zstructFree(gridStruct);
 	(*env)->ReleaseIntArrayElements(env, j_ifltab, ifltab, 0);
