@@ -350,7 +350,7 @@ int Export(char* dssFileName, char* path)
 	if ((rs->dataType >= DATA_TYPE_UGT) && (rs->dataType < DATA_TYPE_SG))
 	{
 		zStructSpatialGrid* gridStruct = zstructSpatialGridNew(path);
-		(ifltab, gridStruct,1);
+		
 
 		int status = zspatialGridRetrieve(ifltab, gridStruct, 1);
 		
