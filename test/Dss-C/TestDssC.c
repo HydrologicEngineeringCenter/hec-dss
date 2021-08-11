@@ -26,6 +26,8 @@ void usage(char* exeName)
 	printf("\nfile.dss DSS file");
 	printf("\nworkout, performs reads/writes on file.dss, can be used with multiple instances");
 	printf("\nversion, dss version (6 or 7)");
+	printf("\nexport, writes the contents of a DSS record to the console");
+
 
 	printf("\n\nExamples:\n%s workout 7 2000 5000 test.dss", exeName);
 	printf("\n%s test", exeName);
@@ -36,6 +38,7 @@ void usage(char* exeName)
 	printf("\n%s zcheckFile myfile.dss", exeName);
 	printf("\n%s zcheckLinks myfile.dss", exeName);;
 	printf("\n%s zcheckPathnames myfile.dss", exeName);
+	printf("\n%s export myfile.dss /SHG/EFRUSSIAN20/PRECIPITATION/01OCT2004:2400/02OCT2004:0100/GAGEINTERP/", exeName);
 	printf("\n");
 
 }
@@ -91,6 +94,9 @@ int main(int argc, char* argv[])
 		status = Lock(argv[3], atoi(argv[2]));
 
 		return status;
+	}
+	else if (strcmp(argv[1], "export") == 0 && argc == 4) { // export file.dss path
+		return Export(argv[2], argv[3]);
 	}
 	else if (strcmp(argv[1], "test") != 0 || argc != 2) { // test
 		usage(argv[0]);
