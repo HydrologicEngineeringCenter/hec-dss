@@ -319,3 +319,56 @@ Kmult=          26
 	zclose(ifltab);
 	return status;
 }
+
+int Export(char* dssFileName, char* path)
+{
+	long long ifltab[250];
+	char cdate[13], ctime[10];
+	int status = zopen(ifltab, dssFileName);
+	zStructRecordSize* rs = zstructRecordSizeNew(path);
+
+	status = zgetRecordSize(ifltab, rs);
+	if (status != 0)
+	{
+		printf("\n Error:  Could not find path:' %s'",path);
+	}
+
+	printf("\ndataType = %d\n",rs->dataType);
+
+	if ((rs->dataType >= DATA_TYPE_RTS) && (rs->dataType < DATA_TYPE_PD))
+	{ // time series
+		zStructTimeSeries* tss = zstructTsNew(path);
+		status = ztsRetrieve(ifltab, tss, 0, 2, 0);
+		if (status != STATUS_OKAY) return status;
+
+		for (int i = 0; i < tss->numberValues; i++) {
+			getDateAndTime(tss->times[i], tss->timeGranularitySeconds, tss->julianBaseDate,
+				cdate, sizeof(cdate), ctime, sizeof(ctime));
+			printf("%s %s, %f\n", cdate, ctime, tss->doubleValues[i]);
+		}
+	}
+	if ((rs->dataType >= DATA_TYPE_UGT) && (rs->dataType < DATA_TYPE_SG))
+	{
+		zStructSpatialGrid* gridStruct = zstructSpatialGridNew(path);
+		
+
+		int status = zspatialGridRetrieve(ifltab, gridStruct, 1);
+		
+		printGridStruct(ifltab, -1, gridStruct);
+		if (gridStruct->_data)
+		{
+			float* x = (float*)gridStruct->_data;
+			size_t size = gridStruct->_numberOfCellsX * gridStruct->_numberOfCellsY;
+			printf("---begin GRID DATA---\n");
+			for (size_t i = 0; i < size; i++)
+			{
+				printf("%f ", x[i]);
+			}
+			printf("\n--- end GRID DATA---\n");
+			zstructFree(gridStruct);
+		}
+	}
+
+	zstructFree(rs);
+	return 0;
+}

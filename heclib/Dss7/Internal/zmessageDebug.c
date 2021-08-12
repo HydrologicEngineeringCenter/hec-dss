@@ -106,3 +106,15 @@ void zmessageDebugLong(long long *ifltab, int functionID, const char *message1, 
 	}
 }
 
+void zmessageDebugFloat(long long* ifltab, int functionID, const char* message1, float number)
+{
+	char messageString[20];
+
+	if (message1) {
+		_snprintf_s(messageString, sizeof(messageString), _TRUNCATE, " %f", number);
+		zmessageDebug(ifltab, functionID, message1, messageString);
+	}
+	else {
+		zmessageDebug(ifltab, functionID, "<message 1 is NULL!> ", messageString);
+	}
+}
