@@ -36,8 +36,8 @@
 #endif
 
 
-#define DSS_VERSION "7-IE"
-#define DSS_VERSION_DATE "09 February 2021"
+#define DSS_VERSION "7-IF"
+#define DSS_VERSION_DATE "13 August 2021"
 
 
 const char *ztypeName(int recordType, int boolAbbreviation);
