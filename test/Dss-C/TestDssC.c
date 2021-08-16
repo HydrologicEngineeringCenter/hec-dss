@@ -6,7 +6,7 @@
 #include "TestDssC.h"
 
 
-
+int runTheTests();
 
 
 void usage(char* exeName)
@@ -32,6 +32,7 @@ void usage(char* exeName)
 	printf("\n\nExamples:\n%s workout 7 2000 5000 test.dss", exeName);
 	printf("\n%s test", exeName);
 	printf("\n%s catalog myfile.dss", exeName);
+	printf("\n%s catalog myfile.dss details     # includes record type in output", exeName);
 	printf("\n%s zsqueeze myfile.dss", exeName);
 	printf("\n%s lock 15 myfile.dss", exeName);
 	printf("\n%s check-lock myfile.dss", exeName);
@@ -45,6 +46,72 @@ void usage(char* exeName)
 
 int main(int argc, char* argv[])
 {
+	int status = 0;
+	long long start_time = getCurrentTimeMillis();
+
+
+	if (argc < 2)
+	{
+		usage(argv[0]);
+		return -1;
+	}
+	else if (argc == 2 && strcmp(argv[1], "test") == 0) { // test
+		status = runTheTests();
+	}
+
+	else if ((argc == 3 || argc == 4) && strcmp(argv[1], "catalog") == 0)
+	{ // ./exe catalog myfile.dss
+		int printRecordType = 0;
+		if (argc == 4 && strcmp(argv[3], "details") == 0)
+			printRecordType = 1;
+		status = PrintCatalog(argv[2], printRecordType);
+	}
+	else if (argc == 3 && strcmp(argv[1], "zsqueeze") == 0)
+	{ // ./exe zsqueeze myfile.dss
+		status = Zqueeze(argv[2]);
+	}
+	else if (argc == 3 && strcmp(argv[1], "zcheckFile") == 0)
+	{ // ./exe zcheckFile myfile.dss
+		status = CheckFile(argv[2]);
+	}
+	else if (argc == 3 && strcmp(argv[1], "zcheckLinks") == 0)
+	{ // ./exe zcheckLinks myfile.dss
+		status = CheckLinks(argv[2]);
+	}
+	else if (argc == 3 && strcmp(argv[1], "zcheckPathnames") == 0)
+	{ // ./exe zcheckLinks myfile.dss
+		status = CheckPathnames(argv[2]);
+	}
+
+	else if (argc == 6 && strcmp(argv[1], "workout") == 0)
+	{// example:  workout 7 test.dss
+		status = Workout(argv[0], argv[2], argv[3], argv[4], argv[5]);
+	}
+	else if (argc == 3 && strcmp(argv[1], "check-lock") == 0)
+	{// example:  check-lock test.dss
+		status = CheckLocking(argv[2]);
+	
+	}
+	else if (argc == 4 && strcmp(argv[1], "lock") == 0)
+	{// example:  lock 12 test.dss
+		status = Lock(argv[3], atoi(argv[2]));
+	}
+	else if (strcmp(argv[1], "export") == 0 && argc == 4) { // export file.dss path
+		status= Export(argv[2], argv[3]);
+	}
+	else
+	{
+		usage(argv[0]);
+	}
+
+	printf("\nStatus = %d", status);
+	double elapsed = (getCurrentTimeMillis() - start_time) / 1000.0;
+
+	printf("\nSeconds elapsed: %f", elapsed);
+
+
+}
+int runTheTests() {
 	long long ifltab7[250];
 	long long ifltab6[250];
 	char fileName7[80];
@@ -52,64 +119,6 @@ int main(int argc, char* argv[])
 	char fileName6[80];
 	int status;
 
-	if (argc < 2)
-	{
-		usage(argv[0]);
-		return -1;
-	}
-
-	if (argc == 3 && strcmp(argv[1], "catalog") == 0)
-	{ // ./exe catalog myfile.dss
-		return PrintCatalog(argv[2]);
-	}
-	else if (argc == 3 && strcmp(argv[1], "zsqueeze") == 0)
-	{ // ./exe zsqueeze myfile.dss
-		return Zqueeze(argv[2]);
-	}
-	else if (argc == 3 && strcmp(argv[1], "zcheckFile") == 0)
-	{ // ./exe zcheckFile myfile.dss
-		return CheckFile(argv[2]);
-	}
-	else if (argc == 3 && strcmp(argv[1], "zcheckLinks") == 0)
-	{ // ./exe zcheckLinks myfile.dss
-		return CheckLinks(argv[2]);
-	}
-	else if (argc == 3 && strcmp(argv[1], "zcheckPathnames") == 0)
-	{ // ./exe zcheckLinks myfile.dss
-		return CheckPathnames(argv[2]);
-	}
-
-	else if (argc == 6 && strcmp(argv[1], "workout") == 0)
-	{// example:  workout 7 test.dss
-		return Workout(argv[0], argv[2], argv[3], argv[4], argv[5]);
-	}
-	else if (argc == 3 && strcmp(argv[1], "check-lock") == 0)
-	{// example:  check-lock test.dss
-		status = CheckLocking(argv[2]);
-		printf("\nStatus = %d", status);
-		return status;
-	}
-	else if (argc == 4 && strcmp(argv[1], "lock") == 0)
-	{// example:  lock 12 test.dss
-		status = Lock(argv[3], atoi(argv[2]));
-
-		return status;
-	}
-	else if (strcmp(argv[1], "export") == 0 && argc == 4) { // export file.dss path
-		return Export(argv[2], argv[3]);
-	}
-	else if (strcmp(argv[1], "test") != 0 || argc != 2) { // test
-		usage(argv[0]);
-		return -1;
-	}
-
-
-	//multipleWriteDeleteSlowDown();
-	//SolarisTesting();
-	//UnitPaddingIssue();
-	//decodeError(-200384707);
-	//writeDoubleArray();
-	//return 0;
 
 	printf("\ntest Bulletin_17C_Examples.dss for reading full record\n");
 	status = Bulletin_17C_SSP_Issue();

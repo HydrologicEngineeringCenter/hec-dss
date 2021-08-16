@@ -84,7 +84,7 @@ int CheckLocking(char* dssFileName);
 int Workout(char* exe, char* version, char* timeSeriesCount,char* timeSeriesLength, char* dssFileName);
 int CheckLinks(char* dssFileName);
 int CheckPathnames(char* dssFileName);
-int PrintCatalog(char* dssFileName);
+int PrintCatalog(char* dssFileName,int printRecordType);
 int Zqueeze(char* dssFileName);
 int CheckFile(char* dssFileName);
 void usage(char* exeName);
