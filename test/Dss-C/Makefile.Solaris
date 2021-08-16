@@ -18,9 +18,11 @@ test:Dss-C
 	mkdir -p Output
 	rm -f Output/*.dss
 	cp ../../dss-test-data/*.dss ./Output/
-	(cd Output; ./Dss-C)
+	(cd Output; ./Dss-C test)
 #	(cd Output; valgrind --track-origins=yes  --log-file=vg.txt ./Dss-C)
 
+Output/TestUtility.o:source/TestUtility.c
+	$(CC) $(CFLAGS) source/TestUtility.c -o Output/TestUtility.o
 Output/Bulletin_17C_SSP_Issue.o:source/Bulletin_17C_SSP_Issue.c
 	$(CC) $(CFLAGS) source/Bulletin_17C_SSP_Issue.c -o Output/Bulletin_17C_SSP_Issue.o
 Output/testDateFunctions.o:source/testDateFunctions.c
@@ -131,6 +133,7 @@ Output/TestDssC.o:TestDssC.c
 	$(CC) $(CFLAGS) TestDssC.c -o Output/TestDssC.o
 
 OBJS=\
+Output/TestUtility.o\
 Output/Bulletin_17C_SSP_Issue.o\
 Output/testDateFunctions.o\
 Output/addLocation.o\

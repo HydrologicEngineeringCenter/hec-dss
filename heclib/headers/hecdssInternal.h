@@ -36,8 +36,8 @@
 #endif
 
 
-#define DSS_VERSION "7-IE"
-#define DSS_VERSION_DATE "09 February 2021"
+#define DSS_VERSION "7-IF"
+#define DSS_VERSION_DATE "13 August 2021"
 
 
 const char *ztypeName(int recordType, int boolAbbreviation);
@@ -283,6 +283,7 @@ void zmessage(long long *ifltab, const char *message);
 void zmessageDebug(long long *ifltab, int functionID, const char *message1, const char *message2);
 void zmessageDebugInt(long long *ifltab, int functionID, const char *message1, int number);
 void zmessageDebugLong(long long *ifltab, int functionID, const char *message1, long long number);
+void zmessageDebugFloat(long long* ifltab, int functionID, const char* message1, float number);
 void zmessageLength(long long *ifltab, const char *message, size_t len);  // Public includes time stamp
 void zmessageLen(long long *ifltab, const char *message, size_t length);  //  Private - does not include time stamp
 int zmessageLevel(long long *ifltab, int callingMethod, int level);

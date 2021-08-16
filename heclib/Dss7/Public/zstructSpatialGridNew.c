@@ -53,6 +53,7 @@ zStructSpatialGrid* zstructSpatialGridNew(const char* pathname) {
 
 void printGridStruct(long long *ifltab, int fid, zStructSpatialGrid *gridStruct) {
 	char *messageString, *arrayString;
+	arrayString = 0;
 
 	messageString = (char *)calloc(16, 1);
 
@@ -100,19 +101,21 @@ void printGridStruct(long long *ifltab, int fid, zStructSpatialGrid *gridStruct)
 		zmessageDebug(ifltab, fid, "Mean Data Value : ", messageString);
 		if (gridStruct->_numberOfRanges > 0) {
 			arrayString = calloc(gridStruct->_numberOfRanges * 16, 1);
-			for (int i = 0; i < gridStruct->_numberOfRanges; i++) {
+			for (int i = 0; i < gridStruct->_numberOfRanges && arrayString !=0; i++) {
 				snprintf(messageString, 16,"%5.5f,", *((float*)gridStruct->_rangeLimitTable + i));
 				strncat(arrayString, messageString, strlen(messageString));
 			}
 		}
-		zmessageDebug(ifltab, fid, "Range Limit Table: ", arrayString);
-		arrayString[0] = 0;
-		for (int i = 0; i < gridStruct->_numberOfRanges; i++) {
-			snprintf(messageString,16, "%5d,", gridStruct->_numberEqualOrExceedingRangeLimit[i]);
-			strncat(arrayString, messageString, strlen(messageString));
+		if (arrayString != 0) {
+			zmessageDebug(ifltab, fid, "Range Limit Table: ", arrayString);
+			arrayString[0] = 0;
+			for (int i = 0; i < gridStruct->_numberOfRanges; i++) {
+				snprintf(messageString, 16, "%5d,", gridStruct->_numberEqualOrExceedingRangeLimit[i]);
+				strncat(arrayString, messageString, strlen(messageString));
+			}
+			zmessageDebug(ifltab, fid, "Histo Table: ", arrayString);
+			free(arrayString);
 		}
-		zmessageDebug(ifltab, fid, "Histo Table: ", arrayString);
-		free(arrayString);
 	}
 
 	free(messageString);

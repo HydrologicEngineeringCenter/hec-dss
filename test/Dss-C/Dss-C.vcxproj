@@ -62,6 +62,9 @@
     <OutDir>$(ProjectDir)$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(ProjectDir)$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
@@ -109,7 +112,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\..\heclib\heclib_c_v6v7\$(PlatformName)\$(ConfigurationName);..\..\heclib\heclib_f_v6v7\$(PlatformName)\$(ConfigurationName);$(IFORT_COMPILER21)compiler\lib\ia32_win</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\heclib\heclib_c_v6v7\$(PlatformName)\$(ConfigurationName);..\..\heclib\heclib_f_v6v7\$(PlatformName)\$(ConfigurationName);$(IFORT_COMPILER19)compiler\lib\ia32_win</AdditionalLibraryDirectories>
       <AdditionalDependencies>heclib_f_v6v7.lib;heclib_c_v6v7.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>LIBCMTD.lib</IgnoreSpecificDefaultLibraries>
       <Profile>true</Profile>
@@ -120,7 +123,7 @@
       <AdditionalIncludeDirectories>..\..\heclib\headers;source;.</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>..\..\heclib\heclib_c_v6v7\$(PlatformName)\$(ConfigurationName);..\..\heclib\heclib_f_v6v7\$(PlatformName)\$(ConfigurationName);$(IFORT_COMPILER21)compiler\lib\ia32_win</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\heclib\heclib_c_v6v7\$(PlatformName)\$(ConfigurationName);..\..\heclib\heclib_f_v6v7\$(PlatformName)\$(ConfigurationName)</AdditionalLibraryDirectories>
       <AdditionalDependencies>heclib_f_v6v7.lib;heclib_c_v6v7.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>LIBCMT</IgnoreSpecificDefaultLibraries>
     </Link>
@@ -146,7 +149,7 @@
     <ClCompile Include="source\miscTests.c" />
     <ClCompile Include="source\profileExcel.c" />
     <ClCompile Include="source\runTests.c" />
-    <ClCompile Include="source\SamleTimeSeries.c" />
+    <ClCompile Include="source\TestUtility.c" />
     <ClCompile Include="source\SampleTimeSeries3.c" />
     <ClCompile Include="source\testAdHoc.c" />
     <ClCompile Include="source\testAlias.c" />

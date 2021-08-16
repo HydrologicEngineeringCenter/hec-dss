@@ -193,9 +193,9 @@
 						//  (This is not common)
 						for (i=0; i<5; i++) {
 #ifdef _MSC_VER
-							Sleep(500);
+							Sleep(500);// 500 Milliseconds
 #else
-							sleep(500);
+							usleep(500 * 1000); // 500 Milliseconds
 #endif
 							status = zlockDss(ifltab, handle, 3, lockPosition, 8);
 							if (zmessageLevel(ifltab, MESS_METHOD_LOCKING_ID, MESS_LEVEL_INTERNAL_DIAG_1)) {

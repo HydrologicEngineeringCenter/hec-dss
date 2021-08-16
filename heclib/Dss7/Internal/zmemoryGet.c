@@ -64,8 +64,8 @@ int zmemoryGet(long long *ifltab, int arrayLoc, int size, const char* memName)
 	}
 
 	memory = (long long*)calloc((size_t)(size+3), LONG_SIZE);
-	if (zmessageLevel(ifltab, MESS_METHOD_OPEN_ID, MESS_LEVEL_INTERNAL_DIAG_2)) {
-		zmessageDebugLong(ifltab, DSS_FUNCTION_zmemoryGet_ID, "Memory allocated, location: ", memory);
+	if (zmessageLevel(ifltab, MESS_METHOD_OPEN_ID, MESS_LEVEL_INTERNAL_DIAG_2) && memory != 0) {
+		zmessageDebugLong(ifltab, DSS_FUNCTION_zmemoryGet_ID, "Memory allocated, location: ",(long long) memory);
 	}
 	if (memory == 0) {
 		return zerrorProcessing(ifltab, DSS_FUNCTION_zmemoryGet_ID,

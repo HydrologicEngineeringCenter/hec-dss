@@ -11,7 +11,7 @@ C     Variables that begin with the letter 'K' are pointers
 C     Variables that begin with the letter 'C' are character variables
 C     Variables that begin with the letter 'L' are logicals
 C     Variables that begin with the letter 'N' are often counters, or
-C        string lenghts
+C        string lengths
 C     Other variables follow standard FORTRAN defaults
 C
 C     File Structure:
@@ -24,7 +24,7 @@ C        In the first structure, the first part of the file (224 words)
 C     contains the permanent section of file.  This contains information
 C     such as the number of records, file size, file structure, last
 C     written date and time, etc.  Following the permanent section is a
-C     "hash table", whose lenght is twice the hash size (settable by
+C     "hash table", whose length is twice the hash size (settable by
 C     the zset6 "SIZE" parameter.  Following this is a block of "pathname
 C     bins" (about 20 bins per block), then a data area.  As a file
 C     grows, more bins are added to the end of the file, as needed.

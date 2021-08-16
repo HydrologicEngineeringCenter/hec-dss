@@ -12,7 +12,7 @@
 *
 *  Description:	If we are in an "advisory" access level, check to see if another process has
 *				requested write access to this file.  If so, go into a regular multi-user state.
-*				If another process has read access to this fill and we have written to it, flush
+*				If another process has read access to this file and we have written to it, flush
 *               buffers, but do not enter multi-user state.  (Only flush when this call is made)
 *
 *  Use:			Private (Internal)
