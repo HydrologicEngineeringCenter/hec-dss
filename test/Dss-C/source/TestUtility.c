@@ -83,7 +83,7 @@ int PrintCatalog(char* dssFileName, int printRecordType){
 		  if (printRecordType) {
 			  zStructRecordBasics* recordBasics = zstructRecordBasicsNew(catStruct->pathnameList[i]);
 
-			  zset("MLEV", "",17 );
+			//  zset("MLEV", "",17 );
 			  status = zgetRecordBasics(ifltab, recordBasics);
 			  
 				/*  zdtype_((long long*)ifltab, path, number, exists,
@@ -91,6 +91,7 @@ int PrintCatalog(char* dssFileName, int printRecordType){
 					  strlen(path), sizeof(ctype) - 1);*/
 
 			  printf("[%d] \"%s\" %d\n", i, catStruct->pathnameList[i],recordBasics->recordType);
+			  zstructFree(recordBasics);
 		  }
 		  else {
 			  printf("[%d] %s\n", i, catStruct->pathnameList[i]);
