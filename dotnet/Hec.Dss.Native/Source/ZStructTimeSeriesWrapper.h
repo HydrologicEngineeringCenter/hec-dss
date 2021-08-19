@@ -359,7 +359,7 @@ namespace Hec {
 						if (theStruct->quality)
 							free(theStruct->quality);
 						theStruct->quality = managedToUnmanagedIntArr(val);
-
+						theStruct->allocated[zSTRUCT_TS_quality] = 1;
 					}
 				}
 				property int QualityElementSize {

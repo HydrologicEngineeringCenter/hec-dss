@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -146,5 +147,56 @@ namespace DSSUnitTests
 
       }
     }
+
+        [TestMethod]
+        public void SimpleQualityConsistencyTestDss7()
+        {
+            string fn = TestUtility.BasePath + "simpleQCT7.dss";
+            File.Delete(fn);
+            Array q = Enum.GetValues(typeof(BaseQualityFlags));
+            Random r = new Random();
+            var qList = new List<int>();
+            using (DssWriter w = new DssWriter(fn))
+            {
+                var ts = TimeSeriesTest.CreateSampleTimeSeries(new DateTime(2020, 1, 1), "cfs", "INST", size:10);
+                ts.Path = new DssPath("a", "b", "c", "", E: "1Day", F:"f");
+                for (int i = 0; i < ts.Values.Length; i++)
+                {
+                    BaseQualityFlags flag = (BaseQualityFlags)q.GetValue(r.Next(q.Length));
+                    Quality newQuality = new Quality(flag);
+                    qList.Add(newQuality.Value);
+                }
+                ts.Qualities = qList.ToArray();
+                w.Write(ts);
+            }
+
+            using (DssReader reader = new DssReader(fn))
+            {
+                TimeSeries ts = reader.GetTimeSeries(new DssPath("/a/b/c//1Day/f/"));
+                for (int i = 0; i < ts.Values.Length; i++)
+                    Assert.AreEqual(ts.Qualities[i], qList[i]);
+            }
+
+            using (DssWriter w = new DssWriter(fn))
+            {
+                var ts = w.GetTimeSeries(new DssPath("/a/b/c//1Day/f/"));
+                qList.Clear();
+                for (int i = 0; i < ts.Values.Length; i++)
+                {
+                    BaseQualityFlags flag = (BaseQualityFlags)q.GetValue(r.Next(q.Length));
+                    Quality newQuality = new Quality(flag);
+                    qList.Add(newQuality.Value);
+                }
+                ts.Qualities = qList.ToArray();
+                w.Write(ts);
+            }
+
+            using (DssReader reader = new DssReader(fn))
+            {
+                TimeSeries ts = reader.GetTimeSeries(new DssPath("/a/b/c//1Day/f/"));
+                for (int i = 0; i < ts.Values.Length; i++)
+                    Assert.AreEqual(ts.Qualities[i], qList[i]);
+            }
+        }
   }
 }
