@@ -26,8 +26,8 @@ void usage(char* exeName)
 	printf("\nfile.dss DSS file");
 	printf("\nworkout, performs reads/writes on file.dss, can be used with multiple instances");
 	printf("\nversion, dss version (6 or 7)");
-	printf("\nexport, writes the contents of a DSS record to the console");
-
+	printf("\nexport file.dss path metaDataOnly(0|1)  # writes the contents of a DSS record to the console");
+	
 
 	printf("\n\nExamples:\n%s workout 7 2000 5000 test.dss", exeName);
 	printf("\n%s test", exeName);
@@ -39,7 +39,7 @@ void usage(char* exeName)
 	printf("\n%s zcheckFile myfile.dss", exeName);
 	printf("\n%s zcheckLinks myfile.dss", exeName);;
 	printf("\n%s zcheckPathnames myfile.dss", exeName);
-	printf("\n%s export myfile.dss /SHG/EFRUSSIAN20/PRECIPITATION/01OCT2004:2400/02OCT2004:0100/GAGEINTERP/", exeName);
+	printf("\n%s export myfile.dss /SHG/EFRUSSIAN20/PRECIPITATION/01OCT2004:2400/02OCT2004:0100/GAGEINTERP/ 1", exeName);
 	printf("\n");
 
 }
@@ -96,8 +96,10 @@ int main(int argc, char* argv[])
 	{// example:  lock 12 test.dss
 		status = Lock(argv[3], atoi(argv[2]));
 	}
-	else if (strcmp(argv[1], "export") == 0 && argc == 4) { // export file.dss path
-		status= Export(argv[2], argv[3]);
+	else if (strcmp(argv[1], "export") == 0 && ( argc == 4 || argc == 5)) { // export file.dss path metaDataOnly(0|1)
+		int metaDataOnly = 0;
+		if (argc == 5) metaDataOnly = strcmp(argv[4],"1")? 0:1;
+		status= Export(argv[2], argv[3],metaDataOnly);
 	}
 	else
 	{
