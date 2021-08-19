@@ -203,7 +203,7 @@ int zspatialGridRetrieve(long long *ifltab, zStructSpatialGrid *gridStruct, int 
 
 	if (!boolRetrieveData) {
 		//  Do not retrieve the data, just the meta data in the header
-		ztransfer->userHeaderMode = 0;
+		ztransfer->userHeaderMode = 1;
 		ztransfer->values3Mode = 0;
 	}
 

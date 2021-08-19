@@ -83,7 +83,7 @@ int PrintCatalog(char* dssFileName, int printRecordType){
 		  if (printRecordType) {
 			  zStructRecordBasics* recordBasics = zstructRecordBasicsNew(catStruct->pathnameList[i]);
 
-			  zset("MLEV", "",17 );
+			//  zset("MLEV", "",17 );
 			  status = zgetRecordBasics(ifltab, recordBasics);
 			  
 				/*  zdtype_((long long*)ifltab, path, number, exists,
@@ -91,6 +91,7 @@ int PrintCatalog(char* dssFileName, int printRecordType){
 					  strlen(path), sizeof(ctype) - 1);*/
 
 			  printf("[%d] \"%s\" %d\n", i, catStruct->pathnameList[i],recordBasics->recordType);
+			  zstructFree(recordBasics);
 		  }
 		  else {
 			  printf("[%d] %s\n", i, catStruct->pathnameList[i]);
@@ -200,6 +201,8 @@ int Workout(char* exe, char* version, char* timeSeriesCount,char* timeSeriesLeng
 		usage(exe);
 		return -1;
 	}
+	//zset("program", "dss-c.exe", 0); not working...?
+	
 	char* fn = dssFileName;
 	printf("\nstarting workout with file: %s", fn);
 	status = WriteTimeSeries(fn, ver, count, length);
@@ -334,7 +337,7 @@ Kmult=          26
 	return status;
 }
 
-int Export(char* dssFileName, char* path)
+int Export(char* dssFileName, char* path, int metaDataOnly)
 {
 	long long ifltab[250];
 	char cdate[13], ctime[10];
@@ -355,7 +358,7 @@ int Export(char* dssFileName, char* path)
 		status = ztsRetrieve(ifltab, tss, 0, 2, 0);
 		if (status != STATUS_OKAY) return status;
 
-		for (int i = 0; i < tss->numberValues; i++) {
+		for (int i = 0; i < tss->numberValues && !metaDataOnly; i++) {
 			getDateAndTime(tss->times[i], tss->timeGranularitySeconds, tss->julianBaseDate,
 				cdate, sizeof(cdate), ctime, sizeof(ctime));
 			printf("%s %s, %f\n", cdate, ctime, tss->doubleValues[i]);
@@ -366,7 +369,7 @@ int Export(char* dssFileName, char* path)
 		zStructSpatialGrid* gridStruct = zstructSpatialGridNew(path);
 		
 
-		int status = zspatialGridRetrieve(ifltab, gridStruct, 1);
+		int status = zspatialGridRetrieve(ifltab, gridStruct, !metaDataOnly);
 		
 		printGridStruct(ifltab, -1, gridStruct);
 		if (gridStruct->_data)
