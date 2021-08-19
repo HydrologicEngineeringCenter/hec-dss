@@ -198,5 +198,45 @@ namespace DSSUnitTests
                     Assert.AreEqual(ts.Qualities[i], qList[i]);
             }
         }
-  }
+
+        [TestMethod]
+        public void SimpleQualityConsistencyTestDss6()
+        {
+            string orig = TestUtility.BasePath + "simpleQCT6.dss";
+            string fn = TestUtility.BasePath + "simpleQCT6Copy.dss";
+            File.Delete(fn);
+            File.Copy(orig, fn);
+            Array q = Enum.GetValues(typeof(BaseQualityFlags));
+            Random r = new Random();
+            var qList = new List<int>();
+
+            using (DssReader reader = new DssReader(fn))
+            {
+                TimeSeries ts = reader.GetTimeSeries(new DssPath("/A/B/C//1DAY/F/"));
+                for (int i = 0; i < ts.Values.Length; i++)
+                    Assert.AreEqual(ts.Qualities[i], qList[i]);
+            }
+
+            using (DssWriter w = new DssWriter(fn))
+            {
+                var ts = w.GetTimeSeries(new DssPath("/A/B/C//1DAY/F/"));
+                qList.Clear();
+                for (int i = 0; i < ts.Values.Length; i++)
+                {
+                    BaseQualityFlags flag = (BaseQualityFlags)q.GetValue(r.Next(q.Length));
+                    Quality newQuality = new Quality(flag);
+                    qList.Add(newQuality.Value);
+                }
+                ts.Qualities = qList.ToArray();
+                w.Write(ts);
+            }
+
+            using (DssReader reader = new DssReader(fn))
+            {
+                TimeSeries ts = reader.GetTimeSeries(new DssPath("/A/B/C//1DAY/F/"));
+                for (int i = 0; i < ts.Values.Length; i++)
+                    Assert.AreEqual(ts.Qualities[i], qList[i]);
+            }
+        }
+    }
 }
