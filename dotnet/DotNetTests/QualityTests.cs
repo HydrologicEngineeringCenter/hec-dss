@@ -149,7 +149,7 @@ namespace DSSUnitTests
     }
 
         [TestMethod]
-        public void SimpleQualityConsistencyTestDss7()
+        public void SimpleQualityConsistencyTestDss7_RTS()
         {
             string fn = TestUtility.BasePath + "simpleQCT7.dss";
             File.Delete(fn);
@@ -200,15 +200,91 @@ namespace DSSUnitTests
         }
 
         [TestMethod]
-        public void SimpleQualityConsistencyTestDss6()
+        public void SimpleQualityConsistencyTestDss7_IRTS()
         {
-            string orig = TestUtility.BasePath + "simpleQCT6.dss";
-            string fn = TestUtility.BasePath + "simpleQCT6Copy.dss";
+            string fn = TestUtility.BasePath + "simpleQCT7.dss";
+            File.Delete(fn);
+            Array q = Enum.GetValues(typeof(BaseQualityFlags));
+            Random r = new Random();
+            var qList = new List<int>();
+            using (DssWriter w = new DssWriter(fn))
+            {
+                var ts = new TimeSeries();
+                var times = new List<DateTime>();
+                var vals = new List<double>();
+                DateTime start = new DateTime(2020, 1, 1);
+                for (int i = 0; i < 10; i++)
+                {
+                    times.Add(start.AddDays(i * i));
+                    vals.Add(i);
+                }
+                ts.Values = vals.ToArray();
+                ts.Times = times.ToArray();
+                ts.Path = new DssPath("a", "b", "c", "", E: "IR-Year", F: "f");
+                ts.Units = "cfs";
+                ts.DataType = "INST";
+                for (int i = 0; i < ts.Values.Length; i++)
+                {
+                    BaseQualityFlags flag = (BaseQualityFlags)q.GetValue(r.Next(q.Length));
+                    Quality newQuality = new Quality(flag);
+                    qList.Add(newQuality.Value);
+                }
+                ts.Qualities = qList.ToArray();
+                w.Write(ts);
+            }
+
+            using (DssReader reader = new DssReader(fn))
+            {
+                TimeSeries ts = reader.GetTimeSeries(new DssPath("/a/b/c//IR-Year/f/"));
+                for (int i = 0; i < ts.Values.Length; i++)
+                    Assert.AreEqual(ts.Qualities[i], qList[i]);
+            }
+
+            using (DssWriter w = new DssWriter(fn))
+            {
+                var ts = w.GetTimeSeries(new DssPath("/a/b/c//IR-Year/f/"));
+                qList.Clear();
+                for (int i = 0; i < ts.Values.Length; i++)
+                {
+                    BaseQualityFlags flag = (BaseQualityFlags)q.GetValue(r.Next(q.Length));
+                    Quality newQuality = new Quality(flag);
+                    qList.Add(newQuality.Value);
+                }
+                ts.Qualities = qList.ToArray();
+                w.Write(ts);
+            }
+
+            using (DssReader reader = new DssReader(fn))
+            {
+                TimeSeries ts = reader.GetTimeSeries(new DssPath("/a/b/c//IR-Year/f/"));
+                for (int i = 0; i < ts.Values.Length; i++)
+                    Assert.AreEqual(ts.Qualities[i], qList[i]);
+            }
+        }
+
+        [TestMethod]
+        public void SimpleQualityConsistencyTestDss6_RTS()
+        {
+            string orig = TestUtility.BasePath + "simpleQCT6_RTS.dss";
+            string fn = TestUtility.BasePath + "simpleQCT6Copy_RTS.dss";
             File.Delete(fn);
             File.Copy(orig, fn);
             Array q = Enum.GetValues(typeof(BaseQualityFlags));
             Random r = new Random();
             var qList = new List<int>();
+
+            using (DssWriter w = new DssWriter(fn))
+            {
+                var ts = w.GetTimeSeries(new DssPath("/A/B/C//1DAY/F/"));
+                for (int i = 0; i < ts.Values.Length; i++)
+                {
+                    BaseQualityFlags flag = (BaseQualityFlags)q.GetValue(r.Next(q.Length));
+                    Quality newQuality = new Quality(flag);
+                    qList.Add(newQuality.Value);
+                }
+                ts.Qualities = qList.ToArray();
+                w.Write(ts, true);
+            }
 
             using (DssReader reader = new DssReader(fn))
             {
@@ -228,12 +304,65 @@ namespace DSSUnitTests
                     qList.Add(newQuality.Value);
                 }
                 ts.Qualities = qList.ToArray();
-                w.Write(ts);
+                w.Write(ts, true);
             }
 
             using (DssReader reader = new DssReader(fn))
             {
                 TimeSeries ts = reader.GetTimeSeries(new DssPath("/A/B/C//1DAY/F/"));
+                for (int i = 0; i < ts.Values.Length; i++)
+                    Assert.AreEqual(ts.Qualities[i], qList[i]);
+            }
+        }
+
+        [TestMethod]
+        public void SimpleQualityConsistencyTestDss6_IRTS()
+        {
+            string orig = TestUtility.BasePath + "simpleQCT6_IRTS.dss";
+            string fn = TestUtility.BasePath + "simpleQCT6Copy_IRTS.dss";
+            File.Delete(fn);
+            File.Copy(orig, fn);
+            Array q = Enum.GetValues(typeof(BaseQualityFlags));
+            Random r = new Random();
+            var qList = new List<int>();
+
+            using (DssWriter w = new DssWriter(fn))
+            {
+                var ts = w.GetTimeSeries(new DssPath("/A/B/C//IR-YEAR/F/"));
+                for (int i = 0; i < ts.Values.Length; i++)
+                {
+                    BaseQualityFlags flag = (BaseQualityFlags)q.GetValue(r.Next(q.Length));
+                    Quality newQuality = new Quality(flag);
+                    qList.Add(newQuality.Value);
+                }
+                ts.Qualities = qList.ToArray();
+                w.Write(ts, true);
+            }
+
+            using (DssReader reader = new DssReader(fn))
+            {
+                TimeSeries ts = reader.GetTimeSeries(new DssPath("/A/B/C//IR-YEAR/F/"));
+                for (int i = 0; i < ts.Values.Length; i++)
+                    Assert.AreEqual(ts.Qualities[i], qList[i]);
+            }
+
+            using (DssWriter w = new DssWriter(fn))
+            {
+                var ts = w.GetTimeSeries(new DssPath("/A/B/C//IR-YEAR/F/"));
+                qList.Clear();
+                for (int i = 0; i < ts.Values.Length; i++)
+                {
+                    BaseQualityFlags flag = (BaseQualityFlags)q.GetValue(r.Next(q.Length));
+                    Quality newQuality = new Quality(flag);
+                    qList.Add(newQuality.Value);
+                }
+                ts.Qualities = qList.ToArray();
+                w.Write(ts, true);
+            }
+
+            using (DssReader reader = new DssReader(fn))
+            {
+                TimeSeries ts = reader.GetTimeSeries(new DssPath("/A/B/C//IR-YEAR/F/"));
                 for (int i = 0; i < ts.Values.Length; i++)
                     Assert.AreEqual(ts.Qualities[i], qList[i]);
             }
