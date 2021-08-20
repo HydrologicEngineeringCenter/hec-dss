@@ -1,4 +1,5 @@
       SUBROUTINE zgintl6 (INTL, CHINTL, NODATA, ISTAT)
+      implicit none
 C
 C
 C     Get Interval for time series data
@@ -16,6 +17,8 @@ C         ISTAT = 1, IF IRREGULAR INTERVAL (NO INTERVAL VALUE RETURNED)
 C         ISTAT = -1, DATA OTHER THAN TIME SERIES
 C
 C
+      integer NODATA,ISTAT,I
+      integer maxint
 C     PARAMETER (MAXINT=40)
       PARAMETER (MAXINT=29)
       INTEGER NVALS(MAXINT)
