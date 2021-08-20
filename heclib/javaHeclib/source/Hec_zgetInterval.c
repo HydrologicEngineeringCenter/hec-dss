@@ -2,6 +2,7 @@
 #include <string.h>
 #include "heclib.h"
 
+// Java: public static synchronized native void Hec_zgetInterval(int interval[], stringContainer ePart, int nvals[], int status[]);
 
 JNIEXPORT void JNICALL Java_hec_heclib_util_Heclib_Hec_1zgetInterval
     (JNIEnv *env, jobject obj, jintArray j_interval, jobject j_ePart,
@@ -11,7 +12,7 @@ JNIEXPORT void JNICALL Java_hec_heclib_util_Heclib_Hec_1zgetInterval
     const char *ePart;
     int *nvals;
     int *status;
-    char cEpart[65];
+    char cEpart[MAX_PART_SIZE];
 	int n;
 	jclass cls;
     jfieldID fid;
@@ -28,7 +29,7 @@ JNIEXPORT void JNICALL Java_hec_heclib_util_Heclib_Hec_1zgetInterval
 		jstr = (*env)->GetObjectField (env, j_ePart, fid);
         ePart = (*env)->GetStringUTFChars (env, jstr, 0);
 		if (ePart) {
-			stringCopy(cEpart, 64, ePart, strlen(ePart));
+			stringCopy(cEpart, MAX_PART_SIZE-1, ePart, strlen(ePart));
 		}
 		else
 			cEpart[0] = '\0';
