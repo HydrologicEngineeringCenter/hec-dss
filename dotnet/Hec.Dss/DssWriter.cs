@@ -111,9 +111,9 @@ namespace Hec.Dss
       if (ts.IsRegular())
       {// store as Regular times series
         if (saveAsFloat)
-          rval = StoreTimeSeriesRegular<float>(ts.Path.FullPath, floats, alwaysReplace, ts.StartDateTime, ts.Units, ts.DataType);
+          rval = StoreTimeSeriesRegular<float>(ts.Path.FullPath, floats, ts.Qualities, alwaysReplace, ts.StartDateTime, ts.Units, ts.DataType);
         else
-          rval = StoreTimeSeriesRegular<double>(ts.Path.FullPath, ts.Values, alwaysReplace, ts.StartDateTime, ts.Units, ts.DataType);
+          rval = StoreTimeSeriesRegular<double>(ts.Path.FullPath, ts.Values, ts.Qualities, alwaysReplace, ts.StartDateTime, ts.Units, ts.DataType);
 
       }
       else
@@ -125,9 +125,9 @@ namespace Hec.Dss
         string startBaseDate = Time.JulianToHecDate(julianBaseDate);
         int[] times = Time.ConvertDatesToHecInteger(ts.Times, julianBaseDate, timeGranularitySeconds);
         if (saveAsFloat)
-          rval = StoreTimeSeriesIrregular<float>(ts.Path.FullPath, floats, times, alwaysReplace, timeGranularitySeconds, startBaseDate, ts.Units, ts.DataType);
+          rval = StoreTimeSeriesIrregular<float>(ts.Path.FullPath, floats, ts.Qualities, times, alwaysReplace, timeGranularitySeconds, startBaseDate, ts.Units, ts.DataType);
         else
-          rval = StoreTimeSeriesIrregular<double>(ts.Path.FullPath, ts.Values, times, alwaysReplace, timeGranularitySeconds, startBaseDate, ts.Units, ts.DataType);
+          rval = StoreTimeSeriesIrregular<double>(ts.Path.FullPath, ts.Values, ts.Qualities, times, alwaysReplace, timeGranularitySeconds, startBaseDate, ts.Units, ts.DataType);
       }
 
       return rval;
@@ -208,19 +208,31 @@ namespace Hec.Dss
     /// <param name="startTime">The time in military time format.</param>
     /// <param name="units">%,ft2,ppm,umho/cm, unit,$,ampere,in,deg,mi,ft,MWh,in/day,cfs,langley/min,MW,in-hg,langley,mph,rpm,ac-ft,F,sec,JTU,FNU,volt,ft3,su</param>
     /// <param name="type">INST-VAL, INST-CUM, PER-CUM, PER-AVER</param>
-    private int StoreTimeSeriesRegular<T>(string pathName, T[] values, int storageFlag, string startDate, string startTime, string units, string type) where T : struct
+    private int StoreTimeSeriesRegular<T>(string pathName, T[] values, int[] qualities, int storageFlag, string startDate, string startTime, string units, string type) where T : struct
     {
       Type listType = typeof(T);
       if (listType == typeof(double))
       {
         double[] dArray = values as double[];
         ZStructTimeSeriesWrapper tss = DSS.ZStructTsNewRegDoubles(pathName, ref dArray, dArray.Length, startDate, startTime, units, type);
+        if (qualities != null)
+        {
+          tss.QualityArraySize = dArray.Length;
+          tss.QualityElementSize = 1;
+          tss.Quality = qualities;
+        }
         return DSS.ZTsStore(ref ifltab, ref tss, storageFlag);
       }
       else if (listType == typeof(float))
       {
         float[] fArray = values as float[];
         ZStructTimeSeriesWrapper tss = DSS.ZStructTsNewRegFloats(pathName, ref fArray, fArray.Length, startDate, startTime, units, type);
+        if (qualities != null)
+        {
+          tss.QualityArraySize = fArray.Length;
+          tss.QualityElementSize = 1;
+          tss.Quality = qualities;
+        }
         return DSS.ZTsStore(ref ifltab, ref tss, storageFlag);
       }
       else
@@ -238,10 +250,10 @@ namespace Hec.Dss
     /// <param name="startDateTime">The start date and time of the time series.</param>
     /// <param name="units">%,ft2,ppm,umho/cm, unit,$,ampere,in,deg,mi,ft,MWh,in/day,cfs,langley/min,MW,in-hg,langley,mph,rpm,ac-ft,F,sec,JTU,FNU,volt,ft3,su</param>
     /// <param name="type">INST-VAL, INST-CUM, PER-CUM, PER-AVER</param>
-    private int StoreTimeSeriesRegular<T>(string pathName, T[] values, int storageFlag, DateTime startDateTime, string units, string type) where T : struct
+    private int StoreTimeSeriesRegular<T>(string pathName, T[] values, int[] qualities, int storageFlag, DateTime startDateTime, string units, string type) where T : struct
     {
       Time.DateTimeToHecDateTime(startDateTime, out string startDate, out string startTime);
-      return StoreTimeSeriesRegular(pathName, values, storageFlag, startDate, startTime, units, type);
+      return StoreTimeSeriesRegular(pathName, values, qualities, storageFlag, startDate, startTime, units, type);
     }
 
 
@@ -257,7 +269,7 @@ namespace Hec.Dss
     /// <param name="startDateBase">The base date is often the date of the start of the data.</param>
     /// <param name="units">%,ft2,ppm,umho/cm, unit,$,ampere,in,deg,mi,ft,MWh,in/day,cfs,langley/min,MW,in-hg,langley,mph,rpm,ac-ft,F,sec,JTU,FNU,volt,ft3,su</param>
     /// <param name="type">INST-VAL, INST-CUM, PER-CUM, PER-AVER</param>
-    private int StoreTimeSeriesIrregular<T>(string pathName, T[] values, int[] itimes, int storageFlag, int timeGranularitySeconds, string startDateBase, string units, string type) where T : struct
+    private int StoreTimeSeriesIrregular<T>(string pathName, T[] values, int[] qualities, int[] itimes, int storageFlag, int timeGranularitySeconds, string startDateBase, string units, string type) where T : struct
     {
       
       Type listType = typeof(T);
@@ -265,12 +277,24 @@ namespace Hec.Dss
       {
         double[] dArray = values as double[];
         ZStructTimeSeriesWrapper tss = DSS.ZStructTsNewIrregDoubles(pathName, ref dArray, dArray.Length, ref itimes, timeGranularitySeconds, startDateBase, units, type);
+        if (qualities != null)
+        {
+          tss.QualityArraySize = dArray.Length;
+          tss.QualityElementSize = 1;
+          tss.Quality = qualities;
+        }
         return DSS.ZTsStore(ref ifltab, ref tss, storageFlag);
       }
       else if (listType == typeof(float))
       {
         float[] fArray = values as float[];
         ZStructTimeSeriesWrapper tss = DSS.ZStructTsNewIrregFloats(pathName, ref fArray, fArray.Length, ref itimes, timeGranularitySeconds, startDateBase, units, type);
+        if (qualities != null)
+        {
+          tss.QualityArraySize = fArray.Length;
+          tss.QualityElementSize = 1;
+          tss.Quality = qualities;
+        }
         return DSS.ZTsStore(ref ifltab, ref tss, storageFlag);
       }
       else

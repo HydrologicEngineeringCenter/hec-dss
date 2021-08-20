@@ -92,6 +92,7 @@ namespace DSSUnitTests
       Assert.IsTrue(DssPath.IsValid(path2));
     }
 
+    [Ignore]
     [TestMethod]
     public void CondensedPathTest()
     {
