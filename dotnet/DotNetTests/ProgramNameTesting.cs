@@ -54,6 +54,11 @@ namespace DSSUnitTests
                 w.SetProgramName("dotnet");
                 w.Write(ts);
             }
+
+            using (DssReader r = new DssReader(fn))
+            {
+                Assert.AreEqual("dotnet", r.GetProgramName());
+            }
         }
     }
 }
