@@ -869,6 +869,14 @@ namespace Hec.Dss
       return GetGrid(path.FullPath, retrieveData);
     }
 
+    public string GetProgramName()
+    {
+      string returnString = "";
+      int[] numbers = new int[] { 0 };
+      var status = DSS.ZInquireChar(ref ifltab, "PROG", ref returnString, 16, ref numbers);
+      return returnString;
+    }
+
     public void Dispose()
     {
       ActiveReaders.Remove(this);

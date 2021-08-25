@@ -38,7 +38,7 @@ int zinquireChar(long long *ifltab, const char *request, char *creturn, size_t c
 		}
 		else {
 			len = stringLastNonBlank(creturn, creturnSize);
-			creturn[len] = '\0';
+			creturn[len + 1] = '\0';
 			return 0;
 		}
 	}
