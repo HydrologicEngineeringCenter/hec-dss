@@ -457,15 +457,7 @@ namespace Hec.Dss
 
       if (status == 0)
       {
-        innerTimeSeries.Path = dssPath;
-        innerTimeSeries.Units = blockTimeSeries.Units;
-        innerTimeSeries.Times = GetTsTimes(blockTimeSeries);
-        innerTimeSeries.Values = GetTsValues(blockTimeSeries);
-        innerTimeSeries.Qualities = blockTimeSeries.Quality;
-        innerTimeSeries.DataType = blockTimeSeries.Type;
-        innerTimeSeries.ProgramName = blockTimeSeries.ProgramName;
-        var locationInfo = new LocationInformation(blockTimeSeries.locationStruct);
-        innerTimeSeries.LocationInformation = locationInfo;
+        SetTimeSeriesInfo(blockTimeSeries, innerTimeSeries);
 
         if (compression != TimeWindow.ConsecutiveValueCompression.None)
           innerTimeSeries = innerTimeSeries.Compress(compression);
@@ -481,6 +473,25 @@ namespace Hec.Dss
 
       return rVal;
       
+    }
+
+    private void SetTimeSeriesInfo(TimeSeries fromTimeSeries, TimeSeries ToTimeSeries) 
+    {
+      ToTimeSeries.Path = dssPath;
+      ToTimeSeries.Units = fromTimeSeries.Units;
+      ToTimeSeries.Times = GetTsTimes(fromTimeSeries);
+      ToTimeSeries.Values = GetTsValues(fromTimeSeries);
+      ToTimeSeries.Qualities = fromTimeSeries.Quality;
+      ToTimeSeries.DataType = fromTimeSeries.Type;
+      if (fromTimeSeries.version == 6)
+      {
+        // TODO Find a way to use zgetInfo7 here.
+        // TODO Look at ztsRetrieveReg6.c and see if "charLong(&info[zdssInfoKeys.kinfoProgram], tss->programName, 0, zdssVals.numberProgram, 0, 1);" needs to be added.
+      }
+      else 
+        ToTimeSeries.ProgramName = fromTimeSeries.ProgramName;
+      var locationInfo = new LocationInformation(fromTimeSeries.locationStruct);
+      ToTimeSeries.LocationInformation = locationInfo;
     }
 
     /// <summary>
