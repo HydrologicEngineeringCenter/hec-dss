@@ -463,6 +463,7 @@ namespace Hec.Dss
         innerTimeSeries.Values = GetTsValues(blockTimeSeries);
         innerTimeSeries.Qualities = blockTimeSeries.Quality;
         innerTimeSeries.DataType = blockTimeSeries.Type;
+        innerTimeSeries.ProgramName = blockTimeSeries.ProgramName;
         var locationInfo = new LocationInformation(blockTimeSeries.locationStruct);
         innerTimeSeries.LocationInformation = locationInfo;
 
@@ -867,14 +868,6 @@ namespace Hec.Dss
     public Grid GetGrid(DssPath path, bool retrieveData)
     {
       return GetGrid(path.FullPath, retrieveData);
-    }
-
-    public string GetProgramName()
-    {
-      string returnString = "";
-      int[] numbers = new int[] { 0 };
-      var status = DSS.ZInquireChar(ref ifltab, "PROG", ref returnString, 16, ref numbers);
-      return returnString;
     }
 
     public void Dispose()
