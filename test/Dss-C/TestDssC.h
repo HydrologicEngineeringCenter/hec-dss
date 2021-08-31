@@ -39,7 +39,8 @@ int testExpandedTimesIrreg(long long *ifltab);
 int testExpandedTimesIrreg2(long long *ifltab);
 int testAlias(long long *ifltab);
 int testReclaim(const char *dssFilename);
-
+int testRecordInfo6(const char *filename);
+int testRecordInfo7(const char* filename);
 
 
 
