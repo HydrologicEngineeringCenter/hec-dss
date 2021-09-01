@@ -475,21 +475,15 @@ namespace Hec.Dss
       
     }
 
-    private void SetTimeSeriesInfo(TimeSeries fromTimeSeries, TimeSeries ToTimeSeries) 
+    private void SetTimeSeriesInfo(ZStructTimeSeriesWrapper fromTimeSeries, TimeSeries ToTimeSeries) 
     {
-      ToTimeSeries.Path = dssPath;
+      ToTimeSeries.Path = new DssPath(fromTimeSeries.Pathname);
       ToTimeSeries.Units = fromTimeSeries.Units;
       ToTimeSeries.Times = GetTsTimes(fromTimeSeries);
       ToTimeSeries.Values = GetTsValues(fromTimeSeries);
       ToTimeSeries.Qualities = fromTimeSeries.Quality;
       ToTimeSeries.DataType = fromTimeSeries.Type;
-      if (fromTimeSeries.version == 6)
-      {
-        // TODO Find a way to use zgetInfo7 here.
-        // TODO Look at ztsRetrieveReg6.c and see if "charLong(&info[zdssInfoKeys.kinfoProgram], tss->programName, 0, zdssVals.numberProgram, 0, 1);" needs to be added.
-      }
-      else 
-        ToTimeSeries.ProgramName = fromTimeSeries.ProgramName;
+      ToTimeSeries.ProgramName = fromTimeSeries.ProgramName;
       var locationInfo = new LocationInformation(fromTimeSeries.locationStruct);
       ToTimeSeries.LocationInformation = locationInfo;
     }
