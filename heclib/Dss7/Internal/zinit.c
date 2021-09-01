@@ -267,7 +267,7 @@ void zinit()
 	//     (i.e., their password matches the file password) (0=no, 1=yes).
     zdssKeys.ksuser = zdssKeys.knumberWrites + 1;
 
-	//     KEXCL indicats if the file has been exclusively opened
+	//     KEXCL indicates if the file has been exclusively opened
     zdssKeys.kexclusive = zdssKeys.ksuser + 1;
 
 	//     kpathsThisHash is the number of pathnames for this hash;
@@ -284,7 +284,7 @@ void zinit()
 	//  Indicator of last pathname checked found or not
 	zdssKeys.kfound = zdssKeys.ksameHash + 1;
 
-	//  Table hash of last pathanem
+	//  Table hash of last pathname
 	zdssKeys.ktableHash = zdssKeys.kfound + 1;
 
 	//  Bin hash (Unique hash) of last pathname
@@ -468,13 +468,13 @@ void zinit()
 	//  Number of records renamed since last squeeze
 	zdssFileKeys.knumberRenames = zdssFileKeys.knumberCollections + 1;
 
-	//  Number of record deleted since last squeeze
+	//  Number of records deleted since last squeeze
 	zdssFileKeys.knumberDeletes = zdssFileKeys.knumberRenames + 1;
 
 	//  Number of aliases deleted since last squeeze
 	zdssFileKeys.knumberAliasDeletes = zdssFileKeys.knumberDeletes + 1;
 
-	//     KCREAT pointes to the date/time the file was created
+	//     KCREAT points to the date/time the file was created
     zdssFileKeys.kcreateDate = zdssFileKeys.knumberAliasDeletes + 1;
 
 	//     klastWriteTime points to the time in mills the file was last written to
@@ -622,7 +622,7 @@ void zinit()
 	zdssFileKeys.kreclaimNumber = zdssFileKeys.kreclaimSegmentsUsed + 1;
 
 	//  kreclaimSize is the physcial length of the reclaim segment
-	//  Note, reclaim number <= (reclaim lengh) * 2
+	//  Note, reclaim number <= (reclaim lenght) * 2
 	zdssFileKeys.kreclaimSize = zdssFileKeys.kreclaimNumber + 1;
 
 	//  kreclaimedSpaceUsed is the number of times space has been reclaimed
