@@ -5,6 +5,8 @@
 #include "zdssMessages.h"
 #include "hecdssInternal.h"
 #include "heclib.h"
+#include "zdssKeys.h"
+#include "zdssVals.h"
 #include "zStructTsTimeWindow.h"
 #include "zStructTimeSeries.h"
 
@@ -214,6 +216,13 @@ int ztsRetrieveIrreg6(long long *ifltab, zStructTimeSeries *tss,
 	}
 
 	zinqir6_((int *)ifltab, "PREC", cdummy, &precision, 4, sizeof(cdummy));
+
+	if (status == STATUS_RECORD_FOUND)
+	{
+		info = (long long *)ifltab[zdssKeys.kinfo];
+		charLong(&info[zdssInfoKeys.kinfoProgram], tss->programName, 0, zdssVals.numberProgram, 0, 1);
+	}
+
 	tss->precision = precision;
 
 
