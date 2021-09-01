@@ -538,7 +538,9 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1zgridStore(
 			}
 		}
 	}
-	else {
+
+	// no data
+	if(!gridStruct->_data)  {
 		status = zerrorProcessing((long long*)ifltab, MESS_METHOD_JNI_ID, zdssErrorCodes.INVALID_NUMBER,
 			0, 0, zdssErrorSeverity.WARNING, gridStruct->pathname, "zgridStore, no data");
 		(*env)->ReleaseIntArrayElements(env, j_ifltab, ifltab, 0);
