@@ -220,6 +220,7 @@
     <ClCompile Include="..\Dss6\C\lockdss.c" />
     <ClCompile Include="..\Dss6\C\openf.c" />
     <ClCompile Include="..\Dss6\C\readf.c" />
+    <ClCompile Include="..\Dss6\C\readProgramName.c" />
     <ClCompile Include="..\Dss6\C\seekf.c" />
     <ClCompile Include="..\Dss6\C\waits.c" />
     <ClCompile Include="..\Dss6\C\writf.c" />

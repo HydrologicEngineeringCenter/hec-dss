@@ -216,16 +216,7 @@ int ztsRetrieveIrreg6(long long *ifltab, zStructTimeSeries *tss,
 	}
 
 	zinqir6_((int *)ifltab, "PREC", cdummy, &precision, 4, sizeof(cdummy));
-
-	if (status == STATUS_RECORD_FOUND || status == STATUS_NO_OP)
-	{
-		long long* info = (long long*)ifltab[zdssKeys.kinfo];
-		int ibuff[20];
-		int istat = 0;
-		zgetinfo6_(ifltab, tss->pathname, ibuff, &istat, strlen(tss->pathname));
-		charLong(&ibuff[8], tss->programName, zdssVals.numberProgram, zdssVals.numberProgram, 0, 0);
-	}
-
+	readProgramName(ifltab, tss, status);
 	tss->precision = precision;
 
 

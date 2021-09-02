@@ -60,7 +60,8 @@ Output/testWriteRead.o\
 Output/testZtsProcessTimes.o\
 Output/testztsStructBill.o\
 Output/TestDssC.o\
-Output/zlockdss.o
+Output/zlockdss.o\
+Output/testRecordInfo.o
 
 all:Dss-C
 	(cd ../../heclib; make -f Makefile.Linux)
