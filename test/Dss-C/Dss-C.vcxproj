@@ -193,6 +193,7 @@
     <ClCompile Include="source\testZtsProcessTimes.c" />
     <ClCompile Include="source\testztsStructBill.c" />
     <ClCompile Include="TestDssC.c" />
+    <ClCompile Include="source\testRecordInfo.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TestDssC.h" />

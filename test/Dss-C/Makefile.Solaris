@@ -129,6 +129,8 @@ Output/testZtsProcessTimes.o:source/testZtsProcessTimes.c
 	$(CC) $(CFLAGS) source/testZtsProcessTimes.c -o Output/testZtsProcessTimes.o
 Output/testztsStructBill.o:source/testztsStructBill.c
 	$(CC) $(CFLAGS) source/testztsStructBill.c -o Output/testztsStructBill.o
+Output/testRecordInfo.o:source/testRecordInfo.c
+	$(CC) $(CFLAGS) source/testRecordInfo.c -o Output/testRecordInfo.o
 Output/TestDssC.o:TestDssC.c
 	$(CC) $(CFLAGS) TestDssC.c -o Output/TestDssC.o
 
@@ -187,7 +189,8 @@ Output/testTin.o\
 Output/testWriteRead.o\
 Output/testZtsProcessTimes.o\
 Output/testztsStructBill.o\
-Output/TestDssC.o
+Output/TestDssC.o\
+Output/testRecordInfo.o
 
 
 Dss-C:$(OBJS)

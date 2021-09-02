@@ -290,6 +290,7 @@ int ztsRetrieveReg6(long long *ifltab, zStructTimeSeries *tss,
 					int retrieveFlag, int retrieveDoublesFlag, int boolRetrieveQualityNotes);
 int ztsRetrieveIrreg6(long long *ifltab, zStructTimeSeries *tss,
 					int retrieveFlag, int retrieveDoublesFlag, int boolRetrieveQualityNotes);
+void readProgramName(long long* ifltab, zStructTimeSeries* tss, int status);
 int ztsRetrieveIrreg7(long long *ifltab, zStructTimeSeries *tss,
 					int retrieveFlag, int retrieveDoublesFlag, int boolRetrieveQualityNotes);
 

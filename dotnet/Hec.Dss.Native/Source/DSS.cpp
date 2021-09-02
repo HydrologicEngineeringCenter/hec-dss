@@ -770,9 +770,8 @@ namespace Hec {
 				return toReturn;
 			}
 
-			int DSS::ZInquireChar(array<long long> ^% ifltab, String ^ request, String ^ creturn, size_t creturnSize, array<int> ^% number)
+			int DSS::ZInquireChar(array<long long> ^% ifltab, String ^ request, String ^% creturn, size_t creturnSize, array<int> ^% number)
 			{
-				(creturn, creturnSize);
 				pin_ptr<long long> ifltabPinned = &ifltab[0];
 				pin_ptr<int> numberPinned = &number[0];
 				IntPtr marshallToRequest = Marshal::StringToHGlobalAnsi(request);
@@ -780,6 +779,7 @@ namespace Hec {
 				char * ptrToRequest = static_cast<char*>(marshallToRequest.ToPointer());
 				char * ptrToCReturn = static_cast<char*>(marshallToCReturn.ToPointer());
 				int toReturn = zinquireChar(ifltabPinned, ptrToRequest, ptrToCReturn, creturnSize, numberPinned);
+				creturn = gcnew String(ptrToCReturn);
 				Marshal::FreeHGlobal(marshallToRequest);
 				Marshal::FreeHGlobal(marshallToCReturn);
 				return toReturn;
