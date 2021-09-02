@@ -33,7 +33,7 @@ namespace DSSUnitTests
             ts.Path = new DssPath("A", "B", "C", "01JAN2020", E: "1DAY", F: "F");
             using (DssWriter w = new DssWriter(fn))
             {
-                w.SetProgramName("DOTNET");
+                DssGlobals.SetProgramName("DOTNET");
                 w.Write(ts);
             }
 
@@ -54,7 +54,7 @@ namespace DSSUnitTests
             List<DssPath> paths = new List<DssPath>();
             using (DssWriter w = new DssWriter(fn))
             {
-                w.SetProgramName("DOTNET");
+                DssGlobals.SetProgramName("DOTNET");
                 for (int i = 0; i < 10; i++)
                 {
                     var ts = TimeSeriesTest.CreateSampleTimeSeries(new DateTime(2020, 1, 2), "cfs", "INST", size: 10);
@@ -84,7 +84,7 @@ namespace DSSUnitTests
             ts.Path = new DssPath("a", "b", "c", "01Jan2020", E: "1Day", F: "f");
             using (DssWriter w = new DssWriter(fn))
             {
-                w.SetProgramName("dotnet");
+                DssGlobals.SetProgramName("dotnet");
                 w.Write(ts);
             }
 
@@ -103,7 +103,7 @@ namespace DSSUnitTests
             List<DssPath> paths = new List<DssPath>();
             using (DssWriter w = new DssWriter(fn))
             {
-                w.SetProgramName("dotnet-test");
+                DssGlobals.SetProgramName("dotnet-test");
                 for (int i = 0; i < 10; i++)
                 {
                     var ts = TimeSeriesTest.CreateSampleTimeSeries(new DateTime(2020, 1, 2), "cfs", "INST", size: 10);
@@ -135,7 +135,7 @@ namespace DSSUnitTests
             ts.Path = new DssPath("A", "B", "C", "01JAN2020", E: "1DAY", F: "F");
             using (DssWriter w = new DssWriter(fn))
             {
-                w.SetProgramName("DOTNET");
+                DssGlobals.SetProgramName("DOTNET");
                 w.Write(ts, true);
             }
 
@@ -156,7 +156,7 @@ namespace DSSUnitTests
             ts.Path = new DssPath("a", "b", "c", "01Jan2020", E: "1Day", F: "f");
             using (DssWriter w = new DssWriter(fn))
             {
-                w.SetProgramName("dotnet-test");
+                DssGlobals.SetProgramName("dotnet-test");
                 w.Write(ts, true);
             }
 

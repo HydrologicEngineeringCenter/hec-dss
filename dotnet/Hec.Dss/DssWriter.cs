@@ -465,10 +465,5 @@ namespace Hec.Dss
       DSS.ZpdStore(ref ifltab, ref pds, storageFlag);
     }
 
-    public int SetProgramName(string programName)
-    {
-      return DSS.ZSet("PROG", programName, 0);
-    }
-
   }
 }
