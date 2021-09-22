@@ -1,6 +1,6 @@
       SUBROUTINE zerror6 (IFLTAB, JERR, CSUB, ISTAT, IADD, CSTRF, NSTR1,
      * CSTR2, NSTR2)
-C
+      implicit none
 C
 C     Prints out error messages, then aborts via zabort6.
 C     Designed to handle errors common to several subroutines.
@@ -9,6 +9,7 @@ C
       INTEGER IFLTAB(*)
       CHARACTER CSUB*6
       CHARACTER CSTRF*(*), CSTR2*(*)
+      
 C
       INCLUDE 'zdsskz.h'
 C
@@ -16,7 +17,8 @@ C
 C
       INCLUDE 'zdssmz.h'
 C
-C
+      integer NSTR1, NSTR2, IERR, JERR, N1, N2, ISTAT, IADD
+      
       IERR = JERR
 C
       IF (JERR.EQ.5) THEN
