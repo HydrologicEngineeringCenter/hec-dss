@@ -64,7 +64,7 @@ int CheckLinks(char* dssFileName)
 }
 
 
-int PrintCatalog(char* dssFileName, int printRecordType){
+int PrintCatalog(char* dssFileName, int details){
 
 	long long ifltab[250];
 	int status = zopen(ifltab, dssFileName);
@@ -80,10 +80,10 @@ int PrintCatalog(char* dssFileName, int printRecordType){
 	}
 	  for (int i = 0; i <catStruct->numberPathnames; i++)
   	  {
-		  if (printRecordType) {
+		  if (details) {
 			  zStructRecordBasics* recordBasics = zstructRecordBasicsNew(catStruct->pathnameList[i]);
 
-			//  zset("MLEV", "",17 );
+			// zset("MLEV", "",17 );
 			  status = zgetRecordBasics(ifltab, recordBasics);
 			  
 				/*  zdtype_((long long*)ifltab, path, number, exists,

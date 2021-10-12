@@ -144,19 +144,14 @@ int testAdHoc2()
 	long long ifltab7[250];
 	char fileName7[80];
 	long long ifltab6[250];
-	char fileName6[80];
 	char name[200];
 	char *path;
-	char *path2;
 	int status;
 	int i;
-	int juls, jule;
-	long long addresses[15];
 	char cdate[20];
 	char ctime1[20];
 	zStructTimeSeries *tss1, *tss2;
 	zStructTransfer *ztrans;
-	zStructCatalog *catStruct;
 	int hi, low, code;
 
 	double vals[] = { 1,2,3 };
@@ -359,7 +354,6 @@ int testAdHoc()
 	int status = 0;
 	long long ifltab[250];
 	long long ifltab2[250];
-	long long ifltab7[250];
 	float fvalues[2];
 	int i, j;
 	zStructTimeSeries *tss1, *tss2;
@@ -368,11 +362,9 @@ int testAdHoc()
 	int itimes[200];
 	int julian;
 	int mins;
-	int buffer[1]; long long bufferControl[4] = { 0,0,0,0 };
+	long long bufferControl[4] = { 0,0,0,0 };
 	int zero = 0;
-	int ibuff[20];
 	char cbuff[40];
-	char fileName7[50];
 	char *cpath;
 	char *cnull = 0;
 	int searchOption;
@@ -381,18 +373,12 @@ int testAdHoc()
 	int endJulian[1];
 	int exists[1];
 	int endMinutes[1];
-	int buffer1[5000];
-	long long millis;
-	ztsTimeWindow timeWindow;
 	zStructPairedData *pdsd1 = 0;
 	char cpath1[200];
 	char cpath2[100];
 	char cpath3[100];
 	char pathname[392];
-	char pathWithWild[100];
-	int nfound;
 	int secondsPastMidnight, millsPastSecond;
-	long long start, end, diff;
 	// LARGE_INTEGER StartingTime, EndingTime, ElapsedMicroseconds;
 	// LARGE_INTEGER Frequency;
 	// HMODULE hMods[1024];
@@ -403,28 +389,9 @@ int testAdHoc()
 	// DWORD value = MAX_PATH;
 	// TCHAR  buff[MAX_PATH];
 	// DWORD dw;
-	int numberPaths;
-	int handle;
-	long long addresses[20];
-	zStructRecordSize *recordSize;
-	zStructTransfer *ztransfer;
-	int count;
-	int ipos;
-	int len;
 	int userHeader[2], nUserHeader, numberChars;
-	zStructSpatialTin *tinStructRetrieve;
 
-	float f;
-	int filePos[1];
-	int nPathname;
-	int number;
-
-	zStructCatalog *catStruct;
-	zStructRecordBasics *recordBasics;
 	long long fileTime;
-	char *pos;
-	int jpos;
-	char *path;
 
 	fileTime = 12345;
 	printf("Long number is %lld\n", fileTime);
@@ -1602,20 +1569,11 @@ void tstCnotes() {
 
 	long long ifltab7[250];
 	char fileName7[80];
-	long long ifltab6[250];
 	char cnotes[10000];
-	char name[200];
-	char *path;
-	char *path2;
 	int status;
-	int i, j, ipos;
-	int juls, jule;
-	long long addresses[15];
-	char cdate[20];
-	char ctime1[20];
-	int iary[100];
+	int  j, ipos;
 	float values[200];
-	zStructTimeSeries *tss1, *tss2;
+	zStructTimeSeries  *tss2;
 	char alpha[] = { "abcdefghijklmnopqrstuvwxyz" };
 
 	stringCopy(fileName7, sizeof(fileName7), "C:/Temp/char7.dss", sizeof(fileName7));
