@@ -712,5 +712,29 @@ namespace DSSUnitTests
         Debug.WriteLine(s);
       }
     }
+
+    [TestMethod]
+    public void CreateVersion6FileExplicit()
+    {
+        string fn = TestUtility.BasePath + "newV6.dss";
+        File.Delete(fn);
+        using (DssWriter w = new DssWriter(fn, 6))
+        {
+                Assert.IsTrue(w.GetDSSFileVersion() == 6);
+        }
+
+    }
+
+    [TestMethod]
+    public void CreateVersion7FileExplicit()
+    {
+        string fn = TestUtility.BasePath + "newV7.dss";
+        File.Delete(fn);
+        using (DssWriter w = new DssWriter(fn, 7))
+        {
+            Assert.IsTrue(w.GetDSSFileVersion() == 7);
+        }
+
+    }
   }
 }
