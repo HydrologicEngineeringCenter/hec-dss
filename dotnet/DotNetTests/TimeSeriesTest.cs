@@ -736,5 +736,37 @@ namespace DSSUnitTests
         }
 
     }
+
+    [TestMethod]
+    public void OpenExistingVersion6FileUsingExplicit6()
+    {
+        DssPath path = new DssPath("//SACRAMENTO/PRECIP-INC/01JAN1877/1DAY/OBS/");
+        using (DssReader r = new DssReader(TestUtility.BasePath + "sample6.dss", 7))
+        {
+            var ts = r.GetTimeSeries(path);
+            var dt = ts.ToDataTable();
+        }
+
+        using (DssReader r = new DssReader(TestUtility.BasePath + "sample6.dss", 6))
+        {
+            Assert.IsTrue(r.GetDSSFileVersion() == 6);
+        }
+    }
+
+    [TestMethod]
+    public void OpenExistingVersion7FileUsingExplicit7()
+    {
+        DssPath path = new DssPath("//SACRAMENTO/PRECIP-INC//1Day/OBS/");
+        using (DssReader r = new DssReader(TestUtility.BasePath + "sample7.dss", 6))
+        {
+            var ts = r.GetTimeSeries(path);
+            var dt = ts.ToDataTable();
+        }
+
+        using (DssReader r = new DssReader(TestUtility.BasePath + "sample7.dss", 7))
+        {
+            Assert.IsTrue(r.GetDSSFileVersion() == 7);
+        }
+    }
   }
 }
