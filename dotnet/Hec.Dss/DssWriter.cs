@@ -14,6 +14,12 @@ namespace Hec.Dss
 
     }
 
+    public DssWriter(string filename, int version, MethodID messageMethod = MethodID.MESS_METHOD_GENERAL_ID,
+      LevelID messageLevel = LevelID.MESS_LEVEL_GENERAL) : base(filename, version, messageMethod, messageLevel)
+    {
+
+    }
+
 
     public int Write(TimeSeriesProfile profile, bool saveAsFloat = false)
     {

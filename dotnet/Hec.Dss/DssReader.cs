@@ -46,6 +46,17 @@ namespace Hec.Dss
     /// <param name="filename">Location of DSS file</param>
     public DssReader(string filename, MethodID messageMethod = MethodID.MESS_METHOD_GENERAL_ID, LevelID messageLevel = LevelID.MESS_LEVEL_GENERAL)
     {
+      GetDssFile(filename, messageMethod, messageLevel);
+    }
+
+    public DssReader(string filename, int version, MethodID messageMethod = MethodID.MESS_METHOD_GENERAL_ID, LevelID messageLevel = LevelID.MESS_LEVEL_GENERAL)
+    {
+      DSS.ZSet("DSSV", "", version);
+      GetDssFile(filename, messageMethod, messageLevel);
+    }
+
+    private void GetDssFile(string filename, MethodID messageMethod, LevelID messageLevel)
+    {
       if (ActiveReaders == null)
       {
         ActiveReaders = new List<DssReader>();
@@ -85,9 +96,6 @@ namespace Hec.Dss
         default:
           throw new Exception("Error opening DSS file.");
       }
-
-
-      return;
     }
 
     /// <summary>
