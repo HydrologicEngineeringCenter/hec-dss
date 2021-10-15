@@ -21,6 +21,7 @@ namespace DSSUnitTests
             //
         }
 
+        [Ignore]
         [TestMethod]
         public void SetProgramName_Dss6()
         {
@@ -44,6 +45,7 @@ namespace DSSUnitTests
             }
         }
 
+        [Ignore]
         [TestMethod]
         public void SetProgramNameForMultipleRecords_Dss6()
         {
@@ -123,6 +125,7 @@ namespace DSSUnitTests
             }
         }
 
+        [Ignore]
         [TestMethod]
         public void SetProgramNameAndSaveAsFloat_Dss6()
         {
