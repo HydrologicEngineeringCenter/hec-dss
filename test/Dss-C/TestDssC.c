@@ -101,6 +101,9 @@ int main(int argc, char* argv[])
 		if (argc == 5) metaDataOnly = strcmp(argv[4],"1")? 0:1;
 		status= Export(argv[2], argv[3],metaDataOnly);
 	}
+	else if (argc == 3 && strcmp(argv[1], "recordinfo") == 0) {
+		testRecordInfo6(argv[2]);
+	}
 	else
 	{
 		usage(argv[0]);

@@ -4,9 +4,6 @@
 
 CFLAGS=-m64 -c -I../../heclib/headers -I. -mt -xcode=pic32 -xstrconst -xc99=all -xCC -g -xs 
 
-# SKIP_DSS_TEST    used to eliminate some low level tests on Solaris that are failing/may not be valid on big endian?
-
-
 all:Dss-C
 	(cd ../../heclib; make -f Makefile.Solaris)
 
@@ -19,176 +16,16 @@ test:Dss-C
 	rm -f Output/*.dss
 	cp ../../dss-test-data/*.dss ./Output/
 	(cd Output; ./Dss-C test)
-#	(cd Output; valgrind --track-origins=yes  --log-file=vg.txt ./Dss-C)
-
-Output/TestUtility.o:source/TestUtility.c
-	$(CC) $(CFLAGS) source/TestUtility.c -o Output/TestUtility.o
-Output/Bulletin_17C_SSP_Issue.o:source/Bulletin_17C_SSP_Issue.c
-	$(CC) $(CFLAGS) source/Bulletin_17C_SSP_Issue.c -o Output/Bulletin_17C_SSP_Issue.o
-Output/testDateFunctions.o:source/testDateFunctions.c
-	$(CC) $(CFLAGS) source/testDateFunctions.c -o Output/testDateFunctions.o
-Output/addLocation.o:source/addLocation.c
-	$(CC) $(CFLAGS) source/addLocation.c -o Output/addLocation.o
-Output/comparePDs.o:source/comparePDs.c
-	$(CC) $(CFLAGS) source/comparePDs.c -o Output/comparePDs.o
-Output/compareProfiles.o:source/compareProfiles.c
-	$(CC) $(CFLAGS) source/compareProfiles.c -o Output/compareProfiles.o
-Output/compareTss.o:source/compareTss.c
-	$(CC) $(CFLAGS) source/compareTss.c -o Output/compareTss.o
-Output/findInFile.o:source/findInFile.c
-	$(CC) $(CFLAGS) source/findInFile.c -o Output/findInFile.o
-Output/miscTests.o:source/miscTests.c
-	$(CC) $(CFLAGS) source/miscTests.c -o Output/miscTests.o
-Output/profileExcel.o:source/profileExcel.c
-	$(CC) $(CFLAGS) source/profileExcel.c -o Output/profileExcel.o
-Output/runTests.o:source/runTests.c
-	$(CC) $(CFLAGS) source/runTests.c -o Output/runTests.o
-Output/SamleTimeSeries.o:source/SamleTimeSeries.c
-	$(CC) $(CFLAGS) source/SamleTimeSeries.c -o Output/SamleTimeSeries.o
-Output/SampleTimeSeries3.o:source/SampleTimeSeries3.c
-	$(CC) $(CFLAGS) source/SampleTimeSeries3.c -o Output/SampleTimeSeries3.o
-Output/testAdHoc.o:source/testAdHoc.c
-	$(CC) $(CFLAGS) source/testAdHoc.c -o Output/testAdHoc.o
-Output/testAlias.o:source/testAlias.c
-	$(CC) $(CFLAGS) source/testAlias.c -o Output/testAlias.o
-Output/testArrayWriteRead.o:source/testArrayWriteRead.c
-	$(CC) $(CFLAGS) source/testArrayWriteRead.c -o Output/testArrayWriteRead.o
-Output/testBufferedIO.o:source/testBufferedIO.c
-	$(CC) $(CFLAGS) source/testBufferedIO.c -o Output/testBufferedIO.o
-Output/testCatalog.o:source/testCatalog.c
-	$(CC) $(CFLAGS) source/testCatalog.c -o Output/testCatalog.o
-Output/testConversion.o:source/testConversion.c
-	$(CC) $(CFLAGS) source/testConversion.c -o Output/testConversion.o
-Output/testDateTime.o:source/testDateTime.c
-	$(CC) $(CFLAGS) source/testDateTime.c -o Output/testDateTime.o
-Output/testDelete.o:source/testDelete.c
-	$(CC) $(CFLAGS) source/testDelete.c -o Output/testDelete.o
-Output/testExpandedTimes.o:source/testExpandedTimes.c
-	$(CC) $(CFLAGS) source/testExpandedTimes.c -o Output/testExpandedTimes.o
-Output/testExpandedTimesIrreg.o:source/testExpandedTimesIrreg.c
-	$(CC) $(CFLAGS) source/testExpandedTimesIrreg.c -o Output/testExpandedTimesIrreg.o
-Output/testExpandedTimesIrreg2.o:source/testExpandedTimesIrreg2.c
-	$(CC) $(CFLAGS) source/testExpandedTimesIrreg2.c -o Output/testExpandedTimesIrreg2.o
-Output/testInternalIO.o:source/testInternalIO.c
-	$(CC) $(CFLAGS) source/testInternalIO.c -o Output/testInternalIO.o
-Output/testIO_Interface.o:source/testIO_Interface.c
-	$(CC) $(CFLAGS) source/testIO_Interface.c -o Output/testIO_Interface.o
-Output/testLocation.o:source/testLocation.c
-	$(CC) $(CFLAGS) source/testLocation.c -o Output/testLocation.o
-Output/testMisc.o:source/testMisc.c
-	$(CC) $(CFLAGS) source/testMisc.c -o Output/testMisc.o
-Output/testMultiUser.o:source/testMultiUser.c
-	$(CC) $(CFLAGS) source/testMultiUser.c -o Output/testMultiUser.o
-Output/testPairedData.o:source/testPairedData.c
-	$(CC) $(CFLAGS) source/testPairedData.c -o Output/testPairedData.o
-Output/TestPairedData2.o:source/TestPairedData2.c
-	$(CC) $(CFLAGS) source/TestPairedData2.c -o Output/TestPairedData2.o
-Output/TestPairedData3.o:source/TestPairedData3.c
-	$(CC) $(CFLAGS) source/TestPairedData3.c -o Output/TestPairedData3.o
-Output/testPairedData4.o:source/testPairedData4.c
-	$(CC) $(CFLAGS) source/testPairedData4.c -o Output/testPairedData4.o
-Output/testProfileIrreg.o:source/testProfileIrreg.c
-	$(CC) $(CFLAGS) source/testProfileIrreg.c -o Output/testProfileIrreg.o
-Output/testProfileReg.o:source/testProfileReg.c
-	$(CC) $(CFLAGS) source/testProfileReg.c -o Output/testProfileReg.o
-Output/testReclaim.o:source/testReclaim.c
-	$(CC) $(CFLAGS) source/testReclaim.c -o Output/testReclaim.o
-Output/testSqueeze.o:source/testSqueeze.c
-	$(CC) $(CFLAGS) source/testSqueeze.c -o Output/testSqueeze.o
-Output/testTextTable.o:source/testTextTable.c
-	$(CC) $(CFLAGS) source/testTextTable.c -o Output/testTextTable.o
-Output/testTimeSeries5.o:source/testTimeSeries5.c
-	$(CC) $(CFLAGS) source/testTimeSeries5.c -o Output/testTimeSeries5.o
-Output/testTimeSeriesPattern.o:source/testTimeSeriesPattern.c
-	$(CC) $(CFLAGS) source/testTimeSeriesPattern.c -o Output/testTimeSeriesPattern.o
-Output/testTimeSeriesStruct1.o:source/testTimeSeriesStruct1.c
-	$(CC) $(CFLAGS) source/testTimeSeriesStruct1.c -o Output/testTimeSeriesStruct1.o
-Output/testTimeSeriesStruct11.o:source/testTimeSeriesStruct11.c
-	$(CC) $(CFLAGS) source/testTimeSeriesStruct11.c -o Output/testTimeSeriesStruct11.o
-Output/testTimeSeriesStruct12.o:source/testTimeSeriesStruct12.c
-	$(CC) $(CFLAGS) source/testTimeSeriesStruct12.c -o Output/testTimeSeriesStruct12.o
-Output/testTimeSeriesStruct13.o:source/testTimeSeriesStruct13.c
-	$(CC) $(CFLAGS) source/testTimeSeriesStruct13.c -o Output/testTimeSeriesStruct13.o
-Output/testTimeSeriesStruct14.o:source/testTimeSeriesStruct14.c
-	$(CC) $(CFLAGS) source/testTimeSeriesStruct14.c -o Output/testTimeSeriesStruct14.o
-Output/testTimeSeriesStruct15.o:source/testTimeSeriesStruct15.c
-	$(CC) $(CFLAGS) source/testTimeSeriesStruct15.c -o Output/testTimeSeriesStruct15.o
-Output/testTimeSeriesStruct2.o:source/testTimeSeriesStruct2.c
-	$(CC) $(CFLAGS) source/testTimeSeriesStruct2.c -o Output/testTimeSeriesStruct2.o
-Output/testTimeSeriesStruct3.o:source/testTimeSeriesStruct3.c
-	$(CC) $(CFLAGS) source/testTimeSeriesStruct3.c -o Output/testTimeSeriesStruct3.o
-Output/testTimeSeriesStruct4.o:source/testTimeSeriesStruct4.c
-	$(CC) $(CFLAGS) source/testTimeSeriesStruct4.c -o Output/testTimeSeriesStruct4.o
-Output/testTimeSeriesStruct5.o:source/testTimeSeriesStruct5.c
-	$(CC) $(CFLAGS) source/testTimeSeriesStruct5.c -o Output/testTimeSeriesStruct5.o
-Output/testTin.o:source/testTin.c
-	$(CC) $(CFLAGS) source/testTin.c -o Output/testTin.o
-Output/testWriteRead.o:source/testWriteRead.c
-	$(CC) $(CFLAGS) source/testWriteRead.c -o Output/testWriteRead.o
-Output/testZtsProcessTimes.o:source/testZtsProcessTimes.c
-	$(CC) $(CFLAGS) source/testZtsProcessTimes.c -o Output/testZtsProcessTimes.o
-Output/testztsStructBill.o:source/testztsStructBill.c
-	$(CC) $(CFLAGS) source/testztsStructBill.c -o Output/testztsStructBill.o
-Output/TestDssC.o:TestDssC.c
-	$(CC) $(CFLAGS) TestDssC.c -o Output/TestDssC.o
-
-OBJS=\
-Output/TestUtility.o\
-Output/Bulletin_17C_SSP_Issue.o\
-Output/testDateFunctions.o\
-Output/addLocation.o\
-Output/comparePDs.o\
-Output/compareProfiles.o\
-Output/compareTss.o\
-Output/findInFile.o\
-Output/miscTests.o\
-Output/profileExcel.o\
-Output/runTests.o\
-Output/SamleTimeSeries.o\
-Output/SampleTimeSeries3.o\
-Output/testAdHoc.o\
-Output/testAlias.o\
-Output/testArrayWriteRead.o\
-Output/testBufferedIO.o\
-Output/testCatalog.o\
-Output/testConversion.o\
-Output/testDateTime.o\
-Output/testDelete.o\
-Output/testExpandedTimes.o\
-Output/testExpandedTimesIrreg.o\
-Output/testExpandedTimesIrreg2.o\
-Output/testInternalIO.o\
-Output/testIO_Interface.o\
-Output/testLocation.o\
-Output/testMisc.o\
-Output/testMultiUser.o\
-Output/testPairedData.o\
-Output/TestPairedData2.o\
-Output/TestPairedData3.o\
-Output/testPairedData4.o\
-Output/testProfileIrreg.o\
-Output/testProfileReg.o\
-Output/testReclaim.o\
-Output/testSqueeze.o\
-Output/testTextTable.o\
-Output/testTimeSeries5.o\
-Output/testTimeSeriesPattern.o\
-Output/testTimeSeriesStruct1.o\
-Output/testTimeSeriesStruct11.o\
-Output/testTimeSeriesStruct12.o\
-Output/testTimeSeriesStruct13.o\
-Output/testTimeSeriesStruct14.o\
-Output/testTimeSeriesStruct15.o\
-Output/testTimeSeriesStruct2.o\
-Output/testTimeSeriesStruct3.o\
-Output/testTimeSeriesStruct4.o\
-Output/testTimeSeriesStruct5.o\
-Output/testTin.o\
-Output/testWriteRead.o\
-Output/testZtsProcessTimes.o\
-Output/testztsStructBill.o\
-Output/TestDssC.o
 
 
-Dss-C:$(OBJS)
+Output/%.o:source/%.c
+	$(CC) $(CFLAGS) $^ -o $@
+Output/%.o:%.c
+	$(CC) $(CFLAGS) $^ -o  $@
+
+OBJS:sh=find ./source | grep \\.c$ | sed 's/\.c$/.o/' | sed 's/source/Output/'
+OBJS2:sh=ls ./*.c | sed 's/\.c$/.o/' | sed 's/\.\//Output\//'
+
+Dss-C:$(OBJS) $(OBJS2)
+	echo $(OBJS) $(OBJS2)
 	f95 -mt -m64 -xcode=pic32 -xpagesize=4M Output/*.o ../../heclib/Output/heclib.a -o Output/Dss-C -lrt -lz -g -xs

@@ -11,7 +11,7 @@ namespace DSSUnitTests
   {
 
     //public const string BasePath = @"M:\_Projects\HEC-DSS\test-data\";
-    public const string BasePath = @"../../../dss-test-data/";
+    public const string BasePath = @"../../../../dss-test-data/";
 
     public static string GetSimpleTempFileName(string extension)
     {

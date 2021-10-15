@@ -302,7 +302,7 @@ namespace Hec {
 
 				static long long ZInquire(array<long long>^% ifltab, String^ request);
 
-				static int ZInquireChar(array<long long>^% ifltab, String^ request, String^ creturn, size_t creturnSize, array<int>^% number);
+				static int ZInquireChar(array<long long>^% ifltab, String^ request, String^% creturn, size_t creturnSize, array<int>^% number);
 
 				static int ZFileName(String^% fullDssFilename, size_t sizeofFilename, String^ dssFileName, array<int>^% permission);
 

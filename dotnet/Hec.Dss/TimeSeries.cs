@@ -133,6 +133,8 @@ namespace Hec.Dss
     public LocationInformation LocationInformation { get; set; }
     public bool HasQuality { get { return Qualities != null; } }
 
+    public string ProgramName { get; internal set; }
+
     public TimeSeriesPoint this[int i]
     {
       get
