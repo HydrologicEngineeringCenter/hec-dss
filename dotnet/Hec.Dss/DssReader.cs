@@ -465,14 +465,7 @@ namespace Hec.Dss
 
       if (status == 0)
       {
-        innerTimeSeries.Path = dssPath;
-        innerTimeSeries.Units = blockTimeSeries.Units;
-        innerTimeSeries.Times = GetTsTimes(blockTimeSeries);
-        innerTimeSeries.Values = GetTsValues(blockTimeSeries);
-        innerTimeSeries.Qualities = blockTimeSeries.Quality;
-        innerTimeSeries.DataType = blockTimeSeries.Type;
-        var locationInfo = new LocationInformation(blockTimeSeries.locationStruct);
-        innerTimeSeries.LocationInformation = locationInfo;
+        SetTimeSeriesInfo(blockTimeSeries, innerTimeSeries);
 
         if (compression != TimeWindow.ConsecutiveValueCompression.None)
           innerTimeSeries = innerTimeSeries.Compress(compression);
@@ -488,6 +481,19 @@ namespace Hec.Dss
 
       return rVal;
       
+    }
+
+    private void SetTimeSeriesInfo(ZStructTimeSeriesWrapper fromTimeSeries, TimeSeries ToTimeSeries) 
+    {
+      ToTimeSeries.Path = new DssPath(fromTimeSeries.Pathname);
+      ToTimeSeries.Units = fromTimeSeries.Units;
+      ToTimeSeries.Times = GetTsTimes(fromTimeSeries);
+      ToTimeSeries.Values = GetTsValues(fromTimeSeries);
+      ToTimeSeries.Qualities = fromTimeSeries.Quality;
+      ToTimeSeries.DataType = fromTimeSeries.Type;
+      ToTimeSeries.ProgramName = fromTimeSeries.ProgramName;
+      var locationInfo = new LocationInformation(fromTimeSeries.locationStruct);
+      ToTimeSeries.LocationInformation = locationInfo;
     }
 
     /// <summary>

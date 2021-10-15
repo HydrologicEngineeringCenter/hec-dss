@@ -12,7 +12,6 @@ int TestPairedData3(long long *ifltab)
 	float *temp;
 	char label[20], labels[100];
 	int labelLength;
-	int len;
 	char pathname[100];
 	int numberValues;
 	int status, i, j;
