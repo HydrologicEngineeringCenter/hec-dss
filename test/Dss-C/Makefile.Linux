@@ -24,4 +24,5 @@ test:Dss-C
 
 
 Dss-C: $(obj)
+	mkdir -p Output
 	$(CC) -o Output/$@ $^ ../../heclib/Output/heclib.a $(LDFLAGS)
