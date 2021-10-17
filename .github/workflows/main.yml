@@ -28,7 +28,7 @@ jobs:
       - name: Checkout tools repo
         uses: actions/checkout@v2
         with:
-          repository: https://github.com/HydrologicEngineeringCenter/dss-test-data.git
+          repository: HydrologicEngineeringCenter/dss-test-data
           path: dss-test-data
 
       - uses: actions/setup-java@v2
