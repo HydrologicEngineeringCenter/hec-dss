@@ -1,73 +1,19 @@
-#
-#  Dss-C testing makefile
-#
-#CSECURE=D_FORTIFY_SOURCE=2  -O2
+#  Dss-C 
 CFLAGS=-m64 -c -fPIC -g -std=gnu99 -I../../heclib/headers -I. -Werror=implicit-function-declaration --pipe  -D__linux__
 
-OBJS=\
-Output/TestUtility.o\
-Output/Bulletin_17C_SSP_Issue.o\
-Output/testDateFunctions.o\
-Output/addLocation.o\
-Output/comparePDs.o\
-Output/compareProfiles.o\
-Output/compareTss.o\
-Output/findInFile.o\
-Output/miscTests.o\
-Output/profileExcel.o\
-Output/runTests.o\
-Output/SamleTimeSeries.o\
-Output/SampleTimeSeries3.o\
-Output/testAdHoc.o\
-Output/testAlias.o\
-Output/testArrayWriteRead.o\
-Output/testBufferedIO.o\
-Output/testCatalog.o\
-Output/testConversion.o\
-Output/testDateTime.o\
-Output/testDelete.o\
-Output/testExpandedTimes.o\
-Output/testExpandedTimesIrreg.o\
-Output/testExpandedTimesIrreg2.o\
-Output/testInternalIO.o\
-Output/testIO_Interface.o\
-Output/testLocation.o\
-Output/testMisc.o\
-Output/testMultiUser.o\
-Output/testPairedData.o\
-Output/TestPairedData2.o\
-Output/TestPairedData3.o\
-Output/testPairedData4.o\
-Output/testProfileIrreg.o\
-Output/testProfileReg.o\
-Output/testReclaim.o\
-Output/testSqueeze.o\
-Output/testTextTable.o\
-Output/testTimeSeries5.o\
-Output/testTimeSeriesPattern.o\
-Output/testTimeSeriesStruct1.o\
-Output/testTimeSeriesStruct11.o\
-Output/testTimeSeriesStruct12.o\
-Output/testTimeSeriesStruct13.o\
-Output/testTimeSeriesStruct14.o\
-Output/testTimeSeriesStruct15.o\
-Output/testTimeSeriesStruct2.o\
-Output/testTimeSeriesStruct3.o\
-Output/testTimeSeriesStruct4.o\
-Output/testTimeSeriesStruct5.o\
-Output/testTin.o\
-Output/testWriteRead.o\
-Output/testZtsProcessTimes.o\
-Output/testztsStructBill.o\
-Output/TestDssC.o\
-Output/zlockdss.o\
-Output/testRecordInfo.o
+csrc = $(wildcard source/*.c) \
+       $(wildcard *.c) 
+
+obj = $(csrc:.c=.o)
+
+LDFLAGS = -lz -lrt -lgfortran -lm
+
 
 all:Dss-C
 	(cd ../../heclib; make -f Makefile.Linux)
 
 clean:
-	$(RM) Output/*.o Output/Dss-C
+	$(RM) source/*.o *.o ./Output/Dss-C
 
 test:Dss-C
 	(cd ../../heclib; make -f Makefile.Linux)
@@ -75,15 +21,7 @@ test:Dss-C
 	rm -f Output/*.dss
 	cp ../../dss-test-data/*.dss ./Output/
 	(cd Output; ./Dss-C test)
-	#(cd Output; valgrind --track-origins=yes  --log-file=vg.txt ./Dss-C)
 
-Output/%.o:source/%.c
-	$(CC) $(CFLAGS) $^ -o $@
-Output/%.o:./../../heclib/Dss7/System/%.c
-	$(CC) $(CFLAGS) $^ -o $@
-Output/%.o:%.c
-	$(CC) $(CFLAGS) $^ -o $@
 
-Dss-C:$(OBJS)
-	#$(CC)  ${C_FLAGS}  ../../heclib/heclib_c_v6v7/Output/*.o ../../heclib/heclib_f_v6v7/Output/*.o Output/*.o -o Output/Dss-C -lz -lrt -lgfortran -lm 
-	$(CC)  ${C_FLAGS}  Output/*.o ../../heclib/Output/heclib.a -o Output/Dss-C -lz -lrt -lgfortran -lm 	
+Dss-C: $(obj)
+	$(CC) -o Output/$@ $^ ../../heclib/Output/heclib.a $(LDFLAGS)
