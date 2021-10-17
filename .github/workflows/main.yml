@@ -29,10 +29,15 @@ jobs:
           distribution: 'adopt'
           java-version: '8'
                       
-      - name: build
+      - name: build main library
         run: |
           cd heclib
           make -f Makefile.Linux
+
+      - name: build and run Dss-C test program
+        run: |
+          cd test/Dss-C
+          make -f Makefile.Linux test
 
       # Runs a single command using the runners shell
       - name: Run a one-line script
