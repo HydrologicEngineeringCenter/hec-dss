@@ -76,6 +76,12 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 5.0.x
+        
+    - name: Install Nuget
+      uses: nuget/setup-nuget@v1
+    
+    - name: Restore Nuget Packages
+      run: nuget restore dss.sln
 
     # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
     - name: Setup MSBuild.exe
