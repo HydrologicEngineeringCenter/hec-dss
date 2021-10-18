@@ -87,9 +87,8 @@ jobs:
     - name: Setup MSBuild.exe
       uses: microsoft/setup-msbuild@v1.0.2
       
-    - name: Build DotNetTests
-      run: msbuild "dss.sln" /nologo "/target:_net\DotNetTests" /t:build "/p:Configuration=Release" "/p:Platform=x64"
-
+    - name: Build Solution
+      run: msbuild "dss.sln" /t:build "/p:Configuration=Release" "/p:Platform=x64"
 
     # Execute all unit tests in the solution
     - name: Execute unit tests
