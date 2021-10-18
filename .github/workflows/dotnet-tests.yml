@@ -88,7 +88,7 @@ jobs:
       uses: microsoft/setup-msbuild@v1.0.2
       
     - name: Build Solution
-      run: msbuild "dss.sln" /t:rebuild "/p:Configuration=Release" "/p:Platform=x64"
+      run: build_release.bat
 
     # Execute all unit tests in the solution
     - name: Execute unit tests
