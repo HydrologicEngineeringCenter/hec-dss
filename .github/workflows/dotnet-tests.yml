@@ -79,6 +79,13 @@ jobs:
         
     - name: Install Nuget
       uses: nuget/setup-nuget@v1
+      
+    - name: Install MingW
+    - uses: msys2/setup-msys2@v2
+      with:
+        update: true
+        install: >-
+          mingw-w64-x86_64-gcc-fortran
     
     - name: Restore Nuget Packages
       run: nuget restore dss.sln
