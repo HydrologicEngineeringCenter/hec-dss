@@ -1,0 +1,21 @@
+# based on examples at https://makefiletutorial.com/
+TARGET_LIB := libhec_c.a
+BUILD_DIR := ./Output
+SRC_DIRS := ./src
+CWARNING=-Werror=implicit-function-declaration
+FDEBUG=-fcheck=all,no-recursion
+CFLAGS=-m64 -c -fPIC -g -std=gnu99 -Isrc/headers $(CWARNING) -D__linux__
+SRCS := $(shell find $(SRC_DIRS) -name '*.c' )
+
+OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
+
+$(BUILD_DIR)/$(TARGET_LIB): $(OBJS)
+	$(AR) -r $@  $(OBJS)  
+
+$(BUILD_DIR)/%.c.o: %.c
+	mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+.PHONY: clean
+clean:
+	rm -r $(BUILD_DIR)
