@@ -52,9 +52,8 @@ jobs:
      #matrix:
         #configuration: [Debug, Release]
 
-    runs-on: windows-latest  # For a list of available runner types, refer to
-                             # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
-
+    runs-on: windows-latest
+        
     env:
       Solution_Name: dss.sln                         # Replace with your solution name, i.e. MyWpfApp.sln.
       Test_Project_Path: dotnet\DotNetTests\DotNetTests.csproj                 # Replace with the path to your test project, i.e. MyWpfApp.Tests\MyWpfApp.Tests.csproj.
@@ -80,12 +79,22 @@ jobs:
     - name: Install Nuget
       uses: nuget/setup-nuget@v1
       
-    - name: Install MingW
+    #- name: Install MingW
+     # uses: msys2/setup-msys2@v2
+     # with:
+   #     update: true
+    #    install: >-
+     #     mingw-w64-x86_64-gcc-fortran
+     
+    - name: Install MingW Tools
       uses: msys2/setup-msys2@v2
       with:
+        msystem: MINGW64
         update: true
-        install: >-
-          mingw-w64-x86_64-gcc-fortran
+        install: mingw-w64-x86_64-toolchain
+        
+    - name: Build Fortran
+      run: make -f ./heclib/heclib_f_v6v7/Makefile.Linux
     
     - name: Restore Nuget Packages
       run: nuget restore dss.sln
