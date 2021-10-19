@@ -1,5 +1,5 @@
 #  Dss-C 
-CFLAGS=-m64 -c -fPIC -g -std=gnu99 -I../../heclib/headers -I. -Werror=implicit-function-declaration --pipe  -D__linux__
+CFLAGS=-m64 -c -fPIC -g -std=gnu99 -I../../heclib/heclib_c/src/headers -I. -Werror=implicit-function-declaration --pipe  -D__linux__
 
 csrc = $(wildcard source/*.c) \
        $(wildcard *.c) 

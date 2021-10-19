@@ -14,6 +14,9 @@ all:
 	( cd ../nws_shef; make -j -f Makefile.Linux)
 	(cd heclib_c; make -j -f Makefile.Linux)
 	(cd heclib_f; make -j -f Makefile.Linux)
+	(mkdir -p Output)
+	( rm -f Output/heclib.a)
+	($(AR) -rcT Output/heclib.a ./heclib_c/Output/libhec_c.a ./heclib_f/Output/libhec_f.a )  
 	(cd javaHeclib; make -f Makefile.Linux)
 	ls -la ./javaHeclib/Output/*javaHeclib.*
 	

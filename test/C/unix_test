@@ -1,23 +1,22 @@
-#!/bin/bash
-# heclib7-testing/C/unix_test
+#!/bin/bash 
 # script to Compile and execute test C programs
-# K. Tarbet HEC Oct 2018
+# K. Tarbet HEC Oct 2021
 #
 
 HECLIB7="../../heclib"
-
+HINC="${HECLIB7}/heclib_c/src/headers"
 os="$(uname)"
 echo "os = ${os}"
 
 if [[ "$os" = "Linux" ]]; then
-   CFLAGS="-m64 -c -fPIC -g -std=gnu99 -I${HECLIB7}/headers"
+   CFLAGS="-m64 -c -fPIC -g -std=gnu99 -I${HINC}"
    LINK1="cc -m64 -fPIC "
    LINK2="-lz -lrt -lgfortran -lm"
 elif [[ "$os" = "SunOS" ]]; then
-   CFLAGS="-m64 -c -I${HECLIB7}/headers -mt -xcode=pic32 -xstrconst -xc99=all -xCC -g -xs"
+   CFLAGS="-m64 -c -I${HINC} -mt -xcode=pic32 -xstrconst -xc99=all -xCC -g -xs"
    LINK1="f95 -mt -m64 -xcode=pic32 -xpagesize=4M -lrt -lz -g -xs"
 fi
-
+echo ${CFLAGS}
 pass_count=0
 test_count=0
 fail_count=0
@@ -28,6 +27,7 @@ cp ../../dss-test-data/*.dss .
 
 test()
 {
+   echo "$1.c"
 cc $CFLAGS $1.c -o ./Output/$1.o
 # link
 $LINK1 ./Output/$1.o ${HECLIB7}/Output/heclib.a \
