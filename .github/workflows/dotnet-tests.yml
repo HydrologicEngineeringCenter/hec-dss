@@ -96,7 +96,9 @@ jobs:
         install: mingw-w64-x86_64-toolchain
         
     - name: Build Fortran
-      run: make -f ./heclib/heclib_f_v6v7/Makefile.Win
+      run: |
+        cd ./heclib/heclib_f_v6v7/
+        make -f ./Makefile.Win
     
     - name: Restore Nuget Packages
       run: nuget restore dss.sln
