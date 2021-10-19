@@ -1,8 +1,3 @@
-# heclib/Makefile.Linux
-# Karl Tarbet  - Updated October 2018
-# to create Solaris versoin, use the next line:
-# sed 's/Linux/Solaris/g' Makefile.Linux  >Makefile.Solaris
-#
 # SYSTEM SETUP -- for Linux compile
 																																		# 
 # yum install gcc-gfortran
@@ -17,9 +12,8 @@
 
 all:
 	( cd ../nws_shef; make -j -f Makefile.Linux)
-	(cd heclib_c_v6v7; make -j -f Makefile.Linux)
-	(cd heclib_f_v6v7; make -j -f Makefile.Linux)
-	($(AR) -r Output/heclib.a ./heclib_c_v6v7/Output/*.o ./heclib_f_v6v7/Output/*.o )  
+	(cd heclib_c; make -j -f Makefile.Linux)
+	(cd heclib_f; make -j -f Makefile.Linux)
 	(cd javaHeclib; make -f Makefile.Linux)
 	ls -la ./javaHeclib/Output/*javaHeclib.*
 	
@@ -27,8 +21,8 @@ all:
 clean:
 	( rm -f Output/*.a)
 	( cd ../nws_shef; make -f Makefile.Linux clean)
-	(cd heclib_c_v6v7; make -f Makefile.Linux clean)
-	(cd heclib_f_v6v7; make -f Makefile.Linux clean)
+	(cd heclib_c; make -f Makefile.Linux clean)
+	(cd heclib_f; make -f Makefile.Linux clean)
 	(cd javaHeclib; make -f Makefile.Linux clean)
 
 
