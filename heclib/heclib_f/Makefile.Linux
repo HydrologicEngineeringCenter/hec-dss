@@ -3,7 +3,7 @@ LIB := libhec_f.a
 FWARNINGS=-Warray-bounds -Wc-binding-type -Wcharacter-truncation
 FDEBUG=-fcheck=all,no-recursion
 FORTRAN=gfortran
-FFLAGS=-c -g -cpp -m64 -fPIC $(FWARNINGS) $(FDEBUG) -Isrc  
+FFLAGS=-c -g -cpp -m64 -fPIC $(FWARNINGS) $(FDEBUG) -Isrc/headers  
 
 
 BUILD_DIR := ./Output
