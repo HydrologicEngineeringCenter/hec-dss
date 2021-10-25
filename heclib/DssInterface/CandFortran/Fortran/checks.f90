@@ -133,7 +133,7 @@
     integer i, j
 
     do 100 i=1, number
-        do 100 j=1, length
+        do 99 j=1, length
         if (dataOrig(j, i).ne.dataRead(j, i)) then
             write (*,*)' '
             write (*,*)' '
@@ -146,6 +146,7 @@
             status = -1
             return
         endif
+ 99  continue
  100 continue
 
     status = 0
