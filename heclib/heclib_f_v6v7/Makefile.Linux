@@ -1,4 +1,4 @@
-FWARNINGS=-Warray-bounds -Wc-binding-type -Wcharacter-truncation
+FWARNINGS=-Warray-bounds -Wc-binding-type -Wcharacter-truncation -Werror
 FDEBUG=-fcheck=all
 FFLAGS=-c -g -cpp -m64 -fPIC $(FWARNINGS) $(FDEBUG) -I../Dss6/Fortran -I../headers  -D__linux__
 FORTRAN=gfortran

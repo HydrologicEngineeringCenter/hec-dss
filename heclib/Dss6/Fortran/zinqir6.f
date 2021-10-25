@@ -256,7 +256,7 @@ C     If a system error occurred, the system error message
 C     and number associated with that error
       ELSE IF (CFLAG.EQ.'ERRO') THEN
          INUMB = IERRMS
-         CALPHA = CERRMS
+         CALPHA = CERRMS(1:128)
 C
 C     System error index location in IFLTAB
       ELSE IF (CFLAG.EQ.'KSTA') THEN

@@ -27,7 +27,7 @@ JNIEXPORT void JNICALL Java_hec_heclib_util_Heclib_Hec_1zdblook
 		//   FIX ME - This address is int 4, not int 8!!!!!
 		larray = (long long*)malloc(length * 2 * sizeof(int));
 		zget((long long*)ifltab, laddress, (int *)larray, length, 2);	
-		zdebugout7_ ((long long*)ifltab, larray, laddress, length);	
+		zdebugout7_ ((long long*)ifltab, larray, (long long *)laddress, &length);	
 		free(larray);
 	}
 

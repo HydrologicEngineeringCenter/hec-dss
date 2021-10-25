@@ -20,14 +20,14 @@ JNIEXPORT void JNICALL Java_hec_heclib_util_Heclib_Hec_1zdebug1
     jstring jstr;
 
 	ival =		(int) j_ival;
-	ival8 =		(*env)->GetLongArrayElements (env, j_ival8, 0);
+	ival8 =		(long long *)(*env)->GetLongArrayElements (env, j_ival8, 0);
 	ibytes =	(*env)->GetIntArrayElements (env, j_ibytes, 0);
 
 	zdebug1_ (&ival, ival8, crval, cstrng, ibytes,
 		      sizeof(crval)-1, sizeof(cstrng)-1);
     
     /* Release */
-    (*env)->ReleaseLongArrayElements (env, j_ival8, ival8, 0); 
+    (*env)->ReleaseLongArrayElements (env, j_ival8, (jlong *)ival8, 0); 
 	(*env)->ReleaseIntArrayElements (env, j_ibytes, ibytes, 0); 
     
 	/* Send back crval as a string */

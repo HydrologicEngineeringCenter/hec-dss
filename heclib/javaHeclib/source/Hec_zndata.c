@@ -163,12 +163,12 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1zndata(
 		}
 	}
 
-	if (zgetVersion(ifltab) == 6) {
+	if (zgetVersion((long long *)ifltab) == 6) {
 		/*--------------------------------------------------*/
 		/* call the library routine and collect the results */
 		/*--------------------------------------------------*/
 		CHECK_EXCEPTION();
-		zndata6_(ifltab, ifpos, &juls, &isecs, cpath, npath, juld, isecd, idtype, istat, sizeof(cpath));
+		zndata6_((long long *)ifltab, ifpos, &juls, &isecs, cpath, npath, juld, isecd, idtype, istat, sizeof(cpath));
 		while (istat[0] == 0) {
 			CHECK_EXCEPTION();
 
@@ -193,7 +193,7 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1zndata(
 				CHECK_EXCEPTION();
 			}
 
-			zndata6_(ifltab, ifpos, &juls, &isecs, cpath, npath, juld, isecd, idtype, istat, sizeof(cpath));
+			zndata6_((long long *)ifltab, ifpos, &juls, &isecs, cpath, npath, juld, isecd, idtype, istat, sizeof(cpath));
 		}
 	}
 	else {

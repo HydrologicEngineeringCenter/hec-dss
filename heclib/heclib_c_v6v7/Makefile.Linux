@@ -1,7 +1,7 @@
 #
 # heclib C 
 #
-CWARNING=-Werror=implicit-function-declaration
+CWARNING=-Werror=implicit-function-declaration -Werror 
 #CSECURITY=-D_FORTIFY_SOURCE=2 -O2
 CFLAGS=-m64 -c -fPIC -g -std=gnu99 -I../headers -pipe $(CWARNING)  $(CSECURITY) -D__linux__
 

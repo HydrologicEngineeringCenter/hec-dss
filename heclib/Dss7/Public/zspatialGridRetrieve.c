@@ -291,10 +291,10 @@ int zspatialGridRetrieve(long long *ifltab, zStructSpatialGrid *gridStruct, int 
 
 		//  Retrieve floats: _cellSize,_xCoordOfGridCellZero,_yCoordOfGridCellZero,_nullValue
 		if (ztransfer->userHeader && (ztransfer->userHeaderNumber > 0)) {
-			convertDataArray(&ztransfer->userHeader[0], &gridStruct->_cellSize, 1, 1, 1);
-			convertDataArray(&ztransfer->userHeader[1], &gridStruct->_xCoordOfGridCellZero, 1, 1, 1);
-			convertDataArray(&ztransfer->userHeader[2], &gridStruct->_yCoordOfGridCellZero, 1, 1, 1);
-			convertDataArray(&ztransfer->userHeader[3], &gridStruct->_nullValue, 1, 1, 1);
+			convertDataArray(&ztransfer->userHeader[0], (int *)&gridStruct->_cellSize, 1, 1, 1);
+			convertDataArray(&ztransfer->userHeader[1], (int *)&gridStruct->_xCoordOfGridCellZero, 1, 1, 1);
+			convertDataArray(&ztransfer->userHeader[2], (int *)&gridStruct->_yCoordOfGridCellZero, 1, 1, 1);
+			convertDataArray(&ztransfer->userHeader[3], (int *)&gridStruct->_nullValue, 1, 1, 1);
 		}
 
 		if (gridStruct->_storageDataType == GRID_FLOAT) {

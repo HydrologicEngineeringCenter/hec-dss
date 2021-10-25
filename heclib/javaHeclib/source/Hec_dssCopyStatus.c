@@ -10,17 +10,17 @@ JNIEXPORT void JNICALL Java_hec_heclib_util_Heclib_Hec_1dssCopyStatus
     long *currentRec;
     long *currentPath;
 
-    numberRecs =  (*env)->GetIntArrayElements (env, j_numberRecs,  0);
-	numberPaths = (*env)->GetIntArrayElements (env, j_numberPaths, 0);
-	currentRec =  (*env)->GetIntArrayElements (env, j_currentRec,  0);
-	currentPath = (*env)->GetIntArrayElements (env, j_currentPath, 0);
+    numberRecs =  (long *)(*env)->GetIntArrayElements (env, j_numberRecs,  0);
+	numberPaths = (long *)(*env)->GetIntArrayElements (env, j_numberPaths, 0);
+	currentRec =  (long *)(*env)->GetIntArrayElements (env, j_currentRec,  0);
+	currentPath = (long *)(*env)->GetIntArrayElements (env, j_currentPath, 0);
 
 	dsscopystatus_((int *)numberRecs, (int *)numberPaths, (int *)currentRec, 
 		           (int *)currentPath);
 
-	(*env)->ReleaseIntArrayElements (env, j_numberRecs , numberRecs,  0);
-	(*env)->ReleaseIntArrayElements (env, j_numberPaths, numberPaths, 0);
-	(*env)->ReleaseIntArrayElements (env, j_currentRec,  currentRec,  0);
-	(*env)->ReleaseIntArrayElements (env, j_currentPath, currentPath, 0);
+	(*env)->ReleaseIntArrayElements (env, j_numberRecs , (jint *)numberRecs,  0);
+	(*env)->ReleaseIntArrayElements (env, j_numberPaths, (jint *)numberPaths, 0);
+	(*env)->ReleaseIntArrayElements (env, j_currentRec,  (jint *)currentRec,  0);
+	(*env)->ReleaseIntArrayElements (env, j_currentPath, (jint *)currentPath, 0);
 	  
 }

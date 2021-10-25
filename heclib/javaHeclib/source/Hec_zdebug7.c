@@ -40,7 +40,7 @@ JNIEXPORT void JNICALL Java_hec_heclib_util_Heclib_Hec_1zdebug7
 	ival4b =	(*env)->GetIntArrayElements (env, j_ival4b, 0);
 	ibytes =	(*env)->GetIntArrayElements (env, j_ibytes, 0);
 
-	zdebug7_ (ival, ival8, ival4a, ival4b, cdval, crvala, crvalb, cstrng, ibytes,
+	zdebug7_ (ival, (long long *)ival8, ival4a, ival4b, cdval, crvala, crvalb, cstrng, ibytes,
 		      sizeof(cdval)-1, sizeof(crvala)-1, sizeof(crvalb)-1, sizeof(cstrng)-1);
     
     /* Release */

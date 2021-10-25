@@ -4,8 +4,7 @@
 # sed 's/Linux/Solaris/g' Makefile.Linux  >Makefile.Solaris
 #
 # SYSTEM SETUP -- for Linux compile
-# 
-# Install build packages
+																																		# 
 # yum install gcc-gfortran
 # yum install zlib-devel  
 # yum groupinstall "Development Tools"

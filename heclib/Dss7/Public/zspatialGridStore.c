@@ -238,7 +238,7 @@ int zspatialGridStore(long long *ifltab, zStructSpatialGrid *gridStruct) {
 		}
 #endif
 		if (getEndian()) {
-			zswap(dataValues, numLongs * 2);
+			zswap((long long *)dataValues, numLongs * 2);
 			zswitchInts(dataValues, numLongs * 2);
 		}
 
