@@ -104,7 +104,7 @@ C     Did we hit end of file?
 C
 C     Search through this record, looking for pathname flags
 C
-      DO 200 IWRD=1,NBSIZE
+      DO 199 IWRD=1,NBSIZE
 C
       IF (IARRAY(IWRD).EQ.NPFLAG) THEN
 C
@@ -411,6 +411,7 @@ C
       IF (IFTOLD(KSTAT).NE.0) GO TO 940
       IF (IFTNEW(KSTAT).NE.0) GO TO 940
 C
+ 199  CONTINUE
  200  CONTINUE
 C
 C

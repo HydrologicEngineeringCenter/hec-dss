@@ -86,7 +86,7 @@ C     Did we hit end of file?
 C
 C     Search through this record, looking for pathname flags
 C
-      DO 200 IWRD=1,NBSIZE
+      DO 199 IWRD=1,NBSIZE
 C
       IF (IARRAY(IWRD).EQ.NPFLAG) THEN
 C
@@ -141,6 +141,7 @@ C
       ENDIF
       ENDIF
 C
+ 199  CONTINUE
  200  CONTINUE
 
  800  CONTINUE
