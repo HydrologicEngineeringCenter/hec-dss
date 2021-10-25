@@ -21,7 +21,7 @@ jobs:
       - name: build main library
         run: |
           cd heclib
-          make -f Makefile.Linux
+          make
 
       - name: build and run Dss-C test program
         run: |
