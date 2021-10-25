@@ -1,10 +1,20 @@
 # based on examples at https://makefiletutorial.com/
+UNAME_S := $(shell uname -s)
+
+ifeq ($(UNAME_S),Linux)
+	CWARNING=-Werror=implicit-function-declaration
+	CFLAGS=-m64 -c -fPIC -g -std=gnu99 -Isrc/headers $(CWARNING) -D__linux__
+endif
+ifeq ($(UNAME_S),SunOS)
+	CFLAGS=-m64 -xmemalign=2i -xcode=pic32 -c -Isrc/headers -mt -xcode=abs64 -xstrconst -xc99=all -xCC -g -xs
+endif
+
 TARGET_LIB := libhec_c.a
 BUILD_DIR := ./Output
 SRC_DIRS := ./src
-CWARNING=-Werror=implicit-function-declaration
+CC=cc
+
 FDEBUG=-fcheck=all,no-recursion
-CFLAGS=-m64 -c -fPIC -g -std=gnu99 -Isrc/headers $(CWARNING) -D__linux__
 SRCS := $(shell find $(SRC_DIRS) -name '*.c' )
 
 OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
@@ -19,3 +29,4 @@ $(BUILD_DIR)/%.c.o: %.c
 .PHONY: clean
 clean:
 	rm -r $(BUILD_DIR)
+
