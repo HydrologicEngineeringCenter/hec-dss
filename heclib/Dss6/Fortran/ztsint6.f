@@ -187,7 +187,7 @@ C     Locate first and last data.
 C
       DO 120 J=1,NVALS
       I = NVALS - J + 1
- 120      
+ 120  CONTINUE    
 C
       IF(VALUES(I).NE.-901.0.AND.VALUES(I).NE.-902.0) GO TO 130
       GO TO 140
