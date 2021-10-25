@@ -206,8 +206,9 @@ C     First remove from IORDER any parts given by zeroing them out.
  120  CONTINUE
       IF (JPOS.GT.0) THEN
       DO 140 I=1,JPOS
-      DO 140 J=1,6
+      DO 139 J=1,6
       IF (JORDER(I).EQ.IORDER(J)) IORDER(J) = 0
+ 139  CONTINUE
  140  CONTINUE
       ENDIF
 C
