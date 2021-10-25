@@ -85,7 +85,7 @@ c    . $' /
 C    ===================================================================
 C
  
-      DATA   INITZ,BLNK4,BLNK3,LUNO / 0, '    ', '    ', -1 /
+      DATA   INITZ,BLNK4,BLNK3,LUNO / 0, '    ', '   ', -1 /
  
 C                   On first pass, get and save unit-no, format-type
 c     The ierr variable is used by 'shdece' routine to send in

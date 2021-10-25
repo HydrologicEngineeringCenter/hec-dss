@@ -220,7 +220,7 @@ C           FIND THE LAST '/' BEFORE 80TH COLUMN
 C Place saved beginning of .E line in buffer, then update time
             inext = 4
             if ( lpopt('J') .and. efmt ) then
-               cbuff = cdote(1:ndote)
+               cbuff(1:len(cdote)) = cdote(1:ndote)
                idum = inctim(intl,0,ntot-1,julf,iftime,jul,itime)
                if(ccen.eq.'YES') then
                  call j2sdt(jul,itime,cbuff(idycode+4:idycode+13),i)
