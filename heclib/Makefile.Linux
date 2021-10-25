@@ -1,15 +1,3 @@
-# SYSTEM SETUP -- for Linux compile
-# 
-# Install build packages
-# yum install gcc-gfortran
-# yum install zlib-devel  
-# yum groupinstall "Development Tools"
-# yum install java-1.8.0-openjdk-devel
-#
-# Set environment variable JAVA_HOME (2 options)
-#      (1.) echo export JAVA_HOME=/usr/lib/jvm/java >> /etc/profile (and get new shell)
-# (OR) (2.) echo export JAVA_HOME=/usr/lib/jvm/java >> ~/.bash_profile && . ~/.bash_profile
-
 
 all:
 	( cd ../nws_shef; make -j -f Makefile.Linux)

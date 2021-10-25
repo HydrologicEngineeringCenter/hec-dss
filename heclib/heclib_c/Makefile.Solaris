@@ -1,6 +1,6 @@
 CFLAGS=-m64 -xmemalign=2i -xcode=pic32 -c -I../headers -mt -xcode=abs64 -xstrconst -xc99=all -xCC -g -xs
 
-# -m64			Use –m64 to create 64-bit executables and shared libraries
+# -m64			Use -m64 to create 64-bit executables and shared libraries
 # -c			compile only, don't link
 # -mt			-mt is equivalent to -mt=yes (compile and link multithreaded code)
 # -xcode=abs64  Generates 64-bit absolute addresses. Available only on 64-bit architectures.
