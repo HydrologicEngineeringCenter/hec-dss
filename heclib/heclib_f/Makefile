@@ -1,3 +1,8 @@
+LIB := libhec_f.a 
+BUILD_DIR := ./Output
+SRC_DIRS := ./src
+
+
 UNAME_S := $(shell uname -s)
 
 ifeq ($(UNAME_S),Linux)
@@ -5,24 +10,17 @@ ifeq ($(UNAME_S),Linux)
 	FDEBUG=-fcheck=all,no-recursion
 	FORTRAN=gfortran
 	FFLAGS=-c -g -cpp -m64 -fPIC $(FWARNINGS) $(FDEBUG) -Isrc/headers  
+	FIND=find
 endif
 ifeq ($(UNAME_S),SunOS)
-	FFLAGS= -m64 -c -fpp -mt -xmemalign=2i -xcode=pic32 -xpagesize=4M -Isrc  -O
+	FFLAGS= -m64 -c -fpp -mt -xmemalign=2i -xcode=pic32 -xpagesize=4M -Isrc/headers  -O 
 	FORTRAN=f95
+	FIND=gfind
 endif
 
-LIB := libhec_f.a 
-
-FWARNINGS=-Warray-bounds -Wc-binding-type -Wcharacter-truncation
-FDEBUG=-fcheck=all,no-recursion
-
-FFLAGS=-c -g -cpp -m64 -fPIC $(FWARNINGS) $(FDEBUG) -Isrc/headers  
 
 
-BUILD_DIR := ./Output
-SRC_DIRS := ./src
-
-SRCS := $(shell find $(SRC_DIRS) -name '*.f' -or -name '*.f90' -or -name '*.for')
+SRCS := $(shell $(FIND) ./src -name '*.f' -or -name '*.f90' -or -name '*.for')
 OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
 
 $(BUILD_DIR)/$(LIB): $(OBJS)
@@ -39,8 +37,6 @@ $(BUILD_DIR)/%.f90.o: %.f90
 $(BUILD_DIR)/%.for.o: %.for
 	mkdir -p $(dir $@)
 	$(FORTRAN) $(FFLAGS) -c $< -o $@
-
-
 
 
 .PHONY: clean
