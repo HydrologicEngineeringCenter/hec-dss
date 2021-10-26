@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29411.108
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "heclib_c_v6v7", "heclib\heclib_c_v6v7\heclib_c_v6v7.vcxproj", "{DD025A40-2426-4CCE-B43A-380466B80A9A}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "heclib_c", "heclib\heclib_c\heclib_c.vcxproj", "{DD025A40-2426-4CCE-B43A-380466B80A9A}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "javaHeclib", "heclib\javaHeclib\javaHeclib.vcxproj", "{2CB4806F-7544-4788-93EC-A9D19AB8ECEA}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -11,7 +11,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "javaHeclib", "heclib\javaHe
 		{1E14E295-2F41-4E4E-A7CB-8C0A689A862B} = {1E14E295-2F41-4E4E-A7CB-8C0A689A862B}
 	EndProjectSection
 EndProject
-Project("{6989167D-11E4-40FE-8C1A-2192A86A7E90}") = "heclib_f_v6v7", "heclib\heclib_f_v6v7\heclib_f_v6v7.vfproj", "{1E14E295-2F41-4E4E-A7CB-8C0A689A862B}"
+Project("{6989167D-11E4-40FE-8C1A-2192A86A7E90}") = "heclib_f", "heclib\heclib_f\heclib_f.vfproj", "{1E14E295-2F41-4E4E-A7CB-8C0A689A862B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{9A22C444-4DFB-41FC-B22B-4BE01FA80546}"
 	ProjectSection(SolutionItems) = preProject
