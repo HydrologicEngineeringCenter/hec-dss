@@ -26,7 +26,7 @@ jobs:
       - name: build and run Dss-C test program
         run: |
           cd test/Dss-C
-          make -f Makefile.Linux test
+          make -f Makefile test
 
       # Runs a single command using the runners shell
       - name: Run a one-line script
