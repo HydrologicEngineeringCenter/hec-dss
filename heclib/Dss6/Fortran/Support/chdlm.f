@@ -16,9 +16,10 @@ C
 C     INSERT NEW DELIMITER VALUES
 C
       DO 20 I = IBEG, NUMB
-      ICH = ICHAR (CSTRNG(I:I))
-C     ICH = IEB2AS (ICH)
-20    ITBL(ICH) = ITYPE*100 + I
+          ICH = ICHAR (CSTRNG(I:I))
+C         ICH = IEB2AS (ICH)
+20        CONTINUE
+      ITBL(ICH) = ITYPE*100 + I
       RETURN
       END
 

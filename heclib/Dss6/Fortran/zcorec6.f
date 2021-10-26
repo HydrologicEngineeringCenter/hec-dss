@@ -143,9 +143,9 @@ C
 C     Reset the record information to match the old record
       ISVER = IBVER
       ISPREC = IPREC
-      CSPROG = CPROG
-      CSDATE = CDATE
-      CSTIME = CTIME
+      CSPROG = CPROG(1:8)
+      CSDATE = CDATE(1:9)
+      CSTIME = CTIME(1:4)
       IBVER = INFO(NPPWRD+KIVER)
       IPREC = INFO(NPPWRD+KIPREC)
       CALL HOLCHR (INFO(NPPWRD+KIPROG), 1, NPROGC, CPROG, 1)

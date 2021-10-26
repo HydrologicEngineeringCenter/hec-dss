@@ -137,7 +137,7 @@ C
 C
       IF (CNAME(ILEN:ILEN).EQ.'"') THEN
          ILEN = ILEN - 1
-         CNAME = CNAME(2:ILEN)
+         CNAME(1:ILEN) = CNAME(2:ILEN)
          ILEN = ILEN -1
       ENDIF
       CNAME(ILEN+1:ILEN+1) = CHAR(0)

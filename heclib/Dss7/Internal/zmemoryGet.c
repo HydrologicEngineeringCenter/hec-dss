@@ -78,7 +78,7 @@ int zmemoryGet(long long *ifltab, int arrayLoc, int size, const char* memName)
 	memory[size + 2] = DSS_MEMORY_INTEG_KEY;
 	memory += 2L;
 	//  Has to be kept like this - do not cast!
-	ifltab[arrayLoc] = memory;
+	ifltab[arrayLoc] = (long long)memory;
 
 	if (zmessageLevel(ifltab, MESS_METHOD_OPEN_ID, MESS_LEVEL_INTERNAL_DIAG_1)) {
 		zmessageDebugLong(ifltab, DSS_FUNCTION_zmemoryGet_ID, "Memory allocated at: ", ifltab[arrayLoc]);

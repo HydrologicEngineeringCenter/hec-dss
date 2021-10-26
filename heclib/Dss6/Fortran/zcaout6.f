@@ -125,7 +125,7 @@ C     null parts with the part "(null)"
                   IPOS = IPOS + 7
                ENDIF
  205        CONTINUE
-            CPATH = CSTR
+            CPATH = CSTR(1:392)
             CALL zupath (CPATH, IBPART, IEPART, ILPART, ISTAT)
             GO TO 215
          ENDIF

@@ -215,7 +215,7 @@ int ztsRetrieveIrreg6(long long *ifltab, zStructTimeSeries *tss,
 		tss->julianBaseDate = 0;
 	}
 
-	zinqir6_((int *)ifltab, "PREC", cdummy, &precision, 4, sizeof(cdummy));
+	zinqir6_(ifltab, "PREC", cdummy, &precision, 4, sizeof(cdummy));
 	readProgramName(ifltab, tss, status);
 	tss->precision = precision;
 

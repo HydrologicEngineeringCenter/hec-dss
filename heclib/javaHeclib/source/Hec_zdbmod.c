@@ -46,7 +46,7 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1zdbmod
 			nlongwords = (((int)strlen(characterValue) -1) / 8) + 1;
 			if (nlongwords < 10) {
 				charInt((void *)characterValue, (void *)charArray, (int)strlen(characterValue), (int)strlen(characterValue), 0, 1, 0);
-				status = zput(ifltab, laddress, charArray, nlongwords, 2);
+				status = zput(ifltab, laddress, (int *)charArray, nlongwords, 2);
 				if (laddress < (int)ifltab[zdssKeys.kfiHeadSize]) {
 					for (i=0; i<nlongwords; i++) {
 						fileHeader[(int)laddress+i] = charArray[i];
@@ -55,7 +55,7 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1zdbmod
 			}
 		}
 		else {
-			status = zput(ifltab, laddress, &lvalue, 1, 2);		
+			status = zput(ifltab, laddress, (int *)&lvalue, 1, 2);		
 			if (laddress < (int)ifltab[zdssKeys.kfiHeadSize]) {
 				fileHeader[(int)laddress] = lvalue;
 			}

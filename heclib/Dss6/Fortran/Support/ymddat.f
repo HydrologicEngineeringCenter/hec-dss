@@ -120,7 +120,7 @@ C     GET YEAR
       IF (JYR.LT.100) CALL ADDCENTURY (JYR)
       WRITE (CTEMP,'(I4.4)') JYR
       IF (L4CHYR) THEN
-      CYR = CTEMP
+      CYR = CTEMP(1:4)
       NYR = 4
       ELSE
       CYR = CTEMP(3:4)

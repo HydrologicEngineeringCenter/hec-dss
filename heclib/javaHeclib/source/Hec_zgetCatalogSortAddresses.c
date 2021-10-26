@@ -11,13 +11,13 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1zgetCatalogSortAddresses
 	int status;
 
     ifltab	= (*env)->GetIntArrayElements(env, j_ifltab, 0);
-    sortAddresses = (*env)->GetLongArrayElements (env, j_sortAddresses, 0);
+    sortAddresses = (long long*)(*env)->GetLongArrayElements (env, j_sortAddresses, 0);
 	sortAddressesLen = (int)j_sortAddressesLen;
 	
 	status = zgetCatalogSortAddresses((long long*)ifltab, sortAddresses, sortAddressesLen);
 
     (*env)->ReleaseIntArrayElements (env, j_ifltab, ifltab, 0);
-    (*env)->ReleaseLongArrayElements (env, j_sortAddresses, sortAddresses, 0);
+    (*env)->ReleaseLongArrayElements (env, j_sortAddresses, (jlong *)sortAddresses, 0);
 
 	return (jint)status;
 }

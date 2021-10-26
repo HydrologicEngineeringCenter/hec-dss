@@ -83,7 +83,7 @@ C
       CALL ZUFPN (CPART(1), NPART(1), CPART(2), NPART(2),
      * CPART(3), NPART(3), CPART(4), NPART(4), CPART(5), NPART(5),
      * CPART(6), NPART(6), cpathFrom, npathFrom, ISTAT)
-      CDATE = CPART(4)
+      CDATE = CPART(4)(1:12)
       CEPART = CPART(5)
 C
       call zdataType (ifltabFrom, cpathFrom, IDTYPE, ISTAT)
@@ -170,7 +170,7 @@ C
             CALL ZOFSET6 (JULS, ISTIME, INTL, 2, IOFSET)
             CALL JULDAT(JULS, 4, CDATE, N)
        ELSE
-          CDATE = CPART(4)
+          CDATE = CPART(4)(1:12)
        ENDIF
 
       CALL ZPATH (CPART(1), CPART(2), CPART(3), CDATE, CEPART,

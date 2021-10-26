@@ -553,7 +553,7 @@ void catsort(
 				sprintf(&line[j],
 					"HECDSS Condensed %s\n",
 					strstr(header_lines[i], "Catalog of Record Pathnames"));
-				fprintf(condcatfile, line);
+				fprintf(condcatfile, "%s", line);
 			}
 			else if (!strncmp(header_lines[i], "     Pathnames Not Sorted", 25)
 				 || !strncmp(header_lines[i], "     Sort Order:", 16)) {

@@ -98,7 +98,7 @@ void C_CatalogToJava(
 	if (catStruct->sortAddresses) {
 		size = (jsize)catStruct->numberPathnames;
 		pathAddresses = (*env)->NewLongArray(env, size);
-		(*env)->SetLongArrayRegion(env, pathAddresses, 0, size, catStruct->sortAddresses); 
+		(*env)->SetLongArrayRegion(env, pathAddresses, 0, size, (const jlong *)catStruct->sortAddresses); 
 		fid = (*env)->GetFieldID (env, cls, "pathnameAddresses", "[J");
 		if (fid) {
 			(*env)->SetObjectField (env, j_dssCatalog, fid, pathAddresses);
@@ -156,7 +156,7 @@ void C_CatalogToJava(
 		else if (fid) {
 			size = (jsize)catStruct->numberPathnames;
 			lastWriteTimeRecord = (*env)->NewLongArray(env, size);
-			(*env)->SetLongArrayRegion(env, lastWriteTimeRecord, 0, size, catStruct->lastWriteTimeRecord); 
+			(*env)->SetLongArrayRegion(env, lastWriteTimeRecord, 0, size, (const jlong *)catStruct->lastWriteTimeRecord); 
 			(*env)->SetObjectField (env, j_dssCatalog, fid, lastWriteTimeRecord);
 			(*env)->DeleteLocalRef(env, lastWriteTimeRecord);
 		}
@@ -170,7 +170,7 @@ void C_CatalogToJava(
 		else if (fid) {
 			size = (jsize)catStruct->numberPathnames;
 			pathnameHash = (*env)->NewLongArray(env, size);
-			(*env)->SetLongArrayRegion(env, pathnameHash, 0, size, catStruct->pathnameHash); 
+			(*env)->SetLongArrayRegion(env, pathnameHash, 0, size, (const jlong *)catStruct->pathnameHash); 
 			(*env)->SetObjectField (env, j_dssCatalog, fid, pathnameHash);
 			(*env)->DeleteLocalRef(env, pathnameHash);
 		}

@@ -1,7 +1,7 @@
 I_RHEL_JNI=-I/usr/lib/jvm/java/include -I/usr/lib/jvm/java/include/linux
 I_UBUNTU_JNI=-I${JAVA_HOME}/include -I${JAVA_HOME}/include/linux
 
-CFLAGS=-m64 -c -fPIC -g -std=gnu99 $(I_RHEL_JNI) $(I_UBUNTU_JNI) -I../headers -Werror=implicit-function-declaration  
+CFLAGS=-m64 -c -fPIC -g -std=gnu99 $(I_RHEL_JNI) $(I_UBUNTU_JNI) -Werror -I../headers -Werror=implicit-function-declaration  
 
 all: javaHeclib.a libjavaHeclib.so
 

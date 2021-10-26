@@ -85,7 +85,7 @@ C     Read physical record IREC from file
 C
 C     Search through this record, looking for pathname flags
 C
-      DO 200 IWRD=1,NBSIZE
+      DO 199 IWRD=1,NBSIZE
 C
       IF (IARRAY(IWRD).EQ.NPFLAG) THEN
 C
@@ -157,6 +157,7 @@ C
 C
 C
 C
+ 199  CONTINUE
  200  CONTINUE
 C
 C

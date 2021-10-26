@@ -817,7 +817,7 @@ static int
 fraccompare(a, b)
      register char *a, *b;
 {
-  register tmpa = UCHAR(*a), tmpb = UCHAR(*b);
+  register unsigned char tmpa = UCHAR(*a), tmpb = UCHAR(*b);
 
   if (tmpa == '.' && tmpb == '.')
     {
