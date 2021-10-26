@@ -26,7 +26,6 @@ BuildLog.htm
 *.o
 *.a
 *.so
-heclib/Makefile
 build.Linux.log
 build.Solaris.log
 test/C/Output
