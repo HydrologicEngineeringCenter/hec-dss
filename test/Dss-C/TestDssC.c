@@ -114,7 +114,7 @@ int main(int argc, char* argv[])
 
 	printf("\nSeconds elapsed: %f", elapsed);
 
-
+   return status;
 }
 int runTheTests() {
 	long long ifltab7[250];
