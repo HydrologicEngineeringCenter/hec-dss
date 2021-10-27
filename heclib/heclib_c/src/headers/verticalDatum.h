@@ -118,7 +118,7 @@ typedef struct vertical_datum_info_s {
     float offset_to_navd_88;
     int   offset_to_navd_88_is_estimate;
 } vertical_datum_info;
- 
+
 typedef struct text_boundary_info_s {
     char *first;
     char *first_non_blank;
@@ -132,6 +132,9 @@ typedef struct text_boundary_info_s {
     int   len_non_blank;
     int   len_with_boundaries;
 } text_boundary_info;
+
+char *string_from_user_header(const int *userHeader, int userHeaderSize);
+int *string_to_user_header(const char *str, int *intCount);
 /**
  * Returns the length of a buffer required to hold a base-64 encoding of an input buffer of the specified length.
  *

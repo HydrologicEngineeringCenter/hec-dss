@@ -4,6 +4,7 @@
 #include <ctype.h>
 #include <zlib.h>
 #include <verticalDatum.h>
+#include <hecdssInternal.h>
  
 //
 // The 64 valid characters used in base64 encoding (excluding pad character '='), in index order
@@ -30,6 +31,33 @@ static const unsigned char base64bytes[] = {255,255,255,255,255,255,255,255,255,
                                             255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,
                                             255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255};
  
+//
+// See verticalDatum.h for documentation
+//
+int *string_to_user_header(const char *str, int *intCount) {
+    int  numBytes = strlen(str);
+    int  numInts = numberIntsInBytes(numBytes);
+    int *userHeader = (int *)calloc(numInts, 4);
+    *intCount = numInts * 4;
+    charInt ((void *)str, userHeader, numBytes, *intCount, 0, 1, 0);
+    return userHeader;
+}
+//
+// See verticalDatum.h for documentation
+//
+char *string_from_user_header(const int *userHeader, int userHeaderSize) {
+    char *start = (char *)userHeader;
+    char *cp;
+    char *str;
+    int   len;
+    for (cp = start; *cp && cp - start < userHeaderSize * 4; ++cp);
+    len = cp - start;
+    str = malloc(len+1);
+    strncpy(str, start, len);
+    str[len] = '\0';
+    return str;
+}
+
 //
 // See verticalDatum.h for documentation
 //

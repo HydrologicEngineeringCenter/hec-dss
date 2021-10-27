@@ -5,8 +5,9 @@
 
 void main (int argc, char *argv[]) {
     long long ifltab[250];
-    int status;
+    int  status;
     int  intVal;
+    int *userHeader;
     char charVal[17];
 
     zquery("VERS", charVal, sizeof(charVal), &intVal);
@@ -78,6 +79,16 @@ void main (int argc, char *argv[]) {
     zquery("VDTM", charVal, sizeof(charVal), &intVal);
     assert(intVal == IVERTICAL_DATUM_UNSET);
     assert(!strcmp(charVal, CVERTICAL_DATUM_UNSET));
+
+    intVal = 0;
+    printf("CP1\n");
+    userHeader = string_to_user_header("This is a test string!", &intVal);
+    for (int i = 0; i < intVal; ++i) {
+        printf("%d\t0x%8.8x\n", i, userHeader[i]);
+    }
+    printf("%s\n", string_from_user_header(userHeader, intVal));
+
+    free(userHeader);
 
     exit(0);
 }

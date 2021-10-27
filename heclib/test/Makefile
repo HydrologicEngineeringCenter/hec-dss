@@ -8,7 +8,7 @@ ifeq ($(UNAME_S),Linux)
 	LD=gfortran
 	CWARNING=-Werror
 	CFLAGS=-c -m64 -fPIC -g -std=gnu99 -I$(INCL_DIRS) $(CWARNING) -D__linux__
-	LFLAGS=-lm
+	LFLAGS=-lm -lz
 endif
 
 all: testVerticalDatum7
