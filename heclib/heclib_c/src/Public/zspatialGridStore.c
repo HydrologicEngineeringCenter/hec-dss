@@ -58,7 +58,6 @@ int zspatialGridStore(long long *ifltab, zStructSpatialGrid *gridStruct) {
 	zStructTransfer* ztransfer;
 	void *buffer;
 	int bufsize;
-	int *values;
 	int *internalHeader;
 	if (!gridStruct) {
 		return zerrorProcessing(ifltab, DSS_FUNCTION_zspatialGridStore_ID, zdssErrorCodes.NULL_ARGUMENT,

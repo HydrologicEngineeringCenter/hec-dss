@@ -1,0 +1,34 @@
+name: Ubuntu
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      - name: Checkout tools repo
+        uses: actions/checkout@v2
+        with:
+          repository: HydrologicEngineeringCenter/dss-test-data
+          path: dss-test-data
+
+      - uses: actions/setup-java@v2
+        with:
+          distribution: 'adopt'
+          java-version: '8'
+                      
+      - name: build main library
+        run: |
+          cd heclib
+          make
+
+      - name: build and run Dss-C test program
+        run: |
+          cd test/Dss-C
+          make -f Makefile test
+
+      # Runs a single command using the runners shell
+      - name: Run a one-line script
+        run: java -version
+

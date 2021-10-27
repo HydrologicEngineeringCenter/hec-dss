@@ -1,5 +1,5 @@
 #pragma once
-#include "..\headers\hecdssInternal.h"
+#include "hecdssinternal.h"
 #include "version_build.h"
 
 #define STRINGIZE2(s) #s

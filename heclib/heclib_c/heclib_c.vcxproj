@@ -1,0 +1,640 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Dss6\closf.c" />
+    <ClCompile Include="src\Dss6\deleteFile.c" />
+    <ClCompile Include="src\Dss6\filesize.c" />
+    <ClCompile Include="src\Dss6\flushf.c" />
+    <ClCompile Include="src\Dss6\isonlocaldrive.c" />
+    <ClCompile Include="src\Dss6\lockdss.c" />
+    <ClCompile Include="src\Dss6\openf.c" />
+    <ClCompile Include="src\Dss6\readf.c" />
+    <ClCompile Include="src\Dss6\readProgramName.c" />
+    <ClCompile Include="src\Dss6\seekf.c" />
+    <ClCompile Include="src\Dss6\waits.c" />
+    <ClCompile Include="src\Dss6\writf.c" />
+    <ClCompile Include="src\Dss6\zcatalog6Internal.c" />
+    <ClCompile Include="src\Dss6\zgetRecordBasics6.c" />
+    <ClCompile Include="src\Dss6\zgetRecordSize6.c" />
+    <ClCompile Include="src\Dss6\ztsGetSizes6.c" />
+    <ClCompile Include="src\Dss6\ztsRetrieveIrreg6.c" />
+    <ClCompile Include="src\Dss6\ztsRetrieveReg6.c" />
+    <ClCompile Include="src\Dss6\ztsStoreIrreg6.c" />
+    <ClCompile Include="src\Dss6\ztsStoreReg6.c" />
+    <ClCompile Include="src\DssInterface\missingFlag_.c" />
+    <ClCompile Include="src\DssInterface\secondsToTimeString_.c" />
+    <ClCompile Include="src\DssInterface\timeStringToSeconds_.c" />
+    <ClCompile Include="src\DssInterface\v6and7\zcheck.c" />
+    <ClCompile Include="src\DssInterface\v6and7\zclose.c" />
+    <ClCompile Include="src\DssInterface\v6and7\zconvertVersion.c" />
+    <ClCompile Include="src\DssInterface\v6and7\zcopyRecord.c" />
+    <ClCompile Include="src\DssInterface\v6and7\zdataType.c" />
+    <ClCompile Include="src\DssInterface\v6and7\zdelete.c" />
+    <ClCompile Include="src\DssInterface\v6and7\zgetInfo.c" />
+    <ClCompile Include="src\DssInterface\v6and7\zgetRecordBasics.c" />
+    <ClCompile Include="src\DssInterface\v6and7\zgetRecordSize.c" />
+    <ClCompile Include="src\DssInterface\v6and7\zhandle.c" />
+    <ClCompile Include="src\DssInterface\v6and7\zopen.c" />
+    <ClCompile Include="src\DssInterface\v6and7\zopenExtended.c" />
+    <ClCompile Include="src\DssInterface\v6and7\zpdRetrieve6.c" />
+    <ClCompile Include="src\DssInterface\v6and7\zpdStore6.c" />
+    <ClCompile Include="src\DssInterface\v6and7\zputInfo.c" />
+    <ClCompile Include="src\DssInterface\v6and7\zread.c" />
+    <ClCompile Include="src\DssInterface\v6and7\zreada.c" />
+    <ClCompile Include="src\DssInterface\v6and7\zreadc.c" />
+    <ClCompile Include="src\DssInterface\v6and7\zreadx.c" />
+    <ClCompile Include="src\DssInterface\v6and7\zrecordAddresses.c" />
+    <ClCompile Include="src\DssInterface\v6and7\zset.c" />
+    <ClCompile Include="src\DssInterface\v6and7\zsqueeze.c" />
+    <ClCompile Include="src\DssInterface\v6and7\ztsGetSizes.c" />
+    <ClCompile Include="src\DssInterface\v6and7\ztsOtherStuff.c" />
+    <ClCompile Include="src\DssInterface\v6and7\zundelete.c" />
+    <ClCompile Include="src\DssInterface\v6and7\zwrite.c" />
+    <ClCompile Include="src\DssInterface\v6and7\zwritea.c" />
+    <ClCompile Include="src\DssInterface\v6and7\zwritec.c" />
+    <ClCompile Include="src\DssInterface\v6and7\zwritex.c" />
+    <ClCompile Include="src\DssInterface\zcheckfilever_.c" />
+    <ClCompile Include="src\DssInterface\zclose_.c" />
+    <ClCompile Include="src\DssInterface\zdebugout7.c" />
+    <ClCompile Include="src\DssInterface\zdelete_.c" />
+    <ClCompile Include="src\DssInterface\zerrorDecode_.c" />
+    <ClCompile Include="src\DssInterface\zfname.c" />
+    <ClCompile Include="src\DssInterface\zgetinterval_.c" />
+    <ClCompile Include="src\DssInterface\zgetVersion_.c" />
+    <ClCompile Include="src\DssInterface\zget_.c" />
+    <ClCompile Include="src\DssInterface\zirbeg7_.c" />
+    <ClCompile Include="src\DssInterface\zopenExtended_.c" />
+    <ClCompile Include="src\DssInterface\zopen_.c" />
+    <ClCompile Include="src\DssInterface\zpathnameFormFortran_.c" />
+    <ClCompile Include="src\DssInterface\zpathnameGetPart_.c" />
+    <ClCompile Include="src\DssInterface\zpdStore_.c" />
+    <ClCompile Include="src\DssInterface\zquery7_.c" />
+    <ClCompile Include="src\DssInterface\zritsi7_.c" />
+    <ClCompile Include="src\DssInterface\zrpdi7_.c" />
+    <ClCompile Include="src\DssInterface\zrtxts7_.c" />
+    <ClCompile Include="src\DssInterface\zsits7_.c" />
+    <ClCompile Include="src\DssInterface\zspdi7_.c" />
+    <ClCompile Include="src\DssInterface\ztextRetrieveArray_.c" />
+    <ClCompile Include="src\DssInterface\ztextRetrieveString_.c" />
+    <ClCompile Include="src\DssInterface\ztextRetrieveUnit_.c" />
+    <ClCompile Include="src\DssInterface\ztextstorearray_.c" />
+    <ClCompile Include="src\DssInterface\ztextStoreUnit_.c" />
+    <ClCompile Include="src\DssInterface\ztsends_.c" />
+    <ClCompile Include="src\DssInterface\ztsinfo7_.c" />
+    <ClCompile Include="src\DssInterface\ztsIrregRetrieveFull_.c" />
+    <ClCompile Include="src\DssInterface\ztsIrregStoreFull_.c" />
+    <ClCompile Include="src\DssInterface\ztsRetrieveIrregArgs.c" />
+    <ClCompile Include="src\DssInterface\ztsRetrieveRegArgs.c" />
+    <ClCompile Include="src\DssInterface\ztssrch7_.c" />
+    <ClCompile Include="src\DssInterface\ztsStoreIrregArgs.c" />
+    <ClCompile Include="src\DssInterface\ztsStoreRegArgs.c" />
+    <ClCompile Include="src\DssInterface\ztsStoreStuff.c" />
+    <ClCompile Include="src\DssInterface\zundelete_.c" />
+    <ClCompile Include="src\Internal\charInt.c" />
+    <ClCompile Include="src\Internal\charLong.c" />
+    <ClCompile Include="src\Internal\powf_wrap.c" />
+    <ClCompile Include="src\Internal\zbinNew.c" />
+    <ClCompile Include="src\Internal\zbinUpdate.c" />
+    <ClCompile Include="src\Internal\zcatalogInternal.c" />
+    <ClCompile Include="src\Internal\zcatComparePath.c" />
+    <ClCompile Include="src\Internal\zcatInternalSort.c" />
+    <ClCompile Include="src\Internal\zcatParsePath.c" />
+    <ClCompile Include="src\Internal\zcatSortPath.c" />
+    <ClCompile Include="src\Internal\zcharTo8Byte.c" />
+    <ClCompile Include="src\Internal\zcheckAccessReset.c" />
+    <ClCompile Include="src\Internal\zcheckInternal.c" />
+    <ClCompile Include="src\Internal\zcheckKeys.c" />
+    <ClCompile Include="src\Internal\zcheckMultiUser.c" />
+    <ClCompile Include="src\Internal\zcloseInternal.c" />
+    <ClCompile Include="src\Internal\zcollectionsPath.c" />
+    <ClCompile Include="src\Internal\zcompareRecordStatus.c" />
+    <ClCompile Include="src\Internal\zcopyRecordInternal.c" />
+    <ClCompile Include="src\Internal\zdeleteInternal.c" />
+    <ClCompile Include="src\Internal\zerrorDecode.c" />
+    <ClCompile Include="src\Internal\zerrorEncode.c" />
+    <ClCompile Include="src\Internal\zerrorEncodeHigh.c" />
+    <ClCompile Include="src\Internal\zerrorMessage.c" />
+    <ClCompile Include="src\Internal\zerrorProcessing.c" />
+    <ClCompile Include="src\Internal\zerrorSave.c" />
+    <ClCompile Include="src\Internal\zerrorSeverity.c" />
+    <ClCompile Include="src\Internal\zerrorUpdate.c" />
+    <ClCompile Include="src\Internal\zflushBuffers.c" />
+    <ClCompile Include="src\Internal\zflushToDisk.c" />
+    <ClCompile Include="src\Internal\zget.c" />
+    <ClCompile Include="src\Internal\zgetBuff.c" />
+    <ClCompile Include="src\Internal\zgetCatalogSortAddresses.c" />
+    <ClCompile Include="src\Internal\zgetFileSpace.c" />
+    <ClCompile Include="src\Internal\zgetFunctionName.c" />
+    <ClCompile Include="src\Internal\zgetInternalPath.c" />
+    <ClCompile Include="src\Internal\zgetRecordBasics7.c" />
+    <ClCompile Include="src\Internal\zgetRecordSize7.c" />
+    <ClCompile Include="src\Internal\zhash.c" />
+    <ClCompile Include="src\Internal\zinit.c" />
+    <ClCompile Include="src\Internal\zinitIfltab.c" />
+    <ClCompile Include="src\Internal\zisaCollection.c" />
+    <ClCompile Include="src\Internal\zloadCache.c" />
+    <ClCompile Include="src\Internal\zlocationUpdatePerm.c" />
+    <ClCompile Include="src\Internal\zlockActive.c" />
+    <ClCompile Include="src\Internal\zlockingOld.c" />
+    <ClCompile Include="src\Internal\zlockPassive.c" />
+    <ClCompile Include="src\Internal\zmemoryFree.c" />
+    <ClCompile Include="src\Internal\zmemoryGet.c" />
+    <ClCompile Include="src\Internal\zmessage.c" />
+    <ClCompile Include="src\Internal\zmessageDebug.c" />
+    <ClCompile Include="src\Internal\zmessageInterface.c" />
+    <ClCompile Include="src\Internal\zmessageLevel.c" />
+    <ClCompile Include="src\Internal\zmessageZget.c" />
+    <ClCompile Include="src\Internal\zmessageZput.c" />
+    <ClCompile Include="src\Internal\zmessConcat.c" />
+    <ClCompile Include="src\Internal\znewFileSize.c" />
+    <ClCompile Include="src\Internal\zopenInternal.c" />
+    <ClCompile Include="src\Internal\zpdUnitsToHead.c" />
+    <ClCompile Include="src\Internal\zpermCreate.c" />
+    <ClCompile Include="src\Internal\zpermRead.c" />
+    <ClCompile Include="src\Internal\zpermWrite.c" />
+    <ClCompile Include="src\Internal\zpidWrite.c" />
+    <ClCompile Include="src\Internal\zprintFileInfo.c" />
+    <ClCompile Include="src\Internal\zprintKeys.c" />
+    <ClCompile Include="src\Internal\zput.c" />
+    <ClCompile Include="src\Internal\zputBuff.c" />
+    <ClCompile Include="src\Internal\zreadInfo.c" />
+    <ClCompile Include="src\Internal\zreadInfoBlock.c" />
+    <ClCompile Include="src\Internal\zreadInternal.c" />
+    <ClCompile Include="src\Internal\zreclaimRead.c" />
+    <ClCompile Include="src\Internal\zreclaimSet.c" />
+    <ClCompile Include="src\Internal\zreclaimWrite.c" />
+    <ClCompile Include="src\Internal\zreleaseFileSpace.c" />
+    <ClCompile Include="src\Internal\zsetCatalogSortAddresses.c" />
+    <ClCompile Include="src\Internal\zsetMessageLevel.c" />
+    <ClCompile Include="src\Internal\ztsAggregate.c" />
+    <ClCompile Include="src\Internal\ztsDateMessage.c" />
+    <ClCompile Include="src\Internal\ztsDisaggregate.c" />
+    <ClCompile Include="src\Internal\ztsFirstLastValidValues.c" />
+    <ClCompile Include="src\Internal\ztsGetSizesInternal.c" />
+    <ClCompile Include="src\Internal\ztsIncrementBlock.c" />
+    <ClCompile Include="src\Internal\ztsInternalHeaderPack.c" />
+    <ClCompile Include="src\Internal\ztsInternalHeaderUnpack.c" />
+    <ClCompile Include="src\Internal\ztsIrregGetBlockStart.c" />
+    <ClCompile Include="src\Internal\ztsIrregMergeBlocks.c" />
+    <ClCompile Include="src\Internal\ztsIrregMessage.c" />
+    <ClCompile Include="src\Internal\ztsIrregReadBlock.c" />
+    <ClCompile Include="src\Internal\ztsIrregStoreBlock.c" />
+    <ClCompile Include="src\Internal\ztsMessTimeWindow.c" />
+    <ClCompile Include="src\Internal\ztsPathCompatible.c" />
+    <ClCompile Include="src\Internal\ztsProcessTimes.c" />
+    <ClCompile Include="src\Internal\ztsRegAddTimes.c" />
+    <ClCompile Include="src\Internal\ztsRegGetBlockStart.c" />
+    <ClCompile Include="src\Internal\ztsRegReadBlock.c" />
+    <ClCompile Include="src\Internal\ztsRegRepeatCompress.c" />
+    <ClCompile Include="src\Internal\ztsRegRepeatUncompress.c" />
+    <ClCompile Include="src\Internal\ztsRegStoreBlock.c" />
+    <ClCompile Include="src\Internal\ztsRetrieveIrreg7.c" />
+    <ClCompile Include="src\Internal\ztsRetrieveReg7.c" />
+    <ClCompile Include="src\Internal\ztsStoreIrreg7.c" />
+    <ClCompile Include="src\Internal\ztsStoreReg7.c" />
+    <ClCompile Include="src\Internal\ztsTimeMessage.c" />
+    <ClCompile Include="src\Internal\ztsTrim.c" />
+    <ClCompile Include="src\Internal\ztsTrimAdjustTimeWindow.c" />
+    <ClCompile Include="src\Internal\ztsWriteBlock.c" />
+    <ClCompile Include="src\Internal\zupdatePathStats.c" />
+    <ClCompile Include="src\Internal\zwriteEOF.c" />
+    <ClCompile Include="src\Internal\zwriteEOFandFlush.c" />
+    <ClCompile Include="src\Internal\zwriteInternal.c" />
+    <ClCompile Include="src\Internal\zwriteNew.c" />
+    <ClCompile Include="src\Internal\zwriteOld.c" />
+    <ClCompile Include="src\Public\zaliasAdd.c" />
+    <ClCompile Include="src\Public\zaliasGetPrimary.c" />
+    <ClCompile Include="src\Public\zaliasList.c" />
+    <ClCompile Include="src\Public\zaliasNumber.c" />
+    <ClCompile Include="src\Public\zaliasRemove.c" />
+    <ClCompile Include="src\Public\zaliasRemoveAll.c" />
+    <ClCompile Include="src\Public\zanalyzeFile.c" />
+    <ClCompile Include="src\Public\zarrayRetrieve.c" />
+    <ClCompile Include="src\Public\zarrayStore.c" />
+    <ClCompile Include="src\Public\zbinaryRetrieveToFile.c" />
+    <ClCompile Include="src\Public\zbinaryStoreFromFile.c" />
+    <ClCompile Include="src\Public\zcatalog.c" />
+    <ClCompile Include="src\Public\zcatalogFile.c" />
+    <ClCompile Include="src\Public\zcatalogToFile.c" />
+    <ClCompile Include="src\Public\zcheckFile.c" />
+    <ClCompile Include="src\Public\zcollectionCat.c" />
+    <ClCompile Include="src\Public\zcopyFile.c" />
+    <ClCompile Include="src\Public\zduplicateRecord.c" />
+    <ClCompile Include="src\Public\zfindString.c" />
+    <ClCompile Include="src\Public\zgetDataCRC.c" />
+    <ClCompile Include="src\Public\zgetFileVersion.c" />
+    <ClCompile Include="src\Public\zgetLastWriteTimeFile.c" />
+    <ClCompile Include="src\Public\zgetLastWriteTimeRec.c" />
+    <ClCompile Include="src\Public\zgetMyLastWriteTime.c" />
+    <ClCompile Include="src\Public\zgetVersion.c" />
+    <ClCompile Include="src\Public\zinquire.c" />
+    <ClCompile Include="src\Public\zinquireChar.c" />
+    <ClCompile Include="src\Public\zlibcompress.c" />
+    <ClCompile Include="src\Public\zlocationDelete.c" />
+    <ClCompile Include="src\Public\zlocationPath.c" />
+    <ClCompile Include="src\Public\zlocationRetrieve.c" />
+    <ClCompile Include="src\Public\zlocationStore.c" />
+    <ClCompile Include="src\Public\zopenLog.c" />
+    <ClCompile Include="src\Public\zpathnameAddPart.c" />
+    <ClCompile Include="src\Public\zpathnameClean.c" />
+    <ClCompile Include="src\Public\zpathnameCompare.c" />
+    <ClCompile Include="src\Public\zpathnameCompareCollection.c" />
+    <ClCompile Include="src\Public\zpathnameForm.c" />
+    <ClCompile Include="src\Public\zpathnameGetPart.c" />
+    <ClCompile Include="src\Public\zpathnamePartLengths.c" />
+    <ClCompile Include="src\Public\zpathnamePartPositions.c" />
+    <ClCompile Include="src\Public\zpathnameSetPart.c" />
+    <ClCompile Include="src\Public\zpdRetrieve.c" />
+    <ClCompile Include="src\Public\zpdStore.c" />
+    <ClCompile Include="src\Public\zquery.c" />
+    <ClCompile Include="src\Public\zrename.c" />
+    <ClCompile Include="src\Public\zset7.c" />
+    <ClCompile Include="src\Public\zsetCollectionSequence.c" />
+    <ClCompile Include="src\Public\zsetFile.c" />
+    <ClCompile Include="src\Public\zspatialGridRetrieve.c" />
+    <ClCompile Include="src\Public\zspatialGridStore.c" />
+    <ClCompile Include="src\Public\zspatialTinRetrieve.c" />
+    <ClCompile Include="src\Public\zspatialTinStore.c" />
+    <ClCompile Include="src\Public\zsqueeze7.c" />
+    <ClCompile Include="src\Public\zsqueezeNeeded.c" />
+    <ClCompile Include="src\Public\zstructArrayNew.c" />
+    <ClCompile Include="src\Public\zstructCatalogNew.c" />
+    <ClCompile Include="src\Public\zstructFree.c" />
+    <ClCompile Include="src\Public\zstructLocationNew.c" />
+    <ClCompile Include="src\Public\zstructPdNew.c" />
+    <ClCompile Include="src\Public\zstructPdNewDoubles.c" />
+    <ClCompile Include="src\Public\zstructPdNewFloats.c" />
+    <ClCompile Include="src\Public\zstructRecordBasicsNew.c" />
+    <ClCompile Include="src\Public\zstructRecordSizeNew.c" />
+    <ClCompile Include="src\Public\zstructSpatialGridNew.c" />
+    <ClCompile Include="src\Public\zstructSpatialTinNew.c" />
+    <ClCompile Include="src\Public\zstructTextNew.c" />
+    <ClCompile Include="src\Public\zstructTextStringNew.c" />
+    <ClCompile Include="src\Public\zstructTransferNew.c" />
+    <ClCompile Include="src\Public\zstructTsClone.c" />
+    <ClCompile Include="src\Public\zstructTsCloneNewTimes.c" />
+    <ClCompile Include="src\Public\zstructTsNew.c" />
+    <ClCompile Include="src\Public\zstructTsNewIrregDoubles.c" />
+    <ClCompile Include="src\Public\zstructTsNewIrregFloats.c" />
+    <ClCompile Include="src\Public\zstructTsNewRegDoubles.c" />
+    <ClCompile Include="src\Public\zstructTsNewRegFloats.c" />
+    <ClCompile Include="src\Public\zstructTsNewTimes.c" />
+    <ClCompile Include="src\Public\zstructTsNewTimeWindow.c" />
+    <ClCompile Include="src\Public\ztextRetrieve.c" />
+    <ClCompile Include="src\Public\ztextRetrieveToFile.c" />
+    <ClCompile Include="src\Public\ztextStore.c" />
+    <ClCompile Include="src\Public\ztextStoreFromFile.c" />
+    <ClCompile Include="src\Public\ztextStructPrint.c" />
+    <ClCompile Include="src\Public\ztsGetDateRange.c" />
+    <ClCompile Include="src\Public\ztsGetDateTimeRange.c" />
+    <ClCompile Include="src\Public\ztsGetEPartFromInterval.c" />
+    <ClCompile Include="src\Public\ztsGetInterval.c" />
+    <ClCompile Include="src\Public\ztsOffset.c" />
+    <ClCompile Include="src\Public\ztsOffsetAdjustToOffset.c" />
+    <ClCompile Include="src\Public\ztsOffsetAdjustToStandard.c" />
+    <ClCompile Include="src\Public\ztsPathCheckInterval.c" />
+    <ClCompile Include="src\Public\ztsRetrieve.c" />
+    <ClCompile Include="src\Public\ztsRetrievePattern.c" />
+    <ClCompile Include="src\Public\ztsStore.c" />
+    <ClCompile Include="src\Public\ztypeName.c" />
+    <ClCompile Include="src\Public\zundeleteAll.c" />
+    <ClCompile Include="src\Public\zwhatChanged.c" />
+    <ClCompile Include="src\Public\zwhatChangedCompare.c" />
+    <ClCompile Include="src\Public\zwhatChangedSetStart.c" />
+    <ClCompile Include="src\SemiPublic\zcheckHashTable.c" />
+    <ClCompile Include="src\SemiPublic\zcheckInfo.c" />
+    <ClCompile Include="src\SemiPublic\zcheckLinks.c" />
+    <ClCompile Include="src\SemiPublic\zcheckPathnameBins.c" />
+    <ClCompile Include="src\SemiPublic\zcheckPathnames.c" />
+    <ClCompile Include="src\SemiPublic\zcompareDataSets.c" />
+    <ClCompile Include="src\SemiPublic\zerror.c" />
+    <ClCompile Include="src\SemiPublic\zerrorSpecifics.c" />
+    <ClCompile Include="src\SemiPublic\zfileAccessInfo.c" />
+    <ClCompile Include="src\SemiPublic\zgetProgress.c" />
+    <ClCompile Include="src\SemiPublic\zgetRecordAddresses.c" />
+    <ClCompile Include="src\SemiPublic\zisError.c" />
+    <ClCompile Include="src\SemiPublic\zlocationStructValid.c" />
+    <ClCompile Include="src\SemiPublic\zmaxPart.c" />
+    <ClCompile Include="src\SemiPublic\zmessageCombined.c" />
+    <ClCompile Include="src\SemiPublic\zplist7.c" />
+    <ClCompile Include="src\SemiPublic\zresetProgress.c" />
+    <ClCompile Include="src\SemiPublic\zsetInterrupt.c" />
+    <ClCompile Include="src\SemiPublic\zstructGetType.c" />
+    <ClCompile Include="src\SemiPublic\ztsGetFirstLastPathnames.c" />
+    <ClCompile Include="src\SemiPublic\ztsGetFirstLastRecordTimes.c" />
+    <ClCompile Include="src\SemiPublic\ztsGetPathTimeWindow.c" />
+    <ClCompile Include="src\SemiPublic\ztsGetStandardInterval.c" />
+    <ClCompile Include="src\SemiPublic\ztsIsCurrentTimeSeries.c" />
+    <ClCompile Include="src\SemiPublic\ztsStorePattern.c" />
+    <ClCompile Include="src\System\closeFile.c" />
+    <ClCompile Include="src\System\flushFile.c" />
+    <ClCompile Include="src\System\getCurrentDateTime.c" />
+    <ClCompile Include="src\System\getCurrentTimeMillis.c" />
+    <ClCompile Include="src\System\getEndian.c" />
+    <ClCompile Include="src\System\readBytes.c" />
+    <ClCompile Include="src\System\writeBytes.c" />
+    <ClCompile Include="src\System\zfileName.c" />
+    <ClCompile Include="src\System\zfileSize.c" />
+    <ClCompile Include="src\System\zlockdss.c" />
+    <ClCompile Include="src\System\zopendisk.c" />
+    <ClCompile Include="src\System\zopenFile.c" />
+    <ClCompile Include="src\System\zreaddisk.c" />
+    <ClCompile Include="src\System\zswap.c" />
+    <ClCompile Include="src\System\zswitchDoubles.c" />
+    <ClCompile Include="src\System\zswitchInts.c" />
+    <ClCompile Include="src\System\zwritedisk.c" />
+    <ClCompile Include="src\Utilities\catsort.c" />
+    <ClCompile Include="src\Utilities\convertDataArray.c" />
+    <ClCompile Include="src\Utilities\convertDataLength.c" />
+    <ClCompile Include="src\Utilities\convertDataType.c" />
+    <ClCompile Include="src\Utilities\convertIntArray.c" />
+    <ClCompile Include="src\Utilities\copyAndTrim.c" />
+    <ClCompile Include="src\Utilities\copyLines.c" />
+    <ClCompile Include="src\Utilities\DateTime\addCentury.c" />
+    <ClCompile Include="src\Utilities\DateTime\cleanTime.c" />
+    <ClCompile Include="src\Utilities\DateTime\compareTimes.c" />
+    <ClCompile Include="src\Utilities\DateTime\dateToJulian.c" />
+    <ClCompile Include="src\Utilities\DateTime\dateToYearMonthDay.c" />
+    <ClCompile Include="src\Utilities\DateTime\dayOfWeek.c" />
+    <ClCompile Include="src\Utilities\DateTime\getCurrentDateString.c" />
+    <ClCompile Include="src\Utilities\DateTime\getCurrentDateTimeString.c" />
+    <ClCompile Include="src\Utilities\DateTime\getCurrentTimeString.c" />
+    <ClCompile Include="src\Utilities\DateTime\getDateAndTime.c" />
+    <ClCompile Include="src\Utilities\DateTime\getDateTimeString.c" />
+    <ClCompile Include="src\Utilities\DateTime\incrementTime.c" />
+    <ClCompile Include="src\Utilities\DateTime\isLeapYear.c" />
+    <ClCompile Include="src\Utilities\DateTime\isTimeDefined.c" />
+    <ClCompile Include="src\Utilities\DateTime\isTimeInRange.c" />
+    <ClCompile Include="src\Utilities\DateTime\julianToDate.c" />
+    <ClCompile Include="src\Utilities\DateTime\julianToYearMonthDay.c" />
+    <ClCompile Include="src\Utilities\DateTime\millsToDateTime.c" />
+    <ClCompile Include="src\Utilities\DateTime\minsToDateTime.c" />
+    <ClCompile Include="src\Utilities\DateTime\minutesToHourMin.c" />
+    <ClCompile Include="src\Utilities\DateTime\numberPeriods.c" />
+    <ClCompile Include="src\Utilities\DateTime\secondsToTimeString.c" />
+    <ClCompile Include="src\Utilities\DateTime\spatialDateTime.c" />
+    <ClCompile Include="src\Utilities\DateTime\timeStringToSeconds.c" />
+    <ClCompile Include="src\Utilities\DateTime\timeStringToSecondsMills.c" />
+    <ClCompile Include="src\Utilities\DateTime\yearMonthDayToDate.c" />
+    <ClCompile Include="src\Utilities\DateTime\yearMonthDayToJulian.c" />
+    <ClCompile Include="src\Utilities\doublesToFloats.c" />
+    <ClCompile Include="src\Utilities\doubleToFloat.c" />
+    <ClCompile Include="src\Utilities\f4toi8.c" />
+    <ClCompile Include="src\Utilities\fillArray.c" />
+    <ClCompile Include="src\Utilities\findInt.c" />
+    <ClCompile Include="src\Utilities\floatsToDoubles.c" />
+    <ClCompile Include="src\Utilities\floatToDouble.c" />
+    <ClCompile Include="src\Utilities\getFileFromPath.c" />
+    <ClCompile Include="src\Utilities\getLastInt.c" />
+    <ClCompile Include="src\Utilities\i4toi8.c" />
+    <ClCompile Include="src\Utilities\i8tof4.c" />
+    <ClCompile Include="src\Utilities\i8toi4.c" />
+    <ClCompile Include="src\Utilities\intTo2char.c" />
+    <ClCompile Include="src\Utilities\intTo4char.c" />
+    <ClCompile Include="src\Utilities\isOdd.c" />
+    <ClCompile Include="src\Utilities\isValidChar.c" />
+    <ClCompile Include="src\Utilities\itoa.c" />
+    <ClCompile Include="src\Utilities\longWithCommas.c" />
+    <ClCompile Include="src\Utilities\lowerCase.c" />
+    <ClCompile Include="src\Utilities\mallocAndCopy.c" />
+    <ClCompile Include="src\Utilities\mallocAndCopyPath.c" />
+    <ClCompile Include="src\Utilities\mallocAndCopyTrim.c" />
+    <ClCompile Include="src\Utilities\numberBytesInCharArray.c" />
+    <ClCompile Include="src\Utilities\numberIntsInBytes.c" />
+    <ClCompile Include="src\Utilities\numberIntsInLongs.c" />
+    <ClCompile Include="src\Utilities\numberLongsInBytes.c" />
+    <ClCompile Include="src\Utilities\numberLongsInInts.c" />
+    <ClCompile Include="src\Utilities\printCurrentTime.c" />
+    <ClCompile Include="src\Utilities\printDoubles.c" />
+    <ClCompile Include="src\Utilities\reverseNonNumeric.c" />
+    <ClCompile Include="src\Utilities\sortfiles.c" />
+    <ClCompile Include="src\Utilities\stringCat.c" />
+    <ClCompile Include="src\Utilities\stringCopy.c" />
+    <ClCompile Include="src\Utilities\stringCToFort.c" />
+    <ClCompile Include="src\Utilities\stringFill.c" />
+    <ClCompile Include="src\Utilities\stringFortToC.c" />
+    <ClCompile Include="src\Utilities\stringHeaderUtility.c" />
+    <ClCompile Include="src\Utilities\stringLastNonBlank.c" />
+    <ClCompile Include="src\Utilities\strnlen_hec.c" />
+    <ClCompile Include="src\Utilities\toFixedFields.c" />
+    <ClCompile Include="src\Utilities\trimLength.c" />
+    <ClCompile Include="src\Utilities\trimPositions.c" />
+    <ClCompile Include="src\Utilities\upperCase.c" />
+    <ClCompile Include="src\Utilities\zeroFill.c" />
+    <ClCompile Include="src\Utilities\zmissingFlag.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\headers\hecdss7.h" />
+    <ClInclude Include="src\headers\hecdssFort.h" />
+    <ClInclude Include="src\headers\hecdssInternal.h" />
+    <ClInclude Include="src\headers\heclib.h" />
+    <ClInclude Include="src\headers\heclib6.h" />
+    <ClInclude Include="src\headers\heclib7.h" />
+    <ClInclude Include="src\headers\heclibDate.h" />
+    <ClInclude Include="src\headers\zcontrol.h" />
+    <ClInclude Include="src\headers\zdataTypeDescriptions.h" />
+    <ClInclude Include="src\headers\zdssKeys.h" />
+    <ClInclude Include="src\headers\zdssLocking.h" />
+    <ClInclude Include="src\headers\zdssMessages.h" />
+    <ClInclude Include="src\headers\zdssMessagesFort.h" />
+    <ClInclude Include="src\headers\zdssRecordDiscriptions.h" />
+    <ClInclude Include="src\headers\zdssVals.h" />
+    <ClInclude Include="src\headers\zerrorCodes.h" />
+    <ClInclude Include="src\headers\zlib\zconf.h" />
+    <ClInclude Include="src\headers\zlib\zlib.h" />
+    <ClInclude Include="src\headers\zprogress.h" />
+    <ClInclude Include="src\headers\zStructAllocation.h" />
+    <ClInclude Include="src\headers\zStructArray.h" />
+    <ClInclude Include="src\headers\zStructBasic.h" />
+    <ClInclude Include="src\headers\zStructCatalog.h" />
+    <ClInclude Include="src\headers\zStructLocation.h" />
+    <ClInclude Include="src\headers\zStructPairedData.h" />
+    <ClInclude Include="src\headers\zStructRecordAddresses.h" />
+    <ClInclude Include="src\headers\zStructRecordBasics.h" />
+    <ClInclude Include="src\headers\zStructRecordSize.h" />
+    <ClInclude Include="src\headers\zStructSpatialGrid.h" />
+    <ClInclude Include="src\headers\zStructSpatialTin.h" />
+    <ClInclude Include="src\headers\zStructText.h" />
+    <ClInclude Include="src\headers\zStructTimeSeries.h" />
+    <ClInclude Include="src\headers\zStructTransfer.h" />
+    <ClInclude Include="src\headers\zStructTsTimeWindow.h" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{DD025A40-2426-4CCE-B43A-380466B80A9A}</ProjectGuid>
+    <RootNamespace>heclib_cx64</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>heclib_c</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir)$(Platform)\$(Configuration)_intermediate\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)$(Platform)\$(Configuration)_intermediate\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectDir)$(Platform)\$(Configuration)_intermediate\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)$(Platform)\$(Configuration)_intermediate\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <TargetName>heclib_c</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <TargetName>heclib_c</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <TargetName>heclib_c</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <TargetName>heclib_c</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <CallingConvention>Cdecl</CallingConvention>
+      <CompileAs>CompileAsC</CompileAs>
+      <AdditionalIncludeDirectories>src\headers;src\headers\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CallingConvention>Cdecl</CallingConvention>
+      <CompileAs>CompileAsC</CompileAs>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalIncludeDirectories>src\headers;src\headers\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>
+      </DisableSpecificWarnings>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)heclib_c.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>CompileAsC</CompileAs>
+      <AdditionalIncludeDirectories>src\headers;src\headers\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>CompileAsC</CompileAs>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <AdditionalIncludeDirectories>src\headers;src\headers\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Lib>
+      <LinkTimeCodeGeneration>true</LinkTimeCodeGeneration>
+      <Verbose>true</Verbose>
+    </Lib>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
