@@ -35,11 +35,11 @@ heclib/build.log
 build/**
 heclib/.vs/
 heclib/Win32/
-heclib/heclib_c_v6v7/Win32/
-heclib/heclib_c_v6v7/x64/
+heclib/heclib_c/Win32/
+heclib/heclib_c/x64/
 heclib/heclib_f_v6v7/.vs/
-heclib/heclib_f_v6v7/heclib_f_v6v7_vs2017.u2d
-heclib/heclib_f_v6v7/x64/
+heclib/heclib_f/heclib_f_v6v7_vs2017.u2d
+heclib/heclib_f/x64/
 heclib/heclib_karl.sln
 heclib/javaHeclib/Win32/
 heclib/javaHeclib/javaHeclib_vs2017.vcxproj.user
