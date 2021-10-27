@@ -42,7 +42,6 @@ jobs:
     - name: copy jni.h
       run: |
         cd C:\hostedtoolcache\windows\Java_Adopt_jdk\8.0.312-7\x64
-        Get-ChildItem -Path C:\hostedtoolcache\windows\Java_Adopt_jdk\8.0.312-7\ -Filter jni_md.h -Recurse -ErrorAction SilentlyContinue -Force
         mkdir C:\Programs\Java\
         mkdir C:\Programs\Java\jdk1.8.0\
         mkdir C:\Programs\Java\jdk1.8.0\include\
@@ -56,10 +55,6 @@ jobs:
         curl -fSLo hpckit.exe https://registrationcenter-download.intel.com/akdlm/irc_nas/17762/w_HPCKit_p_2021.2.0.2901.exe
         start /b /wait hpckit.exe -s -x -f hpckit_extracted --log hpckit_extracted.log
         hpckit_extracted\bootstrapper.exe -s --action install --components=intel.oneapi.win.ifort-compiler --eula=accept --continue-with-optional-error=yes -p=NEED_VS2017_INTEGRATION=0 -p=NEED_VS2019_INTEGRATION=1 --log-dir=
-        
-    - name: check for ifconsol.lib
-      run: |
-        Get-ChildItem -Path "C:\Program Files (x86)\Intel\oneAPI\" -Filter ifconsol.lib -Recurse -ErrorAction SilentlyContinue -Force
         
     - name: Install Nuget
       uses: nuget/setup-nuget@v1
