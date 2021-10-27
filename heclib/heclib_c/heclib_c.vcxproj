@@ -77,7 +77,6 @@
     <ClCompile Include="src\DssInterface\zdelete_.c" />
     <ClCompile Include="src\DssInterface\zerrorDecode_.c" />
     <ClCompile Include="src\DssInterface\zfname.c" />
-    <ClCompile Include="src\DssInterface\zfname_.c" />
     <ClCompile Include="src\DssInterface\zgetinterval_.c" />
     <ClCompile Include="src\DssInterface\zgetVersion_.c" />
     <ClCompile Include="src\DssInterface\zget_.c" />
