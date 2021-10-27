@@ -1,0 +1,72 @@
+name: .NET Tests
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+    
+  workflow_dispatch:
+
+jobs: 
+    
+  build_and_run_dotnet_tests:
+    runs-on: windows-latest
+      
+    env:
+      DEVENV_PATH: C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\devenv.exe
+      SLN_PATH: dss.sln
+      WINDOWS_HPCKIT_URL: https://registrationcenter-download.intel.com/akdlm/irc_nas/17762/w_HPCKit_p_2021.2.0.2901.exe
+      WINDOWS_HPCKIT_FILE: hpckit.exe
+      WINDOWS_HPCKIT_COMPONENTS: intel.oneapi.win.ifort-compiler
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    
+    - name: Checkout dss-test-data
+      uses: actions/checkout@v2
+      with:
+        repository: HydrologicEngineeringCenter/dss-test-data
+        path: ./dss-test-data
+        
+    - name: install java 8
+      uses: actions/setup-java@v2
+      with:
+        distribution: 'adopt'
+        java-version: '8'
+        check-latest: true
+        
+    - name: copy jni.h
+      run: |
+        cd C:\hostedtoolcache\windows\Java_Adopt_jdk\8.0.312-7\x64
+        mkdir C:\Programs\Java\
+        mkdir C:\Programs\Java\jdk1.8.0\
+        mkdir C:\Programs\Java\jdk1.8.0\include\
+        mkdir C:\Programs\Java\jdk1.8.0\include\win32
+        Copy-Item -Path C:\hostedtoolcache\windows\Java_Adopt_jdk\8.0.312-7\x64\include\*.h -Destination C:\Programs\Java\jdk1.8.0\include\ -PassThru 
+        Copy-Item -Path C:\hostedtoolcache\windows\Java_Adopt_jdk\8.0.312-7\x64\include\win32\*.h -Destination C:\Programs\Java\jdk1.8.0\include\win32\ -PassThru 
+    
+    - name: Install oneAPI Fortran
+      shell: cmd
+      run: |
+        curl -fSLo hpckit.exe https://registrationcenter-download.intel.com/akdlm/irc_nas/17762/w_HPCKit_p_2021.2.0.2901.exe
+        start /b /wait hpckit.exe -s -x -f hpckit_extracted --log hpckit_extracted.log
+        hpckit_extracted\bootstrapper.exe -s --action install --components=intel.oneapi.win.ifort-compiler --eula=accept --continue-with-optional-error=yes -p=NEED_VS2017_INTEGRATION=0 -p=NEED_VS2019_INTEGRATION=1 --log-dir=
+        
+    - name: Install Nuget
+      uses: nuget/setup-nuget@v1
+        
+    - name: build release
+      shell: cmd
+      run: |
+        set IFORT_COMPILER21=C:\Program Files (x86)\Intel\oneAPI\compiler\2021.2.0\windows\
+        set ONEAPI_ROOT=C:\Program Files (x86)\Intel\oneAPI\
+        set PATH=%PATH%;C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\
+        build_release.bat
+    
+    # Execute all unit tests in the solution
+    - name: Execute unit tests
+      run: dotnet vstest /Platform:x64 dotnet\DotNetTests\bin\Release\DotNetTests.dll
