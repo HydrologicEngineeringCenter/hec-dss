@@ -8,6 +8,6 @@ set build_number=9999
 if not "%1" == "" (set build_number=%1)
 echo %build_number%
 
-dssVersion.exe heclib\headers\hecdssInternal.h %build_number% > heclib\javaheclib\version_build.h
+dssVersion.exe heclib\heclib_c\src\headers\hecdssInternal.h %build_number% > heclib\javaheclib\version_build.h
 
 devenv dss.sln  /Build  "Release|x64"
