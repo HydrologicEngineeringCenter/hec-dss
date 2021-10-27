@@ -342,9 +342,6 @@
     <ClCompile Include="src\DssInterface\v6and7\zclose.c">
       <Filter>src\DssInterface\v6andv7</Filter>
     </ClCompile>
-    <ClCompile Include="src\DssInterface\v6and7\zcollectionCat.c">
-      <Filter>src\DssInterface\v6andv7</Filter>
-    </ClCompile>
     <ClCompile Include="src\DssInterface\v6and7\zconvertVersion.c">
       <Filter>src\DssInterface\v6andv7</Filter>
     </ClCompile>

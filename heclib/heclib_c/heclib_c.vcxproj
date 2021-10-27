@@ -44,7 +44,6 @@
     <ClCompile Include="src\DssInterface\timeStringToSeconds_.c" />
     <ClCompile Include="src\DssInterface\v6and7\zcheck.c" />
     <ClCompile Include="src\DssInterface\v6and7\zclose.c" />
-    <ClCompile Include="src\DssInterface\v6and7\zcollectionCat.c" />
     <ClCompile Include="src\DssInterface\v6and7\zconvertVersion.c" />
     <ClCompile Include="src\DssInterface\v6and7\zcopyRecord.c" />
     <ClCompile Include="src\DssInterface\v6and7\zdataType.c" />
