@@ -2,7 +2,7 @@
 UNAME_S := $(shell uname -s)
 
 ifeq ($(UNAME_S),Linux)
-	CWARNING=-Werror=implicit-function-declaration
+	CWARNING=-Werror
 	FDEBUG=-fcheck=all,no-recursion
 	CFLAGS=-m64 -fPIC -g -std=gnu99 $(CWARNING) $(INC_DIRS) -D__linux__
 	LDFLAGS=-Wl,-z,defs,--wrap=powf -lz -lrt -lgfortran -lm
