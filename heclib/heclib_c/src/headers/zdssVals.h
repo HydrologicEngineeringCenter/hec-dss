@@ -15,11 +15,13 @@ struct hec_zdssVals {
 	 int newCollectionFile;
 	 int globalErrorFlag;
 	 int numberProgram;
+	 int iverticalDatum;
 	 int copyEmptyRecords;
 	 char czdss[5];
 	 char czVersion[5];
 	 char czVersionDate[20];
 	 char cprogramName[17];
+	 char cverticalDatum[17];
 	 char globalErrorMess[MAX_LEN_ERROR_MESS];
 } ;
 

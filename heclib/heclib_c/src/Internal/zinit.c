@@ -12,6 +12,7 @@
 #include "zdssMessages.h"
 #include "hecdssInternal.h"
 #include "heclib7.h"
+#include "verticalDatum.h"
 
 
 
@@ -916,6 +917,10 @@ void zinit()
 
 	//  Max info size allocated (includes 20 spots for alias addresses)
 	zdssVals.maxInfoSize = zdssVals.infoSize + numberLongsInBytes(MAX_PATHNAME_SIZE) + 20;
+
+	// Set initial default vertical datum
+	zdssVals.iverticalDatum = IVERTICAL_DATUM_UNSET;
+	stringCopy(zdssVals.cverticalDatum, sizeof(zdssVals.cverticalDatum), CVERTICAL_DATUM_UNSET, _TRUNCATE);
 
 
 
