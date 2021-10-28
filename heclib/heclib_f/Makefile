@@ -41,7 +41,7 @@ $(BUILD_DIR)/%.for.o: %.for
 
 .PHONY: clean
 clean:
-	rm -r $(BUILD_DIR)
+	rm -fr $(BUILD_DIR)
 
 
 
