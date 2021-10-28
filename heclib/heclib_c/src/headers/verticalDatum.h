@@ -132,16 +132,36 @@ typedef struct text_boundary_info_s {
     int   len_non_blank;
     int   len_with_boundaries;
 } text_boundary_info;
-
-char *string_from_user_header(const int *userHeader, int userHeaderSize);
-int *string_to_user_header(const char *str, int *intCount);
+/**
+ * Returns a string representation of a DSS record user header
+ * 
+ * @param userHeader     The user header (integer array)
+ * @param userHeaderSize The size of the user header in number of integers
+ * 
+ * @return The string representation of the user header. Memory for this buffer 
+ *         is dynamically allocated using malloc() and must be freed using free().
+ */
+char *string_from_user_header(const int *userHeader, const int userHeaderSize);
+/**
+ * Creates a DSS record user header from a string
+ * 
+ * @param str            The string to create the user header from
+ * @param userHeaderSize Pointer to an int that receives the number of integers allocated.
+ *                       This should always be (len_str - 1) / 4 + 1.
+ * 
+ * @return The user header (array of integers).  Memory for this buffer is dynamically 
+ *         allocated using malloc() and must be freed using free() unless it is a member
+ *         zStructTime* structure. In that case the "allocated" structure member should
+ *         be set to 1 to all zStructFree() to free the memory.
+ */
+int *string_to_user_header(const char *str, int *userHeaderSize);
 /**
  * Returns the length of a buffer required to hold a base-64 encoding of an input buffer of the specified length.
  *
  * @param to_encode_len The length of the buffer to base64-encode
  *
  * @return -1 if to_encode_len < 0, otherwise the length of buffer necessary to hold the base-64 encoding.
- *         Always a multiple of 4.
+ *         Always a multiple of 4. 
  */
 int b64encoded_len(int to_encode_len);
 /**

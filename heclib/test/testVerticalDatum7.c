@@ -5,10 +5,12 @@
 
 void main (int argc, char *argv[]) {
     long long ifltab[250];
-    int  status;
-    int  intVal;
-    int *userHeader;
-    char charVal[17];
+    int   status;
+    int   intVal;
+    int  *userHeader;
+    char  charVal[17];
+    char *userHeaderStringIn;
+    char *userHeaderStringOut;
 
     zquery("VERS", charVal, sizeof(charVal), &intVal);
     assert(intVal == 7);
@@ -81,14 +83,14 @@ void main (int argc, char *argv[]) {
     assert(!strcmp(charVal, CVERTICAL_DATUM_UNSET));
 
     intVal = 0;
-    printf("CP1\n");
-    userHeader = string_to_user_header("This is a test string!", &intVal);
-    for (int i = 0; i < intVal; ++i) {
-        printf("%d\t0x%8.8x\n", i, userHeader[i]);
-    }
-    printf("%s\n", string_from_user_header(userHeader, intVal));
+    userHeaderStringIn = "This is a test string for the user header ";
+    userHeader = string_to_user_header(userHeaderStringIn, &intVal);
+    assert(intVal == (strlen(userHeaderStringIn)-1)/4+1);
+    userHeaderStringOut = string_from_user_header(userHeader, intVal);
+    assert(!strcmp(userHeaderStringIn, userHeaderStringOut));
 
     free(userHeader);
+    free(userHeaderStringOut);
 
     exit(0);
 }

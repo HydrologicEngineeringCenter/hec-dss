@@ -38,14 +38,14 @@ int *string_to_user_header(const char *str, int *intCount) {
     int  numBytes = strlen(str);
     int  numInts = numberIntsInBytes(numBytes);
     int *userHeader = (int *)calloc(numInts, 4);
-    *intCount = numInts * 4;
-    charInt ((void *)str, userHeader, numBytes, *intCount, 0, 1, 0);
+    charInt ((void *)str, userHeader, numBytes, numInts * 4, 0, 1, 0);
+    *intCount = numInts;
     return userHeader;
 }
 //
 // See verticalDatum.h for documentation
 //
-char *string_from_user_header(const int *userHeader, int userHeaderSize) {
+char *string_from_user_header(const int *userHeader, const int userHeaderSize) {
     char *start = (char *)userHeader;
     char *cp;
     char *str;
