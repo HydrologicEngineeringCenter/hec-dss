@@ -51,7 +51,7 @@ int stringCat (char *destination, size_t sizeOfDestination, const char* source, 
 		if( remainingSpace >0)
 		{   
 			int numToCopy = lenSource;
-			if (numToCopy < remainingSpace)
+			if (numToCopy > remainingSpace)
 				numToCopy = remainingSpace;
 
           	strncat(destination, source, numToCopy);
