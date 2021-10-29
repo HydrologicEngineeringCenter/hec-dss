@@ -50,6 +50,9 @@ int main(int argc, char* argv[])
 	long long start_time = getCurrentTimeMillis();
 
 
+	test_stringCat();
+	return 0;
+
 	if (argc < 2)
 	{
 		usage(argv[0]);
