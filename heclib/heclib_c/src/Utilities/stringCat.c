@@ -35,21 +35,29 @@
 
 int stringCat (char *destination, size_t sizeOfDestination, const char* source, size_t lenSource)
 {
-	if( source == NULL)
+	if( destination == NULL || source == NULL || sizeOfDestination<=0 || lenSource <=0)
 	 return -1;
+
+	size_t remainingSpace = sizeOfDestination - strlen(destination) - 1;
 #ifdef _MSC_VER
 	//  Avoid an overflow error
 	if (lenSource != _TRUNCATE) {
-		if (lenSource > sizeOfDestination) {
+		if (lenSource > remainingSpace) {
 			lenSource = _TRUNCATE;
-		}
+		} 
 	}
 	return strncat_s(destination, sizeOfDestination, source, lenSource);
 #else
-	size_t remainingSpace = sizeOfDestination- strlen(destination)-1;
 		if( remainingSpace >0)
-		{
-          	strncat(destination, source, remainingSpace);
+		{   
+			int numToCopy = lenSource;
+			if (numToCopy < remainingSpace)
+				numToCopy = remainingSpace;
+
+          	strncat(destination, source, numToCopy);
+
+			if(lenSource > remainingSpace )
+			   return 80; // truncated
 			  return 0;
 		}
 		else{
