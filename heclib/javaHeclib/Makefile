@@ -17,7 +17,7 @@ TARGET_LIB := libjavaHeclib.so
 BUILD_DIR := ./Output
 SRC_DIRS := ./src
 INC_DIRS=-Isrc -I../heclib_c/src/headers -I${JAVA_HOME}/include -I${JAVA_HOME}/include/linux
-HLIBS=../heclib_f/Output/libhec_f.a ../heclib_c/Output/libhec_c.a
+HLIBS=../heclib_f/Output/libhec_f.a ../heclib_c/Output/libhec_c.a ../../nws_shef/Output/libshefdss.a
 
 SRCS := $(shell find $(SRC_DIRS) -name '*.c' )
 
@@ -25,7 +25,7 @@ SRCS := $(shell find $(SRC_DIRS) -name '*.c' )
 OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
 
 $(BUILD_DIR)/$(TARGET_LIB): $(OBJS)
-	$(CC) $(CFLAGS) -shared  -o $@  $(OBJS) ../../nws_shef/Output/*.o $(HLIBS) $(HLIBS)  $(LDFLAGS)
+	$(CC) $(CFLAGS) -shared  -o $@  $(OBJS) $(HLIBS) $(HLIBS)  $(LDFLAGS)
 	ls -la $(BUILD_DIR)/lib*
 
 $(BUILD_DIR)/%.c.o: %.c
