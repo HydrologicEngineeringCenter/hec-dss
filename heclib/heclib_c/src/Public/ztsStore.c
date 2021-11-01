@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -5,6 +6,7 @@
 #include "zdssMessages.h"
 #include "hecdssInternal.h"
 #include "zStructTimeSeries.h"
+#include "verticalDatum.h"
 
 
 /**
@@ -350,6 +352,10 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 		}
 	}
 	else {
+		float  *tmpFloatVals = NULL;
+		float  *origFloatVals = NULL;
+		double *tmpDoubleVals = NULL;
+		double *origDoubleVals = NULL;
 		if (!zinquire(ifltab, "write")) {
 			return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID,
 				zdssErrorCodes.WRITE_ON_READ_ONLY, 0, 0,
@@ -366,11 +372,124 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 				"Either doubles or floats may be stored, not both");
 			}
 		}
+		// set values to native vertical datum if necessary and possible
+		if (tss->floatValues || tss->doubleValues) {
+			vertical_datum_info *vdi = vertical_datum_info_from_user_header(tss->userHeader, tss->userHeaderSize);
+			if (vdi) {
+				double offset = 0.;
+				// get the default vertical datum, if any
+				char cvertcal_datum[17];
+				int  ivertical_datum = -1;
+				int  ivertical_datum2;
+				zquery("VDTM", cvertcal_datum, sizeof(cvertcal_datum), &ivertical_datum);
+				ivertical_datum2 = ivertical_datum;
+				// override default with the specified vertical datum, if any in hacked unit spec
+				if (strchr(tss->units, '|')) {
+					char  strtok_buf[256];
+					char *value;
+					char *unit = NULL;
+					char *vertical_datum = NULL;
+					char *unitSpec = mallocAndCopy(tss->units);
+					char *key = strtok_r(unitSpec, "|=", (char **)&strtok_buf);
+					while (key) {
+						value = strtok_r(NULL, "|=", (char **)&strtok_buf);
+						if (!strcasecmp(key, "U")) {
+							unit = value;
+						}
+						else if (!strcasecmp(key, "V")) {
+							vertical_datum = value;
+						}
+						key = strtok_r(NULL, "|=", (char **)&strtok_buf);
+					}
+					if (unit) {
+						free(tss->units);
+						tss->units = mallocAndCopy(unit);
+					}
+					if (vertical_datum) {
+						if (!strcasecmp(vertical_datum, CVERTICAL_DATUM_NAVD88)) {
+							ivertical_datum = IVERTICAL_DATUM_NAVD88;
+						}
+						else if (!strcasecmp(vertical_datum, CVERTICAL_DATUM_NGVD29)) {
+							ivertical_datum = IVERTICAL_DATUM_NGVD29;
+						}
+						else {
+							ivertical_datum = IVERTICAL_DATUM_OTHER;
+						}
+						strcpy(cvertcal_datum, vdi->native_datum);
+					}
+					free(unitSpec);
+				}
+				// get the offset to use
+				switch(ivertical_datum) {
+					case IVERTICAL_DATUM_NAVD88 :
+						offset = vdi->offset_to_navd_88;
+						break;
+					case IVERTICAL_DATUM_NGVD29 :
+						offset = vdi->offset_to_ngvd_29;
+						break;
+					case IVERTICAL_DATUM_OTHER :
+						if (strcasecmp(cvertcal_datum, vdi->native_datum)) {
+							offset = UNDEFINED_VERTICAL_DATUM_VALUE;
+						}
+						else {
+							offset = 0;
+						}
+						break;
+					default :
+						offset = 0;
+						break;
+				}
+				if (offset != 0.) {
+					if (offset == UNDEFINED_VERTICAL_DATUM_VALUE) {
+						return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID,
+							zdssErrorCodes.INCOMPATIBLE_CALL, 0,
+							0, zdssErrorSeverity.WARNING, tss->pathname,
+							"Vertical datum offset is not specified for requested datum");
+					}
+					offset = get_offset(offset, vdi->unit, tss->units);
+					if (offset == UNDEFINED_VERTICAL_DATUM_VALUE) {
+						return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID,
+							zdssErrorCodes.INCOMPATIBLE_CALL, 0,
+							0, zdssErrorSeverity.WARNING, tss->pathname,
+							"Unexpected unit (data or offset) - cannot perform vertical datum offset");
+					}
+					// adjust the values
+					if (offset != 0.) {
+						if (tss->floatValues) {
+							tmpFloatVals = (float *)calloc(tss->numberValues, sizeof(float));
+							for (int i = 0; i < tss->numberValues; ++i) {
+								tmpFloatVals[i] = tss->floatValues[i] - offset;
+							}
+							origFloatVals = tss->floatValues;
+							tss->floatValues = tmpFloatVals;
+						}
+						else if (tss->doubleValues) {
+							tmpDoubleVals = (double *)calloc(tss->numberValues, sizeof(double));
+							for (int i = 0; i < tss->numberValues; ++i) {
+								tmpDoubleVals[i] = tss->doubleValues[i] - offset;
+							}
+							origDoubleVals = tss->doubleValues;
+							tss->doubleValues = tmpDoubleVals;
+						}
+					}
+				}
+				free(vdi);
+			}
+		}
+
 		if (intervalType == 0) {
 			status = ztsStoreReg7(ifltab, tss, storageFlag);
 		}
 		else {
 			status = ztsStoreIrreg7(ifltab, tss, storageFlag);
+		}
+		if (tmpFloatVals != NULL) {
+			tss->floatValues = origFloatVals;
+			free(tmpFloatVals);
+		}
+		if (tmpDoubleVals != NULL) {
+			tss->doubleValues = origDoubleVals;
+			free(tmpFloatVals);
 		}
 		if ((tss->locationStruct) && (status == STATUS_OKAY)) {
 			if (tss->locationStruct->pathnameInternal && tss->locationStruct->allocated[zSTRUCT_locationPathInternal]) {

@@ -4,6 +4,7 @@
 #include "heclib.h"
 #include "zStructTsTimeWindow.h"
 #include "zStructTimeSeries.h"
+#include "verticalDatum.h"
 
 /**
 *  Function:	ztsRetrieve
@@ -17,7 +18,7 @@
 *
 *  Parameters:	long long ifltab
 *					An integer array dimensioned to int*8 [250] that contains file specific information.  
-*					This should be considered as a “handle” array and must be passed to any function that accesses that file.
+*					This should be considered as a ï¿½handleï¿½ array and must be passed to any function that accesses that file.
 *					See zopen() for more information.
 *
 *				zStructTimeSeries *tss
@@ -402,6 +403,46 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 				status = ztsTrim(ifltab, tss);
 			}
 		}
+	}
+	//  Convert values to default vertical datum if necessary and possible
+	if (status == STATUS_OKAY && (tss->floatValues || tss->doubleValues) && tss->userHeader) {
+		char cvertcal_datum[17];
+		int  ivertical_datum = -1;
+		zquery("VDTM", cvertcal_datum, sizeof(cvertcal_datum), &ivertical_datum);
+		if (ivertical_datum != IVERTICAL_DATUM_UNSET) {
+			vertical_datum_info *vdi = vertical_datum_info_from_user_header(tss->userHeader, tss->userHeaderSize);
+			if (vdi != NULL && strcmp(vdi->native_datum, cvertcal_datum)) {
+				double offset;
+				switch (ivertical_datum) {
+					case IVERTICAL_DATUM_NAVD88 :
+						offset = vdi->offset_to_navd_88;
+						break;
+					case IVERTICAL_DATUM_NGVD29 :
+						offset = vdi->offset_to_ngvd_29;
+						break;
+					default :
+						offset = 0.;
+						break;
+				}
+				if (offset != 0.) {
+					offset = get_offset(offset, vdi->unit, tss->units);
+					if (offset == UNDEFINED_VERTICAL_DATUM_VALUE) {
+						status = STATUS_NOT_OKAY;
+					}
+					else {
+						for (int i = 0; i < tss->numberValues; ++i) {
+							if (tss->floatValues) {
+								tss->floatValues[i] += offset;
+							}
+							else {
+								tss->doubleValues[i] += offset;
+							}
+						}
+					}
+				}
+			}
+		}
+
 	}
 	//  Add the time array for regular interval?
 	if (status == STATUS_OKAY) {

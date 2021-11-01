@@ -23,3 +23,4 @@ testVerticalDatum7 : testVerticalDatum7.o
 
 clean:
 	rm -f Output/*
+	rm -f *.dss

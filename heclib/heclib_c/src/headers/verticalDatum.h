@@ -51,7 +51,8 @@ extern "C" {
  
 #define FALSE 0
 #define TRUE  1
-#define UNDEFINED -FLT_MAX
+#define UNDEFINED_VERTICAL_DATUM_VALUE -FLT_MAX
+#define METERS_PER_FOOT 0.3048
  
 //-----------------------------//
 // Vertical datum constants    //
@@ -69,6 +70,9 @@ extern "C" {
 #define CVERTICAL_DATUM_NGVD29 "NGVD-29"
 #define CVERTICAL_DATUM_OTHER  "OTHER"
 #define CVERTICAL_DATUM_LOCAL  CVERTICAL_DATUM_OTHER
+
+#define VERTICAL_DATUM_USER_HEADER_PARAM "verticalDatumInfo:"
+#define VERTICAL_DATUM_USER_HEADER_PARAM_LEN 18 //strlen(VERTICAL_DATUM_USER_HEADER_PARAM)
 
 //----------------//
 // error messages //
@@ -92,6 +96,7 @@ extern "C" {
 #define INVALID_NAVD_88_OFFSET_VALUE_IN_XML             "Invalid NAVD-88 offset value in XML"
 #define INVALID_NGVD_29_OFFSET_BLOCK_IN_XML             "Invalid NGVD-29 offset block in XML"
 #define INVALID_NGVD_29_OFFSET_VALUE_IN_XML             "Invalid NGVD-29 offset value in XML"
+#define MISSING_OFFSET_BLOCK_IN_XML                     "Missing <offset>...</offset> block in XML"
 #define INVALID_OFFSET_BLOCK_IN_XML                     "Invalid <offset>...</offset> block in XML"
 #define INVALID_XML_STRUCTURE                           "Invalid XML Structure"
 #define MULTIPLE_NAVD_88_OFFSET_BLOCKS_IN_XML           "Multiple NAVD-88 offset blocks in XML"
@@ -108,7 +113,7 @@ extern "C" {
     __typeof__ (b) _b = (b); \
     _a < _b ? _a : _b;       \
 })
- 
+
 typedef struct vertical_datum_info_s {
     char  native_datum[17];
     float elevation;
@@ -132,6 +137,17 @@ typedef struct text_boundary_info_s {
     int   len_non_blank;
     int   len_with_boundaries;
 } text_boundary_info;
+/**
+ * Returns a vertical datum offset adjusted for data unit
+ * 
+ * @param offset      The value of the offset
+ * @param offset_unit The unit of offset
+ * @param data_unit   The unit of the elevations being modified
+ * 
+ * @return The offset appropriate for adjusting the offsets with. Returns UNDEFINED_VERTICAL_DATUM_VALUE
+ *         if either of the units cannot be identified as feet or meters
+ */
+double get_offset(double offset, const char *offset_unit, const char *data_unit);
 /**
  * Returns a string representation of a DSS record user header
  * 
@@ -273,6 +289,16 @@ char *vertical_datum_info_from_string(vertical_datum_info *vdi, const char *inpu
  */
 char *vertical_datum_info_to_string(char **results, vertical_datum_info *vdi, int generate_compressed);
 /**
+ * Returns any vertical datum info in a DSS record user header
+ * 
+ * @param userHeader     The user header (integer array)
+ * @param userHeaderSize The size of the user header in number of integers
+ * 
+ * @return A pointer to a dynmically allocated vertical_datum_info struct, or NULL if the user header doesn't
+ *         include any vertical datum info
+ */
+vertical_datum_info *vertical_datum_info_from_user_header(const int *userHeader, const int userHeaderSize);
+/**
  * Fortan wrapper for vertical_datum_info_from_string
  *
  * Use the following Fortran interface for this routine:
@@ -303,10 +329,10 @@ char *vertical_datum_info_to_string(char **results, vertical_datum_info *vdi, in
  * @param native_datum               Fortran CHARACTER (LEN=*) output for native datum. Length should be >= 16.
  * @param unit                       Fortran CHARACTER (LEN=*) output for unit of elevation and offsets. Length should be >= 2
  * @param error_message              Fortran CHARACTER (LEN=*) output for error message. Empty on success. Length should be >= 64
- * @param elevation                  Fortran REAL (KIND=4) output for elevation. UNDEFINED if no value in XML
- * @param offset_ngvd_29             Fortran REAL (KIND=4) output for the offset to NGVD-29. UNDEFINED if no value in XML
+ * @param elevation                  Fortran REAL (KIND=4) output for elevation. UNDEFINED_VERTICAL_DATUM_VALUE if no value in XML
+ * @param offset_ngvd_29             Fortran REAL (KIND=4) output for the offset to NGVD-29. UNDEFINED_VERTICAL_DATUM_VALUE if no value in XML
  * @param offset_ngvd_29_is_estimate Fortran LOGICAL (KIND=4) output for whether the offset to NGVD-29 is estimated
- * @param offset_navd_88             Fortran REAL (KIND=4) output for the offset to NAVD-88. UNDEFINED if no value in XML
+ * @param offset_navd_88             Fortran REAL (KIND=4) output for the offset to NAVD-88. UNDEFINED_VERTICAL_DATUM_VALUE if no value in XML
  * @param offset_navd_88_is_estimate Fortran LOGICAL (KIND=4) output for whether the offset to NAVD-88 is estimated
  * @param len_input_str              Fortran hidden parameter for declared length of input_str parameter
  * @param len_native_datum           Fortran hidden parameter for declared length of native_datum parameter
@@ -360,10 +386,10 @@ void vertical_datum_info_from_string_(
  * @param native_datum               Fortran CHARACTER (LEN=*) input for native datum.
  * @param unit                       Fortran CHARACTER (LEN=*) input for unit of elevation and offsets.
  * @param error_message              Fortran CHARACTER (LEN=*) output for error message. Empty on success. Length should be >= 64
- * @param elevation                  Fortran REAL (KIND=4) input for elevation. UNDEFINED if unknown or n/a
- * @param offset_ngvd_29             Fortran REAL (KIND=4) input for the offset to NGVD-29. UNDEFINED if n/a
+ * @param elevation                  Fortran REAL (KIND=4) input for elevation. UNDEFINED_VERTICAL_DATUM_VALUE if unknown or n/a
+ * @param offset_ngvd_29             Fortran REAL (KIND=4) input for the offset to NGVD-29. UNDEFINED_VERTICAL_DATUM_VALUE if n/a
  * @param offset_ngvd_29_is_estimate Fortran LOGICAL (KIND=4) input for whether the offset to NGVD-29 is estimated
- * @param offset_navd_88             Fortran REAL (KIND=4) input for the offset to NAVD-88. UNDEFINED if n/a
+ * @param offset_navd_88             Fortran REAL (KIND=4) input for the offset to NAVD-88. UNDEFINED_VERTICAL_DATUM_VALUE if n/a
  * @param offset_navd_88_is_estimate Fortran LOGICAL (KIND=4) input for whether the offset to NAVD-88 is estimated
  * @param generate_compressed        Fortran LOGICAL (KIND=4) input for whether to generate compressed or raw (XML) string
  * @param len_output_str             Fortran hidden parameter for declared length of output_str parameter
