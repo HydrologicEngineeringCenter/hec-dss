@@ -378,12 +378,34 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 			if (vdi) {
 				double offset = 0.;
 				// get the default vertical datum, if any
-				char cvertcal_datum[17];
+				char cvertical_datum[17];
 				int  ivertical_datum = -1;
 				int  ivertical_datum2;
-				zquery("VDTM", cvertcal_datum, sizeof(cvertcal_datum), &ivertical_datum);
+				zquery("VDTM", cvertical_datum, sizeof(cvertical_datum), &ivertical_datum);
 				ivertical_datum2 = ivertical_datum;
-				// override default with the specified vertical datum, if any in hacked unit spec
+				// override datum with the specified vertical datum, if any, in user header
+				char *userHeaderString = string_from_user_header(tss->userHeader, tss->userHeaderSize);
+				char *headerDatum = extract_from_user_header_string(&userHeaderString, VERTICAL_DATUM_USER_HEADER_PARAM, TRUE, FALSE);
+				if (headerDatum) {
+					if (!strcmp(headerDatum, CVERTICAL_DATUM_NAVD88)) {
+						ivertical_datum = IVERTICAL_DATUM_NAVD88;
+					}
+					else if (!strcmp(headerDatum, CVERTICAL_DATUM_NGVD29)) {
+						ivertical_datum = IVERTICAL_DATUM_NGVD29;
+					}
+					else {
+						ivertical_datum = IVERTICAL_DATUM_OTHER;
+					}
+					strcpy(cvertical_datum, headerDatum);
+					// remove the datum from the user header
+					extract_from_user_header_string(&userHeaderString, VERTICAL_DATUM_USER_HEADER_PARAM, TRUE, TRUE);
+					int newHeaderSize;
+					int *newHeader = string_to_user_header(userHeaderString, &newHeaderSize);
+					free(tss->userHeader);
+					tss->userHeader = newHeader;
+					tss->userHeaderNumber = tss->userHeaderSize = newHeaderSize;
+				}
+				// override datum with the specified vertical datum, if any, in hacked unit spec
 				if (strchr(tss->units, '|')) {
 					char  strtok_buf[256];
 					char *value;
@@ -415,7 +437,7 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 						else {
 							ivertical_datum = IVERTICAL_DATUM_OTHER;
 						}
-						strcpy(cvertcal_datum, vdi->native_datum);
+						strcpy(cvertical_datum, vertical_datum);
 					}
 					free(unitSpec);
 				}
@@ -428,7 +450,7 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 						offset = vdi->offset_to_ngvd_29;
 						break;
 					case IVERTICAL_DATUM_OTHER :
-						if (strcasecmp(cvertcal_datum, vdi->native_datum)) {
+						if (strcasecmp(cvertical_datum, vdi->native_datum)) {
 							offset = UNDEFINED_VERTICAL_DATUM_VALUE;
 						}
 						else {
@@ -441,17 +463,28 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 				}
 				if (offset != 0.) {
 					if (offset == UNDEFINED_VERTICAL_DATUM_VALUE) {
+						char errmsg[256];
+						sprintf(
+							errmsg, 
+							"\nVertical datum offset is undefined for datum '%s'.\nNo conversion performed.", 
+							cvertical_datum);
 						return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID,
 							zdssErrorCodes.INCOMPATIBLE_CALL, 0,
 							0, zdssErrorSeverity.WARNING, tss->pathname,
-							"Vertical datum offset is not specified for requested datum");
+							errmsg);
 					}
 					offset = get_offset(offset, vdi->unit, tss->units);
 					if (offset == UNDEFINED_VERTICAL_DATUM_VALUE) {
+						char errmsg[256];
+						sprintf(
+							errmsg, 
+							"\nData unit (%s) and/or offset unit (%s) is invalid for vertical datum conversion.\n"
+							"No conversion to datum '%s' performed", 
+							tss->units, vdi->unit, cvertical_datum);
 						return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID,
 							zdssErrorCodes.INCOMPATIBLE_CALL, 0,
 							0, zdssErrorSeverity.WARNING, tss->pathname,
-							"Unexpected unit (data or offset) - cannot perform vertical datum offset");
+							errmsg);
 					}
 					// adjust the values
 					if (offset != 0.) {

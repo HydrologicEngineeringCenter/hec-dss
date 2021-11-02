@@ -95,6 +95,100 @@ double get_offset(double offset, const char *offset_unit, const char *_data_unit
         return UNDEFINED_VERTICAL_DATUM_VALUE;
     }
 }
+const char *strcasestr(const char *haystack, const char *needle) {
+    int   haystack_len = strlen(haystack);
+    int   needle_len = strlen(needle);
+    for (int haystack_pos = 0; haystack_pos < haystack_len - needle_len; ++haystack_pos) {
+        if (!strncasecmp(haystack + haystack_pos, needle, needle_len)) {
+            return haystack + haystack_pos;
+        }
+    }
+    return NULL;
+}
+//
+// See verticalDatum.h for documentation
+//
+char *extract_from_user_header_string(char **userHeaderStr, const char *parameter, int matchCase, int removeFromString) {
+    char *value = NULL;
+    int   len;
+    char *param;
+    char *param_start;
+    char *value_start;
+    char *value_end;
+    if (parameter[strlen(parameter)-1] == ':') {
+        param = (char *)parameter;
+    }
+    else {
+        param = (char *)malloc(strlen(parameter)+2);
+        sprintf(param, "%s:", parameter);
+    }
+    param_start = matchCase ? (char *)strstr(*userHeaderStr, param) : (char *)strcasestr(*userHeaderStr, param);
+    if (param_start) {
+        value_start = param_start + strlen(param);
+        for(value_end = value_start+1; *value_end && *value_end != ';'; ++value_end);
+        len = value_end - value_start;
+        value = (char *)malloc(len + 1);
+        strncpy(value, value_start, len);
+        value[len] = '\0';
+        if (removeFromString) {
+            char *last_char;
+            if (*value_end) {
+                ++value_end;
+            }
+            memmove(param_start, value_end, strlen(value_end)+1);
+            last_char = *userHeaderStr + strlen(*userHeaderStr) - 1;
+            if (*last_char == ';') {
+                *last_char = '\0';
+            }
+        }
+    }
+    if (param != parameter) {
+        free(param);
+    }
+    return value;
+}
+//
+// See verticalDatum.h for documentation
+//
+int insert_into_user_header_string(
+        char      **userHeaderString, 
+        int         userHeaderStringSize, 
+        const char *parameter, 
+        const char *value, 
+        int         overwriteExisting) {
+    char *param = (char *)malloc(strlen(parameter) + 2);
+    strcpy(param, parameter);
+    if (param[strlen(param)-1] != ':') {
+        strcat(param, ":");
+    }
+    char *existing = extract_from_user_header_string(userHeaderString, param, TRUE, FALSE);
+    if (existing && !overwriteExisting) {
+        free(param);
+        return 0;
+    }
+    int to_insert_len = strlen(param) + strlen(value);
+    if (!strchr(*userHeaderString, ';')) {
+        ++to_insert_len;
+    }
+    int available_len = userHeaderStringSize - strlen(*userHeaderString);
+    if (existing) {
+        available_len += strlen(param) + strlen(existing);
+    }
+    if (available_len < to_insert_len) {
+        free(param);
+        return -1;
+    }
+    if (overwriteExisting) {
+        extract_from_user_header_string(userHeaderString, parameter, TRUE, TRUE);
+    }
+    if (strlen(*userHeaderString) > 0 && (*userHeaderString)[strlen(*userHeaderString)-1] != ';') {
+        strcat(*userHeaderString, ";");
+    }
+    strcat(*userHeaderString, param);
+    strcat(*userHeaderString, value);
+    free(param);
+    return 0;
+}
 //
 // See verticalDatum.h for documentation
 //
@@ -832,9 +926,9 @@ vertical_datum_info *vertical_datum_info_from_user_header(const int *userHeader,
     char *cp = string_from_user_header(userHeader, userHeaderSize);
     char *errmsg;
     if (cp) {
-        char *start = strstr(cp, VERTICAL_DATUM_USER_HEADER_PARAM);
+        char *start = strstr(cp, VERTICAL_DATUM_INFO_USER_HEADER_PARAM);
         if (start) {
-            start += VERTICAL_DATUM_USER_HEADER_PARAM_LEN;
+            start += VERTICAL_DATUM_INFO_USER_HEADER_PARAM_LEN;
             char *end = start;
             for(; *end && *end != ';'; ++end); // string_from_user_header() returns NULL terminated string
             *end = '\0';
