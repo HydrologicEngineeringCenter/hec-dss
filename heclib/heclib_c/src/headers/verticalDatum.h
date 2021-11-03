@@ -71,10 +71,10 @@ extern "C" {
 #define CVERTICAL_DATUM_OTHER  "OTHER"
 #define CVERTICAL_DATUM_LOCAL  CVERTICAL_DATUM_OTHER
 
-#define VERTICAL_DATUM_USER_HEADER_PARAM "verticalDatum:"
-#define VERTICAL_DATUM_USER_HEADER_PARAM_LEN 14 //strlen(VERTICAL_DATUM_USER_HEADER_PARAM)
-#define VERTICAL_DATUM_INFO_USER_HEADER_PARAM "verticalDatumInfo:"
-#define VERTICAL_DATUM_INFO_USER_HEADER_PARAM_LEN 18 //strlen(VERTICAL_DATUM_INFO_USER_HEADER_PARAM)
+#define VERTICAL_DATUM_USER_HEADER_PARAM "verticalDatum"
+#define VERTICAL_DATUM_USER_HEADER_PARAM_LEN 13 //strlen(VERTICAL_DATUM_USER_HEADER_PARAM)
+#define VERTICAL_DATUM_INFO_USER_HEADER_PARAM "verticalDatumInfo"
+#define VERTICAL_DATUM_INFO_USER_HEADER_PARAM_LEN 17 //strlen(VERTICAL_DATUM_INFO_USER_HEADER_PARAM)
 
 //----------------//
 // error messages //
@@ -140,6 +140,14 @@ typedef struct text_boundary_info_s {
     int   len_with_boundaries;
 } text_boundary_info;
 /**
+ * Returns TRUE if unit recognized as feet, otherwise FALSE
+ */
+int unit_is_feet(const char *unit);
+/**
+ * Returns TRUE if unit recognized as meters, otherwise FALSE
+ */
+int unit_is_meters(const char *unit);
+/**
  * Returns a vertical datum offset adjusted for data unit
  * 
  * @param offset      The value of the offset
@@ -151,30 +159,50 @@ typedef struct text_boundary_info_s {
  */
 double get_offset(double offset, const char *offset_unit, const char *data_unit);
 /**
- * Returns a parameter value from a user header string, optionally removing the parameter and value from the string
+ * Returns a parameter value from a string whose parts are delimited by a single character, optionally 
+ * removing the parameter and value from the string
  * 
- * @param userHeaderStr    The user header string (possibly modified)
+ * @param delimitedStr     The delimited string (possibly modified) if removeFromString is TRUE
  * @param parameter        The parameter to extract the value for
+ * @param separator        A string that separates the parameter from the value. May be NULL
  * @param matchCase        A flag to specify whether to use case sensitive matching on the parameter
- * @param removeFromString A flag to specify whether to remove the parameter and value from the user header string
+ * @param removeFromString A flag to specify whether to remove the parameter and value from the delimited string
+ * @param delimiter        The character used as a delimiter
  * 
- * @return The value of the parameter in the user header string, or NULL if the parameter is not found
+ * @return The value of the parameter in the user header string, or NULL if the parameter is not found. Memory for 
+ *         this buffer is dynamically allocated using malloc() and must be freed using free() by the caller if this 
+ *         call is successful.
  */
-char *extract_from_user_header_string(char **userHeaderStr, const char *parameter, int matchCase, int removeFromString);
+char *extract_from_delimited_string(
+    char      **delimitedStr, 
+    const char *parameter, 
+    const char *separator,
+    int         matchCase, 
+    int         removeFromString, 
+    char        delimiter);
 /**
- * Inserts a parameter/value pair into a user header string
+ * Inserts a parameter/value pair into a string whose parts are delimited by a single character
  * 
- * @param userHeaderString     The user header string to modify
- * @param userHeaderStringSize The allocated size in bytes of the user header string
- * @param parameter            The parameter to add to the user header string
- * @param value                The value of the parameter to add to the user header string 
+ * @param delimitedString      The delimited string to modify
+ * @param delimitedStringSize  The allocated size in bytes of the delimited  string
+ * @param parameter            The parameter to add to the delimited string
+ * @param separator            A string that separates the parameter from the value. May be NULL
+ * @param value                The value of the parameter to add to the delimited string. May be NULL 
  * @param overwriteExisting    A flag to specify overwriting the value of the parameter if it already exists
+ * @param delimiter            The character used as a delimiter
  * 
  * @return 0 on success - either the parameter existed and overwriteExisting was FALSE, or the user header sting 
  *         was successfully modified. -1 if there is not enough room to insert the parameter/value pair
  * 
  */
-int insert_into_user_header_string(char **userHeaderString, int userHeaderStringSize, const char *parameter, const char *value, int overwriteExisting);
+int insert_into_delimited_string(
+    char     **delimitedString, 
+    int        delimitedStringSize, 
+    const char *parameter, 
+    const char *value, 
+    const char *separator, 
+    int         overwriteExisting, 
+    char        delimiter);
 /**
  * Returns a string representation of a DSS record user header
  * 

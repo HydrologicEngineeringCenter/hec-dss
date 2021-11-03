@@ -40,6 +40,28 @@ const int meter_unit_alias_count = sizeof(meter_unit_aliases) / sizeof(meter_uni
 //
 // See verticalDatum.h for documentation
 //
+int unit_is_feet(const char *unit) {
+    for (int i = 0; i < foot_unit_alias_count; ++i) {
+        if (!strcasecmp(unit, foot_unit_aliases[i])) {
+            return TRUE;
+        }
+    }
+    return FALSE;
+}
+//
+// See verticalDatum.h for documentation
+//
+int unit_is_meters(const char *unit) {
+    for (int i = 0; i < meter_unit_alias_count; ++i) {
+        if (!strcasecmp(unit, meter_unit_aliases[i])) {
+            return TRUE;
+        }
+    }
+    return FALSE;
+}
+//
+// See verticalDatum.h for documentation
+//
 double get_offset(double offset, const char *offset_unit, const char *_data_unit) {
     int data_in_feet     = 0;
     int data_in_meters   = 0;
@@ -53,33 +75,14 @@ double get_offset(double offset, const char *offset_unit, const char *_data_unit
     }
     if (offset_unit == NULL || data_unit == NULL) return UNDEFINED_VERTICAL_DATUM_VALUE;
     if (!strcasecmp(offset_unit, data_unit)) return offset;
-    for (int i = 0; i < foot_unit_alias_count; ++i) {
-        if (!strcasecmp(offset_unit, foot_unit_aliases[i])) {
-            offset_in_feet = 1;
-            break;
-        }
-    }
-    if (!offset_in_feet) {
-        for (int i = 0; i < meter_unit_alias_count; ++i) {
-            if (!strcasecmp(offset_unit, meter_unit_aliases[i])) {
-                offset_in_meters = 1;
-                break;
-            }
-        }
-    }
-    for (int i = 0; i < foot_unit_alias_count; ++i) {
-        if (!strcasecmp(data_unit, foot_unit_aliases[i])) {
-            data_in_feet = 1;
-            break;
-        }
-    }
+
+    data_in_feet = unit_is_feet(data_unit);
     if (!data_in_feet) {
-        for (int i = 0; i < meter_unit_alias_count; ++i) {
-            if (!strcasecmp(data_unit, meter_unit_aliases[i])) {
-                data_in_meters = 1;
-                break;
-            }
-        }
+        data_in_meters = unit_is_meters(data_unit);
+    }
+    offset_in_feet = unit_is_feet(offset_unit);
+    if (!offset_in_feet) {
+        offset_in_meters = unit_is_meters(offset_unit);
     }
     if (data_in_feet) {
         if (offset_in_feet)   return offset;
@@ -108,24 +111,29 @@ const char *strcasestr(const char *haystack, const char *needle) {
 //
 // See verticalDatum.h for documentation
 //
-char *extract_from_user_header_string(char **userHeaderStr, const char *parameter, int matchCase, int removeFromString) {
+char *extract_from_delimited_string(
+        char      **delimitedString, 
+        const char *parameter, 
+        const char *separator,
+        int         matchCase, 
+        int         removeFromString, 
+        char        delimiter) {
+
+    int len = strlen(parameter) + 1;
+    if (separator) {
+        len += strlen(separator);
+    }
+    char *param = malloc(len);
+    strcpy(param, parameter);
+    if (separator) {
+        strcat(param, separator);
+    }
     char *value = NULL;
-    int   len;
-    char *param;
-    char *param_start;
-    char *value_start;
-    char *value_end;
-    if (parameter[strlen(parameter)-1] == ':') {
-        param = (char *)parameter;
-    }
-    else {
-        param = (char *)malloc(strlen(parameter)+2);
-        sprintf(param, "%s:", parameter);
-    }
-    param_start = matchCase ? (char *)strstr(*userHeaderStr, param) : (char *)strcasestr(*userHeaderStr, param);
+    char *param_start = matchCase ? (char *)strstr(*delimitedString, param) : (char *)strcasestr(*delimitedString, param);
     if (param_start) {
-        value_start = param_start + strlen(param);
-        for(value_end = value_start+1; *value_end && *value_end != ';'; ++value_end);
+        char *value_start = param_start + strlen(param);
+        char *value_end;
+        for(value_end = value_start+1; *value_end && *value_end != delimiter; ++value_end);
         len = value_end - value_start;
         value = (char *)malloc(len + 1);
         strncpy(value, value_start, len);
@@ -136,57 +144,73 @@ char *extract_from_user_header_string(char **userHeaderStr, const char *paramete
                 ++value_end;
             }
             memmove(param_start, value_end, strlen(value_end)+1);
-            last_char = *userHeaderStr + strlen(*userHeaderStr) - 1;
-            if (*last_char == ';') {
+            last_char = *delimitedString + strlen(*delimitedString) - 1;
+            if (*last_char == delimiter) {
                 *last_char = '\0';
             }
         }
     }
-    if (param != parameter) {
-        free(param);
-    }
     return value;
-}
-//
-// See verticalDatum.h for documentation
-//
-int insert_into_user_header_string(
-        char      **userHeaderString, 
-        int         userHeaderStringSize, 
+}    
+int insert_into_delimited_string(
+        char     **delimitedString, 
+        int        delimitedStringSize, 
         const char *parameter, 
         const char *value, 
-        int         overwriteExisting) {
-    char *param = (char *)malloc(strlen(parameter) + 2);
-    strcpy(param, parameter);
-    if (param[strlen(param)-1] != ':') {
-        strcat(param, ":");
-    }
-    char *existing = extract_from_user_header_string(userHeaderString, param, TRUE, FALSE);
+        const char *separator, 
+        int         overwriteExisting, 
+        char        delimiter) {
+
+    char *existing = extract_from_delimited_string(
+        delimitedString, 
+        parameter, 
+        separator, 
+        TRUE, 
+        FALSE, 
+        delimiter);
     if (existing && !overwriteExisting) {
-        free(param);
+        free(existing);
         return 0;
     }
-    int to_insert_len = strlen(param) + strlen(value);
-    if (!strchr(*userHeaderString, ';')) {
+    int to_insert_len = strlen(parameter);
+    if (separator) {
+        to_insert_len += strlen(separator);
+    }
+    if (value) {
+        to_insert_len += strlen(value);
+    }
+    if (!strchr(*delimitedString, delimiter)) {
         ++to_insert_len;
     }
-    int available_len = userHeaderStringSize - strlen(*userHeaderString);
+    int available_len = delimitedStringSize - strlen(*delimitedString);
     if (existing) {
-        available_len += strlen(param) + strlen(existing);
+        available_len += strlen(parameter);
+        if (separator) {
+            available_len += strlen(separator);
+        }
     }
     if (available_len < to_insert_len) {
-        free(param);
+        if (existing) {
+            free(existing);
+        }
         return -1;
     }
     if (overwriteExisting) {
-        extract_from_user_header_string(userHeaderString, parameter, TRUE, TRUE);
+        extract_from_delimited_string(delimitedString, parameter, separator, TRUE, TRUE, delimiter);
     }
-    if (strlen(*userHeaderString) > 0 && (*userHeaderString)[strlen(*userHeaderString)-1] != ';') {
-        strcat(*userHeaderString, ";");
+    if (strlen(*delimitedString) > 0 && (*delimitedString)[strlen(*delimitedString)-1] != delimiter) {
+        sprintf(*delimitedString+strlen(*delimitedString), "%c", delimiter);
     }
-    strcat(*userHeaderString, param);
-    strcat(*userHeaderString, value);
-    free(param);
+    strcat(*delimitedString, parameter);
+    if (separator) {
+        strcat(*delimitedString, separator);
+    }
+    if (value) {
+        strcat(*delimitedString, value);
+    }
+    if (existing) {
+        free(existing);
+    }
     return 0;
 }
 //
@@ -195,8 +219,11 @@ int insert_into_user_header_string(
 int *string_to_user_header(const char *str, int *intCount) {
     int  numBytes = strlen(str);
     int  numInts = numberIntsInBytes(numBytes);
-    int *userHeader = (int *)calloc(numInts, 4);
-    charInt ((void *)str, userHeader, numBytes, numInts * 4, 0, 1, 0);
+    int *userHeader = NULL;
+    if (numInts > 0) {
+        userHeader = (int *)calloc(numInts, 4);
+        charInt ((void *)str, userHeader, numBytes, numInts * 4, 0, 1, 0);
+    }
     *intCount = numInts;
     return userHeader;
 }
@@ -924,21 +951,23 @@ char *vertical_datum_info_to_string(char **results, vertical_datum_info *vdi, in
 vertical_datum_info *vertical_datum_info_from_user_header(const int *userHeader, const int userHeaderSize) {
     vertical_datum_info *vdi = NULL;
     char *cp = string_from_user_header(userHeader, userHeaderSize);
-    char *errmsg;
     if (cp) {
-        char *start = strstr(cp, VERTICAL_DATUM_INFO_USER_HEADER_PARAM);
-        if (start) {
-            start += VERTICAL_DATUM_INFO_USER_HEADER_PARAM_LEN;
-            char *end = start;
-            for(; *end && *end != ';'; ++end); // string_from_user_header() returns NULL terminated string
-            *end = '\0';
+        char *vdiStr = extract_from_delimited_string(
+            &cp, 
+            VERTICAL_DATUM_INFO_USER_HEADER_PARAM, 
+            ":",
+            FALSE, 
+            FALSE,
+            ';');
+        if (vdiStr) {
             vdi = (vertical_datum_info *)malloc(sizeof(vertical_datum_info));
-            errmsg = vertical_datum_info_from_string(vdi, start);
+            char *errmsg = vertical_datum_info_from_string(vdi, vdiStr);
             if (errmsg != NULL) {
                 fprintf(stderr, "%s\n", errmsg);
                 free(vdi);
                 vdi = NULL;
             }
+            free(vdiStr);
         }
         free(cp);
     }

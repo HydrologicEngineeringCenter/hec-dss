@@ -4,32 +4,32 @@
 #include <verticalDatum.h>
 
 void main (int argc, char *argv[]) {
-    // test extract_from_user_header_string() and insert_into_user_header_string()
+    // test extract_from_delimited_string() and insert_into_delimited_string()
     {
         int text_size = 256;
         char *text = (char *)malloc(text_size);
         char *cp;
         char *text_value = "theFirstParameter:theFirstValue;theSecondParameter:theSecondValue";
         sprintf(text, text_value);
-        cp = extract_from_user_header_string(&text, "theFirstParameter", TRUE, FALSE);
+        cp = extract_from_delimited_string(&text, "theFirstParameter", ":", TRUE, FALSE, ';');
         assert(!strcmp(cp, "theFirstValue"));
-        cp = extract_from_user_header_string(&text, "theSecondParameter", TRUE, FALSE);
+        cp = extract_from_delimited_string(&text, "theSecondParameter", ":", TRUE, FALSE, ';');
         assert(!strcmp(cp, "theSecondValue"));
-        cp = extract_from_user_header_string(&text, "THEFIRSTPARAMETER", FALSE, FALSE);
+        cp = extract_from_delimited_string(&text, "THEFIRSTPARAMETER", ":", FALSE, FALSE, ';');
         assert(!strcmp(cp, "theFirstValue"));
-        cp = extract_from_user_header_string(&text, "THEFIRSTPARAMETER", FALSE, TRUE);
+        cp = extract_from_delimited_string(&text, "THEFIRSTPARAMETER", ":", FALSE, TRUE, ';');
         assert(!strcmp(cp, "theFirstValue"));
         assert(!strcmp(text, "theSecondParameter:theSecondValue"));
         sprintf(text, text_value);
-        cp = extract_from_user_header_string(&text, "theSecondParameter", TRUE, TRUE);
+        cp = extract_from_delimited_string(&text, "theSecondParameter", ":", TRUE, TRUE, ';');
         assert(!strcmp(cp, "theSecondValue"));
         assert(!strcmp(text, "theFirstParameter:theFirstValue"));
-        assert(insert_into_user_header_string(&text, text_size, "anotherParameter", "anotherValue", FALSE) ==  0);
+        assert(insert_into_delimited_string(&text, text_size, "anotherParameter", "anotherValue", ":", FALSE, ';') ==  0);
         assert(!strcmp(text, "theFirstParameter:theFirstValue;anotherParameter:anotherValue"));
-        extract_from_user_header_string(&text, "theFirstParameter", TRUE, TRUE);
-        extract_from_user_header_string(&text, "anotherParameter", TRUE, TRUE);
+        extract_from_delimited_string(&text, "theFirstParameter", ":", TRUE, TRUE, ';');
+        extract_from_delimited_string(&text, "anotherParameter", ":", TRUE, TRUE, ';');
         assert(strlen(text) == 0);
-        assert(insert_into_user_header_string(&text, text_size, "anotherParameter", "anotherValue", FALSE) == 0);
+        assert(insert_into_delimited_string(&text, text_size, "anotherParameter", "anotherValue", ":", FALSE, ';') == 0);
         assert(strcmp(text, "anotherParameter:anotherValue") == 0);
         free(text);
     }
@@ -365,15 +365,17 @@ void main (int argc, char *argv[]) {
                                 //------------------------------------------------//
                                 errmsg = compress_and_encode(&compressed, xml[i]);
                                 assert(errmsg == NULL);
-                                len = VERTICAL_DATUM_INFO_USER_HEADER_PARAM_LEN + strlen(compressed);
+                                len = VERTICAL_DATUM_INFO_USER_HEADER_PARAM_LEN + strlen(compressed) + 1;
                                 headerBuf = (char *)malloc(len+1);
                                 memset(headerBuf, 0, len+1);
-                                status = insert_into_user_header_string(
+                                status = insert_into_delimited_string(
                                     &headerBuf, 
                                     len+1, 
                                     VERTICAL_DATUM_INFO_USER_HEADER_PARAM, 
                                     compressed, 
-                                    FALSE);
+                                    ":",
+                                    FALSE,
+                                    ';');
                                 assert(status == 0);
                                 tss->userHeader = string_to_user_header(headerBuf, &tss->userHeaderSize);
                                 tss->userHeaderNumber = tss->userHeaderSize; 
@@ -386,21 +388,25 @@ void main (int argc, char *argv[]) {
                                     J = j2;
                                     char *headerString = string_from_user_header(tss->userHeader, tss->userHeaderSize);
                                     int headerLen = strlen(headerString);
-                                    status = insert_into_user_header_string(
+                                    status = insert_into_delimited_string(
                                         &headerString, 
                                         headerLen, 
                                         VERTICAL_DATUM_USER_HEADER_PARAM, 
                                         verticalDatums[J], 
-                                        FALSE);
+                                        ":",
+                                        FALSE,
+                                        ';');
                                     if (status != 0) {
-                                        headerLen += VERTICAL_DATUM_USER_HEADER_PARAM_LEN + strlen(verticalDatums[J]) + 2;
+                                        headerLen += VERTICAL_DATUM_USER_HEADER_PARAM_LEN + strlen(verticalDatums[J]) + 3;
                                         headerString = (char *)realloc(headerString, headerLen);
-                                        status = insert_into_user_header_string(
+                                        status = insert_into_delimited_string(
                                             &headerString, 
                                             headerLen, 
                                             VERTICAL_DATUM_USER_HEADER_PARAM, 
                                             verticalDatums[J], 
-                                            FALSE);
+                                            ":",
+                                            FALSE,
+                                            ';');
                                         assert(status == 0);
                                     }
                                     tss->userHeader = string_to_user_header(headerString, &tss->userHeaderSize);
