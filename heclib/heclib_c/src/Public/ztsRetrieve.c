@@ -417,7 +417,7 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 			//-------------------------------------------------------------//
 			// we have a request to convert to a non-native vertical datum //
 			//-------------------------------------------------------------//
-			char errmsg[128];
+			char errmsg[1024];
 			char *vdiStr = extract_from_delimited_string(
 				&tss->locationStruct->supplemental,
 				VERTICAL_DATUM_INFO_USER_HEADER_PARAM, 
