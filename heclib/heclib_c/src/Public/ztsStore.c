@@ -461,7 +461,7 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 							"Call 'zset(\"VDOW\", \"\", 1)' to allow overwriting the location's vertical datum information.\n"
 							"Conversion to datum '%s' was not performed.\n"
 							"No data stored.", 
-							vdiTs->elevation, vdiTs->unit, vdiLoc->elevation, vdiLoc->unit);
+							vdiTs->elevation, vdiTs->unit, vdiLoc->elevation, vdiLoc->unit, vdiLoc->native_datum);
 						return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID,
 							zdssErrorCodes.INCOMPATIBLE_CALL, 0,
 							0, zdssErrorSeverity.WARNING, tss->pathname,
@@ -477,7 +477,7 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 							"Call 'zset(\"VDOW\", \"\", 1)' to allow overwriting the location's vertical datum information.\n"
 							"Conversion to datum '%s' was not performed.\n"
 							"No data stored.", 
-							vdiTs->unit, vdiLoc->unit);
+							vdiTs->unit, vdiLoc->unit, vdiLoc->native_datum);
 						return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID,
 							zdssErrorCodes.INCOMPATIBLE_CALL, 0,
 							0, zdssErrorSeverity.WARNING, tss->pathname,
@@ -493,7 +493,7 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 							"Call 'zset(\"VDOW\", \"\", 1)' to allow overwriting the location's vertical datum information.\n"
 							"Conversion to datum '%s' was not performed.\n"
 							"No data stored.", 
-							vdiTs->offset_to_navd_88, vdiTs->unit, vdiLoc->offset_to_navd_88, vdiLoc->unit);
+							vdiTs->offset_to_navd_88, vdiTs->unit, vdiLoc->offset_to_navd_88, vdiLoc->unit, vdiLoc->native_datum);
 						return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID,
 							zdssErrorCodes.INCOMPATIBLE_CALL, 0,
 							0, zdssErrorSeverity.WARNING, tss->pathname,
@@ -509,7 +509,7 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 							"Call 'zset(\"VDOW\", \"\", 1)' to allow overwriting the location's vertical datum information.\n"
 							"Conversion to datum '%s' was not performed.\n"
 							"No data stored.", 
-							vdiTs->offset_to_ngvd_29, vdiTs->unit, vdiLoc->offset_to_ngvd_29, vdiLoc->unit);
+							vdiTs->offset_to_ngvd_29, vdiTs->unit, vdiLoc->offset_to_ngvd_29, vdiLoc->unit, vdiLoc->native_datum);
 						return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID,
 							zdssErrorCodes.INCOMPATIBLE_CALL, 0,
 							0, zdssErrorSeverity.WARNING, tss->pathname,
