@@ -352,6 +352,7 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 		}
 	}
 	else {
+		int allowOverwriteLocationVerticalDatum;
 		if (!zinquire(ifltab, "write")) {
 			return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID,
 				zdssErrorCodes.WRITE_ON_READ_ONLY, 0, 0,
@@ -388,7 +389,7 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 			// get the info from the time series struct user header //
 			//------------------------------------------------------//
 			vdiTs = vertical_datum_info_from_user_header(tss->userHeader, tss->userHeaderSize);
-			if (!vdiTs && tss->locationStruct && tss->locationStruct->supplemental) {
+			if (tss->locationStruct && tss->locationStruct->supplemental) {
 				//------------------------------------------------------------------------------//
 				// none in the user header, see if any is passed in in embedded location struct //
 				//------------------------------------------------------------------------------//
@@ -409,69 +410,56 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 			// get the info from the location struct on disk //
 			//-----------------------------------------------//
 			zStructLocation *ls = zstructLocationNew(tss->pathname);
+			zlocationRetrieve(ifltab, ls);
 			if (ls && ls->supplemental) {
-				char *sup = mallocAndCopyTrim(ls->supplemental);
-				char *strtok_buf = (char *)malloc(strlen(sup)+1);
-				char *cp = strtok_r(sup, "\n", &strtok_buf);
-				while (cp) {
-					if (!strncmp(cp, VERTICAL_DATUM_INFO_USER_HEADER_PARAM, VERTICAL_DATUM_INFO_USER_HEADER_PARAM_LEN)) {
-						vertical_datum_info_from_string(&_vdiLoc, cp+VERTICAL_DATUM_INFO_USER_HEADER_PARAM_LEN);
-						vdiLoc = &_vdiLoc;
-						break;
-					}
-					cp = strtok_r(NULL, "\n", &strtok_buf);
+				char *vdiStr = extract_from_delimited_string(
+					&ls->supplemental,
+					VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
+					":",
+					TRUE,
+					FALSE,
+					'\n');
+				if (vdiStr) {
+					vertical_datum_info_from_string(&_vdiLoc, vdiStr);
+					vdiLoc = &_vdiLoc;
+					free(vdiStr);
 				}
-				free(strtok_buf);
-				free(sup);
 			}
 			if (vdiTs && vdiLoc) {
-				//-----------------------------------------------------------------------------------------//
-				// We have 2 sources of information. Combine them into vdiTs if appropriate (no conflicts) //
-				//-----------------------------------------------------------------------------------------//
-				double factor = 1.0;
-				double tolerance = 0.00000;
-				char errmsg[256];
-				if (unit_is_feet(vdiTs->unit) && unit_is_meters(vdiLoc->unit)) {
-					factor /= METERS_PER_FOOT;
-				}
-				else if (unit_is_meters(vdiTs->unit) && unit_is_feet(vdiLoc->unit)) {
-					factor *= METERS_PER_FOOT;
-				}
-				if (!strcmp(vdiTs->native_datum, "OTHER")) {
-					if (strcmp(vdiLoc->native_datum, CVERTICAL_DATUM_NAVD88) && 
-					    strcmp(vdiLoc->native_datum, CVERTICAL_DATUM_NGVD29)) {
-							strcpy(vdiTs->native_datum, vdiLoc->native_datum);
-						}
-				}
-				else if (!strcmp(vdiLoc->native_datum, "OTHER")) {
-					if (strcmp(vdiTs->native_datum, CVERTICAL_DATUM_NAVD88) && 
-					    strcmp(vdiTs->native_datum, CVERTICAL_DATUM_NGVD29)) {
-							// nop
-						}
+				zquery("VDOW", "", 0, &allowOverwriteLocationVerticalDatum);
+				if (allowOverwriteLocationVerticalDatum) {
+					vdi = vdiTs;
 				}
 				else {
+					//-------------------------------------------------------------------//
+					// We have 2 sources of information, abort if they're not equivalent //
+					//-------------------------------------------------------------------//
+					char errmsg[1024];
+					//-----------------------//
+					// compare native datums //
+					//-----------------------//
+					if (strcmp(vdiTs->native_datum, vdiLoc->native_datum)) {
 						sprintf(
 							errmsg, 
-							"\nIncoming native datum of %s conflicts with existing native datum of %s.\n"
-							"Conversion to datum '%s' could not be performed.\n"
+							"\nIncoming native vertical datum of '%s' conflicts with location's native datum of '%s'.\n"
+							"Call 'zset(\"VDOW\", \"\", 1)' to allow overwriting the location's vertical datum information.\n"
+							"Conversion to datum '%s' was not performed.\n"
 							"No data stored.", 
-							vdiTs->native_datum, vdiLoc->native_datum);
+							vdiTs->native_datum, vdiLoc->native_datum, vdiLoc->native_datum);
 						return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID,
 							zdssErrorCodes.INCOMPATIBLE_CALL, 0,
 							0, zdssErrorSeverity.WARNING, tss->pathname,
 							errmsg);
-				}
-				if (vdiTs->elevation == UNDEFINED_VERTICAL_DATUM_VALUE) {
-					if (vdiLoc->elevation != UNDEFINED_VERTICAL_DATUM_VALUE) {
-						vdiTs->elevation = vdiLoc->elevation * factor;
 					}
-				}
-				else if (vdiLoc->elevation != UNDEFINED_VERTICAL_DATUM_VALUE){ 
-					if (abs(vdiTs->elevation - vdiLoc->elevation * factor) >= tolerance) {
+					//--------------------//
+					// compare elevations //
+					//--------------------//
+					if (vdiTs->elevation != vdiLoc->elevation) {
 						sprintf(
 							errmsg, 
-							"\nIncoming elevation of %f %s conflicts with existing elevation of %f %s.\n"
-							"Conversion to datum '%s' could not be performed.\n"
+							"\nIncoming elevation of %f %s conflicts with location's elevation of %f %s.\n"
+							"Call 'zset(\"VDOW\", \"\", 1)' to allow overwriting the location's vertical datum information.\n"
+							"Conversion to datum '%s' was not performed.\n"
 							"No data stored.", 
 							vdiTs->elevation, vdiTs->unit, vdiLoc->elevation, vdiLoc->unit);
 						return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID,
@@ -479,18 +467,31 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 							0, zdssErrorSeverity.WARNING, tss->pathname,
 							errmsg);
 					}
-				}
-				if (vdiTs->offset_to_navd_88 == UNDEFINED_VERTICAL_DATUM_VALUE) {
-					if (vdiLoc->offset_to_navd_88 != UNDEFINED_VERTICAL_DATUM_VALUE) {
-						vdiTs->offset_to_navd_88 = vdiLoc->offset_to_navd_88 * factor;
-					}
-				}
-				else if (vdiLoc->offset_to_navd_88 != UNDEFINED_VERTICAL_DATUM_VALUE){ 
-					if (abs(vdiTs->offset_to_navd_88 - vdiLoc->offset_to_navd_88 * factor) >= tolerance) {
+					//----------------------//
+					// compare offset units //
+					//----------------------//
+					if (strcmp(vdiTs->unit, vdiLoc->unit)) {
 						sprintf(
 							errmsg, 
-							"\nIncoming offset to NAVD-88 of %f %s conflicts with existing of %f %s.\n"
-							"Conversion to datum '%s' could not be performed.\n"
+							"\nIncoming vertical datum offset unit of %s conflicts with location's unit of %s.\n"
+							"Call 'zset(\"VDOW\", \"\", 1)' to allow overwriting the location's vertical datum information.\n"
+							"Conversion to datum '%s' was not performed.\n"
+							"No data stored.", 
+							vdiTs->unit, vdiLoc->unit);
+						return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID,
+							zdssErrorCodes.INCOMPATIBLE_CALL, 0,
+							0, zdssErrorSeverity.WARNING, tss->pathname,
+							errmsg);
+					}
+					//------------------------//
+					// compare NAVD-88 offset //
+					//------------------------//
+					if (vdiTs->offset_to_navd_88 != vdiLoc->offset_to_navd_88) {
+						sprintf(
+							errmsg, 
+							"\nIncoming offset to NAVD-88 of %f %s conflicts with location's offset of %f %s.\n"
+							"Call 'zset(\"VDOW\", \"\", 1)' to allow overwriting the location's vertical datum information.\n"
+							"Conversion to datum '%s' was not performed.\n"
 							"No data stored.", 
 							vdiTs->offset_to_navd_88, vdiTs->unit, vdiLoc->offset_to_navd_88, vdiLoc->unit);
 						return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID,
@@ -498,18 +499,15 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 							0, zdssErrorSeverity.WARNING, tss->pathname,
 							errmsg);
 					}
-				}
-				if (vdiTs->offset_to_ngvd_29 == UNDEFINED_VERTICAL_DATUM_VALUE) {
-					if (vdiLoc->offset_to_ngvd_29 != UNDEFINED_VERTICAL_DATUM_VALUE) {
-						vdiTs->offset_to_ngvd_29 = vdiLoc->offset_to_ngvd_29 * factor;
-					}
-				}
-				else if (vdiLoc->offset_to_ngvd_29 != UNDEFINED_VERTICAL_DATUM_VALUE){ 
-					if (abs(vdiTs->offset_to_ngvd_29 - vdiLoc->offset_to_ngvd_29 * factor) >= tolerance) {
+					//------------------------//
+					// compare NGVD-29 offset //
+					//------------------------//
+					if (vdiTs->offset_to_ngvd_29 != vdiLoc->offset_to_ngvd_29) {
 						sprintf(
 							errmsg, 
 							"\nIncoming offset to NGVD_29 of %f %s conflicts with existing offset of %f %s.\n"
-							"Conversion to datum '%s' could not be performed.\n"
+							"Call 'zset(\"VDOW\", \"\", 1)' to allow overwriting the location's vertical datum information.\n"
+							"Conversion to datum '%s' was not performed.\n"
 							"No data stored.", 
 							vdiTs->offset_to_ngvd_29, vdiTs->unit, vdiLoc->offset_to_ngvd_29, vdiLoc->unit);
 						return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID,
@@ -517,8 +515,8 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 							0, zdssErrorSeverity.WARNING, tss->pathname,
 							errmsg);
 					}
+					vdi = vdiLoc;
 				}
-				vdi = vdiTs;
 			}
 			else {
 				//--------------------------//
@@ -791,7 +789,6 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 					//--------------------------------------------------------------------//
 					char *userHeaderString = string_from_user_header(tss->userHeader, tss->userHeaderSize);
 					if (userHeaderString) {
-						fprintf(stderr, "Before = %s\n", userHeaderString);
 						char *vdiStr = extract_from_delimited_string(
 							&userHeaderString, 
 							VERTICAL_DATUM_INFO_USER_HEADER_PARAM, 
@@ -800,12 +797,9 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 							TRUE,
 							';');
 						if (vdiStr) {
-							fprintf(stderr, "After  = %s\n", userHeaderString);
 							free(vdiStr);
 							int newHeaderSize;
 							int *newHeader = string_to_user_header(userHeaderString, &newHeaderSize);
-							fprintf(stderr, "Size = %d\n", newHeaderSize);
-							fprintf(stderr, "NULL ? %d\n", newHeader ? FALSE : TRUE);
 							free(tss->userHeader);
 							tss->userHeader = newHeader;
 							tss->userHeaderNumber = tss->userHeaderSize = newHeaderSize;
@@ -843,8 +837,7 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 			}
 			tss->locationStruct->pathnameInternal = mallocAndCopy(tss->pathname);
 			tss->locationStruct->allocated[zSTRUCT_locationPathInternal] = 1;
-			fprintf(stderr, "Storing location record\n");
-			zlocationStore(ifltab, tss->locationStruct, 0);
+			zlocationStore(ifltab, tss->locationStruct, allowOverwriteLocationVerticalDatum);
 		}
 	}
 

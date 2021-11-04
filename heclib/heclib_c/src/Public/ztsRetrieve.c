@@ -404,45 +404,83 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 			}
 		}
 	}
-	//  Convert values to default vertical datum if necessary and possible
-	if (status == STATUS_OKAY && (tss->floatValues || tss->doubleValues) && tss->userHeader) {
-		char cvertcal_datum[17];
+	char cPart[65];
+	zpathnameGetPart(tss->pathname, 3, cPart, sizeof(cPart));
+	if (!strncasecmp(cPart, "ELEV", 4) && tss->locationStruct && tss->locationStruct->supplemental) {
+		//--------------------------------------------------------------------------------//
+		// we're working with elevations and have possible vertical datum conversion info //
+		//--------------------------------------------------------------------------------//
+		char cvertical_datum[17];
 		int  ivertical_datum = -1;
-		zquery("VDTM", cvertcal_datum, sizeof(cvertcal_datum), &ivertical_datum);
-		if (ivertical_datum != IVERTICAL_DATUM_UNSET) {
-			vertical_datum_info *vdi = vertical_datum_info_from_user_header(tss->userHeader, tss->userHeaderSize);
-			if (vdi != NULL && strcmp(vdi->native_datum, cvertcal_datum)) {
-				double offset;
-				switch (ivertical_datum) {
-					case IVERTICAL_DATUM_NAVD88 :
-						offset = vdi->offset_to_navd_88;
-						break;
-					case IVERTICAL_DATUM_NGVD29 :
-						offset = vdi->offset_to_ngvd_29;
-						break;
-					default :
-						offset = 0.;
-						break;
+		zquery("VDTM", cvertical_datum, sizeof(cvertical_datum), &ivertical_datum);
+		if (ivertical_datum != tss->locationStruct->verticalDatum) {
+			//-------------------------------------------------------------//
+			// we have a request to convert to a non-native vertical datum //
+			//-------------------------------------------------------------//
+			char errmsg[128];
+			char *vdiStr = extract_from_delimited_string(
+				&tss->locationStruct->supplemental,
+				VERTICAL_DATUM_INFO_USER_HEADER_PARAM, 
+				":", 
+				TRUE,
+				FALSE,
+				'\n');
+			if (vdiStr) {
+				vertical_datum_info vdi;
+				char *msg = vertical_datum_info_from_string(&vdi, vdiStr);
+				if(msg) {
+					sprintf(
+						errmsg, 
+						"Cannot convert from native vertical datum of '%s' to '%s'.\n"
+						"Location has no conversion information.\n"
+						"Values not converted.",
+						tss->locationStruct->verticalDatum == 0 ? "UNSET"   :
+						tss->locationStruct->verticalDatum == 1 ? "NAVD-88" :
+						tss->locationStruct->verticalDatum == 2 ? "NGVD-29" : "OTHER",
+						cvertical_datum);
+					zmessage(ifltab, errmsg);
 				}
-				if (offset != 0.) {
-					offset = get_offset(offset, vdi->unit, tss->units);
-					if (offset == UNDEFINED_VERTICAL_DATUM_VALUE) {
-						status = STATUS_NOT_OKAY;
+				else {
+					double offset;
+					switch (ivertical_datum) {
+						case IVERTICAL_DATUM_NAVD88 :
+							offset = vdi.offset_to_navd_88;
+							break;
+						case IVERTICAL_DATUM_NGVD29 :
+							offset = vdi.offset_to_ngvd_29;
+							break;
+						default :
+							offset = 0.;
+							break;
 					}
-					else {
-						for (int i = 0; i < tss->numberValues; ++i) {
-							if (tss->floatValues) {
-								tss->floatValues[i] += offset;
-							}
-							else {
-								tss->doubleValues[i] += offset;
+					if (offset != 0.) {
+						offset = get_offset(offset, vdi.unit, tss->units);
+						if (offset == UNDEFINED_VERTICAL_DATUM_VALUE) {
+							sprintf(
+								errmsg, 
+								"\nData unit (%s) and/or offset unit (%s) is invalid for vertical datum conversion.\n"
+								"Conversion to datum '%s' could not be performed.\n"
+								"No data stored.", 
+								tss->units, 
+								vdi.unit, 
+								cvertical_datum);
+							zmessage(ifltab, errmsg);
+						}
+						else {
+							for (int i = 0; i < tss->numberValues; ++i) {
+								if (tss->floatValues) {
+									tss->floatValues[i] += offset;
+								}
+								else {
+									tss->doubleValues[i] += offset;
+								}
 							}
 						}
 					}
 				}
+				free(vdiStr);
 			}
 		}
-
 	}
 	//  Add the time array for regular interval?
 	if (status == STATUS_OKAY) {

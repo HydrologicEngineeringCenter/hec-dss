@@ -228,6 +228,9 @@ int zset7(const char* parameter, const char* charVal, int integerValue)
 			stringCopy(zdssVals.cverticalDatum, sizeof(zdssVals.cverticalDatum), charVal, _TRUNCATE);
 		}
 	}
+	else if (!strncmp(cparm, "vdow", 4)) {
+		zdssVals.icanOverwriteLocationVerticalDatum = integerValue ? TRUE : FALSE;
+	}
 	else {
 		if (zmessageLevel(ifltabTemp, MESS_METHOD_UTILITY_ID, MESS_LEVEL_INTERNAL_DIAG_2)) {
 			zmessageDebug(ifltabTemp, DSS_FUNCTION_zset_ID, "Parameter not recognized:   ", parameter);

@@ -772,6 +772,7 @@ char *vertical_datum_info_from_string(vertical_datum_info *vdi, const char *inpu
     //--------------------------------//
     err_msg = find_text_between(&tbi, xml, "<elevation>", "</elevation>");
     if (err_msg == NULL) {
+        errno = 0;
         ftmp = strtof(tbi.first_non_blank, &tbi.last_non_blank);
         if (ftmp != 0.f || errno == 0) {
             vdi->elevation = ftmp;
@@ -821,6 +822,7 @@ char *vertical_datum_info_from_string(vertical_datum_info *vdi, const char *inpu
             free(xml);
             return NO_NGVD_29_OFFSET_VALUE_IN_XML;
             }
+            errno = 0;
             ftmp = strtof(tbi.first_non_blank, &tbi.last_non_blank);
             if (ftmp != 0.f || errno == 0) {
                 vdi->offset_to_ngvd_29 = ftmp;
@@ -858,6 +860,7 @@ char *vertical_datum_info_from_string(vertical_datum_info *vdi, const char *inpu
                 free(xml);
                 return NO_NAVD_88_OFFSET_VALUE_IN_XML;
             }
+            errno = 0;
             ftmp = strtof(tbi.first_non_blank, &tbi.last_non_blank);;
             if (ftmp != 0.f || errno == 0) {
                 vdi->offset_to_navd_88 = ftmp;
@@ -919,20 +922,20 @@ char *vertical_datum_info_to_string(char **results, vertical_datum_info *vdi, in
     if (vdi->offset_to_ngvd_29 != UNDEFINED_VERTICAL_DATUM_VALUE) {
         sprintf(
             cp,
-            "  offset estimate=\"%c\">\n    <to-datum>NGVD-29</to-datum>\n    <value>%f</value>\n  </offset>\n",
-            vdi->offset_to_ngvd_29_is_estimate ? 'T' : 'F',
+            "  <offset estimate=\"%s\">\n    <to-datum>NGVD-29</to-datum>\n    <value>%f</value>\n  </offset>\n",
+            vdi->offset_to_ngvd_29_is_estimate ? "true" : "false",
             vdi->offset_to_ngvd_29);
         while (*cp)++cp;
     }
     if (vdi->offset_to_navd_88 != UNDEFINED_VERTICAL_DATUM_VALUE) {
         sprintf(
             cp,
-            "  offset estimate=\"%c\">\n    <to-datum>NAVD-88</to-datum>\n    <value>%f</value>\n  </offset>\n",
-            vdi->offset_to_navd_88_is_estimate ? 'T' : 'F',
+            "  <offset estimate=\"%s\">\n    <to-datum>NAVD-88</to-datum>\n    <value>%f</value>\n  </offset>\n",
+            vdi->offset_to_navd_88_is_estimate ? "true" : "false",
             vdi->offset_to_navd_88);
         while (*cp)++cp;
     }
-    sprintf(cp, "</vertical-datup-info>");
+    sprintf(cp, "</vertical-datum-info>");
     if (generate_compressed) {
         err_msg = compress_and_encode(results, xml);
         if (err_msg != NULL) {

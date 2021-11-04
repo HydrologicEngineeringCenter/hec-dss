@@ -156,6 +156,10 @@ int zquery(const char* parameter,  char* charVal, size_t lenCharVal, int *intege
 		stringCopy(charVal, (size_t)lenCharVal, zdssVals.cverticalDatum, _TRUNCATE);
 		status = STATUS_OKAY;
 	}
+	else if (!strncmp(cparm, "vdow", 4)) {
+		*integerValue = zdssVals.icanOverwriteLocationVerticalDatum;
+		status = STATUS_OKAY;
+	}
 	else {
 		status = STATUS_NOT_OKAY;;
 	}

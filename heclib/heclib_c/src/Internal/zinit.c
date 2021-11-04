@@ -921,6 +921,7 @@ void zinit()
 	// Set initial default vertical datum
 	zdssVals.iverticalDatum = IVERTICAL_DATUM_UNSET;
 	stringCopy(zdssVals.cverticalDatum, sizeof(zdssVals.cverticalDatum), CVERTICAL_DATUM_UNSET, _TRUNCATE);
+	zdssVals.icanOverwriteLocationVerticalDatum = FALSE;
 
 
 

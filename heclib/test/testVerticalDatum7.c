@@ -125,6 +125,9 @@ void main (int argc, char *argv[]) {
         assert(intVal == IVERTICAL_DATUM_UNSET);
         assert(!strcmp(charVal, CVERTICAL_DATUM_UNSET));
 
+        zquery("VDOW", "", 0, &intVal);
+        assert(intVal == FALSE);
+
         zset("VDTM", "", 1);
         zquery("VDTM", charVal, sizeof(charVal), &intVal);
         assert(intVal == IVERTICAL_DATUM_NAVD88);
@@ -187,6 +190,14 @@ void main (int argc, char *argv[]) {
         zquery("VDTM", charVal, sizeof(charVal), &intVal);
         assert(intVal == IVERTICAL_DATUM_UNSET);
         assert(!strcmp(charVal, CVERTICAL_DATUM_UNSET));
+
+        zset("VDOW", "", TRUE);
+        zquery("VDOW", "", 0, &intVal);
+        assert(intVal == TRUE);
+
+        zset("VDOW", "", FALSE);
+        zquery("VDOW", "", 0, &intVal);
+        assert(intVal == FALSE);
     }
     // test string_to_user_header() and string_from_user_header()
     {
@@ -425,13 +436,19 @@ void main (int argc, char *argv[]) {
                                 // store the time series in the overridden vertical datum //
                                 //--------------------------------------------------------//
                                 status = ztsStore(ifltab, tss, 0);
-                                zclose(ifltab);
-                                zstructFree(tss);
                                 //-----------------------------------------------------------------------------//
                                 // figure out whether the ztsStore should have succeeded, and test accordingly //
                                 //-----------------------------------------------------------------------------//
                                 if (!strstr(xml[i], verticalDatums[J])) {
                                     assert(status != STATUS_OKAY);
+                                }
+                                else if (i == 1 && j+k+n+m+p == 0) {
+                                    // change of vertical datum information
+                                    assert(status != STATUS_OKAY);
+                                    zset("VDOW", "", TRUE);
+                                    status = ztsStore(ifltab, tss, 0);
+                                    assert(status == STATUS_OKAY);
+                                    zset("VDOW", "", FALSE);
                                 }
                                 else if (strcmp(unit[k], "ft") && strcmp(unit[k], "m")) {
                                     sprintf(buf, "<native-datum>%s</native-datum>", verticalDatums[J]);
@@ -451,6 +468,8 @@ void main (int argc, char *argv[]) {
                                 else {
                                     assert(status == STATUS_OKAY);
                                 }
+                                zclose(ifltab);
+                                zstructFree(tss);
                                 if (status == STATUS_OKAY) {
                                     //------------------------------------------------------------//
                                     // set the default vertical datum to the datum we stored with //

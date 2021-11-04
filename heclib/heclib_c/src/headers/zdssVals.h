@@ -16,6 +16,7 @@ struct hec_zdssVals {
 	 int globalErrorFlag;
 	 int numberProgram;
 	 int iverticalDatum;
+	 int icanOverwriteLocationVerticalDatum;
 	 int copyEmptyRecords;
 	 char czdss[5];
 	 char czVersion[5];
