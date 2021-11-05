@@ -352,7 +352,6 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 		}
 	}
 	else {
-		int allowOverwriteLocationVerticalDatum;
 		if (!zinquire(ifltab, "write")) {
 			return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID,
 				zdssErrorCodes.WRITE_ON_READ_ONLY, 0, 0,
@@ -372,6 +371,7 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 		//------------------------------------//
 		// START OF VERTICAL DATUM PROCESSING //
 		//------------------------------------//
+		int allowOverwriteLocationVerticalDatum;
 		float  *tmpFloatVals = NULL;
 		float  *origFloatVals = NULL;
 		double *tmpDoubleVals = NULL;
@@ -526,95 +526,17 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 			}
 			if (vdi) {
 				double offset = 0.;
-				//----------------------------------------//
-				// get the default vertical datum, if any //
-				//----------------------------------------//
-				char cvertical_datum[17];
+				//----------------------------------//
+				// get the effective vertical datum //
+				//----------------------------------//
+				char cvertical_datum[CVERTICAL_DATUM_SIZE];
 				int  ivertical_datum = -1;
-				int  ivertical_datum2;
-				zquery("VDTM", cvertical_datum, sizeof(cvertical_datum), &ivertical_datum);
-				ivertical_datum2 = ivertical_datum;
-				//-------------------------------------------------------------------------//
-				// override with the vertical datum specified in user header datum, if any //
-				//-------------------------------------------------------------------------//
-				char *userHeaderString = userHeaderToString(tss->userHeader, tss->userHeaderSize);
-				if (userHeaderString) {
-					char *headerDatum = extractFromDelimitedString(
-						&userHeaderString, 
-						VERTICAL_DATUM_USER_HEADER_PARAM, 
-						":",
-						TRUE, 
-						FALSE,
-						';');
-					if (headerDatum) {
-						if (!strcmp(headerDatum, CVERTICAL_DATUM_NAVD88)) {
-							ivertical_datum = IVERTICAL_DATUM_NAVD88;
-						}
-						else if (!strcmp(headerDatum, CVERTICAL_DATUM_NGVD29)) {
-							ivertical_datum = IVERTICAL_DATUM_NGVD29;
-						}
-						else {
-							ivertical_datum = IVERTICAL_DATUM_OTHER;
-						}
-						strcpy(cvertical_datum, headerDatum);
-						free(headerDatum);
-						//------------------------------------------------------------//
-						// remove the datum from the user header since it's transient //
-						//------------------------------------------------------------//
-						free(extractFromDelimitedString(
-							&userHeaderString, 
-							VERTICAL_DATUM_USER_HEADER_PARAM, 
-							":",
-							TRUE, 
-							TRUE,
-							';'));
-						free(headerDatum);
-						int newHeaderSize;
-						int *newHeader = stringToUserHeader(userHeaderString, &newHeaderSize);
-						free(tss->userHeader);
-						tss->userHeader = newHeader;
-						tss->userHeaderNumber = tss->userHeaderSize = newHeaderSize;
-					}
-					free(userHeaderString);
-				}
-				//-----------------------------------------------------------------//
-				// override with the vertical datum specified in unit spec, if any //
-				//-----------------------------------------------------------------//
-				if (strchr(tss->units, '|')) {
-					char  strtok_buf[256];
-					char *value;
-					char *unit = NULL;
-					char *vertical_datum = NULL;
-					char *unitSpec = mallocAndCopy(tss->units);
-					char *key = strtok_r(unitSpec, "|=", (char **)&strtok_buf);
-					while (key) {
-						value = strtok_r(NULL, "|=", (char **)&strtok_buf);
-						if (!strcasecmp(key, "U")) {
-							unit = value;
-						}
-						else if (!strcasecmp(key, "V")) {
-							vertical_datum = value;
-						}
-						key = strtok_r(NULL, "|=", (char **)&strtok_buf);
-					}
-					if (unit) {
-						free(tss->units);
-						tss->units = mallocAndCopy(unit);
-					}
-					if (vertical_datum) {
-						if (!strcasecmp(vertical_datum, CVERTICAL_DATUM_NAVD88)) {
-							ivertical_datum = IVERTICAL_DATUM_NAVD88;
-						}
-						else if (!strcasecmp(vertical_datum, CVERTICAL_DATUM_NGVD29)) {
-							ivertical_datum = IVERTICAL_DATUM_NGVD29;
-						}
-						else {
-							ivertical_datum = IVERTICAL_DATUM_OTHER;
-						}
-						strcpy(cvertical_datum, vertical_datum);
-					}
-					free(unitSpec);
-				}
+				ivertical_datum = getEffectiveVerticalDatum(
+					cvertical_datum,
+					sizeof(cvertical_datum),
+					&tss->userHeader,
+					&tss->userHeaderSize,
+					&tss->units);
 				//-------------------------------------------------------//
 				// now that we have a datum, determine the offset to use //
 				//-------------------------------------------------------//

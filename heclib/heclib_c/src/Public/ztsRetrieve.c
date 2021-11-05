@@ -410,7 +410,7 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 		//--------------------------------------------------------------------------------//
 		// we're working with elevations and have possible vertical datum conversion info //
 		//--------------------------------------------------------------------------------//
-		char cvertical_datum[17];
+		char cvertical_datum[CVERTICAL_DATUM_SIZE];
 		int  ivertical_datum = -1;
 		zquery("VDTM", cvertical_datum, sizeof(cvertical_datum), &ivertical_datum);
 		if (ivertical_datum != tss->locationStruct->verticalDatum) {

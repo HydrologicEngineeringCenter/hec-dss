@@ -199,7 +199,7 @@ void main (int argc, char *argv[]) {
         zquery("VDOW", "", 0, &intVal);
         assert(intVal == FALSE);
     }
-    // test stringToUserHeader() and string_from_user_header()
+    // test stringToUserHeader() and userHeaderToString()
     {
         int  *userHeader;
         int   userHeaderSize;

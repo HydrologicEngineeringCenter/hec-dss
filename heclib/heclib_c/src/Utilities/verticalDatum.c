@@ -6,6 +6,7 @@
 #include <zlib.h>
 #include <verticalDatum.h>
 #include <hecdssInternal.h>
+#include <heclib.h>
  
 //
 // The 64 valid characters used in base64 encoding (excluding pad character '='), in index order
@@ -976,6 +977,117 @@ verticalDatumInfo *extractVerticalDatumInfoFromUserHeader(const int *userHeader,
     }
     return vdi;
 }
+//
+// See verticalDatum.h for documentation
+//
+int	getEffectiveVerticalDatum(
+        char  *cverticalDatum,
+        int    cverticalDatumSize,
+        int  **userHeader,
+        int   *userHeaderSize,
+        char **unit) {
+
+        memset(cverticalDatum, 0, cverticalDatumSize);
+        if (cverticalDatumSize < CVERTICAL_DATUM_SIZE) {
+            return -1;
+        }
+        //----------------------------//
+        // first get the global value //
+        //----------------------------//
+        int iverticalDatum;
+		zquery("VDTM", cverticalDatum, cverticalDatumSize, &iverticalDatum);
+        //-----------------------------//
+        // next, check the user header //
+        //-----------------------------//
+        if (userHeader != NULL && *userHeader != NULL && *userHeaderSize > 0) {
+			char *userHeaderString = userHeaderToString(*userHeader, *userHeaderSize);
+            if (userHeaderString) {
+                char *verticalDatum = extractFromDelimitedString(
+                    &userHeaderString, 
+                    VERTICAL_DATUM_USER_HEADER_PARAM,
+                    ":",
+                    TRUE,
+                    TRUE, // this causes vertical datum to be removed from userHeaderString
+                    ';');
+                if (verticalDatum) {
+                    if (!strcasecmp(verticalDatum, CVERTICAL_DATUM_NAVD88)) {
+                        iverticalDatum = IVERTICAL_DATUM_NAVD88;
+                        strcpy(cverticalDatum, CVERTICAL_DATUM_NAVD88);
+                    }
+                    else if (!strcasecmp(verticalDatum, CVERTICAL_DATUM_NGVD29)) {
+                        iverticalDatum = IVERTICAL_DATUM_NGVD29;
+                        strcpy(cverticalDatum, CVERTICAL_DATUM_NGVD29);
+                    }
+                    else if (!strcasecmp(verticalDatum, CVERTICAL_DATUM_OTHER)) {
+                        iverticalDatum = IVERTICAL_DATUM_OTHER;
+                        strcpy(cverticalDatum, CVERTICAL_DATUM_OTHER);
+                    }
+                    else {
+                        iverticalDatum = IVERTICAL_DATUM_OTHER;
+                        strcpy(cverticalDatum, verticalDatum);
+                    }
+                    //---------------------------------------//
+                    // remove vertical datum from userHeader //
+                    //---------------------------------------//
+                    int newHeaderSize;
+                    *userHeader = stringToUserHeader(userHeaderString, &newHeaderSize);
+                    *userHeaderSize = newHeaderSize;
+                    free(verticalDatum);
+                }
+                free(userHeaderString);
+            }
+        }
+        //---------------------------------------//
+        // finally, check the unit specification //
+        //---------------------------------------//
+        if (unit != NULL && *unit != NULL) {
+            if (strchr(*unit, '|')) {
+                char  strtokBuf[256];
+                char *value;
+                char *unitValue = NULL;
+                char *verticalDatum = NULL;
+                char *unitSpec = mallocAndCopy(*unit);
+                char *key = strtok_r(unitSpec, "|=", (char **)&strtokBuf);
+                while (key) {
+                    value = strtok_r(NULL, "|=", (char **)&strtokBuf);
+                    if (!strcasecmp(key, "U")) {
+                        unitValue = value;
+                    }
+                    else if (!strcasecmp(key, "V")) {
+                        verticalDatum = value;
+                    }
+                    key = strtok_r(NULL, "|=", (char **)&strtokBuf);
+                }
+                if (unitValue) {
+                    //----------------------------------------------//
+                    // convert the unit spec to a simple unit value //
+                    //----------------------------------------------//
+                    free(*unit);
+                    *unit = mallocAndCopy(unitValue);
+                }
+                if (verticalDatum) {
+                    if (!strcasecmp(verticalDatum, CVERTICAL_DATUM_NAVD88)) {
+                        iverticalDatum = IVERTICAL_DATUM_NAVD88;
+                        strcpy(cverticalDatum, CVERTICAL_DATUM_NAVD88);
+                    }
+                    else if (!strcasecmp(verticalDatum, CVERTICAL_DATUM_NGVD29)) {
+                        iverticalDatum = IVERTICAL_DATUM_NGVD29;
+                        strcpy(cverticalDatum, CVERTICAL_DATUM_NGVD29);
+                    }
+                    else if (!strcasecmp(verticalDatum, CVERTICAL_DATUM_OTHER)) {
+                        iverticalDatum = IVERTICAL_DATUM_OTHER;
+                        strcpy(cverticalDatum, CVERTICAL_DATUM_OTHER);
+                    }
+                    else {
+                        iverticalDatum = IVERTICAL_DATUM_OTHER;
+                        strcpy(cverticalDatum, verticalDatum);
+                    }
+                }
+                free(unitSpec);
+			}
+        }
+        return iverticalDatum;
+    }
 //
 // See verticalDatum.h for documentation
 //

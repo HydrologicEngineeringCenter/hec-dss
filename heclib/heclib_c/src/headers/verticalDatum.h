@@ -48,12 +48,15 @@ extern "C" {
         for (i = len; i < flen; ++i) f[i] = ' '; \
     }                                            \
 }
- 
+//----------------// 
+// misc constants //
+//----------------// 
 #define FALSE 0
 #define TRUE  1
 #define UNDEFINED_VERTICAL_DATUM_VALUE -FLT_MAX
 #define METERS_PER_FOOT 0.3048
- 
+#define CVERTICAL_DATUM_SIZE 17 // with NULL terminator
+#define UNIT_SIZE 17 // with NULL terminator
 //-----------------------------//
 // Vertical datum constants    //
 //                             //
@@ -70,7 +73,9 @@ extern "C" {
 #define CVERTICAL_DATUM_NGVD29 "NGVD-29"
 #define CVERTICAL_DATUM_OTHER  "OTHER"
 #define CVERTICAL_DATUM_LOCAL  CVERTICAL_DATUM_OTHER
-
+//-----------------------------------------------------//
+// parameter constants for global values (zset/zquery) //
+//-----------------------------------------------------//
 #define VERTICAL_DATUM_USER_HEADER_PARAM "verticalDatum"
 #define VERTICAL_DATUM_USER_HEADER_PARAM_LEN 13 //strlen(VERTICAL_DATUM_USER_HEADER_PARAM)
 #define VERTICAL_DATUM_INFO_USER_HEADER_PARAM "verticalDatumInfo"
@@ -117,9 +122,9 @@ extern "C" {
 })
 
 typedef struct verticalDatumInfo_s {
-    char  nativeDatum[17];
+    char  nativeDatum[CVERTICAL_DATUM_SIZE];
     float elevation;
-    char  unit[3];
+    char  unit[UNIT_SIZE];
     float offsetToNgvd29;
     int   offsetToNgvd29IsEstimate;
     float offsetToNavd88;
@@ -353,6 +358,29 @@ char *verticalDatumInfoToString(char **results, verticalDatumInfo *vdi, int gene
  *         include any vertical datum info
  */
 verticalDatumInfo *extractVerticalDatumInfoFromUserHeader(const int *userHeader, const int userHeaderSize);
+/**
+ * Retrieves the effective vertical datum from the current environment. The effective vertical datum is
+ * set from the following locations, in increasing priority
+ * <p>
+ * <ol>
+ * <li> The global parameter "VDTM" set with zset()</li>
+ * <li> The user header value of the "verticalDatum" parameter, if it exists</li>
+ * <li> The value of the "V" key in a unit specification of the form "U=unit|V=vertical_datum"</li>
+ * </ol>
+ * </p><p>
+ * If the vertical datum is specified in the user header (even if the datum is ultimately taken from
+ * the unit specification) the header is modified to remove it.
+ * </p><p>
+ * If the vertical datum is taken from the unit specification, the unit parameter is modified to 
+ * contain only the value of the "U" key.
+ * 
+ */
+int	getEffectiveVerticalDatum(
+    char  *cverticalDatum,
+    int    cverticalDatumSize,
+    int  **userHeader,
+    int   *userHeaderSize,
+    char **unit);
 /**
  * Fortan wrapper for stringToVerticalDatumInfo
  *
