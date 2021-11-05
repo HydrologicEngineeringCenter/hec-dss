@@ -33,16 +33,16 @@ static const unsigned char base64bytes[] = {255,255,255,255,255,255,255,255,255,
                                             255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255};
 
 // these unit aliases are from the CWMS database
-const char *foot_unit_aliases[]  = {"FT","FEET","FOOT"};
-const char *meter_unit_aliases[] = {"M","METER","METERS","METRE","METRES"};
-const int foot_unit_alias_count = sizeof(foot_unit_aliases) / sizeof(foot_unit_aliases[0]);
-const int meter_unit_alias_count = sizeof(meter_unit_aliases) / sizeof(meter_unit_aliases[0]);
+const char *footUnitAliases[]  = {"FT","FEET","FOOT"};
+const char *meterUnitAliases[] = {"M","METER","METERS","METRE","METRES"};
+const int footUnitAliasCount = sizeof(footUnitAliases) / sizeof(footUnitAliases[0]);
+const int meterUnitAliasCount = sizeof(meterUnitAliases) / sizeof(meterUnitAliases[0]);
 //
 // See verticalDatum.h for documentation
 //
-int unit_is_feet(const char *unit) {
-    for (int i = 0; i < foot_unit_alias_count; ++i) {
-        if (!strcasecmp(unit, foot_unit_aliases[i])) {
+int unitIsFeet(const char *unit) {
+    for (int i = 0; i < footUnitAliasCount; ++i) {
+        if (!strcasecmp(unit, footUnitAliases[i])) {
             return TRUE;
         }
     }
@@ -51,9 +51,9 @@ int unit_is_feet(const char *unit) {
 //
 // See verticalDatum.h for documentation
 //
-int unit_is_meters(const char *unit) {
-    for (int i = 0; i < meter_unit_alias_count; ++i) {
-        if (!strcasecmp(unit, meter_unit_aliases[i])) {
+int unitIsMeters(const char *unit) {
+    for (int i = 0; i < meterUnitAliasCount; ++i) {
+        if (!strcasecmp(unit, meterUnitAliases[i])) {
             return TRUE;
         }
     }
@@ -62,36 +62,36 @@ int unit_is_meters(const char *unit) {
 //
 // See verticalDatum.h for documentation
 //
-double get_offset(double offset, const char *offset_unit, const char *_data_unit) {
-    int data_in_feet     = 0;
-    int data_in_meters   = 0;
-    int offset_in_feet   = 0;
-    int offset_in_meters = 0;
+double getOffset(double offset, const char *offsetUnit, const char *_dataUnit) {
+    int dataInFeet     = 0;
+    int dataInMeters   = 0;
+    int offsetInFeet   = 0;
+    int offsetInMeters = 0;
     // blank trim the data unit (shouldn't have to do this)
-    char *data_unit = (char *)malloc(strlen(_data_unit)+1);
-    strcpy(data_unit, _data_unit);
-    for (int i = strlen(data_unit)-1; data_unit[i] == 32; --i) {
-        data_unit[i] = '\0';
+    char *dataUnit = (char *)malloc(strlen(_dataUnit)+1);
+    strcpy(dataUnit, _dataUnit);
+    for (int i = strlen(dataUnit)-1; dataUnit[i] == 32; --i) {
+        dataUnit[i] = '\0';
     }
-    if (offset_unit == NULL || data_unit == NULL) return UNDEFINED_VERTICAL_DATUM_VALUE;
-    if (!strcasecmp(offset_unit, data_unit)) return offset;
+    if (offsetUnit == NULL || dataUnit == NULL) return UNDEFINED_VERTICAL_DATUM_VALUE;
+    if (!strcasecmp(offsetUnit, dataUnit)) return offset;
 
-    data_in_feet = unit_is_feet(data_unit);
-    if (!data_in_feet) {
-        data_in_meters = unit_is_meters(data_unit);
+    dataInFeet = unitIsFeet(dataUnit);
+    if (!dataInFeet) {
+        dataInMeters = unitIsMeters(dataUnit);
     }
-    offset_in_feet = unit_is_feet(offset_unit);
-    if (!offset_in_feet) {
-        offset_in_meters = unit_is_meters(offset_unit);
+    offsetInFeet = unitIsFeet(offsetUnit);
+    if (!offsetInFeet) {
+        offsetInMeters = unitIsMeters(offsetUnit);
     }
-    if (data_in_feet) {
-        if (offset_in_feet)   return offset;
-        if (offset_in_meters) return offset / METERS_PER_FOOT;
+    if (dataInFeet) {
+        if (offsetInFeet)   return offset;
+        if (offsetInMeters) return offset / METERS_PER_FOOT;
         return UNDEFINED_VERTICAL_DATUM_VALUE;
     }
-    else if (data_in_meters) {
-        if (offset_in_feet)   return offset * METERS_PER_FOOT;
-        if (offset_in_meters) return offset;
+    else if (dataInMeters) {
+        if (offsetInFeet)   return offset * METERS_PER_FOOT;
+        if (offsetInMeters) return offset;
         return UNDEFINED_VERTICAL_DATUM_VALUE;
     }
     else {
@@ -99,11 +99,11 @@ double get_offset(double offset, const char *offset_unit, const char *_data_unit
     }
 }
 const char *strcasestr(const char *haystack, const char *needle) {
-    int   haystack_len = strlen(haystack);
-    int   needle_len = strlen(needle);
-    for (int haystack_pos = 0; haystack_pos < haystack_len - needle_len; ++haystack_pos) {
-        if (!strncasecmp(haystack + haystack_pos, needle, needle_len)) {
-            return haystack + haystack_pos;
+    int   haystackLen = strlen(haystack);
+    int   needleLen = strlen(needle);
+    for (int haystackPos = 0; haystackPos < haystackLen - needleLen; ++haystackPos) {
+        if (!strncasecmp(haystack + haystackPos, needle, needleLen)) {
+            return haystack + haystackPos;
         }
     }
     return NULL;
@@ -111,7 +111,7 @@ const char *strcasestr(const char *haystack, const char *needle) {
 //
 // See verticalDatum.h for documentation
 //
-char *extract_from_delimited_string(
+char *extractFromDelimitedString(
         char      **delimitedString, 
         const char *parameter, 
         const char *separator,
@@ -129,30 +129,30 @@ char *extract_from_delimited_string(
         strcat(param, separator);
     }
     char *value = NULL;
-    char *param_start = matchCase ? (char *)strstr(*delimitedString, param) : (char *)strcasestr(*delimitedString, param);
-    if (param_start) {
-        char *value_start = param_start + strlen(param);
-        char *value_end;
-        for(value_end = value_start+1; *value_end && *value_end != delimiter; ++value_end);
-        len = value_end - value_start;
+    char *paramStart = matchCase ? (char *)strstr(*delimitedString, param) : (char *)strcasestr(*delimitedString, param);
+    if (paramStart) {
+        char *valueStart = paramStart + strlen(param);
+        char *valueEnd;
+        for(valueEnd = valueStart+1; *valueEnd && *valueEnd != delimiter; ++valueEnd);
+        len = valueEnd - valueStart;
         value = (char *)malloc(len + 1);
-        strncpy(value, value_start, len);
+        strncpy(value, valueStart, len);
         value[len] = '\0';
         if (removeFromString) {
-            char *last_char;
-            if (*value_end) {
-                ++value_end;
+            char *lastChar;
+            if (*valueEnd) {
+                ++valueEnd;
             }
-            memmove(param_start, value_end, strlen(value_end)+1);
-            last_char = *delimitedString + strlen(*delimitedString) - 1;
-            if (*last_char == delimiter) {
-                *last_char = '\0';
+            memmove(paramStart, valueEnd, strlen(valueEnd)+1);
+            lastChar = *delimitedString + strlen(*delimitedString) - 1;
+            if (*lastChar == delimiter) {
+                *lastChar = '\0';
             }
         }
     }
     return value;
 }    
-int insert_into_delimited_string(
+int insertIntoDelimitedString(
         char     **delimitedString, 
         int        delimitedStringSize, 
         const char *parameter, 
@@ -161,7 +161,7 @@ int insert_into_delimited_string(
         int         overwriteExisting, 
         char        delimiter) {
 
-    char *existing = extract_from_delimited_string(
+    char *existing = extractFromDelimitedString(
         delimitedString, 
         parameter, 
         separator, 
@@ -172,31 +172,31 @@ int insert_into_delimited_string(
         free(existing);
         return 0;
     }
-    int to_insert_len = strlen(parameter);
+    int toInsertLen = strlen(parameter);
     if (separator) {
-        to_insert_len += strlen(separator);
+        toInsertLen += strlen(separator);
     }
     if (value) {
-        to_insert_len += strlen(value);
+        toInsertLen += strlen(value);
     }
     if (!strchr(*delimitedString, delimiter)) {
-        ++to_insert_len;
+        ++toInsertLen;
     }
-    int available_len = delimitedStringSize - strlen(*delimitedString);
+    int availableLen = delimitedStringSize - strlen(*delimitedString);
     if (existing) {
-        available_len += strlen(parameter);
+        availableLen += strlen(parameter);
         if (separator) {
-            available_len += strlen(separator);
+            availableLen += strlen(separator);
         }
     }
-    if (available_len < to_insert_len) {
+    if (availableLen < toInsertLen) {
         if (existing) {
             free(existing);
         }
         return -1;
     }
     if (overwriteExisting) {
-        extract_from_delimited_string(delimitedString, parameter, separator, TRUE, TRUE, delimiter);
+        extractFromDelimitedString(delimitedString, parameter, separator, TRUE, TRUE, delimiter);
     }
     if (strlen(*delimitedString) > 0 && (*delimitedString)[strlen(*delimitedString)-1] != delimiter) {
         sprintf(*delimitedString+strlen(*delimitedString), "%c", delimiter);
@@ -216,7 +216,7 @@ int insert_into_delimited_string(
 //
 // See verticalDatum.h for documentation
 //
-int *string_to_user_header(const char *str, int *intCount) {
+int *stringToUserHeader(const char *str, int *intCount) {
     int  numBytes = strlen(str);
     int  numInts = numberIntsInBytes(numBytes);
     int *userHeader = NULL;
@@ -230,7 +230,7 @@ int *string_to_user_header(const char *str, int *intCount) {
 //
 // See verticalDatum.h for documentation
 //
-char *string_from_user_header(const int *userHeader, const int userHeaderSize) {
+char *userHeaderToString(const int *userHeader, const int userHeaderSize) {
     char *str = NULL;
     if (userHeader != NULL && userHeaderSize > 0) {
         char *start = (char *)userHeader;
@@ -247,21 +247,21 @@ char *string_from_user_header(const int *userHeader, const int userHeaderSize) {
 //
 // See verticalDatum.h for documentation
 //
-int b64encoded_len(int to_encode_len) {
-    if (to_encode_len == 0) return 0;
-    if (to_encode_len < 0) return -1;
-    return ((to_encode_len - 1) / 3 + 1) * 4;
+int b64EncodedLen(int toEncodeLen) {
+    if (toEncodeLen == 0) return 0;
+    if (toEncodeLen < 0) return -1;
+    return ((toEncodeLen - 1) / 3 + 1) * 4;
 }
 //
 // See verticalDatum.h for documentation
 //
-int b64decoded_len(int to_decode_len) {
-    if (to_decode_len < 0) return -1;
-    if (to_decode_len % 4) return -2;
-    return to_decode_len / 4 * 3; // maximum length, may be 1 ro 2 less
+int b64DecodedLen(int toDecodeLen) {
+    if (toDecodeLen < 0) return -1;
+    if (toDecodeLen % 4) return -2;
+    return toDecodeLen / 4 * 3; // maximum length, may be 1 ro 2 less
 }
 //
-// byte operations for b64encode
+// byte operations for b64Encode
 //
 #define i0_0 (i[0] & 0xfc) >> 2 // part of input byte 0 in output byte 0 - top 6 bits shifted down 2
 #define i0_1 (i[0] & 0x03) << 4 // part of input byte 0 in output byte 1 - bottom 2 bits shifted up 4
@@ -272,22 +272,22 @@ int b64decoded_len(int to_decode_len) {
 //
 // See verticalDatum.h for documentation
 //
-int b64encode(char **encoded, const char *to_encode, int to_encode_len) {
-    int len = b64encoded_len(to_encode_len);
+int b64Encode(char **encoded, const char *toEncode, int toEncodeLen) {
+    int len = b64EncodedLen(toEncodeLen);
     if (len < 0) return len;
     *encoded = (char *)malloc(len+1);
-    const char *i = to_encode;
+    const char *i = toEncode;
     char *o = *encoded;
-    int remaining_len = to_encode_len;
-    while (remaining_len > 0) {
-        switch (remaining_len) {
+    int remainingLen = toEncodeLen;
+    while (remainingLen > 0) {
+        switch (remainingLen) {
             case 1 :
                 o[0] = base64chars[i0_0];
                 o[1] = base64chars[i0_1];
                 o[2] = '=';
                 o[3] = '=';
                 o += 4;
-                remaining_len = 0;
+                remainingLen = 0;
                 break;
             case 2 :
                 o[0] = base64chars[i0_0];
@@ -295,7 +295,7 @@ int b64encode(char **encoded, const char *to_encode, int to_encode_len) {
                 o[2] = base64chars[i1_2];
                 o[3] = '=';
                 o += 4;
-                remaining_len = 0;
+                remainingLen = 0;
                 break;
             default :
                 o[0] = base64chars[i0_0];
@@ -304,7 +304,7 @@ int b64encode(char **encoded, const char *to_encode, int to_encode_len) {
                 o[3] = base64chars[i2_3];
                 i += 3;
                 o += 4;
-                remaining_len -= 3;
+                remainingLen -= 3;
         }
     }
     *o = '\0';
@@ -317,7 +317,7 @@ int b64encode(char **encoded, const char *to_encode, int to_encode_len) {
 #undef i2_2
 #undef i2_3
 //
-// byte operations for b64decode
+// byte operations for b64Decode
 //
 #define i0_0 (i[0] & 0x3f) << 2 // part of input byte 0 in output byte 0 - bits 0-5 shifted up 2
 #define i1_0 (i[1] & 0x30) >> 4 // part of input byte 1 in output byte 0 - bits 4-5 shifed down 4
@@ -328,18 +328,18 @@ int b64encode(char **encoded, const char *to_encode, int to_encode_len) {
 //
 // See verticalDatum.h for documentation
 //
-int b64decode(char **decoded, int *decoded_len, const char *to_decode) {
-    int len = b64decoded_len(strlen(to_decode));
-    if (*(to_decode - 2) == '=') {
+int b64Decode(char **decoded, int *decodedLen, const char *toDecode) {
+    int len = b64DecodedLen(strlen(toDecode));
+    if (*(toDecode - 2) == '=') {
         len -= 2;
     }
-    else if (*(to_decode - 1) == '=') {
+    else if (*(toDecode - 1) == '=') {
         --len;
  
     }
     if (len < 0) return len;
-    *decoded = (char *)malloc(strlen(to_decode));
-    const char *c = to_decode;
+    *decoded = (char *)malloc(strlen(toDecode));
+    const char *c = toDecode;
     char i[4];
     char *o = *decoded;
     while (*c) {
@@ -349,7 +349,7 @@ int b64decode(char **decoded, int *decoded_len, const char *to_decode) {
         i[3] = base64bytes[c[3]];
         if (i[0] == 255 || i[1] == 255) {
             free(*decoded);
-            *decoded_len = 0;
+            *decodedLen = 0;
             return -3;
         }
         o[0] = i0_0 | i1_0;
@@ -369,7 +369,7 @@ int b64decode(char **decoded, int *decoded_len, const char *to_decode) {
         c += 4;
         o += 3;
     }
-    *decoded_len = (c - to_decode);
+    *decodedLen = (c - toDecode);
     return 0;
 }
 #undef i0_0
@@ -381,54 +381,54 @@ int b64decode(char **decoded, int *decoded_len, const char *to_decode) {
 //
 // See verticalDatum.h for documentation
 //
-char *find_text_between(text_boundary_info *tbi, const char *buf, const char *after, const char *before) {
-    memset(tbi, 0, sizeof(text_boundary_info));
-    tbi->first_with_boundary = strstr(buf, after);
-    if (!tbi->first_with_boundary) {
+char *findTextBetween(textBoundaryInfo *tbi, const char *buf, const char *after, const char *before) {
+    memset(tbi, 0, sizeof(textBoundaryInfo));
+    tbi->firstWithBoundary = strstr(buf, after);
+    if (!tbi->firstWithBoundary) {
         return BEGINNING_BOUNDARY_NOT_FOUND;
     }
-    tbi->first = tbi->first_with_boundary + strlen(after);
+    tbi->first = tbi->firstWithBoundary + strlen(after);
     tbi->offset = tbi->first - buf;
     tbi->last = strstr(tbi->first, before);
     if (!tbi->last) {
         return ENDING_BOUNDARY_NOT_FOUND;
     }
-    tbi->last_with_boundary = tbi->last + strlen(before);
+    tbi->lastWithBoundary = tbi->last + strlen(before);
     tbi->len = tbi->last - tbi->first;
-    tbi->len_with_boundaries = tbi->last_with_boundary - tbi->first_with_boundary;
-    for (tbi->first_non_blank = tbi->first;
-         tbi->first_non_blank < tbi->last && isspace(*tbi->first_non_blank);
-         tbi->first_non_blank++);
+    tbi->lenWithBoundaries = tbi->lastWithBoundary - tbi->firstWithBoundary;
+    for (tbi->firstNonBlank = tbi->first;
+         tbi->firstNonBlank < tbi->last && isspace(*tbi->firstNonBlank);
+         tbi->firstNonBlank++);
  
-    if (tbi->first_non_blank == tbi->last) {
-        tbi->last_non_blank = tbi->last;
-        tbi->len_non_blank = 0;
+    if (tbi->firstNonBlank == tbi->last) {
+        tbi->lastNonBlank = tbi->last;
+        tbi->lenNonBlank = 0;
     }
     else {
  
-        for (tbi->last_non_blank = tbi->last;
-             tbi->last_non_blank > tbi->first && isspace(*(tbi->last_non_blank - 1));
-             tbi->last_non_blank--);
-        tbi->len_non_blank = tbi->last_non_blank - tbi->first_non_blank;
+        for (tbi->lastNonBlank = tbi->last;
+             tbi->lastNonBlank > tbi->first && isspace(*(tbi->lastNonBlank - 1));
+             tbi->lastNonBlank--);
+        tbi->lenNonBlank = tbi->lastNonBlank - tbi->firstNonBlank;
     }
-    tbi->offset_non_blank = tbi->first_non_blank - buf;
+    tbi->offsetNonBlank = tbi->firstNonBlank - buf;
     return NULL;
 }
 //
 // See verticalDatum.h for documentation
 //
-char *decode_and_uncompress(char **results, const char *input_buf) {
-    char  text_buf[4096];
-    int   decoded_len;
-    char *decoded_buf;
-    char *output_buf;
+char *decodeAndGunzip(char **results, const char *inputBuf) {
+    char  textBuf[4096];
+    int   decodedLen;
+    char *decodedBuf;
+    char *outputBuf;
     int   rc;
     z_stream zstr;
     //--------------------------------//
     // first, Base64 decode the input //
     //--------------------------------//
-    decoded_len = b64decoded_len(strlen(input_buf));
-    if (b64decode(&decoded_buf, &decoded_len, input_buf)) {
+    decodedLen = b64DecodedLen(strlen(inputBuf));
+    if (b64Decode(&decodedBuf, &decodedLen, inputBuf)) {
         return BASE64_DECODING_ERROR;
     }
     //---------------------------------------------------//
@@ -437,14 +437,14 @@ char *decode_and_uncompress(char **results, const char *input_buf) {
     zstr.zalloc    = Z_NULL;
     zstr.zfree     = Z_NULL;
     zstr.opaque    = Z_NULL;
-    zstr.avail_in  = decoded_len + 1;
-    zstr.next_in   = decoded_buf;
-    zstr.avail_out = sizeof(text_buf);
-    zstr.next_out  = text_buf;
+    zstr.avail_in  = decodedLen + 1;
+    zstr.next_in   = decodedBuf;
+    zstr.avail_out = sizeof(textBuf);
+    zstr.next_out  = textBuf;
     rc = inflateInit2(&zstr, 16+MAX_WBITS);
     if (rc != Z_OK) {
         fprintf(stderr, "Error code %d on inflateInit2(): %s\n", rc, zstr.msg);
-        free(decoded_buf);
+        free(decodedBuf);
         return ERROR_ON_INFLATEINIT2;
     }
     //---------------------------------//
@@ -453,46 +453,46 @@ char *decode_and_uncompress(char **results, const char *input_buf) {
     rc = inflate(&zstr, Z_FINISH);
     if (rc != Z_OK && rc != Z_STREAM_END) {
         fprintf(stderr, "Error code %d on inflate(): %s\n", rc, zstr.msg == NULL ? "Unknown" : zstr.msg);
-        free(decoded_buf);
+        free(decodedBuf);
         return ERROR_ON_INFLATE;
     }
     rc = inflateEnd(&zstr);
     if (rc != Z_OK) {
         fprintf(stderr, "Error code %d on inflateEnd(): %s\n", rc, zstr.msg);
-        free(decoded_buf);
+        free(decodedBuf);
         return ERROR_ON_INFLATEEND;
     }
     //--------------------//
     // return the results //
     //--------------------//
     *results = (char *)malloc(zstr.total_out+1);
-    text_buf[zstr.total_out] = '\0';
-    strcpy(*results, text_buf);
-    free(decoded_buf);
+    textBuf[zstr.total_out] = '\0';
+    strcpy(*results, textBuf);
+    free(decodedBuf);
     return NULL;
 }
 //
 // See verticalDatum.h for documentation
 //
-char *compress_and_encode(char **results, const char *input_buf) {
-    char *compressed_buf;
-    char *encoded_buf;
+char *gzipAndEncode(char **results, const char *inputBuf) {
+    char *compressedBuf;
+    char *encodedBuf;
     int   rc;
-    int   input_len = strlen(input_buf)+1;
-    int   output_len;
+    int   inputLen = strlen(inputBuf)+1;
+    int   outputLen;
     z_stream zstr;
  
     //-----------------------------------//
     // setup structure for gzip compress //
     //-----------------------------------//
-    compressed_buf = (char *)malloc(input_len);
+    compressedBuf = (char *)malloc(inputLen);
     zstr.zalloc    = Z_NULL;
     zstr.zfree     = Z_NULL;
     zstr.opaque    = Z_NULL;
-    zstr.avail_in  = input_len;
-    zstr.next_in   = (char *)input_buf;
-    zstr.avail_out = input_len;
-    zstr.next_out  = compressed_buf;
+    zstr.avail_in  = inputLen;
+    zstr.next_in   = (char *)inputBuf;
+    zstr.avail_out = inputLen;
+    zstr.next_out  = compressedBuf;
     //-------------------------//
     // gzip compress the input //
     //-------------------------//
@@ -504,69 +504,69 @@ char *compress_and_encode(char **results, const char *input_buf) {
     rc = deflate(&zstr, Z_FINISH);
     if (rc != Z_OK && rc != Z_STREAM_END) {
         fprintf(stderr, "Error code %d on deflate(): %s\n", rc, zstr.msg);
-        free(compressed_buf);
+        free(compressedBuf);
         return ERROR_ON_DEFLATE;
     }
     rc = deflateEnd(&zstr);
     if (rc != Z_OK) {
         fprintf(stderr, "Error code %d on deflateEnd(): %s\n", rc, zstr.msg);
-        free(compressed_buf);
+        free(compressedBuf);
         return ERROR_ON_DEFLATEEND;
     }
     //----------------------------------//
     // Base64 encode the compressed buf //
     //----------------------------------//
-    if (b64encode(&encoded_buf, compressed_buf, zstr.total_out)) {
-        free(compressed_buf);
+    if (b64Encode(&encodedBuf, compressedBuf, zstr.total_out)) {
+        free(compressedBuf);
         return BASE64_ENCODING_ERROR;
     }
-    *results = (char *)malloc(strlen(encoded_buf)+1);
-    strcpy(*results, encoded_buf);
-    free(compressed_buf);
-    free(encoded_buf);
+    *results = (char *)malloc(strlen(encodedBuf)+1);
+    strcpy(*results, encodedBuf);
+    free(compressedBuf);
+    free(encodedBuf);
     return NULL;
 }
 //
 // See verticalDatum.h for documentation
 //
-char *expand_empty_xml_tags(char **output_buf, const char *input_buf) {
+char *expandEmptyXmlTags(char **outputBuf, const char *inputBuf) {
     const char *in;
     char *out;
-    int   tag_buf_len = 32;
-    char *tag_buf = (char *)malloc(tag_buf_len);
-    int   xml_buf_len = strlen(input_buf) * 3;
-    char *xml_buf = (char *)malloc(xml_buf_len);
-    int   in_tag = FALSE;
-    int   tag_pos;
-    char *tag_char;
-    in  = input_buf;
-    out = xml_buf;
+    int   tagBufLen = 32;
+    char *tagBuf = (char *)malloc(tagBufLen);
+    int   xmlBufLen = strlen(inputBuf) * 3;
+    char *xmlBuf = (char *)malloc(xmlBufLen);
+    int   inTag = FALSE;
+    int   tagPos;
+    char *tagChar;
+    in  = inputBuf;
+    out = xmlBuf;
     while (*in) {
         switch (*in) {
             case '<' :
-                if (in_tag) {
-                    free(tag_buf);
-                    free(xml_buf);
+                if (inTag) {
+                    free(tagBuf);
+                    free(xmlBuf);
                     return XML_IS_NOT_WELL_FORMED;
                 }
-                in_tag = TRUE;
-                tag_pos = 0;
-                memset(tag_buf, 0, tag_buf_len);
+                inTag = TRUE;
+                tagPos = 0;
+                memset(tagBuf, 0, tagBufLen);
                 *out++ = *in++;
                 break;
             case '/' :
                 switch (*(in+1)) {
                     case '\0':
-                        free(tag_buf);
-                        free(xml_buf);
+                        free(tagBuf);
+                        free(xmlBuf);
                         return XML_IS_NOT_WELL_FORMED;
                     case '>' :
                         *out++ = '>';
                         *out++ = '<';
                         *out++ = '/';
-                        tag_char = tag_buf;
-                        while (*tag_char) {
-                            *out++ = *tag_char++;
+                        tagChar = tagBuf;
+                        while (*tagChar) {
+                            *out++ = *tagChar++;
                         }
                         ++in;
                         break;
@@ -575,34 +575,34 @@ char *expand_empty_xml_tags(char **output_buf, const char *input_buf) {
                 }
                 break;
             case '>' :
-                in_tag = FALSE;
+                inTag = FALSE;
                 *out++ = *in++;
                 break;
             default :
                 if (isspace(*in)) {
-                    in_tag = FALSE;
+                    inTag = FALSE;
                 }
-                if (in_tag) {
-                    if (tag_pos >= tag_buf_len) {
-                        tag_buf_len *= 2;
-                        tag_buf = (char *)realloc(tag_buf, tag_buf_len);
+                if (inTag) {
+                    if (tagPos >= tagBufLen) {
+                        tagBufLen *= 2;
+                        tagBuf = (char *)realloc(tagBuf, tagBufLen);
                     }
-                    tag_buf[tag_pos++] = *in;
+                    tagBuf[tagPos++] = *in;
                 }
                 *out++ = *in++;
         }
     }
-    free(tag_buf);
-    *output_buf = xml_buf;
+    free(tagBuf);
+    *outputBuf = xmlBuf;
     return NULL;
 }
 //
 // See verticalDatum.h for documentation
 //
-char *validate_xml_structure(const char *xml) {
+char *validateXmlStructure(const char *xml) {
     int    size = 20;
     int    count = 0;
-    char **tag_names = (char **)malloc(size * sizeof(char *));
+    char **tagNames = (char **)malloc(size * sizeof(char *));
     char  *buf = (char *)malloc(strlen(xml)+1);
     char  *cp1;
     char  *cp2;
@@ -611,8 +611,8 @@ char *validate_xml_structure(const char *xml) {
  
     strcpy(buf, xml);
     while (TRUE) {
-        char strtok_buf[4096];
-        cp1 = first ? strtok_r(buf, "<", (char **)&strtok_buf) : strtok_r(NULL, "<", (char **)&strtok_buf);
+        char strtokBuf[4096];
+        cp1 = first ? strtok_r(buf, "<", (char **)&strtokBuf) : strtok_r(NULL, "<", (char **)&strtokBuf);
         first = FALSE;
         if (!cp1) {
             break;
@@ -624,9 +624,9 @@ char *validate_xml_structure(const char *xml) {
         }
         if (!*cp2) {
             for (int i = 0; i < count; ++i) {
-                free(tag_names[i]);
+                free(tagNames[i]);
             }
-            free(tag_names);
+            free(tagNames);
             return INVALID_XML_STRUCTURE;
         }
         if (*cp1 == '/') {
@@ -635,10 +635,10 @@ char *validate_xml_structure(const char *xml) {
             //-----------------//
             ++cp1;
             len = cp2 - cp1;
-            if (strncmp(cp1, tag_names[count-1], len)) {
+            if (strncmp(cp1, tagNames[count-1], len)) {
                 return INVALID_XML_STRUCTURE;
             }
-            free(tag_names[--count]);
+            free(tagNames[--count]);
             if (count == 0) {
                 break;
             }
@@ -649,87 +649,87 @@ char *validate_xml_structure(const char *xml) {
             //-----------------//
             if (count++ == size) {
                 size *= 2;
-                tag_names = (char **)realloc(tag_names, size * sizeof(char *));
+                tagNames = (char **)realloc(tagNames, size * sizeof(char *));
             }
             len = cp2 - cp1;
-            tag_names[count-1] = (char *)malloc(len+1);
-            strncpy(tag_names[count-1], cp1, len);
-            tag_names[count-1][len] = '\0';
+            tagNames[count-1] = (char *)malloc(len+1);
+            strncpy(tagNames[count-1], cp1, len);
+            tagNames[count-1][len] = '\0';
         }
     }
     for (int i = 0; i < count; ++i) {
-        free(tag_names[i]);
+        free(tagNames[i]);
     }
-    free(tag_names);
+    free(tagNames);
     return NULL;
 }
 //
 // See verticalDatum.h for documentation
 //
-char *vertical_datum_info_from_string(vertical_datum_info *vdi, const char *input_str) {
-    char *err_msg = NULL;
+char *stringToVerticalDatumInfo(verticalDatumInfo *vdi, const char *inputStr) {
+    char *errmsg = NULL;
     char *xml1;
     char *xml;
-    char  offset_buf[2][128];
-    int   free_xml1;
+    char  offsetBuf[2][128];
+    int   freeXml1;
     float ftmp;
-    text_boundary_info tbi;
+    textBoundaryInfo tbi;
  
     vdi->elevation = UNDEFINED_VERTICAL_DATUM_VALUE;
-    vdi->offset_to_ngvd_29 = UNDEFINED_VERTICAL_DATUM_VALUE;
-    vdi->offset_to_ngvd_29_is_estimate = FALSE;
-    vdi->offset_to_navd_88 = UNDEFINED_VERTICAL_DATUM_VALUE;
-    vdi->offset_to_navd_88_is_estimate = FALSE;
-    memset(vdi->native_datum, 0, sizeof(vdi->native_datum)); // null terminators will exist after strncpy()
+    vdi->offsetToNgvd29 = UNDEFINED_VERTICAL_DATUM_VALUE;
+    vdi->offsetToNgvd29IsEstimate = FALSE;
+    vdi->offsetToNavd88 = UNDEFINED_VERTICAL_DATUM_VALUE;
+    vdi->offsetToNavd88IsEstimate = FALSE;
+    memset(vdi->nativeDatum, 0, sizeof(vdi->nativeDatum)); // null terminators will exist after strncpy()
     memset(vdi->unit, 0, sizeof(vdi->unit));                 // null terminators will exist after strncpy()
  
-    memset(offset_buf, 0, sizeof(offset_buf));               // null terminators will exist after strncpy()
+    memset(offsetBuf, 0, sizeof(offsetBuf));               // null terminators will exist after strncpy()
  
-    int ngvd_29_offset_processed = 0;
-    int navd_88_offset_processed = 0;
+    int ngvd29OffsetProcessed = 0;
+    int navd88OffsetProcessed = 0;
  
-    if (input_str == NULL) {
+    if (inputStr == NULL) {
         vdi = NULL;
         return INPUT_STRING_IS_NULL;
     }
-    if (strchr(input_str, '<')) {
-        xml1 = (char *)input_str; 
-        free_xml1 = FALSE; 
+    if (strchr(inputStr, '<')) {
+        xml1 = (char *)inputStr; 
+        freeXml1 = FALSE; 
     }
     else {
-        err_msg = decode_and_uncompress(&xml1, input_str);
-        if (err_msg != NULL) {
-            return err_msg;
+        errmsg = decodeAndGunzip(&xml1, inputStr);
+        if (errmsg != NULL) {
+            return errmsg;
         }
-        free_xml1 = TRUE;
+        freeXml1 = TRUE;
     }
-    err_msg = expand_empty_xml_tags(&xml, xml1);
-    if (free_xml1) {
+    errmsg = expandEmptyXmlTags(&xml, xml1);
+    if (freeXml1) {
         free(xml1);
     }
-    if (err_msg) {
-        return err_msg;
+    if (errmsg) {
+        return errmsg;
     }
-    err_msg = validate_xml_structure(xml);
-    if (err_msg) {
-        return err_msg;
+    errmsg = validateXmlStructure(xml);
+    if (errmsg) {
+        return errmsg;
     }
-    err_msg = find_text_between(&tbi, xml, "<vertical-datum-info", "</vertical-datum-info>");
-    if (err_msg != NULL || tbi.len_non_blank == 0) {
-        fprintf(stderr, "%s\n", err_msg);
+    errmsg = findTextBetween(&tbi, xml, "<vertical-datum-info", "</vertical-datum-info>");
+    if (errmsg != NULL || tbi.lenNonBlank == 0) {
+        fprintf(stderr, "%s\n", errmsg);
         free(xml);
         return XML_IS_NOT_A_VALID_VERTICAL_DATUM_INFO_INSTANCE;
     }
     //------------------------//
     // get the elevation unit //
     //------------------------//
-    err_msg = find_text_between(&tbi, tbi.first, "unit=\"", "\"");
-    if (err_msg != NULL || tbi.len_non_blank == 0) {
-        fprintf(stderr, "%s\n", err_msg);
+    errmsg = findTextBetween(&tbi, tbi.first, "unit=\"", "\"");
+    if (errmsg != NULL || tbi.lenNonBlank == 0) {
+        fprintf(stderr, "%s\n", errmsg);
         free(xml);
         return NO_ELEVATION_UNIT_IN_XML;
     }
-    strncpy(vdi->unit, tbi.first_non_blank, MIN(tbi.len_non_blank, sizeof(vdi->unit)-1));
+    strncpy(vdi->unit, tbi.firstNonBlank, MIN(tbi.lenNonBlank, sizeof(vdi->unit)-1));
     if (strcmp(vdi->unit, "ft") && strcmp(vdi->unit, "m")) {
         free(xml);
         return INVALID_ELEVATION_UNIT_IN_XML;
@@ -737,30 +737,30 @@ char *vertical_datum_info_from_string(vertical_datum_info *vdi, const char *inpu
     //----------------------//
     // get the native datum //
     //----------------------//
-    err_msg = find_text_between(&tbi, xml, "<native-datum>", "</native-datum>");
-    if (err_msg != NULL || tbi.len_non_blank == 0) {
-        fprintf(stderr, "%s\n", err_msg);
+    errmsg = findTextBetween(&tbi, xml, "<native-datum>", "</native-datum>");
+    if (errmsg != NULL || tbi.lenNonBlank == 0) {
+        fprintf(stderr, "%s\n", errmsg);
         free(xml);
         return NO_NATIVE_DATUM_IN_XML;
     }
-    strncpy(vdi->native_datum, tbi.first_non_blank, MIN(tbi.len_non_blank, sizeof(vdi->native_datum)-1));
-    if (!strcmp(vdi->native_datum, CVERTICAL_DATUM_NAVD88)) {
-        vdi->offset_to_navd_88 = 0.f;
-        vdi->offset_to_navd_88_is_estimate = 0;
+    strncpy(vdi->nativeDatum, tbi.firstNonBlank, MIN(tbi.lenNonBlank, sizeof(vdi->nativeDatum)-1));
+    if (!strcmp(vdi->nativeDatum, CVERTICAL_DATUM_NAVD88)) {
+        vdi->offsetToNavd88 = 0.f;
+        vdi->offsetToNavd88IsEstimate = 0;
     }
-    else if (!strcmp(vdi->native_datum, CVERTICAL_DATUM_NGVD29)) {
-        vdi->offset_to_ngvd_29 = 0.f;
-        vdi->offset_to_ngvd_29_is_estimate = 0;
+    else if (!strcmp(vdi->nativeDatum, CVERTICAL_DATUM_NGVD29)) {
+        vdi->offsetToNgvd29 = 0.f;
+        vdi->offsetToNgvd29IsEstimate = 0;
     }
-    else if (!strcmp(vdi->native_datum, CVERTICAL_DATUM_OTHER)) {
+    else if (!strcmp(vdi->nativeDatum, CVERTICAL_DATUM_OTHER)) {
         //---------------------------------------//
         // get the local datum name if it exists //
         //---------------------------------------//
-        err_msg = find_text_between(&tbi, xml, "<local-datum-name>", "</local-datum-name>");
-        if (err_msg == NULL && tbi.len_non_blank > 0) {
-            size_t len = MIN(tbi.len_non_blank, sizeof(vdi->native_datum)-1);
-            strncpy(vdi->native_datum, tbi.first_non_blank, len);
-            vdi->native_datum[len] = '\0'; // because we're overwriting a previous value
+        errmsg = findTextBetween(&tbi, xml, "<local-datum-name>", "</local-datum-name>");
+        if (errmsg == NULL && tbi.lenNonBlank > 0) {
+            size_t len = MIN(tbi.lenNonBlank, sizeof(vdi->nativeDatum)-1);
+            strncpy(vdi->nativeDatum, tbi.firstNonBlank, len);
+            vdi->nativeDatum[len] = '\0'; // because we're overwriting a previous value
         }
     }
     else {
@@ -770,10 +770,10 @@ char *vertical_datum_info_from_string(vertical_datum_info *vdi, const char *inpu
     //--------------------------------//
     // get the elevation if it exists //
     //--------------------------------//
-    err_msg = find_text_between(&tbi, xml, "<elevation>", "</elevation>");
-    if (err_msg == NULL) {
+    errmsg = findTextBetween(&tbi, xml, "<elevation>", "</elevation>");
+    if (errmsg == NULL) {
         errno = 0;
-        ftmp = strtof(tbi.first_non_blank, &tbi.last_non_blank);
+        ftmp = strtof(tbi.firstNonBlank, &tbi.lastNonBlank);
         if (ftmp != 0.f || errno == 0) {
             vdi->elevation = ftmp;
         }
@@ -785,102 +785,102 @@ char *vertical_datum_info_from_string(vertical_datum_info *vdi, const char *inpu
     //----------------------------------------//
     // get the sub-xml blocks for the offsets //
     //----------------------------------------//
-    err_msg = find_text_between(&tbi, xml, "<offset", "</offset>");
-    if (err_msg == NULL && tbi.len_non_blank != 0) {
-        strncpy(offset_buf[0], tbi.first_with_boundary, tbi.len_with_boundaries);
-        err_msg = find_text_between(&tbi, tbi.last_with_boundary, "<offset", "</offset>");
-        if (err_msg == NULL && tbi.len_non_blank != 0) {
-            strncpy(offset_buf[1], tbi.first_with_boundary, tbi.len_with_boundaries);
+    errmsg = findTextBetween(&tbi, xml, "<offset", "</offset>");
+    if (errmsg == NULL && tbi.lenNonBlank != 0) {
+        strncpy(offsetBuf[0], tbi.firstWithBoundary, tbi.lenWithBoundaries);
+        errmsg = findTextBetween(&tbi, tbi.lastWithBoundary, "<offset", "</offset>");
+        if (errmsg == NULL && tbi.lenNonBlank != 0) {
+            strncpy(offsetBuf[1], tbi.firstWithBoundary, tbi.lenWithBoundaries);
         }
     }
     //---------------------------//
     // process the offset blocks //
     //---------------------------//
     for (int i = 0; i < 2; ++i) {
-        if (offset_buf[i][0] == '\0') {
+        if (offsetBuf[i][0] == '\0') {
             if (i == 0) {
                 free(xml);
                 return MISSING_OFFSET_BLOCK_IN_XML;
             }
             break; // only 1 offset block
         }
-        err_msg = find_text_between(&tbi, offset_buf[i], "<to-datum>", "</to-datum>");
-        if (err_msg != NULL || tbi.len_non_blank == 0) {
-            fprintf(stderr, "%s\n", err_msg);
+        errmsg = findTextBetween(&tbi, offsetBuf[i], "<to-datum>", "</to-datum>");
+        if (errmsg != NULL || tbi.lenNonBlank == 0) {
+            fprintf(stderr, "%s\n", errmsg);
             free(xml);
             return INVALID_OFFSET_BLOCK_IN_XML;
         }
-        if (!strncmp(tbi.first_non_blank, CVERTICAL_DATUM_NGVD29, 7)) {
-            if (ngvd_29_offset_processed) {
+        if (!strncmp(tbi.firstNonBlank, CVERTICAL_DATUM_NGVD29, 7)) {
+            if (ngvd29OffsetProcessed) {
                 free(xml);
                 return MULTIPLE_NGVD_29_OFFSET_BLOCKS_IN_XML;
             }
-            ngvd_29_offset_processed = 1;
-            err_msg = find_text_between(&tbi, offset_buf[i], "<value>", "</value>");
-            if (err_msg != NULL || tbi.len_non_blank == 0) {
-                fprintf(stderr, "%s\n", err_msg);
+            ngvd29OffsetProcessed = 1;
+            errmsg = findTextBetween(&tbi, offsetBuf[i], "<value>", "</value>");
+            if (errmsg != NULL || tbi.lenNonBlank == 0) {
+                fprintf(stderr, "%s\n", errmsg);
             free(xml);
             return NO_NGVD_29_OFFSET_VALUE_IN_XML;
             }
             errno = 0;
-            ftmp = strtof(tbi.first_non_blank, &tbi.last_non_blank);
+            ftmp = strtof(tbi.firstNonBlank, &tbi.lastNonBlank);
             if (ftmp != 0.f || errno == 0) {
-                vdi->offset_to_ngvd_29 = ftmp;
+                vdi->offsetToNgvd29 = ftmp;
             }
             else {
                 free(xml);
                 return INVALID_NGVD_29_OFFSET_VALUE_IN_XML;
             }
-            err_msg = find_text_between(&tbi, offset_buf[i], "estimate=\"", "\"");
-            if (err_msg != NULL || tbi.len_non_blank == 0) {
-                fprintf(stderr, "%s\n", err_msg);
+            errmsg = findTextBetween(&tbi, offsetBuf[i], "estimate=\"", "\"");
+            if (errmsg != NULL || tbi.lenNonBlank == 0) {
+                fprintf(stderr, "%s\n", errmsg);
                 free(xml);
                 return INVALID_NGVD_29_OFFSET_BLOCK_IN_XML;
             }
-            if (!strncmp(tbi.first_non_blank, "true", tbi.len_non_blank)) {
-                vdi->offset_to_ngvd_29_is_estimate = TRUE;
+            if (!strncmp(tbi.firstNonBlank, "true", tbi.lenNonBlank)) {
+                vdi->offsetToNgvd29IsEstimate = TRUE;
             }
-            else if (!strncmp(tbi.first_non_blank, "false", tbi.len_non_blank)) {
-                vdi->offset_to_ngvd_29_is_estimate = FALSE;
+            else if (!strncmp(tbi.firstNonBlank, "false", tbi.lenNonBlank)) {
+                vdi->offsetToNgvd29IsEstimate = FALSE;
             }
             else {
                 free(xml);
                 return INVALID_NGVD_29_OFFSET_BLOCK_IN_XML;
             }
         }
-        else if (!strncmp(tbi.first_non_blank, CVERTICAL_DATUM_NAVD88, 7)) {
-            if (navd_88_offset_processed) {
+        else if (!strncmp(tbi.firstNonBlank, CVERTICAL_DATUM_NAVD88, 7)) {
+            if (navd88OffsetProcessed) {
                 free(xml);
                 return MULTIPLE_NAVD_88_OFFSET_BLOCKS_IN_XML;
             }
-            navd_88_offset_processed = 1;
-            err_msg = find_text_between(&tbi, offset_buf[i], "<value>", "</value>");
-            if (err_msg != NULL || tbi.len_non_blank == 0) {
-                fprintf(stderr, "%s\n", err_msg);
+            navd88OffsetProcessed = 1;
+            errmsg = findTextBetween(&tbi, offsetBuf[i], "<value>", "</value>");
+            if (errmsg != NULL || tbi.lenNonBlank == 0) {
+                fprintf(stderr, "%s\n", errmsg);
                 free(xml);
                 return NO_NAVD_88_OFFSET_VALUE_IN_XML;
             }
             errno = 0;
-            ftmp = strtof(tbi.first_non_blank, &tbi.last_non_blank);;
+            ftmp = strtof(tbi.firstNonBlank, &tbi.lastNonBlank);;
             if (ftmp != 0.f || errno == 0) {
-                vdi->offset_to_navd_88 = ftmp;
+                vdi->offsetToNavd88 = ftmp;
             }
             else {
                 free(xml);
                 return INVALID_NAVD_88_OFFSET_VALUE_IN_XML;
 
             }
-            err_msg = find_text_between(&tbi, offset_buf[i], "estimate=\"", "\"");
-            if (err_msg != NULL || tbi.len_non_blank == 0) {
-                fprintf(stderr, "%s\n", err_msg);
+            errmsg = findTextBetween(&tbi, offsetBuf[i], "estimate=\"", "\"");
+            if (errmsg != NULL || tbi.lenNonBlank == 0) {
+                fprintf(stderr, "%s\n", errmsg);
                 free(xml);
                 return INVALID_NAVD_88_OFFSET_BLOCK_IN_XML;
             }
-            if (!strncmp(tbi.first_non_blank, "true", tbi.len_non_blank)) {
-                vdi->offset_to_navd_88_is_estimate = 1;
+            if (!strncmp(tbi.firstNonBlank, "true", tbi.lenNonBlank)) {
+                vdi->offsetToNavd88IsEstimate = 1;
             }
-            else if (!strncmp(tbi.first_non_blank, "false", tbi.len_non_blank)) {
-                vdi->offset_to_navd_88_is_estimate = 0;
+            else if (!strncmp(tbi.firstNonBlank, "false", tbi.lenNonBlank)) {
+                vdi->offsetToNavd88IsEstimate = 0;
             }
             else {
                 free(xml);
@@ -898,48 +898,48 @@ char *vertical_datum_info_from_string(vertical_datum_info *vdi, const char *inpu
 //
 // See verticalDatum.h for documentation
 //
-char *vertical_datum_info_to_string(char **results, vertical_datum_info *vdi, int generate_compressed) {
+char *verticalDatumInfoToString(char **results, verticalDatumInfo *vdi, int generateCompressed) {
     char  xml[4096];
     char *cp = xml;
-    char *err_msg;
+    char *errmsg;
  
     sprintf(cp, "<vertical-datum-info unit=\"%s\">\n", vdi->unit);
     while (*cp)++cp;
-    if (!strcmp(vdi->native_datum, "NGVD-29") ||
-        !strcmp(vdi->native_datum, "NGVD-29") ||
-        !strcmp(vdi->native_datum, "OTHER")) {
+    if (!strcmp(vdi->nativeDatum, "NGVD-29") ||
+        !strcmp(vdi->nativeDatum, "NGVD-29") ||
+        !strcmp(vdi->nativeDatum, "OTHER")) {
  
-        sprintf(cp, "  <native-datum>%s</native-datum>\n", vdi->native_datum);
+        sprintf(cp, "  <native-datum>%s</native-datum>\n", vdi->nativeDatum);
     }
     else {
-        sprintf(cp, "  <native-datum>OTHER</native-datum>\n  <local-datum-name>%s</local-datum-name>\n", vdi->native_datum);
+        sprintf(cp, "  <native-datum>OTHER</native-datum>\n  <local-datum-name>%s</local-datum-name>\n", vdi->nativeDatum);
     }
     while (*cp)++cp;
     if (vdi->elevation != UNDEFINED_VERTICAL_DATUM_VALUE) {
         sprintf(cp, "  <elevation>%f</elevation>\n", vdi->elevation);
         while (*cp)++cp;
     }
-    if (vdi->offset_to_ngvd_29 != UNDEFINED_VERTICAL_DATUM_VALUE) {
+    if (vdi->offsetToNgvd29 != UNDEFINED_VERTICAL_DATUM_VALUE) {
         sprintf(
             cp,
             "  <offset estimate=\"%s\">\n    <to-datum>NGVD-29</to-datum>\n    <value>%f</value>\n  </offset>\n",
-            vdi->offset_to_ngvd_29_is_estimate ? "true" : "false",
-            vdi->offset_to_ngvd_29);
+            vdi->offsetToNgvd29IsEstimate ? "true" : "false",
+            vdi->offsetToNgvd29);
         while (*cp)++cp;
     }
-    if (vdi->offset_to_navd_88 != UNDEFINED_VERTICAL_DATUM_VALUE) {
+    if (vdi->offsetToNavd88 != UNDEFINED_VERTICAL_DATUM_VALUE) {
         sprintf(
             cp,
             "  <offset estimate=\"%s\">\n    <to-datum>NAVD-88</to-datum>\n    <value>%f</value>\n  </offset>\n",
-            vdi->offset_to_navd_88_is_estimate ? "true" : "false",
-            vdi->offset_to_navd_88);
+            vdi->offsetToNavd88IsEstimate ? "true" : "false",
+            vdi->offsetToNavd88);
         while (*cp)++cp;
     }
     sprintf(cp, "</vertical-datum-info>");
-    if (generate_compressed) {
-        err_msg = compress_and_encode(results, xml);
-        if (err_msg != NULL) {
-            return err_msg;
+    if (generateCompressed) {
+        errmsg = gzipAndEncode(results, xml);
+        if (errmsg != NULL) {
+            return errmsg;
         }
     }
     else {
@@ -951,11 +951,11 @@ char *vertical_datum_info_to_string(char **results, vertical_datum_info *vdi, in
 //
 // See verticalDatum.h for documentation
 //
-vertical_datum_info *vertical_datum_info_from_user_header(const int *userHeader, const int userHeaderSize) {
-    vertical_datum_info *vdi = NULL;
-    char *cp = string_from_user_header(userHeader, userHeaderSize);
+verticalDatumInfo *extractVerticalDatumInfoFromUserHeader(const int *userHeader, const int userHeaderSize) {
+    verticalDatumInfo *vdi = NULL;
+    char *cp = userHeaderToString(userHeader, userHeaderSize);
     if (cp) {
-        char *vdiStr = extract_from_delimited_string(
+        char *vdiStr = extractFromDelimitedString(
             &cp, 
             VERTICAL_DATUM_INFO_USER_HEADER_PARAM, 
             ":",
@@ -963,8 +963,8 @@ vertical_datum_info *vertical_datum_info_from_user_header(const int *userHeader,
             FALSE,
             ';');
         if (vdiStr) {
-            vdi = (vertical_datum_info *)malloc(sizeof(vertical_datum_info));
-            char *errmsg = vertical_datum_info_from_string(vdi, vdiStr);
+            vdi = (verticalDatumInfo *)malloc(sizeof(verticalDatumInfo));
+            char *errmsg = stringToVerticalDatumInfo(vdi, vdiStr);
             if (errmsg != NULL) {
                 fprintf(stderr, "%s\n", errmsg);
                 free(vdi);
@@ -979,68 +979,68 @@ vertical_datum_info *vertical_datum_info_from_user_header(const int *userHeader,
 //
 // See verticalDatum.h for documentation
 //
-void vertical_datum_info_from_string_(
-        const char *input_str,
-        char    *native_datum,
+void stringToVerticalDatumInfo_(
+        const char *inputStr,
+        char    *nativeDatum,
         char    *unit,
-        char    *error_message,
+        char    *errorMessage,
         float   *elevation,
-        float   *offset_ngvd_29,
-        int32_t *offset_ngvd_29_is_estimate,
-        float   *offset_navd_88,
-        int32_t *offset_navd_88_is_estimate,
-        slen_t   len_input_str,
-        slen_t   len_native_datum,
-        slen_t   len_unit,
-        slen_t   len_error_message) {
+        float   *offsetNgvd29,
+        int32_t *offsetNgvd29IsEstimate,
+        float   *offsetNavd88,
+        int32_t *offsetNavd88IsEstimate,
+        slen_t   lenInputStr,
+        slen_t   lenNativeDatum,
+        slen_t   lenUnit,
+        slen_t   lenErrorMessage) {
  
-    char *l_input_str = (char *)malloc(len_input_str+1);
-    char *err_msg;
-    vertical_datum_info vdi;
+    char *lInputStr = (char *)malloc(lenInputStr+1);
+    char *errmsg;
+    verticalDatumInfo vdi;
  
-    F2C(input_str, l_input_str, len_input_str, len_input_str+1);
-    err_msg = vertical_datum_info_from_string(&vdi, l_input_str);
-    C2F(err_msg, error_message, len_error_message);
-    C2F(vdi.native_datum, native_datum, len_native_datum);
-    C2F(vdi.unit, unit, len_unit);
+    F2C(inputStr, lInputStr, lenInputStr, lenInputStr+1);
+    errmsg = stringToVerticalDatumInfo(&vdi, lInputStr);
+    C2F(errmsg, errorMessage, lenErrorMessage);
+    C2F(vdi.nativeDatum, nativeDatum, lenNativeDatum);
+    C2F(vdi.unit, unit, lenUnit);
     *elevation = vdi.elevation;
-    *offset_ngvd_29 = vdi.offset_to_ngvd_29;
-    *offset_ngvd_29_is_estimate = vdi.offset_to_ngvd_29_is_estimate;
-    *offset_navd_88 = vdi.offset_to_navd_88;
-    *offset_navd_88_is_estimate = vdi.offset_to_navd_88_is_estimate;
-    free(l_input_str);
+    *offsetNgvd29 = vdi.offsetToNgvd29;
+    *offsetNgvd29IsEstimate = vdi.offsetToNgvd29IsEstimate;
+    *offsetNavd88 = vdi.offsetToNavd88;
+    *offsetNavd88IsEstimate = vdi.offsetToNavd88IsEstimate;
+    free(lInputStr);
 }
 //
 // See verticalDatum.h for documentation
 //
-void vertical_datum_info_to_string_(
-        char    *output_str,
-        char    *native_datum,
+void verticalDatumInfoToString_(
+        char    *outputStr,
+        char    *nativeDatum,
         char    *unit,
-        char    *error_message,
+        char    *errorMessage,
         float   *elevation,
-        float   *offset_ngvd_29,
-        int32_t *offset_ngvd_29_is_estimate,
-        float   *offset_navd_88,
-        int32_t *offset_navd_88_is_estimate,
-        int32_t *generate_compressed,
-        slen_t   len_output_str,
-        slen_t   len_native_datum,
-        slen_t   len_unit,
-        slen_t   len_error_message) {
+        float   *offsetNgvd29,
+        int32_t *offsetNgvd29IsEstimate,
+        float   *offsetNavd88,
+        int32_t *offsetNavd88IsEstimate,
+        int32_t *generateCompressed,
+        slen_t   lenOutputStr,
+        slen_t   lenNativeDatum,
+        slen_t   lenUnit,
+        slen_t   lenErrorMessage) {
          
-    char *err_msg;
+    char *errmsg;
     char *results;
-    vertical_datum_info vdi;
-    F2C(native_datum, vdi.native_datum, len_native_datum, sizeof(vdi.native_datum));
-    F2C(unit, vdi.unit, len_unit, sizeof(vdi.unit));
+    verticalDatumInfo vdi;
+    F2C(nativeDatum, vdi.nativeDatum, lenNativeDatum, sizeof(vdi.nativeDatum));
+    F2C(unit, vdi.unit, lenUnit, sizeof(vdi.unit));
     vdi.elevation = *elevation;
-    vdi.offset_to_ngvd_29 = *offset_ngvd_29;
-    vdi.offset_to_navd_88_is_estimate = *offset_ngvd_29_is_estimate;
-    vdi.offset_to_navd_88 = *offset_navd_88;
-    vdi.offset_to_navd_88_is_estimate = *offset_navd_88;
-    err_msg = vertical_datum_info_to_string(&results, &vdi, *generate_compressed);
-    C2F(err_msg, error_message, len_error_message);
-    C2F(results, output_str, len_output_str);
+    vdi.offsetToNgvd29 = *offsetNgvd29;
+    vdi.offsetToNavd88IsEstimate = *offsetNgvd29IsEstimate;
+    vdi.offsetToNavd88 = *offsetNavd88;
+    vdi.offsetToNavd88IsEstimate = *offsetNavd88;
+    errmsg = verticalDatumInfoToString(&results, &vdi, *generateCompressed);
+    C2F(errmsg, errorMessage, lenErrorMessage);
+    C2F(results, outputStr, lenOutputStr);
     free(results);
 }

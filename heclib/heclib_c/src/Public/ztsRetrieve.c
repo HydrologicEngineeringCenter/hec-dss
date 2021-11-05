@@ -418,7 +418,7 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 			// we have a request to convert to a non-native vertical datum //
 			//-------------------------------------------------------------//
 			char errmsg[1024];
-			char *vdiStr = extract_from_delimited_string(
+			char *vdiStr = extractFromDelimitedString(
 				&tss->locationStruct->supplemental,
 				VERTICAL_DATUM_INFO_USER_HEADER_PARAM, 
 				":", 
@@ -426,8 +426,8 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 				FALSE,
 				'\n');
 			if (vdiStr) {
-				vertical_datum_info vdi;
-				char *msg = vertical_datum_info_from_string(&vdi, vdiStr);
+				verticalDatumInfo vdi;
+				char *msg = stringToVerticalDatumInfo(&vdi, vdiStr);
 				if(msg) {
 					sprintf(
 						errmsg, 
@@ -444,17 +444,17 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 					double offset;
 					switch (ivertical_datum) {
 						case IVERTICAL_DATUM_NAVD88 :
-							offset = vdi.offset_to_navd_88;
+							offset = vdi.offsetToNavd88;
 							break;
 						case IVERTICAL_DATUM_NGVD29 :
-							offset = vdi.offset_to_ngvd_29;
+							offset = vdi.offsetToNgvd29;
 							break;
 						default :
 							offset = 0.;
 							break;
 					}
 					if (offset != 0.) {
-						offset = get_offset(offset, vdi.unit, tss->units);
+						offset = getOffset(offset, vdi.unit, tss->units);
 						if (offset == UNDEFINED_VERTICAL_DATUM_VALUE) {
 							sprintf(
 								errmsg, 

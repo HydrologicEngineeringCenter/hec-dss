@@ -116,48 +116,48 @@ extern "C" {
     _a < _b ? _a : _b;       \
 })
 
-typedef struct vertical_datum_info_s {
-    char  native_datum[17];
+typedef struct verticalDatumInfo_s {
+    char  nativeDatum[17];
     float elevation;
     char  unit[3];
-    float offset_to_ngvd_29;
-    int   offset_to_ngvd_29_is_estimate;
-    float offset_to_navd_88;
-    int   offset_to_navd_88_is_estimate;
-} vertical_datum_info;
+    float offsetToNgvd29;
+    int   offsetToNgvd29IsEstimate;
+    float offsetToNavd88;
+    int   offsetToNavd88IsEstimate;
+} verticalDatumInfo;
 
-typedef struct text_boundary_info_s {
+typedef struct textBoundaryInfo_s {
     char *first;
-    char *first_non_blank;
-    char *first_with_boundary;
+    char *firstNonBlank;
+    char *firstWithBoundary;
     char *last;
-    char *last_non_blank;
-    char *last_with_boundary;
+    char *lastNonBlank;
+    char *lastWithBoundary;
     int   offset;
-    int   offset_non_blank;
+    int   offsetNonBlank;
     int   len;
-    int   len_non_blank;
-    int   len_with_boundaries;
-} text_boundary_info;
+    int   lenNonBlank;
+    int   lenWithBoundaries;
+} textBoundaryInfo;
 /**
  * Returns TRUE if unit recognized as feet, otherwise FALSE
  */
-int unit_is_feet(const char *unit);
+int unitIsFeet(const char *unit);
 /**
  * Returns TRUE if unit recognized as meters, otherwise FALSE
  */
-int unit_is_meters(const char *unit);
+int unitIsMeters(const char *unit);
 /**
  * Returns a vertical datum offset adjusted for data unit
  * 
- * @param offset      The value of the offset
- * @param offset_unit The unit of offset
- * @param data_unit   The unit of the elevations being modified
+ * @param offset     The value of the offset
+ * @param offsetUnit The unit of offset
+ * @param dataUnit   The unit of the elevations being modified
  * 
  * @return The offset appropriate for adjusting the offsets with. Returns UNDEFINED_VERTICAL_DATUM_VALUE
  *         if either of the units cannot be identified as feet or meters
  */
-double get_offset(double offset, const char *offset_unit, const char *data_unit);
+double getOffset(double offset, const char *offsetUnit, const char *dataUnit);
 /**
  * Returns a parameter value from a string whose parts are delimited by a single character, optionally 
  * removing the parameter and value from the string
@@ -173,7 +173,7 @@ double get_offset(double offset, const char *offset_unit, const char *data_unit)
  *         this buffer is dynamically allocated using malloc() and must be freed using free() by the caller if this 
  *         call is successful.
  */
-char *extract_from_delimited_string(
+char *extractFromDelimitedString(
     char      **delimitedStr, 
     const char *parameter, 
     const char *separator,
@@ -195,9 +195,9 @@ char *extract_from_delimited_string(
  *         was successfully modified. -1 if there is not enough room to insert the parameter/value pair
  * 
  */
-int insert_into_delimited_string(
-    char     **delimitedString, 
-    int        delimitedStringSize, 
+int insertIntoDelimitedString(
+    char      **delimitedString, 
+    int         delimitedStringSize, 
     const char *parameter, 
     const char *value, 
     const char *separator, 
@@ -212,7 +212,7 @@ int insert_into_delimited_string(
  * @return The string representation of the user header. Memory for this buffer 
  *         is dynamically allocated using malloc() and must be freed using free().
  */
-char *string_from_user_header(const int *userHeader, const int userHeaderSize);
+char *userHeaderToString(const int *userHeader, const int userHeaderSize);
 /**
  * Creates a DSS record user header from a string
  * 
@@ -225,95 +225,95 @@ char *string_from_user_header(const int *userHeader, const int userHeaderSize);
  *         zStructTime* structure. In that case the "allocated" structure member should
  *         be set to 1 to all zStructFree() to free the memory.
  */
-int *string_to_user_header(const char *str, int *userHeaderSize);
+int *stringToUserHeader(const char *str, int *userHeaderSize);
 /**
  * Returns the length of a buffer required to hold a base-64 encoding of an input buffer of the specified length.
  *
- * @param to_encode_len The length of the buffer to base64-encode
+ * @param toEncodeLen The length of the buffer to base64-encode
  *
- * @return -1 if to_encode_len < 0, otherwise the length of buffer necessary to hold the base-64 encoding.
+ * @return -1 if toEncodeLen < 0, otherwise the length of buffer necessary to hold the base-64 encoding.
  *         Always a multiple of 4. 
  */
-int b64encoded_len(int to_encode_len);
+int b64EncodedLen(int toEncodeLen);
 /**
  * Returns the length of a buffer required to hold a base-64 decoding of an input buffer of the specified length.
  *
- * @param to_decode_len The length of the buffer to base64-decode. Must be a multiple of 4
+ * @param toDecodeLen The length of the buffer to base64-decode. Must be a multiple of 4
  *
- * @return -1 if to_deocde_len < 0, -2 if to_decode_len is not a multiple of 4, otherwise the length of buffer
+ * @return -1 if to_deocde_len < 0, -2 if toDecodeLen is not a multiple of 4, otherwise the length of buffer
  *         necessary to hold the base-64 decoding. Any actual decoded length may be one or two bytes shorder
  *         depending on the actual input buffer (it will be shorter by the number of '=' characters at the end
  *         of the data to base64-decode).
  */
-int b64decoded_len(int to_decode_len);
+int b64DecodedLen(int toDecodeLen);
 /**
  * Base64-encodes a buffer
  *
- * @param encoded       The encoded version of to_encode. Memory for this buffer is dynamically allocated
- *                      using malloc() and must be freed using free() by the caller if this call is successful.
- *                      This buffer is always a null-terminated string.
- * @param to_encode     A pointer to the buffer to encode
- * @param to_encode_len The length of the portion of to_encode to encode.
+ * @param encoded     The encoded version of toEncode. Memory for this buffer is dynamically allocated
+ *                    using malloc() and must be freed using free() by the caller if this call is successful.
+ *                    This buffer is always a null-terminated string.
+ * @param toEncode    A pointer to the buffer to encode
+ * @param toEncodeLen The length of the portion of toEncode to encode.
  *
- * @return -1 if to_encode_len < 0, otherwise 0 on success
+ * @return -1 if toEncodeLen < 0, otherwise 0 on success
  */
-int b64encode(char **encoded, const char *to_encode, int to_encode_len);
+int b64Encode(char **encoded, const char *toEncode, int toEncodeLen);
 /**
  * Base64-decodes a buffer
  *
- * @param decoded     The decoded data. Memory for this buffer is dynamically allocated using malloc()
- *                    and must be freed using free() by the caller if this call is successful.
- * @param decoded_len A pointer to an integer to receive the actual decoded length. This may be slightly less
- *                    than the value retuned by b64encoded_len(strlen(to_decode))
- * @param to_decode   A null-terminated string of the base64-encoded data
+ * @param decoded    The decoded data. Memory for this buffer is dynamically allocated using malloc()
+ *                   and must be freed using free() by the caller if this call is successful.
+ * @param decodedLen A pointer to an integer to receive the actual decoded length. This may be slightly less
+ *                   than the value retuned by b64EncodedLen(strlen(toDecode))
+ * @param toDecode   A null-terminated string of the base64-encoded data
  *
- * @return -2 if strlen(to_decode) is not a multiple of 4, -3 if any character in to_decode is not a valie
+ * @return -2 if strlen(toDecode) is not a multiple of 4, -3 if any character in toDecode is not a valie
  *         base64 encoding character, otherwise 0 on success
  */
-int b64decode(char **decoded, int *decoded_len, const char *to_decode);
+int b64Decode(char **decoded, int *decodedLen, const char *toDecode);
  
 /**
  * Locates the first occurrence of text in buffer that is bounded by specified text strings;
  *
- * @param tbi    A pointer to an existing text_boundary_info structure to hold the the results
+ * @param tbi    A pointer to an existing textBoundaryInfo structure to hold the the results
  * @param buf    The buffer to search in
  * @param after  The first boundary (the located text is immediately after this)
  * @param before The second boundary (the located text is immediately before this)
  *
  * @return An error message, which is NULL the function succeeds.
  */
-char *find_text_between(text_boundary_info *tbi, const char *buf, const char *after, const char *before);
+char *findTextBetween(textBoundaryInfo *tbi, const char *buf, const char *after, const char *before);
 /**
  *  Returns a text string that has been gzipped and then base64 encoded to its original state
  *
  * @param results   The decoded and un-gzipped string. Memory for this buffer is dynamically allocated
  *                  using malloc() and must be freed using free() by the caller.
- * @param input_buf The buffer to decode and un-gzip.
+ * @param inputBuf The buffer to decode and un-gzip.
  *
  * @return An error message, which is NULL if the function succeeds.
  */
-char *decode_and_uncompress(char **results, const char *input_buf);
+char *decodeAndGunzip(char **results, const char *inputBuf);
 /**
  * Gzips and base64 encodes a text string
  *
  * @param results   The gzipped and encoded string. Memory for this buffer is dynamically allocated
  *                  using malloc() and must be freed using free() by the caller.
- * @param input_buf The buffer to gzip and encode.
+ * @param inputBuf The buffer to gzip and encode.
  *
  * @return An error message, which is NULL if the function succeeds.
  */
-char *compress_and_encode(char **results, const char *input_buf);
+char *gzipAndEncode(char **results, const char *inputBuf);
 /**
  * Expands empty tags of the format <tag_name/> to <tag_name></tag_name> for purpose of easy
  * structure validation.
  *
- * @param output_buf The result of the expansion. Memory for this buffer is dynamically allocated
- *                   using malloc() and must be freed using free() by the caller.
- * @param input_buf  The XML instance to expand
+ * @param outputBuf The result of the expansion. Memory for this buffer is dynamically allocated
+ *                  using malloc() and must be freed using free() by the caller.
+ * @param inputBuf  The XML instance to expand
  *
  * @return An error message, which is NULL the function succeeds.
  */
-char *expand_empty_xml_tags(char **output_buf, const char *input_buf);
+char *expandEmptyXmlTags(char **outputBuf, const char *inputBuf);
 /**
  * Validates the well-formedness of an XML instance
  *
@@ -321,47 +321,47 @@ char *expand_empty_xml_tags(char **output_buf, const char *input_buf);
  *
  * @return An error message, which is NULL the function succeeds.
  */
-char *validate_xml_structure(const char *xml);
+char *validateXmlStructure(const char *xml);
 /**
  * Parses a standard vertical datum infomration XML instance into data structure
  *
- * @param vdi        A ponter to a previously existing vertical_datum_info sturcture
- * @param intput_str The XML instance to parse. This may be either a plain text XML instance or one
- *                   that has been gzipped and base64 encoded
+ * @param vdi       A ponter to a previously existing verticalDatumInfo sturcture
+ * @param intputStr The XML instance to parse. This may be either a plain text XML instance or one
+ *                  that has been gzipped and base64 encoded
  */
-char *vertical_datum_info_from_string(vertical_datum_info *vdi, const char *input_str);
+char *stringToVerticalDatumInfo(verticalDatumInfo *vdi, const char *inputStr);
 /**
  * Creates a (compressed or uncompressed) string from vertical datum information
  *
  * @param results             The string containing the vertical datum infomation . Memory for this buffer is
  *                            dynamically allocated using malloc() and must be freed using free() by the caller.
- * @param vdi                 A ponter to a previously existing vertical_datum_info sturcture containing the information
+ * @param vdi                 A ponter to a previously existing verticalDatumInfo sturcture containing the information
  * @param generate_compressed A flag (TRUE/FALSE) that specifies whether to generate a compressed string.
  *                            If FALSE, the result will be an XML instance containing the vertical datum information.
  *                            If TRUE, the XML will be gzipped and base64 encoded.
  *
  * @return An error message, which is NULL the function succeeds.
  */
-char *vertical_datum_info_to_string(char **results, vertical_datum_info *vdi, int generate_compressed);
+char *verticalDatumInfoToString(char **results, verticalDatumInfo *vdi, int generate_compressed);
 /**
  * Returns any vertical datum info in a DSS record user header
  * 
  * @param userHeader     The user header (integer array)
  * @param userHeaderSize The size of the user header in number of integers
  * 
- * @return A pointer to a dynmically allocated vertical_datum_info struct, or NULL if the user header doesn't
+ * @return A pointer to a dynmically allocated verticalDatumInfo struct, or NULL if the user header doesn't
  *         include any vertical datum info
  */
-vertical_datum_info *vertical_datum_info_from_user_header(const int *userHeader, const int userHeaderSize);
+verticalDatumInfo *extractVerticalDatumInfoFromUserHeader(const int *userHeader, const int userHeaderSize);
 /**
- * Fortan wrapper for vertical_datum_info_from_string
+ * Fortan wrapper for stringToVerticalDatumInfo
  *
  * Use the following Fortran interface for this routine:
  *
  *  interface
- *      subroutine vertical_datum_info_from_string( &
- *          input_str,                              &
- *          native_datum,                           &
+ *      subroutine stringToVerticalDatumInfo( &
+ *          inputStr,                              &
+ *          nativeDatum,                           &
  *          unit,                                   &
  *          error_message,                          &
  *          elevation,                              &
@@ -370,18 +370,18 @@ vertical_datum_info *vertical_datum_info_from_user_header(const int *userHeader,
  *          offset_navd_88,                         &
  *          offset_navd_88_is_estimate)
  *          character (len = *),  intent(in)  :: compressed
- *          character (len = *),  intent(out) :: native_datum
+ *          character (len = *),  intent(out) :: nativeDatum
  *          character (len = *),  intent(out) :: unit
  *          character (len = *),  intent(out) :: error_message
  *          real      (kind = 4), intent(out) :: offset_ngvd_29
  *          logical   (kind = 4), intent(out) :: offset_ngvd_29_is_estimate
  *          real      (kind = 4), intent(out) :: offset_navd_88
  *          logical   (kind = 4), intent(out) :: offset_navd_88_is_estimate
- *      end subroutine vertical_datum_info_from_string
+ *      end subroutine stringToVerticalDatumInfo
  *  end interface
  *
- * @param input_str                  Fortran CHARACTER (LEN=*) input for input XML in raw or compressed format.
- * @param native_datum               Fortran CHARACTER (LEN=*) output for native datum. Length should be >= 16.
+ * @param inputStr                  Fortran CHARACTER (LEN=*) input for input XML in raw or compressed format.
+ * @param nativeDatum               Fortran CHARACTER (LEN=*) output for native datum. Length should be >= 16.
  * @param unit                       Fortran CHARACTER (LEN=*) output for unit of elevation and offsets. Length should be >= 2
  * @param error_message              Fortran CHARACTER (LEN=*) output for error message. Empty on success. Length should be >= 64
  * @param elevation                  Fortran REAL (KIND=4) output for elevation. UNDEFINED_VERTICAL_DATUM_VALUE if no value in XML
@@ -389,14 +389,14 @@ vertical_datum_info *vertical_datum_info_from_user_header(const int *userHeader,
  * @param offset_ngvd_29_is_estimate Fortran LOGICAL (KIND=4) output for whether the offset to NGVD-29 is estimated
  * @param offset_navd_88             Fortran REAL (KIND=4) output for the offset to NAVD-88. UNDEFINED_VERTICAL_DATUM_VALUE if no value in XML
  * @param offset_navd_88_is_estimate Fortran LOGICAL (KIND=4) output for whether the offset to NAVD-88 is estimated
- * @param len_input_str              Fortran hidden parameter for declared length of input_str parameter
- * @param len_native_datum           Fortran hidden parameter for declared length of native_datum parameter
+ * @param len_input_str              Fortran hidden parameter for declared length of inputStr parameter
+ * @param len_native_datum           Fortran hidden parameter for declared length of nativeDatum parameter
  * @param len_unit                   Fortran hidden parameter for declared length of unit parameter
  * @param len_error_message          Fortran hidden parameter for declared length of error_message parameter
  */
-void vertical_datum_info_from_string_(
-        const char *input_str,
-        char    *native_datum,
+void stringToVerticalDatumInfo_(
+        const char *inputStr,
+        char    *nativeDatum,
         char    *unit,
         char    *error_message,
         float   *elevation,
@@ -409,14 +409,14 @@ void vertical_datum_info_from_string_(
         slen_t   len_unit,
         slen_t   len_error_message);
 /**
- * Fortan wrapper for vertical_datum_info_to_string
+ * Fortan wrapper for verticalDatumInfoToString
  *
  * Use the following Fortran interface for this routine:
  *
  *  interface
- *      subroutine vertical_datum_info_to_string( &
+ *      subroutine verticalDatumInfoToString( &
  *          output_str,                           &
- *          native_datum,                         &
+ *          nativeDatum,                         &
  *          unit,                                 &
  *          error_message,                        &
  *          elevation,                            &
@@ -426,7 +426,7 @@ void vertical_datum_info_from_string_(
  *          offset_navd_88_is_estimate            &
  *          generate_compressed)
  *          character (len = *),  intent(out) :: compressed
- *          character (len = *),  intent(in)  :: native_datum
+ *          character (len = *),  intent(in)  :: nativeDatum
  *          character (len = *),  intent(in)  :: unit
  *          character (len = *),  intent(out) :: error_message
  *          real      (kind = 4), intent(in)  :: offset_ngvd_29
@@ -434,11 +434,11 @@ void vertical_datum_info_from_string_(
  *          real      (kind = 4), intent(in)  :: offset_navd_88
  *          logical   (kind = 4), intent(in)  :: offset_navd_88_is_estimate
  *          logical   (kind = 4), intent(in)  :: generate_compressed
- *      end subroutine vertical_datum_info_from_string
+ *      end subroutine verticalDatumInfoToString
  *  end interface
  *
  * @param output_str                 Fortran CHARACTER (LEN=*) output in raw (XML) or compressed format. Length should be >= 400
- * @param native_datum               Fortran CHARACTER (LEN=*) input for native datum.
+ * @param nativeDatum               Fortran CHARACTER (LEN=*) input for native datum.
  * @param unit                       Fortran CHARACTER (LEN=*) input for unit of elevation and offsets.
  * @param error_message              Fortran CHARACTER (LEN=*) output for error message. Empty on success. Length should be >= 64
  * @param elevation                  Fortran REAL (KIND=4) input for elevation. UNDEFINED_VERTICAL_DATUM_VALUE if unknown or n/a
@@ -448,13 +448,13 @@ void vertical_datum_info_from_string_(
  * @param offset_navd_88_is_estimate Fortran LOGICAL (KIND=4) input for whether the offset to NAVD-88 is estimated
  * @param generate_compressed        Fortran LOGICAL (KIND=4) input for whether to generate compressed or raw (XML) string
  * @param len_output_str             Fortran hidden parameter for declared length of output_str parameter
- * @param len_native_datum           Fortran hidden parameter for declared length of native_datum parameter
+ * @param len_native_datum           Fortran hidden parameter for declared length of nativeDatum parameter
  * @param len_unit                   Fortran hidden parameter for declared length of unit parameter
  * @param len_error_message          Fortran hidden parameter for declared length of error_message parameter
  */
-void vertical_datum_info_to_string_(
+void verticalDatumInfoToString_(
         char    *output_str,
-        char    *native_datum,
+        char    *nativeDatum,
         char    *unit,
         char    *error_message,
         float   *elevation,

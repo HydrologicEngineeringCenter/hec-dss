@@ -4,36 +4,36 @@
 #include <verticalDatum.h>
 
 void main (int argc, char *argv[]) {
-    // test extract_from_delimited_string() and insert_into_delimited_string()
+    // test extract_from_delimited_string() and insertIntoDelimitedString()
     {
         int text_size = 256;
         char *text = (char *)malloc(text_size);
         char *cp;
         char *text_value = "theFirstParameter:theFirstValue;theSecondParameter:theSecondValue";
         sprintf(text, text_value);
-        cp = extract_from_delimited_string(&text, "theFirstParameter", ":", TRUE, FALSE, ';');
+        cp = extractFromDelimitedString(&text, "theFirstParameter", ":", TRUE, FALSE, ';');
         assert(!strcmp(cp, "theFirstValue"));
-        cp = extract_from_delimited_string(&text, "theSecondParameter", ":", TRUE, FALSE, ';');
+        cp = extractFromDelimitedString(&text, "theSecondParameter", ":", TRUE, FALSE, ';');
         assert(!strcmp(cp, "theSecondValue"));
-        cp = extract_from_delimited_string(&text, "THEFIRSTPARAMETER", ":", FALSE, FALSE, ';');
+        cp = extractFromDelimitedString(&text, "THEFIRSTPARAMETER", ":", FALSE, FALSE, ';');
         assert(!strcmp(cp, "theFirstValue"));
-        cp = extract_from_delimited_string(&text, "THEFIRSTPARAMETER", ":", FALSE, TRUE, ';');
+        cp = extractFromDelimitedString(&text, "THEFIRSTPARAMETER", ":", FALSE, TRUE, ';');
         assert(!strcmp(cp, "theFirstValue"));
         assert(!strcmp(text, "theSecondParameter:theSecondValue"));
         sprintf(text, text_value);
-        cp = extract_from_delimited_string(&text, "theSecondParameter", ":", TRUE, TRUE, ';');
+        cp = extractFromDelimitedString(&text, "theSecondParameter", ":", TRUE, TRUE, ';');
         assert(!strcmp(cp, "theSecondValue"));
         assert(!strcmp(text, "theFirstParameter:theFirstValue"));
-        assert(insert_into_delimited_string(&text, text_size, "anotherParameter", "anotherValue", ":", FALSE, ';') ==  0);
+        assert(insertIntoDelimitedString(&text, text_size, "anotherParameter", "anotherValue", ":", FALSE, ';') ==  0);
         assert(!strcmp(text, "theFirstParameter:theFirstValue;anotherParameter:anotherValue"));
-        extract_from_delimited_string(&text, "theFirstParameter", ":", TRUE, TRUE, ';');
-        extract_from_delimited_string(&text, "anotherParameter", ":", TRUE, TRUE, ';');
+        extractFromDelimitedString(&text, "theFirstParameter", ":", TRUE, TRUE, ';');
+        extractFromDelimitedString(&text, "anotherParameter", ":", TRUE, TRUE, ';');
         assert(strlen(text) == 0);
-        assert(insert_into_delimited_string(&text, text_size, "anotherParameter", "anotherValue", ":", FALSE, ';') == 0);
+        assert(insertIntoDelimitedString(&text, text_size, "anotherParameter", "anotherValue", ":", FALSE, ';') == 0);
         assert(strcmp(text, "anotherParameter:anotherValue") == 0);
         free(text);
     }
-    // test compress_and_encode() and decode_and_uncompress()
+    // test gzipAndEncode() and decodeAndGunzip()
     {
         char *errmsg;
         char *compressed;
@@ -54,17 +54,17 @@ void main (int argc, char *argv[]) {
             "  </offset>\n"
             "</vertical-datum-info>\n";
 
-        errmsg = compress_and_encode(&compressed, input_text);
+        errmsg = gzipAndEncode(&compressed, input_text);
         if (errmsg != NULL) fprintf(stderr, "%s\n", errmsg);
         assert(errmsg == NULL);
-        errmsg = decode_and_uncompress(&expanded, compressed);
+        errmsg = decodeAndGunzip(&expanded, compressed);
         if (errmsg != NULL) fprintf(stderr, "%s\n", errmsg);
         assert(errmsg == NULL);
         assert(!strcmp(expanded, input_text));
     }
-    // test vertical_datum_info_from_string() and vertical_datum_info_to_string()
+    // test stringToVerticalDatumInfo() and verticalDatumInfoToString()
     {
-        vertical_datum_info vdi;
+        verticalDatumInfo vdi;
         char *errmsg;
         char *xml1 = 
             "<vertical-datum-info office=\"SWT\" unit=\"ft\">\n"
@@ -92,25 +92,25 @@ void main (int argc, char *argv[]) {
             "  </offset>\n"
             "</vertical-datum-info>\n";
 
-        errmsg = vertical_datum_info_from_string(&vdi, xml1);
+        errmsg = stringToVerticalDatumInfo(&vdi, xml1);
         if (errmsg != NULL) fprintf(stderr, "%s\n", errmsg);
         assert(errmsg == NULL);
-        assert(!strcmp(vdi.native_datum, CVERTICAL_DATUM_NGVD29));
+        assert(!strcmp(vdi.nativeDatum, CVERTICAL_DATUM_NGVD29));
         assert(vdi.elevation == 615.2f);
-        assert(vdi.offset_to_navd_88 == 0.3855f);
-        assert(vdi.offset_to_navd_88_is_estimate == 1);
-        assert(vdi.offset_to_ngvd_29 == 0.f);
-        assert(vdi.offset_to_ngvd_29_is_estimate == 0);
+        assert(vdi.offsetToNavd88 == 0.3855f);
+        assert(vdi.offsetToNavd88IsEstimate == 1);
+        assert(vdi.offsetToNgvd29 == 0.f);
+        assert(vdi.offsetToNgvd29IsEstimate == 0);
 
-        errmsg = vertical_datum_info_from_string(&vdi, xml2);
+        errmsg = stringToVerticalDatumInfo(&vdi, xml2);
         if (errmsg != NULL) fprintf(stderr, "%s\n", errmsg);
         assert(errmsg == NULL);
-        assert(!strcmp(vdi.native_datum, "Pensacola"));
+        assert(!strcmp(vdi.nativeDatum, "Pensacola"));
         assert(vdi.elevation == 757.f);
-        assert(vdi.offset_to_navd_88 == 1.457f);
-        assert(vdi.offset_to_navd_88_is_estimate == 1);
-        assert(vdi.offset_to_ngvd_29 == 1.07f);
-        assert(vdi.offset_to_ngvd_29_is_estimate == 0);
+        assert(vdi.offsetToNavd88 == 1.457f);
+        assert(vdi.offsetToNavd88IsEstimate == 1);
+        assert(vdi.offsetToNgvd29 == 1.07f);
+        assert(vdi.offsetToNgvd29IsEstimate == 0);
 
     }
     // test zset() and zquery() for vertical datums
@@ -199,16 +199,16 @@ void main (int argc, char *argv[]) {
         zquery("VDOW", "", 0, &intVal);
         assert(intVal == FALSE);
     }
-    // test string_to_user_header() and string_from_user_header()
+    // test stringToUserHeader() and string_from_user_header()
     {
         int  *userHeader;
         int   userHeaderSize;
         char *userHeaderStringIn;
         char *userHeaderStringOut;
         userHeaderStringIn = "This is a test string for the user header ";
-        userHeader = string_to_user_header(userHeaderStringIn, &userHeaderSize);
+        userHeader = stringToUserHeader(userHeaderStringIn, &userHeaderSize);
         assert(userHeaderSize == (strlen(userHeaderStringIn)-1)/4+1);
-        userHeaderStringOut = string_from_user_header(userHeader, userHeaderSize);
+        userHeaderStringOut = userHeaderToString(userHeader, userHeaderSize);
         assert(!strcmp(userHeaderStringIn, userHeaderStringOut));
         free(userHeader);
         free(userHeaderStringOut);
@@ -218,7 +218,7 @@ void main (int argc, char *argv[]) {
         long long ifltab[250];
         int status;
         zStructTimeSeries *tss = NULL;
-        vertical_datum_info vdi;
+        verticalDatumInfo vdi;
         char *errmsg;
         char *filename    = "v7.dss";
         char *pathnames[2][2] = {{"//TestLoc/Elev//1Hour/TestDoubles/",    "//TestLoc/Elev//1Hour/TestFloats/"},
@@ -374,12 +374,12 @@ void main (int argc, char *argv[]) {
                                 //------------------------------------------------//
                                 // add the vertical datum info to the user header //
                                 //------------------------------------------------//
-                                errmsg = compress_and_encode(&compressed, xml[i]);
+                                errmsg = gzipAndEncode(&compressed, xml[i]);
                                 assert(errmsg == NULL);
                                 len = VERTICAL_DATUM_INFO_USER_HEADER_PARAM_LEN + strlen(compressed) + 1;
                                 headerBuf = (char *)malloc(len+1);
                                 memset(headerBuf, 0, len+1);
-                                status = insert_into_delimited_string(
+                                status = insertIntoDelimitedString(
                                     &headerBuf, 
                                     len+1, 
                                     VERTICAL_DATUM_INFO_USER_HEADER_PARAM, 
@@ -388,7 +388,7 @@ void main (int argc, char *argv[]) {
                                     FALSE,
                                     ';');
                                 assert(status == 0);
-                                tss->userHeader = string_to_user_header(headerBuf, &tss->userHeaderSize);
+                                tss->userHeader = stringToUserHeader(headerBuf, &tss->userHeaderSize);
                                 tss->userHeaderNumber = tss->userHeaderSize; 
                                 tss->allocated[zSTRUCT_userHeader] = 1;
                                 free(headerBuf);
@@ -397,9 +397,9 @@ void main (int argc, char *argv[]) {
                                     // override the default vertical datum with the user header //
                                     //----------------------------------------------------------//
                                     J = j2;
-                                    char *headerString = string_from_user_header(tss->userHeader, tss->userHeaderSize);
+                                    char *headerString = userHeaderToString(tss->userHeader, tss->userHeaderSize);
                                     int headerLen = strlen(headerString);
-                                    status = insert_into_delimited_string(
+                                    status = insertIntoDelimitedString(
                                         &headerString, 
                                         headerLen, 
                                         VERTICAL_DATUM_USER_HEADER_PARAM, 
@@ -410,7 +410,7 @@ void main (int argc, char *argv[]) {
                                     if (status != 0) {
                                         headerLen += VERTICAL_DATUM_USER_HEADER_PARAM_LEN + strlen(verticalDatums[J]) + 3;
                                         headerString = (char *)realloc(headerString, headerLen);
-                                        status = insert_into_delimited_string(
+                                        status = insertIntoDelimitedString(
                                             &headerString, 
                                             headerLen, 
                                             VERTICAL_DATUM_USER_HEADER_PARAM, 
@@ -420,7 +420,7 @@ void main (int argc, char *argv[]) {
                                             ';');
                                         assert(status == 0);
                                     }
-                                    tss->userHeader = string_to_user_header(headerString, &tss->userHeaderSize);
+                                    tss->userHeader = stringToUserHeader(headerString, &tss->userHeaderSize);
                                     tss->userHeaderNumber = tss->userHeaderSize;
                                     if (m > 1) {
                                         //--------------------------------------------------------//
