@@ -108,17 +108,21 @@ C     If a debug level is on, print out information
               WRITE (MUNIT, 5) I, DVALUES(I)
  5            FORMAT (T5, I4,3X,F16.6)
  4         CONTINUE
-           DO 6 I=JUMB,NVALS
-              WRITE (MUNIT, 5) I, DVALUES(I)
- 6         CONTINUE
-        ELSE
+           IF (JUMB.GT.0) THEN 
+             DO 6 I=JUMB,NVALS
+                WRITE (MUNIT, 5) I, DVALUES(I)
+6            CONTINUE
+           ENDIF 
+         ELSE
            DO 7 I=1,NUMB
               WRITE (MUNIT, 5) I, SVALUES(I)
  7         CONTINUE
-           DO 8 I=JUMB,NVALS
-              WRITE (MUNIT, 5) I, SVALUES(I)
- 8         CONTINUE
-        ENDIF
+           IF (JUMB.GT.0) THEN 
+             DO 8 I=JUMB,NVALS
+                WRITE (MUNIT, 5) I, SVALUES(I)
+ 8           CONTINUE
+           ENDIF 
+         ENDIF
       ENDIF
       ENDIF
 C
