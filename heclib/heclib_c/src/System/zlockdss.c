@@ -185,7 +185,11 @@ void testLock(long long* ifltab, int ihandle)
 
 	for (i = 100; i < 120; i++) {
 		address = i * 8;
-		jpos = lseek64(ihandle, address, SEEK_SET);
+        #if __APPLE__
+        jpos = lseek(ihandle, address, SEEK_SET);
+        #else
+        jpos = lseek64(ihandle, address, SEEK_SET);
+        #endif
 		status = lockf(ihandle, F_TLOCK, 8);
 		if (status == 0) {
 			lockf(ihandle, F_ULOCK, 8);
@@ -209,7 +213,11 @@ int zlockDss(long long *ifltab, int ihandle, int mode, long long wordAddress, in
 
 
 	address = wordAddress * 8;
-	jpos = lseek64(ihandle, address, SEEK_SET);
+    #ifdef __APPLE__
+    jpos = lseek(ihandle, address, SEEK_SET);
+    #else
+    jpos = lseek64(ihandle, address, SEEK_SET);
+    #endif
 	if (jpos < 0) {
 		status = STATUS_NOT_OKAY;
 		return status;
