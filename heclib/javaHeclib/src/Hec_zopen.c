@@ -3,6 +3,11 @@
 #include <stdio.h>
 #include "heclib.h"
 
+// If MacOS, use hec_zopen instead of stdio::zopen
+#ifdef __APPLE__
+#define zopen hec_zopen
+#endif
+
 //  Opens either version 6 or 7.
 //  To create a new version 6, pass "6" in status
 JNIEXPORT int JNICALL Java_hec_heclib_util_Heclib_Hec_1zopen

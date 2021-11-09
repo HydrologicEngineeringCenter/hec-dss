@@ -41,7 +41,12 @@ int zpdRetrieve6(long long *ifltab, zStructPairedData *pds, int retrieveSizeFlag
 //  This includes both Fortran and C function
 
 //  zopen functions.  You can call any on any version; only difference is in creating new files
+// To avoid conflict with MacOSX 'stdio.h' zopen()
+#ifdef __APPLE__
+int  hec_zopen  (long long *ifltab, const char *dssFilename);
+#else
 int  zopen  (long long *ifltab, const char *dssFilename);
+#endif
 int  zopen6 (long long *ifltab, const char *dssFilename);
 int  zopen7 (long long *ifltab, const char *dssFilename);
 

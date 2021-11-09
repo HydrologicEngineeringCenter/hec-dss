@@ -33,6 +33,13 @@
 #define EXCLUSIVE_ACCESS 4
 #define RELEASE_ACCESS 6
 
+// To avoid conflict with MacOSX 'stdio.h' zopen()
+#ifdef __APPLE__
+int hec_zopen(long long *ifltab, const char *dssFilename);
+#else
+int zopen(long long *ifltab, const char *dssFilename);
+#endif
+
 //  Public functions for DSS Version 7 library (only)
 //  For the normal combined library, use heclib.h
 
@@ -41,7 +48,6 @@ int zclose(long long *ifltab);
 int zgetFileVersion(const char *dssFilename);
 int zgetVersion(long long *ifltab);
 int zgetFullVersion(long long *ifltab);  //  For example DSS Version "7-BG" = 70207
-int zopen(long long *ifltab, const char *dssFilename);
 int zopenExtended(long long *ifltab, const char *dssFilename, int fileVersion,
 				  int access, int maxExpectedPathnames, int hashSize, int binSize);
 int zset(const char* parameter, const char* charVal, int integerValue);

@@ -3,6 +3,11 @@
 #include "heclib.h"
 #include "hecdssInternal.h"
 
+// If MacOS, use hec_zopen instead of stdio::zopen
+#ifdef __APPLE__
+#define zopen hec_zopen
+#endif
+
 int zopen(long long *ifltab, const char *dssFilename)
 {
 	int version;
