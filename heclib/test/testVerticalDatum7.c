@@ -62,6 +62,20 @@ void main (int argc, char *argv[]) {
         assert(errmsg == NULL);
         assert(!strcmp(expanded, input_text));
     }
+    // test stringToUserHeader() and userHeaderToString()
+    {
+        int  *userHeader;
+        int   userHeaderSize;
+        char *userHeaderStringIn;
+        char *userHeaderStringOut;
+        userHeaderStringIn = "This is a test string for the user header ";
+        userHeader = stringToUserHeader(userHeaderStringIn, &userHeaderSize);
+        assert(userHeaderSize == (strlen(userHeaderStringIn)-1)/4+1);
+        userHeaderStringOut = userHeaderToString(userHeader, userHeaderSize);
+        assert(!strcmp(userHeaderStringIn, userHeaderStringOut));
+        free(userHeader);
+        free(userHeaderStringOut);
+    }
     // test stringToVerticalDatumInfo() and verticalDatumInfoToString()
     {
         verticalDatumInfo vdi;
@@ -199,30 +213,15 @@ void main (int argc, char *argv[]) {
         zquery("VDOW", "", 0, &intVal);
         assert(intVal == FALSE);
     }
-    // test stringToUserHeader() and userHeaderToString()
-    {
-        int  *userHeader;
-        int   userHeaderSize;
-        char *userHeaderStringIn;
-        char *userHeaderStringOut;
-        userHeaderStringIn = "This is a test string for the user header ";
-        userHeader = stringToUserHeader(userHeaderStringIn, &userHeaderSize);
-        assert(userHeaderSize == (strlen(userHeaderStringIn)-1)/4+1);
-        userHeaderStringOut = userHeaderToString(userHeader, userHeaderSize);
-        assert(!strcmp(userHeaderStringIn, userHeaderStringOut));
-        free(userHeader);
-        free(userHeaderStringOut);
-    }
     // test storing and retriving time series data
     {
         long long ifltab[250];
         int status;
         zStructTimeSeries *tss = NULL;
-        verticalDatumInfo vdi;
         char *errmsg;
-        char *filename    = "v7.dss";
-        char *pathnames[2][2] = {{"//TestLoc/Elev//1Hour/TestDoubles/",    "//TestLoc/Elev//1Hour/TestFloats/"},
-                                 {"//TestLoc/Elev//Ir-Month/TestDoubles/", "//TestLoc/Elev//Ir-Month/Floats/"}};
+        char *filename[]      = {"v6.dss", "v7.dss"};
+        char *pathnames[2][2] = {{"//TestLoc/Elev//1Hour/Doubles/",    "//TestLoc/Elev//1Hour/Floats/"},
+                                 {"//TestLoc/Elev//Ir-Month/Doubles/", "//TestLoc/Elev//Ir-Month/Floats/"}};
         double dvalues[3][6]  = {{1000,1001,1002,1003,1004,1005},                           // ft
                                  {304.8,305.1048,305.4096,305.7144,306.0192,306.324},       // m
                                  {1000,1001,1002,1003,1004,1005}};                          // cfs
@@ -278,256 +277,272 @@ void main (int argc, char *argv[]) {
         //
         // loop variables
         //
-        // i = xml blocks
+        // i = DSS file version
+        //     0 = DSS 6
+        //     1 = DSS 7
+        //
+        // j = xml blocks
         //     0 = NGVD-29 native
         //     1 = OTHER native with local datum named "Pensacola"
         //
-        // j = vertical datum
+        // k = vertical datum
         //     0 = NAVD-88
         //     1 = NGVD-29
         //     2 = OTHER (Pensacola)
-        //     j2  (j + 1) % 3
-        //     j3  (j + 2) % 3
+        //     k2  (k + 1) % 3
+        //     k3  (k + 2) % 3
         //
-        // k = data units
+        // l = data units
         //     0 = ft
         //     1 = m
         //     2 = cfs (invalid for datum conversion)
         //
-        // l = vertical datum specification method
+        // m = vertical datum specification method
         //     0 = set default with zset
         //     1 = 0 plus override with user header
         //     2 = 1 plus override with unit spec
         //
-        // m = time series type
+        // n = time series type
         //     0 = regular time series
         //     1 = irregular time series
         //
-        // n = data value type
+        // o = data value type
         //     0 = doubles
         //     1 = floats 
         //
-        // o = put vertical datum in user header? (false tests correct retrieval
+        // p = put vertical datum in user header? (false tests correct retrieval
         //     of vertical datum info from location record)
         //     0 = true
         //     1 = false
         zset("MLVL", "", 0);
-        for (int i = 0; i < xml_count; ++i) {
-            for (int j = 0; j < verticalDatumCount; ++j) {
-                int j2 = (j+1) % verticalDatumCount;
-                int j3 = (j+2) % verticalDatumCount;
-                for (int k = 0; k < unitCount; ++ k) {
-                    for (int l = 0; l < 3; ++l) {
-                        for (int m = 0; m < 2; ++m) {
+        for (int i = 0; i < 2; ++i) {
+            for (int j = 0; j < xml_count; ++j) {
+                for (int k = 0; k < verticalDatumCount; ++k) {
+                    int k2 = (k+1) % verticalDatumCount;
+                    int k3 = (k+2) % verticalDatumCount;
+                    for (int l = 0; l < unitCount; ++ l) {
+                        for (int m = 0; m < 3; ++m) {
                             for (int n = 0; n < 2; ++n) {
                                 for (int o = 0; o < 2; ++o) {
-                                    //------------------------//
-                                    // create the time series //
-                                    //------------------------//
-                                    // fprintf(stderr, "%d\t%d\t%d\t%d\t%d\t%d\t%d\n", i,j,k,l,m,n,o);
-                                    status = zopen(ifltab, filename);
-                                    assert(status == STATUS_OKAY);
-                                    if (m == 0) {
-                                        if (n == 0) {
-                                            tss = zstructTsNewRegDoubles(
-                                                pathnames[m][n],
-                                                dvalues[k],
-                                                numberValues,
-                                                startDate[o],
-                                                startTime,
-                                                unit[k],
-                                                type);
+                                    for (int p = 0; p < 2; ++p) {
+                                        //------------------------//
+                                        // create the time series //
+                                        //------------------------//
+                                        // fprintf(stderr, "%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n", i,j,k,l,m,n,o,p);
+                                        if (i == 0) {
+                                            status = zopen6(ifltab, filename[i]);
                                         }
                                         else {
-                                            tss = zstructTsNewRegFloats(
-                                                pathnames[m][n],
-                                                fvalues[k],
-                                                numberValues,
-                                                startDate[o],
-                                                startTime,
-                                                unit[k],
-                                                type);
+                                            status = zopen7(ifltab, filename[i]);
                                         }
-                                    }
-                                    else {
+                                        assert(status == STATUS_OKAY);
                                         if (n == 0) {
-                                            tss = zstructTsNewIrregDoubles(
-                                                pathnames[m][n],
-                                                dvalues[k],
-                                                numberValues,
-                                                itimes[o],
-                                                60,
-                                                NULL,
-                                                unit[k],
-                                                type);
+                                            if (o == 0) {
+                                                tss = zstructTsNewRegDoubles(
+                                                    pathnames[n][o],
+                                                    dvalues[l],
+                                                    numberValues,
+                                                    startDate[p],
+                                                    startTime,
+                                                    unit[l],
+                                                    type);
+                                            }
+                                            else {
+                                                tss = zstructTsNewRegFloats(
+                                                    pathnames[n][o],
+                                                    fvalues[l],
+                                                    numberValues,
+                                                    startDate[p],
+                                                    startTime,
+                                                    unit[l],
+                                                    type);
+                                            }
                                         }
                                         else {
-                                            tss = zstructTsNewIrregFloats(
-                                                pathnames[m][n],
-                                                fvalues[k],
-                                                numberValues,
-                                                itimes[o],
-                                                60,
-                                                NULL,
-                                                unit[k],
-                                                type);
+                                            if (o == 0) {
+                                                tss = zstructTsNewIrregDoubles(
+                                                    pathnames[n][o],
+                                                    dvalues[l],
+                                                    numberValues,
+                                                    itimes[p],
+                                                    60,
+                                                    NULL,
+                                                    unit[l],
+                                                    type);
+                                            }
+                                            else {
+                                                tss = zstructTsNewIrregFloats(
+                                                    pathnames[n][o],
+                                                    fvalues[l],
+                                                    numberValues,
+                                                    itimes[p],
+                                                    60,
+                                                    NULL,
+                                                    unit[l],
+                                                    type);
+                                            }
                                         }
-                                    }
-                                    assert(tss != NULL);
-                                    //--------------------------------//        
-                                    // set the default vertical datum //
-                                    //--------------------------------//
-                                    int J = j;
-                                    zset("VDTM", verticalDatums[J], 0);
-                                    //------------------------------------------------//
-                                    // add the vertical datum info to the user header //
-                                    //------------------------------------------------//
-                                    errmsg = gzipAndEncode(&compressed, xml[i]);
-                                    assert(errmsg == NULL);
-                                    len = VERTICAL_DATUM_INFO_USER_HEADER_PARAM_LEN + strlen(compressed) + 1;
-                                    headerBuf = (char *)malloc(len+1);
-                                    memset(headerBuf, 0, len+1);
-                                    status = insertIntoDelimitedString(
-                                        &headerBuf, 
-                                        len+1, 
-                                        VERTICAL_DATUM_INFO_USER_HEADER_PARAM, 
-                                        compressed, 
-                                        ":",
-                                        FALSE,
-                                        ';');
-                                    assert(status == 0);
-                                    tss->userHeader = stringToUserHeader(headerBuf, &tss->userHeaderSize);
-                                    tss->userHeaderNumber = tss->userHeaderSize; 
-                                    tss->allocated[zSTRUCT_userHeader] = 1;
-                                    free(headerBuf);
-                                    if (l > 0) {
-                                        if (o == 0) {
-                                            //----------------------------------------------------------//
-                                            // override the default vertical datum with the user header //
-                                            //----------------------------------------------------------//
-                                            J = j2;
-                                            char *headerString = userHeaderToString(tss->userHeader, tss->userHeaderSize);
-                                            int headerLen = strlen(headerString);
-                                            status = insertIntoDelimitedString(
-                                                &headerString, 
-                                                headerLen, 
-                                                VERTICAL_DATUM_USER_HEADER_PARAM, 
-                                                verticalDatums[J], 
-                                                ":",
-                                                FALSE,
-                                                ';');
-                                            if (status != 0) {
-                                                headerLen += VERTICAL_DATUM_USER_HEADER_PARAM_LEN + strlen(verticalDatums[J]) + 3;
-                                                headerString = (char *)realloc(headerString, headerLen);
+                                        assert(tss != NULL);
+                                        //--------------------------------//        
+                                        // set the default vertical datum //
+                                        //--------------------------------//
+                                        int K = k;
+                                        zset("VDTM", verticalDatums[K], 0);
+                                        //------------------------------------------------//
+                                        // add the vertical datum info to the user header //
+                                        //------------------------------------------------//
+                                        errmsg = gzipAndEncode(&compressed, xml[j]);
+                                        assert(errmsg == NULL);
+                                        len = VERTICAL_DATUM_INFO_USER_HEADER_PARAM_LEN + strlen(compressed) + 1;
+                                        headerBuf = (char *)malloc(len+1);
+                                        memset(headerBuf, 0, len+1);
+                                        status = insertIntoDelimitedString(
+                                            &headerBuf, 
+                                            len+1, 
+                                            VERTICAL_DATUM_INFO_USER_HEADER_PARAM, 
+                                            compressed, 
+                                            ":",
+                                            FALSE,
+                                            ';');
+                                        assert(status == 0);
+                                        tss->userHeader = stringToUserHeader(headerBuf, &tss->userHeaderSize);
+                                        tss->userHeaderNumber = tss->userHeaderSize; 
+                                        tss->allocated[zSTRUCT_userHeader] = 1;
+                                        free(headerBuf);
+                                        if (m > 0) {
+                                            if (p == 0) {
+                                                //----------------------------------------------------------//
+                                                // override the default vertical datum with the user header //
+                                                //----------------------------------------------------------//
+                                                K = k2;
+                                                char *headerString = userHeaderToString(tss->userHeader, tss->userHeaderSize);
+                                                int headerLen = strlen(headerString);
                                                 status = insertIntoDelimitedString(
                                                     &headerString, 
                                                     headerLen, 
                                                     VERTICAL_DATUM_USER_HEADER_PARAM, 
-                                                    verticalDatums[J], 
+                                                    verticalDatums[K], 
                                                     ":",
                                                     FALSE,
                                                     ';');
-                                                assert(status == 0);
+                                                if (status != 0) {
+                                                    headerLen += VERTICAL_DATUM_USER_HEADER_PARAM_LEN + strlen(verticalDatums[K]) + 3;
+                                                    headerString = (char *)realloc(headerString, headerLen);
+                                                    status = insertIntoDelimitedString(
+                                                        &headerString, 
+                                                        headerLen, 
+                                                        VERTICAL_DATUM_USER_HEADER_PARAM, 
+                                                        verticalDatums[K], 
+                                                        ":",
+                                                        FALSE,
+                                                        ';');
+                                                    assert(status == 0);
+                                                }
+                                                tss->userHeader = stringToUserHeader(headerString, &tss->userHeaderSize);
+                                                tss->userHeaderNumber = tss->userHeaderSize;
                                             }
-                                            tss->userHeader = stringToUserHeader(headerString, &tss->userHeaderSize);
-                                            tss->userHeaderNumber = tss->userHeaderSize;
+                                            if (m > 1) {
+                                                //--------------------------------------------------------//
+                                                // override default and user header datums with unit spec //
+                                                //--------------------------------------------------------//
+                                                K = k3;
+                                                sprintf(unitSpec, "U=%s|V=%s", unit[l], verticalDatums[K]);
+                                                free(tss->units);
+                                                tss->units = mallocAndCopy(unitSpec);
+                                            }
                                         }
-                                        if (l > 1) {
-                                            //--------------------------------------------------------//
-                                            // override default and user header datums with unit spec //
-                                            //--------------------------------------------------------//
-                                            J = j3;
-                                            sprintf(unitSpec, "U=%s|V=%s", unit[k], verticalDatums[J]);
-                                            free(tss->units);
-                                            tss->units = mallocAndCopy(unitSpec);
-                                        }
-                                    }
-                                    //--------------------------------------------------------//
-                                    // store the time series in the overridden vertical datum //
-                                    //--------------------------------------------------------//
-                                    status = ztsStore(ifltab, tss, 0);
-                                    //-----------------------------------------------------------------------------//
-                                    // figure out whether the ztsStore should have succeeded, and test accordingly //
-                                    //-----------------------------------------------------------------------------//
-                                    if (!strstr(xml[i], verticalDatums[J])) {
-                                        assert(status != STATUS_OKAY);
-                                    }
-                                    else if (i == 1 && j+k+m+l+n+o == 0) {
-                                        // change of vertical datum information
-                                        assert(status != STATUS_OKAY);
-                                        zset("VDOW", "", TRUE);
+                                        //--------------------------------------------------------//
+                                        // store the time series in the overridden vertical datum //
+                                        //--------------------------------------------------------//
                                         status = ztsStore(ifltab, tss, 0);
-                                        assert(status == STATUS_OKAY);
-                                        zset("VDOW", "", FALSE);
-                                    }
-                                    else if (strcmp(unit[k], "ft") && strcmp(unit[k], "m")) {
-                                        sprintf(buf, "<native-datum>%s</native-datum>", verticalDatums[J]);
-                                        if (strstr(xml[i], buf)) {
-                                            assert(status == STATUS_OKAY);
+                                        //-----------------------------------------------------------------------------//
+                                        // figure out whether the ztsStore should have succeeded, and test accordingly //
+                                        //-----------------------------------------------------------------------------//
+                                        if (!strstr(xml[j], verticalDatums[K])) {
+                                            assert(status != STATUS_OKAY);
                                         }
-                                        else {
-                                            sprintf(buf, "<local-datum-name>%s</local-datum-name", verticalDatums[J]);
-                                            if (strstr(xml[i], buf)) {
+                                        else if (i == 1 && j == 1 && k+l+n+m+o+p == 0) {
+                                            // change of vertical datum information
+                                            assert(status != STATUS_OKAY);
+                                            zset("VDOW", "", TRUE);
+                                            status = ztsStore(ifltab, tss, 0);
+                                            assert(status == STATUS_OKAY);
+                                            zset("VDOW", "", FALSE);
+                                        }
+                                        else if (strcmp(unit[l], "ft") && strcmp(unit[l], "m")) {
+                                            sprintf(buf, "<native-datum>%s</native-datum>", verticalDatums[K]);
+                                            if (strstr(xml[j], buf)) {
                                                 assert(status == STATUS_OKAY);
                                             }
                                             else {
-                                                assert(status != STATUS_OKAY);
+                                                sprintf(buf, "<local-datum-name>%s</local-datum-name", verticalDatums[K]);
+                                                if (strstr(xml[j], buf)) {
+                                                    assert(status == STATUS_OKAY);
+                                                }
+                                                else {
+                                                    assert(status != STATUS_OKAY);
+                                                }
                                             }
-                                        }
-                                    }
-                                    else {
-                                        assert(status == STATUS_OKAY);
-                                    }
-                                    zclose(ifltab);
-                                    zstructFree(tss);
-                                    if (status == STATUS_OKAY) {
-                                        //------------------------------------------------------------//
-                                        // set the default vertical datum to the datum we stored with //
-                                        //------------------------------------------------------------//
-                                        zset("VDTM", verticalDatums[J], 0);
-                                        //--------------------------------------------------------//
-                                        // retrieve the time series in the default vertical datum //
-                                        //-------------------------------------------------------//
-                                        status = zopen(ifltab, filename);
-                                        assert(status == STATUS_OKAY);
-                                        tss = zstructTsNewTimes(
-                                            pathnames[m][n],
-                                            startDate[o],
-                                            startTime,
-                                            endDate[o],
-                                            endTime);
-                                        assert(tss != NULL);
-                                        status = ztsRetrieve(ifltab, tss, -1, 0, 1);
-                                        assert(status == STATUS_OKAY);
-                                        //------------------------------------------------------//
-                                        // compare the retrieved time seires to what was stored //
-                                        //------------------------------------------------------//
-                                        if (tss->numberValues != numberValues) {
-                                            fprintf(stderr, "Expected %d values, got %d\n", numberValues, tss->numberValues);
-                                        }
-                                        assert(tss->numberValues == numberValues);
-                                        if (n == 0) {
-                                            assert(tss->doubleValues != NULL);
                                         }
                                         else {
-                                            assert(tss->floatValues != NULL);
-                                        }
-                                        for (int ii = 0; ii < tss->numberValues; ++ii) {
-                                            if (n == 0) {
-                                                if (tss->doubleValues[ii] != dvalues[k][ii]) {
-                                                    fprintf(stderr, "%f != %f\n", tss->doubleValues[ii], dvalues[k][ii]);
-                                                }
-                                                assert(tss->doubleValues[ii] == dvalues[k][ii]);
-                                            }
-                                            else {
-                                                if (tss->floatValues[ii] != fvalues[k][ii]) {
-                                                    fprintf(stderr, "%f != %f\n", tss->floatValues[ii], fvalues[k][ii]);
-                                                }
-                                                assert(tss->floatValues[ii] == fvalues[k][ii]);
-                                            }
+                                            assert(status == STATUS_OKAY);
                                         }
                                         zclose(ifltab);
                                         zstructFree(tss);
+                                        if (status == STATUS_OKAY) {
+                                            //------------------------------------------------------------//
+                                            // set the default vertical datum to the datum we stored with //
+                                            //------------------------------------------------------------//
+                                            zset("VDTM", verticalDatums[K], 0);
+                                            //--------------------------------------------------------//
+                                            // retrieve the time series in the default vertical datum //
+                                            //-------------------------------------------------------//
+                                            if (i == 0) {
+                                                status = zopen6(ifltab, filename[i]);
+                                            }
+                                            else {
+                                                status = zopen7(ifltab, filename[i]);
+                                            }
+                                            assert(status == STATUS_OKAY);
+                                            tss = zstructTsNewTimes(
+                                                pathnames[n][o],
+                                                startDate[p],
+                                                startTime,
+                                                endDate[p],
+                                                endTime);
+                                            assert(tss != NULL);
+                                            status = ztsRetrieve(ifltab, tss, -1, 0, 1);
+                                            assert(status == STATUS_OKAY);
+                                            //------------------------------------------------------//
+                                            // compare the retrieved time seires to what was stored //
+                                            //------------------------------------------------------//
+                                            if (tss->numberValues != numberValues) {
+                                                fprintf(stderr, "Expected %d values, got %d\n", numberValues, tss->numberValues);
+                                            }
+                                            assert(tss->numberValues == numberValues);
+                                            if (o == 0) {
+                                                assert(tss->doubleValues != NULL);
+                                            }
+                                            else {
+                                                assert(tss->floatValues != NULL);
+                                            }
+                                            for (int ii = 0; ii < tss->numberValues; ++ii) {
+                                                if (o == 0) {
+                                                    if (tss->doubleValues[ii] != dvalues[l][ii]) {
+                                                        fprintf(stderr, "%f != %f\n", tss->doubleValues[ii], dvalues[l][ii]);
+                                                    }
+                                                    assert(tss->doubleValues[ii] == dvalues[l][ii]);
+                                                }
+                                                else {
+                                                    if (tss->floatValues[ii] != fvalues[l][ii]) {
+                                                        fprintf(stderr, "%f != %f\n", tss->floatValues[ii], fvalues[l][ii]);
+                                                    }
+                                                    assert(tss->floatValues[ii] == fvalues[l][ii]);
+                                                }
+                                            }
+                                            zclose(ifltab);
+                                            zstructFree(tss);
+                                        }
                                     }
                                 }
                             }
@@ -537,6 +552,344 @@ void main (int argc, char *argv[]) {
             }
         }
     }
+    // test storing and retrieving paired data
+    {
+        long long ifltab[250];
+        zStructPairedData *pds;
+        int    status;
+        char  *errmsg;
+        char  *filename[2]      = {"v6.dss", "v7.dss"};
+        char  *pathnames[2][2]  = {{"//TestLoc/Stage-Elev///Doubles/", "//TestLoc/Stage-Elev///Floats/"},
+                                   {"//TestLoc/Elev-Stage///Doubles/", "//TestLoc/Elev-Stage///Floats/"}};
+        char  *type             = "Linear";
+        char  *unit[]           = {"ft", "m", "cfs"};
+        double dordinates[3][6] = {{1000,1001,1002,1003,1004,1005},                           // ft
+                                   {304.8,305.1048,305.4096,305.7144,306.0192,306.324},       // m
+                                   {1000,1001,1002,1003,1004,1005}};                          // cfs
+        double dvalues[3][6]    = {{1000,1001,1002,1003,1004,1005},                           // ft
+                                   {304.8,305.1048,305.4096,305.7144,306.0192,306.324},       // m
+                                   {1000,1001,1002,1003,1004,1005}};                          // cfs
+        float  fordinates[3][6] = {{1000.f,1001.f,1002.f,1003.f,1004.f,1005.f},               // ft
+                                   {304.8f,305.1048f,305.4096f,305.7144f,306.0192f,306.324f}, // m
+                                   {1000.f,1001.f,1002.f,1003.f,1004.f,1005.f}};              // cfs
+        float  fvalues[3][6]    = {{1000.f,1001.f,1002.f,1003.f,1004.f,1005.f},               // ft
+                                   {304.8f,305.1048f,305.4096f,305.7144f,306.0192f,306.324f}, // m
+                                   {1000.f,1001.f,1002.f,1003.f,1004.f,1005.f}};              // cfs
+        int    numberOrdinates   = 6;
+        int    numberCurves      = 1;
+        char  *compressed   = NULL;
+        char  *headerBuf    = NULL;
+        int    len          = 0;
+        char   buf[80];
+        char   unitSpec[24];
+        char *xml[]       = {
+            "<vertical-datum-info unit=\"ft\">\n"
+            "  <native-datum>NGVD-29</native-datum>\n"
+            "  <elevation>615.2</elevation>\n"
+            "  <offset estimate=\"true\">\n"
+            "    <to-datum>NAVD-88</to-datum>\n"
+            "    <value>0.3855</value>\n"
+            "  </offset>\n"
+            "</vertical-datum-info>\n",
 
+            "<vertical-datum-info unit=\"ft\">\n"
+            "  <native-datum>OTHER</native-datum>\n"
+            "  <local-datum-name>Pensacola</local-datum-name>\n"
+            "  <elevation>757</elevation>\n"
+            "  <offset estimate=\"true\">\n"
+            "    <to-datum>NAVD-88</to-datum>\n"
+            "    <value>1.457</value>\n"
+            "  </offset>\n"
+            "  <offset estimate=\"false\">\n"
+            "    <to-datum>NGVD-29</to-datum>\n"
+            "    <value>1.07</value>\n"
+            "  </offset>\n"
+            "</vertical-datum-info>\n"
+        };
+        char *verticalDatums[] = {
+            CVERTICAL_DATUM_NAVD88,
+            CVERTICAL_DATUM_NGVD29,
+            "Pensacola"
+        };
+        int unitCount = sizeof(unit) / sizeof(unit[0]);
+        int xml_count = sizeof(xml) / sizeof(xml[0]);
+        int verticalDatumCount = sizeof(verticalDatums) / sizeof(verticalDatums[0]);
+        //
+        // loop variables
+        //
+        // i = DSS file version
+        //     0 = DSS 6
+        //     1 = DSS 7
+        //
+        // j = xml blocks
+        //     0 = NGVD-29 native
+        //     1 = OTHER native with local datum named "Pensacola"
+        //
+        // k = vertical datum
+        //     0 = NAVD-88
+        //     1 = NGVD-29
+        //     2 = OTHER (Pensacola)
+        //     k2  (k + 1) % 3
+        //     k3  (k + 2) % 3
+        //
+        // l = data units
+        //     0 = ft
+        //     1 = m
+        //     2 = cfs (invalid for datum conversion)
+        //
+        // m = vertical datum specification method
+        //     0 = set default with zset
+        //     1 = 0 plus override with user header
+        //     2 = 1 plus override with unit spec
+        //
+        // n = elevation param position
+        //     0 = dependent parameter
+        //     1 = independent parameter
+        //
+        // o = data value type
+        //     0 = doubles
+        //     1 = floats 
+        //
+        // p = put vertical datum in user header? (false tests correct retrieval
+        //     of vertical datum info from location record)
+        //     0 = true
+        //     1 = false
+        zset("MLVL", "", 0);
+        for (int i = 0; i < 2; ++i) {
+            for (int j = 0; j < xml_count; ++j) {
+                for (int k = 0; k < verticalDatumCount; ++k) {
+                    int k2 = (k+1) % verticalDatumCount;
+                    int k3 = (k+2) % verticalDatumCount;
+                    for (int l = 0; l < unitCount; ++ l) {
+                        for (int m = 0; m < 3; ++m) {
+                            for (int n = 0; n < 2; ++n) {
+                                for (int o = 0; o < 2; ++o) {
+                                    for (int p = 0; p < 2; ++p) {
+                                        //------------------------//
+                                        // create the paired data //
+                                        //------------------------//
+                                        // fprintf(stderr, "%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n", i,j,k,l,m,n,o,p);
+                                        if (i == 0) {
+                                            status = zopen6(ifltab, filename[i]);
+                                        }
+                                        else {
+                                            status = zopen7(ifltab, filename[i]);
+                                        }
+                                        assert(status == STATUS_OKAY);
+                                        if (o == 0) {
+                                            pds = zstructPdNewDoubles(
+                                                pathnames[n][o],
+                                                dordinates[l],
+                                                dvalues[l],
+                                                numberOrdinates,
+                                                numberCurves,
+                                                unit[l],
+                                                type,
+                                                unit[l],
+                                                type);
+                                        }
+                                        else {
+                                            pds = zstructPdNewFloats(
+                                                pathnames[n][o],
+                                                fordinates[l],
+                                                fvalues[l],
+                                                numberOrdinates,
+                                                numberCurves,
+                                                unit[l],
+                                                type,
+                                                unit[l],
+                                                type);
+                                        }
+                                        assert(pds != NULL);
+                                        //--------------------------------//        
+                                        // set the default vertical datum //
+                                        //--------------------------------//
+                                        int K = k;
+                                        zset("VDTM", verticalDatums[K], 0);
+                                        //------------------------------------------------//
+                                        // add the vertical datum info to the user header //
+                                        //------------------------------------------------//
+                                        errmsg = gzipAndEncode(&compressed, xml[j]);
+                                        assert(errmsg == NULL);
+                                        len = VERTICAL_DATUM_INFO_USER_HEADER_PARAM_LEN + strlen(compressed) + 1;
+                                        headerBuf = (char *)malloc(len+1);
+                                        memset(headerBuf, 0, len+1);
+                                        status = insertIntoDelimitedString(
+                                            &headerBuf, 
+                                            len+1, 
+                                            VERTICAL_DATUM_INFO_USER_HEADER_PARAM, 
+                                            compressed, 
+                                            ":",
+                                            FALSE,
+                                            ';');
+                                        assert(status == 0);
+                                        pds->userHeader = stringToUserHeader(headerBuf, &pds->userHeaderNumber);
+                                        pds->userHeaderNumber = pds->userHeaderNumber; 
+                                        pds->allocated[zSTRUCT_userHeader] = 1;
+                                        free(headerBuf);
+                                        if (m > 0) {
+                                            if (p == 0) {
+                                                //----------------------------------------------------------//
+                                                // override the default vertical datum with the user header //
+                                                //----------------------------------------------------------//
+                                                K = k2;
+                                                char *headerString = userHeaderToString(pds->userHeader, pds->userHeaderNumber);
+                                                int headerLen = strlen(headerString);
+                                                status = insertIntoDelimitedString(
+                                                    &headerString, 
+                                                    headerLen, 
+                                                    VERTICAL_DATUM_USER_HEADER_PARAM, 
+                                                    verticalDatums[K], 
+                                                    ":",
+                                                    FALSE,
+                                                    ';');
+                                                if (status != 0) {
+                                                    headerLen += VERTICAL_DATUM_USER_HEADER_PARAM_LEN + strlen(verticalDatums[K]) + 3;
+                                                    headerString = (char *)realloc(headerString, headerLen);
+                                                    status = insertIntoDelimitedString(
+                                                        &headerString, 
+                                                        headerLen, 
+                                                        VERTICAL_DATUM_USER_HEADER_PARAM, 
+                                                        verticalDatums[K], 
+                                                        ":",
+                                                        FALSE,
+                                                        ';');
+                                                    assert(status == 0);
+                                                }
+                                                pds->userHeader = stringToUserHeader(headerString, &pds->userHeaderNumber);
+                                            }
+                                            if (m > 1) {
+                                                //--------------------------------------------------------//
+                                                // override default and user header datums with unit spec //
+                                                //--------------------------------------------------------//
+                                                K = k3;
+                                                sprintf(unitSpec, "U=%s|V=%s", unit[l], verticalDatums[K]);
+                                                if (n == 0) {
+                                                    free(pds->unitsDependent);
+                                                    pds->unitsDependent = mallocAndCopy(unitSpec);
+                                                }
+                                                else {
+                                                    free(pds->unitsIndependent);
+                                                    pds->unitsIndependent = mallocAndCopy(unitSpec);
+                                                }
+                                            }
+                                        }
+                                        //--------------------------------------------------------//
+                                        // store the paired data in the overridden vertical datum //
+                                        //--------------------------------------------------------//
+                                        status = zpdStore(ifltab, pds, 0);
+                                        //-----------------------------------------------------------------------------//
+                                        // figure out whether the zpdStore should have succeeded, and test accordingly //
+                                        //-----------------------------------------------------------------------------//
+                                        assert(status == STATUS_OKAY);
+                                        // if (!strstr(xml[i], verticalDatums[J])) {
+                                        //     assert(status != STATUS_OKAY);
+                                        // }
+                                        // else if (i == 1 && j+k+m+l+n+o == 0) {
+                                        //     // change of vertical datum information
+                                        //     assert(status != STATUS_OKAY);
+                                        //     zset("VDOW", "", TRUE);
+                                        //     status = zpdStore(ifltab, pds, 0);
+                                        //     assert(status == STATUS_OKAY);
+                                        //     zset("VDOW", "", FALSE);
+                                        // }
+                                        // else if (strcmp(unit[k], "ft") && strcmp(unit[k], "m")) {
+                                        //     sprintf(buf, "<native-datum>%s</native-datum>", verticalDatums[J]);
+                                        //     if (strstr(xml[i], buf)) {
+                                        //         assert(status == STATUS_OKAY);
+                                        //     }
+                                        //     else {
+                                        //         sprintf(buf, "<local-datum-name>%s</local-datum-name", verticalDatums[J]);
+                                        //         if (strstr(xml[i], buf)) {
+                                        //             assert(status == STATUS_OKAY);
+                                        //         }
+                                        //         else {
+                                        //             assert(status != STATUS_OKAY);
+                                        //         }
+                                        //     }
+                                        // }
+                                        // else {
+                                        //     assert(status == STATUS_OKAY);
+                                        // }
+                                        zclose(ifltab);
+                                        zstructFree(pds);
+                                        if (status == STATUS_OKAY) {
+                                            //------------------------------------------------------------//
+                                            // set the default vertical datum to the datum we stored with //
+                                            //------------------------------------------------------------//
+                                            zset("VDTM", verticalDatums[K], 0);
+                                            //--------------------------------------------------------//
+                                            // retrieve the time series in the default vertical datum //
+                                            //-------------------------------------------------------//
+                                            if (i == 0) {
+                                                status = zopen6(ifltab, filename[i]);
+                                            }
+                                            else {
+                                                status = zopen7(ifltab, filename[i]);
+                                            }
+                                            assert(status == STATUS_OKAY);
+                                            pds = zstructPdNew(pathnames[n][o]);
+                                            assert(pds != NULL);
+                                            status = zpdRetrieve(ifltab, pds, 0);
+                                            assert(status == STATUS_OKAY);
+                                            //------------------------------------------------------//
+                                            // compare the retrieved paired data to what was stored //
+                                            //------------------------------------------------------//
+                                            if (pds->numberOrdinates != numberOrdinates) {
+                                                fprintf(stderr, "Expected %d ordinates, got %d\n", numberOrdinates, pds->numberOrdinates);
+                                            }
+                                            assert(pds->numberOrdinates == numberOrdinates);
+                                            if (pds->numberCurves != numberCurves) {
+                                                fprintf(stderr, "Expected %d curves, got %d\n", numberCurves, pds->numberCurves);
+                                            }
+                                            assert(pds->numberCurves == numberCurves);
+                                            if (o == 0) {
+                                                assert(pds->doubleOrdinates != NULL);
+                                                assert(pds->doubleValues != NULL);
+                                            }
+                                            else {
+                                                assert(pds->floatOrdinates != NULL);
+                                                assert(pds->floatValues != NULL);
+                                            }
+                                            if (o == 0) {
+                                                for (int ii = 0; ii < pds->numberOrdinates; ++ii) {
+                                                    if (pds->doubleOrdinates[ii] != dordinates[l][ii]) {
+                                                        fprintf(stderr, "ordinate %f != %f\n", pds->doubleOrdinates[ii], dordinates[l][ii]);
+                                                    }
+                                                    assert(pds->doubleOrdinates[ii] == dordinates[l][ii]);
+                                                }
+                                                for (int ii = 0; ii < pds->numberCurves * pds->numberOrdinates; ++ii) {
+                                                    if (pds->doubleValues[ii] != dvalues[l][ii]) {
+                                                        fprintf(stderr, "value %f != %f\n", pds->doubleOrdinates[ii], dordinates[l][ii]);
+                                                    }
+                                                    assert(pds->doubleValues[ii] == dvalues[l][ii]);
+                                                }
+                                            }
+                                            else {
+                                                for (int ii = 0; ii < pds->numberOrdinates; ++ii) {
+                                                    if (pds->floatOrdinates[ii] != fordinates[l][ii]) {
+                                                        fprintf(stderr, "ordinate %f != %f\n", pds->floatOrdinates[ii], fordinates[l][ii]);
+                                                    }
+                                                    assert(pds->floatOrdinates[ii] == fordinates[l][ii]);
+                                                }
+                                                for (int ii = 0; ii < pds->numberCurves * pds->numberOrdinates; ++ii) {
+                                                    if (pds->floatValues[ii] != fvalues[l][ii]) {
+                                                        fprintf(stderr, "value %f != %f\n", pds->floatValues[ii], fvalues[l][ii]);
+                                                    }
+                                                    assert(pds->floatValues[ii] == fvalues[l][ii]);
+                                                }
+                                            }
+                                            zclose(ifltab);
+                                            zstructFree(pds);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+   }
     exit(0);
 }
