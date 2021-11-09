@@ -91,6 +91,9 @@ int zwriteDisk (int ihandle, int iswap, long long address, void *iarray, int num
 		}
 		return status;
 	}
+#elif __APPLE__
+    jpos = lseek(ihandle, address, 0);
+    status = ((jpos == -1) ? -3 : 0);
 #else
 	jpos = lseek64(ihandle, address, 0);
 	status = ((jpos == -1) ? -3 : 0);

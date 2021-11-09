@@ -81,6 +81,8 @@ int zreadDisk (int ihandle, int iswap, long long address, void *iarray, int numb
 
 #ifdef _MSC_VER
 	jpos = _lseeki64(ihandle, address, 0);
+#elif __APPLE__
+    jpos = lseek(ihandle, address, 0);
 #else
 	jpos = lseek64(ihandle, address, 0);
 #endif

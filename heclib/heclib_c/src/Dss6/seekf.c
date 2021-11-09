@@ -17,6 +17,8 @@ seekf64_ (int *ihandl, int *iorigin, long long*iofset, long long*ipos, int *ista
 {
 #ifdef _MSC_VER
     *ipos = _lseeki64(*ihandl, *iofset, *iorigin);
+#elif __APPLE__
+    *ipos = lseek(*ihandl, *iofset, *iorigin);
 #else
 	*ipos = lseek64(*ihandl, *iofset, *iorigin);
 #endif

@@ -66,16 +66,30 @@ void lockdss_(int *ihandle, int *mode, int *position, int *nbytes, int *istat)
 
 void lockdss_(int *ihandle, int *mode, int *position, int *nbytes, int *istat)
 {
-	off64_t lbytes;
-	off64_t lposition;
+    #ifdef __APPLE__
+	off_t lbytes;
+	off_t lposition;
+    #else
+    off64_t lbytes;
+    off64_t lposition;
+    #endif
 	long newPosition;
 	/*   extern char *sys_errlist[];
 	extern int errno;  */
 
-	lbytes = (off64_t)*nbytes;
-	lposition = (off64_t)*position;
+    #ifdef __APPLE__
+	lbytes = (off_t)*nbytes;
+	lposition = (off_t)*position;
+    #else
+    lbytes = (off64_t)*nbytes;
+    lposition = (off64_t)*position;
+    #endif
 
-	newPosition = lseek64(*ihandle, lposition, SEEK_SET);
+    #ifdef __APPLE__
+	newPosition = lseek(*ihandle, lposition, SEEK_SET);
+    #else
+    newPosition = lseek64(*ihandle, lposition, SEEK_SET);
+    #endif
 	if (newPosition < 0) {
 		*istat = -1;
 		return;
@@ -84,20 +98,36 @@ void lockdss_(int *ihandle, int *mode, int *position, int *nbytes, int *istat)
 	switch (*mode) {
 
 	case UNLOCK:
-		*istat = lockf64(*ihandle, F_ULOCK, lbytes);
+        #ifdef __APPLE__
+        *istat = lockf(*ihandle, F_ULOCK, lbytes);
+        #else
+        *istat = lockf64(*ihandle, F_ULOCK, lbytes);
+        #endif
 		break;
 
 	case LOCK_WAIT:
-		*istat = lockf64(*ihandle, F_LOCK, lbytes);
+        #ifdef __APPLE__
+        *istat = lockf(*ihandle, F_LOCK, lbytes);
+        #else
+        *istat = lockf64(*ihandle, F_LOCK, lbytes);
+        #endif
 		if (*istat) printf("\nError: Lock Failed:\n");
 		break;
 
 	case LOCK_NOWAIT:
-		*istat = lockf64(*ihandle, F_TLOCK, lbytes);
+        #ifdef __APPLE__
+		*istat = lockf(*ihandle, F_TLOCK, lbytes);
+        #else
+        *istat = lockf64(*ihandle, F_TLOCK, lbytes);
+        #endif
 		break;
 
 	case TEST_LOCK:
-		*istat = lockf64(*ihandle, F_TEST, lbytes);
+        #ifdef __APPLE__
+		*istat = lockf(*ihandle, F_TEST, lbytes);
+        #else
+        *istat = lockf64(*ihandle, F_TEST, lbytes);
+        #endif
 		break;
 
 	default:
