@@ -347,19 +347,19 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 	char cPart[65];
 	zpathnameGetPart(tss->pathname, 3, cPart, sizeof(cPart));
 	if (!strncasecmp(cPart, "ELEV", 4) && (tss->floatValues || tss->doubleValues)) {
-		//--------------------------------------------------------//
+		//------------------------------------------------------//
 		// see if we have one or more verticalDatumInfo objects //
-		//--------------------------------------------------------//
+		//------------------------------------------------------//
 		verticalDatumInfo *vdi;
 		verticalDatumInfo *vdiTs  = NULL;
 		verticalDatumInfo *vdiLoc = NULL;
 		verticalDatumInfo _vdiTs;
 		verticalDatumInfo _vdiLoc;
-		//------------------------------------------------------//
-		// get the info from the time series struct user header //
-		//------------------------------------------------------//
+		//------------------------------//
+		// get the info from the header //
+		//------------------------------//
 		vdiTs = extractVerticalDatumInfoFromUserHeader(tss->userHeader, tss->userHeaderSize);
-		if (tss->locationStruct && tss->locationStruct->supplemental) {
+		if (!vdiTs && tss->locationStruct && tss->locationStruct->supplemental) {
 			//------------------------------------------------------------------------------//
 			// none in the user header, see if any is passed in in embedded location struct //
 			//------------------------------------------------------------------------------//

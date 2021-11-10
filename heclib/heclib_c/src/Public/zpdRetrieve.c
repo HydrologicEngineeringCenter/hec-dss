@@ -6,7 +6,7 @@
 #include "zdssMessages.h"
 #include "heclib.h"
 #include "zerrorCodes.h"
-
+#include "verticalDatum.h"
 
 
 /**
@@ -220,10 +220,42 @@ int zpdRetrieve(long long *ifltab, zStructPairedData *pds, int retrieveSizeFlag)
 		return zerrorProcessing(ifltab, DSS_FUNCTION_zpdRetrieve_ID, zdssErrorCodes.NULL_PATHNAME,
 			0, 0, zdssErrorSeverity.INVALID_ARGUMENT, "", "zStructPairedData pathname is null");
 	}
-
+	int version = zgetVersion(ifltab);
+	int indElev = FALSE;
+	int depElev = FALSE;
+	char cPart[65];
+	char strtokBuf[65];
+	char cvertical_datum[CVERTICAL_DATUM_SIZE];
+	int  ivertical_datum = IVERTICAL_DATUM_UNSET;
+	int  ivertical_datum2;
+	verticalDatumInfo _vdi;
+	verticalDatumInfo *vdi = NULL;
+	char errmsg[1024];
+	zpathnameGetPart(pds->pathname, 3, cPart, sizeof(cPart));
+	char *cp = strtok_r(cPart, "-", (char **)&strtokBuf);
+	if (!strncasecmp(cp, "ELEV", 4)) {
+		indElev = TRUE;
+	}
+	else {
+		cp = strtok_r(NULL, "-", (char **)&strtokBuf);
+		if (cp && !strncasecmp(cp, "ELEV", 4)) {
+			depElev = TRUE;
+		}
+	}
+	if (indElev || depElev) {
+		zquery("VDTM", cvertical_datum, sizeof(cvertical_datum), &ivertical_datum);
+	}
 	//  Check for correct DSS Version
-	if (zgetVersion(ifltab) != 7) {
-		return zpdRetrieve6(ifltab, pds, retrieveSizeFlag);
+	if (version != 7) {
+		status = zpdRetrieve6(ifltab, pds, retrieveSizeFlag);
+		if (ivertical_datum != IVERTICAL_DATUM_UNSET) {
+			vdi = extractVerticalDatumInfoFromUserHeader(pds->userHeader, pds->userHeaderNumber);
+			if (vdi) {
+
+				free(vdi);
+			}
+		}
+		return status;
 	}
 
 	//  Messages and debug

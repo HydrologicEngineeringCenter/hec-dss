@@ -1053,8 +1053,10 @@ C     Vertical Datums (same order as java DataContainer)
       DATA  CVD_NAVD88 /'NAVD-88'/, IVD_NAVD88 /1/  
       DATA  CVD_NGVD29 /'NGVD-29'/, IVD_NGVD29 /2/   
       DATA  CVD_OTHER  /'OTHER'  /, IVD_OTHER  /3/ 
-      DATA  CVD_LOCAL  /'OTHER'  /, IVD_LOCAL  /3/ 
-
+      DATA  CVD_LOCAL  /'OTHER'  /, IVD_LOCAL  /3/
+      
+      DATA VERTICAL_DATUM_INFO_PARAM /'verticalDatumInfo'/
+      DATA UNDEFINED_VERTICAL_DATUM_VALUE /-3.4028234663852886e+38/
 C
 C
 C     Variables for INTEGER*6 on Harris

@@ -99,6 +99,20 @@ double getOffset(double offset, const char *offsetUnit, const char *_dataUnit) {
         return UNDEFINED_VERTICAL_DATUM_VALUE;
     }
 }
+void getoffset_(
+        double *offset,
+        const char *offsetUnit, 
+        const char *dataUnit,
+        slen_t lenOffsetUnit,
+        slen_t lenDataUnit) {
+
+    char *cOffsetUnit = (char *)malloc(lenOffsetUnit+1);
+    char *cDataUnit   = (char *)malloc(lenDataUnit+1);
+    F2C(offsetUnit, cOffsetUnit, lenOffsetUnit, lenOffsetUnit+1);
+    F2C(dataUnit, cDataUnit, lenDataUnit, lenDataUnit+1);
+    *offset = getOffset(*offset, cOffsetUnit, cDataUnit);
+}
+
 const char *strcasestr(const char *haystack, const char *needle) {
     int   haystackLen = strlen(haystack);
     int   needleLen = strlen(needle);
@@ -668,12 +682,12 @@ char *validateXmlStructure(const char *xml) {
 // See verticalDatum.h for documentation
 //
 char *stringToVerticalDatumInfo(verticalDatumInfo *vdi, const char *inputStr) {
-    char *errmsg = NULL;
-    char *xml1;
-    char *xml;
-    char  offsetBuf[2][128];
-    int   freeXml1;
-    float ftmp;
+    char  *errmsg = NULL;
+    char  *xml1;
+    char  *xml;
+    char   offsetBuf[2][128];
+    int    freeXml1;
+    double dtmp;
     textBoundaryInfo tbi;
  
     vdi->elevation = UNDEFINED_VERTICAL_DATUM_VALUE;
@@ -747,11 +761,11 @@ char *stringToVerticalDatumInfo(verticalDatumInfo *vdi, const char *inputStr) {
     strncpy(vdi->nativeDatum, tbi.firstNonBlank, MIN(tbi.lenNonBlank, sizeof(vdi->nativeDatum)-1));
     if (!strcmp(vdi->nativeDatum, CVERTICAL_DATUM_NAVD88)) {
         vdi->offsetToNavd88 = 0.f;
-        vdi->offsetToNavd88IsEstimate = 0;
+        vdi->offsetToNavd88IsEstimate = FALSE;
     }
     else if (!strcmp(vdi->nativeDatum, CVERTICAL_DATUM_NGVD29)) {
         vdi->offsetToNgvd29 = 0.f;
-        vdi->offsetToNgvd29IsEstimate = 0;
+        vdi->offsetToNgvd29IsEstimate = FALSE;
     }
     else if (!strcmp(vdi->nativeDatum, CVERTICAL_DATUM_OTHER)) {
         //---------------------------------------//
@@ -774,9 +788,9 @@ char *stringToVerticalDatumInfo(verticalDatumInfo *vdi, const char *inputStr) {
     errmsg = findTextBetween(&tbi, xml, "<elevation>", "</elevation>");
     if (errmsg == NULL) {
         errno = 0;
-        ftmp = strtof(tbi.firstNonBlank, &tbi.lastNonBlank);
-        if (ftmp != 0.f || errno == 0) {
-            vdi->elevation = ftmp;
+        dtmp = strtod(tbi.firstNonBlank, &tbi.lastNonBlank);
+        if (dtmp != 0. || errno == 0) {
+            vdi->elevation = dtmp;
         }
         else {
             free(xml);
@@ -824,9 +838,9 @@ char *stringToVerticalDatumInfo(verticalDatumInfo *vdi, const char *inputStr) {
             return NO_NGVD_29_OFFSET_VALUE_IN_XML;
             }
             errno = 0;
-            ftmp = strtof(tbi.firstNonBlank, &tbi.lastNonBlank);
-            if (ftmp != 0.f || errno == 0) {
-                vdi->offsetToNgvd29 = ftmp;
+            dtmp = strtod(tbi.firstNonBlank, &tbi.lastNonBlank);
+            if (dtmp != 0.f || errno == 0) {
+                vdi->offsetToNgvd29 = dtmp;
             }
             else {
                 free(xml);
@@ -862,9 +876,9 @@ char *stringToVerticalDatumInfo(verticalDatumInfo *vdi, const char *inputStr) {
                 return NO_NAVD_88_OFFSET_VALUE_IN_XML;
             }
             errno = 0;
-            ftmp = strtof(tbi.firstNonBlank, &tbi.lastNonBlank);;
-            if (ftmp != 0.f || errno == 0) {
-                vdi->offsetToNavd88 = ftmp;
+            dtmp = strtod(tbi.firstNonBlank, &tbi.lastNonBlank);;
+            if (dtmp != 0.f || errno == 0) {
+                vdi->offsetToNavd88 = dtmp;
             }
             else {
                 free(xml);
@@ -878,10 +892,10 @@ char *stringToVerticalDatumInfo(verticalDatumInfo *vdi, const char *inputStr) {
                 return INVALID_NAVD_88_OFFSET_BLOCK_IN_XML;
             }
             if (!strncmp(tbi.firstNonBlank, "true", tbi.lenNonBlank)) {
-                vdi->offsetToNavd88IsEstimate = 1;
+                vdi->offsetToNavd88IsEstimate = TRUE;
             }
             else if (!strncmp(tbi.firstNonBlank, "false", tbi.lenNonBlank)) {
-                vdi->offsetToNavd88IsEstimate = 0;
+                vdi->offsetToNavd88IsEstimate = FALSE;
             }
             else {
                 free(xml);
@@ -917,13 +931,13 @@ char *verticalDatumInfoToString(char **results, verticalDatumInfo *vdi, int gene
     }
     while (*cp)++cp;
     if (vdi->elevation != UNDEFINED_VERTICAL_DATUM_VALUE) {
-        sprintf(cp, "  <elevation>%f</elevation>\n", vdi->elevation);
+        sprintf(cp, "  <elevation>%lf</elevation>\n", vdi->elevation);
         while (*cp)++cp;
     }
     if (vdi->offsetToNgvd29 != UNDEFINED_VERTICAL_DATUM_VALUE) {
         sprintf(
             cp,
-            "  <offset estimate=\"%s\">\n    <to-datum>NGVD-29</to-datum>\n    <value>%f</value>\n  </offset>\n",
+            "  <offset estimate=\"%s\">\n    <to-datum>NGVD-29</to-datum>\n    <value>%lf</value>\n  </offset>\n",
             vdi->offsetToNgvd29IsEstimate ? "true" : "false",
             vdi->offsetToNgvd29);
         while (*cp)++cp;
@@ -931,7 +945,7 @@ char *verticalDatumInfoToString(char **results, verticalDatumInfo *vdi, int gene
     if (vdi->offsetToNavd88 != UNDEFINED_VERTICAL_DATUM_VALUE) {
         sprintf(
             cp,
-            "  <offset estimate=\"%s\">\n    <to-datum>NAVD-88</to-datum>\n    <value>%f</value>\n  </offset>\n",
+            "  <offset estimate=\"%s\">\n    <to-datum>NAVD-88</to-datum>\n    <value>%lf</value>\n  </offset>\n",
             vdi->offsetToNavd88IsEstimate ? "true" : "false",
             vdi->offsetToNavd88);
         while (*cp)++cp;
@@ -987,119 +1001,120 @@ int	getEffectiveVerticalDatum(
         int   *userHeaderSize,
         char **unit) {
 
-        memset(cverticalDatum, 0, cverticalDatumSize);
-        if (cverticalDatumSize < CVERTICAL_DATUM_SIZE) {
-            return -1;
-        }
-        //----------------------------//
-        // first get the global value //
-        //----------------------------//
-        int iverticalDatum;
-		zquery("VDTM", cverticalDatum, cverticalDatumSize, &iverticalDatum);
-        //-----------------------------//
-        // next, check the user header //
-        //-----------------------------//
-        if (userHeader != NULL && *userHeader != NULL && *userHeaderSize > 0) {
-			char *userHeaderString = userHeaderToString(*userHeader, *userHeaderSize);
-            if (userHeaderString) {
-                char *verticalDatum = extractFromDelimitedString(
-                    &userHeaderString, 
-                    VERTICAL_DATUM_USER_HEADER_PARAM,
-                    ":",
-                    TRUE,
-                    TRUE, // this causes vertical datum to be removed from userHeaderString
-                    ';');
-                if (verticalDatum) {
-                    if (!strcasecmp(verticalDatum, CVERTICAL_DATUM_NAVD88)) {
-                        iverticalDatum = IVERTICAL_DATUM_NAVD88;
-                        strcpy(cverticalDatum, CVERTICAL_DATUM_NAVD88);
-                    }
-                    else if (!strcasecmp(verticalDatum, CVERTICAL_DATUM_NGVD29)) {
-                        iverticalDatum = IVERTICAL_DATUM_NGVD29;
-                        strcpy(cverticalDatum, CVERTICAL_DATUM_NGVD29);
-                    }
-                    else if (!strcasecmp(verticalDatum, CVERTICAL_DATUM_OTHER)) {
-                        iverticalDatum = IVERTICAL_DATUM_OTHER;
-                        strcpy(cverticalDatum, CVERTICAL_DATUM_OTHER);
-                    }
-                    else {
-                        iverticalDatum = IVERTICAL_DATUM_OTHER;
-                        strcpy(cverticalDatum, verticalDatum);
-                    }
-                    //---------------------------------------//
-                    // remove vertical datum from userHeader //
-                    //---------------------------------------//
-                    int newHeaderSize;
-                    *userHeader = stringToUserHeader(userHeaderString, &newHeaderSize);
-                    *userHeaderSize = newHeaderSize;
-                    free(verticalDatum);
-                }
-                free(userHeaderString);
-            }
-        }
-        //---------------------------------------//
-        // finally, check the unit specification //
-        //---------------------------------------//
-        if (unit != NULL && *unit != NULL) {
-            if (strchr(*unit, '|')) {
-                char  strtokBuf[256];
-                char *value;
-                char *unitValue = NULL;
-                char *verticalDatum = NULL;
-                char *unitSpec = mallocAndCopy(*unit);
-                char *key = strtok_r(unitSpec, "|=", (char **)&strtokBuf);
-                while (key) {
-                    value = strtok_r(NULL, "|=", (char **)&strtokBuf);
-                    if (!strcasecmp(key, "U")) {
-                        unitValue = value;
-                    }
-                    else if (!strcasecmp(key, "V")) {
-                        verticalDatum = value;
-                    }
-                    key = strtok_r(NULL, "|=", (char **)&strtokBuf);
-                }
-                if (unitValue) {
-                    //----------------------------------------------//
-                    // convert the unit spec to a simple unit value //
-                    //----------------------------------------------//
-                    free(*unit);
-                    *unit = mallocAndCopy(unitValue);
-                }
-                if (verticalDatum) {
-                    if (!strcasecmp(verticalDatum, CVERTICAL_DATUM_NAVD88)) {
-                        iverticalDatum = IVERTICAL_DATUM_NAVD88;
-                        strcpy(cverticalDatum, CVERTICAL_DATUM_NAVD88);
-                    }
-                    else if (!strcasecmp(verticalDatum, CVERTICAL_DATUM_NGVD29)) {
-                        iverticalDatum = IVERTICAL_DATUM_NGVD29;
-                        strcpy(cverticalDatum, CVERTICAL_DATUM_NGVD29);
-                    }
-                    else if (!strcasecmp(verticalDatum, CVERTICAL_DATUM_OTHER)) {
-                        iverticalDatum = IVERTICAL_DATUM_OTHER;
-                        strcpy(cverticalDatum, CVERTICAL_DATUM_OTHER);
-                    }
-                    else {
-                        iverticalDatum = IVERTICAL_DATUM_OTHER;
-                        strcpy(cverticalDatum, verticalDatum);
-                    }
-                }
-                free(unitSpec);
-			}
-        }
-        return iverticalDatum;
+    memset(cverticalDatum, 0, cverticalDatumSize);
+    if (cverticalDatumSize < CVERTICAL_DATUM_SIZE) {
+        return -1;
     }
+    //----------------------------//
+    // first get the global value //
+    //----------------------------//
+    int iverticalDatum;
+    zquery("VDTM", cverticalDatum, cverticalDatumSize, &iverticalDatum);
+    //-----------------------------//
+    // next, check the user header //
+    //-----------------------------//
+    if (userHeader != NULL && *userHeader != NULL && *userHeaderSize > 0) {
+        char *userHeaderString = userHeaderToString(*userHeader, *userHeaderSize);
+        if (userHeaderString) {
+            char *verticalDatum = extractFromDelimitedString(
+                &userHeaderString, 
+                VERTICAL_DATUM_USER_HEADER_PARAM,
+                ":",
+                TRUE,
+                TRUE, // this causes vertical datum to be removed from userHeaderString
+                ';');
+            if (verticalDatum) {
+                if (!strcasecmp(verticalDatum, CVERTICAL_DATUM_NAVD88)) {
+                    iverticalDatum = IVERTICAL_DATUM_NAVD88;
+                    strcpy(cverticalDatum, CVERTICAL_DATUM_NAVD88);
+                }
+                else if (!strcasecmp(verticalDatum, CVERTICAL_DATUM_NGVD29)) {
+                    iverticalDatum = IVERTICAL_DATUM_NGVD29;
+                    strcpy(cverticalDatum, CVERTICAL_DATUM_NGVD29);
+                }
+                else if (!strcasecmp(verticalDatum, CVERTICAL_DATUM_OTHER)) {
+                    iverticalDatum = IVERTICAL_DATUM_OTHER;
+                    strcpy(cverticalDatum, CVERTICAL_DATUM_OTHER);
+                }
+                else {
+                    iverticalDatum = IVERTICAL_DATUM_OTHER;
+                    strcpy(cverticalDatum, verticalDatum);
+                }
+                //---------------------------------------//
+                // remove vertical datum from userHeader //
+                //---------------------------------------//
+                int newHeaderSize;
+                *userHeader = stringToUserHeader(userHeaderString, &newHeaderSize);
+                *userHeaderSize = newHeaderSize;
+                free(verticalDatum);
+            }
+            free(userHeaderString);
+        }
+    }
+    //---------------------------------------//
+    // finally, check the unit specification //
+    //---------------------------------------//
+    if (unit != NULL && *unit != NULL) {
+        if (strchr(*unit, '|')) {
+            char  strtokBuf[256];
+            char *value;
+            char *unitValue = NULL;
+            char *verticalDatum = NULL;
+            char *unitSpec = mallocAndCopy(*unit);
+            char *key = strtok_r(unitSpec, "|=", (char **)&strtokBuf);
+            while (key) {
+                value = strtok_r(NULL, "|=", (char **)&strtokBuf);
+                if (!strcasecmp(key, "U")) {
+                    unitValue = value;
+                }
+                else if (!strcasecmp(key, "V")) {
+                    verticalDatum = value;
+                }
+                key = strtok_r(NULL, "|=", (char **)&strtokBuf);
+            }
+            if (unitValue) {
+                //----------------------------------------------//
+                // convert the unit spec to a simple unit value //
+                //----------------------------------------------//
+                free(*unit);
+                *unit = mallocAndCopy(unitValue);
+            }
+            if (verticalDatum) {
+                if (!strcasecmp(verticalDatum, CVERTICAL_DATUM_NAVD88)) {
+                    iverticalDatum = IVERTICAL_DATUM_NAVD88;
+                    strcpy(cverticalDatum, CVERTICAL_DATUM_NAVD88);
+                }
+                else if (!strcasecmp(verticalDatum, CVERTICAL_DATUM_NGVD29)) {
+                    iverticalDatum = IVERTICAL_DATUM_NGVD29;
+                    strcpy(cverticalDatum, CVERTICAL_DATUM_NGVD29);
+                }
+                else if (!strcasecmp(verticalDatum, CVERTICAL_DATUM_OTHER)) {
+                    iverticalDatum = IVERTICAL_DATUM_OTHER;
+                    strcpy(cverticalDatum, CVERTICAL_DATUM_OTHER);
+                }
+                else {
+                    iverticalDatum = IVERTICAL_DATUM_OTHER;
+                    strcpy(cverticalDatum, verticalDatum);
+                }
+            }
+            free(unitSpec);
+        }
+    }
+    return iverticalDatum;
+}
+
 //
 // See verticalDatum.h for documentation
 //
-void stringToVerticalDatumInfo_(
-        const char *inputStr,
+void stringtoverticaldatuminfo_(
+        char    *inputStr,
         char    *nativeDatum,
         char    *unit,
         char    *errorMessage,
-        float   *elevation,
-        float   *offsetNgvd29,
+        double  *elevation,
+        double  *offsetNgvd29,
         int32_t *offsetNgvd29IsEstimate,
-        float   *offsetNavd88,
+        double  *offsetNavd88,
         int32_t *offsetNavd88IsEstimate,
         slen_t   lenInputStr,
         slen_t   lenNativeDatum,
@@ -1107,19 +1122,31 @@ void stringToVerticalDatumInfo_(
         slen_t   lenErrorMessage) {
  
     char *lInputStr = (char *)malloc(lenInputStr+1);
+    F2C(inputStr, lInputStr, lenInputStr, lenInputStr+1);
     char *errmsg;
     verticalDatumInfo vdi;
- 
-    F2C(inputStr, lInputStr, lenInputStr, lenInputStr+1);
+
     errmsg = stringToVerticalDatumInfo(&vdi, lInputStr);
-    C2F(errmsg, errorMessage, lenErrorMessage);
-    C2F(vdi.nativeDatum, nativeDatum, lenNativeDatum);
-    C2F(vdi.unit, unit, lenUnit);
-    *elevation = vdi.elevation;
-    *offsetNgvd29 = vdi.offsetToNgvd29;
-    *offsetNgvd29IsEstimate = vdi.offsetToNgvd29IsEstimate;
-    *offsetNavd88 = vdi.offsetToNavd88;
-    *offsetNavd88IsEstimate = vdi.offsetToNavd88IsEstimate;
+    if (errmsg) {
+        C2F(errmsg, errorMessage, lenErrorMessage);
+        C2F(" ", nativeDatum, lenNativeDatum);
+        C2F(" ", unit, lenUnit);
+        *elevation = UNDEFINED_VERTICAL_DATUM_VALUE;
+        *offsetNgvd29 = UNDEFINED_VERTICAL_DATUM_VALUE;
+        *offsetNgvd29IsEstimate = -1;
+        *offsetNavd88 = UNDEFINED_VERTICAL_DATUM_VALUE;
+        *offsetNavd88IsEstimate = -1;
+    }
+    else {
+        C2F(" ", errorMessage, lenErrorMessage);
+        C2F(vdi.nativeDatum, nativeDatum, lenNativeDatum);
+        C2F(vdi.unit, unit, lenUnit);
+        *elevation = vdi.elevation;
+        *offsetNgvd29 = vdi.offsetToNgvd29;
+        *offsetNgvd29IsEstimate = vdi.offsetToNgvd29IsEstimate;
+        *offsetNavd88 = vdi.offsetToNavd88;
+        *offsetNavd88IsEstimate = vdi.offsetToNavd88IsEstimate;
+    }
     free(lInputStr);
 }
 //
@@ -1130,10 +1157,10 @@ void verticalDatumInfoToString_(
         char    *nativeDatum,
         char    *unit,
         char    *errorMessage,
-        float   *elevation,
-        float   *offsetNgvd29,
+        double  *elevation,
+        double  *offsetNgvd29,
         int32_t *offsetNgvd29IsEstimate,
-        float   *offsetNavd88,
+        double  *offsetNavd88,
         int32_t *offsetNavd88IsEstimate,
         int32_t *generateCompressed,
         slen_t   lenOutputStr,

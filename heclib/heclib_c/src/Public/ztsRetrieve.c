@@ -416,14 +416,12 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 		verticalDatumInfo *vdi = NULL;
 		char errmsg[1024];
 		zquery("VDTM", cvertical_datum, sizeof(cvertical_datum), &ivertical_datum);
-		if (ivertical_datum != IVERTICAL_DATUM_UNSET) {
+		if (version == 7 && ivertical_datum != IVERTICAL_DATUM_UNSET) {
 			//-----------------------------------//
 			// specific vertical datum requested //
 			//-----------------------------------//
-			if (version == 6) {
-				vdi = extractVerticalDatumInfoFromUserHeader(tss->userHeader, tss->userHeaderSize);
-			}
-			else {
+			vdi = extractVerticalDatumInfoFromUserHeader(tss->userHeader, tss->userHeaderSize);
+			if (!vdi) {
 				if (tss->locationStruct && tss->locationStruct->supplemental) {
 					char *vdiStr = extractFromDelimitedString(
 						&tss->locationStruct->supplemental,

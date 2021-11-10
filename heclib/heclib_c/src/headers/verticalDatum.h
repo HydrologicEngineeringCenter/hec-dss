@@ -26,27 +26,25 @@ extern "C" {
     #endif
 #endif
  
-#define F2C(f, c, flen, clen) {                  \
-    int len = flen < clen ? flen : clen - 1;     \
-    int i;                                       \
-    strncpy(c, f, len);                          \
-    c[len] = '\0';                               \
-    for (i = len-1; i > -1; --i) {               \
-        if (c[i] != ' ' ) break;                 \
-        c[i] = '\0';                             \
-    }                                            \
+#define F2C(f, c, flen, clen) {                    \
+    int len = flen < clen ? flen : clen - 1;       \
+    strncpy(c, f, len);                            \
+    c[len] = '\0';                                 \
+    for (int i = len-1; i > -1; --i) {             \
+        if (c[i] != ' ' ) break;                   \
+        c[i] = '\0';                               \
+    }                                              \
 }
-#define C2F(c, f, flen) {                        \
-    int i;                                       \
-    if (c == NULL) {                             \
-        for (i = 0; i < flen; ++i) f[i] = ' ';   \
-    }                                            \
-    else {                                       \
-        i = strlen(c);                           \
-        int len = i > flen ? flen : i;           \
-        strncpy(f, c, len);                      \
-        for (i = len; i < flen; ++i) f[i] = ' '; \
-    }                                            \
+#define C2F(c, f, flen) {                          \
+    if (c == NULL) {                               \
+        for (int i = 0; i < flen; ++i) f[i] = ' '; \
+    }                                              \
+    else {                                         \
+        int i = strlen(c);                         \
+        int len = i > flen ? flen : i;             \
+        strncpy(f, c, len);                        \
+        for (i = len; i < flen; ++i) f[i] = ' ';   \
+    }                                              \
 }
 //----------------// 
 // misc constants //
@@ -91,7 +89,7 @@ extern "C" {
 #define ERROR_ON_DEFLATE                                "Error on Deflate())"
 #define ERROR_ON_DEFLATEEND                             "Error on DeflateEnd()"
 #define ERROR_ON_DEFLATEINIT2                           "Error on DeflateInit2()"
-#define ERROR_ON_INFLATE                                "Error on Inflate())"
+#define ERROR_ON_INFLATE                                "Error on Inflate()"
 #define ERROR_ON_INFLATEEND                             "Error on InflateEnd()"
 #define ERROR_ON_INFLATEINIT2                           "Error on InflateInit2()"
 #define INPUT_STRING_IS_NULL                            "Input string is NULL"
@@ -122,13 +120,13 @@ extern "C" {
 })
 
 typedef struct verticalDatumInfo_s {
-    char  nativeDatum[CVERTICAL_DATUM_SIZE];
-    float elevation;
-    char  unit[UNIT_SIZE];
-    float offsetToNgvd29;
-    int   offsetToNgvd29IsEstimate;
-    float offsetToNavd88;
-    int   offsetToNavd88IsEstimate;
+    char   nativeDatum[CVERTICAL_DATUM_SIZE];
+    double elevation;
+    char   unit[UNIT_SIZE];
+    double offsetToNgvd29;
+    int    offsetToNgvd29IsEstimate;
+    double offsetToNavd88;
+    int    offsetToNavd88IsEstimate;
 } verticalDatumInfo;
 
 typedef struct textBoundaryInfo_s {
@@ -388,28 +386,29 @@ int	getEffectiveVerticalDatum(
  *
  *  interface
  *      subroutine stringToVerticalDatumInfo( &
- *          inputStr,                              &
- *          nativeDatum,                           &
- *          unit,                                   &
- *          error_message,                          &
- *          elevation,                              &
- *          offset_ngvd_29,                         &
- *          offset_ngvd_29_is_estimate,             &
- *          offset_navd_88,                         &
+ *          inputStr,                         &
+ *          nativeDatum,                      &
+ *          unit,                             &
+ *          error_message,                    &
+ *          elevation,                        &
+ *          offset_ngvd_29,                   &
+ *          offset_ngvd_29_is_estimate,       &
+ *          offset_navd_88,                   &
  *          offset_navd_88_is_estimate)
- *          character (len = *),  intent(in)  :: compressed
+ *          character (len = *),  intent(in)  :: inputStr
  *          character (len = *),  intent(out) :: nativeDatum
  *          character (len = *),  intent(out) :: unit
  *          character (len = *),  intent(out) :: error_message
- *          real      (kind = 4), intent(out) :: offset_ngvd_29
+ *          real      (kind = 8), intent(out) :: elevation
+ *          real      (kind = 8), intent(out) :: offset_ngvd_29
  *          logical   (kind = 4), intent(out) :: offset_ngvd_29_is_estimate
- *          real      (kind = 4), intent(out) :: offset_navd_88
+ *          real      (kind = 8), intent(out) :: offset_navd_88
  *          logical   (kind = 4), intent(out) :: offset_navd_88_is_estimate
  *      end subroutine stringToVerticalDatumInfo
  *  end interface
  *
- * @param inputStr                  Fortran CHARACTER (LEN=*) input for input XML in raw or compressed format.
- * @param nativeDatum               Fortran CHARACTER (LEN=*) output for native datum. Length should be >= 16.
+ * @param inputStr                   Fortran CHARACTER (LEN=*) input for input XML in raw or compressed format.
+ * @param nativeDatum                Fortran CHARACTER (LEN=*) output for native datum. Length should be >= 16.
  * @param unit                       Fortran CHARACTER (LEN=*) output for unit of elevation and offsets. Length should be >= 2
  * @param error_message              Fortran CHARACTER (LEN=*) output for error message. Empty on success. Length should be >= 64
  * @param elevation                  Fortran REAL (KIND=4) output for elevation. UNDEFINED_VERTICAL_DATUM_VALUE if no value in XML
@@ -422,15 +421,15 @@ int	getEffectiveVerticalDatum(
  * @param len_unit                   Fortran hidden parameter for declared length of unit parameter
  * @param len_error_message          Fortran hidden parameter for declared length of error_message parameter
  */
-void stringToVerticalDatumInfo_(
-        const char *inputStr,
+void stringtoverticaldatuminfo_(
+        char    *inputStr,
         char    *nativeDatum,
         char    *unit,
         char    *error_message,
-        float   *elevation,
-        float   *offset_ngvd_29,
+        double  *elevation,
+        double  *offset_ngvd_29,
         int32_t *offset_ngvd_29_is_estimate,
-        float   *offset_navd_88,
+        double  *offset_navd_88,
         int32_t *offset_navd_88_is_estimate,
         slen_t   len_input_str,
         slen_t   len_native_datum,
@@ -443,30 +442,31 @@ void stringToVerticalDatumInfo_(
  *
  *  interface
  *      subroutine verticalDatumInfoToString( &
- *          output_str,                           &
- *          nativeDatum,                         &
- *          unit,                                 &
- *          error_message,                        &
- *          elevation,                            &
- *          offset_ngvd_29,                       &
- *          offset_ngvd_29_is_estimate,           &
- *          offset_navd_88,                       &
- *          offset_navd_88_is_estimate            &
+ *          output_str,                       &
+ *          nativeDatum,                      &
+ *          unit,                             &
+ *          error_message,                    &
+ *          elevation,                        &
+ *          offset_ngvd_29,                   &
+ *          offset_ngvd_29_is_estimate,       &
+ *          offset_navd_88,                   &
+ *          offset_navd_88_is_estimate        &
  *          generate_compressed)
  *          character (len = *),  intent(out) :: compressed
  *          character (len = *),  intent(in)  :: nativeDatum
  *          character (len = *),  intent(in)  :: unit
  *          character (len = *),  intent(out) :: error_message
- *          real      (kind = 4), intent(in)  :: offset_ngvd_29
+ *          real      (kind = 8), intent(in)  :: elevation
+ *          real      (kind = 8), intent(in)  :: offset_ngvd_29
  *          logical   (kind = 4), intent(in)  :: offset_ngvd_29_is_estimate
- *          real      (kind = 4), intent(in)  :: offset_navd_88
+ *          real      (kind = 8), intent(in)  :: offset_navd_88
  *          logical   (kind = 4), intent(in)  :: offset_navd_88_is_estimate
  *          logical   (kind = 4), intent(in)  :: generate_compressed
  *      end subroutine verticalDatumInfoToString
  *  end interface
  *
  * @param output_str                 Fortran CHARACTER (LEN=*) output in raw (XML) or compressed format. Length should be >= 400
- * @param nativeDatum               Fortran CHARACTER (LEN=*) input for native datum.
+ * @param nativeDatum                Fortran CHARACTER (LEN=*) input for native datum.
  * @param unit                       Fortran CHARACTER (LEN=*) input for unit of elevation and offsets.
  * @param error_message              Fortran CHARACTER (LEN=*) output for error message. Empty on success. Length should be >= 64
  * @param elevation                  Fortran REAL (KIND=4) input for elevation. UNDEFINED_VERTICAL_DATUM_VALUE if unknown or n/a
@@ -485,10 +485,10 @@ void verticalDatumInfoToString_(
         char    *nativeDatum,
         char    *unit,
         char    *error_message,
-        float   *elevation,
-        float   *offset_ngvd_29,
+        double  *elevation,
+        double  *offset_ngvd_29,
         int32_t *offset_ngvd_29_is_estimate,
-        float   *offset_navd_88,
+        double  *offset_navd_88,
         int32_t *offset_navd_88_is_estimate,
         int32_t *generate_compressed,
         slen_t   len_output_str,

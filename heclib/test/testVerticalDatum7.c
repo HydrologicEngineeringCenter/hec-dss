@@ -110,8 +110,8 @@ void main (int argc, char *argv[]) {
         if (errmsg != NULL) fprintf(stderr, "%s\n", errmsg);
         assert(errmsg == NULL);
         assert(!strcmp(vdi.nativeDatum, CVERTICAL_DATUM_NGVD29));
-        assert(vdi.elevation == 615.2f);
-        assert(vdi.offsetToNavd88 == 0.3855f);
+        assert(vdi.elevation == 615.2);
+        assert(vdi.offsetToNavd88 == 0.3855);
         assert(vdi.offsetToNavd88IsEstimate == 1);
         assert(vdi.offsetToNgvd29 == 0.f);
         assert(vdi.offsetToNgvd29IsEstimate == 0);
@@ -120,10 +120,10 @@ void main (int argc, char *argv[]) {
         if (errmsg != NULL) fprintf(stderr, "%s\n", errmsg);
         assert(errmsg == NULL);
         assert(!strcmp(vdi.nativeDatum, "Pensacola"));
-        assert(vdi.elevation == 757.f);
-        assert(vdi.offsetToNavd88 == 1.457f);
+        assert(vdi.elevation == 757.);
+        assert(vdi.offsetToNavd88 == 1.457);
         assert(vdi.offsetToNavd88IsEstimate == 1);
-        assert(vdi.offsetToNgvd29 == 1.07f);
+        assert(vdi.offsetToNgvd29 == 1.07);
         assert(vdi.offsetToNgvd29IsEstimate == 0);
 
     }
@@ -314,7 +314,7 @@ void main (int argc, char *argv[]) {
         //     of vertical datum info from location record)
         //     0 = true
         //     1 = false
-        zset("MLVL", "", 0);
+        zset("MLVL", "", 1);
         for (int i = 0; i < 2; ++i) {
             for (int j = 0; j < xml_count; ++j) {
                 for (int k = 0; k < verticalDatumCount; ++k) {
@@ -328,7 +328,7 @@ void main (int argc, char *argv[]) {
                                         //------------------------//
                                         // create the time series //
                                         //------------------------//
-                                        // fprintf(stderr, "%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n", i,j,k,l,m,n,o,p);
+                                        fprintf(stderr, "%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n", i,j,k,l,m,n,o,p);
                                         if (i == 0) {
                                             status = zopen6(ifltab, filename[i]);
                                         }
