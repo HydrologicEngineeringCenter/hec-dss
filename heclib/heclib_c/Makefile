@@ -3,7 +3,7 @@ UNAME_S := $(shell uname -s)
 
 ifeq ($(UNAME_S),Linux)
 	CWARNING=-Werror
-	CFLAGS=-m64 -c -fPIC -g -std=gnu99 -Isrc/headers $(CWARNING) -D__linux__
+	CFLAGS=-m64 -mstackrealign -c -fPIC -g -std=gnu99 -Isrc/headers $(CWARNING) -D__linux__
 endif
 ifeq ($(UNAME_S),SunOS)
 	CFLAGS=-m64 -xmemalign=2i -xcode=pic32 -c -Isrc/headers -mt -xcode=abs64 -xstrconst -xc99=all -xCC -g -xs

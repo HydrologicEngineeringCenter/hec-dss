@@ -1,6 +1,6 @@
-CFLAGS=-Werror -m64 -fPIC -g -I../../heclib/headers -I../../heclib/grid
+CFLAGS=-Werror -m64 -mstackrealign -fPIC -g -I../../heclib/headers -I../../heclib/grid
 #CPPFLAGS= -std=c++11 -m64 -fPIC -g -I../../heclib/headers -I../../heclib/grid
-CPPFLAGS=-Werror -m64 -fPIC -g -I../../heclib/headers 
+CPPFLAGS=-Werror -m64 -mstackralign -fPIC -g -I../../heclib/headers 
 
 CPP_SRCS:=$(wildcard *.cpp)
 CPP_OBJS=$(CPP_SRCS:.cpp=.o)

@@ -8,10 +8,10 @@ FWARNINGS=-Wall
 #           -Wtarget-lifetime, -Wreal-q-constant and -Wunused.
 
 FDEBUG=-fcheck=all
-FFLAGS=-c -g -cpp -m64 -fPIC $(FWARNINGS) $(FDEBUG) -I../Dss6/Fortran -I../headers  -D__linux__
+FFLAGS=-c -g -cpp -m64 -mstackrealign -fPIC $(FWARNINGS) $(FDEBUG) -I../Dss6/Fortran -I../headers  -D__linux__
 FORTRAN=gfortran
 
-CFLAGS=-m64 -c -fPIC -g -std=gnu99  -Werror=implicit-function-declaration --pipe  -D__linux__
+CFLAGS=-m64 -mstackrealign -c -fPIC -g -std=gnu99  -Werror --pipe  -D__linux__
 
 .PHONY: dss
 dss:
@@ -23,9 +23,9 @@ dss:
 
 interop: interop_c.c interop_f.f
 	rm -f interop
-	$(FORTRAN) -dM -c -g -cpp -m64 -fPIC -Wall interop_f.f
+	$(FORTRAN) -dM -c -g -cpp -m64 -mstackrealign -fPIC -Wall interop_f.f
 	cc $(CFLAGS) interop_c.c 
-	$(FORTRAN) -m64 -fPIC   interop_c.o interop_f.o -o interop -lz -lrt -lgfortran -lm 
+	$(FORTRAN) -m64 -mstackrealign -fPIC   interop_c.o interop_f.o -o interop -lz -lrt -lgfortran -lm 
 	./interop
 
 all:dss Dss-Fortran
