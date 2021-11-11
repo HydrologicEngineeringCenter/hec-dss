@@ -51,7 +51,7 @@ namespace Hec.Dss
 
     public DssReader(string filename, int version, MethodID messageMethod = MethodID.MESS_METHOD_GENERAL_ID, LevelID messageLevel = LevelID.MESS_LEVEL_GENERAL)
     {
-      DSS.ZSet("DSSV", "", version);
+      PInvoke.ZSet("DSSV", "", version);
       GetDssFile(filename, messageMethod, messageLevel);
     }
 
@@ -72,7 +72,7 @@ namespace Hec.Dss
       _iflTabGC = GCHandle.Alloc(ifltab, GCHandleType.Pinned);
       int status;
       this.filename = filename;
-      status = DSS.ZOpen(ref ifltab, filename);
+      status = PInvoke.ZOpen(ifltab, filename);
       versionNumber = DSS.ZGetVersion(ref ifltab);
 
       switch (status)

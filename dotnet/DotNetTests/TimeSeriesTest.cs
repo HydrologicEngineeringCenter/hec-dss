@@ -709,7 +709,7 @@ namespace DSSUnitTests
       using (DssReader r = new DssReader(TestUtility.BasePath + "sample7.dss"))
       {
         var s = TimeWindow.GetInterval(r.GetTimeSeries(path));
-        Debug.WriteLine(s);
+        Console.WriteLine(s);
       }
     }
 
