@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Hec.Dss": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "Key": "Value"
+      }
+    }
+  }
+}
