@@ -1,8 +1,8 @@
-name: Ubuntu
-on: [push]
+name: macOS
+on: [workflow_dispatch]
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
@@ -23,22 +23,3 @@ jobs:
           cd heclib
           make
           
-      - name: build and run basic C test programs
-        run: |
-          cd test/C
-          ./unix_test
-
-      - name: build and run Dss-C test program
-        run: |
-          cd test/Dss-C
-          make -f Makefile test
-
-      - name: build and run Fortran test program
-        run: |
-          cd test/Fortran
-          make -f Makefile.Linux test
-
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: java -version
-
