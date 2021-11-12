@@ -9,7 +9,7 @@ ifeq ($(UNAME_S),Linux)
 	FWARNINGS=-Werror -Warray-bounds -Wc-binding-type -Wcharacter-truncation
 	FDEBUG=-fcheck=all,no-recursion
 	FORTRAN=gfortran
-	FFLAGS=-c -g -cpp -m64 -mstackrealign -fPIC $(FWARNINGS) $(FDEBUG) -Isrc/headers  
+	FFLAGS=-c -g -cpp -m64 -fPIC $(FWARNINGS) $(FDEBUG) -Isrc/headers  
 	FIND=find
 endif
 ifeq ($(UNAME_S),SunOS)

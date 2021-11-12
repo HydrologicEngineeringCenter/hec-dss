@@ -3,7 +3,7 @@ UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Linux)
 	LDFLAGS = -lz -lrt -lgfortran -lm
 	CWARNING=-Werror
-	CFLAGS=-m64 -mstackrealign -fPIC -g -std=gnu99 -I../../heclib/heclib_c/src/headers -I. $(CWARNING)  -D__linux__
+	CFLAGS=-m64 -fPIC -g -std=gnu99 -I../../heclib/heclib_c/src/headers -I. $(CWARNING)  -D__linux__
 	MAKE=make
 endif
 ifeq ($(UNAME_S),SunOS)

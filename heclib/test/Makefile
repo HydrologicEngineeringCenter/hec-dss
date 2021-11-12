@@ -7,7 +7,7 @@ ifeq ($(UNAME_S),Linux)
 	CC=gcc
 	LD=gfortran
 	CWARNING=-Werror
-	CFLAGS=-c -m64 -mstackrealign -fPIC -g -std=gnu99 -I$(INCL_DIRS) $(CWARNING) -D__linux__
+	CFLAGS=-c -m64 -fPIC -g -std=gnu99 -I$(INCL_DIRS) $(CWARNING) -D__linux__
 	LFLAGS=-lm -lz
 endif
 
