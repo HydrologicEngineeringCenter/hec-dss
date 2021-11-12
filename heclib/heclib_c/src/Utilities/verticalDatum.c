@@ -76,7 +76,7 @@ double getOffset(double offset, const char *offsetUnit, const char *_dataUnit) {
     }
     if (offsetUnit == NULL || dataUnit == NULL) return UNDEFINED_VERTICAL_DATUM_VALUE;
     if (!strcasecmp(offsetUnit, dataUnit)) return offset;
-
+    free(dataUnit);
     dataInFeet = unitIsFeet(dataUnit);
     if (!dataInFeet) {
         dataInMeters = unitIsMeters(dataUnit);
@@ -111,6 +111,8 @@ void getoffset_(
     F2C(offsetUnit, cOffsetUnit, lenOffsetUnit, lenOffsetUnit+1);
     F2C(dataUnit, cDataUnit, lenDataUnit, lenDataUnit+1);
     *offset = getOffset(*offset, cOffsetUnit, cDataUnit);
+    free(cOffsetUnit);
+    free(cDataUnit);
 }
 
 const char *strcasestr(const char *haystack, const char *needle) {
@@ -165,6 +167,7 @@ char *extractFromDelimitedString(
             }
         }
     }
+    free(param);
     return value;
 }    
 int insertIntoDelimitedString(
@@ -982,7 +985,9 @@ verticalDatumInfo *extractVerticalDatumInfoFromUserHeader(const int *userHeader,
             char *errmsg = stringToVerticalDatumInfo(vdi, vdiStr);
             if (errmsg != NULL) {
                 fprintf(stderr, "%s\n", errmsg);
-                free(vdi);
+                if (vdi) {
+                    free(vdi);
+                }
                 vdi = NULL;
             }
             free(vdiStr);

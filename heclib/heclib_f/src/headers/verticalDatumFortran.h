@@ -1,4 +1,7 @@
 C     Vertical Datums
+      DOUBLE PRECISION UNDEFINED_VERTICAL_DATUM_VALUE
+      CHARACTER*17 VERTICAL_DATUM_INFO_PARAM
+      CHARACTER*7  PADDING 
       CHARACTER*16 CVDATUM    ! current default vertical datum (char)
       CHARACTER*16 CVD_UNSET  ! UNSET   vertical datum (char)
       CHARACTER*16 CVD_NAVD88 ! NAVD-88 vertical datum (char)
@@ -10,9 +13,10 @@ C     Vertical Datums
       INTEGER IVD_NGVD29      ! NGVD-20 vertical datum (int)
       INTEGER IVD_OTHER       ! OTHER   vertical datum (int)
       INTEGER IVD_LOCAL       ! OTHER   vertical datum (int) [SAME AS OTHER]
-      DOUBLE PRECISION UNDEFINED_VERTICAL_DATUM_VALUE
-      CHARACTER*17 VERTICAL_DATUM_INFO_PARAM 
       COMMON /VERTICAL_DATUM/ 
+     *        UNDEFINED_VERTICAL_DATUM_VALUE,
+     *        VERTICAL_DATUM_INFO_PARAM,
+     *        PADDING,
      *        CVDATUM, 
      *        CVD_UNSET, 
      *        CVD_NAVD88,
@@ -24,6 +28,4 @@ C     Vertical Datums
      *        IVD_NAVD88, 
      *        IVD_NGVD29, 
      *        IVD_OTHER,
-     *        IVD_LOCAL,
-     *        UNDEFINED_VERTICAL_DATUM_VALUE,
-     *        VERTICAL_DATUM_INFO_PARAM
+     *        IVD_LOCAL
