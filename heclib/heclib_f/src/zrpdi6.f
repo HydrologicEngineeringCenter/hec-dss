@@ -18,6 +18,18 @@ C
 	INTEGER NH, N, NWDS, ICOUNT
       LOGICAL LFOUND, LABEL, LDOUBLE, LEND
       LOGICAL LFILDOB
+C      
+C     Pathname variable dimensions
+      character*64 ca, cb, cc, cd, ce, cf
+      integer na, nb, nc, nd, ne, nf, npath
+C      
+C     Vertical datum varible dimensions 
+      character*256 vdiStr, errMsg
+      character*16 nativeDatum, unit
+      double precision elevation
+      double precision offsetNavd88, offsetNgvd29, vertDatumOffset
+      logical l_Navd88Estimated, l_Ngvd29Estimated, l_indElev, l_depElev
+      integer vdiStrLen
 C
       INCLUDE 'zdssmz.h'
 C
@@ -28,6 +40,8 @@ C
       INCLUDE 'zdsscc.h'
 C
       INCLUDE 'zdsskz.h'
+C
+      INCLUDE 'verticalDatumFortran.h'
 C
 C
 C
@@ -177,7 +191,7 @@ C
       CALL HOLCHR (IGBUFF(10), 1, 8, CTEMP, 1)
       call strcpy(C2TYPE, CTEMP)
 C
-C
+C     
 C
       LABEL = .FALSE.
 	NH = (NCURVE*3) + 11
@@ -224,6 +238,114 @@ C
       IF (MLEVEL.GE.7) WRITE (MUNIT,820) NVALS, LFOUND, LABEL, ISTAT
  820  FORMAT(T10,'----- Exit zrpd6, Number of data values retrieved:',
      * I7,/,T20,'Found:',L2,',  Labels:',L2,',  Status:',I4)
+      !---------------------------------------------------------!
+      ! convert values to requested vertical datum if necessary !
+      !---------------------------------------------------------!
+      l_indElev = .false.
+      l_depElev = .false.
+      call zufpn(ca, na, cb, nb, cc, nc, cd, nd, ce, ne, cf, nf,
+     *           cpath, len_trim(cpath), istat)
+      call upcase(cc)
+      if (index(cc, 'ELEV').eq.1) then
+        l_indElev = .true.
+      elseif (index(cc, '-ELEV').gt.0) then
+        l_depElev = .true.
+      endif
+      if (l_indElev.or.l_depElev) then
+        if (nuhead.gt.0) then
+          call zinqir(ifltab, 'VDTM', cvdatum, ivdatum)
+          if (ivdatum.ne.IVD_UNSET) then
+            call get_user_header_param(
+     *        iuhead, 
+     *        nuhead, 
+     *        VERTICAL_DATUM_INFO_PARAM, 
+     *        vdiStr)
+            vdiStrLen = len_trim(vdiStr)
+            if (vdiStrLen.gt.0) then
+              call stringToVerticalDatumInfo(
+     *          vdiStr,
+     *          nativeDatum,
+     *          unit,
+     *          errMsg,
+     *          elevation,
+     *          offsetNgvd29,
+     *          l_Ngvd29Estimated,
+     *          offsetNavd88,
+     *          l_Navd88Estimated)
+              if (ivdatum.eq.IVD_NAVD88) then
+                vertDatumOffset = offsetNavd88
+              elseif (ivdatum.eq.IVD_NGVD29) then
+                vertDatumOffset = offsetNgvd29
+              else
+                vertDatumOffset = 0.  
+              end if
+              if (vertDatumOffset.ne.0) then
+                if (vertDatumOffset.eq.
+     *            UNDEFINED_VERTICAL_DATUM_VALUE) then
+                  if (mlevel.ge.1) then
+                    write (munit,'(/,a,a,a,a,a,/,a)')
+     *              ' *****DSS*** zrpdi6:  ERROR  - NO VERTICAL DATUM',
+     *              ' OFFSET for ',nativeDatum(1:len_trim(nativeDatum)),
+     *              ' to ',cvdatum(1:len_trim(cvdatum)),
+     *              ' Elevations were not converted.'
+                  end if
+                  return
+                end if
+                if (l_indElev) then
+                  call getoffset(vertDatumOffset, unit, c1unit)
+                  if (vertDatumOffset.eq.
+     *              UNDEFINED_VERTICAL_DATUM_VALUE) then
+                    if (mlevel.ge.1) then
+                      write (munit,'(/,a,a,a,a,a,a,/,a)')
+     *                ' *****DSS*** zrpdi6:  ERROR  - ',
+     *                'INVALID DATA UNIT (', c1unit(1:len_trim(c1unit)),
+     *                ') OR OFFSET UNIT (', unit(1:len_trim(unit)),
+     *                ') FOR VERTICAL DATUM CONVERSION',
+     *                ' Elevations were not converted.'
+                    end if
+                    return
+                  end if  
+                else
+                  call getoffset(vertDatumOffset, unit, c2unit)
+                  if (vertDatumOffset.eq.
+     *              UNDEFINED_VERTICAL_DATUM_VALUE) then
+                    if (mlevel.ge.1) then
+                      write (munit,'(/,a,a,a,a,a,a,/,a)')
+     *                ' *****DSS*** zrpdi6:  ERROR  - ',
+     *                'INVALID DATA UNIT (', c2unit(1:len_trim(c2unit)),
+     *                ') OR OFFSET UNIT (', unit(1:len_trim(unit)),
+     *                ') FOR VERTICAL DATUM CONVERSION',
+     *                ' Elevations were not converted.'
+                    end if
+                    return
+                  end if  
+                end if
+                if (ldouble) then
+                  if (l_indElev) then
+                    do i = 1, nord
+                      dvalues(i) = dvalues(i) + vertdatumoffset
+                    end do
+                  else
+                    do i = nord+1, nvals
+                      dvalues(i) = dvalues(i) + vertdatumoffset
+                    end do
+                  end if
+                else
+                  if (l_indElev) then
+                    do i = 1, nord
+                      svalues(i) = svalues(i) + vertdatumoffset
+                    end do
+                  else
+                    do i = nord+1, nvals
+                      svalues(i) = svalues(i) + vertdatumoffset
+                    end do
+                  end if  
+                end if    
+              end if  
+            end if
+          end if
+        end if
+      end if
       RETURN
 C
  900  CONTINUE
