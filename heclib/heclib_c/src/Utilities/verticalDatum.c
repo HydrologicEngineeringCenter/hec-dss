@@ -75,7 +75,10 @@ double getOffset(double offset, const char *offsetUnit, const char *_dataUnit) {
         dataUnit[i] = '\0';
     }
     if (offsetUnit == NULL || dataUnit == NULL) return UNDEFINED_VERTICAL_DATUM_VALUE;
-    if (!strcasecmp(offsetUnit, dataUnit)) return offset;
+    if (!strcasecmp(offsetUnit, dataUnit)) {
+        free(dataUnit);
+        return offset;
+    }
     dataInFeet = unitIsFeet(dataUnit);
     if (!dataInFeet) {
         dataInMeters = unitIsMeters(dataUnit);
@@ -645,6 +648,7 @@ char *validateXmlStructure(const char *xml) {
                 free(tagNames[i]);
             }
             free(tagNames);
+            free(buf);
             return INVALID_XML_STRUCTURE;
         }
         if (*cp1 == '/') {
@@ -654,6 +658,7 @@ char *validateXmlStructure(const char *xml) {
             ++cp1;
             len = cp2 - cp1;
             if (strncmp(cp1, tagNames[count-1], len)) {
+                free(buf);
                 return INVALID_XML_STRUCTURE;
             }
             free(tagNames[--count]);
@@ -675,10 +680,11 @@ char *validateXmlStructure(const char *xml) {
             tagNames[count-1][len] = '\0';
         }
     }
+    free(tagNames);
     for (int i = 0; i < count; ++i) {
         free(tagNames[i]);
     }
-    free(tagNames);
+    free(buf);
     return NULL;
 }
 //
