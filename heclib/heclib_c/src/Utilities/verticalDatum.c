@@ -76,11 +76,11 @@ double getOffset(double offset, const char *offsetUnit, const char *_dataUnit) {
     }
     if (offsetUnit == NULL || dataUnit == NULL) return UNDEFINED_VERTICAL_DATUM_VALUE;
     if (!strcasecmp(offsetUnit, dataUnit)) return offset;
-    free(dataUnit);
     dataInFeet = unitIsFeet(dataUnit);
     if (!dataInFeet) {
         dataInMeters = unitIsMeters(dataUnit);
     }
+    free(dataUnit);
     offsetInFeet = unitIsFeet(offsetUnit);
     if (!offsetInFeet) {
         offsetInMeters = unitIsMeters(offsetUnit);
