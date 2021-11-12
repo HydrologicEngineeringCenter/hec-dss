@@ -29,4 +29,18 @@ int ZTsStore(long long* ifltab, zStructTimeSeries* tss, int storageFlag)
 	return ztsStore(ifltab, tss, storageFlag);
 }
 
+zStructTimeSeries* ZStructTsNewRegDoubles(const char* pathName, double* dArray, int numberValues, const char* startDate, const char* startTime, const char* units, const char* type)
+{
+	zStructTimeSeries* ts = zstructTsNewRegDoubles(pathName, dArray, numberValues, startDate, startTime, units, type);
+	ts->allocated[zSTRUCT_TS_doubleValues] = 1;
+	return ts;
+}
+
+zStructTimeSeries* ZStructTsNewRegFloats(const char* pathName, float* floatValues, int numberValues, const char* startDate, const char* startTime, const char* units, const char* type)
+{
+	zStructTimeSeries* ts = zstructTsNewRegFloats(pathName, floatValues, numberValues, startDate, startTime, units, type);
+	ts->allocated[zSTRUCT_TS_doubleValues] = 1;
+	return ts;
+}
+
 

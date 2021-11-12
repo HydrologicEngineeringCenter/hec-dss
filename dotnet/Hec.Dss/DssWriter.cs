@@ -220,26 +220,26 @@ namespace Hec.Dss
       if (listType == typeof(double))
       {
         double[] dArray = values as double[];
-        ZStructTimeSeriesWrapper tss = DSS.ZStructTsNewRegDoubles(pathName, ref dArray, dArray.Length, startDate, startTime, units, type);
+        NativeTimeSeriesWrapper tss = PInvoke.NativeTsNewRegDoubles(pathName, dArray, startDate, startTime, units, type);
         if (qualities != null)
         {
           tss.QualityArraySize = dArray.Length;
           tss.QualityElementSize = 1;
           tss.Quality = qualities;
         }
-        return DSS.ZTsStore(ref ifltab, ref tss, storageFlag);
+        return PInvoke.ZTsStore(ifltab, tss, storageFlag);
       }
       else if (listType == typeof(float))
       {
         float[] fArray = values as float[];
-        ZStructTimeSeriesWrapper tss = DSS.ZStructTsNewRegFloats(pathName, ref fArray, fArray.Length, startDate, startTime, units, type);
+        NativeTimeSeriesWrapper tss = PInvoke.NativeTsNewRegFloats(pathName, fArray, startDate, startTime, units, type);
         if (qualities != null)
         {
           tss.QualityArraySize = fArray.Length;
           tss.QualityElementSize = 1;
           tss.Quality = qualities;
         }
-        return DSS.ZTsStore(ref ifltab, ref tss, storageFlag);
+        return PInvoke.ZTsStore(ifltab, tss, storageFlag);
       }
       else
         throw new Exception("Cannot store values of type " + listType.Name + " for time series.  Only accepts double and float");

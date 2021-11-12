@@ -9,4 +9,6 @@ extern "C" {
 	__declspec(dllexport) int ZGetVersion(long long* ifltab);
 	__declspec(dllexport) int ZClose(long long* ifltab);
 	__declspec(dllexport) int ZTsStore(long long* ifltab, zStructTimeSeries* tss, int storageFlag);
+	__declspec(dllexport) zStructTimeSeries* ZStructTsNewRegDoubles(const char* pathName, double* dArray, int numberValues, const char* startDate, const char* startTime, const char* units, const char* type);
+	__declspec(dllexport) zStructTimeSeries* ZStructTsNewRegFloats(const char* pathName, float* floatValues, int numberValues, const char* startDate, const char* startTime, const char* units, const char* type);
 }
