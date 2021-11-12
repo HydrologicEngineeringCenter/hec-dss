@@ -65,15 +65,15 @@ namespace Hec.Dss
       if (messageMethod != MethodID.MESS_METHOD_GENERAL_ID || messageLevel != LevelID.MESS_LEVEL_GENERAL)
       {
         //Call the version 6 and 7 set message level first, if the file is 6 then the ZSetMessageLevel will not work, and we can still use MethodIDs for 7.
-        DSS.ZSet("mlvl", "", (int)messageLevel);
-        DSS.ZSetMessageLevel((int)messageMethod, (int)messageLevel);
+        PInvoke.ZSet("mlvl", "", (int)messageLevel);
+        PInvoke.ZSetMessageLevel((int)messageMethod, (int)messageLevel);
 
       }
       _iflTabGC = GCHandle.Alloc(ifltab, GCHandleType.Pinned);
       int status;
       this.filename = filename;
       status = PInvoke.ZOpen(ifltab, filename);
-      versionNumber = DSS.ZGetVersion(ref ifltab);
+      versionNumber = PInvoke.ZGetVersion(ifltab);
 
       switch (status)
       {
@@ -838,7 +838,7 @@ namespace Hec.Dss
     /// <returns>6 or 7 depending on the version</returns>
     public int GetDSSFileVersion()
     {
-      return DSS.ZGetVersion(ref ifltab);
+      return PInvoke.ZGetVersion(ifltab);
     }
 
 
@@ -886,7 +886,7 @@ namespace Hec.Dss
     public void Dispose()
     {
       ActiveReaders.Remove(this);
-      DSS.ZClose(ifltab);
+      PInvoke.ZClose(ifltab);
       _iflTabGC.Free();
     }
 

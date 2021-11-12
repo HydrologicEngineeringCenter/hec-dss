@@ -49,7 +49,7 @@ namespace DSSUnitTests
             string fn = "crash_me6.dss";
 
             File.Delete(fn);
-            Hec.Dss.Native.DSS.ZSet("DSSV", "", 6);
+            PInvoke.ZSet("DSSV", "", 6);
 
       using (DssWriter w = new DssWriter(fn))
       {
