@@ -223,7 +223,6 @@ namespace Hec.Dss
         NativeTimeSeriesWrapper tss = PInvoke.NativeTsNewRegDoubles(pathName, dArray, startDate, startTime, units, type);
         if (qualities != null)
         {
-          tss.QualityArraySize = dArray.Length;
           tss.QualityElementSize = 1;
           tss.Quality = qualities;
         }
@@ -235,7 +234,6 @@ namespace Hec.Dss
         NativeTimeSeriesWrapper tss = PInvoke.NativeTsNewRegFloats(pathName, fArray, startDate, startTime, units, type);
         if (qualities != null)
         {
-          tss.QualityArraySize = fArray.Length;
           tss.QualityElementSize = 1;
           tss.Quality = qualities;
         }
