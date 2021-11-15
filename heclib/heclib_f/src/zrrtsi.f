@@ -512,9 +512,9 @@ C
             if (vdiStrLen.gt.0) then
               call stringToVerticalDatumInfo(
      *          vdiStr,
+     *          errMsg,
      *          nativeDatum,
      *          unit,
-     *          errMsg,
      *          elevation,
      *          offsetNgvd29,
      *          l_Ngvd29Estimated,

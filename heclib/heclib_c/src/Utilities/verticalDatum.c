@@ -1119,18 +1119,18 @@ int	getEffectiveVerticalDatum(
 //
 void stringtoverticaldatuminfo_(
         char    *inputStr,
+        char    *errorMessage,
         char    *nativeDatum,
         char    *unit,
-        char    *errorMessage,
         double  *elevation,
         double  *offsetNgvd29,
         int32_t *offsetNgvd29IsEstimate,
         double  *offsetNavd88,
         int32_t *offsetNavd88IsEstimate,
         slen_t   lenInputStr,
+        slen_t   lenErrorMessage,
         slen_t   lenNativeDatum,
-        slen_t   lenUnit,
-        slen_t   lenErrorMessage) {
+        slen_t   lenUnit) {
  
     char *lInputStr = (char *)malloc(lenInputStr+1);
     F2C(inputStr, lInputStr, lenInputStr, lenInputStr+1);
@@ -1163,21 +1163,21 @@ void stringtoverticaldatuminfo_(
 //
 // See verticalDatum.h for documentation
 //
-void verticalDatumInfoToString_(
+void verticaldatuminfotostring_(
         char    *outputStr,
+        char    *errorMessage,
         char    *nativeDatum,
         char    *unit,
-        char    *errorMessage,
         double  *elevation,
         double  *offsetNgvd29,
         int32_t *offsetNgvd29IsEstimate,
         double  *offsetNavd88,
         int32_t *offsetNavd88IsEstimate,
         int32_t *generateCompressed,
+        slen_t   lenErrorMessage,
         slen_t   lenOutputStr,
         slen_t   lenNativeDatum,
-        slen_t   lenUnit,
-        slen_t   lenErrorMessage) {
+        slen_t   lenUnit) {
          
     char *errmsg;
     char *results;
@@ -1188,7 +1188,7 @@ void verticalDatumInfoToString_(
     vdi.offsetToNgvd29 = *offsetNgvd29;
     vdi.offsetToNavd88IsEstimate = *offsetNgvd29IsEstimate;
     vdi.offsetToNavd88 = *offsetNavd88;
-    vdi.offsetToNavd88IsEstimate = *offsetNavd88;
+    vdi.offsetToNavd88IsEstimate = *offsetNavd88IsEstimate;
     errmsg = verticalDatumInfoToString(&results, &vdi, *generateCompressed);
     C2F(errmsg, errorMessage, lenErrorMessage);
     C2F(results, outputStr, lenOutputStr);

@@ -387,54 +387,54 @@ int	getEffectiveVerticalDatum(
  *  interface
  *      subroutine stringToVerticalDatumInfo( &
  *          inputStr,                         &
+ *          errorMessage,                     &
  *          nativeDatum,                      &
  *          unit,                             &
- *          error_message,                    &
  *          elevation,                        &
- *          offset_ngvd_29,                   &
- *          offset_ngvd_29_is_estimate,       &
- *          offset_navd_88,                   &
- *          offset_navd_88_is_estimate)
+ *          offsetNgvd29,                     &
+ *          offsetNgvd29IsEstimate,           &
+ *          offsetNavd88,                     &
+ *          offsetNavd88IsEstimate)
  *          character (len = *),  intent(in)  :: inputStr
+ *          character (len = *),  intent(out) :: errorMessage
  *          character (len = *),  intent(out) :: nativeDatum
  *          character (len = *),  intent(out) :: unit
- *          character (len = *),  intent(out) :: error_message
  *          real      (kind = 8), intent(out) :: elevation
- *          real      (kind = 8), intent(out) :: offset_ngvd_29
- *          logical   (kind = 4), intent(out) :: offset_ngvd_29_is_estimate
- *          real      (kind = 8), intent(out) :: offset_navd_88
- *          logical   (kind = 4), intent(out) :: offset_navd_88_is_estimate
+ *          real      (kind = 8), intent(out) :: offsetNgvd29
+ *          logical   (kind = 4), intent(out) :: offsetNgvd29IsEstimate
+ *          real      (kind = 8), intent(out) :: offsetNavd88
+ *          logical   (kind = 4), intent(out) :: offsetNavd88IsEstimate
  *      end subroutine stringToVerticalDatumInfo
  *  end interface
  *
  * @param inputStr                   Fortran CHARACTER (LEN=*) input for input XML in raw or compressed format.
+ * @param errorMessage              Fortran CHARACTER (LEN=*) output for error message. Empty on success. Length should be >= 64
  * @param nativeDatum                Fortran CHARACTER (LEN=*) output for native datum. Length should be >= 16.
  * @param unit                       Fortran CHARACTER (LEN=*) output for unit of elevation and offsets. Length should be >= 2
- * @param error_message              Fortran CHARACTER (LEN=*) output for error message. Empty on success. Length should be >= 64
  * @param elevation                  Fortran REAL (KIND=4) output for elevation. UNDEFINED_VERTICAL_DATUM_VALUE if no value in XML
- * @param offset_ngvd_29             Fortran REAL (KIND=4) output for the offset to NGVD-29. UNDEFINED_VERTICAL_DATUM_VALUE if no value in XML
- * @param offset_ngvd_29_is_estimate Fortran LOGICAL (KIND=4) output for whether the offset to NGVD-29 is estimated
- * @param offset_navd_88             Fortran REAL (KIND=4) output for the offset to NAVD-88. UNDEFINED_VERTICAL_DATUM_VALUE if no value in XML
- * @param offset_navd_88_is_estimate Fortran LOGICAL (KIND=4) output for whether the offset to NAVD-88 is estimated
- * @param len_input_str              Fortran hidden parameter for declared length of inputStr parameter
- * @param len_native_datum           Fortran hidden parameter for declared length of nativeDatum parameter
- * @param len_unit                   Fortran hidden parameter for declared length of unit parameter
- * @param len_error_message          Fortran hidden parameter for declared length of error_message parameter
+ * @param offsetNgvd29             Fortran REAL (KIND=4) output for the offset to NGVD-29. UNDEFINED_VERTICAL_DATUM_VALUE if no value in XML
+ * @param offsetNgvd29IsEstimate Fortran LOGICAL (KIND=4) output for whether the offset to NGVD-29 is estimated
+ * @param offsetNavd88             Fortran REAL (KIND=4) output for the offset to NAVD-88. UNDEFINED_VERTICAL_DATUM_VALUE if no value in XML
+ * @param offsetNavd88IsEstimate Fortran LOGICAL (KIND=4) output for whether the offset to NAVD-88 is estimated
+ * @param lenInputStr              Fortran hidden parameter for declared length of inputStr parameter
+ * @param lenErrorMessage          Fortran hidden parameter for declared length of error_message parameter
+ * @param lenNativeDatum           Fortran hidden parameter for declared length of nativeDatum parameter
+ * @param lenUnit                   Fortran hidden parameter for declared length of unit parameter
  */
 void stringtoverticaldatuminfo_(
         char    *inputStr,
+        char    *errorMessage,
         char    *nativeDatum,
         char    *unit,
-        char    *error_message,
         double  *elevation,
-        double  *offset_ngvd_29,
-        int32_t *offset_ngvd_29_is_estimate,
-        double  *offset_navd_88,
-        int32_t *offset_navd_88_is_estimate,
-        slen_t   len_input_str,
-        slen_t   len_native_datum,
-        slen_t   len_unit,
-        slen_t   len_error_message);
+        double  *offsetNgvd29,
+        int32_t *offsetNgvd29IsEstimate,
+        double  *offsetNavd88,
+        int32_t *offsetNavd88IsEstimate,
+        slen_t   lenInputStr,
+        slen_t   lenErrorMessage,
+        slen_t   lenNativeDatum,
+        slen_t   lenUnit);
 /**
  * Fortan wrapper for verticalDatumInfoToString
  *
@@ -442,59 +442,59 @@ void stringtoverticaldatuminfo_(
  *
  *  interface
  *      subroutine verticalDatumInfoToString( &
- *          output_str,                       &
+ *          outputStr,                        &
+ *          errorMessage,                     &
  *          nativeDatum,                      &
  *          unit,                             &
- *          error_message,                    &
  *          elevation,                        &
- *          offset_ngvd_29,                   &
- *          offset_ngvd_29_is_estimate,       &
- *          offset_navd_88,                   &
- *          offset_navd_88_is_estimate        &
- *          generate_compressed)
- *          character (len = *),  intent(out) :: compressed
+ *          offsetNgvd29,                     &
+ *          offsetNgvd29IsEstimate,           &
+ *          offsetNavd88,                     &
+ *          offsetNavd88IsEstimate,           &
+ *          generateCompressed)
+ *          character (len = *),  intent(out) :: outputStr
+ *          character (len = *),  intent(out) :: errorMessage
  *          character (len = *),  intent(in)  :: nativeDatum
  *          character (len = *),  intent(in)  :: unit
- *          character (len = *),  intent(out) :: error_message
  *          real      (kind = 8), intent(in)  :: elevation
- *          real      (kind = 8), intent(in)  :: offset_ngvd_29
- *          logical   (kind = 4), intent(in)  :: offset_ngvd_29_is_estimate
- *          real      (kind = 8), intent(in)  :: offset_navd_88
- *          logical   (kind = 4), intent(in)  :: offset_navd_88_is_estimate
- *          logical   (kind = 4), intent(in)  :: generate_compressed
+ *          real      (kind = 8), intent(in)  :: offsetNgvd29
+ *          logical   (kind = 4), intent(in)  :: offsetNgvd29IsEstimate
+ *          real      (kind = 8), intent(in)  :: offsetNavd88
+ *          logical   (kind = 4), intent(in)  :: offsetNavd88IsEstimate
+ *          logical   (kind = 4), intent(in)  :: generateCompressed
  *      end subroutine verticalDatumInfoToString
  *  end interface
  *
- * @param output_str                 Fortran CHARACTER (LEN=*) output in raw (XML) or compressed format. Length should be >= 400
- * @param nativeDatum                Fortran CHARACTER (LEN=*) input for native datum.
- * @param unit                       Fortran CHARACTER (LEN=*) input for unit of elevation and offsets.
- * @param error_message              Fortran CHARACTER (LEN=*) output for error message. Empty on success. Length should be >= 64
- * @param elevation                  Fortran REAL (KIND=4) input for elevation. UNDEFINED_VERTICAL_DATUM_VALUE if unknown or n/a
- * @param offset_ngvd_29             Fortran REAL (KIND=4) input for the offset to NGVD-29. UNDEFINED_VERTICAL_DATUM_VALUE if n/a
- * @param offset_ngvd_29_is_estimate Fortran LOGICAL (KIND=4) input for whether the offset to NGVD-29 is estimated
- * @param offset_navd_88             Fortran REAL (KIND=4) input for the offset to NAVD-88. UNDEFINED_VERTICAL_DATUM_VALUE if n/a
- * @param offset_navd_88_is_estimate Fortran LOGICAL (KIND=4) input for whether the offset to NAVD-88 is estimated
- * @param generate_compressed        Fortran LOGICAL (KIND=4) input for whether to generate compressed or raw (XML) string
- * @param len_output_str             Fortran hidden parameter for declared length of output_str parameter
- * @param len_native_datum           Fortran hidden parameter for declared length of nativeDatum parameter
- * @param len_unit                   Fortran hidden parameter for declared length of unit parameter
- * @param len_error_message          Fortran hidden parameter for declared length of error_message parameter
+ * @param outputStr              Fortran CHARACTER (LEN=*) output in raw (XML) or compressed format. Length should be >= 400
+ * @param errorMessage           Fortran CHARACTER (LEN=*) output for error message. Empty on success. Length should be >= 64
+ * @param nativeDatum            Fortran CHARACTER (LEN=*) input for native datum.
+ * @param unit                   Fortran CHARACTER (LEN=*) input for unit of elevation and offsets.
+ * @param elevation              Fortran REAL (KIND=4) input for elevation. UNDEFINED_VERTICAL_DATUM_VALUE if unknown or n/a
+ * @param offsetNgvd29           Fortran REAL (KIND=4) input for the offset to NGVD-29. UNDEFINED_VERTICAL_DATUM_VALUE if n/a
+ * @param offsetNgvd29IsEstimate Fortran LOGICAL (KIND=4) input for whether the offset to NGVD-29 is estimated
+ * @param offsetNavd88           Fortran REAL (KIND=4) input for the offset to NAVD-88. UNDEFINED_VERTICAL_DATUM_VALUE if n/a
+ * @param offsetNavd88IsEstimate Fortran LOGICAL (KIND=4) input for whether the offset to NAVD-88 is estimated
+ * @param generateCompressed     Fortran LOGICAL (KIND=4) input for whether to generate compressed or raw (XML) string
+ * @param len_output_str         Fortran hidden parameter for declared length of output_str parameter
+ * @param len_error_message      Fortran hidden parameter for declared length of error_message parameter
+ * @param len_native_datum       Fortran hidden parameter for declared length of nativeDatum parameter
+ * @param len_unit               Fortran hidden parameter for declared length of unit parameter
  */
-void verticalDatumInfoToString_(
-        char    *output_str,
+void verticaldatuminfotostring_(
+        char    *outputStr,
+        char    *errorMessage,
         char    *nativeDatum,
         char    *unit,
-        char    *error_message,
         double  *elevation,
-        double  *offset_ngvd_29,
-        int32_t *offset_ngvd_29_is_estimate,
-        double  *offset_navd_88,
-        int32_t *offset_navd_88_is_estimate,
-        int32_t *generate_compressed,
-        slen_t   len_output_str,
-        slen_t   len_native_datum,
-        slen_t   len_unit,
-        slen_t   len_error_message);
+        double  *offsetNgvd29,
+        int32_t *offsetNgvd29IsEstimate,
+        double  *offsetNavd88,
+        int32_t *offsetNavd88IsEstimate,
+        int32_t *generateCompressed,
+        slen_t   lenErrorMessage,
+        slen_t   lenOutputStr,
+        slen_t   lenNativeDatum,
+        slen_t   lenUnit);
  
 #ifdef __cplusplus
 } // extern "C"

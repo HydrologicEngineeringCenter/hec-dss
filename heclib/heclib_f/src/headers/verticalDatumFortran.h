@@ -8,6 +8,7 @@ C     Vertical Datums
       CHARACTER*16 CVD_NGVD29 ! NGVD-20 vertical datum (char)
       CHARACTER*16 CVD_OTHER  ! OTHER   vertical datum (char)
       CHARACTER*16 CVD_LOCAL  ! LOCAL   vertical datum (char) [SAME AS OTHER]
+      INTEGER IVDATUM         ! current default vertical datum (int)
       INTEGER IVD_UNSET       ! UNSET   vertical datum (int)
       INTEGER IVD_NAVD88      ! NAVD-88 vertical datum (int)
       INTEGER IVD_NGVD29      ! NGVD-20 vertical datum (int)
