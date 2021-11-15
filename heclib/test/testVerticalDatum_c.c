@@ -223,7 +223,7 @@ void main (int argc, char *argv[]) {
         int status;
         zStructTimeSeries *tss = NULL;
         char *errmsg;
-        char *filename[]      = {"v6.dss", "v7.dss"};
+        char *filename[]      = {"v6_c.dss", "v7_c.dss"};
         char *pathnames[2][2] = {{"//TestTsLoc/Elev//1Hour/Doubles/",    "//TestTsLoc/Elev//1Hour/Floats/"},
                                  {"//TestTsLoc/Elev//Ir-Month/Doubles/", "//TestTsLoc/Elev//Ir-Month/Floats/"}};
         double dvalues[3][6]  = {{1000,1001,1002,1003,1004,1005},                           // ft
@@ -455,9 +455,9 @@ void main (int argc, char *argv[]) {
                                                 tss->units = mallocAndCopy(unitSpec);
                                             }
                                         }
-                                        //--------------------------------------------------------//
-                                        // store the time series in the overridden vertical datum //
-                                        //--------------------------------------------------------//
+                                        //-------------------------------------------------------//
+                                        // store the time series in the specified vertical datum //
+                                        //-------------------------------------------------------//
                                         status = ztsStore(ifltab, tss, 0);
                                         //-----------------------------------------------------------------------------//
                                         // figure out whether the ztsStore should have succeeded, and test accordingly //
@@ -562,7 +562,7 @@ void main (int argc, char *argv[]) {
         zStructPairedData *pds;
         int    status;
         char  *errmsg;
-        char  *filename[2]      = {"v6.dss", "v7.dss"};
+        char  *filename[2]      = {"v6_c.dss", "v7_c.dss"};
         char  *pathnames[2][2]  = {{"//TestPdLoc/Stage-Elev///Doubles/", "//TestPdLoc/Stage-Elev///Floats/"},
                                    {"//TestPdLoc/Elev-Stage///Doubles/", "//TestPdLoc/Elev-Stage///Floats/"}};
         char  *type             = "Linear";
