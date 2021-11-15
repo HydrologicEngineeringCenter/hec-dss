@@ -11,9 +11,9 @@ ifeq ($(UNAME_S),Linux)
 	LFLAGS=-lm -lz
 endif
 
-all: testVerticalDatum7
+all: testVerticalDatum_c
 
-testVerticalDatum7 : testVerticalDatum7.o
+testVerticalDatum_c : testVerticalDatum_c.o
 	$(LD) $(LFLAGS) $< -o $@ $(LIBS)
 	mv -f $@ Output
 	rm $<
