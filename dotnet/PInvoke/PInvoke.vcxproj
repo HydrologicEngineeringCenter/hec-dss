@@ -175,6 +175,7 @@
     <ClInclude Include="NativeTimeSeriesWrapper.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="pinvoke.h" />
+    <ClInclude Include="pinvokeTools.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
@@ -186,6 +187,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="pinvoke.cpp" />
+    <ClCompile Include="pinvokeTools.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\heclib\grid\grid.vcxproj">

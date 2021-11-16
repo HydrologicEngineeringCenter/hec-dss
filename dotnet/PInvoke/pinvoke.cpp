@@ -43,4 +43,36 @@ zStructTimeSeries* ZStructTsNewRegFloats(const char* pathName, float* floatValue
 	return ts;
 }
 
+zStructTimeSeries* ZStructTsNewIrregDoubles(const char* pathName, double* doubleValues, int numberValues, int* itimes, int timeGranularitySeconds, const char* startDateBase, const char* units, const char* type)
+{
+	zStructTimeSeries* ts = zstructTsNewIrregDoubles(pathName, doubleValues, numberValues, itimes, timeGranularitySeconds, startDateBase, units, type);
+	ts->allocated[zSTRUCT_TS_doubleValues] = 1;
+	ts->allocated[zSTRUCT_TS_times] = 1;
+	return ts;
+}
+
+zStructTimeSeries* ZStructTsNewIrregFloats(const char* pathName, float* floatValues, int numberValues, int* itimes, int timeGranularitySeconds, const char* startDateBase, const char* units, const char* type)
+{
+	zStructTimeSeries* ts = zstructTsNewIrregFloats(pathName, floatValues, numberValues, itimes, timeGranularitySeconds, startDateBase, units, type);
+	ts->allocated[zSTRUCT_TS_floatValues] = 1;
+	ts->allocated[zSTRUCT_TS_times] = 1;
+	return ts;
+}
+
+int ZTsRetrieve(long long* ifltab, zStructTimeSeries* tss, int retrieveFlag, int retrieveDoublesFlag, int boolRetrieveQualityNotes)
+{
+
+	return ztsRetrieve(ifltab, tss, retrieveFlag, retrieveDoublesFlag, boolRetrieveQualityNotes);
+}
+
+zStructTimeSeries* ZStructTsNewTimes(const char* pathName, const char* startDate, const char* startTime, const char* endDate, const char* endTime)
+{
+	return zstructTsNewTimes(pathName, startDate, startTime, endDate, endTime);
+}
+
+zStructTimeSeries* ZStructTsNew(const char* pathName)
+{
+	return zstructTsNew(pathName);
+}
+
 
