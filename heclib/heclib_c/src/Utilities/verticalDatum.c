@@ -358,7 +358,9 @@ int b64Decode(char **decoded, int *decodedLen, const char *toDecode) {
         --len;
  
     }
-    if (len < 0) return len;
+    if (len < 0) {
+        return len;
+    }
     *decoded = (char *)malloc(strlen(toDecode));
     const char *c = toDecode;
     char i[4];
@@ -464,7 +466,6 @@ char *decodeAndGunzip(char **results, const char *inputBuf) {
     zstr.next_out  = textBuf;
     rc = inflateInit2(&zstr, 16+MAX_WBITS);
     if (rc != Z_OK) {
-        fprintf(stderr, "Error code %d on inflateInit2(): %s\n", rc, zstr.msg);
         free(decodedBuf);
         return ERROR_ON_INFLATEINIT2;
     }
@@ -473,13 +474,11 @@ char *decodeAndGunzip(char **results, const char *inputBuf) {
     //---------------------------------//
     rc = inflate(&zstr, Z_FINISH);
     if (rc != Z_OK && rc != Z_STREAM_END) {
-        fprintf(stderr, "Error code %d on inflate(): %s\n", rc, zstr.msg == NULL ? "Unknown" : zstr.msg);
         free(decodedBuf);
         return ERROR_ON_INFLATE;
     }
     rc = inflateEnd(&zstr);
     if (rc != Z_OK) {
-        fprintf(stderr, "Error code %d on inflateEnd(): %s\n", rc, zstr.msg);
         free(decodedBuf);
         return ERROR_ON_INFLATEEND;
     }
@@ -519,18 +518,15 @@ char *gzipAndEncode(char **results, const char *inputBuf) {
     //-------------------------//
     rc = deflateInit2(&zstr, Z_DEFAULT_COMPRESSION, Z_DEFLATED, 16+MAX_WBITS, 8, Z_DEFAULT_STRATEGY);
     if (rc != Z_OK) {
-        fprintf(stderr, "Error code %d on deflateInit2(): %s\n", rc, zstr.msg);
         return ERROR_ON_DEFLATEINIT2;
     }
     rc = deflate(&zstr, Z_FINISH);
     if (rc != Z_OK && rc != Z_STREAM_END) {
-        fprintf(stderr, "Error code %d on deflate(): %s\n", rc, zstr.msg);
         free(compressedBuf);
         return ERROR_ON_DEFLATE;
     }
     rc = deflateEnd(&zstr);
     if (rc != Z_OK) {
-        fprintf(stderr, "Error code %d on deflateEnd(): %s\n", rc, zstr.msg);
         free(compressedBuf);
         return ERROR_ON_DEFLATEEND;
     }
@@ -740,7 +736,6 @@ char *stringToVerticalDatumInfo(verticalDatumInfo *vdi, const char *inputStr) {
     }
     errmsg = findTextBetween(&tbi, xml, "<vertical-datum-info", "</vertical-datum-info>");
     if (errmsg != NULL || tbi.lenNonBlank == 0) {
-        fprintf(stderr, "%s\n", errmsg);
         free(xml);
         return XML_IS_NOT_A_VALID_VERTICAL_DATUM_INFO_INSTANCE;
     }
@@ -749,7 +744,6 @@ char *stringToVerticalDatumInfo(verticalDatumInfo *vdi, const char *inputStr) {
     //------------------------//
     errmsg = findTextBetween(&tbi, tbi.first, "unit=\"", "\"");
     if (errmsg != NULL || tbi.lenNonBlank == 0) {
-        fprintf(stderr, "%s\n", errmsg);
         free(xml);
         return NO_ELEVATION_UNIT_IN_XML;
     }
@@ -763,7 +757,6 @@ char *stringToVerticalDatumInfo(verticalDatumInfo *vdi, const char *inputStr) {
     //----------------------//
     errmsg = findTextBetween(&tbi, xml, "<native-datum>", "</native-datum>");
     if (errmsg != NULL || tbi.lenNonBlank == 0) {
-        fprintf(stderr, "%s\n", errmsg);
         free(xml);
         return NO_NATIVE_DATUM_IN_XML;
     }
@@ -830,7 +823,6 @@ char *stringToVerticalDatumInfo(verticalDatumInfo *vdi, const char *inputStr) {
         }
         errmsg = findTextBetween(&tbi, offsetBuf[i], "<to-datum>", "</to-datum>");
         if (errmsg != NULL || tbi.lenNonBlank == 0) {
-            fprintf(stderr, "%s\n", errmsg);
             free(xml);
             return INVALID_OFFSET_BLOCK_IN_XML;
         }
@@ -842,7 +834,6 @@ char *stringToVerticalDatumInfo(verticalDatumInfo *vdi, const char *inputStr) {
             ngvd29OffsetProcessed = 1;
             errmsg = findTextBetween(&tbi, offsetBuf[i], "<value>", "</value>");
             if (errmsg != NULL || tbi.lenNonBlank == 0) {
-                fprintf(stderr, "%s\n", errmsg);
             free(xml);
             return NO_NGVD_29_OFFSET_VALUE_IN_XML;
             }
@@ -857,7 +848,6 @@ char *stringToVerticalDatumInfo(verticalDatumInfo *vdi, const char *inputStr) {
             }
             errmsg = findTextBetween(&tbi, offsetBuf[i], "estimate=\"", "\"");
             if (errmsg != NULL || tbi.lenNonBlank == 0) {
-                fprintf(stderr, "%s\n", errmsg);
                 free(xml);
                 return INVALID_NGVD_29_OFFSET_BLOCK_IN_XML;
             }
@@ -880,7 +870,6 @@ char *stringToVerticalDatumInfo(verticalDatumInfo *vdi, const char *inputStr) {
             navd88OffsetProcessed = 1;
             errmsg = findTextBetween(&tbi, offsetBuf[i], "<value>", "</value>");
             if (errmsg != NULL || tbi.lenNonBlank == 0) {
-                fprintf(stderr, "%s\n", errmsg);
                 free(xml);
                 return NO_NAVD_88_OFFSET_VALUE_IN_XML;
             }
@@ -896,7 +885,6 @@ char *stringToVerticalDatumInfo(verticalDatumInfo *vdi, const char *inputStr) {
             }
             errmsg = findTextBetween(&tbi, offsetBuf[i], "estimate=\"", "\"");
             if (errmsg != NULL || tbi.lenNonBlank == 0) {
-                fprintf(stderr, "%s\n", errmsg);
                 free(xml);
                 return INVALID_NAVD_88_OFFSET_BLOCK_IN_XML;
             }
@@ -990,7 +978,6 @@ verticalDatumInfo *extractVerticalDatumInfoFromUserHeader(const int *userHeader,
             vdi = (verticalDatumInfo *)malloc(sizeof(verticalDatumInfo));
             char *errmsg = stringToVerticalDatumInfo(vdi, vdiStr);
             if (errmsg != NULL) {
-                fprintf(stderr, "%s\n", errmsg);
                 if (vdi) {
                     free(vdi);
                 }
@@ -1140,7 +1127,7 @@ void stringtoverticaldatuminfo_(
     errmsg = stringToVerticalDatumInfo(&vdi, lInputStr);
     if (errmsg) {
         C2F(errmsg, errorMessage, lenErrorMessage);
-        C2F(" ", nativeDatum, lenNativeDatum);
+        C2F(CVERTICAL_DATUM_UNSET, nativeDatum, lenNativeDatum);
         C2F(" ", unit, lenUnit);
         *elevation = UNDEFINED_VERTICAL_DATUM_VALUE;
         *offsetNgvd29 = UNDEFINED_VERTICAL_DATUM_VALUE;
