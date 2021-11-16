@@ -289,6 +289,7 @@ C
      *              ' to ',cvdatum(1:len_trim(cvdatum)),
      *              ' Elevations were not converted.'
                   end if
+                  istat = 13
                   return
                 end if
                 if (l_indElev) then
@@ -303,6 +304,7 @@ C
      *                ') FOR VERTICAL DATUM CONVERSION',
      *                ' Elevations were not converted.'
                     end if
+                    istat = 13
                     return
                   end if  
                 else
@@ -317,6 +319,7 @@ C
      *                ') FOR VERTICAL DATUM CONVERSION',
      *                ' Elevations were not converted.'
                     end if
+                    istat = 13
                     return
                   end if  
                 end if

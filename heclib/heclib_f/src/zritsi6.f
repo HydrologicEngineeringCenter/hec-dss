@@ -615,9 +615,6 @@ C
       !---------------------------------------------------------!
       ! convert values to requested vertical datum if necessary !
       !---------------------------------------------------------!
-      !---------------------------------------------------------!
-      ! convert values to requested vertical datum if necessary !
-      !---------------------------------------------------------!
       call zufpn(ca, na, cb, nb, cc, nc, cd, nd, ce, ne, cf, nf,
      *           cpath, len_trim(cpath), istat)
       call upcase(cc)
@@ -659,6 +656,7 @@ C
      *              ' to ',cvdatum(1:len_trim(cvdatum)),
      *              ' Elevations were not converted.'
                   end if
+                  istat = 13
                   return
                 end if
                 call getoffset(vertDatumOffset, unit, cunits)
@@ -672,6 +670,7 @@ C
      *              ' CONVERSION',
      *              ' Elevations were not converted.'
                   end if
+                  istat = 13
                   return
                 end if
                 if (lgetdob) then

@@ -537,7 +537,8 @@ C
      *              ' to ',cvdatum(1:len_trim(cvdatum)),
      *              ' Elevations were not converted.'
                   end if
-                  return
+                  istat = 13
+                  go to 990
                 end if
                 call getoffset(vertDatumOffset, unit, cunits)
                 if (vertDatumOffset.eq.
@@ -550,7 +551,8 @@ C
      *              ' CONVERSION',
      *              ' Elevations were not converted.'
                   end if
-                  return
+                  istat = 13
+                  go to 990
                 end if
                 if (lgetdob) then
                   do i = 1, nvals
