@@ -449,7 +449,16 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 					tss->locationStruct->verticalDatum == 1 ? "NAVD-88" :
 					tss->locationStruct->verticalDatum == 2 ? "NGVD-29" : "OTHER",
 					cvertical_datum);
-				zmessage(ifltab, errmsg);
+				status = zerrorProcessing(
+					ifltab, 
+					DSS_FUNCTION_ztsRetrieve_ID, 
+					zdssErrorCodes.INVALID_HEADER_PARAMETER, 
+				    intervalType, 
+					0,
+					zdssErrorSeverity.WARNING, 
+					tss->pathname, 
+					errmsg);
+				return status;
 			}
 			else {
 				double offset;
@@ -471,11 +480,20 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 							errmsg, 
 							"\nData unit (%s) and/or offset unit (%s) is invalid for vertical datum conversion.\n"
 							"Conversion to datum '%s' could not be performed.\n"
-							"No data stored.", 
+							"Values not converted.", 
 							tss->units, 
 							vdi->unit, 
 							cvertical_datum);
-						zmessage(ifltab, errmsg);
+						status = zerrorProcessing(
+							ifltab, 
+							DSS_FUNCTION_ztsRetrieve_ID, 
+							zdssErrorCodes.INVALID_HEADER_PARAMETER, 
+							intervalType, 
+							0,
+							zdssErrorSeverity.WARNING, 
+							tss->pathname, 
+							errmsg);
+						return status;
 					}
 					else {
 						for (int i = 0; i < tss->numberValues; ++i) {
