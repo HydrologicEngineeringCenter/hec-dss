@@ -31,7 +31,7 @@ namespace Hec.Dss
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
     private extern static IntPtr ZStructTsNewIrregDoubles(string pathName, double[] dArray, int numberValues, int[] itimes, int timeGranularitySeconds, string startDateBase, string units, string type);
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
-    private extern static IntPtr ZStructTsNewIrregDoubles(string pathName, float[] fArray, int numberValues, int[] itimes, int timeGranularitySeconds, string startDateBase, string units, string type);
+    private extern static IntPtr ZStructTsNewIrregFloats(string pathName, float[] fArray, int numberValues, int[] itimes, int timeGranularitySeconds, string startDateBase, string units, string type);
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
     private extern static IntPtr ZStructTsNewTimes(string pathName, string startDate, string startTime, string endDate, string endTime);
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
