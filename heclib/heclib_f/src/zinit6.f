@@ -1055,7 +1055,8 @@ C     Vertical Datums (same order as java DataContainer)
       DATA  CVD_OTHER  /'OTHER'  /, IVD_OTHER  /3/ 
       DATA  CVD_LOCAL  /'OTHER'  /, IVD_LOCAL  /3/
       
-      DATA VERTICAL_DATUM_INFO_PARAM /'verticalDatumInfo'/
+      DATA VERTICAL_DATUM_INFO_PARAM      /'verticalDatumInfo'    /
+      DATA VERTICAL_DATUM_PARAM           /'verticalDatum'        /
       DATA UNDEFINED_VERTICAL_DATUM_VALUE /-3.4028234663852886e+38/
 C
 C

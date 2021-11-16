@@ -1,7 +1,9 @@
 C     Vertical Datums
       DOUBLE PRECISION UNDEFINED_VERTICAL_DATUM_VALUE
       CHARACTER*17 VERTICAL_DATUM_INFO_PARAM
-      CHARACTER*7  PADDING 
+      CHARACTER*7  PADDING1 
+      CHARACTER*13 VERTICAL_DATUM_PARAM
+      CHARACTER*3  PADDING2
       CHARACTER*16 CVDATUM    ! current default vertical datum (char)
       CHARACTER*16 CVD_UNSET  ! UNSET   vertical datum (char)
       CHARACTER*16 CVD_NAVD88 ! NAVD-88 vertical datum (char)
@@ -17,7 +19,9 @@ C     Vertical Datums
       COMMON /VERTICAL_DATUM/ 
      *        UNDEFINED_VERTICAL_DATUM_VALUE,
      *        VERTICAL_DATUM_INFO_PARAM,
-     *        PADDING,
+     *        PADDING1,
+     *        VERTICAL_DATUM_PARAM,
+     *        PADDING2,
      *        CVDATUM, 
      *        CVD_UNSET, 
      *        CVD_NAVD88,
