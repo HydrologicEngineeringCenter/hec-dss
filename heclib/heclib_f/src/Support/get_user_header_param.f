@@ -29,15 +29,24 @@
       !-------------------------------------------------------------------!  
       ! copy the user header to a local variable so we can equivalence it !
       !-------------------------------------------------------------------!  
+      iuhead_copy = 0
       max_head_len = min(nuhead, size(iuhead_copy))
       do i = 1, max_head_len
         iuhead_copy(i) = iuhead(i)
       end do
-      !-------------------------------------------------!
-      ! blank any null terminator (and following chars) !
-      !-------------------------------------------------!
+      !--------------------------------------------------------!
+      ! blank everything past the copy size or null terminator !
+      !--------------------------------------------------------!
       ifirst = index(cuhead, char(0))
-      if (ifirst.gt.0) cuhead(ifirst:) = ' '
+      if (ifirst.gt.0) then
+        cuhead(ifirst:) = ' '
+      else
+        if (max_head_len.lt.size(iuhead_copy)) then
+          ifirst = max_head_len*4
+          ! write(*,*) 'Blanking at max_head_len: ',ifirst
+          cuhead(ifirst:) = ' '
+        end if
+      end if
       !-----------------------------------------!
       ! locate the parameter name in the header !
       !-----------------------------------------!
@@ -57,11 +66,12 @@
         ilast = index(cuhead(ifirst:), ';')
         if (ilast.eq.0) then
           ilast = ifirst + len(cvalue)
-          cvalue = cuhead(ifirst:)
         else
-            if (ilast.gt.ifirst + len(cvalue)) then
-              ilast = ifirst + len(cvalue)
-            end if  
+          if (ilast.gt.ifirst + len(cvalue)) then
+            ilast = ifirst + len(cvalue)
+          else
+            ilast = ilast + ifirst - 1 
+          end if
         end if  
         cvalue = cuhead(ifirst:ilast-1)
       end if
