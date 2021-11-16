@@ -93,6 +93,22 @@ module modVerticalDatumInfo
             byteCountToIntCount = (byteCount-1) / 4 + 1
         end function byteCountToIntCount
 
+        integer function mpm(ctime)
+            !--------------------------------------------------------------------!
+            ! Minutes Past Midnight - convert a 4-digit time in hhmm to minutes  !
+            !--------------------------------------------------------------------!
+            ! heclib function ihm2m errored on '0100' and this is simpler anyway !
+            !--------------------------------------------------------------------!
+        character(len=*) :: ctime
+            integer      :: itime = -1
+            read(ctime,'(i4)') itime
+            if (itime >= 0 .and. itime < 2500) then
+                mpm = itime / 100 * 60 + mod(itime, 100)
+            else
+                mpm = -1
+            end if
+        end function mpm 
+
     end module modVerticalDatumInfo
 
 
@@ -102,9 +118,11 @@ subroutine testStoreRetrieveTimeSeries()
 
     integer (kind=8)        :: ifltab(250)
     integer (kind=4)        :: status, numberValues, i, j, k, k2, k3, kk, l, m, n, o, p
-    integer (kind=4)        :: quality(6), itimes(6,2),userHeader(100), userHeaderLen
-    real (kind=8)           :: dvalues(6,3), dvals(6)
-    real (kind=4)           :: fvalues(6,3), fvals(6)
+    integer (kind=4)        :: quality(24), itimes(6,2),userHeader(100), userHeaderLen
+    integer (kind=4)        :: intervalOffset, compressionMethod, timesRetrieved(24), baseDate
+    integer (kind=4)        :: startDay, endDay
+    real (kind=8)           :: dvalues(6,3), dvals(24)
+    real (kind=4)           :: fvalues(6,3), fvals(24)
     character (len=300)     :: errmsg, vdiStr
     character (len=80)      :: filename(2)
     character (len=80)      :: pathnames(2,2)
@@ -113,6 +131,7 @@ subroutine testStoreRetrieveTimeSeries()
     character (len=16)      :: startDate(2), endDate(2)
     character (len=4)       :: startTime, endTime
     character (len=400)     :: userHeaderStr
+    logical                 :: readQuality, qualityWasRead
     type(verticalDatumInfo) :: vdi(2)
 
     integer  :: ivdatum
@@ -120,9 +139,12 @@ subroutine testStoreRetrieveTimeSeries()
 
     equivalence (userHeader, userHeaderStr)
 
-    numberValues = 6
-
-    quality = (/0,0,0,0,0,0/)
+    ifltab = 0
+    quality = 0.
+    userHeader = 0
+    dvals = 0.
+    fvals = 0.
+    readQuality = .true.
 
     itimes = reshape((/                                             &
         64035420, 64035480, 64035540, 64035600, 64035660, 64035720, &
@@ -252,7 +274,8 @@ subroutine testStoreRetrieveTimeSeries()
                         do n = 1, 2
                             do o = 1, 2
                                 do p = 1, 2
-                                    ! write(0,*) i, j, k, l, m, n, o, p
+                                    write(*,*) i, j, k, l, m, n, o, p
+                                    ifltab = 0
                                     if (i == 1) then
                                         call zopen6(ifltab, filename(i), status)
                                     else
@@ -293,12 +316,15 @@ subroutine testStoreRetrieveTimeSeries()
                                     ! store the time series in the specified vertical datum !
                                     !-------------------------------------------------------!
                                     userHeaderLen = byteCountToIntCount(len_trim(userHeaderStr))
+                                    numberValues = 6
+                                    write(*,*) userHeaderStr(1:len_trim(userHeaderStr))
+                                    write(*,*) unitSpec(1:len_trim(unitSpec))
                                     if (n == 1) then
                                         if (o == 1) then
                                             !-------------!
                                             ! RTS doubles !
                                             !-------------!
-                                            dvals = dvalues(:, l)
+                                            dvals(1:numberValues) = dvalues(:,l)
                                             call zsrtsxd(               &
                                                 ifltab,                 & ! IFLTAB
                                                 pathnames(o,n),         & ! CPATH
@@ -315,15 +341,11 @@ subroutine testStoreRetrieveTimeSeries()
                                                 0,                      & ! IPLAN
                                                 0,0.,.false.,.false.,0, & ! Compression control
                                                 status)
-                                            if (status.ne.0) then
-                                                write(0,*) 'Status = ',status
-                                            end if
-                                            call assert(status == 0)
                                         else
                                             !------------!
                                             ! RTS floats !
                                             !------------!
-                                            fvals = fvalues(:, l)
+                                            fvals(1:numberValues) = fvalues(:,l)
                                             call zsrtsx(                &
                                                 ifltab,                 & ! IFLTAB
                                                 pathnames(o,n),         & ! CPATH
@@ -340,21 +362,17 @@ subroutine testStoreRetrieveTimeSeries()
                                                 0,                      & ! IPLAN
                                                 0,0.,.false.,.false.,0, & ! Compression control
                                                 status)
-                                            if (status.ne.0) then
-                                                write(0,*) 'Status = ',status
-                                            end if
-                                            call assert(status == 0)
                                         end if
                                     else
                                         if (o == 1) then
                                             !-------------!
                                             ! ITS doubles !
                                             !-------------!
-                                            dvals = dvalues(:, l)
+                                            dvals(1:numberValues) = dvalues(:,l)
                                             call zsitsxd(               &
                                                 ifltab,                 & ! IFLTAB
                                                 pathnames(o,n),         & ! CPATH
-                                                itimes,                 & ! ITIMES
+                                                itimes(:,p),            & ! ITIMES
                                                 dvals,                  & ! DVALUES
                                                 numberValues,           & ! NVALUE
                                                 0,                      & ! IBDATE
@@ -366,19 +384,15 @@ subroutine testStoreRetrieveTimeSeries()
                                                 userHeaderLen,          & ! NHEADU
                                                 1,                      & ! INFLAG
                                                 status)
-                                            if (status.ne.0) then
-                                                write(0,*) 'Status = ',status
-                                            end if
-                                            call assert(status == 0)
                                         else
                                             !------------!
                                             ! ITS floats !
                                             !------------!
-                                            fvals = fvalues(:, l)
+                                            fvals(1:numberValues) = fvalues(:,l)
                                             call zsitsx(                &
                                                 ifltab,                 & ! IFLTAB
                                                 pathnames(o,n),         & ! CPATH
-                                                itimes,                 & ! ITIMES
+                                                itimes(:,p),            & ! ITIMES
                                                 fvals,                  & ! VALUES
                                                 numberValues,           & ! NVALUE
                                                 0,                      & ! IBDATE
@@ -393,6 +407,141 @@ subroutine testStoreRetrieveTimeSeries()
                                         end if
                                     end if
                                     call zclose(ifltab)
+                                    !-----------------------------------------------------------------------------!
+                                    ! figure out whether the ztsStore should have succeeded, and test accordingly !
+                                    !-----------------------------------------------------------------------------!
+                                    if (unit(l) /= 'ft' .and. unit(l) /= 'm') then
+                                        if (cvdatum == CVD_NAVD88 .and. vdi(j)%offsetToNavd88 == 0.) then
+                                          call assert(status == 0)
+                                        else if (cvdatum == CVD_NGVD29 .and. vdi(j)%offsetToNgvd29 == 0.) then
+                                          call assert(status == 0)
+                                        else if (cvdatum /= CVD_NAVD88 .and. cvdatum /= CVD_NGVD29) then
+                                          call assert(status == 0)
+                                        else
+                                          call assert(status /= 0)
+                                        end if
+                                    else
+                                        call assert(status == 0)
+                                    end if
+                                    if (status == 0) then
+                                        !------------------------------------------------------------!
+                                        ! set the default vertical datum to the datum we stored with !
+                                        !------------------------------------------------------------!
+                                        call zset('VDTM', verticalDatums(kk), 0)
+                                        ifltab = 0
+                                        if (i == 1) then
+                                            call zopen6(ifltab, filename(i), status)
+                                        else
+                                            call zopen7(ifltab, filename(i), status)
+                                        end if
+                                        call assert(status == 0)
+                                        if (n == 1) then
+                                            if (o == 1) then
+                                                !-------------!
+                                                ! RTS doubles !
+                                                !-------------!
+                                                call zrrtsxd(          &
+                                                    ifltab,            & ! IFLTAB
+                                                    pathnames(o,n),    & ! CPATH
+                                                    startDate(p),      & ! CDATE
+                                                    startTime,         & ! CTIME
+                                                    numberValues,      & ! NVALS
+                                                    dvals,             & ! DVALS
+                                                    quality,           & ! JQUAL
+                                                    readQuality,       & ! LQUAL
+                                                    qualityWasRead,    & ! LQREAD
+                                                    unitSpec,          & ! CUNITS
+                                                    type,              & ! CTYPE
+                                                    userHeader,        & ! IUHEAD
+                                                    size(userHeader),  & ! KUHEAD
+                                                    userHeaderLen,     & ! NUHEAD
+                                                    intervalOffset,    & ! IOFSET
+                                                    compressionMethod, & ! JCOMP
+                                                    status)              ! ISTAT
+                                                else
+                                                !------------!
+                                                ! RTS floats !
+                                                !------------!
+                                                call zrrtsx(           &
+                                                    ifltab,            & ! IFLTAB
+                                                    pathnames(o,n),    & ! CPATH
+                                                    startDate(p),      & ! CDATE
+                                                    startTime,         & ! CTIME
+                                                    numberValues,      & ! NVALS
+                                                    fvals,             & ! DVALS
+                                                    quality,           & ! JQUAL
+                                                    readQuality,       & ! LQUAL
+                                                    qualityWasRead,    & ! LQREAD
+                                                    unitSpec,          & ! CUNITS
+                                                    type,              & ! CTYPE
+                                                    userHeader,        & ! IUHEAD
+                                                    size(userHeader),  & ! KUHEAD
+                                                    userHeaderLen,     & ! NUHEAD
+                                                    intervalOffset,    & ! IOFSET
+                                                    compressionMethod, & ! JCOMP
+                                                    status)              ! ISTAT
+                                            end if
+                                        else
+                                            call datjul(startDate(p), startDay, status)
+                                            call assert(status == 0)
+                                            call datjul(endDate(p), endDay, status)
+                                            call assert(status == 0)
+                                            if (o == 1) then
+                                                !-------------!
+                                                ! ITS doubles !
+                                                !-------------!
+                                                call zritsxd(          &
+                                                    ifltab,            & ! IFLTAB  in/out
+                                                    pathnames(o,n),    & ! CPATH   in 
+                                                    startDay,          & ! JULS    in
+                                                    mpm(startTime),    & ! ISTIME  in 
+                                                    endDay,            & ! JULE    in
+                                                    mpm(endTime),      & ! IETIME  in
+                                                    timesRetrieved,    & ! ITIMES  out
+                                                    dvals,             & ! DVALUES out
+                                                    size(dvals),       & ! KVALS   in
+                                                    numberValues,      & ! NVALS   out
+                                                    baseDate,          & ! IBDATE  out
+                                                    quality,           & ! IQUAL   out
+                                                    readQuality,       & ! LQUAL   in
+                                                    qualityWasRead,    & ! LQREAD  out
+                                                    unitSpec,          & ! CUNITS  out
+                                                    type,              & ! CTYPE   out
+                                                    userHeader,        & ! IUHEAD  out
+                                                    size(userHeader),  & ! KUHEAD  in
+                                                    userHeaderLen,     & ! NUHEAD  out
+                                                    0,                 & ! INFLAG  in
+                                                    status)              ! ISTAT   out 
+                                            else
+                                                !------------!
+                                                ! ITS floats !
+                                                !------------!
+                                                call zritsx(           &
+                                                    ifltab,            & ! IFLTAB
+                                                    pathnames(o,n),    & ! CPATH
+                                                    startDay,          & ! JULS
+                                                    mpm(startTime),    & ! ISTIME
+                                                    endDay,            & ! JULE
+                                                    mpm(endTime),      & ! IETIME
+                                                    timesRetrieved,    & ! ITIMES
+                                                    fvals,             & ! SVALUES
+                                                    size(fvals),       & ! KVALS
+                                                    numberValues,      & ! NVALS
+                                                    baseDate,          & ! IBDATE
+                                                    quality,           & ! IQUAL
+                                                    readQuality,       & ! LQUAL
+                                                    qualityWasRead,    & ! LQREAD
+                                                    unitSpec,          & ! CUNITS
+                                                    type,              & ! CTYPE
+                                                    userHeader,        & ! IUHEAD
+                                                    size(userHeader),  & ! KUHEAD
+                                                    userHeaderLen,     & ! NUHEAD
+                                                    0,                 & ! INFLAG
+                                                    status)              ! ISTAT
+                                            end if
+                                        end if
+                                        call assert(status == 0)
+                                    end if
                                 end do
                             end do
                         end do
