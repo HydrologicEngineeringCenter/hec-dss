@@ -207,6 +207,21 @@ namespace Hec.Dss
 
 
 
+    internal LocationInformation(NativeLocationWrapper loc)
+    {
+      XOrdinate = loc.XOrdinate;
+      YOrdinate = loc.YOrdinate;
+      ZOrdiante = loc.ZOrdinate;
+      CoordinateSystem = (CoordinateSystem)loc.CoordinateSystem;
+      CoordinateID = loc.CoordinateID;
+      HorizontalUnits = loc.HorizontalUnits;
+      HorizontalDatum = loc.HorizontalDatum;
+      VerticalUnits = loc.VerticalUnits;
+      VerticalDatum = loc.VerticalDatum;
+      TimeZoneName = loc.TimeZoneName;
+      Supplemental = loc.Supplemental;
+    }
+
     internal LocationInformation(ZStructLocationWrapper loc)
     {
       XOrdinate = loc.XOrdinate;

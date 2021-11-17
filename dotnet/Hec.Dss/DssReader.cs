@@ -492,8 +492,8 @@ namespace Hec.Dss
       ToTimeSeries.Qualities = fromTimeSeries.Quality;
       ToTimeSeries.DataType = fromTimeSeries.Type;
       ToTimeSeries.ProgramName = fromTimeSeries.ProgramName;
-      //var locationInfo = new LocationInformation(fromTimeSeries.LocationStruct);
-      //ToTimeSeries.LocationInformation = locationInfo;
+      var locationInfo = new LocationInformation(fromTimeSeries.LocationStruct);
+      ToTimeSeries.LocationInformation = locationInfo;
     }
 
     /// <summary>
