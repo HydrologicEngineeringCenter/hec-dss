@@ -75,4 +75,14 @@ zStructTimeSeries* ZStructTsNew(const char* pathName)
 	return zstructTsNew(pathName);
 }
 
+zStructCatalog* ZStructCatalogNew()
+{
+	return zstructCatalogNew();
+}
+
+int ZCatalog(long long* ifltab, const char* pathWithWild, zStructCatalog* cat, int boolSorted)
+{
+	return zcatalog(ifltab, pathWithWild, cat, boolSorted);
+}
+
 

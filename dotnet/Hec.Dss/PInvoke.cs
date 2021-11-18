@@ -20,8 +20,8 @@ namespace Hec.Dss
     public extern static int ZGetVersion(long[] ifltab);
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
     public extern static int ZClose(long[] ifltab);
-    
-    
+
+
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
     private extern static int ZTsStore(long[] ifltab, IntPtr tss, int storageFlag);
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
@@ -38,6 +38,22 @@ namespace Hec.Dss
     private extern static IntPtr ZStructTsNew(string pathName);
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
     private extern static int ZTsRetrieve(long[] ifltab, IntPtr tss, int retrieveFlag, int boolRetrieveDoubles, int boolRetrieveQualityNotes);
+    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    private extern static IntPtr ZStructCatalogNew();
+    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    private extern static int ZCatalog(long[] ifltab, string pathWithWild, IntPtr cat, int boolSorted);
+
+    public static NativeCatalogWrapper NativeCatalogNew()
+    {
+      NativeCatalogWrapper ncw = new NativeCatalogWrapper();
+      ncw.TheStruct = ZStructCatalogNew();
+      return ncw;
+    }
+
+    public static int ZCatalog(long[] ifltab, string pathWithWIld, NativeCatalogWrapper cat, int boolSorted)
+    {
+      return ZCatalog(ifltab, pathWithWIld, cat.TheStruct, boolSorted);
+    }
 
     public static NativeTimeSeriesWrapper NativeTsNewRegDoubles(string pathName, double[] dArray, string startDate, string startTime, string units, string type)
     {

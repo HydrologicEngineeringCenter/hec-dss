@@ -172,6 +172,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
+    <ClInclude Include="NativeCatalogWrapper.h" />
     <ClInclude Include="NativeLocationWrapper.h" />
     <ClInclude Include="NativeTimeSeriesWrapper.h" />
     <ClInclude Include="pch.h" />
@@ -180,6 +181,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="NativeCatalogWrapper.cpp" />
     <ClCompile Include="NativeLocationWrapper.cpp" />
     <ClCompile Include="NativeTimeSeriesWrapper.cpp" />
     <ClCompile Include="pch.cpp">

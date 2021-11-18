@@ -16,4 +16,6 @@ extern "C" {
 	__declspec(dllexport) int ZTsRetrieve(long long* ifltab, zStructTimeSeries* tss, int retrieveFlag, int retrieveDoublesFlag, int boolRetrieveQualityNotes);
 	__declspec(dllexport) zStructTimeSeries* ZStructTsNewTimes(const char* pathName, const char* startDate, const char* startTime, const char* endDate, const char* endTime);
 	__declspec(dllexport) zStructTimeSeries* ZStructTsNew(const char* pathName);
+	__declspec(dllexport) zStructCatalog* ZStructCatalogNew();
+	__declspec(dllexport) int ZCatalog(long long* ifltab, const char* pathWithWild, zStructCatalog* cat, int boolSorted);
 }

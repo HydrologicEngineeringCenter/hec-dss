@@ -122,8 +122,8 @@ namespace Hec.Dss
       bool sorted = false;
       RecordType[] recordTypes = null;
 
-      ZStructCatalogWrapper cat = DSS.zStructCatalogNew();
-      int status = DSS.ZCatalog(ref ifltab, null, ref cat, sorted ? 1 : 0);
+      NativeCatalogWrapper cat = PInvoke.NativeCatalogNew();
+      int status = PInvoke.ZCatalog(ifltab, null, cat, sorted ? 1 : 0);
       if (status < 0)
         throw new Exception("ZCatalog reported a failure with retrieving DSS filenames");
 
