@@ -247,7 +247,6 @@ C
           cunits = unit2
           cverticalDatum = cverticalDatum2
         end if
-        write(*,*) 'cverticalDatum = ',cverticalDatum
         if (cverticalDatum.eq.CVD_NAVD88.or.
      *      cverticalDatum.eq.CVD_NGVD29) then
           !--------------------------------------------!
