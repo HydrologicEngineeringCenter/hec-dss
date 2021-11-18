@@ -10,10 +10,12 @@ echo %build_number%
 
 dssVersion.exe heclib\heclib_c\src\headers\hecdssInternal.h %build_number% > heclib\javaheclib\version_build.h
 
-devenv dss.sln  /ReBuild "Release|Win32"
+
 devenv dss.sln  /ReBuild  "Debug|x64"
 devenv dss.sln  /ReBuild  "Release|x64"
 
+call vs_env32.bat
+devenv dss.sln  /ReBuild "Release|Win32"
 ::devenv dss.sln  /ReBuild  "Debug|Win32"
   
 
