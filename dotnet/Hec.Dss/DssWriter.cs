@@ -29,7 +29,7 @@ namespace Hec.Dss
       int numCols = profile.ColumnValues.Length;
       int numRows = profile.Values.GetLength(0);
       Time.DateTimeToHecDateTime(profile.StartDateTime, out string startDate, out string startTime);
-      var tss = DSS.ZStructTsNewTimes(profile.Path.FullPath, startDate, startTime, "", "");
+      var tss = PInvoke.NativeTsNewTimes(profile.Path.FullPath, startDate, startTime, "", "");
       tss.UnitsProfileValues = profile.Units;
       tss.UnitsProfileDepths = profile.ColumnUnits;
       tss.NumberValues = numRows;
@@ -52,7 +52,7 @@ namespace Hec.Dss
         tss.DoubleProfileValues = d;
       }
 
-      return DSS.ZTsStore(ref ifltab, ref tss, storageFlagOverwrite);
+      return PInvoke.ZTsStore(ifltab, tss, storageFlagOverwrite);
 
     }
 

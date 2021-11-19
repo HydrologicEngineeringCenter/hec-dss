@@ -1,6 +1,7 @@
 #pragma once
 
 #include "DSSGrid.h"
+#include "pinvokeTools.h"
 
 extern "C" {
 	__declspec(dllexport) int ZOpen(long long* ifltab, const char* dssFilename);
@@ -18,4 +19,5 @@ extern "C" {
 	__declspec(dllexport) zStructTimeSeries* ZStructTsNew(const char* pathName);
 	__declspec(dllexport) zStructCatalog* ZStructCatalogNew();
 	__declspec(dllexport) int ZCatalog(long long* ifltab, const char* pathWithWild, zStructCatalog* cat, int boolSorted);
+	__declspec(dllexport) int ZTsRetrieveEmpty(long long* ifltab, zStructTimeSeries* tss);
 }

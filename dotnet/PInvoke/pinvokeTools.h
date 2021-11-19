@@ -5,3 +5,4 @@
 
 
 BSTR ANSItoBSTR(const char* input);
+char* getStringFromHeader(int* header);

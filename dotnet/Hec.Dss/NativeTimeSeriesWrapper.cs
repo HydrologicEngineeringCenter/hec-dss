@@ -48,6 +48,22 @@ namespace Hec.Dss
     private extern static void SetQuality(IntPtr ts, int[] quality, int arraySize);
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
     private extern static void SetQualityElementSize(IntPtr ts, int elementSize);
+    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    private extern static void SetDoubleProfileDepths(IntPtr ts, double[] values, int arrayLength);
+    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    private extern static void SetProfileDepthsNumber(IntPtr ts, int value);
+    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    private extern static void SetDoubleProfileValues(IntPtr ts, double[] values, int arrayLength);
+    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    private extern static void SetNumberValues(IntPtr ts, int value);
+    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    private extern static void SetUnitsProfileValues(IntPtr ts, string value);
+    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    private extern static void SetUnitsProfileDepths(IntPtr ts, string value);
+    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    private extern static void SetFloatProfileDepths(IntPtr ts, float[] values, int arrayLength);
+    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    private extern static void SetFloatProfileValues(IntPtr ts, float[] values, int arrayLength);
 
     public IntPtr TheStruct;
 
@@ -181,12 +197,20 @@ namespace Hec.Dss
           return null;
         }
       }
+      set
+      {
+        SetDoubleProfileDepths(TheStruct, value, value.Length);
+      }
     }
     public int ProfileDepthsNumber
     {
       get
       {
         return GetProfileDepthsNumber(TheStruct);
+      }
+      set
+      {
+        SetProfileDepthsNumber(TheStruct, value);
       }
     }
     public double[] DoubleProfileValues
@@ -206,12 +230,49 @@ namespace Hec.Dss
           return null;
         }
       }
+      set
+      {
+        SetDoubleProfileValues(TheStruct, value, value.Length);
+      }
     }
     public int NumberValues
     {
       get
       {
         return GetNumberValues(TheStruct);
+      }
+      set
+      {
+        SetNumberValues(TheStruct, value);
+      }
+    }
+
+    public string UnitsProfileValues
+    {
+      set
+      {
+        SetUnitsProfileValues(TheStruct, value);
+      }
+    }
+    public string UnitsProfileDepths
+    {
+      set
+      {
+        SetUnitsProfileDepths(TheStruct, value);
+      }
+    }
+    public float[] FloatProfileDepths
+    {
+      set
+      {
+        SetFloatProfileDepths(TheStruct, value, value.Length);
+      }
+    }
+    public float[] FloatProfileValues
+    {
+      set
+      {
+        SetFloatProfileValues(TheStruct, value, value.Length);
       }
     }
   }

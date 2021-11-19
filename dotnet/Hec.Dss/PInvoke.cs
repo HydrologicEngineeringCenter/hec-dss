@@ -42,7 +42,8 @@ namespace Hec.Dss
     private extern static IntPtr ZStructCatalogNew();
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
     private extern static int ZCatalog(long[] ifltab, string pathWithWild, IntPtr cat, int boolSorted);
-
+    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    private extern static int ZTsRetrieveEmpty(long[] ifltab, IntPtr tss);
     public static NativeCatalogWrapper NativeCatalogNew()
     {
       NativeCatalogWrapper ncw = new NativeCatalogWrapper();
@@ -105,6 +106,11 @@ namespace Hec.Dss
     public static int ZTsRetrieve(long[] ifltab, NativeTimeSeriesWrapper blockTimeSeries, int retrieveFlag, int retrieveDoublesFlag, int boolRetrieveQualityNotes)
     {
       return ZTsRetrieve(ifltab, blockTimeSeries.TheStruct, retrieveFlag, retrieveDoublesFlag, boolRetrieveQualityNotes);
+    }
+
+    public static int ZTsRetrieveEmpty(long[] ifltab, NativeTimeSeriesWrapper tss)
+    {
+      return ZTsRetrieveEmpty(ifltab, tss.TheStruct);
     }
   }
 }

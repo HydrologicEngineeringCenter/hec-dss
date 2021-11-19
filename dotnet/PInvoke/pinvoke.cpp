@@ -85,4 +85,32 @@ int ZCatalog(long long* ifltab, const char* pathWithWild, zStructCatalog* cat, i
 	return zcatalog(ifltab, pathWithWild, cat, boolSorted);
 }
 
+int ZTsRetrieveEmpty(long long* ifltab, zStructTimeSeries* tss)
+{
+	int version = zgetVersion(ifltab);
+	zStructTransfer* transfer;
+	transfer = zstructTransferNew(tss->pathname, 0);
+	transfer->internalHeaderMode = 1;
+	int status = zread(ifltab, transfer);
+	if (status == 0)
+	{
+		if (version == 7)
+		{
+			int intervalType = ztsProcessTimes(ifltab, tss, 0);
+			status = ztsInternalHeaderUnpack(tss, transfer->internalHeader, transfer->internalHeaderNumber);
+		}
+		else if (version == 6)
+		{
+			int v6header_units = 1;
+			int v6header_type = 3;
+			tss->units = getStringFromHeader(&transfer->internalHeader[v6header_units]);
+			tss->type = getStringFromHeader(&transfer->internalHeader[v6header_type]);
+
+		}
+	}
+
+	zstructFree(transfer);
+	return status;
+}
+
 

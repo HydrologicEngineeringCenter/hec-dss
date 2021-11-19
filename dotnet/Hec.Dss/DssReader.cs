@@ -620,7 +620,7 @@ namespace Hec.Dss
     /// <returns></returns>
     public TimeSeries GetEmptyTimeSeries(DssPath path)
     {
-      ZStructTimeSeriesWrapper tss;
+      NativeTimeSeriesWrapper tss;
 
       if (path is DssPathCondensed)
       {
@@ -628,9 +628,9 @@ namespace Hec.Dss
         path = parts[0];
       }
 
-      tss = DSS.ZStructTsNew(path.FullPath);
+      tss = PInvoke.NativeTsNew(path.FullPath);
 
-      int status = DSS.ZTsRetrieveEmpty(ref ifltab, ref tss);
+      int status = PInvoke.ZTsRetrieveEmpty(ifltab, tss);
 
       var rval = new TimeSeries();
       if (status != 0)
@@ -640,7 +640,7 @@ namespace Hec.Dss
       rval.Path = path;
       rval.Units = tss.Units;
       rval.DataType = tss.Type;
-      var locationInfo = new LocationInformation(tss.locationStruct);
+      var locationInfo = new LocationInformation(tss.LocationStruct);
       rval.LocationInformation = locationInfo;
       return rval;
     }
