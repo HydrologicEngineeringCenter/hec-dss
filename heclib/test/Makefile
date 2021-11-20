@@ -39,3 +39,4 @@ clean:
 	rm -f Output/*
 	rm -f *.dss
 	rm -f *.mod
+	rm -f *.ini

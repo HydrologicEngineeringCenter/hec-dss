@@ -25,11 +25,21 @@
       logical   param_has_separator
       equivalence (iuhead_copy, cuhead)
 
+      include 'zdssmz.h'
+
       cvalue = ' '
       !-------------------------------------------------------------------!  
       ! copy the user header to a local variable so we can equivalence it !
       !-------------------------------------------------------------------!  
       iuhead_copy = 0
+      if (nuhead.gt.size(iuhead_copy)) then
+        if (mlevel.ge.1) then
+          write (munit,'(/a,/,a,a,/,a,i4,/,a,i4)')
+     *    ' WARNING: LOCATING PARAMETER VALUE IN TRUNCATED USER HEADER',
+     *    '   User header length : ',nuhead,
+     *    '   Truncated length   : ',size(iuhead_copy)
+        end if
+      end if
       max_head_len = min(nuhead, size(iuhead_copy))
       do i = 1, max_head_len
         iuhead_copy(i) = iuhead(i)
@@ -43,7 +53,6 @@
       else
         if (max_head_len.lt.size(iuhead_copy)) then
           ifirst = max_head_len*4
-          ! write(*,*) 'Blanking at max_head_len: ',ifirst
           cuhead(ifirst:) = ' '
         end if
       end if
@@ -65,15 +74,24 @@
         if (.not.param_has_separator) ifirst = ifirst + 1
         ilast = index(cuhead(ifirst:), ';')
         if (ilast.eq.0) then
-          ilast = ifirst + len(cvalue)
+          ilast = len_trim(cuhead)
         else
           if (ilast.gt.ifirst + len(cvalue)) then
-            ilast = ifirst + len(cvalue)
+            ilast = ifirst + len(cvalue) - 1
           else
-            ilast = ilast + ifirst - 1 
+            ilast = ilast + ifirst - 2
           end if
         end if  
-        cvalue = cuhead(ifirst:ilast-1)
+        if (ilast-ifirst+1.gt.len(cvalue)) then
+          if (mlevel.ge.1) then
+            write (munit,'(/a,/,a,a,/,a,i4,/,a,i4)')
+     *      ' WARNING: USER HEADER PARAMETER VALUE TRUNCATED',
+     *      '   Parameter       : ',cparam,
+     *      '   Value length    : ',ilast-ifirst+1,
+     *      '   Variable length : ',len(cvalue)
+          end if
+        end if;  
+        cvalue = cuhead(ifirst:ilast)
       end if
       return
       end

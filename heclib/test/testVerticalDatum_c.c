@@ -72,7 +72,7 @@ void main (int argc, char *argv[]) {
         int   userHeaderSize;
         char *userHeaderStringIn;
         char *userHeaderStringOut;
-        userHeaderStringIn = "This is a test string for the user header ";
+        userHeaderStringIn = "This is a test string for the user header";
         userHeader = stringToUserHeader(userHeaderStringIn, &userHeaderSize);
         assert(userHeaderSize == (strlen(userHeaderStringIn)-1)/4+1);
         userHeaderStringOut = userHeaderToString(userHeader, userHeaderSize);
@@ -222,6 +222,7 @@ void main (int argc, char *argv[]) {
         long long ifltab[250];
         int status;
         zStructTimeSeries *tss = NULL;
+        verticalDatumInfo vdi;
         char *errmsg;
         char *filename[]      = {"v6_c.dss", "v7_c.dss"};
         char *pathnames[2][2] = {{"//TestTsLoc/Elev//1Hour/Doubles/",    "//TestTsLoc/Elev//1Hour/Floats/"},
@@ -458,39 +459,64 @@ void main (int argc, char *argv[]) {
                                         //-------------------------------------------------------//
                                         // store the time series in the specified vertical datum //
                                         //-------------------------------------------------------//
+                                        if (m == 2 && i+j+k+l+n+o+p == 0) {
+                                            m = 2;
+                                        }
                                         status = ztsStore(ifltab, tss, 0);
                                         //-----------------------------------------------------------------------------//
                                         // figure out whether the ztsStore should have succeeded, and test accordingly //
                                         //-----------------------------------------------------------------------------//
-                                        if (!strstr(xml[j], verticalDatums[K])) {
-                                            assert(status != STATUS_OKAY);
-                                        }
-                                        else if (i == 1 && j == 1 && k+l+n+m+o+p == 0) {
-                                            // change of vertical datum information
+                                        stringToVerticalDatumInfo(&vdi, xml[j]);
+                                        if (i == 1 && j == 1 && k+l+n+m+o+p == 0) {
+                                            //-------------------------------------------------------------------------------//
+                                            // change of vertical datum information in DSS 7, need to update location record //
+                                            //-------------------------------------------------------------------------------//
                                             assert(status != STATUS_OKAY);
                                             zset("VDOW", "", TRUE);
                                             status = ztsStore(ifltab, tss, 0);
-                                            assert(status == STATUS_OKAY);
                                             zset("VDOW", "", FALSE);
                                         }
-                                        else if (strcmp(unit[l], "ft") && strcmp(unit[l], "m")) {
-                                            sprintf(buf, "<native-datum>%s</native-datum>", verticalDatums[K]);
-                                            if (strstr(xml[j], buf)) {
+                                        if (!strcmp(vdi.nativeDatum, verticalDatums[K])) {
+                                            //-------------------------------------//
+                                            // same datum, no conversion necessary //
+                                            //-------------------------------------//
+                                            assert(status == STATUS_OKAY);
+                                        }
+                                        else if (strcmp(verticalDatums[K], CVERTICAL_DATUM_NAVD88) && strcmp(verticalDatums[K], CVERTICAL_DATUM_NGVD29)) {
+                                            //------------------------------------------------------------------------------//
+                                            // specified datum is local, so by definition it is already in the native datum //
+                                            // and no conversion is necessary                                               //
+                                            //------------------------------------------------------------------------------//
+                                            assert(status == STATUS_OKAY);
+                                        }
+                                        else if (!strcmp(verticalDatums[K], CVERTICAL_DATUM_NAVD88) && vdi.offsetToNavd88 != UNDEFINED_VERTICAL_DATUM_VALUE) {
+                                            //-------------------------------------------------------------//
+                                            // specified datum is NAVD-88 and we have an offset to NAVD-88 //
+                                            //-------------------------------------------------------------//
+                                            if (unitIsFeet(unit[l]) || unitIsMeters(unit[l])) {
                                                 assert(status == STATUS_OKAY);
                                             }
                                             else {
-                                                sprintf(buf, "<local-datum-name>%s</local-datum-name", verticalDatums[K]);
-                                                if (strstr(xml[j], buf)) {
-                                                    assert(status == STATUS_OKAY);
-                                                }
-                                                else {
-                                                    assert(status != STATUS_OKAY);
-                                                }
+                                                assert(status != STATUS_OKAY);
+                                            }
+                                        }
+                                        else if (!strcmp(verticalDatums[K], CVERTICAL_DATUM_NGVD29) && vdi.offsetToNgvd29 != UNDEFINED_VERTICAL_DATUM_VALUE) {
+                                            //-------------------------------------------------------------//
+                                            // specified datum is NGVD-29 and we have an offset to NGVD-29 //
+                                            //-------------------------------------------------------------//
+                                            if (unitIsFeet(unit[l]) || unitIsMeters(unit[l])) {
+                                                assert(status == STATUS_OKAY);
+                                            }
+                                            else {
+                                                assert(status != STATUS_OKAY);
                                             }
                                         }
                                         else {
-                                            assert(status == STATUS_OKAY);
-                                        }
+                                            //-----------------//
+                                            // all other cases //
+                                            //-----------------//
+                                            assert(status != STATUS_OKAY);
+                                        }                                            
                                         zclose(ifltab);
                                         zstructFree(tss);
                                         if (status == STATUS_OKAY) {
@@ -526,18 +552,16 @@ void main (int argc, char *argv[]) {
                                             assert(tss->numberValues == numberValues);
                                             if (o == 0) {
                                                 assert(tss->doubleValues != NULL);
-                                            }
-                                            else {
-                                                assert(tss->floatValues != NULL);
-                                            }
-                                            for (int ii = 0; ii < tss->numberValues; ++ii) {
-                                                if (o == 0) {
+                                                for (int ii = 0; ii < tss->numberValues; ++ii) {
                                                     if (tss->doubleValues[ii] != dvalues[l][ii]) {
                                                         fprintf(stderr, "%f != %f\n", tss->doubleValues[ii], dvalues[l][ii]);
                                                     }
                                                     assert(tss->doubleValues[ii] == dvalues[l][ii]);
                                                 }
-                                                else {
+                                            }
+                                            else {
+                                                assert(tss->floatValues != NULL);
+                                                for (int ii = 0; ii < tss->numberValues; ++ii) {
                                                     if (tss->floatValues[ii] != fvalues[l][ii]) {
                                                         fprintf(stderr, "%f != %f\n", tss->floatValues[ii], fvalues[l][ii]);
                                                     }

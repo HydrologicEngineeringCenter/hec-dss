@@ -50,6 +50,16 @@ int unitIsFeet(const char *unit) {
     return FALSE;
 }
 //
+// Fortran wrapper for unitIsFeet
+//
+int unitisfeet_(char *unit, slen_t lenUnit) {
+    char *cUnit = (char *)malloc(lenUnit+1);
+    F2C(unit, cUnit, lenUnit, lenUnit+1);
+    int isFeet = unitIsFeet(cUnit);
+    free(cUnit);
+    return isFeet;
+}
+//
 // See verticalDatum.h for documentation
 //
 int unitIsMeters(const char *unit) {
@@ -59,6 +69,16 @@ int unitIsMeters(const char *unit) {
         }
     }
     return FALSE;
+}
+//
+// Fortran wrapper for unitIsMeters
+//
+int unitismeters_(char *unit, slen_t lenUnit) {
+    char *cUnit = (char *)malloc(lenUnit+1);
+    F2C(unit, cUnit, lenUnit, lenUnit+1);
+    int isMeters = unitIsMeters(cUnit);
+    free(cUnit);
+    return isMeters;
 }
 //
 // See verticalDatum.h for documentation
@@ -258,6 +278,7 @@ char *userHeaderToString(const int *userHeader, const int userHeaderSize) {
         char *cp;
         int   len;
         for (cp = start; *cp && cp - start < userHeaderSize * 4; ++cp);
+        while (*(cp-1) == ' ') --cp;
         len = cp - start;
         str = malloc(len+1);
         strncpy(str, start, len);
@@ -1041,6 +1062,7 @@ int	getEffectiveVerticalDatum(
                 //---------------------------------------//
                 // remove vertical datum from userHeader //
                 //---------------------------------------//
+                free(*userHeader);
                 int newHeaderSize;
                 *userHeader = stringToUserHeader(userHeaderString, &newHeaderSize);
                 *userHeaderSize = newHeaderSize;
