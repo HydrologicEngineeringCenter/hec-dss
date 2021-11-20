@@ -83,7 +83,7 @@ C     Pathname variable dimensions
       integer na, nb, nc, nd, ne, nf, npath
 C      
 C     Vertical datum varible dimensions 
-      character*256 vdiStr, errMsg
+      character*400 vdiStr, errMsg
       character*16 nativeDatum, unit
       double precision elevation
       double precision offsetNavd88, offsetNgvd29, vertDatumOffset
@@ -557,13 +557,13 @@ C
                 if (lgetdob) then
                   do i = 1, nvals
                     if (dvalues(i).ne.-901.and.dvalues(i).ne.-902) then
-                      dvalues(i) = dvalues(i) + vertdatumoffset
+                      dvalues(i) = dvalues(i) + vertDatumOffset
                     end if  
                   end do
                 else
                   do i = 1, nvals
                     if (svalues(i).ne.-901.and.svalues(i).ne.-902) then
-                      svalues(i) = svalues(i) + vertdatumoffset
+                      svalues(i) = svalues(i) + vertDatumOffset
                     end if  
                   end do
                 end if 

@@ -73,7 +73,7 @@ C     Local Dimensions
       LOGICAL LFOUND, LERR, LFILDOB
 C      
 C     Vertical datum varible dimensions 
-      character*256 vdiStr, errMsg
+      character*400 vdiStr, errMsg
       character*16 unit, unit2, cverticalDatum, cverticalDatum2
       character*16 nativeDatum
       character*64 cc, unitSpec
@@ -97,7 +97,6 @@ C
       INCLUDE 'zdssdc.h'
 C
       INCLUDE 'verticalDatumFortran.h'
-      l_modified = .false.
 C
 C
 C
@@ -139,6 +138,12 @@ C     If a debug level is on, print out information
       ENDIF
 C
 C
+      l_modified = .false.
+      if (index(cunits,'|').eq.0) then
+        if (len_trim(cunits).gt.8) cunits = cunits(1:8)
+      else
+        if (len_trim(cunits).gt.29) cunits = cunits(1:29)
+      endif
       NSTART = 1
       ISTAT = 0
       LPROT2 = LPROTC
@@ -160,7 +165,7 @@ C     Unform the pathname
  30   CONTINUE
       CALL CHRLNB (CPATH, NPATH)
       IF ((NPATH.GT.MXPATH).OR.(NPATH.LE.1)) GO TO 900
-      IF (CPATH(1:1).NE.'/') GO TO 900
+      IF (CPATH(1:1).NE."/") GO TO 900
       CALL zufpn (CPART(1), NPART(1), CPART(2), NPART(2),
      * CPART(3), NPART(3), CPART(4), NPART(4), CPART(5), NPART(5),
      * CPART(6), NPART(6), CPATH, NPATH, IERR)
@@ -217,7 +222,7 @@ C     has no specific time associated with it
 C     (such as a unit hydrograph or mean maximum daily temperatures)
 C
       CALL UPCASE (CPART(4))
-      IF (CPART(4)(1:3).EQ.'TS-') THEN
+      IF (CPART(4)(1:3).EQ."TS-") THEN
          IF (LDOUBLE) GO TO 995
          CALL zsrtpa6 (IFLTAB, CPATH, SVALUES, NVALS, CUNITS, CTYPE,
      *                IUHEAD, NUHEAD, IPLAN, ISTAT)
@@ -240,11 +245,13 @@ C
         ! override the default with any datum in the user header    
         call get_user_header_param(iuhead, nuhead, 
      *    VERTICAL_DATUM_PARAM, cverticalDatum2)
-        if (cverticalDatum2.ne.' ') cverticalDatum = cverticalDatum2
+        if (cverticalDatum2.ne." ") then
+          cverticalDatum = cverticalDatum2
+        end if
         ! override both with the unit spec
         call crack_unit_spec(cunits, unit2, cverticalDatum2)
-        if (cverticalDatum2.ne.' ') then
-          cunits = unit2
+        if (cverticalDatum2.ne." ") then
+          cunits = unit2(1:len_trim(unit2))
           cverticalDatum = cverticalDatum2
         end if
         if (cverticalDatum.eq.CVD_NAVD88.or.
@@ -254,11 +261,11 @@ C
           !--------------------------------------------!
           call get_user_header_param(iuhead, nuhead, 
      *      VERTICAL_DATUM_INFO_PARAM, vdiStr)
-          if (vdiStr.eq.' ') then
+          if (vdiStr.eq." ") then
             if (mlevel.ge.1) then
               write (munit,'(/,a,a,/,a,a,a,/,a)')
      *          ' *****DSS*** zsrtsi6:  ERROR  - NO VERTICAL DATUM',
-     *          ' OFFSET INFORMATION.','Cannot convert from ',
+     *          ' OFFSET INFORMATION.',' Cannot convert from ',
      *          cvdatum(1:len_trim(cvdatum)),' to native datum.',
      *          ' No values stored.'
             end if
@@ -275,12 +282,12 @@ C
      *        l_Ngvd29Estimated,
      *        offsetNavd88,
      *        l_Navd88Estimated)
-            if (errMsg.ne.' ') then
+            if (errMsg.ne." ") then
             if (mlevel.ge.1) then
               write (munit,'(/,a,a,/,a,/,a)')
      *          ' *****DSS*** zsrtsi6:  ERROR  - ',
      *          errMsg(1:len_trim(errMsg)),
-     *          'Cannot convert  to native datum.',
+     *          ' Cannot convert  to native datum.',
      *          ' No values stored.'
             end if
             istat = 13
@@ -302,21 +309,24 @@ C
                 end if
                 istat = 13
                 return
-                call get_offset(vertDatumOffset, unit, cunits)
-                if (vertDatumOffset.eq.
-     *            UNDEFINED_VERTICAL_DATUM_VALUE)then
-                  if (mlevel.ge.1) then
-                    write (munit,'(/,a,a,a,a,a,a,a,a,/,a)')
-     *              ' *****DSS*** zsrtsi6:  ERROR  - INVALID DATA UNIT',
-     *              ' (',cunits(1:len_trim(cunits)),') OR OFFSET UNIT',
-     *              ' (',unit(1:len_trim(unit)),') FOR VERTICAL DATUM',
-     *              ' CONVERSION',
-     *              ' No values stored.'
-                  end if
-                  istat = 13
-                  return
+              end if
+              call getOffset(
+     *              vertDatumOffset,
+     *              unit(1:len_trim(unit)),
+     *              cunits(1:len_trim(cunits)))
+              if (vertDatumOffset.eq.
+     *          UNDEFINED_VERTICAL_DATUM_VALUE)then
+                if (mlevel.ge.1) then
+                  write (munit,'(/,a,a,a,a,a,a,a,a,/,a)')
+     *            ' *****DSS*** zsrtsi6:  ERROR  - INVALID DATA UNIT',
+     *            ' (',cunits(1:len_trim(cunits)),') OR OFFSET UNIT',
+     *            ' (',unit(1:len_trim(unit)),') FOR VERTICAL DATUM',
+     *            ' CONVERSION',
+     *            ' No values stored.'
                 end if
-              end if    
+                istat = 13
+                return
+              end if
               if (ldouble) then
                 do ii = 1, nvals
                   if (dvalues(ii).ne.-901.and.dvalues(ii).ne.-902.) then

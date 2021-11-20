@@ -83,7 +83,7 @@ C     Pathname variable dimensions
       integer na, nb, nc, nd, ne, nf, npath
 C      
 C     Vertical datum varible dimensions 
-      character*256 vdiStr, errMsg
+      character*400 vdiStr, errMsg
       character*16 nativeDatum, unit
       double precision elevation
       double precision offsetNavd88, offsetNgvd29, vertDatumOffset
