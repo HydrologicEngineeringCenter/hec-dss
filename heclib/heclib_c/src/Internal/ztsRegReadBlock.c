@@ -270,7 +270,7 @@ int ztsRegReadBlock(long long *ifltab, const char *pathname, int boolExists,
 		else {
 			*profileDepthsNumberRead = 0;
 		}		
-		if ((ztransfer->userHeaderNumber > 0) && (userHeaderArraySize > 0)) {
+		if ((ztransfer->userHeaderNumber > 0) && (userHeaderArraySize > 0) && ztransfer->userHeader && userHeader) {
 			if (profileDepthsArraySize == 1) {
 				//  space allocated in zread
 				*userHeaderNumber = ztransfer->userHeaderNumber;
