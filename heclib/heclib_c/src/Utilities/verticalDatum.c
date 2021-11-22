@@ -1072,9 +1072,9 @@ int	getEffectiveVerticalDatum(
                 //---------------------------------------//
                 // remove vertical datum from userHeader //
                 //---------------------------------------//
-                free(*userHeader);
                 int newHeaderSize;
-                *userHeader = stringToUserHeader(userHeaderString, &newHeaderSize);
+                stringToUserHeader(userHeaderString, &newHeaderSize);
+                sprintf((char *)*userHeader, userHeaderString); // safe because new string is always shorter than old string
                 *userHeaderSize = newHeaderSize;
                 free(verticalDatum);
             }
@@ -1106,8 +1106,7 @@ int	getEffectiveVerticalDatum(
                 //----------------------------------------------//
                 // convert the unit spec to a simple unit value //
                 //----------------------------------------------//
-                free(*unit);
-                *unit = mallocAndCopy(unitValue);
+                sprintf(*unit, unitValue); // safe becuase new string is always shorter than old string
             }
             if (verticalDatum) {
                 if (!strcasecmp(verticalDatum, CVERTICAL_DATUM_NAVD88)) {

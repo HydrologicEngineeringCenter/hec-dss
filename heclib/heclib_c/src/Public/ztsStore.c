@@ -535,21 +535,12 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 				//----------------------------------//
 				char cvertical_datum[CVERTICAL_DATUM_SIZE];
 				int  ivertical_datum = -1;
-				int  dummyHeaderSize = tss->userHeaderSize;
-				int *dummyHeader = NULL;
-				if (dummyHeaderSize > 0) {
-					dummyHeader = (int*)malloc(dummyHeaderSize * 4);
-					memcpy(dummyHeader, tss->userHeader, dummyHeaderSize * 4);
-				}
 				ivertical_datum = getEffectiveVerticalDatum(
 					cvertical_datum,
 					sizeof(cvertical_datum),
-					&dummyHeader,
-					&dummyHeaderSize,
+					&tss->userHeader,
+					&tss->userHeaderSize,
 					&tss->units);
-				if (dummyHeaderSize > 0) {
-					free(dummyHeader);
-				}
 				//-------------------------------------------------------//
 				// now that we have a datum, determine the offset to use //
 				//-------------------------------------------------------//
