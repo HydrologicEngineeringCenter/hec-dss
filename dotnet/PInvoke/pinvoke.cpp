@@ -113,4 +113,89 @@ int ZTsRetrieveEmpty(long long* ifltab, zStructTimeSeries* tss)
 	return status;
 }
 
+zStructLocation* ZLocationRetrieve(long long* ifltab, const char* pathName)
+{
+	int ver = zgetVersion(ifltab);
+
+	zStructLocation* loc = zstructLocationNew(pathName);
+	loc->xOrdinate = -9999;
+	loc->yOrdinate = -9999;
+	loc->zOrdinate = -9999;
+
+	if (ver > 6)
+		zlocationRetrieve(ifltab, loc);
+
+	return loc;
+}
+
+int ZDataType(long long* ifltab, const char* pathName)
+{
+	return zdataType(ifltab, pathName);
+}
+
+int ZSqueeze(const char* fileName)
+{
+	return zsqueeze(fileName);
+}
+
+int ZSqueeze7(long long* ifltab, int boolOnlyIfNeeded, int boolInPlace)
+{
+	return zsqueeze7(ifltab, boolOnlyIfNeeded, boolInPlace);
+}
+
+int GetDateAndTime(int timeMinOrSec, int timeGranularitySeconds, int julianBaseDate, char* dateString, int sizeOfDateString, char* hoursMins, int sizeOfHoursMins)
+{
+	return getDateAndTime(timeMinOrSec, timeGranularitySeconds, julianBaseDate, dateString, sizeOfDateString, hoursMins, sizeOfHoursMins);
+}
+
+int ZCheck(long long* ifltab, const char* pathName)
+{
+	return zcheck(ifltab, pathName);
+}
+
+int ZDelete(long long* ifltab, const char* pathName)
+{
+	return zdelete(ifltab, pathName);
+}
+
+int ZSqueezeNeeded(long long* ifltab)
+{
+	return zsqueezeNeeded(ifltab);
+}
+
+float ZMissingFlag()
+{
+	return zmissingFlagFloat();
+}
+
+zStructLocation* ZStructLocationNew(const char* pathName)
+{
+	return zstructLocationNew(pathName);
+}
+
+int ZLocationStore(long long* ifltab, zStructLocation* loc, int storageFlag)
+{
+	return zlocationStore(ifltab, loc, storageFlag);
+}
+
+int ZPathNameForm(const char* aPart, const char* bPart, const char* cPart, const char* dPart, const char* ePart, const char* fPart, char* pathName, size_t sizeOfPathName)
+{
+	return zpathnameForm(aPart, bPart, cPart, dPart, ePart, fPart, pathName, sizeOfPathName);
+}
+
+int JulianToYearMonthDay(int julian, int* year, int* month, int* day)
+{
+	return julianToYearMonthDay(julian, year, month, day);
+}
+
+int TimeStringToSeconds(const char* timeString)
+{
+	return timeStringToSeconds(timeString);
+}
+
+int DateToJulian(const char* dateString)
+{
+	return dateToJulian(dateString);
+}
+
 

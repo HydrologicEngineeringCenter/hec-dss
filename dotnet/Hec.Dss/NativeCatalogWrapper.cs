@@ -53,5 +53,8 @@ namespace Hec.Dss
         return null;
       }
     }
+
+    public int TypeWantedStart { get; set; }
+    public int TypeWantedEnd { get; set; }
   }
 }

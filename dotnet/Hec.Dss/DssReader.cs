@@ -154,7 +154,7 @@ namespace Hec.Dss
       HashSet<double> uZs = new HashSet<double>();
       foreach (var item in collection)
       {
-        var loc = DSS.ZLocationRetrieve(ref ifltab, item.FullPath);
+        var loc = PInvoke.ZLocationRetrieve(ifltab, item.FullPath);
         item.XOrdinate = loc.XOrdinate;
         item.YOrdinate = loc.YOrdinate;
         item.ZOrdinate = loc.ZOrdinate;
@@ -401,7 +401,7 @@ namespace Hec.Dss
         pathName = (path as DssPathCondensed).GetComprisingDSSPaths()[0].FullPath;
       }
 
-      int rtInt = DSS.ZDataType(ref ifltab, pathName);
+      int rtInt = PInvoke.ZDataType( ifltab, pathName);
 
       if (rtInt == -1)
       {
@@ -410,7 +410,7 @@ namespace Hec.Dss
         var catalog = GetCatalog();
         var cmp = new DssPath.DatelessComparer();
         pathName = catalog.Where(p => cmp.Equals(p, path)).First().PathWithoutRange;
-        rtInt = DSS.ZDataType(ref ifltab, pathName);
+        rtInt = PInvoke.ZDataType(ifltab, pathName);
       }
 
       return RecordTypeFromInt(rtInt);
@@ -422,7 +422,7 @@ namespace Hec.Dss
     /// <returns>True if squeeze needed, false if squeeze not needed</returns>
     public bool SqueezeNeeded()
     {
-      int status = DSS.zSqueezeNeeded(ref ifltab);
+      int status = PInvoke.ZSqueezeNeeded(ifltab);
       if (status < 0)
         throw new Exception("zSqueezeNeeded reported a failure");
       else if (status == 0)
@@ -606,8 +606,8 @@ namespace Hec.Dss
       // This implementation works, but uses string manipulation and is REALLLY slow
       string d = "".PadRight(20);
       string h = "".PadRight(20);
-      DSS.GetDateAndTime(julian, timeGranularitySeconds, julianBaseDate,
-          ref d, d.Length, ref h, h.Length);
+      PInvoke.GetDateAndTime(julian, timeGranularitySeconds, julianBaseDate,
+          d, d.Length, h, h.Length);
       return Time.ConvertFromHecDateTime(d, h);
     }
 
@@ -816,7 +816,7 @@ namespace Hec.Dss
     /// <returns>True if the path exists, false otherwise.</returns>
     public bool ExactPathExists(DssPath path)
     {
-      int status = DSS.ZCheck(ifltab, path.FullPath);
+      int status = PInvoke.ZCheck(ifltab, path.FullPath);
       if (status != 0)
         return false;
       else
@@ -829,7 +829,7 @@ namespace Hec.Dss
     /// <returns>The missing flag value</returns>
     public float CheckMissingFlag()
     {
-      return DSS.ZMissingFlag();
+      return PInvoke.ZMissingFlag();
     }
 
     /// <summary>
@@ -850,7 +850,7 @@ namespace Hec.Dss
     /// <returns>If successful, the location data in the pathname.  Otherwise returns empty LocationData
     public LocationInformation GetLocationInfo(string pathname)
     {
-      ZStructLocationWrapper w = DSS.ZLocationRetrieve(ref ifltab, pathname);
+      NativeLocationWrapper w = PInvoke.ZLocationRetrieve(ifltab, pathname);
       var L = new LocationInformation(w);
       return L;
     }

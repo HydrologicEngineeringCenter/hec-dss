@@ -34,6 +34,31 @@ namespace Hec.Dss
     [return: MarshalAs(UnmanagedType.BStr)]
     private extern static string GetSupplemental(IntPtr loc);
 
+    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    private extern static void SetXOrdinate(IntPtr loc, double value);
+    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    private extern static void SetYOrdinate(IntPtr loc, double value);
+    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    private extern static void SetZOrdinate(IntPtr loc, double value);
+    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    private extern static void SetCoordinateSystem(IntPtr loc, int value);
+    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    private extern static void SetCoordinateID(IntPtr loc, int value);
+    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    private extern static void SetHorizontalUnits(IntPtr loc, int value);
+    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    private extern static void SetHorizontalDatum(IntPtr loc, int value);
+    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    private extern static void SetVerticalUnits(IntPtr loc, int value);
+    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    private extern static void SetVerticalDatum(IntPtr loc, int value);
+    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    private extern static void SetTimeZoneName(IntPtr loc, string value);
+    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    private extern static void SetSupplemental(IntPtr loc, string value);
+    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    private extern static void SetPathName(IntPtr loc, string value);
+
 
     public IntPtr TheStruct;
 
@@ -43,12 +68,20 @@ namespace Hec.Dss
       {
         return GetXOrdinate(TheStruct);
       }
+      set
+      {
+        SetXOrdinate(TheStruct, value);
+      }
     }
     public double YOrdinate
     {
       get
       {
         return GetYOrdinate(TheStruct);
+      }
+      set
+      {
+        SetYOrdinate(TheStruct, value);
       }
     }
     public double ZOrdinate
@@ -57,12 +90,20 @@ namespace Hec.Dss
       {
         return GetZOrdinate(TheStruct);
       }
+      set
+      {
+        SetZOrdinate(TheStruct, value);
+      }
     }
     public int CoordinateSystem
     {
       get
       {
         return GetCoordinateSystem(TheStruct);
+      }
+      set
+      {
+        SetCoordinateSystem(TheStruct, value);
       }
     }
     public int CoordinateID
@@ -71,11 +112,19 @@ namespace Hec.Dss
       {
         return GetCoordinateID(TheStruct);
       }
+      set
+      {
+        SetCoordinateID(TheStruct, value);
+      }
     }
     public int HorizontalUnits{
       get
       {
         return GetHorizontalUnits(TheStruct);
+      }
+      set
+      {
+        SetHorizontalUnits(TheStruct, value);
       }
     }
     public int HorizontalDatum
@@ -84,11 +133,19 @@ namespace Hec.Dss
       {
         return GetHorizontalDatum(TheStruct);
       }
+      set
+      {
+        SetHorizontalDatum(TheStruct, value);
+      }
     }
     public int VerticalUnits{
       get
       {
         return GetVerticalUnits(TheStruct);
+      }
+      set
+      {
+        SetVerticalUnits(TheStruct, value);
       }
     }
     public int VerticalDatum
@@ -97,6 +154,10 @@ namespace Hec.Dss
       {
         return GetVerticalDatum(TheStruct);
       }
+      set
+      {
+        SetVerticalDatum(TheStruct, value);
+      }
     }
     public string TimeZoneName
     {
@@ -104,11 +165,27 @@ namespace Hec.Dss
       {
         return GetTimeZoneName(TheStruct);
       }
+      set
+      {
+        SetTimeZoneName(TheStruct, value);
+      }
     }
     public string Supplemental{
       get
       {
         return GetSupplemental(TheStruct);
+      }
+      set
+      {
+        SetSupplemental(TheStruct, value);
+      }
+    }
+
+    public string PathName
+    {
+      set
+      {
+        SetPathName(TheStruct, value);
       }
     }
   }

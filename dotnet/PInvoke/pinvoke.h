@@ -20,4 +20,19 @@ extern "C" {
 	__declspec(dllexport) zStructCatalog* ZStructCatalogNew();
 	__declspec(dllexport) int ZCatalog(long long* ifltab, const char* pathWithWild, zStructCatalog* cat, int boolSorted);
 	__declspec(dllexport) int ZTsRetrieveEmpty(long long* ifltab, zStructTimeSeries* tss);
+	__declspec(dllexport) zStructLocation* ZLocationRetrieve(long long* ifltab, const char* pathName);
+	__declspec(dllexport) int ZDataType(long long* ifltab, const char* pathName);
+	__declspec(dllexport) int ZSqueeze(const char* fileName);
+	__declspec(dllexport) int ZSqueeze7(long long* ifltab, int boolOnlyIfNeeded, int boolInPlace);
+	__declspec(dllexport) int GetDateAndTime(int timeMinOrSec, int timeGranularitySeconds, int julianBaseDate, char* dateString, int sizeOfDateString, char* hoursMins, int sizeOfHoursMins);
+	__declspec(dllexport) int ZCheck(long long* ifltab, const char* pathName);
+	__declspec(dllexport) int ZDelete(long long* ifltab, const char* pathName);
+	__declspec(dllexport) int ZSqueezeNeeded(long long* ifltab);
+	__declspec(dllexport) float ZMissingFlag();
+	__declspec(dllexport) zStructLocation* ZStructLocationNew(const char* pathName);
+	__declspec(dllexport) int ZLocationStore(long long* ifltab, zStructLocation* loc, int storageFlag);
+	__declspec(dllexport) int ZPathNameForm(const char* aPart, const char* bPart, const char* cPart, const char* dPart, const char* ePart, const char* fPart, char* pathName, size_t sizeOfPathName);
+	__declspec(dllexport) int JulianToYearMonthDay(int julian, int* year, int* month, int* day);
+	__declspec(dllexport) int TimeStringToSeconds(const char* timeString);
+	__declspec(dllexport) int DateToJulian(const char* dateString);
 }

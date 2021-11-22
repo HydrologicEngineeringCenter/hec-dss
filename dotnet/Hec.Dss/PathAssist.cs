@@ -17,7 +17,7 @@ namespace Hec.Dss
     {
       int totalLength = aPart.Length + bPart.Length + cPart.Length + dPart.Length + ePart.Length + fPart.Length + 8;
       string path = new string('1', totalLength);
-      DSS.ZPathNameForm(aPart, bPart, cPart, dPart, ePart, fPart,ref path,(uint) totalLength);
+      PInvoke.ZPathNameForm(aPart, bPart, cPart, dPart, ePart, fPart,ref path,(uint) totalLength);
       if (path[path.Length - 1] != '/')
         path += "/";
       return path;

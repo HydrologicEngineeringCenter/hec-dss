@@ -186,7 +186,7 @@ namespace Hec.Dss
 
     public void StoreLocation(string dssPath, LocationInformation loc, bool overwrite = false)
     {
-      ZStructLocationWrapper wrapper = DSS.ZStructLocationNew(dssPath);
+      NativeLocationWrapper wrapper = PInvoke.NativeLocationNew(dssPath);
       wrapper.CoordinateID = loc.CoordinateID;
       wrapper.CoordinateSystem = (int)loc.CoordinateSystem;
       wrapper.HorizontalDatum = loc.HorizontalDatum;
@@ -199,7 +199,7 @@ namespace Hec.Dss
       wrapper.XOrdinate = loc.XOrdinate;
       wrapper.YOrdinate = loc.YOrdinate;
       wrapper.ZOrdinate = loc.ZOrdiante;
-      DSS.ZLocationStore(ref ifltab, ref wrapper, overwrite ? 1 : 0);
+      PInvoke.ZLocationStore(ifltab, wrapper, overwrite ? 1 : 0);
 
     }
 
@@ -420,7 +420,7 @@ namespace Hec.Dss
     {
       if (versionNumber == 7)
       {
-        int status = DSS.zSqueeze7(ref ifltab, OnlyIfNeeded ? 1 : 0, InPlaceSqueeze ? 1 : 0);
+        int status = PInvoke.ZSqueeze7(ifltab, OnlyIfNeeded ? 1 : 0, InPlaceSqueeze ? 1 : 0);
         if (status < 0)
         {
           return false;
@@ -429,7 +429,7 @@ namespace Hec.Dss
       }
       else
       {
-        int status = DSS.ZSqueeze(filename);
+        int status = PInvoke.ZSqueeze(filename);
         if (status < 0)
         {
           return false;
@@ -442,7 +442,7 @@ namespace Hec.Dss
 
     public void DeleteRecord(string pathName)
     {
-      DSS.ZDelete(ref ifltab, pathName);
+      PInvoke.ZDelete(ifltab, pathName);
     }
 
     public void DeleteRecord(DssPath path)
