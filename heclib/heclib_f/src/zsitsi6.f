@@ -84,11 +84,10 @@ C
 C
 C
       l_modified = .false.
-      if (index(cunits,'|').eq.0) then
-        if (len_trim(cunits).gt.8) cunits = cunits(1:8)
-      else
-        if (len_trim(cunits).gt.29) cunits = cunits(1:29)
-      endif
+      ispace = index(cunits, ' ')
+      if (ispace.gt.1) then
+        cunits = cunits(1:ispace-1)
+      end if
       ISTAT = 0
       IPOS = 1
       I1440 = 1440
