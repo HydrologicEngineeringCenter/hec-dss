@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
 using Hec.Dss.Native;
+using Hec.Dss;
 
 namespace DSSUnitTests
 {
@@ -17,19 +18,19 @@ namespace DSSUnitTests
       int status;
             string fn = TestUtility.GetSimpleTempFileName(".dss");
       File.Delete(fn);
-      status = DSS.ZOpen(ref ifltab, fn);
+      status = PInvoke.ZOpen(ifltab, fn);
       if (status != 0)
         Assert.Fail();
       if (!File.Exists(fn))
         Assert.Fail();
-      DSS.ZClose(ifltab);
+      PInvoke.ZClose(ifltab);
 
     }
     [TestMethod]
     public void TestCatalogV7()
     {
       long[] ifltab = new long[250];
-      DSS.ZOpen(ref ifltab, TestUtility.BasePath + "sample7.dss");
+      PInvoke.ZOpen(ifltab, TestUtility.BasePath + "sample7.dss");
       ZStructCatalogWrapper catStruct = DSS.zStructCatalogNew();
       int numberPaths = DSS.ZCatalog(ref ifltab, null, ref catStruct, 1);
       Assert.IsTrue(numberPaths == 595);
@@ -38,13 +39,13 @@ namespace DSSUnitTests
       {
         Assert.IsTrue(catStruct.PathNameList[i] == "//SACRAMENTO/PRECIP-INC/01Jan" + (num + i).ToString() + "/1Day/OBS/");
       }
-      DSS.ZClose(ifltab);
+      PInvoke.ZClose(ifltab);
     }
     [TestMethod]
     public void TestCatalogV7Continued()
     {
       long[] ifltab = new long[250];
-      DSS.ZOpen(ref ifltab, TestUtility.BasePath + "sample7.dss");
+      PInvoke.ZOpen(ifltab, TestUtility.BasePath + "sample7.dss");
       ZStructCatalogWrapper catStruct = DSS.zStructCatalogNew();
       int numberPaths = DSS.ZCatalog(ref ifltab, "/*/*/*Flow*/*/*/*/", ref catStruct, 1);
       Assert.IsTrue(numberPaths == 167);
@@ -53,13 +54,13 @@ namespace DSSUnitTests
       Assert.IsTrue(catStruct.PathNameList[2] == "/EF RUSSIAN/COYOTE/FLOW-RES IN/01Mar2006/1Hour/SMOOTH/");
       Assert.IsTrue(catStruct.PathNameList[3] == "/EF RUSSIAN/COYOTE/FLOW-RES OUT/01Mar2006/1Hour//");
       Assert.IsTrue(catStruct.PathNameList[4] == "/FISHKILL CREEK/BEACON NY/FREQ-FLOW///USGS/");
-      DSS.ZClose(ifltab);
+      PInvoke.ZClose(ifltab);
     }
     [TestMethod]
     public void TestCatalogV6()
     {
       long[] ifltab = new long[250];
-      DSS.ZOpen(ref ifltab, TestUtility.BasePath + "sample6_ras.dss");
+      PInvoke.ZOpen(ifltab, TestUtility.BasePath + "sample6_ras.dss");
       ZStructCatalogWrapper catStruct = DSS.zStructCatalogNew();
       int numberPaths = DSS.ZCatalog(ref ifltab, null, ref catStruct, 1);
       Assert.IsTrue(numberPaths == 627);
@@ -68,13 +69,13 @@ namespace DSSUnitTests
       {
         Assert.IsTrue(catStruct.PathNameList[i] == "//SACRAMENTO/PRECIP-INC/01JAN" + (num + i).ToString() + "/1DAY/OBS/");
       }
-      DSS.ZClose(ifltab);
+      PInvoke.ZClose(ifltab);
     }
     [TestMethod]
     public void TestCatalogV6Continued()
     {
       long[] ifltab = new long[250];
-      DSS.ZOpen(ref ifltab, TestUtility.BasePath + "sample6_ras.dss");
+      PInvoke.ZOpen(ifltab, TestUtility.BasePath + "sample6_ras.dss");
       ZStructCatalogWrapper catStruct = DSS.zStructCatalogNew();
       int numberPaths = DSS.ZCatalog(ref ifltab, "/*/*/*Flow*/*/*/*/", ref catStruct, 1);
       Assert.IsTrue(numberPaths == 172);
@@ -83,13 +84,13 @@ namespace DSSUnitTests
       Assert.IsTrue(catStruct.PathNameList[2] == "/EF RUSSIAN/COYOTE/FLOW-RES IN/01MAR2006/1HOUR/SMOOTH/");
       Assert.IsTrue(catStruct.PathNameList[3] == "/EF RUSSIAN/COYOTE/FLOW-RES OUT/01MAR2006/1HOUR//");
       Assert.IsTrue(catStruct.PathNameList[4] == "/FISHKILL CREEK/BEACON NY/FREQ-FLOW///USGS/");
-      DSS.ZClose(ifltab);
+      PInvoke.ZClose(ifltab);
     }
     [TestMethod]
     public void TestCatalogPairedDataPathNamesV7()
     {
       long[] ifltab = new long[250];
-      DSS.ZOpen(ref ifltab, TestUtility.BasePath + "sample7.dss");
+      PInvoke.ZOpen(ifltab, TestUtility.BasePath + "sample7.dss");
       ZStructCatalogWrapper catStruct = DSS.zStructCatalogNew();
       catStruct.TypeWantedStart = 200; //paired data regular
       catStruct.TypeWantedEnd = 205;//paired data double
@@ -100,13 +101,13 @@ namespace DSSUnitTests
       {
         Assert.IsTrue(catStruct.PathNameList[i] == "//SACRAMENTO/PRECIP-INC/01Jan" + (num + i).ToString() + "/1Day/OBS/");
       }
-      DSS.ZClose(ifltab);
+      PInvoke.ZClose(ifltab);
     }
     [TestMethod]
     public void TestCatalogFileV7()
     {
       long[] ifltab = new long[250];
-      DSS.ZOpen(ref ifltab, TestUtility.BasePath + "sample7.dss");
+      PInvoke.ZOpen(ifltab, TestUtility.BasePath + "sample7.dss");
       int numberPaths = DSS.ZCatalogFile(ref ifltab, null, 1, null);
       Assert.IsTrue(numberPaths == 595);
        string fn = "test_sample7.dsscat.txt";
@@ -124,7 +125,7 @@ namespace DSSUnitTests
       string cdate = new string('1', 13);
       string ctime = new string('1', 10);
       int valueTime,status;
-      DSS.ZOpen(ref ifltab, "dotnet_example7.dss");
+      PInvoke.ZOpen( ifltab, "dotnet_example7.dss");
       for (int i = 0; i < 200; i++)
       {
         fvalues[i] = (float)i;
@@ -192,7 +193,7 @@ namespace DSSUnitTests
           Assert.IsTrue(cdate == "19Sep2012");
 
       }
-      DSS.ZClose(ifltab);
+      PInvoke.ZClose(ifltab);
     }
     [TestMethod]
     public void TestTimeSeries2()
@@ -207,7 +208,7 @@ namespace DSSUnitTests
       string ctime = new string('1', 10);
       int valueTime, status, n;
       int ich;
-      status = DSS.ZOpen(ref ifltab, TestUtility.BasePath + "dotnet_example8.dss");
+      status = PInvoke.ZOpen(ifltab, TestUtility.BasePath + "dotnet_example8.dss");
       Assert.IsTrue(status == 0);
       tss2 = DSS.ZStructTsNew("/Basin/Location/Flow/01JAN2010/1Hour/Java Example/");
       tss2.NumberValues = 200;
@@ -259,7 +260,7 @@ namespace DSSUnitTests
         noteCount += tss2.CNotes.Length+1;
         valueTime += 3600;
       }
-      DSS.ZClose(ifltab);
+      PInvoke.ZClose(ifltab);
     }
     [TestMethod]
     public void TestRetrieveGrid6()
@@ -267,14 +268,14 @@ namespace DSSUnitTests
       long[] ifltab = new long[250];
       int status;
       ////ZStructGridWrapper gs;
-      status = DSS.ZOpen(ref ifltab, "containsGrids.dss");
+      status = PInvoke.ZOpen(ifltab, "containsGrids.dss");
       //if (status != 0)
       //  Assert.Fail();
       ////gs = DSS.ZStructGridNew(@"/SHG/LAKE WINNEBAGO/PRECIP/01JUN2016:0600/01JUN2016:1200/WPC-QPF/");
       ////status = DSS.ZgRetrieve(ref ifltab, ref gs);
       //if (status != 0)
       //  Assert.Fail();
-      //DSS.ZClose(ifltab);
+      //PInvoke.ZClose(ifltab);
 
     }
 

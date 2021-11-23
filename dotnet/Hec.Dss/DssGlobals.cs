@@ -11,7 +11,7 @@ namespace Hec.Dss
   {
     static public int SetProgramName(String programName)
     {
-      return DSS.ZSet("PROG", programName, 0);
+      return PInvoke.ZSet("PROG", programName, 0);
     }
   }
 }

@@ -86,7 +86,7 @@ namespace Hec.Dss
     internal static string JulianToHecDate(int julianBaseDate)
     {
       int y = 0, m = 0, d = 0;
-      DSS.JulianToYearMonthDay(julianBaseDate, ref y, ref m, ref d);
+      PInvoke.JulianToYearMonthDay(julianBaseDate, ref y, ref m, ref d);
       DateTime t = new DateTime(y, m, d);
 
       return t.ToString(HecDateFormat);
@@ -263,7 +263,7 @@ namespace Hec.Dss
       for (int i = 0; i < times.Length; i++)
       {
         int julian = DateToJulian(times[i]);
-        int secs = DSS.TimeStringToSeconds(times[i].ToString("HH:mm:ss"));
+        int secs = PInvoke.TimeStringToSeconds(times[i].ToString("HH:mm:ss"));
         rval[i] = (julian - julianBaseDate) * (86400 / timeGranularitySeconds) + (secs / timeGranularitySeconds);
       }
       return rval;
@@ -271,7 +271,7 @@ namespace Hec.Dss
 
     internal static int DateToJulian(DateTime t)
     {
-      return DSS.DateToJulian(HecDateToString(t));
+      return PInvoke.DateToJulian(HecDateToString(t));
     }
 
   }

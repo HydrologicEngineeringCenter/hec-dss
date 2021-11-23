@@ -51,7 +51,7 @@ namespace Hec.Dss
 
     public DssReader(string filename, int version, MethodID messageMethod = MethodID.MESS_METHOD_GENERAL_ID, LevelID messageLevel = LevelID.MESS_LEVEL_GENERAL)
     {
-      DSS.ZSet("DSSV", "", version);
+      PInvoke.ZSet("DSSV", "", version);
       GetDssFile(filename, messageMethod, messageLevel);
     }
 
@@ -65,15 +65,15 @@ namespace Hec.Dss
       if (messageMethod != MethodID.MESS_METHOD_GENERAL_ID || messageLevel != LevelID.MESS_LEVEL_GENERAL)
       {
         //Call the version 6 and 7 set message level first, if the file is 6 then the ZSetMessageLevel will not work, and we can still use MethodIDs for 7.
-        DSS.ZSet("mlvl", "", (int)messageLevel);
-        DSS.ZSetMessageLevel((int)messageMethod, (int)messageLevel);
+        PInvoke.ZSet("mlvl", "", (int)messageLevel);
+        PInvoke.ZSetMessageLevel((int)messageMethod, (int)messageLevel);
 
       }
       _iflTabGC = GCHandle.Alloc(ifltab, GCHandleType.Pinned);
       int status;
       this.filename = filename;
-      status = DSS.ZOpen(ref ifltab, filename);
-      versionNumber = DSS.ZGetVersion(ref ifltab);
+      status = PInvoke.ZOpen(ifltab, filename);
+      versionNumber = PInvoke.ZGetVersion(ifltab);
 
       switch (status)
       {
@@ -122,8 +122,8 @@ namespace Hec.Dss
       bool sorted = false;
       RecordType[] recordTypes = null;
 
-      ZStructCatalogWrapper cat = DSS.zStructCatalogNew();
-      int status = DSS.ZCatalog(ref ifltab, null, ref cat, sorted ? 1 : 0);
+      NativeCatalogWrapper cat = PInvoke.NativeCatalogNew();
+      int status = PInvoke.ZCatalog(ifltab, null, cat, sorted ? 1 : 0);
       if (status < 0)
         throw new Exception("ZCatalog reported a failure with retrieving DSS filenames");
 
@@ -154,7 +154,7 @@ namespace Hec.Dss
       HashSet<double> uZs = new HashSet<double>();
       foreach (var item in collection)
       {
-        var loc = DSS.ZLocationRetrieve(ref ifltab, item.FullPath);
+        var loc = PInvoke.ZLocationRetrieve(ifltab, item.FullPath);
         item.XOrdinate = loc.XOrdinate;
         item.YOrdinate = loc.YOrdinate;
         item.ZOrdinate = loc.ZOrdinate;
@@ -401,7 +401,7 @@ namespace Hec.Dss
         pathName = (path as DssPathCondensed).GetComprisingDSSPaths()[0].FullPath;
       }
 
-      int rtInt = DSS.ZDataType(ref ifltab, pathName);
+      int rtInt = PInvoke.ZDataType( ifltab, pathName);
 
       if (rtInt == -1)
       {
@@ -410,7 +410,7 @@ namespace Hec.Dss
         var catalog = GetCatalog();
         var cmp = new DssPath.DatelessComparer();
         pathName = catalog.Where(p => cmp.Equals(p, path)).First().PathWithoutRange;
-        rtInt = DSS.ZDataType(ref ifltab, pathName);
+        rtInt = PInvoke.ZDataType(ifltab, pathName);
       }
 
       return RecordTypeFromInt(rtInt);
@@ -422,7 +422,7 @@ namespace Hec.Dss
     /// <returns>True if squeeze needed, false if squeeze not needed</returns>
     public bool SqueezeNeeded()
     {
-      int status = DSS.zSqueezeNeeded(ref ifltab);
+      int status = PInvoke.ZSqueezeNeeded(ifltab);
       if (status < 0)
         throw new Exception("zSqueezeNeeded reported a failure");
       else if (status == 0)
@@ -459,7 +459,7 @@ namespace Hec.Dss
         } 
       }
 
-      int status = DSS.ZTsRetrieve(ref ifltab, ref blockTimeSeries, retrieveFlag, retrieveDoublesFlag, boolRetrieveQualityNotes);
+      int status = PInvoke.ZTsRetrieve(ifltab, blockTimeSeries, retrieveFlag, retrieveDoublesFlag, boolRetrieveQualityNotes);
 
       // if path is valid, and is time series, (status -1 proably means no data in the time window)
 
@@ -483,16 +483,16 @@ namespace Hec.Dss
       
     }
 
-    private void SetTimeSeriesInfo(ZStructTimeSeriesWrapper fromTimeSeries, TimeSeries ToTimeSeries) 
+    private void SetTimeSeriesInfo(NativeTimeSeriesWrapper fromTimeSeries, TimeSeries ToTimeSeries) 
     {
-      ToTimeSeries.Path = new DssPath(fromTimeSeries.Pathname);
+      ToTimeSeries.Path = new DssPath(fromTimeSeries.Path);
       ToTimeSeries.Units = fromTimeSeries.Units;
       ToTimeSeries.Times = GetTsTimes(fromTimeSeries);
       ToTimeSeries.Values = GetTsValues(fromTimeSeries);
       ToTimeSeries.Qualities = fromTimeSeries.Quality;
       ToTimeSeries.DataType = fromTimeSeries.Type;
       ToTimeSeries.ProgramName = fromTimeSeries.ProgramName;
-      var locationInfo = new LocationInformation(fromTimeSeries.locationStruct);
+      var locationInfo = new LocationInformation(fromTimeSeries.LocationStruct);
       ToTimeSeries.LocationInformation = locationInfo;
     }
 
@@ -534,26 +534,26 @@ namespace Hec.Dss
       return null;
     }
 
-    public static List<ZStructTimeSeriesWrapper> CreateTSWrapperList(DssPath dssPath, DateTime startDateTime, DateTime endDateTime)
-    {
-      List<ZStructTimeSeriesWrapper> listTss = new List<ZStructTimeSeriesWrapper>();
+    //public static List<ZStructTimeSeriesWrapper> CreateTSWrapperList(DssPath dssPath, DateTime startDateTime, DateTime endDateTime)
+    //{
+    //  List<ZStructTimeSeriesWrapper> listTss = new List<ZStructTimeSeriesWrapper>();
 
-      //TODO: When we figure out TODO in CreateTSWrapper, potentially change && to ||
-      if (dssPath is DssPathCondensed)
-      {//TODO  find contiguous blocks, minimize number of calls.
-        var dssPathCon = dssPath as DssPathCondensed;
-        for (int i = 0; i < dssPathCon.ComprisedDParts.Count; i++)
-        {
-          var comprisedPath = dssPathCon.GetPath(i);
-          listTss.Add(CreateTSWrapper(comprisedPath));
-        }
-      }
-      else
-        listTss.Add(CreateTSWrapper(dssPath, startDateTime, endDateTime));
-      return listTss;
-    }
+    //  //TODO: When we figure out TODO in CreateTSWrapper, potentially change && to ||
+    //  if (dssPath is DssPathCondensed)
+    //  {//TODO  find contiguous blocks, minimize number of calls.
+    //    var dssPathCon = dssPath as DssPathCondensed;
+    //    for (int i = 0; i < dssPathCon.ComprisedDParts.Count; i++)
+    //    {
+    //      var comprisedPath = dssPathCon.GetPath(i);
+    //      listTss.Add(CreateTSWrapper(comprisedPath));
+    //    }
+    //  }
+    //  else
+    //    listTss.Add(CreateTSWrapper(dssPath, startDateTime, endDateTime));
+    //  return listTss;
+    //}
 
-    private static ZStructTimeSeriesWrapper CreateTSWrapper(DssPath path, DateTime startDateTime = default(DateTime), DateTime endDateTime = default(DateTime))
+    private static NativeTimeSeriesWrapper CreateTSWrapper(DssPath path, DateTime startDateTime = default(DateTime), DateTime endDateTime = default(DateTime))
     {
       //TODO: Find out how DSS deals with null start and valid end, OR valid start null end.
       //If it handles it like we expect then this method needs to change to accomdate that
@@ -563,16 +563,16 @@ namespace Hec.Dss
         string startDate, startTime, endDate, endTime;
         Time.DateTimeToHecDateTime(startDateTime, out startDate, out startTime);
         Time.DateTimeToHecDateTime(endDateTime, out endDate, out endTime);
-        return DSS.ZStructTsNewTimes(path.FullPath, startDate, startTime, endDate, endTime);
+        return PInvoke.NativeTsNewTimes(path.FullPath, startDate, startTime, endDate, endTime);
       }
       else
       {
-        return DSS.ZStructTsNew(path.FullPath);
+        return PInvoke.NativeTsNew(path.FullPath);
       }
 
     }
 
-    private static double[] GetTsValues(ZStructTimeSeriesWrapper comprisedTimeSeries)
+    private static double[] GetTsValues(NativeTimeSeriesWrapper comprisedTimeSeries)
     {
       if (comprisedTimeSeries.DoubleValues == null)
         throw new NullReferenceException("Time Series double values was null.  Something didn't work right in DSS.");
@@ -581,7 +581,7 @@ namespace Hec.Dss
       return values;
     }
 
-    private static DateTime[] GetTsTimes(ZStructTimeSeriesWrapper ts)
+    private static DateTime[] GetTsTimes(NativeTimeSeriesWrapper ts)
     {
       if (ts.Times == null)
         throw new NullReferenceException("Time Series Times array was null.  Something didn't work right in DSS.");
@@ -606,8 +606,8 @@ namespace Hec.Dss
       // This implementation works, but uses string manipulation and is REALLLY slow
       string d = "".PadRight(20);
       string h = "".PadRight(20);
-      DSS.GetDateAndTime(julian, timeGranularitySeconds, julianBaseDate,
-          ref d, d.Length, ref h, h.Length);
+      PInvoke.GetDateAndTime(julian, timeGranularitySeconds, julianBaseDate,
+          d, d.Length, h, h.Length);
       return Time.ConvertFromHecDateTime(d, h);
     }
 
@@ -620,7 +620,7 @@ namespace Hec.Dss
     /// <returns></returns>
     public TimeSeries GetEmptyTimeSeries(DssPath path)
     {
-      ZStructTimeSeriesWrapper tss;
+      NativeTimeSeriesWrapper tss;
 
       if (path is DssPathCondensed)
       {
@@ -628,9 +628,9 @@ namespace Hec.Dss
         path = parts[0];
       }
 
-      tss = DSS.ZStructTsNew(path.FullPath);
+      tss = PInvoke.NativeTsNew(path.FullPath);
 
-      int status = DSS.ZTsRetrieveEmpty(ref ifltab, ref tss);
+      int status = PInvoke.ZTsRetrieveEmpty(ifltab, tss);
 
       var rval = new TimeSeries();
       if (status != 0)
@@ -640,7 +640,7 @@ namespace Hec.Dss
       rval.Path = path;
       rval.Units = tss.Units;
       rval.DataType = tss.Type;
-      var locationInfo = new LocationInformation(tss.locationStruct);
+      var locationInfo = new LocationInformation(tss.LocationStruct);
       rval.LocationInformation = locationInfo;
       return rval;
     }
@@ -732,12 +732,12 @@ namespace Hec.Dss
     public TimeSeriesProfile GetTimeSeriesProfile(DssPath pathname)
     {
       var rval = new TimeSeriesProfile();
-      ZStructTimeSeriesWrapper tss = DSS.ZStructTsNew(pathname.PathWithoutRange);
+      NativeTimeSeriesWrapper tss = PInvoke.NativeTsNew(pathname.PathWithoutRange);
 
       int retrieveDoublesFlag = 2; // get doubles
       int retrieveFlagTrim = -1;
       int boolRetrieveQualityNotes = 0;
-      int status = DSS.ZTsRetrieve(ref ifltab, ref tss, retrieveFlagTrim, retrieveDoublesFlag, boolRetrieveQualityNotes);
+      int status = PInvoke.ZTsRetrieve(ifltab, tss, retrieveFlagTrim, retrieveDoublesFlag, boolRetrieveQualityNotes);
       if (status != 0)
       {
         throw new Exception("Error reading path " + pathname + " in GetTimeSeriesProfile(" + pathname + ")");
@@ -816,7 +816,7 @@ namespace Hec.Dss
     /// <returns>True if the path exists, false otherwise.</returns>
     public bool ExactPathExists(DssPath path)
     {
-      int status = DSS.ZCheck(ifltab, path.FullPath);
+      int status = PInvoke.ZCheck(ifltab, path.FullPath);
       if (status != 0)
         return false;
       else
@@ -829,7 +829,7 @@ namespace Hec.Dss
     /// <returns>The missing flag value</returns>
     public float CheckMissingFlag()
     {
-      return DSS.ZMissingFlag();
+      return PInvoke.ZMissingFlag();
     }
 
     /// <summary>
@@ -838,7 +838,7 @@ namespace Hec.Dss
     /// <returns>6 or 7 depending on the version</returns>
     public int GetDSSFileVersion()
     {
-      return DSS.ZGetVersion(ref ifltab);
+      return PInvoke.ZGetVersion(ifltab);
     }
 
 
@@ -850,7 +850,7 @@ namespace Hec.Dss
     /// <returns>If successful, the location data in the pathname.  Otherwise returns empty LocationData
     public LocationInformation GetLocationInfo(string pathname)
     {
-      ZStructLocationWrapper w = DSS.ZLocationRetrieve(ref ifltab, pathname);
+      NativeLocationWrapper w = PInvoke.ZLocationRetrieve(ifltab, pathname);
       var L = new LocationInformation(w);
       return L;
     }
@@ -886,7 +886,7 @@ namespace Hec.Dss
     public void Dispose()
     {
       ActiveReaders.Remove(this);
-      DSS.ZClose(ifltab);
+      PInvoke.ZClose(ifltab);
       _iflTabGC.Free();
     }
 

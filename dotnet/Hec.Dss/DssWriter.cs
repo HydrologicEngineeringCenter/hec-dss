@@ -29,7 +29,7 @@ namespace Hec.Dss
       int numCols = profile.ColumnValues.Length;
       int numRows = profile.Values.GetLength(0);
       Time.DateTimeToHecDateTime(profile.StartDateTime, out string startDate, out string startTime);
-      var tss = DSS.ZStructTsNewTimes(profile.Path.FullPath, startDate, startTime, "", "");
+      var tss = PInvoke.NativeTsNewTimes(profile.Path.FullPath, startDate, startTime, "", "");
       tss.UnitsProfileValues = profile.Units;
       tss.UnitsProfileDepths = profile.ColumnUnits;
       tss.NumberValues = numRows;
@@ -52,7 +52,7 @@ namespace Hec.Dss
         tss.DoubleProfileValues = d;
       }
 
-      return DSS.ZTsStore(ref ifltab, ref tss, storageFlagOverwrite);
+      return PInvoke.ZTsStore(ifltab, tss, storageFlagOverwrite);
 
     }
 
@@ -186,7 +186,7 @@ namespace Hec.Dss
 
     public void StoreLocation(string dssPath, LocationInformation loc, bool overwrite = false)
     {
-      ZStructLocationWrapper wrapper = DSS.ZStructLocationNew(dssPath);
+      NativeLocationWrapper wrapper = PInvoke.NativeLocationNew(dssPath);
       wrapper.CoordinateID = loc.CoordinateID;
       wrapper.CoordinateSystem = (int)loc.CoordinateSystem;
       wrapper.HorizontalDatum = loc.HorizontalDatum;
@@ -199,7 +199,7 @@ namespace Hec.Dss
       wrapper.XOrdinate = loc.XOrdinate;
       wrapper.YOrdinate = loc.YOrdinate;
       wrapper.ZOrdinate = loc.ZOrdiante;
-      DSS.ZLocationStore(ref ifltab, ref wrapper, overwrite ? 1 : 0);
+      PInvoke.ZLocationStore(ifltab, wrapper, overwrite ? 1 : 0);
 
     }
 
@@ -220,26 +220,24 @@ namespace Hec.Dss
       if (listType == typeof(double))
       {
         double[] dArray = values as double[];
-        ZStructTimeSeriesWrapper tss = DSS.ZStructTsNewRegDoubles(pathName, ref dArray, dArray.Length, startDate, startTime, units, type);
+        NativeTimeSeriesWrapper tss = PInvoke.NativeTsNewRegDoubles(pathName, dArray, startDate, startTime, units, type);
         if (qualities != null)
         {
-          tss.QualityArraySize = dArray.Length;
           tss.QualityElementSize = 1;
           tss.Quality = qualities;
         }
-        return DSS.ZTsStore(ref ifltab, ref tss, storageFlag);
+        return PInvoke.ZTsStore(ifltab, tss, storageFlag);
       }
       else if (listType == typeof(float))
       {
         float[] fArray = values as float[];
-        ZStructTimeSeriesWrapper tss = DSS.ZStructTsNewRegFloats(pathName, ref fArray, fArray.Length, startDate, startTime, units, type);
+        NativeTimeSeriesWrapper tss = PInvoke.NativeTsNewRegFloats(pathName, fArray, startDate, startTime, units, type);
         if (qualities != null)
         {
-          tss.QualityArraySize = fArray.Length;
           tss.QualityElementSize = 1;
           tss.Quality = qualities;
         }
-        return DSS.ZTsStore(ref ifltab, ref tss, storageFlag);
+        return PInvoke.ZTsStore(ifltab, tss, storageFlag);
       }
       else
         throw new Exception("Cannot store values of type " + listType.Name + " for time series.  Only accepts double and float");
@@ -282,26 +280,24 @@ namespace Hec.Dss
       if (listType == typeof(double))
       {
         double[] dArray = values as double[];
-        ZStructTimeSeriesWrapper tss = DSS.ZStructTsNewIrregDoubles(pathName, ref dArray, dArray.Length, ref itimes, timeGranularitySeconds, startDateBase, units, type);
+        NativeTimeSeriesWrapper tss = PInvoke.NativeTsNewIrregDoubles(pathName, dArray, itimes, timeGranularitySeconds, startDateBase, units, type);
         if (qualities != null)
         {
-          tss.QualityArraySize = dArray.Length;
           tss.QualityElementSize = 1;
           tss.Quality = qualities;
         }
-        return DSS.ZTsStore(ref ifltab, ref tss, storageFlag);
+        return PInvoke.ZTsStore(ifltab, tss, storageFlag);
       }
       else if (listType == typeof(float))
       {
         float[] fArray = values as float[];
-        ZStructTimeSeriesWrapper tss = DSS.ZStructTsNewIrregFloats(pathName, ref fArray, fArray.Length, ref itimes, timeGranularitySeconds, startDateBase, units, type);
+        NativeTimeSeriesWrapper tss = PInvoke.NativeTsNewIrregFloats(pathName, fArray, itimes, timeGranularitySeconds, startDateBase, units, type);
         if (qualities != null)
         {
-          tss.QualityArraySize = fArray.Length;
           tss.QualityElementSize = 1;
           tss.Quality = qualities;
         }
-        return DSS.ZTsStore(ref ifltab, ref tss, storageFlag);
+        return PInvoke.ZTsStore(ifltab, tss, storageFlag);
       }
       else
         throw new Exception("Cannot store values of type " + listType.Name + " for time series.  Only accepts double and float");
@@ -424,7 +420,7 @@ namespace Hec.Dss
     {
       if (versionNumber == 7)
       {
-        int status = DSS.zSqueeze7(ref ifltab, OnlyIfNeeded ? 1 : 0, InPlaceSqueeze ? 1 : 0);
+        int status = PInvoke.ZSqueeze7(ifltab, OnlyIfNeeded ? 1 : 0, InPlaceSqueeze ? 1 : 0);
         if (status < 0)
         {
           return false;
@@ -433,7 +429,7 @@ namespace Hec.Dss
       }
       else
       {
-        int status = DSS.ZSqueeze(filename);
+        int status = PInvoke.ZSqueeze(filename);
         if (status < 0)
         {
           return false;
@@ -446,7 +442,7 @@ namespace Hec.Dss
 
     public void DeleteRecord(string pathName)
     {
-      DSS.ZDelete(ref ifltab, pathName);
+      PInvoke.ZDelete(ifltab, pathName);
     }
 
     public void DeleteRecord(DssPath path)
