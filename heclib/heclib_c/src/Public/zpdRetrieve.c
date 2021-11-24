@@ -752,6 +752,8 @@ int zpdRetrieve(long long *ifltab, zStructPairedData *pds, int retrieveSizeFlag)
 					if (vdiStr) {
 						char *msg = stringToVerticalDatumInfo(&_vdi, vdiStr);
 						if (msg) {
+							char _msg[65];
+							strncpy(_msg, msg, sizeof(_msg)-1);
 							sprintf(
 								errmsg,
 								"Cannot convert from native vertical datum of '%s' to '%s'.\n%s\n"
@@ -760,7 +762,7 @@ int zpdRetrieve(long long *ifltab, zStructPairedData *pds, int retrieveSizeFlag)
 								pds->locationStruct->verticalDatum == 1 ? "NAVD-88" :
 								pds->locationStruct->verticalDatum == 2 ? "NGVD-29" : "OTHER",
 								cvertical_datum,
-								errmsg);
+								_msg);
 							zmessage(ifltab, errmsg);
 						}
 						else {
