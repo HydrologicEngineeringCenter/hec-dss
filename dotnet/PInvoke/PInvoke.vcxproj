@@ -175,6 +175,7 @@
     <ClInclude Include="NativeCatalogWrapper.h" />
     <ClInclude Include="NativeLocationWrapper.h" />
     <ClInclude Include="NativePairedDataWrapper.h" />
+    <ClInclude Include="NativeSpatialGridWrapper.h" />
     <ClInclude Include="NativeTimeSeriesWrapper.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="pinvoke.h" />
@@ -185,6 +186,7 @@
     <ClCompile Include="NativeCatalogWrapper.cpp" />
     <ClCompile Include="NativeLocationWrapper.cpp" />
     <ClCompile Include="NativePairedDataWrapper.cpp" />
+    <ClCompile Include="NativeSpatialGridWrapper.cpp" />
     <ClCompile Include="NativeTimeSeriesWrapper.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
