@@ -74,6 +74,47 @@ namespace Hec.Dss
     public extern static int TimeStringToSeconds(string timeString);
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
     public extern static int DateToJulian(string dateString);
+    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    private extern static IntPtr ZStructPdNew(string pathName);
+    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    private extern static IntPtr ZStructPdNewDoubles(string pathName, double[] doubleOrdinates, double[] doubleValues, int numberOrdinates, int numberCurves, string unitsIndependent, string typeIndependent, string unitsDependent, string typeDependent);
+    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    private extern static IntPtr ZStructPdNewFloats(string pathName, float[] floatOrdinates, float[] floatValues, int numberOrdinates, int numberCurves, string unitsIndependent, string typeIndependent, string unitsDependent, string typeDependent);
+    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    private extern static int ZPdRetrieve(long[] ifltab, IntPtr pd, int retrieveDoubleFlag);
+    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    private extern static int ZPdStore(long[] ifltab, IntPtr pd, int storageFlag);
+
+    public static int ZPdStore(long[] ifltab, NativePairedDataWrapper pd, int storageFlag)
+    {
+      return ZPdStore(ifltab, pd.TheStruct, storageFlag);
+    }
+
+    public static int ZPdRetrieve(long[] ifltab, NativePairedDataWrapper pd, int retrieveDoubleFlag)
+    {
+      return ZPdRetrieve(ifltab, pd.TheStruct, retrieveDoubleFlag);
+    }
+
+    public static NativePairedDataWrapper NativePdNewFloats(string pathName, float[] floatOrdinates, float[] floatValues, int numberOrdinates, int numberCurves, string unitsIndependent, string typeIndependent, string unitsDependent, string typeDependent)
+    {
+      NativePairedDataWrapper npd = new NativePairedDataWrapper();
+      npd.TheStruct = ZStructPdNewFloats(pathName, floatOrdinates, floatValues, numberOrdinates, numberCurves, unitsIndependent, typeIndependent, unitsDependent, typeDependent);
+      return npd;
+    }
+
+    public static NativePairedDataWrapper NativePdNewDoubles(string pathName, double[] doubleOrdinates, double[] doubleValues, int numberOrdinates, int numberCurves, string unitsIndependent, string typeIndependent, string unitsDependent, string typeDependent)
+    {
+      NativePairedDataWrapper npd = new NativePairedDataWrapper();
+      npd.TheStruct = ZStructPdNewDoubles(pathName, doubleOrdinates, doubleValues, numberOrdinates, numberCurves, unitsIndependent, typeIndependent, unitsDependent, typeDependent);
+      return npd;
+    }
+
+    public static NativePairedDataWrapper NativePdNew(string pathName)
+    {
+      NativePairedDataWrapper npd = new NativePairedDataWrapper();
+      npd.TheStruct = ZStructPdNew(pathName);
+      return npd;
+    }
 
     public static int ZPathNameForm(string aPart, string bPart, string cPart, string dPart, string ePart, string fPart, ref string pathName, ulong sizeOfPathName)
     {

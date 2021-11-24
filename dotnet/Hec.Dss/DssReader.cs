@@ -655,8 +655,8 @@ namespace Hec.Dss
     /// <param name="dataUnits">An array of size 2, the first value is the units of the independent, the second value is the units of the dependent.</param>
     public PairedData GetPairedData(string pathname)
     {
-      ZStructPairedDataWrapper pds = DSS.ZStructPdNew(pathname);
-      int status = DSS.ZpdRetrieve(ref ifltab, ref pds, 2);
+      NativePairedDataWrapper pds = PInvoke.NativePdNew(pathname);
+      int status = PInvoke.ZPdRetrieve(ifltab, pds, 2);
       if (status != 0)
       {
         return null;
