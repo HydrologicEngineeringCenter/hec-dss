@@ -1,5 +1,5 @@
 program testVerticalDatum
-    call testStoreRetrieveTimeSeries()
+    ! call testStoreRetrieveTimeSeries()
     call testStoreRetrievePairedData()
 
     stop
@@ -139,11 +139,8 @@ subroutine testStoreRetrieveTimeSeries()
     character (len=16)      :: startDate(2), endDate(2)
     character (len=4)       :: startTime, endTime
     character (len=400)     :: userHeaderStr
-    logical                 :: readQuality, qualityWasRead, debugStop
+    logical                 :: readQuality, qualityWasRead
     type(verticalDatumInfo) :: vdi(2)
-
-    integer  :: ivdatum
-    character (len=cverticalDatumLen) :: cvdatum
 
     equivalence (userHeader, userHeaderStr)
 
@@ -160,9 +157,9 @@ subroutine testStoreRetrieveTimeSeries()
         /),shape(itimes))
 
     dvalues = reshape((/                                   &
-        1000.,1001.,1002.,1003.,1004.,1005.,               &
-        304.8,305.1048,305.4096,305.7144,306.0192,306.324, &
-        1000.,1001.,1002.,1003.,1004.,1005.                &
+        1000.,1001.,1002.,1003.,1004.,1005.,               & ! ft
+        304.8,305.1048,305.4096,305.7144,306.0192,306.324, & ! m
+        1000.,1001.,1002.,1003.,1004.,1005.                & ! cfs
         /),shape(dvalues))
 
     fvalues = dvalues
@@ -224,7 +221,7 @@ subroutine testStoreRetrieveTimeSeries()
     !     2 = NGVD-29
     !     3 = OTHER (Pensacola)
     !     k2  mod(k, 3) + 1
-    !     k3  mod(k+1, 3 + 1)
+    !     k3  mod(k+1, 3) + 1
     !
     ! l = data units
     !     1 = ft
@@ -287,9 +284,6 @@ subroutine testStoreRetrieveTimeSeries()
                                     call zopen7(ifltab, filename(i), status)
                                 end if
                                 call assert(status == 0)
-                                if (i==2.and.j==1.and.k==3.and.l==3.and.m==2.and.n==1.and.o==1) then
-                                    debugStop = .true.
-                                end if
                                 !--------------------------------!
                                 ! set the default vertical datum !
                                 !--------------------------------!
@@ -323,8 +317,6 @@ subroutine testStoreRetrieveTimeSeries()
                                 !-------------------------------------------------------!
                                 userHeaderLen = byteCountToIntCount(len_trim(userHeaderStr))
                                 numberValues = 6
-                                ! write(0,*) userHeaderStr(1:len_trim(userHeaderStr))
-                                ! write(0,*) unitSpec(1:len_trim(unitSpec))
                                 if (n == 1) then
                                     if (o == 1) then
                                         !-------------!
@@ -694,6 +686,244 @@ subroutine testStoreRetrieveTimeSeries()
 end subroutine testStoreRetrieveTimeSeries
 
 subroutine testStoreRetrievePairedData()
+    use modVerticalDatumInfo
+    implicit none
+
+    integer (kind=8)        :: ifltab(250)
+    integer (kind=4)        :: status, numberOrdinates, numberCurves
+    integer (kind=4)        :: userHeader(100), userHeaderLen, i, j, k, k2, k3, kk, l, m, n, o
+    real (kind=8)           :: dordinates(6,3), dvalues(6,3), dvals(12)
+    real (kind=4)           :: fordinates(6,3), fvalues(6,3), fvals(12)
+    character (len=300)     :: errmsg, vdiStr
+    character (len=80)      :: filename(2)
+    character (len=80)      :: pathnames(2,2)
+    character (len=16)      :: unit(3), type, verticalDatums(3)
+    character (len=32)      :: unitSpec
+    character (len=4)       :: startTime, endTime
+    character (len=400)     :: userHeaderStr
+    type(verticalDatumInfo) :: vdi(2)
+
+    equivalence (userHeader, userHeaderStr)
+
+    ifltab = 0
+    numberOrdinates = 6
+    numberCurves = 1
+    userHeader = 0
+    dvals = 0.
+    fvals = 0.
+    
+    dordinates = reshape((/                                &
+        1000.,1001.,1002.,1003.,1004.,1005.,               & ! ft
+        304.8,305.1048,305.4096,305.7144,306.0192,306.324, & ! m
+        1000.,1001.,1002.,1003.,1004.,1005.                & ! cfs
+        /),shape(dvalues))
+
+    dvalues = dordinates
+
+    fordinates = dordinates
+
+    fvalues = fordinates
+
+    filename = (/'v6_f.dss', 'v7_f.dss'/)
+
+    pathnames = reshape((/                    &
+        '//TestPdLoc/Stage-Elev///Doubles/ ', &
+        '//TestPdLoc/Stage-Elev///Floats/  ', &
+        '//TestPdLoc/Elev-Stage///Doubles/ ', &
+        '//TestPdLoc/Elev-Stage///Floats/  '  &
+        /), shape(pathnames))
+
+    
+    unit = (/'ft ', 'm  ', 'cfs'/)
+
+    type = 'UNT'
+
+    verticalDatums = (/CVD_NAVD88, CVD_NGVD29, 'Pensacola'/)
+
+    do j = 1, 2
+        call initVerticalDatumInfo(vdi(j))
+        if (j == 1) then
+            vdi(j)%nativeDatum = CVD_NGVD29
+            vdi(j)%elevation = 615.2
+            vdi(j)%unit = 'ft'
+            vdi(j)%offsetToNavd88 = 0.3855
+            vdi(j)%offsetToNavd88IsEstimate = .true.
+        else
+            vdi(j)%nativeDatum = 'Pensacola'
+            vdi(j)%elevation = 757
+            vdi(j)%unit = 'ft'
+            vdi(j)%offsetToNavd88 = 1.457
+            vdi(j)%offsetToNavd88IsEstimate = .true.
+            vdi(j)%offsetToNgvd29 = 1.07
+            vdi(j)%offsetToNgvd29IsEstimate = .false.
+        end if
+    end do
+    !
+    ! loop variables
+    !
+    ! i = DSS file version
+    !     1 = DSS 6
+    !     2 = DSS 7
+    !
+    ! j = vdi
+    !     1 = NGVD-29 native
+    !     2 = OTHER native with local datum named "Pensacola"
+    !
+    ! k = vertical datum
+    !     1 = NAVD-88
+    !     2 = NGVD-29
+    !     3 = OTHER (Pensacola)
+    !     k2  mod(k, 3) + 1
+    !     k3  mod(k+1, 3) + 1
+    !
+    ! l = data units
+    !     1 = ft
+    !     2 = m
+    !     3 = cfs (invalid for datum conversion)
+    !
+    ! m = vertical datum specification method
+    !     1 = set default with zset
+    !     2 = 1 plus override with user header
+    !     3 = 2 plus override with unit spec
+    !
+    ! n = elevation param position
+    !     1 = dependent parameter
+    !     2 = independent parameter
+    !
+    ! o = data value type
+    !     1 = doubles
+    !     2 = floats 
+    !
+    call zset('MLVL', '', 1)
+    do i = 1, 2
+        do j = 1, 2
+            call verticalDatumInfoToString(       &
+                vdiStr,                           &
+                errmsg,                           &
+                vdi(j)%nativeDatum,               &
+                vdi(j)%unit,                      &
+                vdi(j)%elevation,                 &
+                vdi(j)%offsetToNgvd29,            &
+                vdi(j)%offsetToNgvd29IsEstimate,  &
+                vdi(j)%offsetToNavd88,            &
+                vdi(j)%offsetToNavd88IsEstimate,  &
+                .true.)
+            call assert(errmsg == ' ')
+            call stringToVerticalDatumInfo(      &
+                vdiStr,                          &
+                errmsg,                          &
+                vdi(j)%nativeDatum,              &
+                vdi(j)%unit,                     &
+                vdi(j)%elevation,                &
+                vdi(j)%offsetToNgvd29,           &
+                vdi(j)%offsetToNgvd29IsEstimate, &
+                vdi(j)%offsetToNavd88,           &
+                vdi(j)%offsetToNavd88IsEstimate)
+            call assert(errmsg == ' ')
+            do k = 1, 3
+                k2 = mod(k, 3) + 1
+                k3 = mod(k+1, 3) + 1
+                do l = 1, 3
+                    do m = 1, 3
+                        do n = 1, 2
+                            do o = 1, 2
+                                ! write(0,*) i, j, k, l, m, n, o
+                                ifltab = 0
+                                if (i == 1) then
+                                    ! write(0,*) 'OPENING DSS v6 FILE'
+                                    call zopen6(ifltab, filename(i), status)
+                                else
+                                    ! write(0,*) 'OPENING DSS v7 FILE'
+                                    call zopen7(ifltab, filename(i), status)
+                                end if
+                                call assert(status == 0)
+                                !--------------------------------!
+                                ! set the default vertical datum !
+                                !--------------------------------!
+                                kk = k
+                                call zset('VDTM', verticalDatums(kk), 0)
+                                !------------------------------------------------!
+                                ! add the vertical datum info to the user header !
+                                !------------------------------------------------!
+                                userHeaderStr = VERTICAL_DATUM_INFO_PARAM//':'//vdiStr
+                                unitSpec = unit(l)
+                                if (m > 1) then
+                                    !----------------------------------------------------------!
+                                    ! override the default vertical datum with the user header !
+                                    !----------------------------------------------------------!
+                                    kk = k2
+                                    write(userHeaderStr,'(7a)')                                       &
+                                        VERTICAL_DATUM_INFO_PARAM,':',vdiStr(1:len_trim(vdiStr)),';', &
+                                        VERTICAL_DATUM_PARAM,':',verticalDatums(kk)
+                                end if
+                                if (m > 2) then
+                                    !--------------------------------------------------------!
+                                    ! override default and user header datums with unit spec !
+                                    !--------------------------------------------------------!
+                                    kk = k3
+                                    write(unitSpec,'(5a)')                             &
+                                        'U=',unit(l)(1:len_trim(unit(l))),'|', &
+                                        'V=',verticalDatums(kk)
+                                end if
+                                !-------------------------------------------------------!
+                                ! store the paried data in the specified vertical datum !
+                                !-------------------------------------------------------!
+                                userHeaderLen = byteCountToIntCount(len_trim(userHeaderStr))
+                                if (o == 1) then
+                                    !---------!
+                                    ! doubles !
+                                    !---------!
+                                    dvals(1:6) = dordinates(:,l)
+                                    dvals(7:12) = dvalues(:,l)
+                                    call zspdd(          & ! 
+                                        ifltab,          & ! IFLTAB
+                                        pathnames(o,n),  & ! CPATH
+                                        numberOrdinates, & ! NORD
+                                        numberCurves,    & ! NCURVE
+                                        1,               & ! IHORIZ
+                                        unit(l),         & ! C1UNIT
+                                        type,            & ! C1TYPE
+                                        unit(l),         & ! C2UNIT
+                                        type,            & ! C2TYPE
+                                        dvals,           & ! DVALUES
+                                        '',              & ! CLABEL
+                                        .false.,         & ! LABEL
+                                        userHeader,      & ! IUHEAD
+                                        userHeaderLen,   & ! NUHEAD
+                                        2,               & ! IPLAN
+                                        status)            ! ISTAT
+                                else
+                                    !--------!
+                                    ! floats !
+                                    !--------!
+                                    fvals(1:6) = fordinates(:,l)
+                                    fvals(7:12) = fvalues(:,l)
+                                    call zspd(           & ! 
+                                        ifltab,          & ! IFLTAB
+                                        pathnames(o,n),  & ! CPATH
+                                        numberOrdinates, & ! NORD
+                                        numberCurves,    & ! NCURVE
+                                        1,               & ! IHORIZ
+                                        unit(l),         & ! C1UNIT
+                                        type,            & ! C1TYPE
+                                        unit(l),         & ! C2UNIT
+                                        type,            & ! C2TYPE
+                                        fvals,           & ! SVALUES
+                                        '',              & ! CLABEL
+                                        .false.,         & ! LABEL
+                                        userHeader,      & ! IUHEAD
+                                        userHeaderLen,   & ! NUHEAD
+                                        2,               & ! IPLAN
+                                        status)            ! ISTAT
+                                end if
+                                call zclose(ifltab)
+                            end do
+                        end do
+                    end do
+                end do
+            end do
+        end do
+    end do
     return
 end subroutine testStoreRetrievePairedData
 

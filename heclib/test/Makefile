@@ -40,3 +40,4 @@ clean:
 	rm -f *.dss
 	rm -f *.mod
 	rm -f *.ini
+	rm -f vgcore*

@@ -1072,8 +1072,9 @@ int	getEffectiveVerticalDatum(
                 //---------------------------------------//
                 // remove vertical datum from userHeader //
                 //---------------------------------------//
-                int newHeaderSize;
-                stringToUserHeader(userHeaderString, &newHeaderSize);
+                int  newHeaderSize;
+                int *dummy = stringToUserHeader(userHeaderString, &newHeaderSize);
+                free(dummy);
                 sprintf((char *)*userHeader, userHeaderString); // safe because new string is always shorter than old string
                 *userHeaderSize = newHeaderSize;
                 free(verticalDatum);

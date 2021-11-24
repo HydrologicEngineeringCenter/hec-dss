@@ -618,6 +618,7 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 					//----------------------------------------------------------------------------//
 					if (!tss->locationStruct) {
 						tss->locationStruct = zstructLocationNew(tss->pathname);
+						tss->allocated[zSTRUCT_TS_locationStruct] = TRUE;
 					}
 					tss->locationStruct->verticalUnits = unitIsFeet(vdi->unit) ? 1 : 2;
 					if (!strcmp(vdi->nativeDatum, CVERTICAL_DATUM_NAVD88)) {
