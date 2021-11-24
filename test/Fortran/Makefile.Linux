@@ -8,7 +8,7 @@ FWARNINGS=-Wall
 #           -Wtarget-lifetime, -Wreal-q-constant and -Wunused.
 
 FDEBUG=-fcheck=all
-FFLAGS=-c -g -cpp -m64 -fsanitize=address -fPIC $(FWARNINGS) $(FDEBUG) -I../Dss6/Fortran -I../headers  -D__linux__
+FFLAGS=-c -g -cpp -m64 -fPIC $(FWARNINGS) $(FDEBUG) -I../Dss6/Fortran -I../headers  -D__linux__
 FORTRAN=gfortran
 
 CFLAGS=-m64 -c -fPIC -g -std=gnu99  -Werror --pipe  -D__linux__
