@@ -3,11 +3,12 @@
 # K. Tarbet HEC Oct 2021
 #
 
-HECLIB7="../../heclib"
-HINC="${HECLIB7}/heclib_c/src/headers"
+HECLIB_HOME="../../heclib"
+HINC="${HECLIB_HOME}/heclib_c/src/headers"
+HLIBS="${HECLIB_HOME}/heclib_c/Output/libhec_c.a ${HECLIB_HOME}/heclib_f/Output/libhec_f.a"
 os="$(uname)"
 echo "os = ${os}"
-
+echo ${HLIBS}
 if [[ "$os" = "Linux" ]]; then
    CFLAGS="-m64 -c -fPIC -g -std=gnu99 -I${HINC}"
    LINK1="cc -m64 -fPIC "
@@ -30,7 +31,7 @@ test()
    echo "$1.c"
 cc $CFLAGS $1.c -o ./Output/$1.o
 # link
-$LINK1 ./Output/$1.o ${HECLIB7}/Output/heclib.a \
+$LINK1 ./Output/$1.o ${HLIBS} ${HLIBS} ${HLIBS} \
 getopt.o \
 -o ./Output/$1 $LINK2
 # run the program

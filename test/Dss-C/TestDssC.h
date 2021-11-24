@@ -5,6 +5,7 @@
 #include "heclib.h"
 #include "hecdss7.h"
 
+int test_stringCat();
 int testAdHoc();
 int testMultiUser();
 int testZtsProcessTimes(long long *ifltab);

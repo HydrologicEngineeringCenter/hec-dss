@@ -1,8 +1,8 @@
 UNAME_S := $(shell uname -s)
 
 ifeq ($(UNAME_S),Linux)
-	LDFLAGS = -lz -lrt -lgfortran -lm
 	CWARNING=-Werror
+	LDFLAGS = -lz -lrt -lgfortran -lm 
 	CFLAGS=-m64 -fPIC -g -std=gnu99 -I../../heclib/heclib_c/src/headers -I. $(CWARNING)  -D__linux__
 	MAKE=make
 endif
@@ -22,15 +22,16 @@ SRCS := $(shell find $(SRC_DIRS) -name '*.c' )
 
 OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
 
+$(BUILD_DIR)/$(TARGET): $(OBJS)
+	mkdir -p $(BUILD_DIR)
+	$(CC) $(CFLAGS) -o $@ $^ $(HLIBS) $(HLIBS)  $(HLIBS) $(LDFLAGS)
+
 test:$(BUILD_DIR)/$(TARGET)
 	mkdir -p $(BUILD_DIR)
 	rm -f $(BUILD_DIR)/*.dss
 	cp ../../dss-test-data/*.dss $(BUILD_DIR)
 	(cd $(BUILD_DIR); ./Dss-C test)
 
-$(BUILD_DIR)/$(TARGET): $(OBJS)
-	mkdir -p $(BUILD_DIR)
-	$(CC) $(CFLAGS) -o $@ $^ $(HLIBS) $(HLIBS)  $(HLIBS) $(LDFLAGS)
 
 $(BUILD_DIR)/%.c.o: %.c
 	mkdir -p $(dir $@)

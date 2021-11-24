@@ -71,7 +71,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\heclib\headers;source;.</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\heclib\heclib_c\src\headers;source;.</AdditionalIncludeDirectories>
       <MinimalRebuild>false</MinimalRebuild>
       <CompileAs>CompileAsC</CompileAs>
       <OmitFramePointers>false</OmitFramePointers>
@@ -84,8 +84,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\..\heclib\heclib_c_v6v7\$(PlatformName)\$(ConfigurationName);..\..\heclib\heclib_f_v6v7\$(PlatformName)\$(ConfigurationName);..\..\lib\$(Platform);$(IFORT_COMPILER21)compiler\lib\intel64_win</AdditionalLibraryDirectories>
-      <AdditionalDependencies>heclib_f_v6v7.lib;heclib_c_v6v7.lib;zlibstatic.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\heclib\heclib_c\$(PlatformName)\$(ConfigurationName);..\..\heclib\heclib_f\$(PlatformName)\$(ConfigurationName);..\..\lib\$(Platform);$(IFORT_COMPILER21)compiler\lib\intel64_win</AdditionalLibraryDirectories>
+      <AdditionalDependencies>heclib_f.lib;heclib_c.lib;zlibstatic.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>LIBCMTD;MSVCRT</IgnoreSpecificDefaultLibraries>
       <Profile>true</Profile>
     </Link>
@@ -103,7 +103,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\heclib\headers;source;.</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\heclib\heclib_c\src\headers;source;.</AdditionalIncludeDirectories>
       <MinimalRebuild>false</MinimalRebuild>
       <CompileAs>CompileAsC</CompileAs>
       <OmitFramePointers>false</OmitFramePointers>
@@ -112,29 +112,29 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\..\heclib\heclib_c_v6v7\$(PlatformName)\$(ConfigurationName);..\..\heclib\heclib_f_v6v7\$(PlatformName)\$(ConfigurationName);$(IFORT_COMPILER19)compiler\lib\ia32_win</AdditionalLibraryDirectories>
-      <AdditionalDependencies>heclib_f_v6v7.lib;heclib_c_v6v7.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\heclib\heclib_c\$(PlatformName)\$(ConfigurationName);..\..\heclib\heclib_f\$(PlatformName)\$(ConfigurationName);$(IFORT_COMPILER19)compiler\lib\ia32_win</AdditionalLibraryDirectories>
+      <AdditionalDependencies>heclib_f.lib;heclib_c.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>LIBCMTD.lib</IgnoreSpecificDefaultLibraries>
       <Profile>true</Profile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\..\heclib\headers;source;.</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\heclib\heclib_c\src\headers;source;.</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>..\..\heclib\heclib_c_v6v7\$(PlatformName)\$(ConfigurationName);..\..\heclib\heclib_f_v6v7\$(PlatformName)\$(ConfigurationName)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>heclib_f_v6v7.lib;heclib_c_v6v7.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\heclib\heclib_c\$(PlatformName)\$(ConfigurationName);..\..\heclib\heclib_f\$(PlatformName)\$(ConfigurationName)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>heclib_f.lib;heclib_c.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>LIBCMT</IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\..\heclib\headers;source;.</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\heclib\heclib_c\src\headers;source;.</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>..\..\heclib\heclib_c_v6v7\$(PlatformName)\$(ConfigurationName);..\..\heclib\heclib_f_v6v7\$(PlatformName)\$(ConfigurationName);..\..\lib\$(Platform);$(IFORT_COMPILER21)compiler\lib\intel64_win</AdditionalLibraryDirectories>
-      <AdditionalDependencies>heclib_f_v6v7.lib;heclib_c_v6v7.lib;zlibstatic.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\heclib\heclib_c\$(PlatformName)\$(ConfigurationName);..\..\heclib\heclib_f\$(PlatformName)\$(ConfigurationName);..\..\lib\$(Platform);$(IFORT_COMPILER21)compiler\lib\intel64_win</AdditionalLibraryDirectories>
+      <AdditionalDependencies>heclib_f.lib;heclib_c.lib;zlibstatic.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>LIBCMT</IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
@@ -192,6 +192,7 @@
     <ClCompile Include="source\testWriteRead.c" />
     <ClCompile Include="source\testZtsProcessTimes.c" />
     <ClCompile Include="source\testztsStructBill.c" />
+    <ClCompile Include="source\test_stringCat.c" />
     <ClCompile Include="TestDssC.c" />
     <ClCompile Include="source\testRecordInfo.c" />
   </ItemGroup>

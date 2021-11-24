@@ -15,7 +15,7 @@ CFLAGS=-m64 -c -fPIC -g -std=gnu99  -Werror --pipe  -D__linux__
 
 .PHONY: dss
 dss:
-	(cd ../../heclib; make -f Makefile.Linux)
+	(cd ../../heclib; make )
 	mkdir -p Output
 
 # get predefinde symbols

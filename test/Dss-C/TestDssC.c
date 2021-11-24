@@ -50,6 +50,7 @@ int main(int argc, char* argv[])
 	long long start_time = getCurrentTimeMillis();
 
 
+
 	if (argc < 2)
 	{
 		usage(argv[0]);
@@ -124,6 +125,11 @@ int runTheTests() {
 	char fileName6[80];
 	int status;
 
+
+	printf("\ntest stringCat\n");
+	status = test_stringCat();
+	if (status != STATUS_OKAY)
+		return status;
 
 	printf("\ntest Bulletin_17C_Examples.dss for reading full record\n");
 	status = Bulletin_17C_SSP_Issue();

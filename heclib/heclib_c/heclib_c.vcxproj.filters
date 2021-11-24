@@ -13,1380 +13,1398 @@
     <Filter Include="src\Utilities\DateTime">
       <UniqueIdentifier>{3c4e7ccc-9475-4c1b-b4df-0bcb937c994c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\DssInterface">
+      <UniqueIdentifier>{61fa48bd-70fa-477e-bd9e-a16919fa1521}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\DssInterface\v6andv7">
+      <UniqueIdentifier>{d3998f68-7005-49df-b831-31a3d79b6a1d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\headers">
+      <UniqueIdentifier>{835e66f7-74f8-433b-92c2-5cc4c16e1775}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\headers\zlib">
+      <UniqueIdentifier>{d0f52fa2-ea27-4b7a-b34e-6cea609c069c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Internal">
+      <UniqueIdentifier>{a3f2fc7e-1255-4376-944e-b6f1724b1c75}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Public">
+      <UniqueIdentifier>{4d6f9ae7-7477-4ece-8248-17a565f1150a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\SemiPublic">
+      <UniqueIdentifier>{2585446c-db31-4d04-94d7-4c232ebe4279}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\System">
+      <UniqueIdentifier>{46481252-bc14-4f4f-be56-94134c12cff5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Utilities\catsort.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\charInt.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\charLong.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\DateTime\cleanTime.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\System\closeFile.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Dss6\closf.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\DateTime\compareTimes.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\convertDataArray.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\convertDataLength.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\convertDataType.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\convertIntArray.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\copyAndTrim.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\copyLines.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\DateTime\dateToJulian.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\DateTime\dateToYearMonthDay.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\DateTime\dayOfWeek.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Dss6\deleteFile.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\doublesToFloats.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\doubleToFloat.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\f4toi8.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Dss6\filesize.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\fillArray.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\findInt.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\floatsToDoubles.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\floatToDouble.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Dss6\flushf.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\System\flushFile.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\DateTime\getCurrentDateString.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\System\getCurrentDateTime.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\DateTime\getCurrentDateTimeString.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\System\getCurrentTimeMillis.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\DateTime\getCurrentTimeString.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\DateTime\getDateAndTime.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\DateTime\getDateTimeString.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\System\getEndian.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\getFileFromPath.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\getLastInt.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\i4toi8.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\i8tof4.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\i8toi4.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\DateTime\incrementTime.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\intTo2char.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\intTo4char.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\DateTime\isLeapYear.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\isOdd.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Dss6\isonlocaldrive.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\DateTime\isTimeDefined.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\DateTime\isTimeInRange.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\isValidChar.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\itoa.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\DateTime\julianToDate.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\DateTime\julianToYearMonthDay.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Dss6\lockdss.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\longWithCommas.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\lowerCase.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\mallocAndCopy.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\mallocAndCopyPath.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\mallocAndCopyTrim.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\DateTime\millsToDateTime.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\DateTime\minsToDateTime.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\DateTime\minutesToHourMin.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\missingFlag_.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\numberBytesInCharArray.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\numberIntsInBytes.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\numberIntsInLongs.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\numberLongsInBytes.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\numberLongsInInts.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\DateTime\numberPeriods.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Dss6\openf.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\powf_wrap.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\printCurrentTime.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\printDoubles.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\System\readBytes.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Dss6\readf.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Dss6\readProgramName.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\reverseNonNumeric.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\DateTime\secondsToTimeString.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\secondsToTimeString_.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Dss6\seekf.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\sortfiles.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\DateTime\spatialDateTime.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\stringCat.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\stringCopy.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\stringCToFort.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\stringFill.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\stringFortToC.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\stringHeaderUtility.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\stringLastNonBlank.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\strnlen_hec.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\DateTime\timeStringToSeconds.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\timeStringToSeconds_.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\DateTime\timeStringToSecondsMills.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\toFixedFields.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\trimLength.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\trimPositions.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\upperCase.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Dss6\waits.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\System\writeBytes.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Dss6\writf.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\DateTime\yearMonthDayToDate.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\DateTime\yearMonthDayToJulian.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zaliasAdd.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zaliasGetPrimary.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zaliasList.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zaliasNumber.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zaliasRemove.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zaliasRemoveAll.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zanalyzeFile.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zarrayRetrieve.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zarrayStore.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zbinaryRetrieveToFile.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zbinaryStoreFromFile.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zbinNew.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zbinUpdate.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zcatalog.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Dss6\zcatalog6Internal.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zcatalogFile.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zcatalogInternal.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zcatalogToFile.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zcatComparePath.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zcatInternalSort.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zcatParsePath.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zcatSortPath.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zcharTo8Byte.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\v6and7\zcheck.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zcheckAccessReset.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zcheckFile.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\zcheckfilever_.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\SemiPublic\zcheckHashTable.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\SemiPublic\zcheckInfo.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zcheckInternal.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zcheckKeys.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\SemiPublic\zcheckLinks.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zcheckMultiUser.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\SemiPublic\zcheckPathnameBins.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\SemiPublic\zcheckPathnames.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\v6and7\zclose.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\zclose_.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zcloseInternal.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\v6and7\zcollectionCat.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zcollectionCat.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zcollectionsPath.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\SemiPublic\zcompareDataSets.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zcompareRecordStatus.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\v6and7\zconvertVersion.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zcopyFile.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\v6and7\zcopyRecord.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zcopyRecordInternal.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\v6and7\zdataType.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\zdebugout7.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\v6and7\zdelete.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\zdelete_.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zdeleteInternal.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zduplicateRecord.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\zeroFill.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\SemiPublic\zerror.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zerrorDecode.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\zerrorDecode_.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zerrorEncode.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zerrorEncodeHigh.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zerrorMessage.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zerrorProcessing.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zerrorSave.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zerrorSeverity.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\SemiPublic\zerrorSpecifics.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zerrorUpdate.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\SemiPublic\zfileAccessInfo.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\System\zfileName.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\System\zfileSize.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zfindString.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zflushBuffers.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zflushToDisk.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\zfname.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\zfname_.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zget.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\zget_.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zgetBuff.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zgetCatalogSortAddresses.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zgetDataCRC.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zgetFileSpace.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zgetFileVersion.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zgetFunctionName.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\v6and7\zgetInfo.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zgetInternalPath.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\zgetinterval_.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zgetLastWriteTimeFile.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zgetLastWriteTimeRec.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zgetMyLastWriteTime.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\SemiPublic\zgetProgress.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\SemiPublic\zgetRecordAddresses.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\v6and7\zgetRecordBasics.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Dss6\zgetRecordBasics6.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zgetRecordBasics7.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\v6and7\zgetRecordSize.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Dss6\zgetRecordSize6.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zgetRecordSize7.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zgetVersion.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\zgetVersion_.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\v6and7\zhandle.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zhash.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zinit.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zinitIfltab.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zinquire.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zinquireChar.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\zirbeg7_.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zisaCollection.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\SemiPublic\zisError.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zlibcompress.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zloadCache.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zlocationDelete.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zlocationPath.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zlocationRetrieve.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zlocationStore.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\SemiPublic\zlocationStructValid.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zlocationUpdatePerm.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zlockActive.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\System\zlockdss.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zlockingOld.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zlockPassive.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\SemiPublic\zmaxPart.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zmemoryFree.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zmemoryGet.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zmessage.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\SemiPublic\zmessageCombined.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zmessageDebug.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zmessageInterface.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zmessageLevel.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zmessageZget.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zmessageZput.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zmessConcat.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\zmissingFlag.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\znewFileSize.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\v6and7\zopen.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\zopen_.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\System\zopendisk.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\v6and7\zopenExtended.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\zopenExtended_.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\System\zopenFile.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zopenInternal.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zopenLog.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zpathnameAddPart.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zpathnameClean.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zpathnameCompare.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zpathnameCompareCollection.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zpathnameForm.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\zpathnameFormFortran_.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zpathnameGetPart.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\zpathnameGetPart_.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zpathnamePartLengths.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zpathnamePartPositions.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zpathnameSetPart.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zpdRetrieve.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\v6and7\zpdRetrieve6.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zpdStore.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\zpdStore_.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\v6and7\zpdStore6.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zpdUnitsToHead.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zpermCreate.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zpermRead.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zpermWrite.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zpidWrite.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\SemiPublic\zplist7.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zprintFileInfo.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zprintKeys.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zput.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zputBuff.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\v6and7\zputInfo.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zquery.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\zquery7_.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\v6and7\zread.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\v6and7\zreada.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\v6and7\zreadc.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\System\zreaddisk.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zreadInfo.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zreadInfoBlock.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zreadInternal.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\v6and7\zreadx.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zreclaimRead.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zreclaimSet.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zreclaimWrite.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\v6and7\zrecordAddresses.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zreleaseFileSpace.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zrename.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\SemiPublic\zresetProgress.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\zritsi7_.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\zrpdi7_.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\zrtxts7_.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\v6and7\zset.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zset7.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zsetCatalogSortAddresses.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zsetCollectionSequence.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zsetFile.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\SemiPublic\zsetInterrupt.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zsetMessageLevel.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\zsits7_.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zspatialGridRetrieve.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zspatialGridStore.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zspatialTinRetrieve.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zspatialTinStore.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\zspdi7_.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\v6and7\zsqueeze.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zsqueeze7.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zsqueezeNeeded.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zstructArrayNew.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zstructCatalogNew.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zstructFree.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\SemiPublic\zstructGetType.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zstructLocationNew.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zstructPdNew.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zstructPdNewDoubles.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zstructPdNewFloats.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zstructRecordBasicsNew.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zstructRecordSizeNew.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zstructSpatialGridNew.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zstructSpatialTinNew.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zstructTextNew.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zstructTextStringNew.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zstructTransferNew.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zstructTsClone.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zstructTsCloneNewTimes.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zstructTsNew.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zstructTsNewIrregDoubles.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zstructTsNewIrregFloats.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zstructTsNewRegDoubles.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zstructTsNewRegFloats.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zstructTsNewTimes.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zstructTsNewTimeWindow.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\System\zswap.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\System\zswitchDoubles.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\System\zswitchInts.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\ztextRetrieve.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\ztextRetrieveArray_.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\ztextRetrieveString_.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\ztextRetrieveToFile.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\ztextRetrieveUnit_.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\ztextStore.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\ztextstorearray_.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\ztextStoreFromFile.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\ztextStoreUnit_.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\ztextStructPrint.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\ztsAggregate.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\ztsDateMessage.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\ztsDisaggregate.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\ztsends_.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\ztsFirstLastValidValues.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\ztsGetDateRange.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\ztsGetDateTimeRange.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\ztsGetEPartFromInterval.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\SemiPublic\ztsGetFirstLastPathnames.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\SemiPublic\ztsGetFirstLastRecordTimes.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\ztsGetInterval.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\SemiPublic\ztsGetPathTimeWindow.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\v6and7\ztsGetSizes.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Dss6\ztsGetSizes6.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\ztsGetSizesInternal.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\SemiPublic\ztsGetStandardInterval.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\ztsIncrementBlock.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\ztsinfo7_.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\ztsInternalHeaderPack.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\ztsInternalHeaderUnpack.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\ztsIrregGetBlockStart.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\ztsIrregMergeBlocks.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\ztsIrregMessage.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\ztsIrregReadBlock.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\ztsIrregRetrieveFull_.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\ztsIrregStoreBlock.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\ztsIrregStoreFull_.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\SemiPublic\ztsIsCurrentTimeSeries.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\ztsMessTimeWindow.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\ztsOffset.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\ztsOffsetAdjustToOffset.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\ztsOffsetAdjustToStandard.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\v6and7\ztsOtherStuff.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\ztsPathCheckInterval.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\ztsPathCompatible.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\ztsProcessTimes.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\ztsRegAddTimes.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\ztsRegGetBlockStart.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\ztsRegReadBlock.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\ztsRegRepeatCompress.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\ztsRegRepeatUncompress.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\ztsRegStoreBlock.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\ztsRetrieve.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Dss6\ztsRetrieveIrreg6.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\ztsRetrieveIrreg7.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\ztsRetrieveIrregArgs.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\ztsRetrievePattern.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Dss6\ztsRetrieveReg6.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\ztsRetrieveReg7.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\ztsRetrieveRegArgs.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\ztssrch7_.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\ztsStore.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Dss6\ztsStoreIrreg6.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\ztsStoreIrreg7.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\ztsStoreIrregArgs.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\SemiPublic\ztsStorePattern.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Dss6\ztsStoreReg6.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\ztsStoreReg7.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\ztsStoreRegArgs.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\ztsStoreStuff.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\ztsTimeMessage.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\ztsTrim.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\ztsTrimAdjustTimeWindow.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\ztsWriteBlock.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\ztypeName.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\v6and7\zundelete.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\zundelete_.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zundeleteAll.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zupdatePathStats.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zwhatChanged.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zwhatChangedCompare.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\zwhatChangedSetStart.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\v6and7\zwrite.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\v6and7\zwritea.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\v6and7\zwritec.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\System\zwritedisk.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zwriteEOF.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zwriteEOFandFlush.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zwriteInternal.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zwriteNew.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Internal\zwriteOld.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\v6and7\zwritex.c">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="src\Utilities\DateTime\addCentury.c">
       <Filter>src\Utilities\DateTime</Filter>
     </ClCompile>
+    <ClCompile Include="src\Utilities\DateTime\cleanTime.c">
+      <Filter>src\Utilities\DateTime</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\DateTime\compareTimes.c">
+      <Filter>src\Utilities\DateTime</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\DateTime\dateToJulian.c">
+      <Filter>src\Utilities\DateTime</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\DateTime\dateToYearMonthDay.c">
+      <Filter>src\Utilities\DateTime</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\DateTime\dayOfWeek.c">
+      <Filter>src\Utilities\DateTime</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\DateTime\getCurrentDateString.c">
+      <Filter>src\Utilities\DateTime</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\DateTime\getCurrentDateTimeString.c">
+      <Filter>src\Utilities\DateTime</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\DateTime\getCurrentTimeString.c">
+      <Filter>src\Utilities\DateTime</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\DateTime\getDateAndTime.c">
+      <Filter>src\Utilities\DateTime</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\DateTime\getDateTimeString.c">
+      <Filter>src\Utilities\DateTime</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\DateTime\incrementTime.c">
+      <Filter>src\Utilities\DateTime</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\DateTime\isLeapYear.c">
+      <Filter>src\Utilities\DateTime</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\DateTime\isTimeDefined.c">
+      <Filter>src\Utilities\DateTime</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\DateTime\isTimeInRange.c">
+      <Filter>src\Utilities\DateTime</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\DateTime\julianToDate.c">
+      <Filter>src\Utilities\DateTime</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\DateTime\julianToYearMonthDay.c">
+      <Filter>src\Utilities\DateTime</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\DateTime\millsToDateTime.c">
+      <Filter>src\Utilities\DateTime</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\DateTime\minsToDateTime.c">
+      <Filter>src\Utilities\DateTime</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\DateTime\minutesToHourMin.c">
+      <Filter>src\Utilities\DateTime</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\DateTime\numberPeriods.c">
+      <Filter>src\Utilities\DateTime</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\DateTime\secondsToTimeString.c">
+      <Filter>src\Utilities\DateTime</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\DateTime\spatialDateTime.c">
+      <Filter>src\Utilities\DateTime</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\DateTime\timeStringToSeconds.c">
+      <Filter>src\Utilities\DateTime</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\DateTime\timeStringToSecondsMills.c">
+      <Filter>src\Utilities\DateTime</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\DateTime\yearMonthDayToDate.c">
+      <Filter>src\Utilities\DateTime</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\DateTime\yearMonthDayToJulian.c">
+      <Filter>src\Utilities\DateTime</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\catsort.c">
+      <Filter>src\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\convertDataArray.c">
+      <Filter>src\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\convertDataLength.c">
+      <Filter>src\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\convertDataType.c">
+      <Filter>src\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\convertIntArray.c">
+      <Filter>src\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\copyAndTrim.c">
+      <Filter>src\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\copyLines.c">
+      <Filter>src\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\doublesToFloats.c">
+      <Filter>src\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\doubleToFloat.c">
+      <Filter>src\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\f4toi8.c">
+      <Filter>src\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\fillArray.c">
+      <Filter>src\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\findInt.c">
+      <Filter>src\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\floatsToDoubles.c">
+      <Filter>src\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\floatToDouble.c">
+      <Filter>src\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\getFileFromPath.c">
+      <Filter>src\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\getLastInt.c">
+      <Filter>src\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\i4toi8.c">
+      <Filter>src\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\i8tof4.c">
+      <Filter>src\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\i8toi4.c">
+      <Filter>src\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\intTo2char.c">
+      <Filter>src\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\intTo4char.c">
+      <Filter>src\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\isOdd.c">
+      <Filter>src\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\isValidChar.c">
+      <Filter>src\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\itoa.c">
+      <Filter>src\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\longWithCommas.c">
+      <Filter>src\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\lowerCase.c">
+      <Filter>src\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\mallocAndCopy.c">
+      <Filter>src\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\mallocAndCopyPath.c">
+      <Filter>src\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\mallocAndCopyTrim.c">
+      <Filter>src\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\numberBytesInCharArray.c">
+      <Filter>src\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\numberIntsInBytes.c">
+      <Filter>src\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\numberIntsInLongs.c">
+      <Filter>src\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\numberLongsInBytes.c">
+      <Filter>src\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\numberLongsInInts.c">
+      <Filter>src\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\printCurrentTime.c">
+      <Filter>src\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\printDoubles.c">
+      <Filter>src\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\reverseNonNumeric.c">
+      <Filter>src\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\sortfiles.c">
+      <Filter>src\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\stringCat.c">
+      <Filter>src\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\stringCopy.c">
+      <Filter>src\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\stringCToFort.c">
+      <Filter>src\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\stringFill.c">
+      <Filter>src\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\stringFortToC.c">
+      <Filter>src\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\stringHeaderUtility.c">
+      <Filter>src\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\stringLastNonBlank.c">
+      <Filter>src\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\strnlen_hec.c">
+      <Filter>src\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\toFixedFields.c">
+      <Filter>src\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\trimLength.c">
+      <Filter>src\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\trimPositions.c">
+      <Filter>src\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\upperCase.c">
+      <Filter>src\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\zeroFill.c">
+      <Filter>src\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\zmissingFlag.c">
+      <Filter>src\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Dss6\closf.c">
+      <Filter>src\Dss6</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Dss6\deleteFile.c">
+      <Filter>src\Dss6</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Dss6\filesize.c">
+      <Filter>src\Dss6</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Dss6\flushf.c">
+      <Filter>src\Dss6</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Dss6\isonlocaldrive.c">
+      <Filter>src\Dss6</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Dss6\lockdss.c">
+      <Filter>src\Dss6</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Dss6\openf.c">
+      <Filter>src\Dss6</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Dss6\readf.c">
+      <Filter>src\Dss6</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Dss6\readProgramName.c">
+      <Filter>src\Dss6</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Dss6\seekf.c">
+      <Filter>src\Dss6</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Dss6\waits.c">
+      <Filter>src\Dss6</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Dss6\writf.c">
+      <Filter>src\Dss6</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Dss6\zcatalog6Internal.c">
+      <Filter>src\Dss6</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Dss6\zgetRecordBasics6.c">
+      <Filter>src\Dss6</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Dss6\zgetRecordSize6.c">
+      <Filter>src\Dss6</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Dss6\ztsGetSizes6.c">
+      <Filter>src\Dss6</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Dss6\ztsRetrieveIrreg6.c">
+      <Filter>src\Dss6</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Dss6\ztsRetrieveReg6.c">
+      <Filter>src\Dss6</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Dss6\ztsStoreIrreg6.c">
+      <Filter>src\Dss6</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Dss6\ztsStoreReg6.c">
+      <Filter>src\Dss6</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\v6and7\zcheck.c">
+      <Filter>src\DssInterface\v6andv7</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\v6and7\zclose.c">
+      <Filter>src\DssInterface\v6andv7</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\v6and7\zconvertVersion.c">
+      <Filter>src\DssInterface\v6andv7</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\v6and7\zcopyRecord.c">
+      <Filter>src\DssInterface\v6andv7</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\v6and7\zdataType.c">
+      <Filter>src\DssInterface\v6andv7</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\v6and7\zdelete.c">
+      <Filter>src\DssInterface\v6andv7</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\v6and7\zgetInfo.c">
+      <Filter>src\DssInterface\v6andv7</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\v6and7\zgetRecordBasics.c">
+      <Filter>src\DssInterface\v6andv7</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\v6and7\zgetRecordSize.c">
+      <Filter>src\DssInterface\v6andv7</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\v6and7\zhandle.c">
+      <Filter>src\DssInterface\v6andv7</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\v6and7\zopen.c">
+      <Filter>src\DssInterface\v6andv7</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\v6and7\zopenExtended.c">
+      <Filter>src\DssInterface\v6andv7</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\v6and7\zpdRetrieve6.c">
+      <Filter>src\DssInterface\v6andv7</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\v6and7\zpdStore6.c">
+      <Filter>src\DssInterface\v6andv7</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\v6and7\zputInfo.c">
+      <Filter>src\DssInterface\v6andv7</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\v6and7\zread.c">
+      <Filter>src\DssInterface\v6andv7</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\v6and7\zreada.c">
+      <Filter>src\DssInterface\v6andv7</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\v6and7\zreadc.c">
+      <Filter>src\DssInterface\v6andv7</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\v6and7\zreadx.c">
+      <Filter>src\DssInterface\v6andv7</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\v6and7\zrecordAddresses.c">
+      <Filter>src\DssInterface\v6andv7</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\v6and7\zset.c">
+      <Filter>src\DssInterface\v6andv7</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\v6and7\zsqueeze.c">
+      <Filter>src\DssInterface\v6andv7</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\v6and7\ztsGetSizes.c">
+      <Filter>src\DssInterface\v6andv7</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\v6and7\ztsOtherStuff.c">
+      <Filter>src\DssInterface\v6andv7</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\v6and7\zundelete.c">
+      <Filter>src\DssInterface\v6andv7</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\v6and7\zwrite.c">
+      <Filter>src\DssInterface\v6andv7</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\v6and7\zwritea.c">
+      <Filter>src\DssInterface\v6andv7</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\v6and7\zwritec.c">
+      <Filter>src\DssInterface\v6andv7</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\v6and7\zwritex.c">
+      <Filter>src\DssInterface\v6andv7</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\missingFlag_.c">
+      <Filter>src\DssInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\secondsToTimeString_.c">
+      <Filter>src\DssInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\timeStringToSeconds_.c">
+      <Filter>src\DssInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\zcheckfilever_.c">
+      <Filter>src\DssInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\zclose_.c">
+      <Filter>src\DssInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\zdebugout7.c">
+      <Filter>src\DssInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\zdelete_.c">
+      <Filter>src\DssInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\zerrorDecode_.c">
+      <Filter>src\DssInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\zfname.c">
+      <Filter>src\DssInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\zget_.c">
+      <Filter>src\DssInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\zgetinterval_.c">
+      <Filter>src\DssInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\zgetVersion_.c">
+      <Filter>src\DssInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\zirbeg7_.c">
+      <Filter>src\DssInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\zopen_.c">
+      <Filter>src\DssInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\zopenExtended_.c">
+      <Filter>src\DssInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\zpathnameFormFortran_.c">
+      <Filter>src\DssInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\zpathnameGetPart_.c">
+      <Filter>src\DssInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\zpdStore_.c">
+      <Filter>src\DssInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\zquery7_.c">
+      <Filter>src\DssInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\zritsi7_.c">
+      <Filter>src\DssInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\zrpdi7_.c">
+      <Filter>src\DssInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\zrtxts7_.c">
+      <Filter>src\DssInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\zsits7_.c">
+      <Filter>src\DssInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\zspdi7_.c">
+      <Filter>src\DssInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\ztextRetrieveArray_.c">
+      <Filter>src\DssInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\ztextRetrieveString_.c">
+      <Filter>src\DssInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\ztextRetrieveUnit_.c">
+      <Filter>src\DssInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\ztextstorearray_.c">
+      <Filter>src\DssInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\ztextStoreUnit_.c">
+      <Filter>src\DssInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\ztsends_.c">
+      <Filter>src\DssInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\ztsinfo7_.c">
+      <Filter>src\DssInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\ztsIrregRetrieveFull_.c">
+      <Filter>src\DssInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\ztsIrregStoreFull_.c">
+      <Filter>src\DssInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\ztsRetrieveIrregArgs.c">
+      <Filter>src\DssInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\ztsRetrieveRegArgs.c">
+      <Filter>src\DssInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\ztssrch7_.c">
+      <Filter>src\DssInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\ztsStoreIrregArgs.c">
+      <Filter>src\DssInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\ztsStoreRegArgs.c">
+      <Filter>src\DssInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\ztsStoreStuff.c">
+      <Filter>src\DssInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DssInterface\zundelete_.c">
+      <Filter>src\DssInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\charInt.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\charLong.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\powf_wrap.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zbinNew.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zbinUpdate.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zcatalogInternal.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zcatComparePath.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zcatInternalSort.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zcatParsePath.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zcatSortPath.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zcharTo8Byte.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zcheckAccessReset.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zcheckInternal.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zcheckKeys.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zcheckMultiUser.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zcloseInternal.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zcollectionsPath.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zcompareRecordStatus.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zcopyRecordInternal.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zdeleteInternal.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zerrorDecode.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zerrorEncode.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zerrorEncodeHigh.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zerrorMessage.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zerrorProcessing.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zerrorSave.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zerrorSeverity.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zerrorUpdate.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zflushBuffers.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zflushToDisk.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zget.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zgetBuff.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zgetCatalogSortAddresses.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zgetFileSpace.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zgetFunctionName.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zgetInternalPath.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zgetRecordBasics7.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zgetRecordSize7.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zhash.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zinit.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zinitIfltab.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zisaCollection.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zloadCache.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zlocationUpdatePerm.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zlockActive.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zlockingOld.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zlockPassive.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zmemoryFree.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zmemoryGet.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zmessage.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zmessageDebug.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zmessageInterface.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zmessageLevel.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zmessageZget.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zmessageZput.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zmessConcat.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\znewFileSize.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zopenInternal.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zpdUnitsToHead.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zpermCreate.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zpermRead.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zpermWrite.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zpidWrite.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zprintFileInfo.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zprintKeys.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zput.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zputBuff.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zreadInfo.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zreadInfoBlock.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zreadInternal.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zreclaimRead.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zreclaimSet.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zreclaimWrite.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zreleaseFileSpace.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zsetCatalogSortAddresses.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zsetMessageLevel.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\ztsAggregate.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\ztsDateMessage.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\ztsDisaggregate.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\ztsFirstLastValidValues.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\ztsGetSizesInternal.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\ztsIncrementBlock.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\ztsInternalHeaderPack.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\ztsInternalHeaderUnpack.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\ztsIrregGetBlockStart.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\ztsIrregMergeBlocks.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\ztsIrregMessage.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\ztsIrregReadBlock.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\ztsIrregStoreBlock.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\ztsMessTimeWindow.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\ztsPathCompatible.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\ztsProcessTimes.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\ztsRegAddTimes.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\ztsRegGetBlockStart.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\ztsRegReadBlock.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\ztsRegRepeatCompress.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\ztsRegRepeatUncompress.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\ztsRegStoreBlock.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\ztsRetrieveIrreg7.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\ztsRetrieveReg7.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\ztsStoreIrreg7.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\ztsStoreReg7.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\ztsTimeMessage.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\ztsTrim.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\ztsTrimAdjustTimeWindow.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\ztsWriteBlock.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zupdatePathStats.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zwriteEOF.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zwriteEOFandFlush.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zwriteInternal.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zwriteNew.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\zwriteOld.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zaliasAdd.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zaliasGetPrimary.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zaliasList.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zaliasNumber.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zaliasRemove.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zaliasRemoveAll.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zanalyzeFile.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zarrayRetrieve.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zarrayStore.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zbinaryRetrieveToFile.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zbinaryStoreFromFile.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zcatalog.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zcatalogFile.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zcatalogToFile.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zcheckFile.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zcollectionCat.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zcopyFile.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zduplicateRecord.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zfindString.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zgetDataCRC.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zgetFileVersion.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zgetLastWriteTimeFile.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zgetLastWriteTimeRec.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zgetMyLastWriteTime.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zgetVersion.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zinquire.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zinquireChar.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zlibcompress.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zlocationDelete.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zlocationPath.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zlocationRetrieve.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zlocationStore.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zopenLog.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zpathnameAddPart.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zpathnameClean.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zpathnameCompare.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zpathnameCompareCollection.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zpathnameForm.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zpathnameGetPart.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zpathnamePartLengths.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zpathnamePartPositions.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zpathnameSetPart.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zpdRetrieve.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zpdStore.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zquery.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zrename.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zset7.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zsetCollectionSequence.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zsetFile.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zspatialGridRetrieve.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zspatialGridStore.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zspatialTinRetrieve.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zspatialTinStore.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zsqueeze7.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zsqueezeNeeded.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zstructArrayNew.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zstructCatalogNew.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zstructFree.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zstructLocationNew.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zstructPdNew.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zstructPdNewDoubles.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zstructPdNewFloats.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zstructRecordBasicsNew.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zstructRecordSizeNew.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zstructSpatialGridNew.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zstructSpatialTinNew.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zstructTextNew.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zstructTextStringNew.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zstructTransferNew.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zstructTsClone.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zstructTsCloneNewTimes.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zstructTsNew.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zstructTsNewIrregDoubles.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zstructTsNewIrregFloats.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zstructTsNewRegDoubles.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zstructTsNewRegFloats.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zstructTsNewTimes.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zstructTsNewTimeWindow.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\ztextRetrieve.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\ztextRetrieveToFile.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\ztextStore.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\ztextStoreFromFile.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\ztextStructPrint.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\ztsGetDateRange.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\ztsGetDateTimeRange.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\ztsGetEPartFromInterval.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\ztsGetInterval.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\ztsOffset.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\ztsOffsetAdjustToOffset.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\ztsOffsetAdjustToStandard.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\ztsPathCheckInterval.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\ztsRetrieve.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\ztsRetrievePattern.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\ztsStore.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\ztypeName.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zundeleteAll.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zwhatChanged.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zwhatChangedCompare.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Public\zwhatChangedSetStart.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SemiPublic\zcheckHashTable.c">
+      <Filter>src\SemiPublic</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SemiPublic\zcheckInfo.c">
+      <Filter>src\SemiPublic</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SemiPublic\zcheckLinks.c">
+      <Filter>src\SemiPublic</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SemiPublic\zcheckPathnameBins.c">
+      <Filter>src\SemiPublic</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SemiPublic\zcheckPathnames.c">
+      <Filter>src\SemiPublic</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SemiPublic\zcompareDataSets.c">
+      <Filter>src\SemiPublic</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SemiPublic\zerror.c">
+      <Filter>src\SemiPublic</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SemiPublic\zerrorSpecifics.c">
+      <Filter>src\SemiPublic</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SemiPublic\zfileAccessInfo.c">
+      <Filter>src\SemiPublic</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SemiPublic\zgetProgress.c">
+      <Filter>src\SemiPublic</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SemiPublic\zgetRecordAddresses.c">
+      <Filter>src\SemiPublic</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SemiPublic\zisError.c">
+      <Filter>src\SemiPublic</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SemiPublic\zlocationStructValid.c">
+      <Filter>src\SemiPublic</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SemiPublic\zmaxPart.c">
+      <Filter>src\SemiPublic</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SemiPublic\zmessageCombined.c">
+      <Filter>src\SemiPublic</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SemiPublic\zplist7.c">
+      <Filter>src\SemiPublic</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SemiPublic\zresetProgress.c">
+      <Filter>src\SemiPublic</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SemiPublic\zsetInterrupt.c">
+      <Filter>src\SemiPublic</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SemiPublic\zstructGetType.c">
+      <Filter>src\SemiPublic</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SemiPublic\ztsGetFirstLastPathnames.c">
+      <Filter>src\SemiPublic</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SemiPublic\ztsGetFirstLastRecordTimes.c">
+      <Filter>src\SemiPublic</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SemiPublic\ztsGetPathTimeWindow.c">
+      <Filter>src\SemiPublic</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SemiPublic\ztsGetStandardInterval.c">
+      <Filter>src\SemiPublic</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SemiPublic\ztsIsCurrentTimeSeries.c">
+      <Filter>src\SemiPublic</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SemiPublic\ztsStorePattern.c">
+      <Filter>src\SemiPublic</Filter>
+    </ClCompile>
+    <ClCompile Include="src\System\closeFile.c">
+      <Filter>src\System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\System\flushFile.c">
+      <Filter>src\System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\System\getCurrentDateTime.c">
+      <Filter>src\System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\System\getCurrentTimeMillis.c">
+      <Filter>src\System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\System\getEndian.c">
+      <Filter>src\System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\System\readBytes.c">
+      <Filter>src\System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\System\writeBytes.c">
+      <Filter>src\System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\System\zfileName.c">
+      <Filter>src\System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\System\zfileSize.c">
+      <Filter>src\System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\System\zlockdss.c">
+      <Filter>src\System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\System\zopendisk.c">
+      <Filter>src\System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\System\zopenFile.c">
+      <Filter>src\System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\System\zreaddisk.c">
+      <Filter>src\System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\System\zswap.c">
+      <Filter>src\System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\System\zswitchDoubles.c">
+      <Filter>src\System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\System\zswitchInts.c">
+      <Filter>src\System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\System\zwritedisk.c">
+      <Filter>src\System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\headers\hecdss7.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\headers\hecdssFort.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\headers\hecdssInternal.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\headers\heclib.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\headers\heclib6.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\headers\heclib7.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\headers\heclibDate.h">
-      <Filter>src</Filter>
-    </ClInclude>
     <ClInclude Include="src\headers\zlib\zconf.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\headers\zcontrol.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\headers\zdataTypeDescriptions.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\headers\zdssKeys.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\headers\zdssLocking.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\headers\zdssMessages.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\headers\zdssMessagesFort.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\headers\zdssRecordDiscriptions.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\headers\zdssVals.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\headers\zerrorCodes.h">
-      <Filter>src</Filter>
+      <Filter>src\headers\zlib</Filter>
     </ClInclude>
     <ClInclude Include="src\headers\zlib\zlib.h">
-      <Filter>src</Filter>
+      <Filter>src\headers\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\headers\hecdss7.h">
+      <Filter>src\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\headers\hecdssFort.h">
+      <Filter>src\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\headers\hecdssInternal.h">
+      <Filter>src\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\headers\heclib.h">
+      <Filter>src\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\headers\heclib6.h">
+      <Filter>src\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\headers\heclib7.h">
+      <Filter>src\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\headers\heclibDate.h">
+      <Filter>src\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\headers\zcontrol.h">
+      <Filter>src\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\headers\zdataTypeDescriptions.h">
+      <Filter>src\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\headers\zdssKeys.h">
+      <Filter>src\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\headers\zdssLocking.h">
+      <Filter>src\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\headers\zdssMessages.h">
+      <Filter>src\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\headers\zdssMessagesFort.h">
+      <Filter>src\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\headers\zdssRecordDiscriptions.h">
+      <Filter>src\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\headers\zdssVals.h">
+      <Filter>src\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\headers\zerrorCodes.h">
+      <Filter>src\headers</Filter>
     </ClInclude>
     <ClInclude Include="src\headers\zprogress.h">
-      <Filter>src</Filter>
+      <Filter>src\headers</Filter>
     </ClInclude>
     <ClInclude Include="src\headers\zStructAllocation.h">
-      <Filter>src</Filter>
+      <Filter>src\headers</Filter>
     </ClInclude>
     <ClInclude Include="src\headers\zStructArray.h">
-      <Filter>src</Filter>
+      <Filter>src\headers</Filter>
     </ClInclude>
     <ClInclude Include="src\headers\zStructBasic.h">
-      <Filter>src</Filter>
+      <Filter>src\headers</Filter>
     </ClInclude>
     <ClInclude Include="src\headers\zStructCatalog.h">
-      <Filter>src</Filter>
+      <Filter>src\headers</Filter>
     </ClInclude>
     <ClInclude Include="src\headers\zStructLocation.h">
-      <Filter>src</Filter>
+      <Filter>src\headers</Filter>
     </ClInclude>
     <ClInclude Include="src\headers\zStructPairedData.h">
-      <Filter>src</Filter>
+      <Filter>src\headers</Filter>
     </ClInclude>
     <ClInclude Include="src\headers\zStructRecordAddresses.h">
-      <Filter>src</Filter>
+      <Filter>src\headers</Filter>
     </ClInclude>
     <ClInclude Include="src\headers\zStructRecordBasics.h">
-      <Filter>src</Filter>
+      <Filter>src\headers</Filter>
     </ClInclude>
     <ClInclude Include="src\headers\zStructRecordSize.h">
-      <Filter>src</Filter>
+      <Filter>src\headers</Filter>
     </ClInclude>
     <ClInclude Include="src\headers\zStructSpatialGrid.h">
-      <Filter>src</Filter>
+      <Filter>src\headers</Filter>
     </ClInclude>
     <ClInclude Include="src\headers\zStructSpatialTin.h">
-      <Filter>src</Filter>
+      <Filter>src\headers</Filter>
     </ClInclude>
     <ClInclude Include="src\headers\zStructText.h">
-      <Filter>src</Filter>
+      <Filter>src\headers</Filter>
     </ClInclude>
     <ClInclude Include="src\headers\zStructTimeSeries.h">
-      <Filter>src</Filter>
+      <Filter>src\headers</Filter>
     </ClInclude>
     <ClInclude Include="src\headers\zStructTransfer.h">
-      <Filter>src</Filter>
+      <Filter>src\headers</Filter>
     </ClInclude>
     <ClInclude Include="src\headers\zStructTsTimeWindow.h">
-      <Filter>src</Filter>
+      <Filter>src\headers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
