@@ -198,4 +198,35 @@ int DateToJulian(const char* dateString)
 	return dateToJulian(dateString);
 }
 
+zStructPairedData* ZStructPdNew(const char* pathName)
+{
+	return zstructPdNew(pathName);
+}
+
+zStructPairedData* ZStructPdNewDoubles(const char* pathname, double* doubleOrdinates, double* doubleValues, int numberOrdinates, int numberCurves, const char* unitsIndependent, const char* typeIndependent, const char* unitsDependent, const char* typeDependent)
+{
+	zStructPairedData* pd = zstructPdNewDoubles(pathname, doubleOrdinates, doubleValues, numberOrdinates, numberCurves, unitsIndependent, typeIndependent, unitsDependent, typeDependent);
+	pd->allocated[zSTRUCT_PD_doubleValues] = 1;
+	pd->allocated[zSTRUCT_PD_doubleOridnates] = 1;
+	return pd;
+}
+
+zStructPairedData* ZStructPdNewFloats(const char* pathname, float* floatOrdinates, float* floatValues, int numberOrdinates, int numberCurves, const char* unitsIndependent, const char* typeIndependent, const char* unitsDependent, const char* typeDependent)
+{
+	zStructPairedData* pd = zstructPdNewFloats(pathname, floatOrdinates, floatValues, numberOrdinates, numberCurves, unitsIndependent, typeIndependent, unitsDependent, typeDependent);
+	pd->allocated[zSTRUCT_PD_floatValues] = 1;
+	pd->allocated[zSTRUCT_PD_floatOrdinates] = 1;
+	return pd;
+}
+
+int ZPdRetrieve(long long* ifltab, zStructPairedData* pd, int retrieveDoubleFlag)
+{
+	return zpdRetrieve(ifltab, pd, retrieveDoubleFlag);
+}
+
+int ZPdStore(long long* ifltab, zStructPairedData* pd, int storageFlag)
+{
+	return zpdStore(ifltab, pd, storageFlag);
+}
+
 

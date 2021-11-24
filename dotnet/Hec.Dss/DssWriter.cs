@@ -323,15 +323,15 @@ namespace Hec.Dss
       {
         double[] dValues = values as double[];
         double[] dOrdinates = ordinates as double[];
-        ZStructPairedDataWrapper pds = DSS.ZStructPdNewDoubles(pathName, ref dOrdinates, ref dValues, ordinates.Length, numberCurves, unitsIndependent, typeIndependent, unitsDependent, typeDependent);
-        DSS.ZpdStore(ref ifltab, ref pds, storageFlag);
+        NativePairedDataWrapper pds = PInvoke.NativePdNewDoubles(pathName, dOrdinates, dValues, ordinates.Length, numberCurves, unitsIndependent, typeIndependent, unitsDependent, typeDependent);
+        PInvoke.ZPdStore(ifltab, pds, storageFlag);
       }
       else if (listType == typeof(float))
       {
         float[] fValues = values as float[];
         float[] fOrdinates = ordinates as float[];
-        ZStructPairedDataWrapper pds = DSS.ZStructPdNewFloats(pathName, ref fOrdinates, ref fValues, ordinates.Length, numberCurves, unitsIndependent, typeIndependent, unitsDependent, typeDependent);
-        DSS.ZpdStore(ref ifltab, ref pds, storageFlag);
+        NativePairedDataWrapper pds = PInvoke.NativePdNewFloats(pathName, fOrdinates, fValues, ordinates.Length, numberCurves, unitsIndependent, typeIndependent, unitsDependent, typeDependent);
+        PInvoke.ZPdStore(ifltab, pds, storageFlag);
       }
       else
         throw new Exception("Cannot store values of type " + listType.Name + " for paired data.  Only accepts double and float");
@@ -463,8 +463,8 @@ namespace Hec.Dss
       }
       double[] dValues = d.ToArray();
       double[] dOrdinates = pd.Ordinates;
-      ZStructPairedDataWrapper pds = DSS.ZStructPdNewDoubles(pd.Path.FullPath, ref dOrdinates, ref dValues, pd.Ordinates.Length, pd.Values.Count, pd.UnitsIndependent, pd.TypeIndependent, pd.UnitsDependent, pd.TypeDependent);
-      DSS.ZpdStore(ref ifltab, ref pds, storageFlag);
+      NativePairedDataWrapper pds = PInvoke.NativePdNewDoubles(pd.Path.FullPath, dOrdinates, dValues, pd.Ordinates.Length, pd.Values.Count, pd.UnitsIndependent, pd.TypeIndependent, pd.UnitsDependent, pd.TypeDependent);
+      PInvoke.ZPdStore(ifltab, pds, storageFlag);
     }
 
   }

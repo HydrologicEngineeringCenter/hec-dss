@@ -35,4 +35,10 @@ extern "C" {
 	__declspec(dllexport) int JulianToYearMonthDay(int julian, int* year, int* month, int* day);
 	__declspec(dllexport) int TimeStringToSeconds(const char* timeString);
 	__declspec(dllexport) int DateToJulian(const char* dateString);
+	__declspec(dllexport) zStructPairedData* ZStructPdNew(const char* pathName);
+	__declspec(dllexport) zStructPairedData* ZStructPdNewDoubles(const char* pathname, double* doubleOrdinates, double* doubleValues, int numberOrdinates, int numberCurves, const char* unitsIndependent, const char* typeIndependent, const char* unitsDependent, const char* typeDependent);
+	__declspec(dllexport) zStructPairedData* ZStructPdNewFloats(const char* pathname, float* floatOrdinates, float* floatValues, int numberOrdinates, int numberCurves, const char* unitsIndependent, const char* typeIndependent, const char* unitsDependent, const char* typeDependent);
+	__declspec(dllexport) int ZPdRetrieve(long long* ifltab, zStructPairedData* pd, int retrieveDoubleFlag);
+	__declspec(dllexport) int ZPdStore(long long* ifltab, zStructPairedData* pd, int storageFlag);
+
 }
