@@ -35,7 +35,7 @@ namespace Hec.Dss
   {
     static Grid() => Assembly.Initialize();
 
-    protected ZStructSpatialGridWrapper _grid;
+    protected NativeSpatialGridWrapper _grid;
 
     public string PathName
     {
@@ -47,7 +47,7 @@ namespace Hec.Dss
     {
       get { return (DssGridType)_grid.GridType; } // readonly. 
     }
-    public ZStructSpatialGridWrapper DSSObj
+    public NativeSpatialGridWrapper DSSObj
     {
       get
       {
@@ -435,7 +435,7 @@ namespace Hec.Dss
     /// </summary>
     /// <param name="grid">The DSS grid object that has the information</param>
     /// <param name="dataRetrieved">Whether you retrieved data in ZgRetrieve or not</param>
-    internal Grid(ZStructSpatialGridWrapper grid, bool dataRetrieved)
+    internal Grid(NativeSpatialGridWrapper grid, bool dataRetrieved)
     {
       _grid = grid;
       _data = _grid.Data;

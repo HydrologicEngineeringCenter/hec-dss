@@ -20,8 +20,6 @@ namespace Hec.Dss
     public extern static int ZGetVersion(long[] ifltab);
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
     public extern static int ZClose(long[] ifltab);
-
-
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
     private extern static int ZTsStore(long[] ifltab, IntPtr tss, int storageFlag);
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
@@ -84,6 +82,29 @@ namespace Hec.Dss
     private extern static int ZPdRetrieve(long[] ifltab, IntPtr pd, int retrieveDoubleFlag);
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
     private extern static int ZPdStore(long[] ifltab, IntPtr pd, int storageFlag);
+    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    private extern static IntPtr ZStructSpatialGridNew(string pathName);
+    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    private extern static int ZSpatialGridRetrieve(long[] ifltab, IntPtr grid, bool retrieveData);
+    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    private extern static int ZSpatialGridStore(long[] ifltab, IntPtr grid);
+
+    public static int ZSpatialGridStore(long[] ifltab, NativeSpatialGridWrapper grid)
+    {
+      return ZSpatialGridStore(ifltab, grid.TheStruct);
+    }
+
+    public static int ZSpatialGridRetrieve(long[] ifltab, NativeSpatialGridWrapper grid, bool retrieveData)
+    {
+      return ZSpatialGridRetrieve(ifltab, grid.TheStruct, retrieveData);
+    }
+
+    public static NativeSpatialGridWrapper NativeSpatialGridNew(string pathName)
+    {
+      NativeSpatialGridWrapper grid = new NativeSpatialGridWrapper();
+      grid.TheStruct = ZStructSpatialGridNew(pathName);
+      return grid;
+    }
 
     public static int ZPdStore(long[] ifltab, NativePairedDataWrapper pd, int storageFlag)
     {

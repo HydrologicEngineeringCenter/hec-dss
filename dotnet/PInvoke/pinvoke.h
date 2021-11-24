@@ -40,5 +40,7 @@ extern "C" {
 	__declspec(dllexport) zStructPairedData* ZStructPdNewFloats(const char* pathname, float* floatOrdinates, float* floatValues, int numberOrdinates, int numberCurves, const char* unitsIndependent, const char* typeIndependent, const char* unitsDependent, const char* typeDependent);
 	__declspec(dllexport) int ZPdRetrieve(long long* ifltab, zStructPairedData* pd, int retrieveDoubleFlag);
 	__declspec(dllexport) int ZPdStore(long long* ifltab, zStructPairedData* pd, int storageFlag);
-
+	__declspec(dllexport) zStructSpatialGrid* ZStructSpatialGridNew(const char* pathName);
+	__declspec(dllexport) int ZSpatialGridRetrieve(long long* ifltab, zStructSpatialGrid* grid, bool retrieveData);
+	__declspec(dllexport) int ZSpatialGridStore(long long* ifltab, zStructSpatialGrid* grid);
 }
