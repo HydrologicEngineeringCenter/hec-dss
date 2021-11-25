@@ -58,13 +58,13 @@ C
 C
 C     Vertical datum varible dimensions
       character*400 vdiStr, errMsg
-      character*16 unit, unit2, cverticalDatum, cverticalDatum2
+      character*16 unit, unit2, cvdatum2
       character*16 nativeDatum
       character*64 cc, unitSpec
       double precision elevation
       double precision offsetNavd88, offsetNgvd29, vertDatumOffset
       logical l_Navd88Estimated, l_Ngvd29Estimated, l_modified
-      integer vdiStrLen, iverticalDatum
+      integer vdiStrLen
 C
 C
       INCLUDE 'zdssmz.h'
@@ -257,21 +257,20 @@ C
         ! get the vertical datum of the values !
         !--------------------------------------!
         ! first get any default vertical datum
-        call zinqir6(IFLTAB, 'VDTM', cverticalDatum, iverticalDatum)
+        call zinqir6(IFLTAB, 'VDTM', cvdatum, ivdatum)
         ! override the default with any datum in the user header
         call get_user_header_param(iuhead, nuhead,
-     *    VERTICAL_DATUM_PARAM, cverticalDatum2)
-        if (cverticalDatum2.ne.' ') then
-          cverticalDatum = cverticalDatum2
+     *    VERTICAL_DATUM_PARAM, cvdatum2)
+        if (cvdatum2.ne.' ') then
+          cvdatum = cvdatum2
         end if
         ! override both with the unit spec
-        call crack_unit_spec(cunits, unit2, cverticalDatum2)
-        if (cverticalDatum2.ne.' ') then
+        call crack_unit_spec(cunits, unit2, cvdatum2)
+        if (cvdatum2.ne.' ') then
           cunits = unit2(1:len_trim(unit2))
-          cverticalDatum = cverticalDatum2
+          cvdatum = cvdatum2
         end if
-        if (cverticalDatum.eq.CVD_NAVD88.or.
-     *      cverticalDatum.eq.CVD_NGVD29) then
+        if (cvdatum.ne.CVD_UNSET) then
           !--------------------------------------------!
           ! we possibly need to convert the elevations !
           !--------------------------------------------!
@@ -309,10 +308,17 @@ C
               istat = 13
               return
             end if
-            if (cverticalDatum.eq.CVD_NAVD88) then
+            if (cvdatum.eq.CVD_NAVD88) then
               vertDatumOffset = offsetNavd88
-            else
+            elseif (cvdatum.eq.CVD_NGVD29) then
               vertDatumOffset = offsetNgvd29
+            else
+              if (nativeDatum.eq.cvdatum.or.
+     *            nativeDatum.eq.CVD_OTHER) then
+                vertDatumOffset = 0.
+              else
+                vertDatumOffset = UNDEFINED_VERTICAL_DATUM_VALUE
+              end if
             end if
             if (vertDatumOffset.ne.0) then
               if(vertDatumOffset.eq.UNDEFINED_VERTICAL_DATUM_VALUE) then

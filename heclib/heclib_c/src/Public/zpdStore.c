@@ -510,11 +510,13 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 					case IVERTICAL_DATUM_NGVD29 :
 						offset = vdi->offsetToNgvd29;
 						break;
-					case IVERTICAL_DATUM_OTHER :
-						offset = 0;
-						break;
 					default :
-						offset = 0;
+						if(!strcmp(cvertical_datum, vdi->nativeDatum) || !strcmp(cvertical_datum, CVERTICAL_DATUM_OTHER)) {
+							offset = 0;
+						}
+						else {
+							offset = UNDEFINED_VERTICAL_DATUM_VALUE;
+						}
 						break;
 				}
 				if (offset != 0.) {
@@ -603,11 +605,13 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 					case IVERTICAL_DATUM_NGVD29 :
 						offset = vdi->offsetToNgvd29;
 						break;
-					case IVERTICAL_DATUM_OTHER :
-						offset = 0;
-						break;
 					default :
-						offset = 0;
+						if(!strcmp(cvertical_datum, vdi->nativeDatum) || !strcmp(cvertical_datum, CVERTICAL_DATUM_OTHER)) {
+							offset = 0;
+						}
+						else {
+							offset = UNDEFINED_VERTICAL_DATUM_VALUE;
+						}
 						break;
 				}
 				if (offset != 0.) {

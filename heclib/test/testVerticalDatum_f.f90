@@ -1,5 +1,5 @@
 program testVerticalDatum
-    ! call testStoreRetrieveTimeSeries()
+    call testStoreRetrieveTimeSeries()
     call testStoreRetrievePairedData()
 
     stop
@@ -84,7 +84,7 @@ module modVerticalDatumInfo
             character (len = *) :: unit
         end function unitIsMeters
     end interface
-   
+
     contains
         subroutine initVerticalDatumInfo(vdi)
             type(verticalDatumInfo) vdi
@@ -115,7 +115,7 @@ module modVerticalDatumInfo
             else
                 mpm = -1
             end if
-        end function mpm 
+        end function mpm
 
     end module modVerticalDatumInfo
 
@@ -125,12 +125,12 @@ subroutine testStoreRetrieveTimeSeries()
     implicit none
 
     integer (kind=8)        :: ifltab(250)
-    integer (kind=4)        :: status, numberValues, i, j, k, k2, k3, kk, l, m, n, o
-    integer (kind=4)        :: quality(24), itimes(6,2),userHeader(100), userHeaderLen
+    integer (kind=4)        :: status, numberValues, i, j, k, k2, k3, kk, l, m, n, o, ii
+    integer (kind=4)        :: quality(24), itimes(6,2),userHeader(100), userHeaderLen, count
     integer (kind=4)        :: intervalOffset, compressionMethod, timesRetrieved(24), baseDate
     integer (kind=4)        :: startDay, endDay
-    real (kind=8)           :: dvalues(6,3), dvals(24)
-    real (kind=4)           :: fvalues(6,3), fvals(24)
+    real (kind=8)           :: dvalues(6,3), dvals(24), dvals_out(24)
+    real (kind=4)           :: fvalues(6,3), fvals(24), fvals_out(24)
     character (len=300)     :: errmsg, vdiStr
     character (len=80)      :: filename(2)
     character (len=80)      :: pathnames(2,2)
@@ -139,7 +139,7 @@ subroutine testStoreRetrieveTimeSeries()
     character (len=16)      :: startDate(2), endDate(2)
     character (len=4)       :: startTime, endTime
     character (len=400)     :: userHeaderStr
-    logical                 :: readQuality, qualityWasRead
+    logical                 :: readQuality, qualityWasRead, expectSuccess
     type(verticalDatumInfo) :: vdi(2)
 
     equivalence (userHeader, userHeaderStr)
@@ -239,9 +239,10 @@ subroutine testStoreRetrieveTimeSeries()
     !
     ! o = data value type
     !     1 = doubles
-    !     2 = floats 
+    !     2 = floats
     !
     call zset('MLVL', '', 1)
+    count = 0
     do i = 1, 2
         do j = 1, 2
             call verticalDatumInfoToString(       &
@@ -274,13 +275,12 @@ subroutine testStoreRetrieveTimeSeries()
                     do m = 1, 3
                         do n = 1, 2
                             do o = 1, 2
+                                count = count + 1
                                 ! write(0,*) i, j, k, l, m, n, o
                                 ifltab = 0
                                 if (i == 1) then
-                                    ! write(0,*) 'OPENING DSS v6 FILE'
                                     call zopen6(ifltab, filename(i), status)
                                 else
-                                    ! write(0,*) 'OPENING DSS v7 FILE'
                                     call zopen7(ifltab, filename(i), status)
                                 end if
                                 call assert(status == 0)
@@ -310,7 +310,63 @@ subroutine testStoreRetrieveTimeSeries()
                                     kk = k3
                                     write(unitSpec,'(5a)')                             &
                                         'U=',unit(l)(1:len_trim(unit(l))),'|', &
-                                        'V=',verticalDatums(kk)
+                                            'V=',verticalDatums(kk)
+                                end if
+                                !-----------------------------------------------!
+                                ! figure out whether the zs?tsx? should succeed !
+                                !-----------------------------------------------!
+                                if (i==2.and.j==2.and.k==1.and.l==1.and.m==1.and.n==1.and.o==1) then
+                                    expectSuccess = .false.
+                                elseif (vdi(j)%nativeDatum == verticalDatums(kk)) then
+                                    !-------------------------------------!
+                                    ! same datum, no conversion necessary !
+                                    !-------------------------------------!
+                                    expectSuccess = .true.
+                                else if (verticalDatums(kk) /= CVD_NAVD88.and.verticalDatums(kk) /= CVD_NGVD29) then
+                                    !--------------------------!
+                                    ! requested datum is local !
+                                    !--------------------------!
+                                    if (vdi(j)%nativeDatum == CVD_NAVD88.or.vdi(j)%nativeDatum == CVD_NGVD29) then
+                                        !---------------------------!
+                                        ! native datum is non-local !
+                                        !---------------------------!
+                                        expectSuccess = .false.
+                                    else
+                                        !-----------------------!
+                                        ! native datum is local !
+                                        !-----------------------!
+                                        expectSuccess = .true.
+                                    end if
+                                else if (verticalDatums(kk) == CVD_NAVD88 .and. &
+                                         vdi(j)%offsetToNavd88 /= UNDEFINED_VERTICAL_DATUM_VALUE) then
+                                    !-------------------------------------------------------------!
+                                    ! specified datum is NAVD-88 and we have an offset to NAVD-88 !
+                                    !-------------------------------------------------------------!
+                                    if (unitIsFeet(unit(l)).or.unitIsMeters(unit(l))) then
+                                        expectSuccess = .true.
+                                    else
+                                        expectSuccess = .false.
+                                    end if
+                                else if (verticalDatums(kk) == CVD_NGVD29 .and. &
+                                         vdi(j)%offsetToNgvd29 /= UNDEFINED_VERTICAL_DATUM_VALUE) then
+                                    !-------------------------------------------------------------!
+                                    ! specified datum is NGVD-29 and we have an offset to NGVD-29 !
+                                    !-------------------------------------------------------------!
+                                    if (unitIsFeet(unit(l)).or.unitIsMeters(unit(l))) then
+                                        expectSuccess = .true.
+                                    else
+                                        expectSuccess = .false.
+                                    end if
+                                else
+                                    !-----------------!
+                                    ! all other cases !
+                                    !-----------------!
+                                    expectSuccess = .false.
+                                end if
+                                if (expectSuccess) then
+                                    write(0,'(a,i3,a)') 'Time series test ',count,' expecting SUCCESS'
+                                else
+                                    write(0,'(a,i3,a)') 'Time seires test ',count,' expecting ERROR'
                                 end if
                                 !-------------------------------------------------------!
                                 ! store the time series in the specified vertical datum !
@@ -322,7 +378,6 @@ subroutine testStoreRetrieveTimeSeries()
                                         !-------------!
                                         ! RTS doubles !
                                         !-------------!
-                                        ! write(0,*) 'Calling zsrtxd'
                                         dvals(1:numberValues) = dvalues(:,l)
                                         call zsrtsxd(               &
                                             ifltab,                 & ! IFLTAB
@@ -344,7 +399,6 @@ subroutine testStoreRetrieveTimeSeries()
                                         !------------!
                                         ! RTS floats !
                                         !------------!
-                                        ! write(0,*) 'Calling zsrtx'
                                         fvals(1:numberValues) = fvalues(:,l)
                                         call zsrtsx(                &
                                             ifltab,                 & ! IFLTAB
@@ -368,7 +422,6 @@ subroutine testStoreRetrieveTimeSeries()
                                         !-------------!
                                         ! ITS doubles !
                                         !-------------!
-                                        ! write(0,*) 'Calling zsitxd'
                                         dvals(1:numberValues) = dvalues(:,l)
                                         call zsitsxd(               &
                                             ifltab,                 & ! IFLTAB
@@ -408,22 +461,19 @@ subroutine testStoreRetrieveTimeSeries()
                                             status)
                                     end if
                                 end if
-                                !-----------------------------------------------------------------------------!
-                                ! figure out whether the ztsStore should have succeeded, and test accordingly !
-                                !-----------------------------------------------------------------------------!
+                                call assert((status == 0) .eqv. expectSuccess)
                                 if (i==2.and.j==2.and.k==1.and.l==1.and.m==1.and.n==1.and.o==1) then
                                     !-------------------------------------------------------------------------------!
                                     ! change of vertical datum information in DSS 7, need to update location record !
                                     !-------------------------------------------------------------------------------!
-                                    call assert(status /= 0)
                                     call zset('VDOW', ' ', 1)
+                                    count = count + 1
+                                    write(0,'(a,i3,a)') 'Time series test ',count,' expecting SUCCESS'
                                     if (n == 1) then
                                         if (o == 1) then
                                             !-------------!
                                             ! RTS doubles !
                                             !-------------!
-                                            ! write(0,*) 'Calling zsrtxd'
-                                            dvals(1:numberValues) = dvalues(:,l)
                                             call zsrtsxd(               &
                                                 ifltab,                 & ! IFLTAB
                                                 pathnames(o,n),         & ! CPATH
@@ -444,8 +494,6 @@ subroutine testStoreRetrieveTimeSeries()
                                             !------------!
                                             ! RTS floats !
                                             !------------!
-                                            ! write(0,*) 'Calling zsrtx'
-                                            fvals(1:numberValues) = fvalues(:,l)
                                             call zsrtsx(                &
                                                 ifltab,                 & ! IFLTAB
                                                 pathnames(o,n),         & ! CPATH
@@ -468,8 +516,6 @@ subroutine testStoreRetrieveTimeSeries()
                                             !-------------!
                                             ! ITS doubles !
                                             !-------------!
-                                            ! write(0,*) 'Calling zsitxd'
-                                            dvals(1:numberValues) = dvalues(:,l)
                                             call zsitsxd(               &
                                                 ifltab,                 & ! IFLTAB
                                                 pathnames(o,n),         & ! CPATH
@@ -489,8 +535,6 @@ subroutine testStoreRetrieveTimeSeries()
                                             !------------!
                                             ! ITS floats !
                                             !------------!
-                                            ! write(0,*) 'Calling zsitx'
-                                            fvals(1:numberValues) = fvalues(:,l)
                                             call zsitsx(                &
                                                 ifltab,                 & ! IFLTAB
                                                 pathnames(o,n),         & ! CPATH
@@ -509,56 +553,21 @@ subroutine testStoreRetrieveTimeSeries()
                                         end if
                                     end if
                                     call zset('VDOW', ' ', 0)
-                                end if
-                                ! write(0,*) 'CLOSING DSS FILE'
-                                call zclose(ifltab)
-                                if (vdi(j)%nativeDatum == verticalDatums(kk)) then
-                                    !-------------------------------------!
-                                    ! same datum, no conversion necessary !
-                                    !-------------------------------------!
-                                else if (verticalDatums(kk) /= CVD_NAVD88.and.verticalDatums(kk) /= CVD_NGVD29) then
-                                    !------------------------------------------------------------------------------!
-                                    ! specified datum is local, so by definition it is already in the native datum !
-                                    ! and no conversion is necessary                                               !
-                                    !------------------------------------------------------------------------------!
                                     call assert(status == 0)
-                                else if (verticalDatums(kk) == CVD_NAVD88 .and. &
-                                         vdi(j)%offsetToNavd88 /= UNDEFINED_VERTICAL_DATUM_VALUE) then
-                                    !-------------------------------------------------------------!
-                                    ! specified datum is NAVD-88 and we have an offset to NAVD-88 !
-                                    !-------------------------------------------------------------!
-                                    if (unitIsFeet(unit(l)).or.unitIsMeters(unit(l))) then
-                                        call assert(status == 0)
-                                    else
-                                        call assert(status /= 0)
-                                    end if
-                                else if (verticalDatums(kk) == CVD_NGVD29 .and. &
-                                         vdi(j)%offsetToNgvd29 /= UNDEFINED_VERTICAL_DATUM_VALUE) then
-                                    !-------------------------------------------------------------!
-                                    ! specified datum is NGVD-29 and we have an offset to NGVD-29 !
-                                    !-------------------------------------------------------------!
-                                    if (unitIsFeet(unit(l)).or.unitIsMeters(unit(l))) then
-                                        call assert(status == 0)
-                                    else
-                                        call assert(status /= 0)
-                                    end if
-                                else
-                                    !-----------------!
-                                    ! all other cases !
-                                    !-----------------!
-                                    call assert(status /= 0)
                                 end if
+                                call zclose(ifltab)
                                 if (status == 0) then
                                     !------------------------------------------------------------!
                                     ! set the default vertical datum to the datum we stored with !
                                     !------------------------------------------------------------!
                                     call zset('VDTM', verticalDatums(kk), 0)
+                                    !--------------------------------------------------------!
+                                    ! retrieve the time series in the default vertical datum !
+                                    !--------------------------------------------------------!
                                     ifltab = 0
                                     if (i == 1) then
-                                        ! write(0,*) 'OPENING DSS v6 FILE'
                                         call zopen6(ifltab, filename(i), status)
                                     else
-                                        ! write(0,*) 'OPENING DSS v7 FILE'
                                         call zopen7(ifltab, filename(i), status)
                                     end if
                                         call assert(status == 0)
@@ -567,14 +576,13 @@ subroutine testStoreRetrieveTimeSeries()
                                             !-------------!
                                             ! RTS doubles !
                                             !-------------!
-                                            ! write(0,*) 'Calling zrrtxd'
                                             call zrrtsxd(          &
                                                 ifltab,            & ! IFLTAB
                                                 pathnames(o,n),    & ! CPATH
                                                 startDate,         & ! CDATE
                                                 startTime,         & ! CTIME
                                                 numberValues,      & ! NVALS
-                                                dvals,             & ! DVALS
+                                                dvals_out,         & ! DVALS
                                                 quality,           & ! JQUAL
                                                 readQuality,       & ! LQUAL
                                                 qualityWasRead,    & ! LQREAD
@@ -590,14 +598,13 @@ subroutine testStoreRetrieveTimeSeries()
                                             !------------!
                                             ! RTS floats !
                                             !------------!
-                                            ! write(0,*) 'Calling zrrtx'
                                             call zrrtsx(           &
                                                 ifltab,            & ! IFLTAB
                                                 pathnames(o,n),    & ! CPATH
                                                 startDate,         & ! CDATE
                                                 startTime,         & ! CTIME
                                                 numberValues,      & ! NVALS
-                                                fvals,             & ! DVALS
+                                                fvals_out,         & ! DVALS
                                                 quality,           & ! JQUAL
                                                 readQuality,       & ! LQUAL
                                                 qualityWasRead,    & ! LQREAD
@@ -619,17 +626,16 @@ subroutine testStoreRetrieveTimeSeries()
                                             !-------------!
                                             ! ITS doubles !
                                             !-------------!
-                                            ! write(0,*) 'Calling zritxd'
                                             call zritsxd(          &
                                                 ifltab,            & ! IFLTAB  in/out
-                                                pathnames(o,n),    & ! CPATH   in 
+                                                pathnames(o,n),    & ! CPATH   in
                                                 startDay,          & ! JULS    in
-                                                mpm(startTime),    & ! ISTIME  in 
+                                                mpm(startTime),    & ! ISTIME  in
                                                 endDay,            & ! JULE    in
                                                 mpm(endTime),      & ! IETIME  in
                                                 timesRetrieved,    & ! ITIMES  out
-                                                dvals,             & ! DVALUES out
-                                                size(dvals),       & ! KVALS   in
+                                                dvals_out,         & ! DVALUES out
+                                                size(dvals_out),   & ! KVALS   in
                                                 numberValues,      & ! NVALS   out
                                                 baseDate,          & ! IBDATE  out
                                                 quality,           & ! IQUAL   out
@@ -641,12 +647,11 @@ subroutine testStoreRetrieveTimeSeries()
                                                 size(userHeader),  & ! KUHEAD  in
                                                 userHeaderLen,     & ! NUHEAD  out
                                                 0,                 & ! INFLAG  in
-                                                status)              ! ISTAT   out 
+                                                status)              ! ISTAT   out
                                         else
                                             !------------!
                                             ! ITS floats !
                                             !------------!
-                                            ! write(0,*) 'Calling zritx'
                                             call zritsx(           &
                                                 ifltab,            & ! IFLTAB
                                                 pathnames(o,n),    & ! CPATH
@@ -655,8 +660,8 @@ subroutine testStoreRetrieveTimeSeries()
                                                 endDay,            & ! JULE
                                                 mpm(endTime),      & ! IETIME
                                                 timesRetrieved,    & ! ITIMES
-                                                fvals,             & ! SVALUES
-                                                size(fvals),       & ! KVALS
+                                                fvals_out,         & ! SVALUES
+                                                size(fvals_out),   & ! KVALS
                                                 numberValues,      & ! NVALS
                                                 baseDate,          & ! IBDATE
                                                 quality,           & ! IQUAL
@@ -671,9 +676,21 @@ subroutine testStoreRetrieveTimeSeries()
                                                 status)              ! ISTAT
                                         end if
                                     end if
-                                    ! write(0,*) 'CLOSING DSS FILE'
                                     call zclose(ifltab)
-                                        call assert(status == 0)
+                                    call assert(status == 0)
+                                    !------------------------------------------------------!
+                                    ! compare the retrieved time seires to what was stored !
+                                    !------------------------------------------------------!
+                                    call assert(numberValues == 6)
+                                    if (o == 1) then
+                                        do ii = 1, numberValues
+                                            call assert(dvals_out(i) == dvals(i))
+                                        end do
+                                    else
+                                        do ii = 1, numberValues
+                                            call assert(fvals_out(i) == fvals(i))
+                                        end do
+                                    end if
                                 end if
                             end do
                         end do
@@ -682,6 +699,7 @@ subroutine testStoreRetrieveTimeSeries()
             end do
         end do
     end do
+    write(0,'(/,/,i3,a)') count,' time sereies tests passed'
     return
 end subroutine testStoreRetrieveTimeSeries
 
@@ -690,18 +708,20 @@ subroutine testStoreRetrievePairedData()
     implicit none
 
     integer (kind=8)        :: ifltab(250)
-    integer (kind=4)        :: status, numberOrdinates, numberCurves
-    integer (kind=4)        :: userHeader(100), userHeaderLen, i, j, k, k2, k3, kk, l, m, n, o
-    real (kind=8)           :: dordinates(6,3), dvalues(6,3), dvals(12)
-    real (kind=4)           :: fordinates(6,3), fvalues(6,3), fvals(12)
+    integer (kind=4)        :: status, numberOrdinates, numberCurves, ihoriz, nvals, kuhead, count
+    integer (kind=4)        :: userHeader(100), userHeaderLen, i, j, k, k2, k3, kk, l, m, n, o, ii
+    real (kind=8)           :: dordinates(6,3), dvalues(6,3), dvals(12), dvals_out(12)
+    real (kind=4)           :: fordinates(6,3), fvalues(6,3), fvals(12), fvals_out(12)
     character (len=300)     :: errmsg, vdiStr
     character (len=80)      :: filename(2)
     character (len=80)      :: pathnames(2,2)
-    character (len=16)      :: unit(3), type, verticalDatums(3)
+    character (len=16)      :: unit(3), type, verticalDatums(3), c1unit, c2unit, c1type, c2type, clabel
     character (len=32)      :: unitSpec
     character (len=4)       :: startTime, endTime
     character (len=400)     :: userHeaderStr
+    logical                 :: l_label, expectSuccess
     type(verticalDatumInfo) :: vdi(2)
+
 
     equivalence (userHeader, userHeaderStr)
 
@@ -711,7 +731,7 @@ subroutine testStoreRetrievePairedData()
     userHeader = 0
     dvals = 0.
     fvals = 0.
-    
+
     dordinates = reshape((/                                &
         1000.,1001.,1002.,1003.,1004.,1005.,               & ! ft
         304.8,305.1048,305.4096,305.7144,306.0192,306.324, & ! m
@@ -733,7 +753,7 @@ subroutine testStoreRetrievePairedData()
         '//TestPdLoc/Elev-Stage///Floats/  '  &
         /), shape(pathnames))
 
-    
+
     unit = (/'ft ', 'm  ', 'cfs'/)
 
     type = 'UNT'
@@ -792,9 +812,10 @@ subroutine testStoreRetrievePairedData()
     !
     ! o = data value type
     !     1 = doubles
-    !     2 = floats 
+    !     2 = floats
     !
     call zset('MLVL', '', 1)
+    count = 0
     do i = 1, 2
         do j = 1, 2
             call verticalDatumInfoToString(       &
@@ -827,13 +848,12 @@ subroutine testStoreRetrievePairedData()
                     do m = 1, 3
                         do n = 1, 2
                             do o = 1, 2
+                                count = count + 1
                                 ! write(0,*) i, j, k, l, m, n, o
                                 ifltab = 0
                                 if (i == 1) then
-                                    ! write(0,*) 'OPENING DSS v6 FILE'
                                     call zopen6(ifltab, filename(i), status)
                                 else
-                                    ! write(0,*) 'OPENING DSS v7 FILE'
                                     call zopen7(ifltab, filename(i), status)
                                 end if
                                 call assert(status == 0)
@@ -865,58 +885,328 @@ subroutine testStoreRetrievePairedData()
                                         'U=',unit(l)(1:len_trim(unit(l))),'|', &
                                         'V=',verticalDatums(kk)
                                 end if
+                                !--------------------------------------------------------------------------!
+                                ! figure out whether the zspd? should have succeeded, and test accordingly !
+                                !--------------------------------------------------------------------------!
+                                if (i==2.and.j==2.and.k==1.and.l==1.and.m==1.and.n==1.and.o==1) then
+                                    expectSuccess = .false.
+                                else if (vdi(j)%nativeDatum == verticalDatums(kk)) then
+                                    !-------------------------------------!
+                                    ! same datum, no conversion necessary !
+                                    !-------------------------------------!
+                                    expectSuccess = .true.
+                                elseif (verticalDatums(kk) /= CVD_NAVD88 .and. verticalDatums(kk) /= CVD_NGVD29) then
+                                    !--------------------------!
+                                    ! requested datum is local !
+                                    !--------------------------!
+                                    if (vdi(j)%nativeDatum == CVD_NAVD88 .or. vdi(j)%nativeDatum == CVD_NGVD29) then
+                                        !---------------------------!
+                                        ! native datum is non-local !
+                                        !---------------------------!
+                                        expectSuccess = .false.
+                                    else
+                                        !-----------------------!
+                                        ! native datum is local !
+                                        !-----------------------!
+                                        expectSuccess = .true.
+                                    end if
+                                elseif (verticalDatums(kk) == CVD_NAVD88 .and.  &
+                                        vdi(j)%offsetToNavd88 /= UNDEFINED_VERTICAL_DATUM_VALUE) then
+                                    !-------------------------------------------------------------!
+                                    ! specified datum is NAVD-88 and we have an offset to NAVD-88 !
+                                    !-------------------------------------------------------------!
+                                    if (unitIsFeet(unit(l)).or.unitIsMeters(unit(l))) then
+                                        expectSuccess = .true.
+                                    else
+                                        expectSuccess = .false.
+                                    end if
+                                elseif (verticalDatums(kk) == CVD_NGVD29 .and.  &
+                                        vdi(j)%offsetToNgvd29 /= UNDEFINED_VERTICAL_DATUM_VALUE) then
+                                    !-------------------------------------------------------------!
+                                    ! specified datum is NGVD-29 and we have an offset to NGVD-29 !
+                                    !-------------------------------------------------------------!
+                                    if (unitIsFeet(unit(l)).or.unitIsMeters(unit(l))) then
+                                        expectSuccess = .true.
+                                    else
+                                        expectSuccess = .false.
+                                    end if
+                                else
+                                    !-----------------!
+                                    ! all other cases !
+                                    !-----------------!
+                                    expectSuccess = .false.
+                                end if
+                                if (expectSuccess) then
+                                    write(0,'(a,i3,a)') 'Paired data test ',count,' expecting SUCCESS'
+                                else
+                                    write(0,'(a,i3,a)') 'Paired data test ',count,' expecting ERROR'
+                                end if
                                 !-------------------------------------------------------!
                                 ! store the paried data in the specified vertical datum !
                                 !-------------------------------------------------------!
                                 userHeaderLen = byteCountToIntCount(len_trim(userHeaderStr))
+                                kuhead = userHeaderLen
                                 if (o == 1) then
                                     !---------!
                                     ! doubles !
                                     !---------!
                                     dvals(1:6) = dordinates(:,l)
                                     dvals(7:12) = dvalues(:,l)
-                                    call zspdd(          & ! 
-                                        ifltab,          & ! IFLTAB
-                                        pathnames(o,n),  & ! CPATH
-                                        numberOrdinates, & ! NORD
-                                        numberCurves,    & ! NCURVE
-                                        1,               & ! IHORIZ
-                                        unit(l),         & ! C1UNIT
-                                        type,            & ! C1TYPE
-                                        unit(l),         & ! C2UNIT
-                                        type,            & ! C2TYPE
-                                        dvals,           & ! DVALUES
-                                        '',              & ! CLABEL
-                                        .false.,         & ! LABEL
-                                        userHeader,      & ! IUHEAD
-                                        userHeaderLen,   & ! NUHEAD
-                                        2,               & ! IPLAN
-                                        status)            ! ISTAT
+                                    if (n == 1) then
+                                        call zspdd(          & !
+                                            ifltab,          & ! IFLTAB
+                                            pathnames(o,n),  & ! CPATH
+                                            numberOrdinates, & ! NORD
+                                            numberCurves,    & ! NCURVE
+                                            1,               & ! IHORIZ
+                                            unit(l),         & ! C1UNIT
+                                            type,            & ! C1TYPE
+                                            unitSpec,        & ! C2UNIT
+                                            type,            & ! C2TYPE
+                                            dvals,           & ! DVALUES
+                                            '',              & ! CLABEL
+                                            .false.,         & ! LABEL
+                                            userHeader,      & ! IUHEAD
+                                            userHeaderLen,   & ! NUHEAD
+                                            0,               & ! IPLAN
+                                            status)            ! ISTAT
+                                    else
+                                        call zspdd(          & !
+                                            ifltab,          & ! IFLTAB
+                                            pathnames(o,n),  & ! CPATH
+                                            numberOrdinates, & ! NORD
+                                            numberCurves,    & ! NCURVE
+                                            1,               & ! IHORIZ
+                                            unitSpec,        & ! C1UNIT
+                                            type,            & ! C1TYPE
+                                            unit(l),         & ! C2UNIT
+                                            type,            & ! C2TYPE
+                                            dvals,           & ! DVALUES
+                                            '',              & ! CLABEL
+                                            .false.,         & ! LABEL
+                                            userHeader,      & ! IUHEAD
+                                            userHeaderLen,   & ! NUHEAD
+                                            0,               & ! IPLAN
+                                            status)            ! ISTAT
+                                    end if
                                 else
                                     !--------!
                                     ! floats !
                                     !--------!
                                     fvals(1:6) = fordinates(:,l)
                                     fvals(7:12) = fvalues(:,l)
-                                    call zspd(           & ! 
-                                        ifltab,          & ! IFLTAB
-                                        pathnames(o,n),  & ! CPATH
-                                        numberOrdinates, & ! NORD
-                                        numberCurves,    & ! NCURVE
-                                        1,               & ! IHORIZ
-                                        unit(l),         & ! C1UNIT
-                                        type,            & ! C1TYPE
-                                        unit(l),         & ! C2UNIT
-                                        type,            & ! C2TYPE
-                                        fvals,           & ! SVALUES
-                                        '',              & ! CLABEL
-                                        .false.,         & ! LABEL
-                                        userHeader,      & ! IUHEAD
-                                        userHeaderLen,   & ! NUHEAD
-                                        2,               & ! IPLAN
-                                        status)            ! ISTAT
+                                    if (n == 1) then
+                                        call zspd(           & !
+                                            ifltab,          & ! IFLTAB
+                                            pathnames(o,n),  & ! CPATH
+                                            numberOrdinates, & ! NORD
+                                            numberCurves,    & ! NCURVE
+                                            1,               & ! IHORIZ
+                                            unit(l),         & ! C1UNIT
+                                            type,            & ! C1TYPE
+                                            unitSpec,        & ! C2UNIT
+                                            type,            & ! C2TYPE
+                                            fvals,           & ! SVALUES
+                                            '',              & ! CLABEL
+                                            .false.,         & ! LABEL
+                                            userHeader,      & ! IUHEAD
+                                            userHeaderLen,   & ! NUHEAD
+                                            0,               & ! IPLAN
+                                            status)            ! ISTAT
+                                    else
+                                        call zspd(           & !
+                                            ifltab,          & ! IFLTAB
+                                            pathnames(o,n),  & ! CPATH
+                                            numberOrdinates, & ! NORD
+                                            numberCurves,    & ! NCURVE
+                                            1,               & ! IHORIZ
+                                            unitSpec,        & ! C1UNIT
+                                            type,            & ! C1TYPE
+                                            unit(l),         & ! C2UNIT
+                                            type,            & ! C2TYPE
+                                            fvals,           & ! SVALUES
+                                            '',              & ! CLABEL
+                                            .false.,         & ! LABEL
+                                            userHeader,      & ! IUHEAD
+                                            userHeaderLen,   & ! NUHEAD
+                                            0,               & ! IPLAN
+                                            status)            ! ISTAT
+                                    end if
+                                end if
+                                call assert((status == 0) .eqv. expectSuccess)
+                                if (i==2.and.j==2.and.k==1.and.l==1.and.m==1.and.n==1.and.o==1) then
+                                    count = count + 1
+                                    write(0,'(a,i3,a)') 'Paired data test ',count,' expecting SUCCESS'
+                                    call zset('VDOW', '', 1)
+                                    if (o == 1) then
+                                        !---------!
+                                        ! doubles !
+                                        !---------!
+                                        if (n == 1) then
+                                            call zspdd(          & !
+                                                ifltab,          & ! IFLTAB
+                                                pathnames(o,n),  & ! CPATH
+                                                numberOrdinates, & ! NORD
+                                                numberCurves,    & ! NCURVE
+                                                1,               & ! IHORIZ
+                                                unit(l),         & ! C1UNIT
+                                                type,            & ! C1TYPE
+                                                unitSpec,        & ! C2UNIT
+                                                type,            & ! C2TYPE
+                                                dvals,           & ! DVALUES
+                                                '',              & ! CLABEL
+                                                .false.,         & ! LABEL
+                                                userHeader,      & ! IUHEAD
+                                                userHeaderLen,   & ! NUHEAD
+                                                0,               & ! IPLAN
+                                                status)            ! ISTAT
+                                        else
+                                            call zspdd(          & !
+                                                ifltab,          & ! IFLTAB
+                                                pathnames(o,n),  & ! CPATH
+                                                numberOrdinates, & ! NORD
+                                                numberCurves,    & ! NCURVE
+                                                1,               & ! IHORIZ
+                                                unitSpec,        & ! C1UNIT
+                                                type,            & ! C1TYPE
+                                                unit(l),         & ! C2UNIT
+                                                type,            & ! C2TYPE
+                                                dvals,           & ! DVALUES
+                                                '',              & ! CLABEL
+                                                .false.,         & ! LABEL
+                                                userHeader,      & ! IUHEAD
+                                                userHeaderLen,   & ! NUHEAD
+                                                0,               & ! IPLAN
+                                                status)            ! ISTAT
+                                        end if
+                                    else
+                                        !--------!
+                                        ! floats !
+                                        !--------!
+                                        if (n == 1) then
+                                            call zspd(           & !
+                                                ifltab,          & ! IFLTAB
+                                                pathnames(o,n),  & ! CPATH
+                                                numberOrdinates, & ! NORD
+                                                numberCurves,    & ! NCURVE
+                                                1,               & ! IHORIZ
+                                                unit(l),         & ! C1UNIT
+                                                type,            & ! C1TYPE
+                                                unitSpec,        & ! C2UNIT
+                                                type,            & ! C2TYPE
+                                                fvals,           & ! SVALUES
+                                                '',              & ! CLABEL
+                                                .false.,         & ! LABEL
+                                                userHeader,      & ! IUHEAD
+                                                userHeaderLen,   & ! NUHEAD
+                                                0,               & ! IPLAN
+                                                status)            ! ISTAT
+                                        else
+                                            call zspd(           & !
+                                                ifltab,          & ! IFLTAB
+                                                pathnames(o,n),  & ! CPATH
+                                                numberOrdinates, & ! NORD
+                                                numberCurves,    & ! NCURVE
+                                                1,               & ! IHORIZ
+                                                unitSpec,        & ! C1UNIT
+                                                type,            & ! C1TYPE
+                                                unit(l),         & ! C2UNIT
+                                                type,            & ! C2TYPE
+                                                fvals,           & ! SVALUES
+                                                '',              & ! CLABEL
+                                                .false.,         & ! LABEL
+                                                userHeader,      & ! IUHEAD
+                                                userHeaderLen,   & ! NUHEAD
+                                                0,               & ! IPLAN
+                                                status)            ! ISTAT
+                                        end if
+                                    end if
+                                    call assert(status == 0)
+                                    call zset('VDOW', '', 0)
                                 end if
                                 call zclose(ifltab)
+                                if (status == 0) then
+                                  !------------------------------------------------------------!
+                                  ! set the default vertical datum to the datum we stored with !
+                                  !------------------------------------------------------------!
+                                  call zset('VDTM', verticalDatums(kk), 0)
+                                  !--------------------------------------------------------!
+                                  ! retrieve the paired data in the default vertical datum !
+                                  !--------------------------------------------------------!
+                                  if (i == 1) then
+                                      call zopen6(ifltab, filename(i), status)
+                                  else
+                                      call zopen7(ifltab, filename(i), status)
+                                  end if
+                                  call assert(status == 0)
+                                  if (o == 1) then
+                                    !---------!
+                                    ! doubles !
+                                    !---------!
+                                    call zrpdd(           &
+                                        ifltab,           & ! IFLTAB
+                                        pathnames(o,n),   & ! CPATH
+                                        numberOrdinates,  & ! NORD
+                                        numberCurves,     & ! NCURVE
+                                        ihoriz,           & ! IHORIZ
+                                        c1unit,           & ! C1UNIT
+                                        c1type,           & ! C1TYPE
+                                        c2unit,           & ! C2UNIT
+                                        c2type,           & ! C2TYPE
+                                        dvals_out,        & ! DVALUES
+                                        size(dvals),      & ! KVALS
+                                        nvals,            & ! NVALS
+                                        clabel,           & ! CLABEL
+                                        0,                & ! KLABEL
+                                        l_label,          & ! LABEL
+                                        userHeader,       & ! IUHEAD
+                                        kuhead,           & ! KUHEAD
+                                        userHeaderLen,    & ! NUHEAD
+                                        status)             ! ISTAT
+                                  else
+                                    !--------!
+                                    ! floats !
+                                    !--------!
+                                    call zrpd(            &
+                                        ifltab,           & ! IFLTAB
+                                        pathnames(o,n),   & ! CPATH
+                                        numberOrdinates,  & ! NORD
+                                        numberCurves,     & ! NCURVE
+                                        ihoriz,           & ! IHORIZ
+                                        c1unit,           & ! C1UNIT
+                                        c1type,           & ! C1TYPE
+                                        c2unit,           & ! C2UNIT
+                                        c2type,           & ! C2TYPE
+                                        fvals_out,        & ! SVALUES
+                                        size(dvals),      & ! KVALS
+                                        nvals,            & ! NVALS
+                                        clabel,           & ! CLABEL
+                                        0,                & ! KLABEL
+                                        l_label,          & ! LABEL
+                                        userHeader,       & ! IUHEAD
+                                        kuhead,           & ! KUHEAD
+                                        userHeaderLen,    & ! NUHEAD
+                                        status)             ! ISTAT
+                                  end if
+                                  call assert(status == 0)
+                                  call assert(numberOrdinates == 6)
+                                  call assert(numberCurves == 1)
+                                  call assert(c1unit == unit(l))
+                                  call assert(c2unit == unit(l))
+                                  call assert(c1type == type)
+                                  call assert(c2type == type)
+                                  if (o == 1) then
+                                    call assert(nvals == size(dvals))
+                                    do ii = 1, nvals
+                                        call assert(dvals_out(ii) == dvals(ii))
+                                    end do
+                                  else
+                                    call assert(nvals == size(fvals))
+                                    do ii = 1, nvals
+                                        call assert(fvals_out(ii) == fvals(ii))
+                                    end do
+                                  end if
+                                end if
                             end do
                         end do
                     end do
@@ -924,6 +1214,7 @@ subroutine testStoreRetrievePairedData()
             end do
         end do
     end do
+    write(0,'(/,/,i3,a)') count,' paried data tests passed'
     return
 end subroutine testStoreRetrievePairedData
 

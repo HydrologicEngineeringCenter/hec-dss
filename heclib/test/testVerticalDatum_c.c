@@ -100,7 +100,7 @@ void testVerticalDatumInfoSerialization() {
     // test stringToVerticalDatumInfo() and verticalDatumInfoToString()
     verticalDatumInfo vdi;
     char *errmsg;
-    char *xml1 = 
+    char *xml1 =
         "<vertical-datum-info office=\"SWT\" unit=\"ft\">\n"
         "  <location>TULA</location>\n"
         "  <native-datum>NGVD-29</native-datum>\n"
@@ -110,7 +110,7 @@ void testVerticalDatumInfoSerialization() {
         "    <value>0.3855</value>\n"
         "  </offset>\n"
         "</vertical-datum-info>\n";
-    char *xml2 = 
+    char *xml2 =
         "<vertical-datum-info office=\"SWT\" unit=\"ft\">\n"
         "  <location>PENS</location>\n"
         "  <native-datum>OTHER</native-datum>\n"
@@ -154,7 +154,7 @@ void testZsetZquery() {
 
     zquery("VERS", charVal, sizeof(charVal), &intVal);
     assert(intVal == 7);
-    
+
     zquery("VDTM", charVal, sizeof(charVal), &intVal);
     assert(intVal == IVERTICAL_DATUM_UNSET);
     assert(!strcmp(charVal, CVERTICAL_DATUM_UNSET));
@@ -294,6 +294,8 @@ void testStoreRetrieveTimeSeries() {
     int unitCount = sizeof(unit) / sizeof(unit[0]);
     int xml_count = sizeof(xml) / sizeof(xml[0]);
     int verticalDatumCount = sizeof(verticalDatums) / sizeof(verticalDatums[0]);
+    int count = 0;
+    int expectSuccess = TRUE;
     //
     // loop variables
     //
@@ -328,7 +330,7 @@ void testStoreRetrieveTimeSeries() {
     //
     // o = data value type
     //     0 = doubles
-    //     1 = floats 
+    //     1 = floats
     zset("MLVL", "", 1);
     for (int i = 0; i < 2; ++i) {
         for (int j = 0; j < xml_count; ++j) {
@@ -339,6 +341,7 @@ void testStoreRetrieveTimeSeries() {
                     for (int m = 0; m < 3; ++m) {
                         for (int n = 0; n < 2; ++n) {
                             for (int o = 0; o < 2; ++o) {
+                                ++count;
                                 //------------------------//
                                 // create the time series //
                                 //------------------------//
@@ -397,7 +400,7 @@ void testStoreRetrieveTimeSeries() {
                                     }
                                 }
                                 assert(tss != NULL);
-                                //--------------------------------//        
+                                //--------------------------------//
                                 // set the default vertical datum //
                                 //--------------------------------//
                                 int K = k;
@@ -411,17 +414,17 @@ void testStoreRetrieveTimeSeries() {
                                 headerBuf = (char *)malloc(len+1);
                                 memset(headerBuf, 0, len+1);
                                 status = insertIntoDelimitedString(
-                                    &headerBuf, 
-                                    len+1, 
-                                    VERTICAL_DATUM_INFO_USER_HEADER_PARAM, 
-                                    compressed, 
+                                    &headerBuf,
+                                    len+1,
+                                    VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
+                                    compressed,
                                     ":",
                                     FALSE,
                                     ';');
                                 assert(status == 0);
                                 free(compressed);
                                 tss->userHeader = stringToUserHeader(headerBuf, &tss->userHeaderSize);
-                                tss->userHeaderNumber = tss->userHeaderSize; 
+                                tss->userHeaderNumber = tss->userHeaderSize;
                                 tss->allocated[zSTRUCT_userHeader] = TRUE;
                                 free(headerBuf);
                                 if (m > 0) {
@@ -432,10 +435,10 @@ void testStoreRetrieveTimeSeries() {
                                     char *headerString = userHeaderToString(tss->userHeader, tss->userHeaderSize);
                                     int headerLen = strlen(headerString);
                                     status = insertIntoDelimitedString(
-                                        &headerString, 
-                                        headerLen, 
-                                        VERTICAL_DATUM_USER_HEADER_PARAM, 
-                                        verticalDatums[K], 
+                                        &headerString,
+                                        headerLen,
+                                        VERTICAL_DATUM_USER_HEADER_PARAM,
+                                        verticalDatums[K],
                                         ":",
                                         FALSE,
                                         ';');
@@ -443,10 +446,10 @@ void testStoreRetrieveTimeSeries() {
                                         headerLen += VERTICAL_DATUM_USER_HEADER_PARAM_LEN + strlen(verticalDatums[K]) + 3;
                                         headerString = (char *)realloc(headerString, headerLen);
                                         status = insertIntoDelimitedString(
-                                            &headerString, 
-                                            headerLen, 
-                                            VERTICAL_DATUM_USER_HEADER_PARAM, 
-                                            verticalDatums[K], 
+                                            &headerString,
+                                            headerLen,
+                                            VERTICAL_DATUM_USER_HEADER_PARAM,
+                                            verticalDatums[K],
                                             ":",
                                             FALSE,
                                             ';');
@@ -465,45 +468,48 @@ void testStoreRetrieveTimeSeries() {
                                     free(tss->units);
                                     tss->units = mallocAndCopy(unitSpec);
                                 }
-                                //-------------------------------------------------------//
-                                // store the time series in the specified vertical datum //
-                                //-------------------------------------------------------//
-                                status = ztsStore(ifltab, tss, 0);
-                                //-----------------------------------------------------------------------------//
-                                // figure out whether the ztsStore should have succeeded, and test accordingly //
-                                //-----------------------------------------------------------------------------//
+                                //-------------------------------------------------//
+                                // figure out whether expect ztsStore to succeeded //
+                                //-------------------------------------------------//
                                 stringToVerticalDatumInfo(&vdi, xml[j]);
                                 if (i == 1 && j == 1 && k+l+n+m+o == 0) {
                                     //-------------------------------------------------------------------------------//
                                     // change of vertical datum information in DSS 7, need to update location record //
                                     //-------------------------------------------------------------------------------//
-                                    assert(status != STATUS_OKAY);
-                                    zset("VDOW", "", TRUE);
-                                    status = ztsStore(ifltab, tss, 0);
-                                    zset("VDOW", "", FALSE);
+                                    expectSuccess = FALSE;
                                 }
-                                if (!strcmp(vdi.nativeDatum, verticalDatums[K])) {
+                                else if (!strcmp(vdi.nativeDatum, verticalDatums[K])) {
                                     //-------------------------------------//
                                     // same datum, no conversion necessary //
                                     //-------------------------------------//
-                                    assert(status == STATUS_OKAY);
+                                    expectSuccess = TRUE;
                                 }
                                 else if (strcmp(verticalDatums[K], CVERTICAL_DATUM_NAVD88) && strcmp(verticalDatums[K], CVERTICAL_DATUM_NGVD29)) {
-                                    //------------------------------------------------------------------------------//
-                                    // specified datum is local, so by definition it is already in the native datum //
-                                    // and no conversion is necessary                                               //
-                                    //------------------------------------------------------------------------------//
-                                    assert(status == STATUS_OKAY);
+                                    //--------------------------//
+                                    // requested datum is local //
+                                    //--------------------------//
+                                    if (!strcmp(vdi.nativeDatum, CVERTICAL_DATUM_NAVD88) || !strcmp(vdi.nativeDatum, CVERTICAL_DATUM_NGVD29)) {
+                                        //---------------------------//
+                                        // native datum is non-local //
+                                        //---------------------------//
+                                        expectSuccess = FALSE;
+                                    }
+                                    else {
+                                        //-----------------------//
+                                        // native datum is local //
+                                        //-----------------------//
+                                        expectSuccess = TRUE;
+                                    }
                                 }
                                 else if (!strcmp(verticalDatums[K], CVERTICAL_DATUM_NAVD88) && vdi.offsetToNavd88 != UNDEFINED_VERTICAL_DATUM_VALUE) {
                                     //-------------------------------------------------------------//
                                     // specified datum is NAVD-88 and we have an offset to NAVD-88 //
                                     //-------------------------------------------------------------//
                                     if (unitIsFeet(unit[l]) || unitIsMeters(unit[l])) {
-                                        assert(status == STATUS_OKAY);
+                                        expectSuccess = TRUE;
                                     }
                                     else {
-                                        assert(status != STATUS_OKAY);
+                                        expectSuccess = FALSE;
                                     }
                                 }
                                 else if (!strcmp(verticalDatums[K], CVERTICAL_DATUM_NGVD29) && vdi.offsetToNgvd29 != UNDEFINED_VERTICAL_DATUM_VALUE) {
@@ -511,18 +517,34 @@ void testStoreRetrieveTimeSeries() {
                                     // specified datum is NGVD-29 and we have an offset to NGVD-29 //
                                     //-------------------------------------------------------------//
                                     if (unitIsFeet(unit[l]) || unitIsMeters(unit[l])) {
-                                        assert(status == STATUS_OKAY);
+                                        expectSuccess = TRUE;
                                     }
                                     else {
-                                        assert(status != STATUS_OKAY);
+                                        expectSuccess = FALSE;
                                     }
                                 }
                                 else {
                                     //-----------------//
                                     // all other cases //
                                     //-----------------//
-                                    assert(status != STATUS_OKAY);
-                                }                                            
+                                    expectSuccess = TRUE;
+                                }
+                                //-------------------------------------------------------//
+                                // store the time series in the specified vertical datum //
+                                //-------------------------------------------------------//
+                                fprintf(stderr, "Time series test %3d: expecting %s\n", count, expectSuccess ? "SUCESS" : "ERROR");
+                                status = ztsStore(ifltab, tss, 0);
+                                assert((status == STATUS_OKAY) == expectSuccess);
+                                if (i == 1 && j == 1 && k+l+n+m+o == 0) {
+                                    //-------------------------------------------------------------------------------//
+                                    // change of vertical datum information in DSS 7, need to update location record //
+                                    //-------------------------------------------------------------------------------//
+                                    zset("VDOW", "", TRUE);
+                                    fprintf(stderr, "Test %d: expecting SUCESS\n", ++count);
+                                    status = ztsStore(ifltab, tss, 0);
+                                    assert(status == STATUS_OKAY);
+                                    zset("VDOW", "", FALSE);
+                                }
                                 zclose(ifltab);
                                 zstructFree(tss);
                                 if (status == STATUS_OKAY) {
@@ -552,25 +574,16 @@ void testStoreRetrieveTimeSeries() {
                                     //------------------------------------------------------//
                                     // compare the retrieved time seires to what was stored //
                                     //------------------------------------------------------//
-                                    if (tss->numberValues != numberValues) {
-                                        fprintf(stderr, "Expected %d values, got %d\n", numberValues, tss->numberValues);
-                                    }
                                     assert(tss->numberValues == numberValues);
                                     if (o == 0) {
                                         assert(tss->doubleValues != NULL);
                                         for (int ii = 0; ii < tss->numberValues; ++ii) {
-                                            if (tss->doubleValues[ii] != dvalues[l][ii]) {
-                                                fprintf(stderr, "%f != %f\n", tss->doubleValues[ii], dvalues[l][ii]);
-                                            }
                                             assert(tss->doubleValues[ii] == dvalues[l][ii]);
                                         }
                                     }
                                     else {
                                         assert(tss->floatValues != NULL);
                                         for (int ii = 0; ii < tss->numberValues; ++ii) {
-                                            if (tss->floatValues[ii] != fvalues[l][ii]) {
-                                                fprintf(stderr, "%f != %f\n", tss->floatValues[ii], fvalues[l][ii]);
-                                            }
                                             assert(tss->floatValues[ii] == fvalues[l][ii]);
                                         }
                                     }
@@ -584,6 +597,7 @@ void testStoreRetrieveTimeSeries() {
             }
         }
     }
+    fprintf(stderr, "\n\n%3d Time series tests passed\n", count);
 }
 void testStoreRetrievePairedData() {
     // test storing and retrieving paired data
@@ -648,6 +662,8 @@ void testStoreRetrievePairedData() {
     int unitCount = sizeof(unit) / sizeof(unit[0]);
     int xml_count = sizeof(xml) / sizeof(xml[0]);
     int verticalDatumCount = sizeof(verticalDatums) / sizeof(verticalDatums[0]);
+    int count = 0;
+    int expectSuccess = FALSE;
     //
     // loop variables
     //
@@ -682,7 +698,7 @@ void testStoreRetrievePairedData() {
     //
     // o = data value type
     //     0 = doubles
-    //     1 = floats 
+    //     1 = floats
     zset("MLVL", "", 1);
     for (int i = 0; i < 2; ++i) {
         for (int j = 0; j < xml_count; ++j) {
@@ -693,6 +709,7 @@ void testStoreRetrievePairedData() {
                     for (int m = 0; m < 3; ++m) {
                         for (int n = 0; n < 2; ++n) {
                             for (int o = 0; o < 2; ++o) {
+                                ++count;
                                 //------------------------//
                                 // create the paired data //
                                 //------------------------//
@@ -729,7 +746,7 @@ void testStoreRetrievePairedData() {
                                         type);
                                 }
                                 assert(pds != NULL);
-                                //--------------------------------//        
+                                //--------------------------------//
                                 // set the default vertical datum //
                                 //--------------------------------//
                                 int K = k;
@@ -743,10 +760,10 @@ void testStoreRetrievePairedData() {
                                 headerBuf = (char *)malloc(len+1);
                                 memset(headerBuf, 0, len+1);
                                 status = insertIntoDelimitedString(
-                                    &headerBuf, 
-                                    len+1, 
-                                    VERTICAL_DATUM_INFO_USER_HEADER_PARAM, 
-                                    compressed, 
+                                    &headerBuf,
+                                    len+1,
+                                    VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
+                                    compressed,
                                     ":",
                                     FALSE,
                                     ';');
@@ -763,10 +780,10 @@ void testStoreRetrievePairedData() {
                                     char *headerString = userHeaderToString(pds->userHeader, pds->userHeaderNumber);
                                     int headerLen = strlen(headerString);
                                     status = insertIntoDelimitedString(
-                                        &headerString, 
-                                        headerLen, 
-                                        VERTICAL_DATUM_USER_HEADER_PARAM, 
-                                        verticalDatums[K], 
+                                        &headerString,
+                                        headerLen,
+                                        VERTICAL_DATUM_USER_HEADER_PARAM,
+                                        verticalDatums[K],
                                         ":",
                                         FALSE,
                                         ';');
@@ -774,10 +791,10 @@ void testStoreRetrievePairedData() {
                                         headerLen += VERTICAL_DATUM_USER_HEADER_PARAM_LEN + strlen(verticalDatums[K]) + 3;
                                         headerString = (char *)realloc(headerString, headerLen);
                                         status = insertIntoDelimitedString(
-                                            &headerString, 
-                                            headerLen, 
-                                            VERTICAL_DATUM_USER_HEADER_PARAM, 
-                                            verticalDatums[K], 
+                                            &headerString,
+                                            headerLen,
+                                            VERTICAL_DATUM_USER_HEADER_PARAM,
+                                            verticalDatums[K],
                                             ":",
                                             FALSE,
                                             ';');
@@ -800,45 +817,48 @@ void testStoreRetrievePairedData() {
                                         }
                                     }
                                 }
-                                //--------------------------------------------------------//
-                                // store the paired data in the overridden vertical datum //
-                                //--------------------------------------------------------//
-                                status = zpdStore(ifltab, pds, 0);
-                                //-----------------------------------------------------------------------------//
-                                // figure out whether the zpdStore should have succeeded, and test accordingly //
-                                //-----------------------------------------------------------------------------//
+                                //------------------------------------------------//
+                                // figure out whether the zpdStore should succeed //
+                                //------------------------------------------------//
                                 stringToVerticalDatumInfo(&vdi, xml[j]);
                                 if (i == 1 && j == 1 && k+l+n+m+o == 0) {
                                     //-------------------------------------------------------------------------------//
                                     // change of vertical datum information in DSS 7, need to update location record //
                                     //-------------------------------------------------------------------------------//
-                                    assert(status != STATUS_OKAY);
-                                    zset("VDOW", "", TRUE);
-                                    status = zpdStore(ifltab, pds, 0);
-                                    zset("VDOW", "", FALSE);
+                                    expectSuccess = FALSE;
                                 }
-                                if (!strcmp(vdi.nativeDatum, verticalDatums[K])) {
+                                else if (!strcmp(vdi.nativeDatum, verticalDatums[K])) {
                                     //-------------------------------------//
                                     // same datum, no conversion necessary //
                                     //-------------------------------------//
-                                    assert(status == STATUS_OKAY);
+                                    expectSuccess = TRUE;
                                 }
                                 else if (strcmp(verticalDatums[K], CVERTICAL_DATUM_NAVD88) && strcmp(verticalDatums[K], CVERTICAL_DATUM_NGVD29)) {
-                                    //------------------------------------------------------------------------------//
-                                    // specified datum is local, so by definition it is already in the native datum //
-                                    // and no conversion is necessary                                               //
-                                    //------------------------------------------------------------------------------//
-                                    assert(status == STATUS_OKAY);
+                                    //--------------------------//
+                                    // requested datum is local //
+                                    //--------------------------//
+                                    if (!strcmp(vdi.nativeDatum, CVERTICAL_DATUM_NAVD88) || !strcmp(vdi.nativeDatum, CVERTICAL_DATUM_NGVD29)) {
+                                        //---------------------------//
+                                        // native datum is non-local //
+                                        //---------------------------//
+                                        expectSuccess = FALSE;
+                                    }
+                                    else {
+                                        //-----------------------//
+                                        // native datum is local //
+                                        //-----------------------//
+                                        expectSuccess = TRUE;
+                                    }
                                 }
                                 else if (!strcmp(verticalDatums[K], CVERTICAL_DATUM_NAVD88) && vdi.offsetToNavd88 != UNDEFINED_VERTICAL_DATUM_VALUE) {
                                     //-------------------------------------------------------------//
                                     // specified datum is NAVD-88 and we have an offset to NAVD-88 //
                                     //-------------------------------------------------------------//
                                     if (unitIsFeet(unit[l]) || unitIsMeters(unit[l])) {
-                                        assert(status == STATUS_OKAY);
+                                        expectSuccess = TRUE;
                                     }
                                     else {
-                                        assert(status != STATUS_OKAY);
+                                        expectSuccess = FALSE;
                                     }
                                 }
                                 else if (!strcmp(verticalDatums[K], CVERTICAL_DATUM_NGVD29) && vdi.offsetToNgvd29 != UNDEFINED_VERTICAL_DATUM_VALUE) {
@@ -846,18 +866,34 @@ void testStoreRetrievePairedData() {
                                     // specified datum is NGVD-29 and we have an offset to NGVD-29 //
                                     //-------------------------------------------------------------//
                                     if (unitIsFeet(unit[l]) || unitIsMeters(unit[l])) {
-                                        assert(status == STATUS_OKAY);
+                                        expectSuccess = TRUE;
                                     }
                                     else {
-                                        assert(status != STATUS_OKAY);
+                                        expectSuccess = FALSE;
                                     }
                                 }
                                 else {
                                     //-----------------//
                                     // all other cases //
                                     //-----------------//
-                                    assert(status != STATUS_OKAY);
-                                }                                            
+                                    expectSuccess = FALSE;
+                                }
+                                //--------------------------------------------------------//
+                                // store the paired data in the overridden vertical datum //
+                                //--------------------------------------------------------//
+                                fprintf(stderr, "Paired data test %3d: expecting %s\n", count, expectSuccess ? "SUCESS" : "ERROR");
+                                status = zpdStore(ifltab, pds, 0);
+                                assert((status == STATUS_OKAY) == expectSuccess);
+                                if (i == 1 && j == 1 && k+l+n+m+o == 0) {
+                                    //-------------------------------------------------------------------------------//
+                                    // change of vertical datum information in DSS 7, need to update location record //
+                                    //-------------------------------------------------------------------------------//
+                                    zset("VDOW", "", TRUE);
+                                    fprintf(stderr, "Test %d: expecting SUCESS\n", ++count);
+                                    status = zpdStore(ifltab, pds, 0);
+                                    assert(status == STATUS_OKAY);
+                                    zset("VDOW", "", FALSE);
+                                }
                                 zclose(ifltab);
                                 zstructFree(pds);
                                 if (status == STATUS_OKAY) {
@@ -865,11 +901,9 @@ void testStoreRetrievePairedData() {
                                     // set the default vertical datum to the datum we stored with //
                                     //------------------------------------------------------------//
                                     zset("VDTM", verticalDatums[K], 0);
-                                    double tolerance = 0.0000001;
-                                    double diff;
                                     //--------------------------------------------------------//
-                                    // retrieve the time series in the default vertical datum //
-                                    //-------------------------------------------------------//
+                                    // retrieve the paired data in the default vertical datum //
+                                    //--------------------------------------------------------//
                                     if (i == 0) {
                                         status = zopen6(ifltab, filename[i]);
                                     }
@@ -884,13 +918,7 @@ void testStoreRetrievePairedData() {
                                     //------------------------------------------------------//
                                     // compare the retrieved paired data to what was stored //
                                     //------------------------------------------------------//
-                                    if (pds->numberOrdinates != numberOrdinates) {
-                                        fprintf(stderr, "Expected %d ordinates, got %d\n", numberOrdinates, pds->numberOrdinates);
-                                    }
                                     assert(pds->numberOrdinates == numberOrdinates);
-                                    if (pds->numberCurves != numberCurves) {
-                                        fprintf(stderr, "Expected %d curves, got %d\n", numberCurves, pds->numberCurves);
-                                    }
                                     assert(pds->numberCurves == numberCurves);
                                     if (o == 0) {
                                         assert(pds->doubleOrdinates != NULL);
@@ -902,29 +930,17 @@ void testStoreRetrievePairedData() {
                                     }
                                     if (o == 0) {
                                         for (int ii = 0; ii < pds->numberOrdinates; ++ii) {
-                                            if (pds->doubleOrdinates[ii] != dordinates[l][ii]) {
-                                                fprintf(stderr, "ordinate %f != %f\n", pds->doubleOrdinates[ii], dordinates[l][ii]);
-                                            }
                                             assert(pds->doubleOrdinates[ii] == dordinates[l][ii]);
                                         }
                                         for (int ii = 0; ii < pds->numberCurves * pds->numberOrdinates; ++ii) {
-                                            if (pds->doubleValues[ii] != dvalues[l][ii]) {
-                                                fprintf(stderr, "value %f != %f\n", pds->doubleValues[ii], dvalues[l][ii]);
-                                            }
                                             assert(pds->doubleValues[ii] == dvalues[l][ii]);
                                         }
                                     }
                                     else {
                                         for (int ii = 0; ii < pds->numberOrdinates; ++ii) {
-                                            if (pds->floatOrdinates[ii] != fordinates[l][ii]) {
-                                                fprintf(stderr, "ordinate %f != %f\n", pds->floatOrdinates[ii], fordinates[l][ii]);
-                                            }
                                             assert(pds->floatOrdinates[ii] == fordinates[l][ii]);
                                         }
                                         for (int ii = 0; ii < pds->numberCurves * pds->numberOrdinates; ++ii) {
-                                            if (pds->floatValues[ii] != fvalues[l][ii]) {
-                                                fprintf(stderr, "value %f != %f\n", pds->floatValues[ii], fvalues[l][ii]);
-                                            }
                                             assert(pds->floatValues[ii] == fvalues[l][ii]);
                                         }
                                     }
@@ -938,4 +954,5 @@ void testStoreRetrievePairedData() {
             }
         }
     }
+    fprintf(stderr, "\n\n%3d Paired data tests passed\n", count);
 }

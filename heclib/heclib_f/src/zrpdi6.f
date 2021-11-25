@@ -25,14 +25,12 @@ C     Pathname variable dimensions
 C
 C     Vertical datum varible dimensions
       character*400 vdiStr, errMsg
-      character*16 unit, unit2, cverticalDatum, cverticalDatum2
+      character*16 unit
       character*16 nativeDatum
-      character*64 unitSpec
       double precision elevation
       double precision offsetNavd88, offsetNgvd29, vertDatumOffset
-      logical l_Navd88Estimated, l_Ngvd29Estimated, l_modified
+      logical l_Navd88Estimated, l_Ngvd29Estimated
       logical l_indElev, l_depElev
-      integer vdiStrLen, iverticalDatum
 C
       INCLUDE 'zdssmz.h'
 C
@@ -256,12 +254,11 @@ C
         l_depElev = .true.
       endif
       if (l_indElev.or.l_depElev) then
-        !--------------------------------------!
-        ! get the vertical datum of the values !
-        !--------------------------------------!
-        call zinqir(ifltab, 'VDTM', cverticalDatum, ivdatum)
-        if (cverticalDatum.eq.CVD_NAVD88.or.
-     *      cverticalDatum.eq.CVD_NGVD29) then
+        !-----------------------------------------------------!
+        ! paired data has elevation in oridates and/or values !
+        !-----------------------------------------------------!
+        call zinqir(ifltab, 'VDTM', cvdatum, ivdatum)
+        if (cvdatum.ne.CVD_UNSET) then
           !--------------------------------------------!
           ! we possibly need to convert the elevations !
           !--------------------------------------------!
@@ -272,7 +269,7 @@ C
               write (munit,'(/,a,a,/,a,a,a,/,a)')
      *          ' *****DSS*** zrpdi6:  ERROR  - NO VERTICAL DATUM',
      *          ' OFFSET INFORMATION.',' Cannot convert from ',
-     *          cverticalDatum(1:len_trim(cverticalDatum)),
+     *          cvdatum(1:len_trim(cvdatum)),
      *          ' to native datum.',' No values stored.'
             end if
             istat = 13
@@ -299,10 +296,17 @@ C
               istat = 13
               return
             end if
-            if (cverticalDatum.eq.CVD_NAVD88) then
+            if (cvdatum.eq.CVD_NAVD88) then
               vertDatumOffset = offsetNavd88
-            else
+            elseif (cvdatum.eq.CVD_NGVD29) then
               vertDatumOffset = offsetNgvd29
+            else
+              if (nativeDatum.eq.cvdatum.or.
+     *            nativeDatum.eq.CVD_OTHER) then
+                vertDatumOffset = 0.
+              else
+                vertDatumOffset = UNDEFINED_VERTICAL_DATUM_VALUE
+              end if
             end if
             if (vertDatumOffset.ne.0) then
               if (vertDatumOffset.eq.
@@ -311,7 +315,7 @@ C
                   write (munit,'(/,a,a,a,a,a,/,a)')
      *            ' *****DSS*** zrpdi6:  ERROR  - NO VERTICAL DATUM',
      *            ' OFFSET for ',nativeDatum(1:len_trim(nativeDatum)),
-     *            ' to ',cverticalDatum(1:len_trim(cverticalDatum)),
+     *            ' to ',cvdatum(1:len_trim(cvdatum)),
      *            ' Elevations were not converted.'
                 end if
                 istat = 13
@@ -332,6 +336,15 @@ C
                   istat = 13
                   return
                 end if
+                if (ldouble) then
+                  do i = 1, nord
+                    dvalues(i) = dvalues(i) + vertDatumOffset
+                  end do
+                else
+                  do i = 1, nord
+                    svalues(i) = svalues(i) + vertDatumOffset
+                  end do
+                end if
               end if
               if (l_depElev) then
                 call getoffset(vertDatumOffset, unit, c2unit)
@@ -348,63 +361,14 @@ C
                   istat = 13
                   return
                 end if
-              end if
-              if (iplan.eq.10) then
-                !----------------!
-                ! ordinates only !
-                !----------------!
-                if (l_indElev) then
-                  if (ldouble) then
-                    do i = 1, nord
-                      dvalues(i) = dvalues(i) - vertDatumOffset
-                    end do
-                  else
-                    do i = 1, nord
-                      svalues(i) = svalues(i) - vertDatumOffset
-                    end do
-                  end if
-                end if
-              else if (iplan.eq.11) then
-                !-----------------------------------------!
-                ! no ordinates, values for one curve only !
-                !-----------------------------------------!
-                if (l_depElev) then
-                  if (ldouble) then
-                    do i = 1, nord
-                      dvalues(i) = dvalues(i) - vertDatumOffset
-                    end do
-                  else
-                    do i = 1, nord
-                      svalues(i) = svalues(i) - vertDatumOffset
-                    end do
-                  end if
-                end if
-              else
-                !----------------------------!
-                ! ordinates and curve values !
-                !----------------------------!
                 if (ldouble) then
-                  if (l_indElev) then
-                    do i = 1, nord
-                      dvalues(i) = dvalues(i) + vertDatumOffset
-                    end do
-                  end if
-                  if (l_depElev) then
-                    do i = nord+1, (ncurve+1)*nord
-                      dvalues(i) = dvalues(i) + vertDatumOffset
-                    end do
-                  end if
+                  do i = nord+1, (ncurve+1) * nord
+                    dvalues(i) = dvalues(i) + vertDatumOffset
+                  end do
                 else
-                  if (l_indElev) then
-                    do i = 1, nord
-                      svalues(i) = svalues(i) + vertDatumOffset
-                    end do
-                  end if
-                  if (l_depElev) then
-                    do i = nord+1, (ncurve+1)*nord
-                      svalues(i) = svalues(i) + vertDatumOffset
-                    end do
-                  end if
+                  do i = nord+1, (ncurve+1) * nord
+                    svalues(i) = svalues(i) + vertDatumOffset
+                  end do
                 end if
               end if
             end if

@@ -71,16 +71,16 @@ C     Local Dimensions
       CHARACTER CDATE1*12, CDATE2*12, CTIME1*4, CTIME2*4, CSCRAT*20
       INTEGER NPART(6)
       LOGICAL LFOUND, LERR, LFILDOB
-C      
-C     Vertical datum varible dimensions 
+C
+C     Vertical datum varible dimensions
       character*400 vdiStr, errMsg
-      character*16 unit, unit2, cverticalDatum, cverticalDatum2
+      character*16 unit, unit2, cvdatum2
       character*16 nativeDatum
       character*64 cc, unitSpec
       double precision elevation
       double precision offsetNavd88, offsetNgvd29, vertDatumOffset
       logical l_Navd88Estimated, l_Ngvd29Estimated, l_modified
-      integer vdiStrLen, iverticalDatum
+      integer vdiStrLen
 C
       INCLUDE 'zdssts.h'
 C
@@ -119,20 +119,20 @@ C     If a debug level is on, print out information
               WRITE (MUNIT, 5) I, DVALUES(I)
  5            FORMAT (T5, I4,3X,F16.6)
  4         CONTINUE
-           IF (JUMB.GT.0) THEN 
+           IF (JUMB.GT.0) THEN
              DO 6 I=JUMB,NVALS
                 WRITE (MUNIT, 5) I, DVALUES(I)
 6            CONTINUE
-           ENDIF 
+           ENDIF
          ELSE
            DO 7 I=1,NUMB
               WRITE (MUNIT, 5) I, SVALUES(I)
  7         CONTINUE
-           IF (JUMB.GT.0) THEN 
+           IF (JUMB.GT.0) THEN
              DO 8 I=JUMB,NVALS
                 WRITE (MUNIT, 5) I, SVALUES(I)
  8           CONTINUE
-           ENDIF 
+           ENDIF
          ENDIF
       ENDIF
       ENDIF
@@ -236,29 +236,28 @@ C
         !----------------------------------------!
         ! elevation time series with user header !
         !----------------------------------------!
-        !--------------------------------------!        
+        !--------------------------------------!
         ! get the vertical datum of the values !
-        !--------------------------------------!        
+        !--------------------------------------!
         ! first get any default vertical datum
-        call zinqir6(IFLTAB, 'VDTM', cverticalDatum, iverticalDatum)
-        ! override the default with any datum in the user header    
-        call get_user_header_param(iuhead, nuhead, 
-     *    VERTICAL_DATUM_PARAM, cverticalDatum2)
-        if (cverticalDatum2.ne." ") then
-          cverticalDatum = cverticalDatum2
+        call zinqir6(IFLTAB, 'VDTM', cvdatum, ivdatum)
+        ! override the default with any datum in the user header
+        call get_user_header_param(iuhead, nuhead,
+     *    VERTICAL_DATUM_PARAM, cvdatum2)
+        if (cvdatum2.ne." ") then
+          cvdatum = cvdatum2
         end if
         ! override both with the unit spec
-        call crack_unit_spec(cunits, unit2, cverticalDatum2)
-        if (cverticalDatum2.ne." ") then
+        call crack_unit_spec(cunits, unit2, cvdatum2)
+        if (cvdatum2.ne." ") then
           cunits = unit2(1:len_trim(unit2))
-          cverticalDatum = cverticalDatum2
+          cvdatum = cvdatum2
         end if
-        if (cverticalDatum.eq.CVD_NAVD88.or.
-     *      cverticalDatum.eq.CVD_NGVD29) then
+        if (cvdatum.ne.CVD_UNSET) then
           !--------------------------------------------!
           ! we possibly need to convert the elevations !
           !--------------------------------------------!
-          call get_user_header_param(iuhead, nuhead, 
+          call get_user_header_param(iuhead, nuhead,
      *      VERTICAL_DATUM_INFO_PARAM, vdiStr)
           if (vdiStr.eq." ") then
             if (mlevel.ge.1) then
@@ -292,10 +291,17 @@ C
             istat = 13
             return
             end if
-            if (cverticalDatum.eq.CVD_NAVD88) then
+            if (cvdatum.eq.CVD_NAVD88) then
               vertDatumOffset = offsetNavd88
-            else 
+            elseif (cvdatum.eq.CVD_NGVD29) then
               vertDatumOffset = offsetNgvd29
+            else
+              if (nativeDatum.eq.cvdatum.or.
+     *            nativeDatum.eq.CVD_OTHER) then
+                vertDatumOffset = 0.
+              else
+                vertDatumOffset = UNDEFINED_VERTICAL_DATUM_VALUE
+              end if
             end if
             if (vertDatumOffset.ne.0) then
               if(vertDatumOffset.eq.UNDEFINED_VERTICAL_DATUM_VALUE) then
@@ -336,7 +342,7 @@ C
                 do ii = 1, nvals
                   if (svalues(ii).ne.-901.and.svalues(ii).ne.-902.) then
                     svalues(ii) = svalues(ii) - vertdatumoffset
-                  end if  
+                  end if
                 end do
               end if
               l_modified = .true.
@@ -991,10 +997,10 @@ C     Done.  Exit zsrts6.
           do ii = 1, nvals
             if (svalues(ii).ne.-901.and.svalues(ii).ne.-902.) then
               svalues(ii) = svalues(ii) + vertdatumoffset
-            end if  
+            end if
           end do
         end if
-      end if      
+      end if
 
 C     Unlock the file and dump all buffers
       LWRITE = .FALSE.

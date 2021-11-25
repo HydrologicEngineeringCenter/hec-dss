@@ -786,7 +786,7 @@ int zpdRetrieve(long long *ifltab, zStructPairedData *pds, int retrieveSizeFlag)
 				else {
 					double offset;
 					if (indElev) {
-						switch (ivertical_datum) {
+						switch(ivertical_datum) {
 							case IVERTICAL_DATUM_NAVD88 :
 								offset = vdi->offsetToNavd88;
 								break;
@@ -794,7 +794,12 @@ int zpdRetrieve(long long *ifltab, zStructPairedData *pds, int retrieveSizeFlag)
 								offset = vdi->offsetToNgvd29;
 								break;
 							default :
-								offset = 0.;
+								if(!strcmp(cvertical_datum, vdi->nativeDatum) || !strcmp(cvertical_datum, CVERTICAL_DATUM_OTHER)) {
+									offset = 0;
+								}
+								else {
+									offset = UNDEFINED_VERTICAL_DATUM_VALUE;
+								}
 								break;
 						}
 						if (offset != 0.) {
@@ -826,7 +831,6 @@ int zpdRetrieve(long long *ifltab, zStructPairedData *pds, int retrieveSizeFlag)
 								}
 							}
 							else {
-								fprintf(stderr, "Adding %f to ordinates.\n", offset);
 								if (pds->doubleOrdinates) {
 									for (int i = 0; i < pds->numberOrdinates; ++i) {
 										pds->doubleOrdinates[i] += offset;
@@ -841,7 +845,7 @@ int zpdRetrieve(long long *ifltab, zStructPairedData *pds, int retrieveSizeFlag)
 						}
 					}
 					if (depElev) {
-						switch (ivertical_datum) {
+						switch(ivertical_datum) {
 							case IVERTICAL_DATUM_NAVD88 :
 								offset = vdi->offsetToNavd88;
 								break;
@@ -849,7 +853,12 @@ int zpdRetrieve(long long *ifltab, zStructPairedData *pds, int retrieveSizeFlag)
 								offset = vdi->offsetToNgvd29;
 								break;
 							default :
-								offset = 0.;
+								if(!strcmp(cvertical_datum, vdi->nativeDatum) || !strcmp(cvertical_datum, CVERTICAL_DATUM_OTHER)) {
+									offset = 0;
+								}
+								else {
+									offset = UNDEFINED_VERTICAL_DATUM_VALUE;
+								}
 								break;
 						}
 						if (offset != 0.) {
@@ -881,7 +890,6 @@ int zpdRetrieve(long long *ifltab, zStructPairedData *pds, int retrieveSizeFlag)
 								}
 							}
 							else {
-								fprintf(stderr, "Adding %f to values.\n", offset);
 								if (pds->doubleValues) {
 									for (int i = 0; i < pds->numberOrdinates * pds->numberCurves; ++i) {
 										pds->doubleValues[i] += offset;
