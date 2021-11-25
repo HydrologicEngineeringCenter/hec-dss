@@ -151,7 +151,7 @@ C     Check that IFLTAB is valid (e.g., the DSS file is open)
             end if
             istat = 13
             return
-          end ifvertDatumOffset_dep
+          end if
           call stringToVerticalDatumInfo(
      *      vdiStr,
      *      errMsg,
@@ -173,8 +173,8 @@ C     Check that IFLTAB is valid (e.g., the DSS file is open)
             istat = 13
             return
           end if
-        end ifvertDatumOffset_dep
-        if (l_indElev) thenvertDatumOffset_dep
+        end if
+        if (l_indElev) then
           if (cvdatum_ind.ne.CVD_UNSET) then
             !--------------------------------------------!
             ! we possibly need to convert the elevations !
@@ -189,7 +189,7 @@ C     Check that IFLTAB is valid (e.g., the DSS file is open)
                 vertDatumOffset_ind = 0.
               else
                 vertDatumOffset_ind = UNDEFINED_VERTICAL_DATUM_VALUE
-              end ifvertDatumOffset_dep
+              end if
             end if
             if (vertDatumOffset_ind.ne.0) then
               if (vertDatumOffset_ind.eq.
@@ -231,12 +231,12 @@ C     Check that IFLTAB is valid (e.g., the DSS file is open)
                   do i = 1, nord
                     svalues(i) = svalues(i) - vertDatumOffset_ind
                   end do
-                end ifvertDatumOffset_dep
+                end if
               end if
             end if
           end if
-        end ifvertDatumOffset_dep
-        if (l_depElev) thenvertDatumOffset_dep
+        end if
+        if (l_depElev) then
           if (cvdatum_dep.ne.CVD_UNSET) then
             !--------------------------------------------!
             ! we possibly need to convert the elevations !
@@ -251,7 +251,7 @@ C     Check that IFLTAB is valid (e.g., the DSS file is open)
                 vertDatumOffset_dep = 0.
               else
                 vertDatumOffset_dep = UNDEFINED_VERTICAL_DATUM_VALUE
-              end ifvertDatumOffset_dep
+              end if
             end if
             if (vertDatumOffset_dep.ne.0) then
               if (vertDatumOffset_dep.eq.
@@ -293,7 +293,7 @@ C     Check that IFLTAB is valid (e.g., the DSS file is open)
                   do i = 1, nord
                     svalues(i) = svalues(i) - vertDatumOffset_dep
                   end do
-                end ifvertDatumOffset_dep
+                end if
               elseif (iplan.ne.10) then
                 !-------------------------------------------!
                 ! data has ordinates and one or more curves !
@@ -308,11 +308,11 @@ C     Check that IFLTAB is valid (e.g., the DSS file is open)
                   do i = nord+1, (ncurve+1)*nord
                     svalues(i) = svalues(i) - vertDatumOffset_dep
                   end do
-                end ifvertDatumOffset_dep
-              end ifvertDatumOffset_dep
+                end if
+              end if
             end if
           end if
-        end ifvertDatumOffset_dep
+        end if
       end if
 C
 C
