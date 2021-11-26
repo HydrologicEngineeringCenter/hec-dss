@@ -80,7 +80,7 @@ C     Vertical datum varible dimensions
       double precision elevation
       double precision offsetNavd88, offsetNgvd29, vertDatumOffset
       logical l_Navd88Estimated, l_Ngvd29Estimated, l_modified
-      integer vdiStrLen
+      integer vdiStrLen, effectiveNuhead, effectiveIuhead(100)
 C
       INCLUDE 'zdssts.h'
 C
@@ -230,22 +230,44 @@ C
       !-----------------------------------------------!
       ! convert to native vertical datum if necessary !
       !-----------------------------------------------!
+      effectiveNuhead = nuhead
+      effectiveIuhead = 0
+      do i = 1, min(size(effectiveIuhead), nuhead)
+        effectiveIuhead(i) = iuhead(i)
+      end do
       cc = cpart(3)
       call upcase(cc)
-      if (index(cc,'ELEV').eq.1 .and. nuhead.gt.0) then
-        !----------------------------------------!
-        ! elevation time series with user header !
-        !----------------------------------------!
+      if (index(cc,'ELEV').eq.1) then
+        !-----------------------!
+        ! elevation time series !
+        !-----------------------!
+        if (nuhead.eq.0) then
+          !------------------------------------------------!
+          ! no user header provided, is there one on disk? !
+          !------------------------------------------------!
+          effectiveNuhead = INFO(NPPWRD+KINUHE)
+          if (effectiveNuhead.GT.0) then
+            call zgtrec6(IFLTAB, effectiveIuhead, effectiveNuhead,
+     *        INFO(NPPWRD+KIAUHE), .TRUE.)
+            call get_user_header_param(effectiveIuhead, effectiveNuhead,
+     *        VERTICAL_DATUM_INFO_PARAM, vdiStr)
+          end if
+        end if
         !--------------------------------------!
         ! get the vertical datum of the values !
         !--------------------------------------!
         ! first get any default vertical datum
         call zinqir6(IFLTAB, 'VDTM', cvdatum, ivdatum)
         ! override the default with any datum in the user header
-        call get_user_header_param(iuhead, nuhead,
+        call get_user_header_param(effectiveiuhead, effectivenuhead,
      *    VERTICAL_DATUM_PARAM, cvdatum2)
         if (cvdatum2.ne." ") then
           cvdatum = cvdatum2
+          !--------------------------------------------------------------------------!
+          ! remove current vertical datum from user header so it's not saved to disk !
+          !--------------------------------------------------------------------------!
+          call remove_user_header_param(effectiveIuhead,
+     *    effectiveNuhead, VERTICAL_DATUM_PARAM)
         end if
         ! override both with the unit spec
         call crack_unit_spec(cunits, unit2, cvdatum2)
@@ -257,18 +279,18 @@ C
           !--------------------------------------------!
           ! we possibly need to convert the elevations !
           !--------------------------------------------!
-          call get_user_header_param(iuhead, nuhead,
+          call get_user_header_param(effectiveiuhead, effectivenuhead,
      *      VERTICAL_DATUM_INFO_PARAM, vdiStr)
           if (vdiStr.eq." ") then
             if (mlevel.ge.1) then
-              write (munit,'(/,a,a,/,a,a,a,/,a)')
-     *          ' *****DSS*** zsrtsi6:  ERROR  - NO VERTICAL DATUM',
-     *          ' OFFSET INFORMATION.',' Cannot convert from ',
-     *          cvdatum(1:len_trim(cvdatum)),' to native datum.',
-     *          ' No values stored.'
-            end if
-            istat = 13
-            return
+            write (munit,'(/,a,a,/,a,a,a,/,a)')
+     *        ' *****DSS*** zsrtsi6:  ERROR  - NO VERTICAL DATUM',
+     *        ' OFFSET INFORMATION.',' Cannot convert from ',
+     *        cvdatum(1:len_trim(cvdatum)),' to native datum.',
+     *        ' No values stored.'
+          end if
+          istat = 13
+          return
           else
             call stringToVerticalDatumInfo(
      *        vdiStr,
@@ -539,8 +561,8 @@ C     Don't use if there are any doubles involved
 C     Can't use if we need to update (check missing data)
       IF (IPLAN.NE.0)  LUPRTS = .FALSE.
 C     Can't use if we need to change the user header
-      IF (JHEAD.NE.NUHEAD) THEN
-      IF (NUHEAD.NE.-1) LUPRTS = .FALSE.
+      IF (JHEAD.NE.effectiveNuhead) THEN
+      IF (effectiveNuhead.NE.-1) LUPRTS = .FALSE.
       ENDIF
 C     Can't use if internal header size different
       IF (JIHEAD.NE.KIHEAD) LUPRTS = .FALSE.
@@ -802,10 +824,10 @@ C     Set the compression value and quality flag to be used in the write
       IQUAL = 0
       IF ((LQUAL).OR.(LQREAD)) IQUAL = 1
 C
-C     If we are updating, and NUHEAD is -1, do not write over the
+C     If we are updating, and effectiveNuhead is -1, do not write over the
 C     the existing user header
-      IF (NUHEAD.GE.0) THEN
-      NUH = NUHEAD
+      IF (effectiveNuhead.GE.0) THEN
+      NUH = effectiveNuhead
       ELSE
       NUH = JHEAD
       ENDIF
@@ -865,8 +887,8 @@ C              record without flags to one that has flags
                GO TO 600
             ENDIF
             IF (MLEVEL.GE.3) WRITE (MUNIT, 420) CTSPAT(1:NTSPAT)
- 420        FORMAT (' -----DSS---zsrts6: Caution:  Writing data without',
-     *      ' flags to an existing data set that has flags.',/,
+ 420        FORMAT (' -----DSS---zsrts6: Caution:  Writing data ',
+     *      ' without flags to an existing data set that has flags.',/,
      *      ' Pathname: ',A)
          ENDIF
       ENDIF
@@ -890,8 +912,8 @@ C     Now store the header arrays
       CALL zptrec6(IFLTAB, IIHEAD, KIHEAD, INFO(NPPWRD+KIAIHE), .FALSE.)
       IF (NCHEAD.GT.0) CALL zptrec6 (IFLTAB, IDCH, NCHEAD,
      * INFO(NPPWRD+KIACHE), .FALSE.)
-      IF (NUHEAD.GT.0) CALL zptrec6 (IFLTAB, IUHEAD, NUHEAD,
-     * INFO(NPPWRD+KIAUHE), .FALSE.)
+      IF (effectiveNuhead.GT.0) CALL zptrec6 (IFLTAB, effectiveIuhead,
+     * effectiveNuhead, INFO(NPPWRD+KIAUHE), .FALSE.)
 C
 C     Now store the data array
 C
@@ -1094,8 +1116,8 @@ C
 C
  980  CONTINUE
       IF (MLEVEL.GE.1) WRITE (MUNIT, 981) IACOMP
- 981  FORMAT (/,' *** ERROR:  zsrtsx6;  Illegal Data compression scheme',
-     * /,' Setting:',I6,';  Min Allowed: 0,  Max: 5')
+ 981  FORMAT (/,' *** ERROR:  zsrtsx6;  Illegal Data compression ',
+     *  'scheme',/,' Setting:',I6,';  Min Allowed: 0,  Max: 5')
       ISTAT = 51
       GO TO 990
 C

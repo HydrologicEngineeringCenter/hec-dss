@@ -7,7 +7,7 @@
 #include <verticalDatum.h>
 #include <hecdssInternal.h>
 #include <heclib.h>
- 
+
 //
 // The 64 valid characters used in base64 encoding (excluding pad character '='), in index order
 //
@@ -134,7 +134,7 @@ double getOffset(double offset, const char *offsetUnit, const char *_dataUnit) {
 }
 void getoffset_(
         double *offset,
-        const char *offsetUnit, 
+        const char *offsetUnit,
         const char *dataUnit,
         slen_t lenOffsetUnit,
         slen_t lenDataUnit) {
@@ -162,11 +162,11 @@ const char *strcasestr(const char *haystack, const char *needle) {
 // See verticalDatum.h for documentation
 //
 char *extractFromDelimitedString(
-        char      **delimitedString, 
-        const char *parameter, 
+        char      **delimitedString,
+        const char *parameter,
         const char *separator,
-        int         matchCase, 
-        int         removeFromString, 
+        int         matchCase,
+        int         removeFromString,
         char        delimiter) {
 
     int len = strlen(parameter) + 1;
@@ -202,22 +202,26 @@ char *extractFromDelimitedString(
     }
     free(param);
     return value;
-}    
+}
 int insertIntoDelimitedString(
-        char     **delimitedString, 
-        int        delimitedStringSize, 
-        const char *parameter, 
-        const char *value, 
-        const char *separator, 
-        int         overwriteExisting, 
+        char     **delimitedString,
+        int        delimitedStringSize,
+        const char *parameter,
+        const char *value,
+        const char *separator,
+        int         overwriteExisting,
         char        delimiter) {
 
+    if (!delimitedString) {
+        return -2;
+    }
+
     char *existing = extractFromDelimitedString(
-        delimitedString, 
-        parameter, 
-        separator, 
-        TRUE, 
-        FALSE, 
+        delimitedString,
+        parameter,
+        separator,
+        TRUE,
+        FALSE,
         delimiter);
     if (existing && !overwriteExisting) {
         free(existing);
@@ -246,8 +250,9 @@ int insertIntoDelimitedString(
         }
         return -1;
     }
-    if (overwriteExisting) {
-        extractFromDelimitedString(delimitedString, parameter, separator, TRUE, TRUE, delimiter);
+    if (existing && overwriteExisting) {
+        char *dummy = extractFromDelimitedString(delimitedString, parameter, separator, TRUE, TRUE, delimiter);
+        free(dummy);
     }
     if (strlen(*delimitedString) > 0 && (*delimitedString)[strlen(*delimitedString)-1] != delimiter) {
         sprintf(*delimitedString+strlen(*delimitedString), "%c", delimiter);
@@ -387,7 +392,7 @@ int b64Decode(char **decoded, int *decodedLen, const char *toDecode) {
     }
     else if (*(toDecode - 1) == '=') {
         --len;
- 
+
     }
     if (len < 0) {
         return len;
@@ -419,7 +424,7 @@ int b64Decode(char **decoded, int *decodedLen, const char *toDecode) {
             break;
         }
         o[2] |= i3_2;
- 
+
         c += 4;
         o += 3;
     }
@@ -453,13 +458,13 @@ char *findTextBetween(textBoundaryInfo *tbi, const char *buf, const char *after,
     for (tbi->firstNonBlank = tbi->first;
          tbi->firstNonBlank < tbi->last && isspace(*tbi->firstNonBlank);
          tbi->firstNonBlank++);
- 
+
     if (tbi->firstNonBlank == tbi->last) {
         tbi->lastNonBlank = tbi->last;
         tbi->lenNonBlank = 0;
     }
     else {
- 
+
         for (tbi->lastNonBlank = tbi->last;
              tbi->lastNonBlank > tbi->first && isspace(*(tbi->lastNonBlank - 1));
              tbi->lastNonBlank--);
@@ -532,7 +537,7 @@ char *gzipAndEncode(char **results, const char *inputBuf) {
     int   inputLen = strlen(inputBuf)+1;
     int   outputLen;
     z_stream zstr;
- 
+
     //-----------------------------------//
     // setup structure for gzip compress //
     //-----------------------------------//
@@ -656,7 +661,7 @@ char *validateXmlStructure(const char *xml) {
     char  *cp2;
     int    len;
     int    first = TRUE;
- 
+
     strcpy(buf, xml);
     while (TRUE) {
         char strtokBuf[4096];
@@ -725,7 +730,7 @@ char *stringToVerticalDatumInfo(verticalDatumInfo *vdi, const char *inputStr) {
     int    freeXml1;
     double dtmp;
     textBoundaryInfo tbi;
- 
+
     vdi->elevation = UNDEFINED_VERTICAL_DATUM_VALUE;
     vdi->offsetToNgvd29 = UNDEFINED_VERTICAL_DATUM_VALUE;
     vdi->offsetToNgvd29IsEstimate = FALSE;
@@ -733,19 +738,19 @@ char *stringToVerticalDatumInfo(verticalDatumInfo *vdi, const char *inputStr) {
     vdi->offsetToNavd88IsEstimate = FALSE;
     memset(vdi->nativeDatum, 0, sizeof(vdi->nativeDatum)); // null terminators will exist after strncpy()
     memset(vdi->unit, 0, sizeof(vdi->unit));                 // null terminators will exist after strncpy()
- 
+
     memset(offsetBuf, 0, sizeof(offsetBuf));               // null terminators will exist after strncpy()
- 
+
     int ngvd29OffsetProcessed = 0;
     int navd88OffsetProcessed = 0;
- 
+
     if (inputStr == NULL || *inputStr == '\0') {
         vdi = NULL;
         return INPUT_STRING_IS_NULL;
     }
     if (strchr(inputStr, '<')) {
-        xml1 = (char *)inputStr; 
-        freeXml1 = FALSE; 
+        xml1 = (char *)inputStr;
+        freeXml1 = FALSE;
     }
     else {
         errmsg = decodeAndGunzip(&xml1, inputStr);
@@ -945,13 +950,13 @@ char *verticalDatumInfoToString(char **results, verticalDatumInfo *vdi, int gene
     char  xml[4096];
     char *cp = xml;
     char *errmsg;
- 
+
     sprintf(cp, "<vertical-datum-info unit=\"%s\">\n", vdi->unit);
     while (*cp)++cp;
     if (!strcmp(vdi->nativeDatum, "NGVD-29") ||
         !strcmp(vdi->nativeDatum, "NGVD-29") ||
         !strcmp(vdi->nativeDatum, "OTHER")) {
- 
+
         sprintf(cp, "  <native-datum>%s</native-datum>\n", vdi->nativeDatum);
     }
     else {
@@ -999,10 +1004,10 @@ verticalDatumInfo *extractVerticalDatumInfoFromUserHeader(const int *userHeader,
     char *cp = userHeaderToString(userHeader, userHeaderSize);
     if (cp) {
         char *vdiStr = extractFromDelimitedString(
-            &cp, 
-            VERTICAL_DATUM_INFO_USER_HEADER_PARAM, 
+            &cp,
+            VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
             ":",
-            FALSE, 
+            FALSE,
             FALSE,
             ';');
         if (vdiStr) {
@@ -1046,7 +1051,7 @@ int	getEffectiveVerticalDatum(
         char *userHeaderString = userHeaderToString(*userHeader, *userHeaderSize);
         if (userHeaderString) {
             char *verticalDatum = extractFromDelimitedString(
-                &userHeaderString, 
+                &userHeaderString,
                 VERTICAL_DATUM_USER_HEADER_PARAM,
                 ":",
                 TRUE,
@@ -1150,7 +1155,7 @@ void stringtoverticaldatuminfo_(
         slen_t   lenErrorMessage,
         slen_t   lenNativeDatum,
         slen_t   lenUnit) {
- 
+
     char *lInputStr = (char *)_malloc(lenInputStr+1);
     F2C(inputStr, lInputStr, lenInputStr, lenInputStr+1);
     char *errmsg;
@@ -1197,7 +1202,7 @@ void verticaldatuminfotostring_(
         slen_t   lenOutputStr,
         slen_t   lenNativeDatum,
         slen_t   lenUnit) {
-         
+
     char *errmsg;
     char *results;
     verticalDatumInfo vdi;

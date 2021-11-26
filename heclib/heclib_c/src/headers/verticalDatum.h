@@ -187,7 +187,7 @@ char *extractFromDelimitedString(
  * Inserts a parameter/value pair into a string whose parts are delimited by a single character
  * 
  * @param delimitedString      The delimited string to modify
- * @param delimitedStringSize  The allocated size in bytes of the delimited  string
+ * @param delimitedStringSize  The allocated size in bytes of the delimited string
  * @param parameter            The parameter to add to the delimited string
  * @param separator            A string that separates the parameter from the value. May be NULL
  * @param value                The value of the parameter to add to the delimited string. May be NULL 

@@ -270,7 +270,7 @@ C
      *          ' *****DSS*** zrpdi6:  ERROR  - NO VERTICAL DATUM',
      *          ' OFFSET INFORMATION.',' Cannot convert from ',
      *          cvdatum(1:len_trim(cvdatum)),
-     *          ' to native datum.',' No values stored.'
+     *          ' to native datum.',' No values retrieved.'
             end if
             istat = 13
             return
@@ -291,7 +291,7 @@ C
      *            ' *****DSS*** zrpdi6:  ERROR  - ',
      *            errMsg(1:len_trim(errMsg)),
      *            ' Cannot convert to native datum.',
-     *            ' No values stored.'
+     *            ' No values retrieved.'
               end if
               istat = 13
               return

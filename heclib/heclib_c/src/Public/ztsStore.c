@@ -374,7 +374,7 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 			//------------------------------//
 			// get the info from the header //
 			//------------------------------//
-			vdiTs = extractVerticalDatumInfoFromUserHeader(tss->userHeader, tss->userHeaderSize);
+			vdiTs = extractVerticalDatumInfoFromUserHeader(tss->userHeader, tss->userHeaderNumber);
 			if (vdiTs == NULL && tss->locationStruct && tss->locationStruct->supplemental) {
 				//------------------------------------------------------------------------------//
 				// none in the user header, see if any is passed in in embedded location struct //
@@ -539,7 +539,7 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 					cvertical_datum,
 					sizeof(cvertical_datum),
 					&tss->userHeader,
-					&tss->userHeaderSize,
+					&tss->userHeaderNumber,
 					&tss->units);
 				//-------------------------------------------------------//
 				// now that we have a datum, determine the offset to use //
@@ -725,7 +725,7 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 					//--------------------------------------------------------------------//
 					// remove the vertical datum info from the user header before storing //
 					//--------------------------------------------------------------------//
-					char *userHeaderString = userHeaderToString(tss->userHeader, tss->userHeaderSize);
+					char *userHeaderString = userHeaderToString(tss->userHeader, tss->userHeaderNumber);
 					if (userHeaderString) {
 						char *vdiStr = extractFromDelimitedString(
 							&userHeaderString,
@@ -740,7 +740,7 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 							int *newHeader = stringToUserHeader(userHeaderString, &newHeaderSize);
 							// free (tss->userHeader); -- don't know why this is a double free() !!!
 							tss->userHeader = newHeader;
-							tss->userHeaderNumber = tss->userHeaderSize = newHeaderSize;
+							tss->userHeaderNumber = newHeaderSize;
 							tss->allocated[zSTRUCT_userHeader] = TRUE;
 							// don't free newHeader - the zstructFree() call will get it.
 						}

@@ -64,7 +64,7 @@ C     Vertical datum varible dimensions
       double precision elevation
       double precision offsetNavd88, offsetNgvd29, vertDatumOffset
       logical l_Navd88Estimated, l_Ngvd29Estimated, l_modified
-      integer vdiStrLen
+      integer vdiStrLen, effectiveNuhead, effectiveIuhead(100)
 C
 C
       INCLUDE 'zdssmz.h'
@@ -77,6 +77,8 @@ C
 C
       INCLUDE 'zdsskz.h'
 C
+      INCLUDE 'zdssiz.h'
+C
       INCLUDE 'verticalDatumFortran.h'
 C
 C
@@ -84,6 +86,7 @@ C
 C
 C
       l_modified = .false.
+      effectiveNuhead = 0
       ispace = index(cunits, ' ')
       if (ispace.gt.1) then
         cunits = cunits(1:ispace-1)
@@ -247,22 +250,44 @@ C
       !-----------------------------------------------!
       ! convert to native vertical datum if necessary !
       !-----------------------------------------------!
+      effectiveNuhead = nuhead
+      effectiveIuhead = 0
+      do i = 1, min(size(effectiveIuhead), nuhead)
+        effectiveIuhead(i) = iuhead(i)
+      end do
       cc = cpath(ibpart(3):iepart(3))
       call upcase(cc)
-      if (index(cc,'ELEV').eq.1 .and. nuhead.gt.0) then
-        !----------------------------------------!
-        ! elevation time series with user header !
-        !----------------------------------------!
+      if (index(cc,'ELEV').eq.1) then
+        !-----------------------!
+        ! elevation time series !
+        !-----------------------!
+        if (nuhead.eq.0) then
+          !------------------------------------------------!
+          ! no user header provided, is there one on disk? !
+          !------------------------------------------------!
+          effectiveNuhead = INFO(NPPWRD+KINUHE)
+          if (effectiveNuhead.GT.0) then
+            call zgtrec6(IFLTAB, effectiveIuhead, effectiveNuhead,
+     *        INFO(NPPWRD+KIAUHE), .TRUE.)
+            call get_user_header_param(effectiveIuhead, effectiveNuhead,
+     *        VERTICAL_DATUM_INFO_PARAM, vdiStr)
+          end if
+        end if
         !--------------------------------------!
         ! get the vertical datum of the values !
         !--------------------------------------!
         ! first get any default vertical datum
         call zinqir6(IFLTAB, 'VDTM', cvdatum, ivdatum)
         ! override the default with any datum in the user header
-        call get_user_header_param(iuhead, nuhead,
+        call get_user_header_param(effectiveIuhead, effectiveNuhead,
      *    VERTICAL_DATUM_PARAM, cvdatum2)
-        if (cvdatum2.ne.' ') then
+        if (cvdatum2.ne." ") then
           cvdatum = cvdatum2
+          !--------------------------------------------------------------------------!
+          ! remove current vertical datum from user header so it's not saved to disk !
+          !--------------------------------------------------------------------------!
+          call remove_user_header_param(effectiveIuhead,
+     *    effectiveNuhead, VERTICAL_DATUM_PARAM)
         end if
         ! override both with the unit spec
         call crack_unit_spec(cunits, unit2, cvdatum2)
@@ -274,9 +299,9 @@ C
           !--------------------------------------------!
           ! we possibly need to convert the elevations !
           !--------------------------------------------!
-          call get_user_header_param(iuhead, nuhead,
+          call get_user_header_param(effectiveIuhead, effectiveNuhead,
      *      VERTICAL_DATUM_INFO_PARAM, vdiStr)
-          if (vdiStr.eq.' ') then
+          if (vdiStr.eq." ") then
             if (mlevel.ge.1) then
               write (munit,'(/,a,a,/,a,a,a,/,a)')
      *          ' *****DSS*** zsitsi6:  ERROR  - NO VERTICAL DATUM',
@@ -407,7 +432,7 @@ C     block--don't read, just replace block
 C
 C
       CALL zreadx6 (IFLTAB, CPATH1, INTBUF, NIBUFF, N,
-     * ICHEAD, 0, J, IUHEAD, 0, N, BUFF, KLBUFF, NDA, 2, LF)
+     * ICHEAD, 0, J, effectiveIuhead, 0, N, BUFF, KLBUFF, NDA, 2, LF)
       CALL zinqir6 (IFLTAB, 'STATUS', CSCRAT, JSTAT)
       IF (JSTAT.NE.0) GO TO 940
 C
@@ -448,8 +473,8 @@ C              record without flags to one that has flags
                GO TO 620
             ENDIF
             IF (MLEVEL.GE.3) WRITE (MUNIT, 120) CPATH1(1:NPATH1)
- 120        FORMAT (' -----DSS---zsits6: Caution:  Writing data without',
-     *      ' flags to an existing data set that has flags.',/,
+ 120        FORMAT (' -----DSS---zsits6: Caution:  Writing data ',
+     *      ' without flags to an existing data set that has flags.',/,
      *      ' Pathname: ',A)
          ENDIF
       ENDIF
@@ -931,7 +956,7 @@ C     Write data to DSS
       IF (LQUAL) CALL zset6 ('QUAL', 'ON', 1)
       NDA = IBSIZE * IMULT
       CALL zwritex6 (IFLTAB, CPATH1, NPATH, IIHEAD, KIHEAD, IDUM, 0,
-     * IUHEAD, NUHEAD, BUFF, NDA, ITYPE, 0, IST, LF)
+     * effectiveIuhead, effectiveNuhead, BUFF, NDA, ITYPE, 0, IST, LF)
       CALL zinqir6 (IFLTAB, 'STATUS', CSCRAT, JSTAT)
       IF (JSTAT.NE.0) GO TO 940
       CALL zsetfi6(IFLTAB, 'PSEU', CPATH1(1:NPATH), INTLPS, IST)

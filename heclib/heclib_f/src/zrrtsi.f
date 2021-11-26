@@ -133,7 +133,7 @@ C
 C     Unform the pathname
       CALL CHRLNB (CPATH, NPATH)
       IF ((NPATH.GT.MXPATH).OR.(NPATH.LE.1)) GO TO 900
-      IF (CPATH(1:1).NE.'/') GO TO 900
+      IF (CPATH(1:1).NE."/") GO TO 900
       CALL zupath (CPATH, IBPART, IEPART, ILPART, IERR)
       IF (IERR.NE.0) GO TO 900
       IF (ILPART(5).LT.4) GO TO 960
@@ -163,7 +163,7 @@ C     (such as a unit hydrograph or mean maximum daily temperatures)
 C
       IF (ILPART(4).GT.3) THEN
          CALL UPCASE (CPATH(IBPART(4):IEPART(4)))
-         IF (CPATH(IBPART(4):IBPART(4)+2).EQ.'TS-') THEN
+         IF (CPATH(IBPART(4):IBPART(4)+2).EQ."TS-") THEN
             IF (LGETDOB) THEN
 C              Time pattern data is always single precision.
                NVALS = KLBUFF

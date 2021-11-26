@@ -412,7 +412,7 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 				//-----------------------------------//
 				// specific vertical datum requested //
 				//-----------------------------------//
-				vdi = extractVerticalDatumInfoFromUserHeader(tss->userHeader, tss->userHeaderSize);
+				vdi = extractVerticalDatumInfoFromUserHeader(tss->userHeader, tss->userHeaderNumber);
 				if (!vdi) {
 					if (tss->locationStruct && tss->locationStruct->supplemental) {
 						char *vdiStr = extractFromDelimitedString(

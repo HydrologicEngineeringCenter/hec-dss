@@ -49,7 +49,7 @@ C     Vertical datum varible dimensions
       double precision vertDatumOffset_ind, vertDatumOffset_dep
       logical l_Navd88Estimated, l_Ngvd29Estimated, l_modified
       logical l_indElev, l_depElev, l_ordsModified, l_valsModified
-      integer vdiStrLen
+      integer vdiStrLen, effectiveNuhead, effectiveIuhead(100)
 C
       INCLUDE 'zdssmz.h'
 C
@@ -96,6 +96,11 @@ C     Check that IFLTAB is valid (e.g., the DSS file is open)
       l_depElev = .false.
       l_ordsModified = .false.
       l_valsModified = .false.
+      effectiveNuhead = nuhead
+      effectiveIuhead = 0
+      do i = 1, min(size(effectiveIuhead), nuhead)
+        effectiveIuhead(i) = iuhead(i)
+      end do
       call zufpn(ca, na, cb, nb, cc, nc, cd, nd, ce, ne, cf, nf,
      *           cpath, len_trim(cpath), istat)
       call upcase(cc)
@@ -106,18 +111,36 @@ C     Check that IFLTAB is valid (e.g., the DSS file is open)
         l_depElev = .true.
       endif
       if (l_indElev.or.l_depElev) then
+        !---------------------------------!
+        ! elevation in oridates or values !
+        !---------------------------------!
+        if (nuhead.eq.0) then
+          !------------------------------------------------!
+          ! no user header provided, is there one on disk? !
+          !------------------------------------------------!
+          effectiveNuhead = INFO(NPPWRD+KINUHE)
+          if (effectiveNuhead.GT.0) then
+            call zgtrec6(IFLTAB, effectiveIuhead, effectiveNuhead,
+     *        INFO(NPPWRD+KIAUHE), .TRUE.)
+            call get_user_header_param(effectiveIuhead, effectiveNuhead,
+     *        VERTICAL_DATUM_INFO_PARAM, vdiStr)
+          end if
+        end if
         !--------------------------------------!
         ! get the vertical datum of the values !
         !--------------------------------------!
         ! first get the default vertical datum
         call zinqir(ifltab, 'VDTM', cvdatum, ivdatum)
-        if (nuhead.gt.0) then
-          ! override the default with any datum in the user header
-          call get_user_header_param(iuhead, nuhead,
-     *      VERTICAL_DATUM_PARAM, cvdatum2)
-          if (cvdatum2.ne." ") then
-            cvdatum = cvdatum2
-          end if
+        ! override the default with any datum in the user header
+        call get_user_header_param(effectiveIuhead, effectiveNuhead,
+     *    VERTICAL_DATUM_PARAM, cvdatum2)
+        if (cvdatum2.ne." ") then
+          cvdatum = cvdatum2
+          !--------------------------------------------------------------------------!
+          ! remove current vertical datum from user header so it's not saved to disk !
+          !--------------------------------------------------------------------------!
+          call remove_user_header_param(effectiveIuhead,
+     *    effectiveNuhead, VERTICAL_DATUM_PARAM)
         end if
         if (cvdatum.ne." ") then
           cvdatum_ind = cvdatum
@@ -137,8 +160,8 @@ C     Check that IFLTAB is valid (e.g., the DSS file is open)
             end if
           end if
           call get_user_header_param(
-     *           iuhead,
-     *           nuhead,
+     *           effectiveIuhead,
+     *           effectiveNuhead,
      *           VERTICAL_DATUM_INFO_PARAM,
      *           vdiStr)
           if (vdiStr.eq." ") then
@@ -441,7 +464,7 @@ C       compatibility)
         ENDIF
 
          CALL zwritex6(IFLTAB, CPATH, NPATH, IGBUFF, NIHEAD,
-     *   ICHEAD, 0, IUHEAD, NUHEAD, BUFF, NTOT, JTYPE,
+     *   ICHEAD, 0, effectiveIuhead, effectiveNuhead, BUFF, NTOT, JTYPE,
      *   0, ISTAT, LFOUND)
          IF (ISTAT.NE.0) GO TO 900
 
@@ -509,15 +532,15 @@ C
 C        Swap words on unix to keep compatitable with PC
          IF (IFLTAB(KDSWAP).NE.0) CALL zdswap6(DVALUES, N)
          CALL zwritex6 (IFLTAB, CPATH, NPATH, IGBUFF, NIHEAD,
-     *   ICHEAD, 0, IUHEAD, NUHEAD, DVALUES, N, JTYPE,
+     *   ICHEAD, 0, effectiveIuhead, effectiveNuhead, DVALUES, N, JTYPE,
      *   IPLAN, ISTAT, LFOUND)
 C        Swap back so we don't mess up the user's data
          IF (IFLTAB(KDSWAP).NE.0) CALL zdswap6(DVALUES, N)
       ELSE
          JTYPE = 200
          CALL zwritex6 (IFLTAB, CPATH, NPATH, IGBUFF, NIHEAD,
-     *   ICHEAD, 0, IUHEAD, NUHEAD, SVALUES, NVALS, JTYPE,
-     *   IPLAN, ISTAT, LFOUND)
+     *   ICHEAD, 0, effectiveIuhead, effectiveNuhead, SVALUES, NVALS,
+     *   JTYPE, IPLAN, ISTAT, LFOUND)
       ENDIF
 C
 
