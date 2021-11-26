@@ -88,6 +88,14 @@ namespace Hec.Dss
     private extern static int ZSpatialGridRetrieve(long[] ifltab, IntPtr grid, bool retrieveData);
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
     private extern static int ZSpatialGridStore(long[] ifltab, IntPtr grid);
+    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    public extern static int DateToYearMonthDay(string date, ref int year, ref int month, ref int day);
+    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    public extern static bool IsTimeDefined(int julianDate, int timeSeconds);
+    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    public extern static string AlbersSRS();
+    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    public extern static int YearMonthDayToJulian(int year, int month, int day);
 
     public static int ZSpatialGridStore(long[] ifltab, NativeSpatialGridWrapper grid)
     {

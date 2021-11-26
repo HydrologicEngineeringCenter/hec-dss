@@ -244,4 +244,24 @@ int ZSpatialGridStore(long long* ifltab, zStructSpatialGrid* grid)
 	return zspatialGridStore(ifltab, grid);
 }
 
+int DateToYearMonthDay(const char* date, int* year, int* month, int* day)
+{
+	return dateToYearMonthDay(date, year, month, day);
+}
+
+bool IsTimeDefined(int julianDate, int timeSeconds)
+{
+	return isTimeDefined(julianDate, timeSeconds) == 1;
+}
+
+BSTR AlbersSRS()
+{
+	return ANSItoBSTR(SHG_SRC_DEFINITION);
+}
+
+int YearMonthDayToJulian(int year, int month, int day)
+{
+	return yearMonthDayToJulian(year, month, day);
+}
+
 

@@ -43,4 +43,8 @@ extern "C" {
 	__declspec(dllexport) zStructSpatialGrid* ZStructSpatialGridNew(const char* pathName);
 	__declspec(dllexport) int ZSpatialGridRetrieve(long long* ifltab, zStructSpatialGrid* grid, bool retrieveData);
 	__declspec(dllexport) int ZSpatialGridStore(long long* ifltab, zStructSpatialGrid* grid);
+	__declspec(dllexport) int DateToYearMonthDay(const char* date, int* year, int* month, int* day);
+	__declspec(dllexport) bool IsTimeDefined(int julianDate, int timeSeconds);
+	__declspec(dllexport) BSTR AlbersSRS();
+	__declspec(dllexport) int YearMonthDayToJulian(int year, int month, int day);
 }

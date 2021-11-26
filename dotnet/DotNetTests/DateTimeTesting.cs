@@ -13,7 +13,7 @@ namespace DSSUnitTests
     {
       Console.WriteLine(date);
       int year = 0, month = 0, day = 0;
-      int status = DSS.DateToYearMonthDay(date, ref year, ref month, ref day);
+      int status = PInvoke.DateToYearMonthDay(date, ref year, ref month, ref day);
       Console.WriteLine(year);
       Console.WriteLine(month);
       Console.WriteLine(day);
@@ -25,8 +25,8 @@ namespace DSSUnitTests
 
     void AssertExtractJulian(string date, int expectedJulian)
     {
-      int j = DSS.DateToJulian(date);
-      Assert.IsTrue(DSS.IsTimeDefined(j, 0));
+      int j = PInvoke.DateToJulian(date);
+      Assert.IsTrue(PInvoke.IsTimeDefined(j, 0));
       Assert.AreEqual(expectedJulian, j);
     }
 
@@ -66,7 +66,7 @@ namespace DSSUnitTests
 
       for (int i = 0; i < dateStr.Length; i++)
       {
-        int j = DSS.DateToJulian(dateStr[i]);
+        int j = PInvoke.DateToJulian(dateStr[i]);
         Console.WriteLine(dateStr[i] + ", " + j);
       }
       /*
@@ -104,9 +104,9 @@ namespace DSSUnitTests
 
     public void BugInvalidDate()
     {
-      int j = DSS.DateToJulian("22JUN2016 12:00");// this is NOT a valid date, because of the time.
+      int j = PInvoke.DateToJulian("22JUN2016 12:00");// this is NOT a valid date, because of the time.
       Console.WriteLine(j);
-      Assert.IsFalse(DSS.IsTimeDefined(j, 0));// = -693786(NOT OK ?)
+      Assert.IsFalse(PInvoke.IsTimeDefined(j, 0));// = -693786(NOT OK ?)
     }
 
     [TestMethod]
@@ -124,7 +124,7 @@ namespace DSSUnitTests
 
       ExtractYMD("01/01/-10000", -10000, 1, 1);
 
-      Assert.IsFalse(DSS.IsTimeDefined(DSS.DateToJulian("22HEC2016"), 0));
+      Assert.IsFalse(PInvoke.IsTimeDefined(PInvoke.DateToJulian("22HEC2016"), 0));
     }
 
     [TestMethod]
