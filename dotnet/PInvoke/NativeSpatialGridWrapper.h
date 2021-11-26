@@ -4,8 +4,8 @@
 #include "pinvokeTools.h"
 
 extern "C" {
-	__declspec(dllexport) BSTR GetPathName(zStructSpatialGrid* grid);
-	__declspec(dllexport) void SetPathName(zStructSpatialGrid* grid, const char* value);
+	__declspec(dllexport) BSTR GetSpatialGridPathName(zStructSpatialGrid* grid);
+	__declspec(dllexport) void SetSpatialGridPathName(zStructSpatialGrid* grid, const char* value);
 	__declspec(dllexport) int GetGridType(zStructSpatialGrid* grid);
 	__declspec(dllexport) BSTR GetDataUnits(zStructSpatialGrid* grid);
 	__declspec(dllexport) void SetDataUnits(zStructSpatialGrid* grid, const char* value);
@@ -32,7 +32,7 @@ extern "C" {
 	__declspec(dllexport) float GetYCoordOfGridCellZero(zStructSpatialGrid* grid);
 	__declspec(dllexport) void SetYCoordOfGridCellZero(zStructSpatialGrid* grid, float value);
 	__declspec(dllexport) int GetStructVersion(zStructSpatialGrid* grid);
-	__declspec(dllexport) int GetVersion(zStructSpatialGrid* grid);
+	__declspec(dllexport) int GetSpatialGridVersion(zStructSpatialGrid* grid);
 	__declspec(dllexport) int GetStorageDataType(zStructSpatialGrid* grid);
 	__declspec(dllexport) int GetCompressionMethod(zStructSpatialGrid* grid);
 	__declspec(dllexport) int GetSizeOfCompressedElements(zStructSpatialGrid* grid);

@@ -1,17 +1,17 @@
 #include "pch.h"
 #include "NativeSpatialGridWrapper.h"
 
-BSTR GetPathName(zStructSpatialGrid* grid)
+BSTR GetSpatialGridPathName(zStructSpatialGrid* grid)
 {
 	return ANSItoBSTR(grid->pathname);
 }
 
-void SetPathName(zStructSpatialGrid* grid, const char* value)
+void SetSpatialGridPathName(zStructSpatialGrid* grid, const char* value)
 {
 	if (grid->pathname)
 		free(grid->pathname);
 
-	grid->pathname = strdup(value);
+	grid->pathname = _strdup(value);
 }
 
 int GetGridType(zStructSpatialGrid* grid)
@@ -29,7 +29,7 @@ void SetDataUnits(zStructSpatialGrid* grid, const char* value)
 	if (grid->_dataUnits)
 		free(grid->_dataUnits);
 
-	grid->_dataUnits = strdup(value);
+	grid->_dataUnits = _strdup(value);
 }
 
 int GetDataType(zStructSpatialGrid* grid)
@@ -102,7 +102,7 @@ void SetSRSName(zStructSpatialGrid* grid, const char* value)
 	if (grid->_srsName)
 		free(grid->_srsName);
 
-	grid->_srsName = strdup(value);
+	grid->_srsName = _strdup(value);
 }
 
 int GetSRSDefinitionType(zStructSpatialGrid* grid)
@@ -125,7 +125,7 @@ void SetSRSDefinition(zStructSpatialGrid* grid, const char* value)
 	if (grid->_srsDefinition)
 		free(grid->_srsDefinition);
 
-	grid->_srsDefinition = strdup(value);
+	grid->_srsDefinition = _strdup(value);
 }
 
 float GetXCoordOfGridCellZero(zStructSpatialGrid* grid)
@@ -153,7 +153,7 @@ int GetStructVersion(zStructSpatialGrid* grid)
 	return grid->_structVersion;
 }
 
-int GetVersion(zStructSpatialGrid* grid)
+int GetSpatialGridVersion(zStructSpatialGrid* grid)
 {
 	return grid->_version;
 }
@@ -203,7 +203,7 @@ void SetTimeZoneID(zStructSpatialGrid* grid, const char* value)
 	if (grid->_timeZoneID)
 		free(grid->_timeZoneID);
 
-	grid->_timeZoneID = strdup(value);
+	grid->_timeZoneID = _strdup(value);
 }
 
 int GetTimeZoneRawOffset(zStructSpatialGrid* grid)

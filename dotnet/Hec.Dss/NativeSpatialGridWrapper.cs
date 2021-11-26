@@ -11,9 +11,9 @@ namespace Hec.Dss
   {
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
     [return: MarshalAs(UnmanagedType.BStr)]
-    private extern static string GetPathName(IntPtr grid);
+    private extern static string GetSpatialGridPathName(IntPtr grid);
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
-    private extern static void SetPathName(IntPtr grid, string value);
+    private extern static void SetSpatialGridPathName(IntPtr grid, string value);
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
     private extern static int GetGridType(IntPtr grid);
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
@@ -70,7 +70,7 @@ namespace Hec.Dss
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
     private extern static int GetStructVersion(IntPtr grid);
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
-    private extern static int GetVersion(IntPtr grid);
+    private extern static int GetSpatialGridVersion(IntPtr grid);
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
     private extern static int GetStorageDataType(IntPtr grid);
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
@@ -135,11 +135,11 @@ namespace Hec.Dss
     {
       get
       {
-        return GetPathName(TheStruct);
+        return GetSpatialGridPathName(TheStruct);
       }
       set
       {
-        SetPathName(TheStruct, value);
+        SetSpatialGridPathName(TheStruct, value);
       }
     }
     public int GridType
@@ -288,7 +288,7 @@ namespace Hec.Dss
     {
       get
       {
-        return GetVersion(TheStruct);
+        return GetSpatialGridVersion(TheStruct);
       }
     }
     public int StorageDataType

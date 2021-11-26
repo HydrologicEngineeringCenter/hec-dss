@@ -366,7 +366,7 @@ namespace Hec.Dss
       {
         throw new Exception("Cannot write grids to DSS version 6 files");
       }
-      ZStructSpatialGridWrapper gs;
+      NativeSpatialGridWrapper gs;
       if (grid.DSSObj != null)
       { //this grid was read in before
         gs = grid.DSSObj;

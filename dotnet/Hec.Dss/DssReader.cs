@@ -865,7 +865,7 @@ namespace Hec.Dss
     public Grid GetGrid(string pathname, bool retrieveData)
     {
       NativeSpatialGridWrapper grid = PInvoke.NativeSpatialGridNew(pathname);
-      int status = DSS.ZSpatialGridRetrieve(ref ifltab, ref grid, retrieveData);
+      int status = PInvoke.ZSpatialGridRetrieve(ifltab, grid, retrieveData);
       if (status != 0)
         return null;
 
