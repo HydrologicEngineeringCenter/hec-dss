@@ -131,37 +131,355 @@ namespace Hec.Dss
 
 
     public IntPtr TheStruct { get; internal set; }
-    public string PathName { get; internal set; }
-    public int GridType { get; internal set; }
-    public string DataUnits { get; internal set; }
-    public int DataType { get; internal set; }
-    public int LowerLeftCellX { get; internal set; }
-    public int LowerLeftCellY { get; internal set; }
-    public int NumberOfCellsX { get; internal set; }
-    public int NumberOfCellsY { get; internal set; }
-    public float CellSize { get; internal set; }
-    public string SRSName { get; internal set; }
-    public int SRSDefinitionType { get; internal set; }
-    public string SRSDefinition { get; internal set; }
-    public float XCoordOfGridCellZero { get; internal set; }
-    public float YCoordOfGridCellZero { get; internal set; }
-    public int StructVersion { get; internal set; }
-    public int Version { get; internal set; }
-    public int StorageDataType { get; internal set; }
-    public int CompressionMethod { get; internal set; }
-    public int SizeOfCompressedElements { get; internal set; }
-    public int NumberOfRanges { get; internal set; }
-    public float NullValue { get; internal set; }
-    public string TimeZoneID { get; internal set; }
-    public int TimeZoneRawOffset { get; internal set; }
-    public bool IsInterval { get; internal set; }
-    public bool IsTimeStamped { get; internal set; }
-    public float MaxDataValue { get; internal set; }
-    public float MinDataValue { get; internal set; }
-    public float MeanDataValue { get; internal set; }
-    public float[] RangeLimitTable { get; internal set; }
-    public float UndefinedValue { get; internal set; }
-    public int[] NumberEqualOrExceedingRangeLimit { get; internal set; }
-    public float[] Data { get; internal set; }
+    public string PathName
+    {
+      get
+      {
+        return GetPathName(TheStruct);
+      }
+      set
+      {
+        SetPathName(TheStruct, value);
+      }
+    }
+    public int GridType
+    {
+      get
+      {
+        return GetGridType(TheStruct);
+      }
+    }
+    public string DataUnits
+    {
+      get
+      {
+        return GetDataUnits(TheStruct);
+      }
+      set
+      {
+        SetDataUnits(TheStruct, value);
+      }
+    }
+    public int DataType
+    {
+      get
+      {
+        return GetDataType(TheStruct);
+      }
+      set
+      {
+        SetDataType(TheStruct, value);
+      }
+    }
+    public int LowerLeftCellX
+    {
+      get
+      {
+        return GetLowerLeftCellX(TheStruct);
+      }
+      set
+      {
+        SetLowerLeftCellX(TheStruct, value);
+      }
+    }
+    public int LowerLeftCellY {
+      get
+      {
+        return GetLowerLeftCellY(TheStruct);
+      }
+      set
+      {
+        SetLowerLeftCellY(TheStruct, value);
+      }
+    }
+    public int NumberOfCellsX {
+      get
+      {
+        return GetNumberOfCellsX(TheStruct);
+      }
+      set
+      {
+        SetNumberOfCellsX(TheStruct, value);
+      }
+    }
+    public int NumberOfCellsY
+    {
+      get
+      {
+        return GetNumberOfCellsY(TheStruct);
+      }
+      set
+      {
+        SetNumberOfCellsY(TheStruct, value);
+      }
+    }
+    public float CellSize {
+      get
+      {
+        return GetCellSize(TheStruct);
+      }
+      set
+      {
+        SetCellSize(TheStruct, value);
+      }
+    }
+    public string SRSName
+    {
+      get
+      {
+        return GetSRSName(TheStruct);
+      }
+      set
+      {
+        SetSRSName(TheStruct, value);
+      }
+    }
+    public int SRSDefinitionType
+    {
+      get
+      {
+        return GetSRSDefinitionType(TheStruct);
+      }
+      set
+      {
+        SetSRSDefinitionType(TheStruct, value);
+      }
+    }
+    public string SRSDefinition
+    {
+      get
+      {
+        return GetSRSDefinition(TheStruct);
+      }
+      set
+      {
+        SetSRSDefinition(TheStruct, value);
+      }
+    }
+    public float XCoordOfGridCellZero {
+      get
+      {
+        return GetXCoordOfGridCellZero(TheStruct);
+      }
+      set
+      {
+        SetXCoordOfGridCellZero(TheStruct, value);
+      }
+    }
+    public float YCoordOfGridCellZero
+    {
+      get
+      {
+        return GetYCoordOfGridCellZero(TheStruct);
+      }
+      set
+      {
+        SetYCoordOfGridCellZero(TheStruct, value);
+      }
+    }
+    public int StructVersion
+    {
+      get
+      {
+        return GetStructVersion(TheStruct);
+      }
+    }
+    public int Version
+    {
+      get
+      {
+        return GetVersion(TheStruct);
+      }
+    }
+    public int StorageDataType
+    {
+      get
+      {
+        return GetStorageDataType(TheStruct);
+      }
+    }
+    public int CompressionMethod
+    {
+      get
+      {
+        return GetCompressionMethod(TheStruct);
+      }
+    }
+    public int SizeOfCompressedElements
+    {
+      get
+      {
+        return GetSizeOfCompressedElements(TheStruct);
+      }
+    }
+    public int NumberOfRanges
+    {
+      get
+      {
+        return GetNumberOfRanges(TheStruct);
+      }
+      set
+      {
+        SetNumberOfRanges(TheStruct, value);
+      }
+    }
+    public float NullValue
+    {
+      get
+      {
+        return GetNullValue(TheStruct);
+      }
+      set
+      {
+        SetNullValue(TheStruct, value);
+      }
+    }
+    public string TimeZoneID
+    {
+      get
+      {
+        return GetTimeZoneID(TheStruct);
+      }
+      set
+      {
+        SetTimeZoneID(TheStruct, value);
+      }
+    }
+    public int TimeZoneRawOffset
+    {
+      get
+      {
+        return GetTimeZoneRawOffset(TheStruct);
+      }
+      set
+      {
+        SetTimeZoneRawOffset(TheStruct, value);
+      }
+    }
+    public bool IsInterval
+    {
+      get
+      {
+        return GetIsInterval(TheStruct);
+      }
+      set
+      {
+        SetIsInterval(TheStruct, value);
+      }
+    }
+    public bool IsTimeStamped
+    {
+      get
+      {
+        return GetIsTimeStamped(TheStruct);
+      }
+      set
+      {
+        SetIsTimeStamped(TheStruct, value);
+      }
+    }
+    public float MaxDataValue
+    {
+      get
+      {
+        return GetMaxDataValue(TheStruct);
+      }
+      set
+      {
+        SetMaxDataValue(TheStruct, value);
+      }
+    }
+    public float MinDataValue
+    {
+      get
+      {
+        return GetMinDataValue(TheStruct);
+      }
+      set
+      {
+        SetMinDataValue(TheStruct, value);
+      }
+    }
+    public float MeanDataValue
+    {
+      get
+      {
+        return GetMeanDataValue(TheStruct);
+      }
+      set
+      {
+        SetMeanDataValue(TheStruct, value);
+      }
+    }
+    public float[] RangeLimitTable
+    {
+      get
+      {
+        IntPtr ptr = GetRangeLimitTable(TheStruct);
+        if (ptr != IntPtr.Zero)
+        {
+          float[] r = new float[NumberOfRanges];
+          Marshal.Copy(ptr, r, 0, r.Length);
+          return r;
+        }
+        else
+        {
+          return null;
+        }
+      }
+      set
+      {
+        SetRangeLimitTable(TheStruct, value);
+      }
+    }
+    public float UndefinedValue
+    {
+      get
+      {
+        return GetUndefinedValue(TheStruct);
+      }
+    }
+    public int[] NumberEqualOrExceedingRangeLimit
+    {
+      get
+      {
+        IntPtr ptr = GetNumberEqualOrExceedingRangeLimit(TheStruct);
+        if (ptr != IntPtr.Zero)
+        {
+          int[] r = new int[NumberOfRanges];
+          Marshal.Copy(ptr, r, 0, r.Length);
+          return r;
+        }
+        else
+        {
+          return null;
+        }
+      }
+      set
+      {
+        SetNumberEqualOrExceedingRangeLimit(TheStruct, value);
+      }
+    }
+    public float[] Data
+    {
+      get
+      {
+        IntPtr ptr = GetData(TheStruct);
+        if (ptr != IntPtr.Zero)
+        {
+          float[] r = new float[NumberOfCellsX * NumberOfCellsY];
+          Marshal.Copy(ptr, r, 0, r.Length);
+          return r;
+        }
+        else
+        {
+          return null;
+        }
+      }
+      set
+      {
+        SetData(TheStruct, value);
+      }
+    }
   }
 }
