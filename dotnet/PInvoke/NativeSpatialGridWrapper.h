@@ -20,11 +20,11 @@ extern "C" {
 	__declspec(dllexport) int GetNumberOfCellsY(zStructSpatialGrid* grid);
 	__declspec(dllexport) void SetNumberOfCellsY(zStructSpatialGrid* grid, int value);
 	__declspec(dllexport) float GetCellSize(zStructSpatialGrid* grid);
-	__declspec(dllexport) void SetCellSize(zStructSpatialGrid* grid);
+	__declspec(dllexport) void SetCellSize(zStructSpatialGrid* grid, float value);
 	__declspec(dllexport) BSTR GetSRSName(zStructSpatialGrid* grid);
 	__declspec(dllexport) void SetSRSName(zStructSpatialGrid* grid, const char* value);
 	__declspec(dllexport) int GetSRSDefinitionType(zStructSpatialGrid* grid);
-	__declspec(dllexport) void SetSRSDefinitionType(zStructSpatialGrid* grid);
+	__declspec(dllexport) void SetSRSDefinitionType(zStructSpatialGrid* grid, int value);
 	__declspec(dllexport) BSTR GetSRSDefinition(zStructSpatialGrid* grid);
 	__declspec(dllexport) void SetSRSDefinition(zStructSpatialGrid* grid, const char* value);
 	__declspec(dllexport) float GetXCoordOfGridCellZero(zStructSpatialGrid* grid);
@@ -40,7 +40,7 @@ extern "C" {
 	__declspec(dllexport) void SetNumberOfRanges(zStructSpatialGrid* grid, int value);
 	__declspec(dllexport) float GetNullValue(zStructSpatialGrid* grid);
 	__declspec(dllexport) void SetNullValue(zStructSpatialGrid* grid, float value);
-	__declspec(dllexport) int GetTimeZoneID(zStructSpatialGrid* grid);
+	__declspec(dllexport) BSTR GetTimeZoneID(zStructSpatialGrid* grid);
 	__declspec(dllexport) void SetTimeZoneID(zStructSpatialGrid* grid, const char* value);
 	__declspec(dllexport) int GetTimeZoneRawOffset(zStructSpatialGrid* grid);
 	__declspec(dllexport) void SetTimeZoneRawOffset(zStructSpatialGrid* grid, int value);
