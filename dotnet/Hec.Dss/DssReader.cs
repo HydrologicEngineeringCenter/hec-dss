@@ -864,8 +864,8 @@ namespace Hec.Dss
     /// <returns>Returns an albers grid if the grid is albers, a specified grid if its a specified grid, or a generic grid otherwise.  Returns null if there is a problem.</returns>
     public Grid GetGrid(string pathname, bool retrieveData)
     {
-      ZStructSpatialGridWrapper grid = DSS.ZStructSpatialGridNew(pathname);
-      int status = DSS.ZSpatialGridRetrieve(ref ifltab, ref grid, retrieveData);
+      NativeSpatialGridWrapper grid = PInvoke.NativeSpatialGridNew(pathname);
+      int status = PInvoke.ZSpatialGridRetrieve(ifltab, grid, retrieveData);
       if (status != 0)
         return null;
 

@@ -366,7 +366,7 @@ namespace Hec.Dss
       {
         throw new Exception("Cannot write grids to DSS version 6 files");
       }
-      ZStructSpatialGridWrapper gs;
+      NativeSpatialGridWrapper gs;
       if (grid.DSSObj != null)
       { //this grid was read in before
         gs = grid.DSSObj;
@@ -374,7 +374,7 @@ namespace Hec.Dss
       }
       else
       {
-        gs = DSS.ZStructSpatialGridNew(pathName);
+        gs = PInvoke.NativeSpatialGridNew(pathName);
         gs.DataUnits = grid.DataUnits;
         gs.DataType = (int)grid.DataType;
         gs.LowerLeftCellX = grid.LowerLeftCellX;
@@ -389,7 +389,7 @@ namespace Hec.Dss
         gs.RangeLimitTable = grid.RangeLimitTable;
         gs.NumberEqualOrExceedingRangeLimit = grid.NumberEqualOrExceedingRangeLimit;
       }
-      DSS.ZSpatialGridStore(ref ifltab, ref gs);
+      PInvoke.ZSpatialGridStore(ifltab, gs);
     }
 
     /// <summary>

@@ -229,4 +229,19 @@ int ZPdStore(long long* ifltab, zStructPairedData* pd, int storageFlag)
 	return zpdStore(ifltab, pd, storageFlag);
 }
 
+zStructSpatialGrid* ZStructSpatialGridNew(const char* pathName)
+{
+	return zstructSpatialGridNew(pathName);
+}
+
+int ZSpatialGridRetrieve(long long* ifltab, zStructSpatialGrid* grid, bool retrieveData)
+{
+	return DSSGrid::RetrieveGriddedData(ifltab, grid, retrieveData);
+}
+
+int ZSpatialGridStore(long long* ifltab, zStructSpatialGrid* grid)
+{
+	return zspatialGridStore(ifltab, grid);
+}
+
 

@@ -39,6 +39,9 @@
     <ClInclude Include="NativePairedDataWrapper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="NativeSpatialGridWrapper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -63,6 +66,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="NativePairedDataWrapper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NativeSpatialGridWrapper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
