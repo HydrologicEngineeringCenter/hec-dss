@@ -264,4 +264,9 @@ int YearMonthDayToJulian(int year, int month, int day)
 	return yearMonthDayToJulian(year, month, day);
 }
 
+int ZCatalogFile(long long* ifltab, const char* pathWithWild, int boolSorted, const char* catalogFileName)
+{
+	return zcatalogFile(ifltab, pathWithWild, boolSorted, catalogFileName);
+}
+
 

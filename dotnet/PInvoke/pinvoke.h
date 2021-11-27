@@ -47,4 +47,5 @@ extern "C" {
 	__declspec(dllexport) bool IsTimeDefined(int julianDate, int timeSeconds);
 	__declspec(dllexport) BSTR AlbersSRS();
 	__declspec(dllexport) int YearMonthDayToJulian(int year, int month, int day);
+	__declspec(dllexport) int ZCatalogFile(long long* ifltab, const char* pathWithWild, int boolSorted, const char* catalogFileName);
 }

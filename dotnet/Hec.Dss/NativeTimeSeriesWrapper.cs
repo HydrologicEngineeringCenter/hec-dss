@@ -27,9 +27,9 @@ namespace Hec.Dss
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
     public extern static IntPtr GetDoubleValues(IntPtr ts);
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
-    public extern static double GetTimeGranularitySeconds(IntPtr ts);
+    public extern static int GetTimeGranularitySeconds(IntPtr ts);
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
-    public extern static double GetJulianBaseDate(IntPtr ts);
+    public extern static int GetJulianBaseDate(IntPtr ts);
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
     public extern static IntPtr GetTimes(IntPtr ts);
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
@@ -150,14 +150,18 @@ namespace Hec.Dss
         }
       }
     }
-    public double TimeGranularitySeconds
+    public int TimeGranularitySeconds
     {
       get
       {
         return GetTimeGranularitySeconds(TheStruct);
       }
+      set
+      {
+
+      }
     }
-    public double JulianBaseDate
+    public int JulianBaseDate
     {
       get
       {
@@ -275,5 +279,14 @@ namespace Hec.Dss
         SetFloatProfileValues(TheStruct, value, value.Length);
       }
     }
+
+    public int StartJulianDate { get; set; }
+    public int StartTimeSeconds { get; set; }
+    public float[] FloatValues { get; set; }
+    public int EndJulianDate { get; set; }
+    public int EndTimeSeconds { get; set; }
+    public int TimeIntervalSeconds { get; set; }
+    public sbyte[] CNotes { get; set; }
+    public int CNotesLengthTotal { get; set; }
   }
 }

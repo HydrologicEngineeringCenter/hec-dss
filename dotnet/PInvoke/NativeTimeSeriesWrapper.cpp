@@ -49,12 +49,12 @@ double* GetDoubleValues(zStructTimeSeries* ts)
 	return ts->doubleValues;
 }
 
-double GetTimeGranularitySeconds(zStructTimeSeries* ts)
+int GetTimeGranularitySeconds(zStructTimeSeries* ts)
 {
 	return ts->timeGranularitySeconds;
 }
 
-double GetJulianBaseDate(zStructTimeSeries* ts)
+int GetJulianBaseDate(zStructTimeSeries* ts)
 {
 	return ts->julianBaseDate;
 }

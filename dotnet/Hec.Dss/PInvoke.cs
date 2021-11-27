@@ -96,6 +96,8 @@ namespace Hec.Dss
     public extern static string AlbersSRS();
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
     public extern static int YearMonthDayToJulian(int year, int month, int day);
+    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    public extern static int ZCatalogFile(long[] ifltab, string pathWithWild, int boolSorted, string catalogFileName);
 
     public static int ZSpatialGridStore(long[] ifltab, NativeSpatialGridWrapper grid)
     {

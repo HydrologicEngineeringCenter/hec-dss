@@ -156,7 +156,7 @@ namespace DSSUnitTests
       Assert.IsTrue(tss3.NumberValues == 200);
       for (int i = 0; i < tss3.NumberValues; i++)
       {
-        PInvoke.GetDateAndTime(valueTime, 1, tss3.StartJulianDate, ref cdate, 13,ref ctime, 10);
+        PInvoke.GetDateAndTime(valueTime, 1, tss3.StartJulianDate, cdate, 13, ctime, 10);
         Assert.IsTrue(tss3.FloatValues[i] == (double)i);
         if (i == 0)
         {
@@ -180,7 +180,7 @@ namespace DSSUnitTests
       Assert.IsTrue(status == 0);
       for (int i = 0; i < tss4.NumberValues; i++)
       {
-        PInvoke.GetDateAndTime(tss4.Times[i], tss4.TimeGranularitySeconds, tss4.JulianBaseDate, ref cdate, 13, ref ctime, 10);
+        PInvoke.GetDateAndTime(tss4.Times[i], tss4.TimeGranularitySeconds, tss4.JulianBaseDate, cdate, 13, ctime, 10);
         Assert.IsTrue(tss4.DoubleValues[i] == (double)i);
         Assert.IsTrue(ctime == "2400");
         if (i == 0)
@@ -248,7 +248,7 @@ namespace DSSUnitTests
       noteCount = 0;
       for (int i = 0; i < tss2.NumberValues;i++)
       {
-        PInvoke.GetDateAndTime(valueTime, 1, tss2.StartJulianDate, ref cdate, 13, ref ctime, 10);
+        PInvoke.GetDateAndTime(valueTime, 1, tss2.StartJulianDate, cdate, 13, ctime, 10);
         Assert.IsTrue(tss2.FloatValues[i] == (float)i);
         Assert.IsTrue(tss2.Quality[i] == 10+i);
         if (i == 0)
