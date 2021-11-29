@@ -316,7 +316,7 @@ subroutine testStoreRetrieveTimeSeries()
                                     userHeaderStr = ' '
                                     unitSpec = unit(l)
                                     count = count + 1
-                                    write(*,*) i, j, k, l, m, n, o, p
+                                    ! write(*,*) i, j, k, l, m, n, o, p
                                     ifltab = 0
                                     if (i == 1) then
                                         call zopen6(ifltab, filename(i), status)
@@ -613,8 +613,6 @@ subroutine testStoreRetrieveTimeSeries()
                                         !------------------------------------------------------------!
                                         ! set the default vertical datum to the datum we stored with !
                                         !------------------------------------------------------------!
-                                        write(*,*) 'variable kk = ',kk
-                                        write(*,*) 'Test program setting requesed vertical datum to ',verticalDatums(kk)
                                         call zset('VDTM', verticalDatums(kk), 0)
                                         ifltab = 0
                                         if (i == 1) then
@@ -623,9 +621,6 @@ subroutine testStoreRetrieveTimeSeries()
                                             call zopen7(ifltab, filename(i), status)
                                         end if
                                         call assert(status == 0)
-                                        call zinqir(ifltab, 'VDTM', cVerticalDatum, iVerticalDatum)
-                                        write(*,*) 'zinqir returned vertical datum of ',cVerticalDatum
-                                        call assert(cVerticalDatum.eq.verticalDatums(kk))
                                         !--------------------------------------------------------!
                                         ! retrieve the time series in the default vertical datum !
                                         !--------------------------------------------------------!
@@ -742,7 +737,6 @@ subroutine testStoreRetrieveTimeSeries()
                                         call assert(numberValues == 6)
                                         if (o == 1) then
                                             do ii = 1, numberValues
-                                                write(*,*) 'After retrieve:',ii, dvals(ii), dvals_out(ii)
                                             end do
                                             do ii = 1, numberValues
                                                 call assert(dvals_out(i) == dvals(i))
@@ -918,7 +912,7 @@ subroutine testStoreRetrievePairedData()
                                     userHeaderStr = ' '
                                     unitSpec = unit(l)
                                     count = count + 1
-                                    write(0,*) i, j, k, l, m, n, o, p
+                                    ! write(0,*) i, j, k, l, m, n, o, p
                                     ifltab = 0
                                     if (i == 1) then
                                         call zopen6(ifltab, filename(i), status)
@@ -1215,8 +1209,6 @@ subroutine testStoreRetrievePairedData()
                                       !------------------------------------------------------------!
                                       ! set the default vertical datum to the datum we stored with !
                                       !------------------------------------------------------------!
-                                        write(*,*) 'variable kk = ',kk
-                                        write(*,*) 'Test program setting requesed vertical datum to ',verticalDatums(kk)
                                         call zset('VDTM', verticalDatums(kk), 0)
                                         ifltab = 0
                                         if (i == 1) then
@@ -1225,9 +1217,6 @@ subroutine testStoreRetrievePairedData()
                                             call zopen7(ifltab, filename(i), status)
                                         end if
                                         call assert(status == 0)
-                                        call zinqir(ifltab, 'VDTM', cVerticalDatum, iVerticalDatum)
-                                        write(*,*) 'zinqir returned vertical datum of ',cVerticalDatum
-                                        call assert(cVerticalDatum.eq.verticalDatums(kk))
                                       !--------------------------------------------------------!
                                       ! retrieve the paired data in the default vertical datum !
                                       !--------------------------------------------------------!
@@ -1284,7 +1273,6 @@ subroutine testStoreRetrievePairedData()
                                             userHeaderLen,    & ! NUHEAD
                                             status)             ! ISTAT
                                       end if
-                                      write(*,*) 'CP1'
                                       call assert(status == 0)
                                       call assert(numberOrdinates == 6)
                                       call assert(numberCurves == 1)
@@ -1292,20 +1280,14 @@ subroutine testStoreRetrievePairedData()
                                       call assert(c2unit == unit(l))
                                       call assert(c1type == type)
                                       call assert(c2type == type)
-                                      write(*,*) 'CP2'
                                       if (o == 1) then
-                                        write(*,*) 'CP3'
                                         call assert(nvals == size(dvals))
                                         do ii = 1, nvals
-                                            write(*,*) 'CP4'
                                             call assert(dvals_out(ii) == dvals(ii))
                                         end do
                                       else
-                                        write(*,*) 'CP5'
                                         call assert(nvals == size(fvals))
                                         do ii = 1, nvals
-                                            write(*,*) 'CP6'
-                                            write(*,*) ii, fvals_out(ii), fvals(ii)
                                             call assert(fvals_out(ii) == fvals(ii))
                                         end do
                                       end if

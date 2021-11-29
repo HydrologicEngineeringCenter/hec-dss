@@ -150,7 +150,6 @@ int zinquireChar(long long *ifltab, const char *request, char *creturn, size_t c
 		stringCopy(creturn, (size_t)creturnSize, zdssVals.cprogramName, strlen(zdssVals.cprogramName));
 	}
 	else if (!strncmp(requestlc, "vdtm", 4)) {
-		printf("In zinquireChar: zdssVals.cverticalDatum = %s\n", zdssVals.cverticalDatum);
 		number[0] = zdssVals.iverticalDatum;
 		stringCopy(creturn, (size_t)creturnSize, zdssVals.cverticalDatum, strlen(zdssVals.cverticalDatum));
 	}

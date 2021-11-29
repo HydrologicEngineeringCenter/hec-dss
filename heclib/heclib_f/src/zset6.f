@@ -379,7 +379,6 @@ C     Set default vertical datum
       ELSE IF (CFLAG.EQ.'VDTM') THEN
         UCSTRIN = CSTRIN
         CALL UPCASE(UCSTRIN)
-        write(*,*) 'In zset6: setting ',cflag,' to ',ucstrin
         IF (UCSTRIN.EQ.'') THEN
            IF (NUMB.EQ.IVD_UNSET) THEN
               CVDATUM = CVD_UNSET
