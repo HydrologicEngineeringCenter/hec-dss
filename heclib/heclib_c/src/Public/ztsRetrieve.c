@@ -408,6 +408,7 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 			verticalDatumInfo *vdi = NULL;
 			char errmsg[1024];
 			zquery("VDTM", cvertical_datum, sizeof(cvertical_datum), &ivertical_datum);
+			printf("CP1 - vertical datum requested = %s\n", cvertical_datum);
 			if (version == 7 && ivertical_datum != IVERTICAL_DATUM_UNSET) {
 				//-----------------------------------//
 				// specific vertical datum requested //
@@ -453,6 +454,7 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 					return status;
 				}
 				else {
+					printf("CP2 - native vertical datum = %s\n", vdi->nativeDatum);
 					double offset;
 					switch(ivertical_datum) {
 						case IVERTICAL_DATUM_NAVD88 :
@@ -470,6 +472,7 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 							}
 							break;
 					}
+					printf("CP3 = offset = %f\n", offset);
 					if (offset != 0.) {
 						offset = getOffset(offset, vdi->unit, tss->units);
 						if (offset == UNDEFINED_VERTICAL_DATUM_VALUE) {
