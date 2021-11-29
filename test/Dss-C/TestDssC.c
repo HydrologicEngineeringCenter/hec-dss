@@ -126,6 +126,16 @@ int runTheTests() {
 	int status;
 
 
+	printf("\ntest vertical datum operations (C API)\n");
+	status = test_vertical_datums_c();
+	if (status != STATUS_OKAY)
+		return status;
+
+	printf("\ntest vertical datum operations (Fortran API)\n");
+	status = test_vertical_datums_f_();
+	if (status != STATUS_OKAY)
+		return status;
+
 	printf("\ntest stringCat\n");
 	status = test_stringCat();
 	if (status != STATUS_OKAY)

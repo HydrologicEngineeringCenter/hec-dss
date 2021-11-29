@@ -11,7 +11,7 @@ void testZsetZquery();
 void testStoreRetrieveTimeSeries();
 void testStoreRetrievePairedData();
 
-void main (int argc, char *argv[]) {
+int test_vertical_datums_c() {
     testDelimitedStringOps();
     testGzipAndEncodingOps();
     testUserHeaderOps();
@@ -19,6 +19,7 @@ void main (int argc, char *argv[]) {
     testZsetZquery();
     testStoreRetrieveTimeSeries();
     testStoreRetrievePairedData();
+    return 0;
 }
 void testDelimitedStringOps() {
     // test extract_from_delimited_string() and insertIntoDelimitedString()

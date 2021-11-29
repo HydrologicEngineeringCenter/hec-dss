@@ -1,11 +1,3 @@
-program testVerticalDatum
-    call testUserHeaderOps()
-    call testStoreRetrieveTimeSeries()
-    call testStoreRetrievePairedData()
-
-    stop
-end program testVerticalDatum
-
 module modVerticalDatumInfo
     implicit none
 
@@ -107,13 +99,14 @@ module modVerticalDatumInfo
         end function byteCountToIntCount
 
         integer function mpm(ctime)
+            implicit none
             !--------------------------------------------------------------------!
             ! Minutes Past Midnight - convert a 4-digit time in hhmm to minutes  !
             !--------------------------------------------------------------------!
             ! heclib function ihm2m errored on '0100' and this is simpler anyway !
             !--------------------------------------------------------------------!
-        character(len=*) :: ctime
-            integer      :: itime = -1
+            character(len=*) :: ctime
+            integer          :: itime = -1
             read(ctime,'(i4)') itime
             if (itime >= 0 .and. itime < 2500) then
                 mpm = itime / 100 * 60 + mod(itime, 100)
@@ -121,8 +114,16 @@ module modVerticalDatumInfo
                 mpm = -1
             end if
         end function mpm
+end module modVerticalDatumInfo
 
-    end module modVerticalDatumInfo
+integer function test_vertical_datums_f()
+    implicit none
+    call testUserHeaderOps()
+    call testStoreRetrieveTimeSeries()
+    call testStoreRetrievePairedData()
+
+    test_vertical_datums_f = 0
+end function test_vertical_datums_f
 
 subroutine testUserHeaderOps
     implicit none
