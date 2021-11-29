@@ -26,7 +26,8 @@ C
         return
       ENDIF
 C
-      write(*,*) 'In zset: setting ',cparam,' to ',calpha
+      write(*,*) 'In zset: setting ',cparam,' to ',
+     *  calpha(1:len_trim(calpha)),' (',inumb,')'
       CALL zset6(CPARAM, CALPHA, INUMB)
       CALL zset7(CPARAM, CALPHA, INUMB)
 C
