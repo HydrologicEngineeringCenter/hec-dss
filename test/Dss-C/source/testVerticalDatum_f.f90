@@ -316,7 +316,7 @@ subroutine testStoreRetrieveTimeSeries()
                                     userHeaderStr = ' '
                                     unitSpec = unit(l)
                                     count = count + 1
-                                    ! write(*,*) i, j, k, l, m, n, o, p
+                                    write(*,*) i, j, k, l, m, n, o, p
                                     ifltab = 0
                                     if (i == 1) then
                                         call zopen6(ifltab, filename(i), status)
@@ -629,6 +629,7 @@ subroutine testStoreRetrieveTimeSeries()
                                                 !-------------!
                                                 ! RTS doubles !
                                                 !-------------!
+                                                dvals(1:numberValues) = dvalues(:,l)
                                                 call zrrtsxd(          &
                                                     ifltab,            & ! IFLTAB
                                                     pathnames(o,n),    & ! CPATH
@@ -651,6 +652,7 @@ subroutine testStoreRetrieveTimeSeries()
                                                 !------------!
                                                 ! RTS floats !
                                                 !------------!
+                                                fvals(1:numberValues) = fvalues(:,l)
                                                 call zrrtsx(           &
                                                     ifltab,            & ! IFLTAB
                                                     pathnames(o,n),    & ! CPATH
@@ -679,6 +681,7 @@ subroutine testStoreRetrieveTimeSeries()
                                                 !-------------!
                                                 ! ITS doubles !
                                                 !-------------!
+                                                dvals(1:numberValues) = dvalues(:,l)
                                                 call zritsxd(          &
                                                     ifltab,            & ! IFLTAB  in/out
                                                     pathnames(o,n),    & ! CPATH   in
@@ -705,6 +708,7 @@ subroutine testStoreRetrieveTimeSeries()
                                                 !------------!
                                                 ! ITS floats !
                                                 !------------!
+                                                fvals(1:numberValues) = fvalues(:,l)
                                                 call zritsx(           &
                                                     ifltab,            & ! IFLTAB
                                                     pathnames(o,n),    & ! CPATH
