@@ -610,11 +610,6 @@ subroutine testStoreRetrieveTimeSeries()
                                     end if
                                     call zclose(ifltab)
                                     if (status == 0) then
-                                        !------------------------------------------------------------!
-                                        ! set the default vertical datum to the datum we stored with !
-                                        !------------------------------------------------------------!
-                                        write(*,*) 'Setting requested vertical datum to ',verticalDatums(kk)
-                                        call zset('VDTM', verticalDatums(kk), 0)
                                         ifltab = 0
                                         if (i == 1) then
                                             call zopen6(ifltab, filename(i), status)
@@ -622,6 +617,11 @@ subroutine testStoreRetrieveTimeSeries()
                                             call zopen7(ifltab, filename(i), status)
                                         end if
                                         call assert(status == 0)
+                                        !------------------------------------------------------------!
+                                        ! set the default vertical datum to the datum we stored with !
+                                        !------------------------------------------------------------!
+                                        write(*,*) 'Setting requested vertical datum to ',verticalDatums(kk)
+                                        call zset('VDTM', verticalDatums(kk), 0)
                                         call zinqir(ifltab, 'VDTM', cVerticalDatum, iVerticalDatum)
                                         write(*,*) 'Checking requested vertical datum : ',cVerticalDatum
                                         call assert(cVerticalDatum.eq.verticalDatums(kk))
