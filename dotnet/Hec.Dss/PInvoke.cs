@@ -53,7 +53,7 @@ namespace Hec.Dss
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
     public extern static int ZSqueezeNeeded(long[] ifltab);
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
-    public extern static int GetDateAndTime(int timeMinOrSec, int timeGranularitySeconds, int julianBaseDate, StringBuilder dateString, int sizeOfDateString, StringBuilder hoursMins, int sizeOfHoursMins);
+    private extern static int GetDateAndTime(int timeMinOrSec, int timeGranularitySeconds, int julianBaseDate, StringBuilder dateString, int sizeOfDateString, StringBuilder hoursMins, int sizeOfHoursMins);
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
     public extern static int ZCheck(long[] ifltab, string pathName);
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
@@ -243,7 +243,7 @@ namespace Hec.Dss
       return ZTsRetrieveEmpty(ifltab, tss.TheStruct);
     }
 
-    public static int GetDateAndTime(int timeMinOrSec, int timeGranularitySeconds, int julianBaseDate, string dateString, int sizeOfDateString, string hoursMins, int sizeOfHoursMins)
+    public static int GetDateAndTime(int timeMinOrSec, int timeGranularitySeconds, int julianBaseDate, out string dateString, int sizeOfDateString, out string hoursMins, int sizeOfHoursMins)
     {
       StringBuilder dateStringBuilder = new StringBuilder(sizeOfDateString);
       StringBuilder hoursMinsStringBuilder = new StringBuilder(sizeOfHoursMins);

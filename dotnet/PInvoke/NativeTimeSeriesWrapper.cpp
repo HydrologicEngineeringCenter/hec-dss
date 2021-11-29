@@ -54,6 +54,11 @@ int GetTimeGranularitySeconds(zStructTimeSeries* ts)
 	return ts->timeGranularitySeconds;
 }
 
+void SetTimeGranularitySeconds(zStructTimeSeries* ts, int value)
+{
+	ts->timeGranularitySeconds = value;
+}
+
 int GetJulianBaseDate(zStructTimeSeries* ts)
 {
 	return ts->julianBaseDate;
@@ -153,4 +158,104 @@ void SetFloatProfileValues(zStructTimeSeries* ts, float* values, int arrayLength
 	ts->floatProfileValues = (float*)malloc(sizeof(float) * arrayLength);
 	if (ts->floatProfileValues)
 		memcpy(ts->floatProfileValues, values, sizeof(float) * arrayLength);
+}
+
+int GetStartJulianDate(zStructTimeSeries* ts)
+{
+	return ts->startJulianDate;
+}
+
+void SetStartJulianDate(zStructTimeSeries* ts, int value)
+{
+	ts->startJulianDate = value;
+}
+
+int GetStartTimeSeconds(zStructTimeSeries* ts)
+{
+	return ts->startTimeSeconds;
+}
+
+void SetStartTimeSeconds(zStructTimeSeries* ts, int value)
+{
+	ts->startTimeSeconds = value;
+}
+
+float* GetFloatValues(zStructTimeSeries* ts)
+{
+	return ts->floatValues;
+}
+
+void SetFloatValues(zStructTimeSeries* ts, float* value, int arrayLength)
+{
+	if (ts->floatValues)
+		free(ts->floatValues);
+
+	ts->floatValues = (float*)malloc(sizeof(float) * arrayLength);
+	if (ts->floatValues)
+		memcpy(ts->floatValues, value, sizeof(float) * arrayLength);
+}
+
+int GetEndJulianDate(zStructTimeSeries* ts)
+{
+	return ts->endJulianDate;
+}
+
+void SetEndJulianDate(zStructTimeSeries* ts, int value)
+{
+	ts->endJulianDate = value;
+}
+
+int GetEndTimeSeconds(zStructTimeSeries* ts)
+{
+	return ts->endTimeSeconds;
+}
+
+void SetEndTimeSeconds(zStructTimeSeries* ts, int value)
+{
+	ts->endTimeSeconds = value;
+}
+
+int GetTimeIntervalSeconds(zStructTimeSeries* ts)
+{
+	return ts->timeIntervalSeconds;
+}
+
+void SetTimeIntervalSeconds(zStructTimeSeries* ts, int value)
+{
+	ts->timeIntervalSeconds = value;
+}
+
+char* GetCNotes(zStructTimeSeries* ts)
+{
+	return ts->cnotes;
+}
+
+void SetCNotes(zStructTimeSeries* ts, const char* value, int arrayLength)
+{
+	if (ts->cnotes)
+		free(ts->cnotes);
+
+	ts->cnotes = (char*)malloc(sizeof(char) * arrayLength);
+	if (ts->cnotes)
+		memcpy(ts->cnotes, value, sizeof(char) * arrayLength);
+}
+
+int GetCNotesSize(zStructTimeSeries* ts)
+{
+	return ts->cnotesSize;
+}
+
+void SetCNotesSize(zStructTimeSeries* ts, int value)
+{
+	ts->cnotesSize = value;
+}
+
+int GetCNotesLengthTotal(zStructTimeSeries* ts)
+{
+	return ts->cnotesLengthTotal;
+}
+
+void SetCNotesLengthTotal(zStructTimeSeries* ts, int value)
+{
+	ts->cnotesLengthTotal = value;
 }

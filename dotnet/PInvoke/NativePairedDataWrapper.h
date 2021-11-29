@@ -5,7 +5,7 @@
 
 extern "C" {
 	__declspec(dllexport) double* GetDoubleOrdinates(zStructPairedData* pd);
-	__declspec(dllexport) float* GetFloatValues(zStructPairedData* pd);
+	__declspec(dllexport) float* GetPdFloatValues(zStructPairedData* pd);
 	__declspec(dllexport) int GetNumberCurves(zStructPairedData* pd);
 	__declspec(dllexport) int GetNumberOrdinates(zStructPairedData* pd);
 	__declspec(dllexport) double* GetPdDoubleValues(zStructPairedData* pd);

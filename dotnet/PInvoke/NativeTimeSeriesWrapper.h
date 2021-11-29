@@ -13,6 +13,7 @@ extern "C" {
 	__declspec(dllexport) int* GetQuality(zStructTimeSeries* ts);
 	__declspec(dllexport) double* GetDoubleValues(zStructTimeSeries* ts);
 	__declspec(dllexport) int GetTimeGranularitySeconds(zStructTimeSeries* ts);
+	__declspec(dllexport) void SetTimeGranularitySeconds(zStructTimeSeries* ts, int value);
 	__declspec(dllexport) int GetJulianBaseDate(zStructTimeSeries* ts);
 	__declspec(dllexport) int* GetTimes(zStructTimeSeries* ts);
 	__declspec(dllexport) double* GetDoubleProfileDepths(zStructTimeSeries* ts);
@@ -33,7 +34,7 @@ extern "C" {
 	__declspec(dllexport) int GetStartTimeSeconds(zStructTimeSeries* ts);
 	__declspec(dllexport) void SetStartTimeSeconds(zStructTimeSeries* ts, int value);
 	__declspec(dllexport) float* GetFloatValues(zStructTimeSeries* ts);
-	__declspec(dllexport) void SetFloatValues(zStructTimeSeries* ts, float* value);
+	__declspec(dllexport) void SetFloatValues(zStructTimeSeries* ts, float* value, int arrayLength);
 	__declspec(dllexport) int GetEndJulianDate(zStructTimeSeries* ts);
 	__declspec(dllexport) void SetEndJulianDate(zStructTimeSeries* ts, int value);
 	__declspec(dllexport) int GetEndTimeSeconds(zStructTimeSeries* ts);
@@ -41,7 +42,9 @@ extern "C" {
 	__declspec(dllexport) int GetTimeIntervalSeconds(zStructTimeSeries* ts);
 	__declspec(dllexport) void SetTimeIntervalSeconds(zStructTimeSeries* ts, int value);
 	__declspec(dllexport) char* GetCNotes(zStructTimeSeries* ts);
-	__declspec(dllexport) void SetCNotes(zStructTimeSeries* ts, const char* value);
+	__declspec(dllexport) void SetCNotes(zStructTimeSeries* ts, const char* value, int arrayLength);
+	__declspec(dllexport) int GetCNotesSize(zStructTimeSeries* ts);
+	__declspec(dllexport) void SetCNotesSize(zStructTimeSeries* ts, int value);
 	__declspec(dllexport) int GetCNotesLengthTotal(zStructTimeSeries* ts);
 	__declspec(dllexport) void SetCNotesLengthTotal(zStructTimeSeries* ts, int value);
 

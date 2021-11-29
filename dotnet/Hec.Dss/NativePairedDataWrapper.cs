@@ -12,7 +12,7 @@ namespace Hec.Dss
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
     private extern static IntPtr GetDoubleOrdinates(IntPtr pd); 
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
-    private extern static IntPtr GetFloatValues(IntPtr pd);
+    private extern static IntPtr GetPdFloatValues(IntPtr pd);
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
     private extern static int GetNumberCurves(IntPtr pd);
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
@@ -59,7 +59,7 @@ namespace Hec.Dss
     {
       get
       {
-        IntPtr ptr = GetFloatValues(TheStruct);
+        IntPtr ptr = GetPdFloatValues(TheStruct);
         if (ptr != IntPtr.Zero)
         {
           float[] r = new float[NumberValues];
