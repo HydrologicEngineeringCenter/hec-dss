@@ -737,7 +737,7 @@ subroutine testStoreRetrieveTimeSeries()
                                         call assert(numberValues == 6)
                                         if (o == 1) then
                                             do ii = 1, numberValues
-                                                write(*,*) ii, dvals(ii), dvals_out(ii)
+                                                write(*,*) 'After retrieve:',ii, dvals(ii), dvals_out(ii)
                                             end do
                                             do ii = 1, numberValues
                                                 call assert(dvals_out(i) == dvals(i))

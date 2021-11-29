@@ -500,7 +500,7 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 									}
 								}
 								else {
-									printf("%d\t%f", i, tss->doubleValues[i]);
+									printf("During retrieve %d\t%f", i, tss->doubleValues[i]);
 									if (tss->doubleValues[i] != UNDEFINED_DOUBLE) {
 										tss->doubleValues[i] += offset;
 									}
