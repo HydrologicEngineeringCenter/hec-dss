@@ -227,6 +227,7 @@ int zset7(const char* parameter, const char* charVal, int integerValue)
 			zdssVals.iverticalDatum = IVERTICAL_DATUM_OTHER;
 			stringCopy(zdssVals.cverticalDatum, sizeof(zdssVals.cverticalDatum), charVal, _TRUNCATE);
 		}
+		printf("In zset7: zdssVals.cverticalDatum set to %s\n", zdssVals.cverticalDatum);
 	}
 	else if (!strncmp(cparm, "vdow", 4)) {
 		zdssVals.icanOverwriteLocationVerticalDatum = integerValue ? TRUE : FALSE;
