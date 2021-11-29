@@ -149,6 +149,13 @@ int zinquireChar(long long *ifltab, const char *request, char *creturn, size_t c
 	else if (!strncmp(requestlc, "prog", 4)) {
 		stringCopy(creturn, (size_t)creturnSize, zdssVals.cprogramName, strlen(zdssVals.cprogramName));
 	}
+	else if (!strncmp(requestlc, "vdtm", 4)) {
+		number[0] = zdssVals.iverticalDatum;
+		stringCopy(creturn, (size_t)creturnSize, zdssVals.cverticalDatum, strlen(zdssVals.cverticalDatum));
+	}
+	else if (!strncmp(requestlc, "vdow", 4)) {
+		number[0] = zdssVals.icanOverwriteLocationVerticalDatum;
+	}
 
 	else {
 		number[0] = (int)zinquire(ifltab, requestlc);

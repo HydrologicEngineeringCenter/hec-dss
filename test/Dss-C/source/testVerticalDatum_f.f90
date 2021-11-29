@@ -610,14 +610,15 @@ subroutine testStoreRetrieveTimeSeries()
                                     end if
                                     call zclose(ifltab)
                                     if (status == 0) then
+                                        if (i==1.and.j==1.and.k==1.and.l==1.and.m==1.and.n==1.and.o==1) then
+                                            write(*,*) 'Debug'
+                                        end if
                                         !------------------------------------------------------------!
                                         ! set the default vertical datum to the datum we stored with !
                                         !------------------------------------------------------------!
                                         write(*,*) 'variable kk = ',kk
                                         write(*,*) 'Test program setting requesed vertical datum to ',verticalDatums(kk)
                                         call zset('VDTM', verticalDatums(kk), 0)
-                                        call zinquir('VDTM', cVerticalDatum, iVerticalDatum)
-                                        call assert(cVerticalDatum.eq.verticalDatums(kk))
                                         ifltab = 0
                                         if (i == 1) then
                                             call zopen6(ifltab, filename(i), status)
@@ -625,6 +626,8 @@ subroutine testStoreRetrieveTimeSeries()
                                             call zopen7(ifltab, filename(i), status)
                                         end if
                                         call assert(status == 0)
+                                        call zinqir(ifltab, 'VDTM', cVerticalDatum, iVerticalDatum)
+                                        call assert(cVerticalDatum.eq.verticalDatums(kk))
                                         !--------------------------------------------------------!
                                         ! retrieve the time series in the default vertical datum !
                                         !--------------------------------------------------------!
