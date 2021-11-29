@@ -27,7 +27,7 @@ void testDelimitedStringOps() {
     char *text = (char *)malloc(text_size);
     char *cp;
     char *text_value = "theFirstParameter:theFirstValue;theSecondParameter:theSecondValue";
-    sprintf(text, text_value);
+    sprintf(text, "%s", text_value);
     cp = extractFromDelimitedString(&text, "theFirstParameter", ":", TRUE, FALSE, ';');
     assert(!strcmp(cp, "theFirstValue"));
     free(cp);
@@ -40,7 +40,7 @@ void testDelimitedStringOps() {
     cp = extractFromDelimitedString(&text, "THEFIRSTPARAMETER", ":", FALSE, TRUE, ';');
     assert(!strcmp(cp, "theFirstValue"));
     assert(!strcmp(text, "theSecondParameter:theSecondValue"));
-    sprintf(text, text_value);
+    sprintf(text, "%s", text_value);
     free(cp);
     cp = extractFromDelimitedString(&text, "theSecondParameter", ":", TRUE, TRUE, ';');
     assert(!strcmp(cp, "theSecondValue"));
