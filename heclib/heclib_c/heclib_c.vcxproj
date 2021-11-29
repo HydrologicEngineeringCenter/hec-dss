@@ -438,6 +438,7 @@
     <ClCompile Include="src\Utilities\trimLength.c" />
     <ClCompile Include="src\Utilities\trimPositions.c" />
     <ClCompile Include="src\Utilities\upperCase.c" />
+    <ClCompile Include="src\Utilities\verticalDatum.c" />
     <ClCompile Include="src\Utilities\zeroFill.c" />
     <ClCompile Include="src\Utilities\zmissingFlag.c" />
   </ItemGroup>
@@ -449,6 +450,7 @@
     <ClInclude Include="src\headers\heclib6.h" />
     <ClInclude Include="src\headers\heclib7.h" />
     <ClInclude Include="src\headers\heclibDate.h" />
+    <ClInclude Include="src\headers\verticalDatum.h" />
     <ClInclude Include="src\headers\zcontrol.h" />
     <ClInclude Include="src\headers\zdataTypeDescriptions.h" />
     <ClInclude Include="src\headers\zdssKeys.h" />

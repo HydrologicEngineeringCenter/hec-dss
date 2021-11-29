@@ -113,11 +113,17 @@ extern "C" {
 #define XML_IS_NOT_A_VALID_VERTICAL_DATUM_INFO_INSTANCE "XML is not a valid vertical datum info instance"
 #define XML_IS_NOT_WELL_FORMED                          "XML is not well formed"
  
+#ifdef _MSC_VER
+
+#define MIN(a, b) min(a,b)
+
+#elif
 #define MIN(a, b) ({         \
     __typeof__ (a) _a = (a); \
     __typeof__ (b) _b = (b); \
     _a < _b ? _a : _b;       \
 })
+#endif
 
 typedef struct verticalDatumInfo_s {
     char   nativeDatum[CVERTICAL_DATUM_SIZE];

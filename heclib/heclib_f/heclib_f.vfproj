@@ -47,6 +47,7 @@
 				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration></Configurations>
 	<Files>
 		<Filter Name="Header Files" Filter="fi;fd">
+		<File RelativePath=".\src\headers\verticalDatumFortran.h"/>
 		<File RelativePath=".\src\headers\zdssbf.h"/>
 		<File RelativePath=".\src\headers\zdssbz.h"/>
 		<File RelativePath=".\src\headers\zdssca.h"/>
@@ -259,8 +260,11 @@
 		<File RelativePath=".\src\Support\xrealc.f"/>
 		<File RelativePath=".\src\Support\xreald.f"/>
 		<File RelativePath=".\src\Support\ymddat.f"/></Filter>
+		<File RelativePath=".\src\Support\crack_unit_spec.f"/>
 		<File RelativePath=".\src\dssCopyStatus.f"/>
+		<File RelativePath=".\src\Support\get_user_header_param.f"/>
 		<File RelativePath=".\src\getCurrentRec.f"/>
+		<File RelativePath=".\src\Support\remove_user_header_param.f"/>
 		<File RelativePath=".\src\zabort6.f"/>
 		<File RelativePath=".\src\zbdump6.f"/>
 		<File RelativePath=".\src\zbegdt6.f"/>
