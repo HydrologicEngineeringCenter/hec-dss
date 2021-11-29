@@ -514,7 +514,9 @@ subroutine testStoreRetrieveTimeSeries()
                                                 status)
                                         end if
                                     end if
+                                    write(*,*) 'CP1'
                                     call assert((status == 0) .eqv. expectSuccess)
+                                    write(*,*) 'CP2'
                                     if (i==2.and.j==2.and.k==1.and.l==1.and.m==1.and.n==1.and.o==1) then
                                         !-------------------------------------------------------------------------------!
                                         ! change of vertical datum information in DSS 7, need to update location record !
@@ -613,6 +615,7 @@ subroutine testStoreRetrieveTimeSeries()
                                         !------------------------------------------------------------!
                                         ! set the default vertical datum to the datum we stored with !
                                         !------------------------------------------------------------!
+                                        write(*,*) 'CP3'
                                         call zset('VDTM', verticalDatums(kk), 0)
                                         !--------------------------------------------------------!
                                         ! retrieve the time series in the default vertical datum !
@@ -624,7 +627,8 @@ subroutine testStoreRetrieveTimeSeries()
                                             call zopen7(ifltab, filename(i), status)
                                         end if
                                             call assert(status == 0)
-                                        if (n == 1) then
+                                        write(*,*) 'CP5'
+                                            if (n == 1) then
                                             if (o == 1) then
                                                 !-------------!
                                                 ! RTS doubles !
@@ -729,18 +733,23 @@ subroutine testStoreRetrieveTimeSeries()
                                                     status)              ! ISTAT
                                             end if
                                         end if
+                                        write(*,*) 'CP6'
                                         call zclose(ifltab)
                                         call assert(status == 0)
+                                        write(*,*) 'CP7'
                                         !------------------------------------------------------!
                                         ! compare the retrieved time seires to what was stored !
                                         !------------------------------------------------------!
                                         call assert(numberValues == 6)
+                                        write(*,*) 'CP8'
                                         if (o == 1) then
                                             do ii = 1, numberValues
+                                                write(*,*) 'CP9'
                                                 call assert(dvals_out(i) == dvals(i))
                                             end do
                                         else
                                             do ii = 1, numberValues
+                                                write(*,*) 'CP10'
                                                 call assert(fvals_out(i) == fvals(i))
                                             end do
                                         end if
