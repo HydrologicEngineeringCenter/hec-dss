@@ -152,6 +152,7 @@ int zquery(const char* parameter,  char* charVal, size_t lenCharVal, int *intege
 		status = STATUS_OKAY;
 	}
 	else if (!strncmp(cparm, "vdtm", 4)) {
+		printf("In zquery: zdssVals.cverticalDatum = %s\n", zdssVals.cverticalDatum);
 		*integerValue = zdssVals.iverticalDatum;
 		stringCopy(charVal, (size_t)lenCharVal, zdssVals.cverticalDatum, _TRUNCATE);
 		status = STATUS_OKAY;
