@@ -213,6 +213,7 @@ int zset7(const char* parameter, const char* charVal, int integerValue)
 		else if (!strncasecmp(charVal, CVERTICAL_DATUM_NAVD88, lenCharVal)) {
 			zdssVals.iverticalDatum = IVERTICAL_DATUM_NAVD88;
 			stringCopy(zdssVals.cverticalDatum, sizeof(zdssVals.cverticalDatum), CVERTICAL_DATUM_NAVD88, _TRUNCATE);
+			printf("In zet7: zdssVals.cverticalDatum = %s\n", zdssVals.cverticalDatum);
 		}
 		else if (!strncasecmp(charVal, CVERTICAL_DATUM_NGVD29, lenCharVal)) {
 			zdssVals.iverticalDatum = IVERTICAL_DATUM_NGVD29;
