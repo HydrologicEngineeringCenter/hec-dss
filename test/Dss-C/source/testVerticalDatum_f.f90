@@ -610,6 +610,13 @@ subroutine testStoreRetrieveTimeSeries()
                                     end if
                                     call zclose(ifltab)
                                     if (status == 0) then
+                                        ifltab = 0
+                                        if (i == 1) then
+                                            call zopen6(ifltab, filename(i), status)
+                                        else
+                                            call zopen7(ifltab, filename(i), status)
+                                        end if
+                                        call assert(status == 0)
                                         !------------------------------------------------------------!
                                         ! set the default vertical datum to the datum we stored with !
                                         !------------------------------------------------------------!
@@ -619,14 +626,7 @@ subroutine testStoreRetrieveTimeSeries()
                                         !--------------------------------------------------------!
                                         ! retrieve the time series in the default vertical datum !
                                         !--------------------------------------------------------!
-                                        ifltab = 0
-                                        if (i == 1) then
-                                            call zopen6(ifltab, filename(i), status)
-                                        else
-                                            call zopen7(ifltab, filename(i), status)
-                                        end if
-                                            call assert(status == 0)
-                                            if (n == 1) then
+                                        if (n == 1) then
                                             if (o == 1) then
                                                 !-------------!
                                                 ! RTS doubles !
