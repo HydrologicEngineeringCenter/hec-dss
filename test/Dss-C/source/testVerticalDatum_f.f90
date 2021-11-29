@@ -316,7 +316,7 @@ subroutine testStoreRetrieveTimeSeries()
                                     userHeaderStr = ' '
                                     unitSpec = unit(l)
                                     count = count + 1
-                                    ! write(0,*) i, j, k, l, m, n, o, p
+                                    write(*,*) i, j, k, l, m, n, o, p
                                     ifltab = 0
                                     if (i == 1) then
                                         call zopen6(ifltab, filename(i), status)
@@ -417,9 +417,9 @@ subroutine testStoreRetrieveTimeSeries()
                                         expectSuccess = .false.
                                     end if
                                     if (expectSuccess) then
-                                        write(0,'(a,i3,a)') 'Time series test ',count,' expecting SUCCESS'
+                                        write(*,'(a,i3,a)') 'Time series test ',count,' expecting SUCCESS'
                                     else
-                                        write(0,'(a,i3,a)') 'Time seires test ',count,' expecting ERROR'
+                                        write(*,'(a,i3,a)') 'Time seires test ',count,' expecting ERROR'
                                     end if
                                     !-------------------------------------------------------!
                                     ! store the time series in the specified vertical datum !
