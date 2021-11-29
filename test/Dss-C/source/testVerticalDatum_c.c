@@ -153,9 +153,14 @@ void testZsetZquery() {
     int   intVal;
     char  charVal[17];
 
+    charVal[0] = '\0';
+
     zquery("VERS", charVal, sizeof(charVal), &intVal);
     assert(intVal == 7);
 
+    //------------------------------------//
+    // query values that haven't been set //
+    //------------------------------------//
     zquery("VDTM", charVal, sizeof(charVal), &intVal);
     assert(intVal == IVERTICAL_DATUM_UNSET);
     assert(!strcmp(charVal, CVERTICAL_DATUM_UNSET));
@@ -163,6 +168,9 @@ void testZsetZquery() {
     zquery("VDOW", "", 0, &intVal);
     assert(intVal == FALSE);
 
+    //-------------------------//
+    // test setting by integer //
+    //-------------------------//
     zset("VDTM", "", 1);
     zquery("VDTM", charVal, sizeof(charVal), &intVal);
     assert(intVal == IVERTICAL_DATUM_NAVD88);
@@ -176,8 +184,8 @@ void testZsetZquery() {
     intVal = zset("VDTM", "", 4);
     // assert(intVal == STATUS_NOT_OKAY); bug, always returns STATUS_OK - Jira issue DSS-122
     zquery("VDTM", charVal, sizeof(charVal), &intVal);
-    assert(intVal == IVERTICAL_DATUM_NGVD29);
-    assert(!strcmp(charVal, CVERTICAL_DATUM_NGVD29));
+    assert(intVal == IVERTICAL_DATUM_NGVD29);         // unchanged from previous call
+    assert(!strcmp(charVal, CVERTICAL_DATUM_NGVD29)); // unchanged from previous call
 
     zset("VDTM", "", 3);
     zquery("VDTM", charVal, sizeof(charVal), &intVal);
@@ -191,6 +199,9 @@ void testZsetZquery() {
     assert(intVal == IVERTICAL_DATUM_UNSET);
     assert(!strcmp(charVal, CVERTICAL_DATUM_UNSET));
 
+    //----------------------//
+    // test setting by name //
+    //----------------------//
     zset("VDTM", CVERTICAL_DATUM_NAVD88, 0);
     zquery("VDTM", charVal, sizeof(charVal), &intVal);
     assert(intVal == IVERTICAL_DATUM_NAVD88);

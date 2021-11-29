@@ -180,7 +180,30 @@ int zset7(const char* parameter, const char* charVal, int integerValue)
 		zdssVals.copyEmptyRecords = integerValue;
 	}
 	else if (!strncmp(cparm, "vdtm", 4)) {
-		if (charVal == NULL || charVal[0] == '\0') {
+		if (charVal != NULL && charVal[0] != '\0') {
+			if (!strncasecmp(charVal, CVERTICAL_DATUM_UNSET, lenCharVal)) {
+				zdssVals.iverticalDatum = IVERTICAL_DATUM_UNSET;
+				stringCopy(zdssVals.cverticalDatum, sizeof(zdssVals.cverticalDatum), CVERTICAL_DATUM_UNSET, _TRUNCATE);
+			}
+			else if (!strncasecmp(charVal, CVERTICAL_DATUM_NAVD88, lenCharVal)) {
+				zdssVals.iverticalDatum = IVERTICAL_DATUM_NAVD88;
+				stringCopy(zdssVals.cverticalDatum, sizeof(zdssVals.cverticalDatum), CVERTICAL_DATUM_NAVD88, _TRUNCATE);
+			}
+			else if (!strncasecmp(charVal, CVERTICAL_DATUM_NGVD29, lenCharVal)) {
+				zdssVals.iverticalDatum = IVERTICAL_DATUM_NGVD29;
+				stringCopy(zdssVals.cverticalDatum, sizeof(zdssVals.cverticalDatum), CVERTICAL_DATUM_NGVD29, _TRUNCATE);
+			}
+			else if (!strncasecmp(charVal, CVERTICAL_DATUM_OTHER, lenCharVal)) {
+				zdssVals.iverticalDatum = IVERTICAL_DATUM_OTHER;
+				stringCopy(zdssVals.cverticalDatum, sizeof(zdssVals.cverticalDatum), CVERTICAL_DATUM_OTHER, _TRUNCATE);
+			}
+			else {
+				// named local vertical datum
+				zdssVals.iverticalDatum = IVERTICAL_DATUM_OTHER;
+				stringCopy(zdssVals.cverticalDatum, sizeof(zdssVals.cverticalDatum), charVal, _TRUNCATE);
+			}
+		}
+		else {
 			if (integerValue == IVERTICAL_DATUM_UNSET) {
 				zdssVals.iverticalDatum = IVERTICAL_DATUM_UNSET;
 				stringCopy(zdssVals.cverticalDatum, sizeof(zdssVals.cverticalDatum), CVERTICAL_DATUM_UNSET, _TRUNCATE);
@@ -206,27 +229,6 @@ int zset7(const char* parameter, const char* charVal, int integerValue)
 				printf("In zset7: zdssVals.cverticalDatum set to %s (%d)\n", zdssVals.cverticalDatum, zdssVals.iverticalDatum);
 				return STATUS_NOT_OKAY;
 			}
-		}
-		else if (!strncasecmp(charVal, CVERTICAL_DATUM_UNSET, lenCharVal)) {
-			zdssVals.iverticalDatum = IVERTICAL_DATUM_UNSET;
-			stringCopy(zdssVals.cverticalDatum, sizeof(zdssVals.cverticalDatum), CVERTICAL_DATUM_UNSET, _TRUNCATE);
-		}
-		else if (!strncasecmp(charVal, CVERTICAL_DATUM_NAVD88, lenCharVal)) {
-			zdssVals.iverticalDatum = IVERTICAL_DATUM_NAVD88;
-			stringCopy(zdssVals.cverticalDatum, sizeof(zdssVals.cverticalDatum), CVERTICAL_DATUM_NAVD88, _TRUNCATE);
-		}
-		else if (!strncasecmp(charVal, CVERTICAL_DATUM_NGVD29, lenCharVal)) {
-			zdssVals.iverticalDatum = IVERTICAL_DATUM_NGVD29;
-			stringCopy(zdssVals.cverticalDatum, sizeof(zdssVals.cverticalDatum), CVERTICAL_DATUM_NGVD29, _TRUNCATE);
-		}
-		else if (!strncasecmp(charVal, CVERTICAL_DATUM_OTHER, lenCharVal)) {
-			zdssVals.iverticalDatum = IVERTICAL_DATUM_OTHER;
-			stringCopy(zdssVals.cverticalDatum, sizeof(zdssVals.cverticalDatum), CVERTICAL_DATUM_OTHER, _TRUNCATE);
-		}
-		else {
-			// named local vertical datum
-			zdssVals.iverticalDatum = IVERTICAL_DATUM_OTHER;
-			stringCopy(zdssVals.cverticalDatum, sizeof(zdssVals.cverticalDatum), charVal, _TRUNCATE);
 		}
 		printf("In zset7: zdssVals.cverticalDatum set to %s (%d)\n", zdssVals.cverticalDatum, zdssVals.iverticalDatum);
 	}
