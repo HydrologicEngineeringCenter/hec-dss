@@ -613,6 +613,8 @@ subroutine testStoreRetrieveTimeSeries()
                                         !------------------------------------------------------------!
                                         ! set the default vertical datum to the datum we stored with !
                                         !------------------------------------------------------------!
+                                        write(*,*) 'variable kk = ',kk
+                                        write(*,*) 'Test program setting requesed vertical datum to ',verticalDatums(kk)
                                         call zset('VDTM', verticalDatums(kk), 0)
                                         !--------------------------------------------------------!
                                         ! retrieve the time series in the default vertical datum !
