@@ -744,6 +744,9 @@ subroutine testStoreRetrieveTimeSeries()
                                         write(*,*) 'CP8'
                                         if (o == 1) then
                                             do ii = 1, numberValues
+                                                write(*,*) i, dvals(i), dvals_out(i)
+                                            end do
+                                            do ii = 1, numberValues
                                                 write(*,*) 'CP9'
                                                 call assert(dvals_out(i) == dvals(i))
                                             end do
