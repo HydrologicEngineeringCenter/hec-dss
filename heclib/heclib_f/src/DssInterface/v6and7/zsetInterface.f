@@ -26,7 +26,10 @@ C
         return
       ENDIF
 C
+      write(*,*) 'In zset: setting ',cparam,' to ',calpha
+      write(*,*) 'Calling zset6'
       CALL zset6(CPARAM, CALPHA, INUMB)
+      write(*,*) 'Calling zset7'
       CALL zset7(CPARAM, CALPHA, INUMB)
 C
       RETURN

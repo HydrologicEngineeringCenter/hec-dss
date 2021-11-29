@@ -610,9 +610,6 @@ subroutine testStoreRetrieveTimeSeries()
                                     end if
                                     call zclose(ifltab)
                                     if (status == 0) then
-                                        if (i==1.and.j==1.and.k==1.and.l==1.and.m==1.and.n==1.and.o==1) then
-                                            write(*,*) 'Debug'
-                                        end if
                                         !------------------------------------------------------------!
                                         ! set the default vertical datum to the datum we stored with !
                                         !------------------------------------------------------------!
@@ -773,14 +770,14 @@ subroutine testStoreRetrievePairedData()
     implicit none
 
     integer (kind=8)        :: ifltab(250)
-    integer (kind=4)        :: status, numberOrdinates, numberCurves, ihoriz, nvals, count
+    integer (kind=4)        :: status, numberOrdinates, numberCurves, ihoriz, nvals, count, iVerticalDatum
     integer (kind=4)        :: userHeader(100), userHeaderLen, i, j, k, k2, k3, kk, l, m, n, o, p, ii, len
     real (kind=8)           :: dordinates(6,3), dvalues(6,3), dvals(12), dvals_out(12)
     real (kind=4)           :: fordinates(6,3), fvalues(6,3), fvals(12), fvals_out(12)
     character (len=300)     :: errmsg, vdiStr
     character (len=80)      :: filename(2)
     character (len=80)      :: pathnames(2,2)
-    character (len=16)      :: unit(3), type, verticalDatums(3), c1unit, c2unit, c1type, c2type, clabel
+    character (len=16)      :: unit(3), type, verticalDatums(3), c1unit, c2unit, c1type, c2type, clabel, cVerticalDatum
     character (len=32)      :: unitSpec
     character (len=4)       :: startTime, endTime
     character (len=400)     :: userHeaderStr
@@ -921,7 +918,7 @@ subroutine testStoreRetrievePairedData()
                                     userHeaderStr = ' '
                                     unitSpec = unit(l)
                                     count = count + 1
-                                    ! write(0,*) i, j, k, l, m, n, o, p
+                                    write(0,*) i, j, k, l, m, n, o, p
                                     ifltab = 0
                                     if (i == 1) then
                                         call zopen6(ifltab, filename(i), status)
@@ -1218,20 +1215,28 @@ subroutine testStoreRetrievePairedData()
                                       !------------------------------------------------------------!
                                       ! set the default vertical datum to the datum we stored with !
                                       !------------------------------------------------------------!
-                                      call zset('VDTM', verticalDatums(kk), 0)
+                                        write(*,*) 'variable kk = ',kk
+                                        write(*,*) 'Test program setting requesed vertical datum to ',verticalDatums(kk)
+                                        call zset('VDTM', verticalDatums(kk), 0)
+                                        ifltab = 0
+                                        if (i == 1) then
+                                            call zopen6(ifltab, filename(i), status)
+                                        else
+                                            call zopen7(ifltab, filename(i), status)
+                                        end if
+                                        call assert(status == 0)
+                                        call zinqir(ifltab, 'VDTM', cVerticalDatum, iVerticalDatum)
+                                        write(*,*) 'zinqir returned vertical datum of ',cVerticalDatum
+                                        call assert(cVerticalDatum.eq.verticalDatums(kk))
                                       !--------------------------------------------------------!
                                       ! retrieve the paired data in the default vertical datum !
                                       !--------------------------------------------------------!
-                                      if (i == 1) then
-                                          call zopen6(ifltab, filename(i), status)
-                                      else
-                                          call zopen7(ifltab, filename(i), status)
-                                      end if
-                                      call assert(status == 0)
                                       if (o == 1) then
                                         !---------!
                                         ! doubles !
                                         !---------!
+                                        dvals(1:6) = dordinates(:,l)
+                                        dvals(7:12) = dvalues(:,l)
                                         call zrpdd(           &
                                             ifltab,           & ! IFLTAB
                                             pathnames(o,n),   & ! CPATH
@@ -1256,6 +1261,8 @@ subroutine testStoreRetrievePairedData()
                                         !--------!
                                         ! floats !
                                         !--------!
+                                        fvals(1:6) = fordinates(:,l)
+                                        fvals(7:12) = fvalues(:,l)
                                         call zrpd(            &
                                             ifltab,           & ! IFLTAB
                                             pathnames(o,n),   & ! CPATH
@@ -1267,7 +1274,7 @@ subroutine testStoreRetrievePairedData()
                                             c2unit,           & ! C2UNIT
                                             c2type,           & ! C2TYPE
                                             fvals_out,        & ! SVALUES
-                                            size(dvals),      & ! KVALS
+                                            size(fvals),      & ! KVALS
                                             nvals,            & ! NVALS
                                             clabel,           & ! CLABEL
                                             0,                & ! KLABEL
@@ -1277,6 +1284,7 @@ subroutine testStoreRetrievePairedData()
                                             userHeaderLen,    & ! NUHEAD
                                             status)             ! ISTAT
                                       end if
+                                      write(*,*) 'CP1'
                                       call assert(status == 0)
                                       call assert(numberOrdinates == 6)
                                       call assert(numberCurves == 1)
@@ -1284,14 +1292,20 @@ subroutine testStoreRetrievePairedData()
                                       call assert(c2unit == unit(l))
                                       call assert(c1type == type)
                                       call assert(c2type == type)
+                                      write(*,*) 'CP2'
                                       if (o == 1) then
+                                        write(*,*) 'CP3'
                                         call assert(nvals == size(dvals))
                                         do ii = 1, nvals
+                                            write(*,*) 'CP4'
                                             call assert(dvals_out(ii) == dvals(ii))
                                         end do
                                       else
+                                        write(*,*) 'CP5'
                                         call assert(nvals == size(fvals))
                                         do ii = 1, nvals
+                                            write(*,*) 'CP6'
+                                            write(*,*) ii, fvals_out(ii), fvals(ii)
                                             call assert(fvals_out(ii) == fvals(ii))
                                         end do
                                       end if
