@@ -203,6 +203,7 @@ int zset7(const char* parameter, const char* charVal, int integerValue)
 				if (zmessageLevel(ifltabTemp, MESS_METHOD_UTILITY_ID, MESS_LEVEL_INTERNAL_DIAG_2)) {
 					zmessageDebug(ifltabTemp, DSS_FUNCTION_zset_ID, "Invalid integer value for \"VDTM\":   ", buf);
 				}
+				printf("In zset7: zdssVals.cverticalDatum set to %s (%d)\n", zdssVals.cverticalDatum, zdssVals.iverticalDatum);
 				return STATUS_NOT_OKAY;
 			}
 		}
