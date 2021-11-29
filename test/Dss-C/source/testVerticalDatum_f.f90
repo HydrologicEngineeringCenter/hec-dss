@@ -158,7 +158,7 @@ subroutine testStoreRetrieveTimeSeries()
     implicit none
 
     integer (kind=8)        :: ifltab(250)
-    integer (kind=4)        :: status, numberValues, i, j, k, k2, k3, kk, l, m, n, o, p, ii, len
+    integer (kind=4)        :: status, numberValues, i, j, k, k2, k3, kk, l, m, n, o, p, ii, len, iVerticalDatum
     integer (kind=4)        :: quality(24), itimes(6,2),userHeader(100), userHeaderLen, count
     integer (kind=4)        :: intervalOffset, compressionMethod, timesRetrieved(24), baseDate
     integer (kind=4)        :: startDay, endDay
@@ -167,7 +167,7 @@ subroutine testStoreRetrieveTimeSeries()
     character (len=300)     :: errmsg, vdiStr
     character (len=80)      :: filename(2)
     character (len=80)      :: pathnames(2,2)
-    character (len=16)      :: unit(3), type, verticalDatums(3)
+    character (len=16)      :: unit(3), type, verticalDatums(3), cVerticalDatum
     character (len=32)      :: unitSpec
     character (len=16)      :: startDate(2), endDate(2)
     character (len=4)       :: startTime, endTime
@@ -616,6 +616,8 @@ subroutine testStoreRetrieveTimeSeries()
                                         write(*,*) 'variable kk = ',kk
                                         write(*,*) 'Test program setting requesed vertical datum to ',verticalDatums(kk)
                                         call zset('VDTM', verticalDatums(kk), 0)
+                                        call zinquir('VDTM', cVerticalDatum, iVerticalDatum)
+                                        call assert(cVerticalDatum.eq.verticalDatums(kk))
                                         ifltab = 0
                                         if (i == 1) then
                                             call zopen6(ifltab, filename(i), status)
