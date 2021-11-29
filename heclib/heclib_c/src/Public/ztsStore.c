@@ -612,8 +612,9 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 						tmpDoubleVals = (double *)calloc(tss->numberValues, sizeof(double));
 						for (int i = 0; i < tss->numberValues; ++i) {
 							tmpDoubleVals[i] = tss->doubleValues[i] - offset;
-							printf("%d\t%f\t%f", i, tss->doubleValues[i], tmpDoubleVals[i]);
+							printf("%d\t%f\t%f\n", i, tss->doubleValues[i], tmpDoubleVals[i]);
 						}
+						printf("\n");
 						origDoubleVals = tss->doubleValues;
 						tss->doubleValues = tmpDoubleVals;
 					}
