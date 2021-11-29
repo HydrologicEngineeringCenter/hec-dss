@@ -278,7 +278,7 @@ subroutine testStoreRetrieveTimeSeries()
     !     1 = specify
     !     2 = don't specify (use previously stored)
     !
-    call zset('MLVL', '', 1)
+    ! call zset('MLVL', '', 1)
     count = 0
     do i = 1, 2
         do j = 1, 2
