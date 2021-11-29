@@ -627,6 +627,7 @@ subroutine testStoreRetrieveTimeSeries()
                                         end if
                                         call assert(status == 0)
                                         call zinqir(ifltab, 'VDTM', cVerticalDatum, iVerticalDatum)
+                                        write(*,*) 'zinqir returned vertical datum of ',cVerticalDatum
                                         call assert(cVerticalDatum.eq.verticalDatums(kk))
                                         !--------------------------------------------------------!
                                         ! retrieve the time series in the default vertical datum !
