@@ -182,22 +182,22 @@ int zset7(const char* parameter, const char* charVal, int integerValue)
 	else if (!strncmp(cparm, "vdtm", 4)) {
 		if (charVal != NULL && charVal[0] != '\0') {
 			printf("In zset7: using character value %s\n", charVal);
-			if (!strncasecmp(charVal, CVERTICAL_DATUM_UNSET, lenCharVal)) {
+			if (!strcasecmp(charVal, CVERTICAL_DATUM_UNSET)) {
 				printf("CP1\n");
 				zdssVals.iverticalDatum = IVERTICAL_DATUM_UNSET;
 				stringCopy(zdssVals.cverticalDatum, sizeof(zdssVals.cverticalDatum), CVERTICAL_DATUM_UNSET, _TRUNCATE);
 			}
-			else if (!strncasecmp(charVal, CVERTICAL_DATUM_NAVD88, lenCharVal)) {
+			else if (!strcasecmp(charVal, CVERTICAL_DATUM_NAVD88)) {
 				printf("CP2\n");
 				zdssVals.iverticalDatum = IVERTICAL_DATUM_NAVD88;
 				stringCopy(zdssVals.cverticalDatum, sizeof(zdssVals.cverticalDatum), CVERTICAL_DATUM_NAVD88, _TRUNCATE);
 			}
-			else if (!strncasecmp(charVal, CVERTICAL_DATUM_NGVD29, lenCharVal)) {
+			else if (!strcasecmp(charVal, CVERTICAL_DATUM_NGVD29)) {
 				printf("CP3\n");
 				zdssVals.iverticalDatum = IVERTICAL_DATUM_NGVD29;
 				stringCopy(zdssVals.cverticalDatum, sizeof(zdssVals.cverticalDatum), CVERTICAL_DATUM_NGVD29, _TRUNCATE);
 			}
-			else if (!strncasecmp(charVal, CVERTICAL_DATUM_OTHER, lenCharVal)) {
+			else if (!strcasecmp(charVal, CVERTICAL_DATUM_OTHER)) {
 				printf("CP4\n");
 				zdssVals.iverticalDatum = IVERTICAL_DATUM_OTHER;
 				stringCopy(zdssVals.cverticalDatum, sizeof(zdssVals.cverticalDatum), CVERTICAL_DATUM_OTHER, _TRUNCATE);
