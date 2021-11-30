@@ -316,7 +316,7 @@ subroutine testStoreRetrieveTimeSeries()
                                     userHeaderStr = ' '
                                     unitSpec = unit(l)
                                     count = count + 1
-                                    write(*,*) i, j, k, l, m, n, o, p
+                                    ! write(*,*) i, j, k, l, m, n, o, p
                                     ifltab = 0
                                     if (i == 1) then
                                         call zopen6(ifltab, filename(i), status)
@@ -610,6 +610,13 @@ subroutine testStoreRetrieveTimeSeries()
                                     end if
                                     call zclose(ifltab)
                                     if (status == 0) then
+                                        !------------------------------------------------------------!
+                                        ! set the default vertical datum to the datum we stored with !
+                                        !------------------------------------------------------------!
+                                        call zset('VDTM', verticalDatums(kk), 0)
+                                        !--------------------------------------------------------!
+                                        ! retrieve the time series in the default vertical datum !
+                                        !--------------------------------------------------------!
                                         ifltab = 0
                                         if (i == 1) then
                                             call zopen6(ifltab, filename(i), status)
@@ -617,17 +624,6 @@ subroutine testStoreRetrieveTimeSeries()
                                             call zopen7(ifltab, filename(i), status)
                                         end if
                                         call assert(status == 0)
-                                        !------------------------------------------------------------!
-                                        ! set the default vertical datum to the datum we stored with !
-                                        !------------------------------------------------------------!
-                                        write(*,*) 'Setting requested vertical datum to ',verticalDatums(kk)
-                                        call zset('VDTM', verticalDatums(kk), 0)
-                                        call zinqir(ifltab, 'VDTM', cVerticalDatum, iVerticalDatum)
-                                        write(*,*) 'Checking requested vertical datum : ',cVerticalDatum
-                                        call assert(cVerticalDatum.eq.verticalDatums(kk))
-                                        !--------------------------------------------------------!
-                                        ! retrieve the time series in the default vertical datum !
-                                        !--------------------------------------------------------!
                                         if (n == 1) then
                                             if (o == 1) then
                                                 !-------------!
@@ -1214,10 +1210,13 @@ subroutine testStoreRetrievePairedData()
                                     end if
                                     call zclose(ifltab)
                                     if (status == 0) then
-                                      !------------------------------------------------------------!
-                                      ! set the default vertical datum to the datum we stored with !
-                                      !------------------------------------------------------------!
+                                        !------------------------------------------------------------!
+                                        ! set the default vertical datum to the datum we stored with !
+                                        !------------------------------------------------------------!
                                         call zset('VDTM', verticalDatums(kk), 0)
+                                      !--------------------------------------------------------!
+                                      ! retrieve the paired data in the default vertical datum !
+                                      !--------------------------------------------------------!
                                         ifltab = 0
                                         if (i == 1) then
                                             call zopen6(ifltab, filename(i), status)
@@ -1225,80 +1224,77 @@ subroutine testStoreRetrievePairedData()
                                             call zopen7(ifltab, filename(i), status)
                                         end if
                                         call assert(status == 0)
-                                      !--------------------------------------------------------!
-                                      ! retrieve the paired data in the default vertical datum !
-                                      !--------------------------------------------------------!
-                                      if (o == 1) then
-                                        !---------!
-                                        ! doubles !
-                                        !---------!
-                                        dvals(1:6) = dordinates(:,l)
-                                        dvals(7:12) = dvalues(:,l)
-                                        call zrpdd(           &
-                                            ifltab,           & ! IFLTAB
-                                            pathnames(o,n),   & ! CPATH
-                                            numberOrdinates,  & ! NORD
-                                            numberCurves,     & ! NCURVE
-                                            ihoriz,           & ! IHORIZ
-                                            c1unit,           & ! C1UNIT
-                                            c1type,           & ! C1TYPE
-                                            c2unit,           & ! C2UNIT
-                                            c2type,           & ! C2TYPE
-                                            dvals_out,        & ! DVALUES
-                                            size(dvals),      & ! KVALS
-                                            nvals,            & ! NVALS
-                                            clabel,           & ! CLABEL
-                                            0,                & ! KLABEL
-                                            l_label,          & ! LABEL
-                                            userHeader,       & ! IUHEAD
-                                            size(userHeader), & ! KUHEAD
-                                            userHeaderLen,    & ! NUHEAD
-                                            status)             ! ISTAT
-                                      else
-                                        !--------!
-                                        ! floats !
-                                        !--------!
-                                        fvals(1:6) = fordinates(:,l)
-                                        fvals(7:12) = fvalues(:,l)
-                                        call zrpd(            &
-                                            ifltab,           & ! IFLTAB
-                                            pathnames(o,n),   & ! CPATH
-                                            numberOrdinates,  & ! NORD
-                                            numberCurves,     & ! NCURVE
-                                            ihoriz,           & ! IHORIZ
-                                            c1unit,           & ! C1UNIT
-                                            c1type,           & ! C1TYPE
-                                            c2unit,           & ! C2UNIT
-                                            c2type,           & ! C2TYPE
-                                            fvals_out,        & ! SVALUES
-                                            size(fvals),      & ! KVALS
-                                            nvals,            & ! NVALS
-                                            clabel,           & ! CLABEL
-                                            0,                & ! KLABEL
-                                            l_label,          & ! LABEL
-                                            userHeader,       & ! IUHEAD
-                                            size(userHeader), & ! KUHEAD
-                                            userHeaderLen,    & ! NUHEAD
-                                            status)             ! ISTAT
-                                      end if
-                                      call assert(status == 0)
-                                      call assert(numberOrdinates == 6)
-                                      call assert(numberCurves == 1)
-                                      call assert(c1unit == unit(l))
-                                      call assert(c2unit == unit(l))
-                                      call assert(c1type == type)
-                                      call assert(c2type == type)
-                                      if (o == 1) then
-                                        call assert(nvals == size(dvals))
-                                        do ii = 1, nvals
-                                            call assert(dvals_out(ii) == dvals(ii))
-                                        end do
-                                      else
-                                        call assert(nvals == size(fvals))
-                                        do ii = 1, nvals
-                                            call assert(fvals_out(ii) == fvals(ii))
-                                        end do
-                                      end if
+                                        if (o == 1) then
+                                            !---------!
+                                            ! doubles !
+                                            !---------!
+                                            dvals(1:6) = dordinates(:,l)
+                                            dvals(7:12) = dvalues(:,l)
+                                            call zrpdd(           &
+                                                ifltab,           & ! IFLTAB
+                                                pathnames(o,n),   & ! CPATH
+                                                numberOrdinates,  & ! NORD
+                                                numberCurves,     & ! NCURVE
+                                                ihoriz,           & ! IHORIZ
+                                                c1unit,           & ! C1UNIT
+                                                c1type,           & ! C1TYPE
+                                                c2unit,           & ! C2UNIT
+                                                c2type,           & ! C2TYPE
+                                                dvals_out,        & ! DVALUES
+                                                size(dvals),      & ! KVALS
+                                                nvals,            & ! NVALS
+                                                clabel,           & ! CLABEL
+                                                0,                & ! KLABEL
+                                                l_label,          & ! LABEL
+                                                userHeader,       & ! IUHEAD
+                                                size(userHeader), & ! KUHEAD
+                                                userHeaderLen,    & ! NUHEAD
+                                                status)             ! ISTAT
+                                        else
+                                            !--------!
+                                            ! floats !
+                                            !--------!
+                                            fvals(1:6) = fordinates(:,l)
+                                            fvals(7:12) = fvalues(:,l)
+                                            call zrpd(            &
+                                                ifltab,           & ! IFLTAB
+                                                pathnames(o,n),   & ! CPATH
+                                                numberOrdinates,  & ! NORD
+                                                numberCurves,     & ! NCURVE
+                                                ihoriz,           & ! IHORIZ
+                                                c1unit,           & ! C1UNIT
+                                                c1type,           & ! C1TYPE
+                                                c2unit,           & ! C2UNIT
+                                                c2type,           & ! C2TYPE
+                                                fvals_out,        & ! SVALUES
+                                                size(fvals),      & ! KVALS
+                                                nvals,            & ! NVALS
+                                                clabel,           & ! CLABEL
+                                                0,                & ! KLABEL
+                                                l_label,          & ! LABEL
+                                                userHeader,       & ! IUHEAD
+                                                size(userHeader), & ! KUHEAD
+                                                userHeaderLen,    & ! NUHEAD
+                                                status)             ! ISTAT
+                                        end if
+                                        call assert(status == 0)
+                                        call assert(numberOrdinates == 6)
+                                        call assert(numberCurves == 1)
+                                        call assert(c1unit == unit(l))
+                                        call assert(c2unit == unit(l))
+                                        call assert(c1type == type)
+                                        call assert(c2type == type)
+                                        if (o == 1) then
+                                            call assert(nvals == size(dvals))
+                                            do ii = 1, nvals
+                                                call assert(dvals_out(ii) == dvals(ii))
+                                            end do
+                                        else
+                                            call assert(nvals == size(fvals))
+                                            do ii = 1, nvals
+                                                call assert(fvals_out(ii) == fvals(ii))
+                                            end do
+                                        end if
                                     end if
                                 end do
                             end do

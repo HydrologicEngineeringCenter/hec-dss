@@ -413,7 +413,6 @@ C     Set default vertical datum
            CVDATUM = CSTRIN
            IVDATUM = IVD_OTHER
         ENDIF
-        write(*,*) 'In zset6: CVDATM set to ',CVDATUM,' (',IVDATUM,')'
 C
 C
       ELSE
