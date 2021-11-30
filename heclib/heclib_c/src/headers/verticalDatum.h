@@ -112,7 +112,13 @@ extern "C" {
 #define NO_NGVD_29_OFFSET_VALUE_IN_XML                  "No NGVD-29 offset value in XML"
 #define XML_IS_NOT_A_VALID_VERTICAL_DATUM_INFO_INSTANCE "XML is not a valid vertical datum info instance"
 #define XML_IS_NOT_WELL_FORMED                          "XML is not well formed"
- 
+
+#ifdef _MSC_VER 
+    #define strcasecmp stricmp
+    #define strncasecmp strnicmp
+    #define strtok_r strtok_s
+#endif
+
 #ifdef __GNUC__
     #define MIN(a, b) ({         \
         __typeof__ (a) _a = (a); \
