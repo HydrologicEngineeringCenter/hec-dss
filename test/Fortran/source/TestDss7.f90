@@ -27,6 +27,8 @@
 !    call exit()
     status = test_vertical_datums_f()
     
+     if(status.ne.0) call exit(status)
+    
 
     call deletefile('c7t1.dss',status)
     call deletefile('c7t2.dss',status)
