@@ -565,6 +565,10 @@
       <AdditionalIncludeDirectories>src\headers;src\headers\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
+    <Lib>
+      <AdditionalDependencies>zlibstatic.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\lib\$(PlatformName)</AdditionalLibraryDirectories>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Midl>
@@ -591,6 +595,8 @@
     </ClCompile>
     <Lib>
       <OutputFile>$(OutDir)heclib_c.lib</OutputFile>
+      <AdditionalDependencies>zlibstatic.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\lib\$(PlatformName)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -608,6 +614,10 @@
       <AdditionalIncludeDirectories>src\headers;src\headers\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
+    <Lib>
+      <AdditionalDependencies>zlibstatic.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\lib\$(PlatformName)</AdditionalLibraryDirectories>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Midl>
@@ -631,6 +641,8 @@
     <Lib>
       <LinkTimeCodeGeneration>true</LinkTimeCodeGeneration>
       <Verbose>true</Verbose>
+      <AdditionalDependencies>zlibstatic.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\lib\$(PlatformName)</AdditionalLibraryDirectories>
     </Lib>
     <ProjectReference>
       <LinkLibraryDependencies>false</LinkLibraryDependencies>
