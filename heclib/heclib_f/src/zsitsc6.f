@@ -61,11 +61,11 @@ C
              NUHEAD = MIN(NUHEAD, NIBUFF)
              MAXHEAD = NUHEAD * 4
 	       IF (NSUPP.GE.MAXHEAD) THEN
-                CALL CH2HOL(CSUPP, INTBUF, NUHEAD)
+                CALL CH2HOL(CSUPP, IUHEAD, NUHEAD)
              ELSE
 C               Be sure the last word is blank filled
-                CALL CH2HOL('    ', INTBUF(NUHEAD), 1)
-                CALL CHRHOL(CSUPP, 1, NSUPP, INTBUF, 1)
+                CALL CH2HOL('    ', IUHEAD(NUHEAD), 1)
+                CALL CHRHOL(CSUPP, 1, NSUPP, IUHEAD, 1)
              ENDIF
           endif
       ENDIF

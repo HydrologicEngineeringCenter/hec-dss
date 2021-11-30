@@ -6,7 +6,7 @@
 #include "zdssMessages.h"
 #include "heclib.h"
 #include "zerrorCodes.h"
-
+#include "verticalDatum.h"
 
 
 /**
@@ -34,7 +34,7 @@
 *				int retrieveFlag
 *					A flag indicating if floats or doubles should be returned.  This is independent of
 *					what is actually stored on disk  Values will be converted to the requested type.
-*						0:  Return data as stored.  
+*						0:  Return data as stored.
 *						1:  Return floats
 *						2:  Return doubles
 *
@@ -220,10 +220,11 @@ int zpdRetrieve(long long *ifltab, zStructPairedData *pds, int retrieveSizeFlag)
 		return zerrorProcessing(ifltab, DSS_FUNCTION_zpdRetrieve_ID, zdssErrorCodes.NULL_PATHNAME,
 			0, 0, zdssErrorSeverity.INVALID_ARGUMENT, "", "zStructPairedData pathname is null");
 	}
-
 	//  Check for correct DSS Version
-	if (zgetVersion(ifltab) != 7) {
-		return zpdRetrieve6(ifltab, pds, retrieveSizeFlag);
+	int version = zgetVersion(ifltab);
+	if (version != 7) {
+		status = zpdRetrieve6(ifltab, pds, retrieveSizeFlag);
+		return status;
 	}
 
 	//  Messages and debug
@@ -358,7 +359,7 @@ int zpdRetrieve(long long *ifltab, zStructPairedData *pds, int retrieveSizeFlag)
 	}
 
 	zpdHeadToUnits(pds, ztransfer->internalHeader, ztransfer->internalHeaderNumber);
-	
+
 	if (ztransfer->userHeaderNumber > 0) {
 		pds->userHeaderNumber = ztransfer->userHeaderNumber;
 		pds->userHeader = ztransfer->userHeader;
@@ -562,7 +563,7 @@ int zpdRetrieve(long long *ifltab, zStructPairedData *pds, int retrieveSizeFlag)
 			if (getEndian()) {
 				if (pds->numberOrdinatesInStruct > 0) {
 					zswitchInts(ztransfer->values1, (pds->numberOrdinatesInStruct + 1));
-				}				
+				}
 			}
 			pds->sizeEachValueRead = 1;
 			if (boolRetrieveDoubles) {
@@ -705,8 +706,207 @@ int zpdRetrieve(long long *ifltab, zStructPairedData *pds, int retrieveSizeFlag)
 	//  Do we need to get location information?
 	if ((status == STATUS_OKAY) && pds->locationStruct) {
 		zlocationRetrieve(ifltab, pds->locationStruct);
-	}
 
+		int indElev = FALSE;
+		int depElev = FALSE;
+		char cPart[65];
+		char strtokBuf[65];
+		char cvertical_datum[CVERTICAL_DATUM_SIZE];
+		int  ivertical_datum = IVERTICAL_DATUM_UNSET;
+		int  ivertical_datum2;
+		verticalDatumInfo _vdi;
+		verticalDatumInfo *vdi = NULL;
+		char errmsg[1024];
+		zpathnameGetPart(pds->pathname, 3, cPart, sizeof(cPart));
+		char *cp = strtok_r(cPart, "-", (char **)&strtokBuf);
+		if (!strncasecmp(cp, "ELEV", 4)) {
+			indElev = TRUE;
+		}
+		cp = strtok_r(NULL, "-", (char **)&strtokBuf);
+		if (cp && !strncasecmp(cp, "ELEV", 4)) {
+			depElev = TRUE;
+		}
+		if (indElev || depElev) {
+			//------------------------//
+			// elevation in parameter //
+			//------------------------//
+			zquery("VDTM", cvertical_datum, sizeof(cvertical_datum), &ivertical_datum);
+			char cvertical_datum[CVERTICAL_DATUM_SIZE];
+			int  ivertical_datum = -1;
+			verticalDatumInfo _vdi;
+			verticalDatumInfo *vdi = NULL;
+			char errmsg[1024];
+			zquery("VDTM", cvertical_datum, sizeof(cvertical_datum), &ivertical_datum);
+			if (ivertical_datum != IVERTICAL_DATUM_UNSET) {
+				//-----------------------------------//
+				// specific vertical datum requested //
+				//-----------------------------------//
+				if (pds->locationStruct && pds->locationStruct->supplemental) {
+					char *vdiStr = extractFromDelimitedString(
+						&pds->locationStruct->supplemental,
+						VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
+						":",
+						TRUE,
+						FALSE,
+						'\n');
+					if (vdiStr) {
+						char *msg = stringToVerticalDatumInfo(&_vdi, vdiStr);
+						if (msg) {
+							char _msg[65];
+							strncpy(_msg, msg, sizeof(_msg)-1);
+							sprintf(
+								errmsg,
+								"Cannot convert from native vertical datum of '%s' to '%s'.\n%s\n"
+								"Values not converted.",
+								pds->locationStruct->verticalDatum == 0 ? "UNSET"   :
+								pds->locationStruct->verticalDatum == 1 ? "NAVD-88" :
+								pds->locationStruct->verticalDatum == 2 ? "NGVD-29" : "OTHER",
+								cvertical_datum,
+								_msg);
+							zmessage(ifltab, errmsg);
+						}
+						else {
+							vdi = &_vdi;
+						}
+						free(vdiStr);
+					}
+				}
+				if (vdi == NULL) {
+					sprintf(
+						errmsg,
+						"Cannot convert from native vertical datum of '%s' to '%s'.\n"
+						"Record has no conversion information.\n"
+						"Values not converted.",
+						pds->locationStruct->verticalDatum == 0 ? "UNSET"   :
+						pds->locationStruct->verticalDatum == 1 ? "NAVD-88" :
+						pds->locationStruct->verticalDatum == 2 ? "NGVD-29" : "OTHER",
+						cvertical_datum);
+					zmessage(ifltab, errmsg);
+				}
+				else {
+					double offset;
+					if (indElev) {
+						switch(ivertical_datum) {
+							case IVERTICAL_DATUM_NAVD88 :
+								offset = vdi->offsetToNavd88;
+								break;
+							case IVERTICAL_DATUM_NGVD29 :
+								offset = vdi->offsetToNgvd29;
+								break;
+							default :
+								if(!strcmp(cvertical_datum, vdi->nativeDatum) || !strcmp(cvertical_datum, CVERTICAL_DATUM_OTHER)) {
+									offset = 0;
+								}
+								else {
+									offset = UNDEFINED_VERTICAL_DATUM_VALUE;
+								}
+								break;
+						}
+						if (offset != 0.) {
+							offset = getOffset(offset, vdi->unit, pds->unitsIndependent);
+							if (offset == UNDEFINED_VERTICAL_DATUM_VALUE) {
+								if (indElev) {
+									sprintf(
+										errmsg,
+										"\nData unit (%s) and/or offset unit (%s) is invalid for vertical datum conversion.\n"
+										"Conversion to datum '%s' could not be performed.\n"
+										"No data stored.",
+										pds->unitsIndependent,
+										vdi->unit,
+										cvertical_datum);
+									zmessage(ifltab, errmsg);
+								}
+								else {
+									if (offset == UNDEFINED_VERTICAL_DATUM_VALUE) {
+										sprintf(
+											errmsg,
+											"\nData unit (%s) and/or offset unit (%s) is invalid for vertical datum conversion.\n"
+											"Conversion to datum '%s' could not be performed.\n"
+											"No data stored.",
+											pds->unitsDependent,
+											vdi->unit,
+											cvertical_datum);
+										zmessage(ifltab, errmsg);
+									}
+								}
+							}
+							else {
+								if (pds->doubleOrdinates) {
+									for (int i = 0; i < pds->numberOrdinates; ++i) {
+										pds->doubleOrdinates[i] += offset;
+									}
+								}
+								else if (pds->floatOrdinates) {
+									for (int i = 0; i < pds->numberOrdinates; ++i) {
+										pds->floatOrdinates[i] += offset;
+									}
+								}
+							}
+						}
+					}
+					if (depElev) {
+						switch(ivertical_datum) {
+							case IVERTICAL_DATUM_NAVD88 :
+								offset = vdi->offsetToNavd88;
+								break;
+							case IVERTICAL_DATUM_NGVD29 :
+								offset = vdi->offsetToNgvd29;
+								break;
+							default :
+								if(!strcmp(cvertical_datum, vdi->nativeDatum) || !strcmp(cvertical_datum, CVERTICAL_DATUM_OTHER)) {
+									offset = 0;
+								}
+								else {
+									offset = UNDEFINED_VERTICAL_DATUM_VALUE;
+								}
+								break;
+						}
+						if (offset != 0.) {
+							offset = getOffset(offset, vdi->unit, pds->unitsDependent);
+							if (offset == UNDEFINED_VERTICAL_DATUM_VALUE) {
+								if (indElev) {
+									sprintf(
+										errmsg,
+										"\nData unit (%s) and/or offset unit (%s) is invalid for vertical datum conversion.\n"
+										"Conversion to datum '%s' could not be performed.\n"
+										"No data stored.",
+										pds->unitsIndependent,
+										vdi->unit,
+										cvertical_datum);
+									zmessage(ifltab, errmsg);
+								}
+								else {
+									if (offset == UNDEFINED_VERTICAL_DATUM_VALUE) {
+										sprintf(
+											errmsg,
+											"\nData unit (%s) and/or offset unit (%s) is invalid for vertical datum conversion.\n"
+											"Conversion to datum '%s' could not be performed.\n"
+											"No data stored.",
+											pds->unitsDependent,
+											vdi->unit,
+											cvertical_datum);
+										zmessage(ifltab, errmsg);
+									}
+								}
+							}
+							else {
+								if (pds->doubleValues) {
+									for (int i = 0; i < pds->numberOrdinates * pds->numberCurves; ++i) {
+										pds->doubleValues[i] += offset;
+									}
+								}
+								else if (pds->floatValues) {
+									for (int i = 0; i < pds->numberOrdinates * pds->numberCurves; ++i) {
+										pds->floatValues[i] += offset;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 	zstructFree(ztransfer);
 	if (zmessageLevel(ifltab, MESS_METHOD_READ_ID, MESS_LEVEL_USER_DIAG)) {
 		zmessageDebug(ifltab, DSS_FUNCTION_zpdRetrieve_ID, "Finished.  Pathname: ", pds->pathname);

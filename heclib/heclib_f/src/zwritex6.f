@@ -22,12 +22,12 @@ C
       INCLUDE 'zdssnz.h'
 C
       INTEGER IFLTAB(*)
-      INTEGER IIHEAD(*), IDATA(*)
+      INTEGER IIHEAD(*), IDATA(*),ICHEAD(*),IUHEAD(*)
       CHARACTER CPATH*(*)
       LOGICAL LFOUND
       integer ISTAT,NIHEAD,NCHEAD,NUHEAD,NDATA
       integer JTYPE,IPLAN,NUH,IABS,JHEAD,JDATA
-      integer NPATH,NH,ND,I,IUHEAD,ICHEAD
+      integer NPATH,NH,ND,I
 C
 C
       ISTAT = 0

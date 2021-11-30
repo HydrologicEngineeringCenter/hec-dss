@@ -73,8 +73,22 @@ C
 C
       INCLUDE 'zdssts.h'
 C
+      INCLUDE 'verticalDatumFortran.h'
+C
       LOGICAL LF, LFOUND, LGETQ, LPREV, LNEXT, LCASE, LDSWAP
       INTEGER IFORWD, INTLPS
+C
+C     Pathname variable dimensions
+      character*64 ca, cb, cc, cd, ce, cf
+      integer na, nb, nc, nd, ne, nf, npath
+C
+C     Vertical datum varible dimensions
+      character*400 vdiStr, errMsg
+      character*16 nativeDatum, unit
+      double precision elevation
+      double precision offsetNavd88, offsetNgvd29, vertDatumOffset
+      logical l_Navd88Estimated, l_Ngvd29Estimated
+      integer vdiStrLen
 C
 C
 C
@@ -598,6 +612,108 @@ C
       ENDIF
       ENDIF
 C
+      !---------------------------------------------------------!
+      ! convert values to requested vertical datum if necessary !
+      !---------------------------------------------------------!
+      call zufpn(ca, na, cb, nb, cc, nc, cd, nd, ce, ne, cf, nf,
+     *           cpath, len_trim(cpath), istat)
+      call upcase(cc)
+      if (index(cc, 'ELEV').eq.1) then
+        !--------------------------!
+        ! time series is elevation !
+        !--------------------------!
+        call zinqir(ifltab, 'VDTM', cvdatum, ivdatum)
+        if (ivdatum.ne.IVD_UNSET) then
+          !-----------------------------------------!
+          ! a specific vertical datum was requested !
+          !-----------------------------------------!
+          if (nuhead.gt.0) then
+            call get_user_header_param(
+     *        iuhead,
+     *        nuhead,
+     *        VERTICAL_DATUM_INFO_PARAM,
+     *        vdiStr)
+            vdiStrLen = len_trim(vdiStr)
+            if (vdiStrLen.gt.0) then
+              !-----------------------------------------------------------!
+              ! we retrieved a user header and it has vertical datum info !
+              !-----------------------------------------------------------!
+              call stringToVerticalDatumInfo(
+     *          vdiStr,
+     *          errMsg,
+     *          nativeDatum,
+     *          unit,
+     *          elevation,
+     *          offsetNgvd29,
+     *          l_Ngvd29Estimated,
+     *          offsetNavd88,
+     *          l_Navd88Estimated)
+              !--------------------------------------!
+              ! get the vertical datum offset to use !
+              !--------------------------------------!
+              if (ivdatum.eq.IVD_NAVD88) then
+                vertDatumOffset = offsetNavd88
+              elseif (ivdatum.eq.IVD_NGVD29) then
+                vertDatumOffset = offsetNgvd29
+              else
+                if (nativeDatum.eq.cvdatum.or.
+     *              nativeDatum.eq.CVD_OTHER) then
+                  vertDatumOffset = 0.
+                else
+                  vertDatumOffset = UNDEFINED_VERTICAL_DATUM_VALUE
+                end if
+              end if
+              if (vertDatumOffset.ne.0) then
+                if (vertDatumOffset.eq.
+     *            UNDEFINED_VERTICAL_DATUM_VALUE) then
+                  if (mlevel.ge.1) then
+                    write (munit,'(/,a,a,a,a,a,/,a)')
+     *              ' *****DSS*** zrits6:  ERROR  - NO VERTICAL DATUM',
+     *              ' OFFSET for ',nativeDatum(1:len_trim(nativeDatum)),
+     *              ' to ',cvdatum(1:len_trim(cvdatum)),
+     *              ' Elevations were not converted.'
+                  end if
+                  istat = 13
+                  return
+                end if
+                !------------------------------------------------------------!
+                ! convert the vertical datum offset to the units of the data !
+                !------------------------------------------------------------!
+                call getoffset(vertDatumOffset, unit, cunits)
+                if (vertDatumOffset.eq.
+     *            UNDEFINED_VERTICAL_DATUM_VALUE)then
+                  if (mlevel.ge.1) then
+                    write (munit,'(/,a,a,a,a,a,a,a,/,a)')
+     *              ' *****DSS*** zrits6:  ERROR  - INVALID DATA UNIT ',
+     *              '(',cunits(1:len_trim(cunits)),') OR OFFSET UNIT (',
+     *              unit(1:len_trim(unit)),') FOR VERTICAL DATUM',
+     *              ' CONVERSION',
+     *              ' Elevations were not converted.'
+                  end if
+                  istat = 13
+                  return
+                end if
+                !-----------------------------------!
+                ! add the offset to the data values !
+                !-----------------------------------!
+                if (lgetdob) then
+                  do i = 1, nvals
+                    if (dvalues(i).ne.-901.and.dvalues(i).ne.-902) then
+                      dvalues(i) = dvalues(i) + vertdatumoffset
+                    end if
+                  end do
+                else
+                  do i = 1, nvals
+                    if (svalues(i).ne.-901.and.svalues(i).ne.-902) then
+                      svalues(i) = svalues(i) + vertdatumoffset
+                    end if
+                  end do
+                end if
+              end if
+            end if
+          end if
+        end if
+      end if
       RETURN
 C
 C

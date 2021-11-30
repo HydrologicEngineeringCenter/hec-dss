@@ -1,7 +1,7 @@
 UNAME_S := $(shell uname -s)
 
 ifeq ($(UNAME_S),Linux)
-	CWARNING=-Werror=implicit-function-declaration
+	CWARNING=-Werror
 	CFLAGS=-m64 -c -fPIC -g -std=gnu99 -Isrc/headers $(CWARNING) -D__linux__
 	Make_OS=Linux
 	MAKE=make
@@ -14,11 +14,12 @@ endif
 all:
 	( cd ../nws_shef; $(MAKE) -j -f Makefile.$(Make_OS))
 	(cd heclib_c; $(MAKE) )
-	(cd heclib_f; $(MAKE) )
+	(cd heclib_f; $(MAKE) )		
 	(mkdir -p Output)
 	( rm -f Output/heclib.a)
 	($(AR) -rcT Output/heclib.a ./heclib_c/Output/libhec_c.a ./heclib_f/Output/libhec_f.a )  
 	(cd javaHeclib; $(MAKE) )
+
 	ls -la ./javaHeclib/Output/*javaHeclib.*
 	
 

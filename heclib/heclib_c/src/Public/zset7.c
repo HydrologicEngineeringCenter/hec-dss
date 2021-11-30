@@ -9,6 +9,7 @@
 #include "hecdssInternal.h"
 #include "heclib7.h"
 #include "zdssMessages.h"
+#include "verticalDatum.h"
 
 /**
 *  Function:	zset
@@ -177,6 +178,60 @@ int zset7(const char* parameter, const char* charVal, int integerValue)
 	}
 	else if (!strncmp(cparm, "empt", 4)) {
 		zdssVals.copyEmptyRecords = integerValue;
+	}
+	else if (!strncmp(cparm, "vdtm", 4)) {
+		if (charVal != NULL && charVal[0] != '\0') {
+			if (!strcasecmp(charVal, CVERTICAL_DATUM_UNSET)) {
+				zdssVals.iverticalDatum = IVERTICAL_DATUM_UNSET;
+				stringCopy(zdssVals.cverticalDatum, sizeof(zdssVals.cverticalDatum), CVERTICAL_DATUM_UNSET, _TRUNCATE);
+			}
+			else if (!strcasecmp(charVal, CVERTICAL_DATUM_NAVD88)) {
+				zdssVals.iverticalDatum = IVERTICAL_DATUM_NAVD88;
+				stringCopy(zdssVals.cverticalDatum, sizeof(zdssVals.cverticalDatum), CVERTICAL_DATUM_NAVD88, _TRUNCATE);
+			}
+			else if (!strcasecmp(charVal, CVERTICAL_DATUM_NGVD29)) {
+				zdssVals.iverticalDatum = IVERTICAL_DATUM_NGVD29;
+				stringCopy(zdssVals.cverticalDatum, sizeof(zdssVals.cverticalDatum), CVERTICAL_DATUM_NGVD29, _TRUNCATE);
+			}
+			else if (!strcasecmp(charVal, CVERTICAL_DATUM_OTHER)) {
+				zdssVals.iverticalDatum = IVERTICAL_DATUM_OTHER;
+				stringCopy(zdssVals.cverticalDatum, sizeof(zdssVals.cverticalDatum), CVERTICAL_DATUM_OTHER, _TRUNCATE);
+			}
+			else {
+				// named local vertical datum
+				zdssVals.iverticalDatum = IVERTICAL_DATUM_OTHER;
+				stringCopy(zdssVals.cverticalDatum, sizeof(zdssVals.cverticalDatum), charVal, _TRUNCATE);
+			}
+		}
+		else {
+			if (integerValue == IVERTICAL_DATUM_UNSET) {
+				zdssVals.iverticalDatum = IVERTICAL_DATUM_UNSET;
+				stringCopy(zdssVals.cverticalDatum, sizeof(zdssVals.cverticalDatum), CVERTICAL_DATUM_UNSET, _TRUNCATE);
+			}
+			else if (integerValue == IVERTICAL_DATUM_NAVD88) {
+				zdssVals.iverticalDatum = IVERTICAL_DATUM_NAVD88;
+				stringCopy(zdssVals.cverticalDatum, sizeof(zdssVals.cverticalDatum), CVERTICAL_DATUM_NAVD88, _TRUNCATE);
+			}
+			else if (integerValue == IVERTICAL_DATUM_NGVD29) {
+				zdssVals.iverticalDatum = IVERTICAL_DATUM_NGVD29;
+				stringCopy(zdssVals.cverticalDatum, sizeof(zdssVals.cverticalDatum), CVERTICAL_DATUM_NGVD29, _TRUNCATE);
+			}
+			else if (integerValue == IVERTICAL_DATUM_OTHER) {
+				zdssVals.iverticalDatum = IVERTICAL_DATUM_OTHER;
+				stringCopy(zdssVals.cverticalDatum, sizeof(zdssVals.cverticalDatum), CVERTICAL_DATUM_OTHER, _TRUNCATE);
+			}
+			else {
+				char buf[16];
+				sprintf(buf, "%d", integerValue);
+				if (zmessageLevel(ifltabTemp, MESS_METHOD_UTILITY_ID, MESS_LEVEL_INTERNAL_DIAG_2)) {
+					zmessageDebug(ifltabTemp, DSS_FUNCTION_zset_ID, "Invalid integer value for \"VDTM\":   ", buf);
+				}
+				return STATUS_NOT_OKAY;
+			}
+		}
+	}
+	else if (!strncmp(cparm, "vdow", 4)) {
+		zdssVals.icanOverwriteLocationVerticalDatum = integerValue ? TRUE : FALSE;
 	}
 	else {
 		if (zmessageLevel(ifltabTemp, MESS_METHOD_UTILITY_ID, MESS_LEVEL_INTERNAL_DIAG_2)) {
