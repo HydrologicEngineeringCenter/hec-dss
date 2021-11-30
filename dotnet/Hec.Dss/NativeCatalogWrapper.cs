@@ -10,13 +10,22 @@ namespace Hec.Dss
   public class NativeCatalogWrapper
   {
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
-    private extern static void GetCatalogPathName(IntPtr cat, [In, Out] StringBuilder inputPathName, int pathNameLength, int pathNameIndex);
+    [return: MarshalAs(UnmanagedType.BStr)]
+    private extern static string GetCatalogPathName(IntPtr cat, int pathNameIndex);
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
     private extern static int GetPathNameLength(IntPtr cat, int pathNameIndex);
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
     private extern static int GetNumberPathNames(IntPtr cat);
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
     private extern static IntPtr GetRecordType(IntPtr cat);
+    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    private extern static int GetTypeWantedStart(IntPtr cat);
+    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    private extern static void SetTypeWantedStart(IntPtr cat, int value);
+    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    private extern static int GetTypeWantedEnd(IntPtr cat);
+    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    private extern static void SetTypeWantedEnd(IntPtr cat, int value);
 
     public IntPtr TheStruct;
 
@@ -30,7 +39,7 @@ namespace Hec.Dss
         for (int i = 0; i < numberPaths; i++)
         {
           arr[i] = new StringBuilder(GetPathNameLength(TheStruct, i));
-          GetCatalogPathName(TheStruct, arr[i], arr[i].Capacity, i);
+          arr[i].Append(GetCatalogPathName(TheStruct, i));
           returnArray[i] = arr[i].ToString();
         }
 
@@ -54,7 +63,27 @@ namespace Hec.Dss
       }
     }
 
-    public int TypeWantedStart { get; set; }
-    public int TypeWantedEnd { get; set; }
+    public int TypeWantedStart
+    {
+      get
+      {
+        return GetTypeWantedStart(TheStruct);
+      }
+      set
+      {
+        SetTypeWantedStart(TheStruct, value);
+      }
+    }
+    public int TypeWantedEnd
+    {
+      get
+      {
+        return GetTypeWantedEnd(TheStruct);
+      }
+      set
+      {
+        SetTypeWantedEnd(TheStruct, value);
+      }
+    }
   }
 }

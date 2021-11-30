@@ -12,38 +12,70 @@ namespace Hec.Dss
   {
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
     [return: MarshalAs(UnmanagedType.BStr)]
-    public extern static string GetPathName(IntPtr ts);
+    private extern static string GetPathName(IntPtr ts);
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
     [return: MarshalAs(UnmanagedType.BStr)]
-    public extern static string GetUnits(IntPtr ts);
+    private extern static string GetUnits(IntPtr ts);
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
     [return: MarshalAs(UnmanagedType.BStr)]
-    public extern static string GetType(IntPtr ts);
+    private extern static string GetType(IntPtr ts);
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
     [return: MarshalAs(UnmanagedType.BStr)]
-    public extern static string GetProgramName(IntPtr ts);
+    private extern static string GetProgramName(IntPtr ts);
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
-    public extern static IntPtr GetQuality(IntPtr ts);
+    private extern static IntPtr GetQuality(IntPtr ts);
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
-    public extern static IntPtr GetDoubleValues(IntPtr ts);
+    private extern static IntPtr GetDoubleValues(IntPtr ts);
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
-    public extern static double GetTimeGranularitySeconds(IntPtr ts);
+    private extern static int GetTimeGranularitySeconds(IntPtr ts);
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
-    public extern static double GetJulianBaseDate(IntPtr ts);
+    private extern static void SetTimeGranularitySeconds(IntPtr ts, int value);
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
-    public extern static IntPtr GetTimes(IntPtr ts);
+    private extern static int GetJulianBaseDate(IntPtr ts);
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
-    public extern static IntPtr GetDoubleProfileDepths(IntPtr ts);
+    private extern static IntPtr GetTimes(IntPtr ts);
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
-    public extern static int GetProfileDepthsNumber(IntPtr ts);
+    private extern static IntPtr GetDoubleProfileDepths(IntPtr ts);
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
-    public extern static IntPtr GetDoubleProfileValues(IntPtr ts);
+    private extern static int GetProfileDepthsNumber(IntPtr ts);
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
-    public extern static int GetNumberValues(IntPtr ts);
+    private extern static IntPtr GetDoubleProfileValues(IntPtr ts);
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
-    public extern static IntPtr GetLocation(IntPtr ts);
-
-
+    private extern static int GetNumberValues(IntPtr ts);
+    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    private extern static IntPtr GetLocation(IntPtr ts);
+    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    private extern static int GetStartJulianDate(IntPtr ts);
+    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    private extern static void SetStartJulianDate(IntPtr ts, int value);
+    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    private extern static int GetStartTimeSeconds(IntPtr ts);
+    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    private extern static void SetStartTimeSeconds(IntPtr ts, int value);
+    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    private extern static IntPtr GetFloatValues(IntPtr ts);
+    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    private extern static void SetFloatValues(IntPtr ts, float[] value, int arrayLength);
+    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    private extern static int GetEndJulianDate(IntPtr ts);
+    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    private extern static void SetEndJulianDate(IntPtr ts, int value);
+    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    private extern static int GetEndTimeSeconds(IntPtr ts);
+    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    private extern static void SetEndTimeSeconds(IntPtr ts, int value);
+    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    private extern static int GetTimeIntervalSeconds(IntPtr ts);
+    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    private extern static void SetTimeIntervalSeconds(IntPtr ts, int value);
+    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    private extern static IntPtr GetCNotes(IntPtr ts);
+    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    private extern static void SetCNotes(IntPtr ts, sbyte[] value, int arrayLength);
+    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    private extern static int GetCNotesLengthTotal(IntPtr ts);
+    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    private extern static void SetCNotesLengthTotal(IntPtr ts, int value);
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
     private extern static void SetQuality(IntPtr ts, int[] quality, int arraySize);
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
@@ -64,6 +96,11 @@ namespace Hec.Dss
     private extern static void SetFloatProfileDepths(IntPtr ts, float[] values, int arrayLength);
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
     private extern static void SetFloatProfileValues(IntPtr ts, float[] values, int arrayLength);
+    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    private extern static int GetCNotesSize(IntPtr ts);
+    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    private extern static int SetCNotesSize(IntPtr ts, int value);
+
 
     public IntPtr TheStruct;
 
@@ -150,14 +187,18 @@ namespace Hec.Dss
         }
       }
     }
-    public double TimeGranularitySeconds
+    public int TimeGranularitySeconds
     {
       get
       {
         return GetTimeGranularitySeconds(TheStruct);
       }
+      set
+      {
+        SetTimeGranularitySeconds(TheStruct, value);
+      }
     }
-    public double JulianBaseDate
+    public int JulianBaseDate
     {
       get
       {
@@ -273,6 +314,128 @@ namespace Hec.Dss
       set
       {
         SetFloatProfileValues(TheStruct, value, value.Length);
+      }
+    }
+
+    public int StartJulianDate
+    {
+      get
+      {
+        return GetStartJulianDate(TheStruct);
+      }
+      set
+      {
+        SetStartJulianDate(TheStruct, value);
+      }
+    }
+    public int StartTimeSeconds
+    {
+      get
+      {
+        return GetStartTimeSeconds(TheStruct);
+      }
+      set
+      {
+        SetStartTimeSeconds(TheStruct, value);
+      }
+    }
+    public float[] FloatValues
+    {
+      get
+      {
+        IntPtr ptr = GetFloatValues(TheStruct);
+        if (ptr != IntPtr.Zero)
+        {
+          float[] r = new float[NumberValues];
+          Marshal.Copy(ptr, r, 0, r.Length);
+          return r;
+        }
+        else
+        {
+          return null;
+        }
+      }
+      set
+      {
+        SetFloatValues(TheStruct, value, value.Length);
+      }
+    }
+    public int EndJulianDate
+    {
+      get
+      {
+        return GetEndJulianDate(TheStruct);
+      }
+      set
+      {
+        SetEndJulianDate(TheStruct, value);
+      }
+    }
+    public int EndTimeSeconds
+    {
+      get
+      {
+        return GetEndTimeSeconds(TheStruct);
+      }
+      set
+      {
+        SetEndTimeSeconds(TheStruct, value);
+      }
+    }
+    public int TimeIntervalSeconds
+    {
+      get
+      {
+        return GetTimeIntervalSeconds(TheStruct);
+      }
+      set
+      {
+        SetTimeIntervalSeconds(TheStruct, value);
+      }
+    }
+    public int CNotesSize
+    {
+      get
+      {
+        return GetCNotesSize(TheStruct);
+      }
+      set
+      {
+        SetCNotesSize(TheStruct, value);
+      }
+    }
+    public sbyte[] CNotes
+    {
+      get
+      {
+        IntPtr ptr = GetCNotes(TheStruct);
+        if (ptr != IntPtr.Zero)
+        {
+          byte[] b = new byte[CNotesSize];
+          Marshal.Copy(ptr, b, 0, b.Length);
+          sbyte[] r = new sbyte[b.Length];
+          for (int i = 0; i < b.Length; i++)
+          {
+            r[i] = (sbyte)b[i];
+          }
+          return r;
+        }
+        return null;
+      }
+      set
+      {
+        SetCNotes(TheStruct, value, value.Length);
+      }
+    }
+    public int CNotesLengthTotal
+    {
+      get
+      {
+        return GetCNotesLengthTotal(TheStruct);
+      }
+      set
+      {
+        SetCNotesLengthTotal(TheStruct, value);
       }
     }
   }

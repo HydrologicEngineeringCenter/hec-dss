@@ -328,7 +328,7 @@ YCoord Of Grid Cell Zero: 0.0
       Assert.IsNotNull(g1);
       Assert.IsNotNull(g2);
 
-      string expected = Hec.Dss.Native.DSS.AlbersSRS();
+      string expected = PInvoke.AlbersSRS();
 
       Console.WriteLine("expected:\n" + expected);
       Console.WriteLine(g2.SRSDefinition);

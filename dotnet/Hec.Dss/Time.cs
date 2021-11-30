@@ -10,6 +10,7 @@ namespace Hec.Dss
     static Time() => Assembly.Initialize();
 
     const string HecDateFormat = "ddMMMyyyy";
+    const int UndefinedValue = -(int.MaxValue);
 
     static Regex hecDateRegex = new Regex(@"\d\d\w{3}\d\d\d\d", System.Text.RegularExpressions.RegexOptions.Compiled);
 
@@ -272,6 +273,11 @@ namespace Hec.Dss
     internal static int DateToJulian(DateTime t)
     {
       return PInvoke.DateToJulian(HecDateToString(t));
+    }
+
+    public static bool HecDateTimeUndefined(int julianDate)
+    {
+      return julianDate == UndefinedValue;
     }
 
   }

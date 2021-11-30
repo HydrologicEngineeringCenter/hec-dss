@@ -6,7 +6,7 @@ double* GetDoubleOrdinates(zStructPairedData* pd)
     return pd->doubleOrdinates;
 }
 
-float* GetFloatValues(zStructPairedData* pd)
+float* GetPdFloatValues(zStructPairedData* pd)
 {
     return pd->floatValues;
 }

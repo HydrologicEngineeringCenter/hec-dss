@@ -585,7 +585,7 @@ namespace DSSUnitTests
           int m = Convert.ToInt32(dateParts[0]);
           int d = Convert.ToInt32(dateParts[1]);
           int y = Convert.ToInt32(dateParts[2]);
-          int j = Hec.Dss.Native.DSS.YearMonthDayToJulian(y, m, d);
+          int j = PInvoke.YearMonthDayToJulian(y, m, d);
           t.Add(j);
           rt.Add(tokens[0]);
           var x = Convert.ToDouble(tokens[1]);

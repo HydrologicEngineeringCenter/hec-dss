@@ -1,7 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
-using Hec.Dss.Native;
 using Hec.Dss;
 
 namespace DSSUnitTests
@@ -31,8 +30,8 @@ namespace DSSUnitTests
     {
       long[] ifltab = new long[250];
       PInvoke.ZOpen(ifltab, TestUtility.BasePath + "sample7.dss");
-      ZStructCatalogWrapper catStruct = DSS.zStructCatalogNew();
-      int numberPaths = DSS.ZCatalog(ref ifltab, null, ref catStruct, 1);
+      NativeCatalogWrapper catStruct = PInvoke.NativeCatalogNew();
+      int numberPaths = PInvoke.ZCatalog(ifltab, null, catStruct, 1);
       Assert.IsTrue(numberPaths == 595);
       int num = 1877;
       for (int i = 0; i < 5; i++)
@@ -46,8 +45,8 @@ namespace DSSUnitTests
     {
       long[] ifltab = new long[250];
       PInvoke.ZOpen(ifltab, TestUtility.BasePath + "sample7.dss");
-      ZStructCatalogWrapper catStruct = DSS.zStructCatalogNew();
-      int numberPaths = DSS.ZCatalog(ref ifltab, "/*/*/*Flow*/*/*/*/", ref catStruct, 1);
+      NativeCatalogWrapper catStruct = PInvoke.NativeCatalogNew();
+      int numberPaths = PInvoke.ZCatalog(ifltab, "/*/*/*Flow*/*/*/*/", catStruct, 1);
       Assert.IsTrue(numberPaths == 167);
       Assert.IsTrue(catStruct.PathNameList[0] == "/AMERICAN/FOLSOM/FLOW-RES IN/01Jan2006/1Day/OBS/");
       Assert.IsTrue(catStruct.PathNameList[1] == "/AMERICAN/FOLSOM/FLOW-RES OUT/01Jan2006/1Day/OBS/");
@@ -61,8 +60,8 @@ namespace DSSUnitTests
     {
       long[] ifltab = new long[250];
       PInvoke.ZOpen(ifltab, TestUtility.BasePath + "sample6_ras.dss");
-      ZStructCatalogWrapper catStruct = DSS.zStructCatalogNew();
-      int numberPaths = DSS.ZCatalog(ref ifltab, null, ref catStruct, 1);
+      NativeCatalogWrapper catStruct = PInvoke.NativeCatalogNew();
+      int numberPaths = PInvoke.ZCatalog(ifltab, null, catStruct, 1);
       Assert.IsTrue(numberPaths == 627);
       int num = 1877;
       for (int i = 0; i < 5; i++)
@@ -76,8 +75,8 @@ namespace DSSUnitTests
     {
       long[] ifltab = new long[250];
       PInvoke.ZOpen(ifltab, TestUtility.BasePath + "sample6_ras.dss");
-      ZStructCatalogWrapper catStruct = DSS.zStructCatalogNew();
-      int numberPaths = DSS.ZCatalog(ref ifltab, "/*/*/*Flow*/*/*/*/", ref catStruct, 1);
+      NativeCatalogWrapper catStruct = PInvoke.NativeCatalogNew();
+      int numberPaths = PInvoke.ZCatalog(ifltab, "/*/*/*Flow*/*/*/*/", catStruct, 1);
       Assert.IsTrue(numberPaths == 172);
       Assert.IsTrue(catStruct.PathNameList[0] == "/AMERICAN/FOLSOM/FLOW-RES IN/01JAN2006/1DAY/OBS/");
       Assert.IsTrue(catStruct.PathNameList[1] == "/AMERICAN/FOLSOM/FLOW-RES OUT/01JAN2006/1DAY/OBS/");
@@ -91,10 +90,10 @@ namespace DSSUnitTests
     {
       long[] ifltab = new long[250];
       PInvoke.ZOpen(ifltab, TestUtility.BasePath + "sample7.dss");
-      ZStructCatalogWrapper catStruct = DSS.zStructCatalogNew();
+      NativeCatalogWrapper catStruct = PInvoke.NativeCatalogNew();
       catStruct.TypeWantedStart = 200; //paired data regular
       catStruct.TypeWantedEnd = 205;//paired data double
-      int numberPaths = DSS.ZCatalog(ref ifltab, null, ref catStruct, 1);
+      int numberPaths = PInvoke.ZCatalog(ifltab, null, catStruct, 1);
       Assert.IsTrue(numberPaths == 595);
       int num = 1877;
       for (int i = 0; i < 5; i++)
@@ -108,17 +107,17 @@ namespace DSSUnitTests
     {
       long[] ifltab = new long[250];
       PInvoke.ZOpen(ifltab, TestUtility.BasePath + "sample7.dss");
-      int numberPaths = DSS.ZCatalogFile(ref ifltab, null, 1, null);
+      int numberPaths = PInvoke.ZCatalogFile(ifltab, null, 1, null);
       Assert.IsTrue(numberPaths == 595);
        string fn = "test_sample7.dsscat.txt";
-      numberPaths = DSS.ZCatalogFile(ref ifltab, fn, 1, null);
+      numberPaths = PInvoke.ZCatalogFile(ifltab, fn, 1, null);
       Assert.IsTrue(numberPaths == 595);
     }
     [TestMethod]
     public void TestTimeSeries1()
     {
       long[] ifltab = new long[250];
-      ZStructTimeSeriesWrapper tss1,tss2, tss3, tss4;
+      NativeTimeSeriesWrapper tss1,tss2, tss3, tss4;
       float[] fvalues = new float[200];
       double[] dvalues = new double[300];
       int[] itimes = new int[300];
@@ -130,33 +129,33 @@ namespace DSSUnitTests
       {
         fvalues[i] = (float)i;
       }
-      tss1 = DSS.ZStructTsNewRegFloats("/Basin/Location/Flow//1Hour/C Test/",ref fvalues, 200, "21Jan2001", "1200", "cfs", "Inst-Val");
+      tss1 = PInvoke.NativeTsNewRegFloats("/Basin/Location/Flow//1Hour/C Test/",fvalues, "21Jan2001", "1200", "cfs", "Inst-Val");
       Assert.IsTrue(tss1.StartJulianDate == 36911);
       Assert.IsTrue(tss1.StartTimeSeconds == 43200);
-      status = DSS.ZTsStore(ref ifltab, ref tss1, 0);
-     // ZStructTimeSeriesWrapper tss;
+      status = PInvoke.ZTsStore(ifltab, tss1, 0);
+     // NativeTimeSeriesWrapper tss;
       Assert.IsTrue(status == 0);
       for (int i = 0; i < 300; i++)
       {
         dvalues[i] = (double)i;
         itimes[i] = i * 1440;
       }
-      tss2 = DSS.ZStructTsNewIrregDoubles("/Basin/Location/Flow//~1Day/C Example/",ref dvalues, 300,ref itimes, 60, "20April2012", "cfs", "Inst-Val");
-      Assert.IsTrue( HecDateTime.Undefined(tss2.StartJulianDate));
+      tss2 = PInvoke.NativeTsNewIrregDoubles("/Basin/Location/Flow//~1Day/C Example/",dvalues, itimes, 60, "20April2012", "cfs", "Inst-Val");
+      Assert.IsTrue( Time.HecDateTimeUndefined(tss2.StartJulianDate));
       Assert.IsTrue(tss2.StartTimeSeconds == -1);
-      status = DSS.ZTsStore(ref ifltab, ref tss2, 0);
+      status = PInvoke.ZTsStore(ifltab, tss2, 0);
       Assert.IsTrue(status == 0);
-      tss3 = DSS.ZStructTsNew("/Basin/Location/Flow/01Jan2001/1Hour/C Test/");
-      Assert.IsTrue(HecDateTime.Undefined(tss3.StartJulianDate));
+      tss3 = PInvoke.NativeTsNew("/Basin/Location/Flow/01Jan2001/1Hour/C Test/");
+      Assert.IsTrue(Time.HecDateTimeUndefined(tss3.StartJulianDate));
       Assert.IsTrue(tss3.StartTimeSeconds == -1);
-      status = DSS.ZTsRetrieve(ref ifltab, ref tss3, -1, 1, 0);
+      status = PInvoke.ZTsRetrieve(ifltab, tss3, -1, 1, 0);
       Assert.IsTrue(status == 0);
       valueTime = tss3.StartTimeSeconds;
       Assert.IsTrue(valueTime == 43200);
       Assert.IsTrue(tss3.NumberValues == 200);
       for (int i = 0; i < tss3.NumberValues; i++)
       {
-        DSS.GetDateAndTime(valueTime, 1, tss3.StartJulianDate, ref cdate, 13,ref ctime, 10);
+        PInvoke.GetDateAndTime(valueTime, 1, tss3.StartJulianDate, out cdate, 13, out ctime, 10);
         Assert.IsTrue(tss3.FloatValues[i] == (double)i);
         if (i == 0)
         {
@@ -175,12 +174,12 @@ namespace DSSUnitTests
         }
         valueTime += 3600;
       }
-      tss4 = DSS.ZStructTsNewTimes("/Basin/Location/Flow//~1Day/C Example/", "19April2012", "2400", "01July2013", "2400");
-      status = DSS.ZTsRetrieve(ref ifltab,ref tss4, 0, 2, 0);
+      tss4 = PInvoke.NativeTsNewTimes("/Basin/Location/Flow//~1Day/C Example/", "19April2012", "2400", "01July2013", "2400");
+      status = PInvoke.ZTsRetrieve(ifltab, tss4, 0, 2, 0);
       Assert.IsTrue(status == 0);
       for (int i = 0; i < tss4.NumberValues; i++)
       {
-        DSS.GetDateAndTime(tss4.Times[i], tss4.TimeGranularitySeconds, tss4.JulianBaseDate, ref cdate, 13, ref ctime, 10);
+        PInvoke.GetDateAndTime(tss4.Times[i], tss4.TimeGranularitySeconds, tss4.JulianBaseDate, out cdate, 13, out ctime, 10);
         Assert.IsTrue(tss4.DoubleValues[i] == (double)i);
         Assert.IsTrue(ctime == "2400");
         if (i == 0)
@@ -199,7 +198,7 @@ namespace DSSUnitTests
     public void TestTimeSeries2()
     {
       long[] ifltab = new long[250];
-      ZStructTimeSeriesWrapper tss1, tss2;
+      NativeTimeSeriesWrapper tss1, tss2;
       float[] fvalues = new float[200];
       int[] quality = new int[200];
       sbyte[] cnotes1 = new sbyte[10000];
@@ -210,7 +209,7 @@ namespace DSSUnitTests
       int ich;
       status = PInvoke.ZOpen(ifltab, TestUtility.BasePath + "dotnet_example8.dss");
       Assert.IsTrue(status == 0);
-      tss2 = DSS.ZStructTsNew("/Basin/Location/Flow/01JAN2010/1Hour/Java Example/");
+      tss2 = PInvoke.NativeTsNew("/Basin/Location/Flow/01JAN2010/1Hour/Java Example/");
       tss2.NumberValues = 200;
       tss2.StartJulianDate = 40197;
       tss2.StartTimeSeconds = 86400;
@@ -232,23 +231,23 @@ namespace DSSUnitTests
         }
         cnotes1[noteCount++] = Convert.ToSByte('\0');
       }
-      tss1 = DSS.ZStructTsNewRegFloats("/Basin/Location/Flow//1Hour/C with Quality and C notes/", ref fvalues, 200, "21Jan2001", "1200", "cfs", "Inst-Val");
+      tss1 = PInvoke.NativeTsNewRegFloats("/Basin/Location/Flow//1Hour/C with Quality and C notes/", fvalues, "21Jan2001", "1200", "cfs", "Inst-Val");
       tss1.Quality = quality;
       tss1.QualityElementSize = 1;
       tss1.CNotes = cnotes1;
       tss1.CNotesLengthTotal = noteCount;
-      status = DSS.ZTsStore(ref ifltab, ref tss1, 0);
+      status = PInvoke.ZTsStore(ifltab, tss1, 0);
       System.Threading.Thread.Sleep(100);
       Assert.IsTrue(status == 0);
-      tss2 = DSS.ZStructTsNew("/Basin/Location/Flow/01Jan2001/1Hour/C with Quality and C notes/");
-      status = DSS.ZTsRetrieve(ref ifltab, ref tss2, -1, 1, 1);
+      tss2 = PInvoke.NativeTsNew("/Basin/Location/Flow/01Jan2001/1Hour/C with Quality and C notes/");
+      status = PInvoke.ZTsRetrieve(ifltab, tss2, -1, 1, 1);
       System.Threading.Thread.Sleep(100);
       Assert.IsTrue(status == 0);
       valueTime = tss2.StartTimeSeconds;
       noteCount = 0;
       for (int i = 0; i < tss2.NumberValues;i++)
       {
-        DSS.GetDateAndTime(valueTime, 1, tss2.StartJulianDate, ref cdate, 13, ref ctime, 10);
+        PInvoke.GetDateAndTime(valueTime, 1, tss2.StartJulianDate, out cdate, 13, out ctime, 10);
         Assert.IsTrue(tss2.FloatValues[i] == (float)i);
         Assert.IsTrue(tss2.Quality[i] == 10+i);
         if (i == 0)
@@ -267,12 +266,12 @@ namespace DSSUnitTests
     {
       long[] ifltab = new long[250];
       int status;
-      ////ZStructGridWrapper gs;
+      ////NativeGridWrapper gs;
       status = PInvoke.ZOpen(ifltab, "containsGrids.dss");
       //if (status != 0)
       //  Assert.Fail();
-      ////gs = DSS.ZStructGridNew(@"/SHG/LAKE WINNEBAGO/PRECIP/01JUN2016:0600/01JUN2016:1200/WPC-QPF/");
-      ////status = DSS.ZgRetrieve(ref ifltab, ref gs);
+      ////gs = PInvoke.NativeGridNew(@"/SHG/LAKE WINNEBAGO/PRECIP/01JUN2016:0600/01JUN2016:1200/WPC-QPF/");
+      ////status = PInvoke.ZgRetrieve(ref ifltab, ref gs);
       //if (status != 0)
       //  Assert.Fail();
       //PInvoke.ZClose(ifltab);

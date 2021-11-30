@@ -3,11 +3,9 @@
 
 
 
-void GetCatalogPathName(zStructCatalog* cat, char* inputPathName, int pathNameLength, int pathNameIndex)
+BSTR GetCatalogPathName(zStructCatalog* cat, int pathNameIndex)
 {
-	if (inputPathName) {
-		std::copy(cat->pathnameList[pathNameIndex], cat->pathnameList[pathNameIndex] + pathNameLength, inputPathName);
-	}
+	return ANSItoBSTR(cat->pathnameList[pathNameIndex]);
 }
 
 int GetPathNameLength(zStructCatalog* cat, int pathNameIndex)
@@ -26,4 +24,24 @@ int GetNumberPathNames(zStructCatalog* cat)
 int* GetRecordType(zStructCatalog* cat)
 {
 	return cat->recordType;
+}
+
+int GetTypeWantedStart(zStructCatalog* cat)
+{
+	return cat->typeWantedStart;
+}
+
+void SetTypeWantedStart(zStructCatalog* cat, int value)
+{
+	cat->typeWantedStart = value;
+}
+
+int GetTypeWantedEnd(zStructCatalog* cat)
+{
+	return cat->typeWantedEnd;
+}
+
+void SetTypeWantedEnd(zStructCatalog* cat, int value)
+{
+	cat->typeWantedEnd = value;
 }

@@ -607,7 +607,7 @@ namespace Hec.Dss
       string d = "".PadRight(20);
       string h = "".PadRight(20);
       PInvoke.GetDateAndTime(julian, timeGranularitySeconds, julianBaseDate,
-          d, d.Length, h, h.Length);
+          out d, d.Length, out h, h.Length);
       return Time.ConvertFromHecDateTime(d, h);
     }
 
