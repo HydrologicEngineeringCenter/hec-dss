@@ -1,7 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
-using Hec.Dss.Native;
 using Hec.Dss;
 
 namespace DSSUnitTests
@@ -142,12 +141,12 @@ namespace DSSUnitTests
         itimes[i] = i * 1440;
       }
       tss2 = PInvoke.NativeTsNewIrregDoubles("/Basin/Location/Flow//~1Day/C Example/",dvalues, itimes, 60, "20April2012", "cfs", "Inst-Val");
-      Assert.IsTrue( HecDateTime.Undefined(tss2.StartJulianDate));
+      Assert.IsTrue( Time.HecDateTimeUndefined(tss2.StartJulianDate));
       Assert.IsTrue(tss2.StartTimeSeconds == -1);
       status = PInvoke.ZTsStore(ifltab, tss2, 0);
       Assert.IsTrue(status == 0);
       tss3 = PInvoke.NativeTsNew("/Basin/Location/Flow/01Jan2001/1Hour/C Test/");
-      Assert.IsTrue(HecDateTime.Undefined(tss3.StartJulianDate));
+      Assert.IsTrue(Time.HecDateTimeUndefined(tss3.StartJulianDate));
       Assert.IsTrue(tss3.StartTimeSeconds == -1);
       status = PInvoke.ZTsRetrieve(ifltab, tss3, -1, 1, 0);
       Assert.IsTrue(status == 0);
