@@ -15,11 +15,14 @@ endif
 ifeq ($(UNAME_S),Darwin)
 	CWARNING=-Werror=implicit-function-declaration
     FDEBUG=-fcheck=all,no-recursion
-    CFLAGS=-m64 -fPIC -g -std=gnu99 $(CWARNING) $(INC_DIRS_MACOS) -D__darwin__
-    LDFLAGS=-Wl,-z,defs,--wrap=powf -lz -lrt -lgfortran -lm
+    CFLAGS=-m64 -dynamiclib -fPIC -g -std=gnu99 $(CWARNING) $(INC_DIRS_MACOS) -D__darwin__
+    LDFLAGS=-L${GFORTRAN_PATH} -lz -lgfortran -lm
 endif
 
 TARGET_LIB := libjavaHeclib.so
+ifeq ($(UNAME_S),Darwin)
+	TARGET_LIB := libjavaHeclib.dylib
+endif
 BUILD_DIR := ./Output
 SRC_DIRS := ./src
 INC_DIRS_LINUX=-Isrc -I../heclib_c/src/headers -I${JAVA_HOME}/include -I${JAVA_HOME}/include/linux
