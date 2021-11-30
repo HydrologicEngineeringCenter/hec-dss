@@ -183,23 +183,28 @@ int zset7(const char* parameter, const char* charVal, int integerValue)
 		if (charVal != NULL && charVal[0] != '\0') {
 			printf("In zset7: using character value %s\n", charVal);
 			if (!strncasecmp(charVal, CVERTICAL_DATUM_UNSET, lenCharVal)) {
+				printf("CP1\n");
 				zdssVals.iverticalDatum = IVERTICAL_DATUM_UNSET;
 				stringCopy(zdssVals.cverticalDatum, sizeof(zdssVals.cverticalDatum), CVERTICAL_DATUM_UNSET, _TRUNCATE);
 			}
 			else if (!strncasecmp(charVal, CVERTICAL_DATUM_NAVD88, lenCharVal)) {
+				printf("CP2\n");
 				zdssVals.iverticalDatum = IVERTICAL_DATUM_NAVD88;
 				stringCopy(zdssVals.cverticalDatum, sizeof(zdssVals.cverticalDatum), CVERTICAL_DATUM_NAVD88, _TRUNCATE);
 			}
 			else if (!strncasecmp(charVal, CVERTICAL_DATUM_NGVD29, lenCharVal)) {
+				printf("CP3\n");
 				zdssVals.iverticalDatum = IVERTICAL_DATUM_NGVD29;
 				stringCopy(zdssVals.cverticalDatum, sizeof(zdssVals.cverticalDatum), CVERTICAL_DATUM_NGVD29, _TRUNCATE);
 			}
 			else if (!strncasecmp(charVal, CVERTICAL_DATUM_OTHER, lenCharVal)) {
+				printf("CP4\n");
 				zdssVals.iverticalDatum = IVERTICAL_DATUM_OTHER;
 				stringCopy(zdssVals.cverticalDatum, sizeof(zdssVals.cverticalDatum), CVERTICAL_DATUM_OTHER, _TRUNCATE);
 			}
 			else {
 				// named local vertical datum
+				printf("CP5\n");
 				zdssVals.iverticalDatum = IVERTICAL_DATUM_OTHER;
 				stringCopy(zdssVals.cverticalDatum, sizeof(zdssVals.cverticalDatum), charVal, _TRUNCATE);
 			}
@@ -207,22 +212,27 @@ int zset7(const char* parameter, const char* charVal, int integerValue)
 		else {
 			printf("In zset7: using integer value %d\n", integerValue);
 			if (integerValue == IVERTICAL_DATUM_UNSET) {
+				printf("CP6\n");
 				zdssVals.iverticalDatum = IVERTICAL_DATUM_UNSET;
 				stringCopy(zdssVals.cverticalDatum, sizeof(zdssVals.cverticalDatum), CVERTICAL_DATUM_UNSET, _TRUNCATE);
 			}
 			else if (integerValue == IVERTICAL_DATUM_NAVD88) {
+				printf("CP7\n");
 				zdssVals.iverticalDatum = IVERTICAL_DATUM_NAVD88;
 				stringCopy(zdssVals.cverticalDatum, sizeof(zdssVals.cverticalDatum), CVERTICAL_DATUM_NAVD88, _TRUNCATE);
 			}
 			else if (integerValue == IVERTICAL_DATUM_NGVD29) {
+				printf("CP8\n");
 				zdssVals.iverticalDatum = IVERTICAL_DATUM_NGVD29;
 				stringCopy(zdssVals.cverticalDatum, sizeof(zdssVals.cverticalDatum), CVERTICAL_DATUM_NGVD29, _TRUNCATE);
 			}
 			else if (integerValue == IVERTICAL_DATUM_OTHER) {
+				printf("CP8\n");
 				zdssVals.iverticalDatum = IVERTICAL_DATUM_OTHER;
 				stringCopy(zdssVals.cverticalDatum, sizeof(zdssVals.cverticalDatum), CVERTICAL_DATUM_OTHER, _TRUNCATE);
 			}
 			else {
+				printf("CP10\n");
 				char buf[16];
 				sprintf(buf, "%d", integerValue);
 				if (zmessageLevel(ifltabTemp, MESS_METHOD_UTILITY_ID, MESS_LEVEL_INTERNAL_DIAG_2)) {
