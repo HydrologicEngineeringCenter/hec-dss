@@ -181,6 +181,7 @@ int zset7(const char* parameter, const char* charVal, int integerValue)
 	}
 	else if (!strncmp(cparm, "vdtm", 4)) {
 		if (charVal != NULL && charVal[0] != '\0') {
+			printf("In zset7: using character value %s\n", charVal);
 			if (!strncasecmp(charVal, CVERTICAL_DATUM_UNSET, lenCharVal)) {
 				zdssVals.iverticalDatum = IVERTICAL_DATUM_UNSET;
 				stringCopy(zdssVals.cverticalDatum, sizeof(zdssVals.cverticalDatum), CVERTICAL_DATUM_UNSET, _TRUNCATE);
@@ -204,6 +205,7 @@ int zset7(const char* parameter, const char* charVal, int integerValue)
 			}
 		}
 		else {
+			printf("In zset7: using integer value %d\n", integerValue);
 			if (integerValue == IVERTICAL_DATUM_UNSET) {
 				zdssVals.iverticalDatum = IVERTICAL_DATUM_UNSET;
 				stringCopy(zdssVals.cverticalDatum, sizeof(zdssVals.cverticalDatum), CVERTICAL_DATUM_UNSET, _TRUNCATE);
@@ -227,10 +229,12 @@ int zset7(const char* parameter, const char* charVal, int integerValue)
 					zmessageDebug(ifltabTemp, DSS_FUNCTION_zset_ID, "Invalid integer value for \"VDTM\":   ", buf);
 				}
 				printf("In zset7: zdssVals.cverticalDatum set to %s (%d)\n", zdssVals.cverticalDatum, zdssVals.iverticalDatum);
+				fflush(stdout);
 				return STATUS_NOT_OKAY;
 			}
 		}
 		printf("In zset7: zdssVals.cverticalDatum set to %s (%d)\n", zdssVals.cverticalDatum, zdssVals.iverticalDatum);
+		fflush(stdout);
 	}
 	else if (!strncmp(cparm, "vdow", 4)) {
 		zdssVals.icanOverwriteLocationVerticalDatum = integerValue ? TRUE : FALSE;
