@@ -93,6 +93,7 @@ namespace Hec.Dss
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
     public extern static bool IsTimeDefined(int julianDate, int timeSeconds);
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [return: MarshalAs(UnmanagedType.BStr)]
     public extern static string AlbersSRS();
     [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
     public extern static int YearMonthDayToJulian(int year, int month, int day);
