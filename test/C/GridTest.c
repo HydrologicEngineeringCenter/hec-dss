@@ -12,6 +12,11 @@
 
 #include "zStructSpatialGrid.h"
 
+// If MacOS, use hec_zopen instead of stdio::zopen
+#ifdef __APPLE__
+#define zopen hec_zopen
+#endif
+
 int isSame(float f1, float f2) {
 	if (fabsf(f1 - f2) < 1.0e-6)
 		return 1;

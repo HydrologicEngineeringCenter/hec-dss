@@ -2,6 +2,11 @@
 #include <string.h>
 #include "heclib.h"
 
+// If MacOS, use hec_zopen instead of stdio::zopen
+#ifdef __APPLE__
+#define zopen hec_zopen
+#endif
+
 //  An example of storing and retrieving a single text string
 
 int main()

@@ -1,6 +1,12 @@
 #include "heclib.h"
 #include <math.h>
 #include <string.h>
+
+// If MacOS, use hec_zopen instead of stdio::zopen
+#ifdef __APPLE__
+#define zopen hec_zopen
+#endif
+
 int main()
 {
 	long long ifltab[250];
