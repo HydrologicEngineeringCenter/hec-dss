@@ -1,5 +1,10 @@
 #include "heclib.h"
 
+// If MacOS, use hec_zopen instead of stdio::zopen
+#ifdef __APPLE__
+#define zopen hec_zopen
+#endif
+
 int SampleTimeSeries()
 {
 	long long ifltab[250];

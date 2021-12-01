@@ -8,6 +8,10 @@
 #include "zdssKeys.h"
 #include "zdssLocking.h"
 
+// If MacOS, use hec_zopen instead of stdio::zopen
+#ifdef __APPLE__
+#define zopen hec_zopen
+#endif
 
 int CheckPathnames(char* dssFileName)
 {

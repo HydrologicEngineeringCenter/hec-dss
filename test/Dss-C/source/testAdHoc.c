@@ -19,6 +19,10 @@
 #include "hecdss7.h"
 //#  Note - No header included for def, as to avoid compiler errors!
 
+// If MacOS, use hec_zopen instead of stdio::zopen
+#ifdef __APPLE__
+#define zopen hec_zopen
+#endif
 
 int charLongxx(void *from, void *to, int numberBytes, int maxBytesTo, int zeroEndFlag)
 {

@@ -6,6 +6,10 @@
 #include "hecdssInternal.h"
 #include "TestDssC.h"
 
+// If MacOS, use hec_zopen instead of stdio::zopen
+#ifdef __APPLE__
+#define zopen hec_zopen
+#endif
 
 //  Tests catalog functions for  DSS-6
 //  Requires the existance of sample7.dss and sample6.dss
