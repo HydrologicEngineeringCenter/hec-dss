@@ -77,10 +77,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Hec.Dss.Native\Hec.Dss.Native.vcxproj">
-      <Project>{27fb0b08-627a-4818-ae2e-153fac8ee8e1}</Project>
-      <Name>Hec.Dss.Native</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Hec.Dss\Hec.Dss.csproj">
       <Project>{17ed2d59-4590-4270-a89b-55f9b261e58e}</Project>
       <Name>Hec.Dss</Name>

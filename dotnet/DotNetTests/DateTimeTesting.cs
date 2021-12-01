@@ -1,6 +1,5 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Hec.Dss.Native;
 using Hec.Dss;
 
 namespace DSSUnitTests
