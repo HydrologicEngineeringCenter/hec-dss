@@ -259,9 +259,9 @@ C
         !-----------------------------------------------------!
         call zinqir(ifltab, 'VDTM', cvdatum, ivdatum)
         if (cvdatum.ne.CVD_UNSET) then
-          !--------------------------------------------!
-          ! we possibly need to convert the elevations !
-          !--------------------------------------------!
+          !----------------------------------------!
+          ! we possibly need to convert the values !
+          !----------------------------------------!
           call get_user_header_param(iuhead, nuhead,
      *      VERTICAL_DATUM_INFO_PARAM, vdiStr)
           if (vdiStr.eq." ") then
@@ -275,6 +275,9 @@ C
             istat = 13
             return
           else
+            !-----------------------------------------------------------!
+            ! we retrieved a user header and it has vertical datum info !
+            !-----------------------------------------------------------!
             call stringToVerticalDatumInfo(
      *        vdiStr,
      *        errMsg,
@@ -296,6 +299,14 @@ C
               istat = 13
               return
             end if
+            !--------------------------------------------!
+            ! add the requested datum to the user header !
+            !--------------------------------------------!
+            call set_user_header_param(iuhead, kuhead, 
+     *        VERTICAL_DATUM_PARAM, cvdatum)
+            !--------------------------------------!
+            ! get the vertical datum offset to use !
+            !--------------------------------------!
             if (cvdatum.eq.CVD_NAVD88) then
               vertDatumOffset = offsetNavd88
             elseif (cvdatum.eq.CVD_NGVD29) then
@@ -322,6 +333,9 @@ C
                 return
               end if
               if (l_indElev) then
+                !------------------------------------------------------------!
+                ! convert the vertical datum offset to the units of the data !
+                !------------------------------------------------------------!
                 call getoffset(vertDatumOffset, unit, c1unit)
                 if (vertDatumOffset.eq.
      *            UNDEFINED_VERTICAL_DATUM_VALUE) then
@@ -336,6 +350,9 @@ C
                   istat = 13
                   return
                 end if
+                !-----------------------------------!
+                ! add the offset to the data values !
+                !-----------------------------------!
                 if (ldouble) then
                   do i = 1, nord
                     dvalues(i) = dvalues(i) + vertDatumOffset
@@ -347,6 +364,9 @@ C
                 end if
               end if
               if (l_depElev) then
+                !------------------------------------------------------------!
+                ! convert the vertical datum offset to the units of the data !
+                !------------------------------------------------------------!
                 call getoffset(vertDatumOffset, unit, c2unit)
                 if (vertDatumOffset.eq.
      *            UNDEFINED_VERTICAL_DATUM_VALUE) then
@@ -361,6 +381,9 @@ C
                   istat = 13
                   return
                 end if
+                !-----------------------------------!
+                ! add the offset to the data values !
+                !-----------------------------------!
                 if (ldouble) then
                   do i = nord+1, (ncurve+1) * nord
                     dvalues(i) = dvalues(i) + vertDatumOffset

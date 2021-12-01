@@ -406,16 +406,17 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 			int  ivertical_datum = -1;
 			verticalDatumInfo _vdi;
 			verticalDatumInfo *vdi = NULL;
+			char *vdiStr;
 			char errmsg[1024];
 			zquery("VDTM", cvertical_datum, sizeof(cvertical_datum), &ivertical_datum);
-			if (version == 7 && ivertical_datum != IVERTICAL_DATUM_UNSET) {
+			if (ivertical_datum != IVERTICAL_DATUM_UNSET) {
 				//-----------------------------------//
 				// specific vertical datum requested //
 				//-----------------------------------//
 				vdi = extractVerticalDatumInfoFromUserHeader(tss->userHeader, tss->userHeaderNumber);
 				if (!vdi) {
 					if (tss->locationStruct && tss->locationStruct->supplemental) {
-						char *vdiStr = extractFromDelimitedString(
+						vdiStr = extractFromDelimitedString(
 							&tss->locationStruct->supplemental,
 							VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
 							":",
@@ -453,6 +454,56 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 					return status;
 				}
 				else {
+					//---------------------------------------------------------------//
+					// ensure the vertical datum info is returned in the user header //
+					//---------------------------------------------------------------//
+					verticalDatumInfoToString(&vdiStr, vdi, TRUE);
+					char *headerString;
+					if (tss->userHeader) {
+						headerString = userHeaderToString(tss->userHeader, tss->userHeaderNumber);
+						if (!strstr(headerString, VERTICAL_DATUM_INFO_USER_HEADER_PARAM)) {
+							headerString = (char *)realloc(
+								headerString,
+								strlen(headerString)
+								+ VERTICAL_DATUM_INFO_USER_HEADER_PARAM_LEN
+								+ strlen(vdiStr)
+								+ 3);
+							sprintf(
+								headerString+strlen(headerString), 
+								";%s:%s", 
+								VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
+								vdiStr);
+							free(tss->userHeader);
+						}
+					}
+					else {
+						headerString = (char *)malloc(
+							strlen(headerString)
+							+ VERTICAL_DATUM_INFO_USER_HEADER_PARAM_LEN
+							+ strlen(vdiStr));
+						sprintf(
+							headerString, 
+							"%s:%s", 
+							VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
+							vdiStr);
+					}
+					tss->userHeader = stringToUserHeader(headerString, &tss->userHeaderNumber);
+					tss->allocated[zSTRUCT_userHeader] = TRUE;
+					free(vdiStr);
+					//--------------------------------------------//
+					// add the requested datum to the user header //
+					//--------------------------------------------//
+					headerString = (char *)realloc(
+						headerString,
+						strlen(headerString)
+						+ VERTICAL_DATUM_USER_HEADER_PARAM_LEN
+						+ strlen(cvertical_datum)
+						+ 3);
+					sprintf(
+						headerString+strlen(headerString), 
+						";%s:%s", 
+						VERTICAL_DATUM_USER_HEADER_PARAM,
+						cvertical_datum);
 					double offset;
 					switch(ivertical_datum) {
 						case IVERTICAL_DATUM_NAVD88 :

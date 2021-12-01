@@ -529,6 +529,11 @@ C
      *          l_Ngvd29Estimated,
      *          offsetNavd88,
      *          l_Navd88Estimated)
+              !--------------------------------------------!
+              ! add the requested datum to the user header !
+              !--------------------------------------------!
+              call set_user_header_param(iuhead, kuhead, 
+     *          VERTICAL_DATUM_PARAM, cvdatum)
               !--------------------------------------!
               ! get the vertical datum offset to use !
               !--------------------------------------!

@@ -21,20 +21,21 @@
       ! local variables !
       !-----------------!  
       integer   iuhead_copy(250), max_head_len, ifirst, ilast, i, plen
-      character cuhead*1000
+      character cuhead*1000, cparam_copy*100
       logical   param_has_separator
       equivalence (iuhead_copy, cuhead)
 
       include 'zdssmz.h'
 
       cvalue = ' '
+      cparam_copy = cparam
       !-------------------------------------------------------------------!  
       ! copy the user header to a local variable so we can equivalence it !
       !-------------------------------------------------------------------!  
       iuhead_copy = 0
       if (nuhead.gt.size(iuhead_copy)) then
         if (mlevel.ge.1) then
-          write (munit,'(/a,/,a,a,/,a,i4,/,a,i4)')
+          write (munit,'(/a,/,a,i4,/,a,i4)')
      *    ' WARNING: LOCATING PARAMETER VALUE IN TRUNCATED USER HEADER',
      *    '   User header length : ',nuhead,
      *    '   Truncated length   : ',size(iuhead_copy)
@@ -55,15 +56,19 @@
           cuhead(ifirst:) = ' '
         end if
       end if
+      ifirst = index(cparam_copy, char(0))
+      if (ifirst.gt.0) then
+        cparam_copy(ifirst:) = ' '
+      end if
       !-----------------------------------------!
       ! locate the parameter name in the header !
       !-----------------------------------------!
-      plen = len_trim(cparam)
-      param_has_separator = cparam(plen:plen).eq.':'
+      plen = len_trim(cparam_copy)
+      param_has_separator = cparam_copy(plen:plen).eq.':'
       if (param_has_separator) then
-        ifirst = index(cuhead, cparam(1:plen))
+        ifirst = index(cuhead, cparam_copy(1:plen))
       else  
-        ifirst = index(cuhead, cparam(1:plen)//':')
+        ifirst = index(cuhead, cparam_copy(1:plen)//':')
       end if
       !--------------------------------------------------------!
       ! get the parameter value if we found the parameter name !
@@ -85,7 +90,7 @@
           if (mlevel.ge.1) then
             write (munit,'(/a,/,a,a,/,a,i4,/,a,i4)')
      *      ' WARNING: USER HEADER PARAMETER VALUE TRUNCATED',
-     *      '   Parameter       : ',cparam,
+     *      '   Parameter       : ',cparam_copy,
      *      '   Value length    : ',ilast-ifirst+1,
      *      '   Variable length : ',len(cvalue)
           end if

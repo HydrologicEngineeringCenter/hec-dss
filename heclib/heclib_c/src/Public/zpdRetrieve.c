@@ -735,6 +735,7 @@ int zpdRetrieve(long long *ifltab, zStructPairedData *pds, int retrieveSizeFlag)
 			int  ivertical_datum = -1;
 			verticalDatumInfo _vdi;
 			verticalDatumInfo *vdi = NULL;
+			char *vdiStr;
 			char errmsg[1024];
 			zquery("VDTM", cvertical_datum, sizeof(cvertical_datum), &ivertical_datum);
 			if (ivertical_datum != IVERTICAL_DATUM_UNSET) {
@@ -742,7 +743,7 @@ int zpdRetrieve(long long *ifltab, zStructPairedData *pds, int retrieveSizeFlag)
 				// specific vertical datum requested //
 				//-----------------------------------//
 				if (pds->locationStruct && pds->locationStruct->supplemental) {
-					char *vdiStr = extractFromDelimitedString(
+					vdiStr = extractFromDelimitedString(
 						&pds->locationStruct->supplemental,
 						VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
 						":",
@@ -784,8 +785,61 @@ int zpdRetrieve(long long *ifltab, zStructPairedData *pds, int retrieveSizeFlag)
 					zmessage(ifltab, errmsg);
 				}
 				else {
-					double offset;
+					//---------------------------------------------------------------//
+					// ensure the vertical datum info is returned in the user header //
+					//---------------------------------------------------------------//
+					verticalDatumInfoToString(&vdiStr, vdi, TRUE);
+					char *headerString;
+					if (pds->userHeader) {
+						headerString = userHeaderToString(pds->userHeader, pds->userHeaderNumber);
+						if (!strstr(headerString, VERTICAL_DATUM_INFO_USER_HEADER_PARAM)) {
+							headerString = (char *)realloc(
+								headerString,
+								strlen(headerString)
+								+ VERTICAL_DATUM_INFO_USER_HEADER_PARAM_LEN
+								+ strlen(vdiStr)
+								+ 3);
+							sprintf(
+								headerString+strlen(headerString), 
+								";%s:%s", 
+								VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
+								vdiStr);
+							free(pds->userHeader);
+						}
+					}
+					else {
+						headerString = (char *)malloc(
+							strlen(headerString)
+							+ VERTICAL_DATUM_INFO_USER_HEADER_PARAM_LEN
+							+ strlen(vdiStr));
+						sprintf(
+							headerString, 
+							"%s:%s", 
+							VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
+							vdiStr);
+					}
+					pds->userHeader = stringToUserHeader(headerString, &pds->userHeaderNumber);
+					pds->allocated[zSTRUCT_userHeader] = TRUE;
+					free(vdiStr);
+					//--------------------------------------------//
+					// add the requested datum to the user header //
+					//--------------------------------------------//
+					headerString = (char *)realloc(
+						headerString,
+						strlen(headerString)
+						+ VERTICAL_DATUM_USER_HEADER_PARAM_LEN
+						+ strlen(cvertical_datum)
+						+ 3);
+					sprintf(
+						headerString+strlen(headerString), 
+						";%s:%s", 
+						VERTICAL_DATUM_USER_HEADER_PARAM,
+						cvertical_datum);
 					if (indElev) {
+						//-----------------------------//	
+						// determine the offset to use //
+						//-----------------------------//	
+						double offset;
 						switch(ivertical_datum) {
 							case IVERTICAL_DATUM_NAVD88 :
 								offset = vdi->offsetToNavd88;
@@ -831,6 +885,9 @@ int zpdRetrieve(long long *ifltab, zStructPairedData *pds, int retrieveSizeFlag)
 								}
 							}
 							else {
+								//------------------------------//
+								// add the offset to the values //
+								//------------------------------//
 								if (pds->doubleOrdinates) {
 									for (int i = 0; i < pds->numberOrdinates; ++i) {
 										pds->doubleOrdinates[i] += offset;
@@ -845,6 +902,10 @@ int zpdRetrieve(long long *ifltab, zStructPairedData *pds, int retrieveSizeFlag)
 						}
 					}
 					if (depElev) {
+						//-----------------------------//	
+						// determine the offset to use //
+						//-----------------------------//	
+						double offset;
 						switch(ivertical_datum) {
 							case IVERTICAL_DATUM_NAVD88 :
 								offset = vdi->offsetToNavd88;
@@ -890,6 +951,9 @@ int zpdRetrieve(long long *ifltab, zStructPairedData *pds, int retrieveSizeFlag)
 								}
 							}
 							else {
+								//------------------------------//
+								// add the offset to the values //
+								//------------------------------//
 								if (pds->doubleValues) {
 									for (int i = 0; i < pds->numberOrdinates * pds->numberCurves; ++i) {
 										pds->doubleValues[i] += offset;

@@ -129,9 +129,11 @@ subroutine testUserHeaderOps
     implicit none
 
     character (len=100) :: cheader, cvalue
-    integer   (kind=4)  :: iheader(25)
+    character (len=72)  :: cheaderShort 
+    integer   (kind=4)  :: iheader(25), iheaderShort(18), status
 
     equivalence (cheader, iheader)
+    equivalence (cheaderShort, iheaderShort)
 
     cheader = 'firstParam:firstValue;secondParam:secondValue;thirdParam:thirdValue'
 
@@ -141,7 +143,22 @@ subroutine testUserHeaderOps
     call assert(cvalue.eq.'secondValue')
     call get_user_header_param(iheader, size(iheader), 'thirdParam', cvalue)
     call assert(cvalue.eq.'thirdValue')
+    call set_user_header_param(iheader, size(iheader), 'firstParam', 'FIRSTValue', status)
+    call assert(status.eq.0)
+    call get_user_header_param(iheader, size(iheader), 'firstParam', cvalue)
+    call assert(cvalue.eq.'FIRSTValue')
+    call set_user_header_param(iheader, size(iheader), 'secondParam', '2ndValue', status)
+    call assert(status.eq.0)
+    call get_user_header_param(iheader, size(iheader), 'secondParam', cvalue)
+    call assert(cvalue.eq.'2ndValue')
+    call set_user_header_param(iheader, size(iheader), 'thirdParam', 'THIRDValue', status)
+    call assert(status.eq.0)
+    call get_user_header_param(iheader, size(iheader), 'thirdParam', cvalue)
+    call assert(cvalue.eq.'THIRDValue')
+    call set_user_header_param(iheader, size(iheader), 'fourthParam', '4thValue', status)
+    call assert(status.eq.0)
 
+    cheader = 'firstParam:firstValue;secondParam:secondValue;thirdParam:thirdValue'
     call remove_user_header_param(iheader, size(iheader), 'firstParam')
     call assert(cheader.eq.'secondParam:secondValue;thirdParam:thirdValue')
     cheader = 'firstParam:firstValue;secondParam:secondValue;thirdParam:thirdValue'
@@ -150,6 +167,10 @@ subroutine testUserHeaderOps
     cheader = 'firstParam:firstValue;secondParam:secondValue;thirdParam:thirdValue'
     call remove_user_header_param(iheader, size(iheader), 'thirdParam')
     call assert(cheader.eq.'firstParam:firstValue;secondParam:secondValue')
+
+    cheaderShort = 'firstParam:firstValue;secondParam:secondValue;thirdParam:thirdValue'
+    call set_user_header_param(iheaderShort, size(iheaderShort), 'fourthParam', '4thValue', status)
+    call assert(status.ne.0)
 
 end subroutine testUserHeaderOps
 
@@ -281,6 +302,7 @@ subroutine testStoreRetrieveTimeSeries()
     call zset('MLVL', '', 1)
     count = 0
     do i = 1, 2
+        call deletefile(filename(i), status)
         do j = 1, 2
             call verticalDatumInfoToString(       &
                 vdiStr,                           &
@@ -881,6 +903,7 @@ subroutine testStoreRetrievePairedData()
     call zset('MLVL', '', 1)
     count = 0
     do i = 1, 2
+        call deletefile(filename(i), status)
         do j = 1, 2
             call verticalDatumInfoToString(       &
                 vdiStr,                           &
