@@ -22,12 +22,12 @@
       !-----------------!  
       ! local variables !
       !-----------------!  
-      integer   iuhead_copy(250), max_head_len, ifirst, ilast, i, len
-      character cuhead*1000, existing*250
+      integer   iuhead_copy(500), max_head_len, ifirst, ilast, i, len
+      character cuhead*2000, existing*250
       logical   param_has_separator
       equivalence (iuhead_copy, cuhead)
 
-      include 'zdssmz.h'
+      include "zdssmz.h"
 
       !-------------------------------------------------------------------!
       ! copy the user header to a local variable so we can equivalence it !
@@ -35,10 +35,10 @@
       cuhead = " "
       if (kuhead.gt.size(iuhead_copy)) then
         if (mlevel.ge.1) then
-          write (munit,'(/a,/,a,i4,/,a,i4)')
-     *    ' WARNING: Possibly truncating data in user header',
-     *    '   User header length : ',kuhead,
-     *    '   Truncated length   : ',size(iuhead_copy)
+          write (munit,"(/a,/,a,i4,/,a,i4)")
+     *    " WARNING: Possibly truncating data in user header",
+     *    "   User header length : ",kuhead,
+     *    "   Truncated length   : ",size(iuhead_copy)
         end if
       end if
       max_head_len = min(kuhead, size(iuhead_copy))
@@ -48,10 +48,10 @@
       !--------------------------------------------------------!
       ifirst = index(cuhead, char(0))
       if (ifirst.gt.0) then
-        cuhead(ifirst:) = ' '
+        cuhead(ifirst:) = " "
       else
         if (max_head_len.lt.size(iuhead_copy)) then
-          cuhead(max_head_len*4:) = ' '
+          cuhead(max_head_len*4:) = " "
         end if
       end if
       !-------------------------------------------------!
@@ -66,10 +66,10 @@
       end if
       if (intsAvailable.lt.intsRequired) then
         if (mlevel.ge.1) then
-          write (munit,'(/a,/,a,i4,/,a,i4)')
-     *    ' WARNING: Not enough room in user header to set parameter',
-     *    '   Length available : ',intsAvailable,
-     *    '   Length required  : ',intsRequired
+          write (munit,"(/a,/,a,i4,/,a,i4)")
+     *    " WARNING: Not enough room in user header to set parameter",
+     *    "   Length available : ",intsAvailable,
+     *    "   Length required  : ",intsRequired
         end if
         istat = 1
       else
@@ -81,11 +81,12 @@
      *    cparam)
         end if
         len = len_trim(cuhead)
-        if (cuhead(len:len).ne.';') then
+        if (cuhead(len:len).ne.";") then
           len = len + 1  
-          cuhead(len:len) = ';'
+          cuhead(len:len) = ";"
         end if  
-        cuhead(len+1:) = cparam // ':' // cvalue
+        cuhead(len+1:) = cparam(:len_trim(cparam)) // ":" // 
+     *    cvalue(:len_trim(cvalue))
         iuhead(:max_head_len) = iuhead_copy(:max_head_len)
         istat = 0
       end if  

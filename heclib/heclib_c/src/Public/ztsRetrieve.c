@@ -469,8 +469,8 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 								+ strlen(vdiStr)
 								+ 3);
 							sprintf(
-								headerString+strlen(headerString), 
-								";%s:%s", 
+								headerString+strlen(headerString),
+								";%s:%s",
 								VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
 								vdiStr);
 							free(tss->userHeader);
@@ -478,12 +478,11 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 					}
 					else {
 						headerString = (char *)malloc(
-							strlen(headerString)
-							+ VERTICAL_DATUM_INFO_USER_HEADER_PARAM_LEN
+							VERTICAL_DATUM_INFO_USER_HEADER_PARAM_LEN
 							+ strlen(vdiStr));
 						sprintf(
-							headerString, 
-							"%s:%s", 
+							headerString,
+							"%s:%s",
 							VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
 							vdiStr);
 					}
@@ -500,10 +499,13 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 						+ strlen(cvertical_datum)
 						+ 3);
 					sprintf(
-						headerString+strlen(headerString), 
-						";%s:%s", 
+						headerString+strlen(headerString),
+						";%s:%s",
 						VERTICAL_DATUM_USER_HEADER_PARAM,
 						cvertical_datum);
+					//-----------------------------//
+					// determine the offset to use //
+					//-----------------------------//
 					double offset;
 					switch(ivertical_datum) {
 						case IVERTICAL_DATUM_NAVD88 :
@@ -544,6 +546,9 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 							return status;
 						}
 						else {
+							//------------------------------//
+							// add the offset to the values //
+							//------------------------------//
 							for (int i = 0; i < tss->numberValues; ++i) {
 								if (tss->floatValues) {
 									if (tss->floatValues[i] != UNDEFINED_FLOAT) {

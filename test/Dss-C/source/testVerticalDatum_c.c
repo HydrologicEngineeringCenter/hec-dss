@@ -351,6 +351,7 @@ void testStoreRetrieveTimeSeries() {
     //
     zset("MLVL", "", 1);
     for (int i = 0; i < 2; ++i) {
+        remove(filename[i]);
         for (int j = 0; j < xml_count; ++j) {
             for (int k = 0; k < verticalDatumCount; ++k) {
                 int k2 = (k+1) % verticalDatumCount;
@@ -642,18 +643,18 @@ void testStoreRetrievePairedData() {
     char  *errmsg;
     char  *filename[2]      = {"v6_c.dss", "v7_c.dss"};
     char  *pathnames[2][2]  = {{"//TestPdLoc/Stage-Elev///Doubles/", "//TestPdLoc/Stage-Elev///Floats/"},
-                                {"//TestPdLoc/Elev-Stage///Doubles/", "//TestPdLoc/Elev-Stage///Floats/"}};
+                               {"//TestPdLoc/Elev-Stage///Doubles/", "//TestPdLoc/Elev-Stage///Floats/"}};
     char  *type             = "Linear";
     char  *unit[]           = {"ft", "m", "cfs"};
     double dordinates[3][6] = {{1000,1001,1002,1003,1004,1005},                           // ft
-                                {304.8,305.1048,305.4096,305.7144,306.0192,306.324},       // m
-                                {1000,1001,1002,1003,1004,1005}};                          // cfs
+                               {304.8,305.1048,305.4096,305.7144,306.0192,306.324},       // m
+                               {1000,1001,1002,1003,1004,1005}};                          // cfs
     double dvalues[3][6]    = {{1000,1001,1002,1003,1004,1005},                           // ft
-                                {304.8,305.1048,305.4096,305.7144,306.0192,306.324},       // m
-                                {1000,1001,1002,1003,1004,1005}};                          // cfs
+                               {304.8,305.1048,305.4096,305.7144,306.0192,306.324},       // m
+                               {1000,1001,1002,1003,1004,1005}};                          // cfs
     float  fordinates[3][6] = {{1000.f,1001.f,1002.f,1003.f,1004.f,1005.f},               // ft
-                                {304.8f,305.1048f,305.4096f,305.7144f,306.0192f,306.324f}, // m
-                                {1000.f,1001.f,1002.f,1003.f,1004.f,1005.f}};              // cfs
+                               {304.8f,305.1048f,305.4096f,305.7144f,306.0192f,306.324f}, // m
+                               {1000.f,1001.f,1002.f,1003.f,1004.f,1005.f}};              // cfs
     float  fvalues[3][6]    = {{1000.f,1001.f,1002.f,1003.f,1004.f,1005.f},               // ft
                                 {304.8f,305.1048f,305.4096f,305.7144f,306.0192f,306.324f}, // m
                                 {1000.f,1001.f,1002.f,1003.f,1004.f,1005.f}};              // cfs
@@ -740,6 +741,7 @@ void testStoreRetrievePairedData() {
     //
     zset("MLVL", "", 1);
     for (int i = 0; i < 2; ++i) {
+        remove(filename[i]);
         for (int j = 0; j < xml_count; ++j) {
             for (int k = 0; k < verticalDatumCount; ++k) {
                 int k2 = (k+1) % verticalDatumCount;

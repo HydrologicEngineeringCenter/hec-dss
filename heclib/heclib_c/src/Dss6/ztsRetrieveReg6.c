@@ -142,7 +142,7 @@ int ztsRetrieveReg6(long long *ifltab, zStructTimeSeries *tss,
 
 	zeroFill(cunits, sizeof(cunits));
 	zeroFill(ctype, sizeof(ctype));
-	kuserHeader = 500;  //sizeof(userHeader);
+	kuserHeader = sizeof(userHeader) / sizeof(userHeader[0]);
 
 	jcomp = 0;
 	boolCoordinates = 1;

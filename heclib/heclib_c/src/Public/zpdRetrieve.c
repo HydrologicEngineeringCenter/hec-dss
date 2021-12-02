@@ -809,8 +809,7 @@ int zpdRetrieve(long long *ifltab, zStructPairedData *pds, int retrieveSizeFlag)
 					}
 					else {
 						headerString = (char *)malloc(
-							strlen(headerString)
-							+ VERTICAL_DATUM_INFO_USER_HEADER_PARAM_LEN
+							VERTICAL_DATUM_INFO_USER_HEADER_PARAM_LEN
 							+ strlen(vdiStr));
 						sprintf(
 							headerString, 

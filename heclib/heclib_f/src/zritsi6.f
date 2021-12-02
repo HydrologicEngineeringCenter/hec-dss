@@ -135,7 +135,7 @@ C
       LQREAD = .FALSE.
 C
 C
-      IF (CPATH(1:1).NE.'/') GO TO 910
+      IF (CPATH(1:1).NE."/") GO TO 910
 C     Look for a pseudo regular time series pathname... The e part
 C     starts with a tilde.  We treat this fully as an irregular
 C     interval data set, but the user sees the general interval
@@ -155,7 +155,7 @@ C     has no specific time associated with it
 C     (such as a unit hydrograph or mean maximum daily temperatures)
 C
       IF (ILPART(4).GT.3) THEN
-         IF (CPATH(IBPART(4):IBPART(4)+2).EQ.'TS-') THEN
+         IF (CPATH(IBPART(4):IBPART(4)+2).EQ."TS-") THEN
             KB = KLBUFF
             CALL zreadx6 (IFLTAB, CPATH, IIHEAD, KIHEAD, NNIHEAD,
      *      IDUM, 0, N, IUHEAD, KUHEAD, NUHEAD, ILBUFF, KB, NB, 0,
@@ -298,7 +298,7 @@ C
 C
 C
       CALL zupath (CPATH, IBPART, IEPART, ILPART, ISTAT)
-      IF (CPATH(1:1).NE.'/') GO TO 910
+      IF (CPATH(1:1).NE."/") GO TO 910
       IF (ISTAT.EQ.0) CALL zirbeg6 (IFLTAB, JULS,
      * CPATH(IBPART(5):IEPART(5)), IYR, IMON, IDAY, IBLOCK, MINBLK,
      * INCBLK)
@@ -652,7 +652,7 @@ C
               ! add the requested datum to the user header !
               !--------------------------------------------!
               call set_user_header_param(iuhead, kuhead, 
-     *          VERTICAL_DATUM_PARAM, cvdatum)
+     *          VERTICAL_DATUM_PARAM, cvdatum, istat)
               !--------------------------------------!
               ! get the vertical datum offset to use !
               !--------------------------------------!

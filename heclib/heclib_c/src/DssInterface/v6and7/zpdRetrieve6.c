@@ -108,8 +108,8 @@ int zpdRetrieve6(long long *ifltab, zStructPairedData *pds, int retrieveSizeFlag
 	}
 
 	if (recordSize->userHeaderNumber > 0) {
-		userHeaderNumber = recordSize->userHeaderNumber;
-		pds->userHeader = (int *)calloc(recordSize->userHeaderNumber, 4);
+		userHeaderNumber = recordSize->userHeaderNumber + 75; // make sure there's enough room for vertical datum info
+		pds->userHeader = (int *)calloc(userHeaderNumber, 4);
 		pds->allocated[zSTRUCT_userHeader] = 1;
 	}
 	else {

@@ -303,7 +303,7 @@ C
             ! add the requested datum to the user header !
             !--------------------------------------------!
             call set_user_header_param(iuhead, kuhead, 
-     *        VERTICAL_DATUM_PARAM, cvdatum)
+     *        VERTICAL_DATUM_PARAM, cvdatum, istat)
             !--------------------------------------!
             ! get the vertical datum offset to use !
             !--------------------------------------!

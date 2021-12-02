@@ -20,8 +20,8 @@
       !-----------------!  
       ! local variables !
       !-----------------!  
-      integer   iuhead_copy(250), max_head_len, ifirst, ilast, i, plen
-      character cuhead*1000, cparam_copy*100
+      integer   iuhead_copy(500), max_head_len, ifirst, ilast, i, plen
+      character cuhead*2000, cparam_copy*100
       logical   param_has_separator
       equivalence (iuhead_copy, cuhead)
 

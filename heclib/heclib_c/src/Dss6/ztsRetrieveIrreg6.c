@@ -122,7 +122,7 @@ int ztsRetrieveIrreg6(long long *ifltab, zStructTimeSeries *tss,
 	zeroFill(cunits, sizeof(cunits));
 	zeroFill(ctype, sizeof(ctype));
 	memset(userHeader, 0, sizeof(userHeader));
-	kuserHeader = sizeof(userHeader);
+	kuserHeader = sizeof(userHeader) / sizeof(userHeader[0]);
 	boolCoordinates = 1;
 
 	minsStart = tss->timeWindow->startTimeSeconds / 60;

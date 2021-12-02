@@ -19,8 +19,8 @@
       !-----------------!
       ! local variables !
       !-----------------!
-      integer   iuhead_copy(250), max_head_len, ifirst, ilast, i, plen
-      character cuhead*1000
+      integer   iuhead_copy(500), max_head_len, ifirst, ilast, i, plen
+      character cuhead*2000
       logical   param_has_separator
       equivalence (iuhead_copy, cuhead)
 
@@ -32,7 +32,7 @@
       iuhead_copy = 0
       if (nuhead.gt.size(iuhead_copy)) then
         if (mlevel.ge.1) then
-          write (munit,'(/a,/,a,a,/,a,i4,/,a,i4)')
+          write (munit,'(/a,/,a,i4,/,a,i4)')
      *    ' WARNING: LOCATING PARAMETER VALUE IN TRUNCATED USER HEADER',
      *    '   User header length : ',nuhead,
      *    '   Truncated length   : ',size(iuhead_copy)
