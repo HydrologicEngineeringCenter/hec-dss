@@ -13,19 +13,6 @@ jobs:
           repository: HydrologicEngineeringCenter/dss-test-data
           path: dss-test-data
 
-      - name: cleanup macOS
-        run: |
-            sudo rm -rf /Applications/Xcode.app /Library/Developer/CommandLineTools
-            sudo xcode-select --reset
-
-      - name: install Homebrew
-        run: |
-          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-
-      - name: install gcc
-        run: |
-          brew install gcc@9
-
       - name: install openjdk
         run: |
           brew install openjdk@11
@@ -35,8 +22,8 @@ jobs:
           cd heclib
           make
         env:
-          JAVA_HOME: /usr/local/Cellar/openjdk@11/11.0.12/libexec/openjdk.jdk/Contents/Home
-          GFORTRAN_PATH: /usr/local/Cellar/gcc@9/9.4.0/lib/gcc/9
+          JAVA_HOME: /usr/local/opt/openjdk@11/libexec/openjdk.jdk/Contents/Home
+          GFORTRAN_PATH: /usr/local/opt/gcc@9/lib/gcc/9/
 
       - name: run C test
         run: |
