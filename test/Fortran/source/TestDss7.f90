@@ -14,7 +14,7 @@
 
     program TestDss7
 
-    use modVerticalDatumInfo
+    !use modVerticalDatumInfo
     implicit none
 
     integer status, messageUnit,test_vertical_datums_f
