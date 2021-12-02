@@ -138,3 +138,4 @@ test/VB/bin/*
 *.dll
 
 packages/
+/heclib/hecdss/x64/Debug

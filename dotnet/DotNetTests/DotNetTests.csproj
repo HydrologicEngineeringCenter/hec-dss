@@ -81,6 +81,10 @@
       <Project>{17ed2d59-4590-4270-a89b-55f9b261e58e}</Project>
       <Name>Hec.Dss</Name>
     </ProjectReference>
+    <ProjectReference Include="..\PInvoke\PInvoke.csproj">
+      <Project>{7e65d787-80b3-438d-ab24-c88373f0764c}</Project>
+      <Name>PInvoke</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
