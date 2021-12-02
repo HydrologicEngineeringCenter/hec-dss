@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
+using System.Runtime.InteropServices;
 
 namespace Hec.Dss
 {
@@ -11,18 +12,29 @@ namespace Hec.Dss
   /// We're trying to select the correct 32/64-bit dependency at runtime.
   /// https://stackoverflow.com/questions/1373100/how-to-add-folder-to-assembly-search-path-at-runtime-in-net
   /// </summary>
+  
+  
   public static class Assembly
   {
+    [DllImport("kernel32.dll")]
+    private static extern IntPtr LoadLibrary(string dllToLoad);
+
     static Assembly()
     {
-      // Based on the docs, I believe this handler only gets invoked if the initial resolution process fails.
-      // If you have Hec.Dss.dll path-local, it won't trigger.
-      AppDomain currentDomain = AppDomain.CurrentDomain;
-      currentDomain.AssemblyResolve += new ResolveEventHandler(AsmResolve);
+      const string HecDss = "hecdss.dll";
+      string cur = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+      if (Environment.Is64BitProcess)
+      {
+        LoadLibrary(Path.Combine(cur, "bin64", HecDss));
+      }
+      else
+      {
+        LoadLibrary(Path.Combine(cur, "bin32", HecDss));
+      }
     }
     static System.Reflection.Assembly AsmResolve(object sender, ResolveEventArgs args)
     {
-      const string HecDss = "Hec.Dss.Native.dll";
+      const string HecDss = "hecdss.dll";
       string cur = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
       if (Environment.Is64BitProcess)
       {
@@ -55,5 +67,7 @@ namespace Hec.Dss
       // This does nothing except trigger the static constructor, 
       // so we guarantee it executes exactly once.
     }
+
+
   }
 }

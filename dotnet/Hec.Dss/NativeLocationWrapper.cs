@@ -9,54 +9,54 @@ namespace Hec.Dss
 {
   public class NativeLocationWrapper
   {
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static double GetXOrdinate(IntPtr loc);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static double GetYOrdinate(IntPtr loc);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static double GetZOrdinate(IntPtr loc);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static int GetCoordinateSystem(IntPtr loc);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static int GetCoordinateID(IntPtr loc);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static int GetHorizontalUnits(IntPtr loc);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static int GetHorizontalDatum(IntPtr loc);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static int GetVerticalUnits(IntPtr loc);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static int GetVerticalDatum(IntPtr loc);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     [return: MarshalAs(UnmanagedType.BStr)]
     private extern static string GetTimeZoneName(IntPtr loc);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     [return: MarshalAs(UnmanagedType.BStr)]
     private extern static string GetSupplemental(IntPtr loc);
 
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static void SetXOrdinate(IntPtr loc, double value);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static void SetYOrdinate(IntPtr loc, double value);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static void SetZOrdinate(IntPtr loc, double value);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static void SetCoordinateSystem(IntPtr loc, int value);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static void SetCoordinateID(IntPtr loc, int value);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static void SetHorizontalUnits(IntPtr loc, int value);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static void SetHorizontalDatum(IntPtr loc, int value);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static void SetVerticalUnits(IntPtr loc, int value);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static void SetVerticalDatum(IntPtr loc, int value);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static void SetTimeZoneName(IntPtr loc, string value);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static void SetSupplemental(IntPtr loc, string value);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static void SetPathName(IntPtr loc, string value);
 
 

@@ -9,95 +9,95 @@ namespace Hec.Dss
 {
   public class NativeTimeSeriesWrapper
   {
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     [return: MarshalAs(UnmanagedType.BStr)]
     private extern static string GetPathName(IntPtr ts);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     [return: MarshalAs(UnmanagedType.BStr)]
     private extern static string GetUnits(IntPtr ts);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     [return: MarshalAs(UnmanagedType.BStr)]
     private extern static string GetType(IntPtr ts);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     [return: MarshalAs(UnmanagedType.BStr)]
     private extern static string GetProgramName(IntPtr ts);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static IntPtr GetQuality(IntPtr ts);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static IntPtr GetDoubleValues(IntPtr ts);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static int GetTimeGranularitySeconds(IntPtr ts);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static void SetTimeGranularitySeconds(IntPtr ts, int value);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static int GetJulianBaseDate(IntPtr ts);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static IntPtr GetTimes(IntPtr ts);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static IntPtr GetDoubleProfileDepths(IntPtr ts);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static int GetProfileDepthsNumber(IntPtr ts);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static IntPtr GetDoubleProfileValues(IntPtr ts);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static int GetNumberValues(IntPtr ts);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static IntPtr GetLocation(IntPtr ts);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static int GetStartJulianDate(IntPtr ts);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static void SetStartJulianDate(IntPtr ts, int value);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static int GetStartTimeSeconds(IntPtr ts);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static void SetStartTimeSeconds(IntPtr ts, int value);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static IntPtr GetFloatValues(IntPtr ts);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static void SetFloatValues(IntPtr ts, float[] value, int arrayLength);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static int GetEndJulianDate(IntPtr ts);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static void SetEndJulianDate(IntPtr ts, int value);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static int GetEndTimeSeconds(IntPtr ts);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static void SetEndTimeSeconds(IntPtr ts, int value);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static int GetTimeIntervalSeconds(IntPtr ts);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static void SetTimeIntervalSeconds(IntPtr ts, int value);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static IntPtr GetCNotes(IntPtr ts);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static void SetCNotes(IntPtr ts, sbyte[] value, int arrayLength);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static int GetCNotesLengthTotal(IntPtr ts);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static void SetCNotesLengthTotal(IntPtr ts, int value);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static void SetQuality(IntPtr ts, int[] quality, int arraySize);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static void SetQualityElementSize(IntPtr ts, int elementSize);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static void SetDoubleProfileDepths(IntPtr ts, double[] values, int arrayLength);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static void SetProfileDepthsNumber(IntPtr ts, int value);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static void SetDoubleProfileValues(IntPtr ts, double[] values, int arrayLength);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static void SetNumberValues(IntPtr ts, int value);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static void SetUnitsProfileValues(IntPtr ts, string value);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static void SetUnitsProfileDepths(IntPtr ts, string value);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static void SetFloatProfileDepths(IntPtr ts, float[] values, int arrayLength);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static void SetFloatProfileValues(IntPtr ts, float[] values, int arrayLength);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static int GetCNotesSize(IntPtr ts);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static int SetCNotesSize(IntPtr ts, int value);
 
 

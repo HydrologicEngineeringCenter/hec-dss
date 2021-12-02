@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Hec.Dss</id>
-    <version>1.0.27.0</version>
+    <version>1.0.33.0</version>
     <authors>Hydrologic Engineering Center</authors>
     <owners>HEC</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -18,8 +18,8 @@
   <files>
     <file src="obj\Release\net472\Hec.Dss.dll" target="lib\net472\Hec.Dss.dll"/>
     <file src="obj\Release\net5.0\Hec.Dss.dll" target="lib\net5.0\Hec.Dss.dll"/>
-    <file src="..\Hec.Dss.Native\x64\Release\Hec.Dss.Native.dll" target="build\x64\Hec.Dss.Native.dll"/>
-    <file src="..\Hec.Dss.Native\Win32\Release\Hec.Dss.Native.dll" target="build\x86\Hec.Dss.Native.dll"/>
+    <file src="..\PInvoke\x64\Release\hecdss.dll" target="build\x64\hecdss.dll"/>
+    <file src="..\PInvoke\Win32\Release\hecdss.dll" target="build\x86\hecdss.dll"/>
     <file src="build\Hec.Dss.targets" target="build\Hec.Dss.targets"/>
   </files>
 </package>

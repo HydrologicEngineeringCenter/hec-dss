@@ -9,22 +9,22 @@ namespace Hec.Dss
 {
   public class NativeCatalogWrapper
   {
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     [return: MarshalAs(UnmanagedType.BStr)]
     private extern static string GetCatalogPathName(IntPtr cat, int pathNameIndex);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static int GetPathNameLength(IntPtr cat, int pathNameIndex);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static int GetNumberPathNames(IntPtr cat);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static IntPtr GetRecordType(IntPtr cat);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static int GetTypeWantedStart(IntPtr cat);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static void SetTypeWantedStart(IntPtr cat, int value);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static int GetTypeWantedEnd(IntPtr cat);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static void SetTypeWantedEnd(IntPtr cat, int value);
 
     public IntPtr TheStruct;
