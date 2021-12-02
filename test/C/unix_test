@@ -59,18 +59,18 @@ cc $CFLAGS getopt.c
 test endian
 ./Output/endian
 test ts_readv6
-#test ts_write_irregular
-#test ExampleSecondGranularity
-#test SampleText1
-#test SamplePairedData
-#test ExampleMinuteGranularity
-#test ts_write
-#test ExampleTimeSeries1
-#test ExampleTimeSeries2
-#test GridTest " -d GridTest.dss -h 100 -w 100 -c 26 -r 12"
-#file GridTest.dss
-#test GridTest " -d GridTest.dss -h 100 -w 100 -c 26 -r 12 -v"
-#test zopenExample
+test ts_write_irregular
+test ExampleSecondGranularity
+test SampleText1
+test SamplePairedData
+test ExampleMinuteGranularity
+test ts_write
+test ExampleTimeSeries1
+test ExampleTimeSeries2
+test GridTest " -d GridTest.dss -h 100 -w 100 -c 26 -r 12"
+file GridTest.dss
+test GridTest " -d GridTest.dss -h 100 -w 100 -c 26 -r 12 -v"
+test zopenExample
 
 echo ""
 echo "============="
