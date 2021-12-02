@@ -17,8 +17,14 @@ jobs:
         run: |
           brew install openjdk@11
 
+      - name: alias test
+        run: |
+          alias
+          alias gfortran = gfortran-9
+
       - name: build main library
         run: |
+          alias
           cd heclib
           make
         env:
