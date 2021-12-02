@@ -13,14 +13,13 @@ jobs:
           repository: HydrologicEngineeringCenter/dss-test-data
           path: dss-test-data
 
-      - name: install openjdk
-        run: |
-          brew install openjdk@11
+#      - name: install openjdk
+#        run: |
+#          brew install openjdk@11
 
       - name: alias test
         run: |
-          alias
-          alias gfortran = gfortran-9
+          gcc-9 -v
 
       - name: build main library
         run: |
