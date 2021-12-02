@@ -93,6 +93,11 @@
   </Target>
   <Import Project="..\..\packages\MSTest.TestAdapter.2.1.1\build\net45\MSTest.TestAdapter.targets" Condition="Exists('..\..\packages\MSTest.TestAdapter.2.1.1\build\net45\MSTest.TestAdapter.targets')" />
   <PropertyGroup>
-    <PostBuildEvent>copy $(SolutionDir)dotnet\PInvoke\x64\$(ConfigurationName)\hecdss.dll $(TargetDir)bin64\</PostBuildEvent>
+    <PostBuildEvent>mkdir $(TargetDir)bin64\
+copy /y $(SolutionDir)heclib\hecdss\x64\$(ConfigurationName)\hecdss.dll $(TargetDir)bin64\</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
 </Project>
