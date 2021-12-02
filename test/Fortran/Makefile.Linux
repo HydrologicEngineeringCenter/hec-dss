@@ -160,6 +160,8 @@ Output/timeTestWritingRTS.o:source/timeTestWritingRTS.f90
 	$(FORTRAN) $(FFLAGS) source/timeTestWritingRTS.f90 -o Output/timeTestWritingRTS.o
 Output/writeARec.o:source/writeARec.f90
 	$(FORTRAN) $(FFLAGS) source/writeARec.f90 -o Output/writeARec.o
+Output/testVerticalDatum_f.o:source/testVerticalDatum_f.f90
+	$(FORTRAN) $(FFLAGS) source/testVerticalDatum_f.f90 -o Output/testVerticalDatum_f.o
 
 OBJS=\
 Output/DssCodeTest7.o\
@@ -221,8 +223,8 @@ Output/timeTestWrite.o\
 Output/timeTestWriteFile.o\
 Output/timeTestWriteFileRTS.o\
 Output/timeTestWritingRTS.o\
-Output/writeARec.o
-
+Output/writeARec.o\
+Output/testVerticalDatum_f.o
 
 
 Dss-Fortran:$(OBJS)
