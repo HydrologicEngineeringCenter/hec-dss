@@ -9,94 +9,94 @@ namespace Hec.Dss
 {
   public static class PInvoke
   {
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     public extern static int ZOpen(long[] ifltab, string dssFilename);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     public extern static int ZSet(string parameter, string charVal, int integerValue);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     public extern static void ZSetMessageLevel(int methodId, int levelId);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     public extern static int ZGetVersion(long[] ifltab);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     public extern static int ZClose(long[] ifltab);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static int ZTsStore(long[] ifltab, IntPtr tss, int storageFlag);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static IntPtr ZStructTsNewRegDoubles(string pathName, double[] dArray, int numberValues, string startDate, string startTime, string units, string type);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static IntPtr ZStructTsNewRegFloats(string pathName, float[] fArray, int numberValues, string startDate, string startTime, string units, string type);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static IntPtr ZStructTsNewIrregDoubles(string pathName, double[] dArray, int numberValues, int[] itimes, int timeGranularitySeconds, string startDateBase, string units, string type);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static IntPtr ZStructTsNewIrregFloats(string pathName, float[] fArray, int numberValues, int[] itimes, int timeGranularitySeconds, string startDateBase, string units, string type);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static IntPtr ZStructTsNewTimes(string pathName, string startDate, string startTime, string endDate, string endTime);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static IntPtr ZStructTsNew(string pathName);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static int ZTsRetrieve(long[] ifltab, IntPtr tss, int retrieveFlag, int boolRetrieveDoubles, int boolRetrieveQualityNotes);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static IntPtr ZStructCatalogNew();
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static int ZCatalog(long[] ifltab, string pathWithWild, IntPtr cat, int boolSorted);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static int ZTsRetrieveEmpty(long[] ifltab, IntPtr tss);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static IntPtr ZLocationRetrieve(long[] ifltab, StringBuilder pathName);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     public extern static int ZDataType(long[] ifltab, string pathName);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     public extern static int ZSqueeze(string pathName);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     public extern static int ZSqueeze7(long[] ifltab, int boolOnlyIfNeeded, int boolInPlace);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     public extern static int ZSqueezeNeeded(long[] ifltab);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static int GetDateAndTime(int timeMinOrSec, int timeGranularitySeconds, int julianBaseDate, StringBuilder dateString, int sizeOfDateString, StringBuilder hoursMins, int sizeOfHoursMins);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     public extern static int ZCheck(long[] ifltab, string pathName);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     public extern static int ZDelete(long[] ifltab, string pathName);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     public extern static float ZMissingFlag();
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static IntPtr ZStructLocationNew(string pathName);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static int ZLocationStore(long[] ifltab, IntPtr loc, int storageFlag);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static int ZPathNameForm(string aPart, string bPart, string cPart, string dPart, string ePart, string fPart, StringBuilder pathName, ulong sizeOfPathName);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     public extern static int JulianToYearMonthDay(int julian, ref int year, ref int month, ref int day);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     public extern static int TimeStringToSeconds(string timeString);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     public extern static int DateToJulian(string dateString);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static IntPtr ZStructPdNew(string pathName);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static IntPtr ZStructPdNewDoubles(string pathName, double[] doubleOrdinates, double[] doubleValues, int numberOrdinates, int numberCurves, string unitsIndependent, string typeIndependent, string unitsDependent, string typeDependent);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static IntPtr ZStructPdNewFloats(string pathName, float[] floatOrdinates, float[] floatValues, int numberOrdinates, int numberCurves, string unitsIndependent, string typeIndependent, string unitsDependent, string typeDependent);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static int ZPdRetrieve(long[] ifltab, IntPtr pd, int retrieveDoubleFlag);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static int ZPdStore(long[] ifltab, IntPtr pd, int storageFlag);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static IntPtr ZStructSpatialGridNew(string pathName);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static int ZSpatialGridRetrieve(long[] ifltab, IntPtr grid, bool retrieveData);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static int ZSpatialGridStore(long[] ifltab, IntPtr grid);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     public extern static int DateToYearMonthDay(string date, ref int year, ref int month, ref int day);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     public extern static bool IsTimeDefined(int julianDate, int timeSeconds);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     [return: MarshalAs(UnmanagedType.BStr)]
     public extern static string AlbersSRS();
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     public extern static int YearMonthDayToJulian(int year, int month, int day);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     public extern static int ZCatalogFile(long[] ifltab, string pathWithWild, int boolSorted, string catalogFileName);
 
     public static int ZSpatialGridStore(long[] ifltab, NativeSpatialGridWrapper grid)

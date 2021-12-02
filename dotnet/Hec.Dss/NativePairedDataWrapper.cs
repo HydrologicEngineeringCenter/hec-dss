@@ -9,35 +9,35 @@ namespace Hec.Dss
 {
   public class NativePairedDataWrapper
   {
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static IntPtr GetDoubleOrdinates(IntPtr pd); 
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static IntPtr GetPdFloatValues(IntPtr pd);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static int GetNumberCurves(IntPtr pd);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static int GetNumberOrdinates(IntPtr pd);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static IntPtr GetPdDoubleValues(IntPtr pd);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static IntPtr GetLabels(IntPtr pd);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     [return: MarshalAs(UnmanagedType.BStr)]
     private extern static string GetTypeDependent(IntPtr pd);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     [return: MarshalAs(UnmanagedType.BStr)]
     private extern static string GetTypeIndependent(IntPtr pd);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     [return: MarshalAs(UnmanagedType.BStr)]
     private extern static string GetUnitsDependent(IntPtr pd);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     [return: MarshalAs(UnmanagedType.BStr)]
     private extern static string GetUnitsIndependent(IntPtr pd);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static IntPtr GetPdLocation(IntPtr pd);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static int GetPdNumberValues(IntPtr pd);
-    [DllImport(@"..\..\..\PInvoke\x64\Debug\PInvoke")]
+    [DllImport("hecdss")]
     private extern static int GetLabelsLength(IntPtr pd);
 
     public IntPtr TheStruct { get; set; }

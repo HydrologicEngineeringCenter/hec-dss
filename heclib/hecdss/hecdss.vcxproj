@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{31c4f875-681b-4915-8911-58ce7953b79d}</ProjectGuid>
-    <RootNamespace>PInvoke</RootNamespace>
+    <ProjectGuid>{b887e6cd-8aa9-4f10-8603-c588d83ec69c}</ProjectGuid>
+    <RootNamespace>hecdss</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -94,17 +94,17 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;PINVOKE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;HECDSS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>..\..\heclib\heclib_c\src\headers;..\..\heclib\heclib_c\src\headers\zlib;..\..\heclib\grid</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\heclib_c\src\headers;..\heclib_c\src\headers\zlib;..\grid</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>..\..\heclib\heclib_f\$(PlatformName)\$(ConfigurationName);..\..\lib\$(PlatformName);$(IFORT_COMPILER21)compiler\lib\ia32_win;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\heclib_f\$(PlatformName)\$(ConfigurationName);..\..\lib\$(PlatformName);$(IFORT_COMPILER21)compiler\lib\ia32_win;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>zlibstatic.lib;heclib_f.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -114,11 +114,11 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;PINVOKE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;HECDSS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>..\..\heclib\heclib_c\src\headers;..\..\heclib\heclib_c\src\headers\zlib;..\..\heclib\grid</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\heclib_c\src\headers;..\heclib_c\src\headers\zlib;..\grid</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -126,7 +126,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>..\..\heclib\heclib_f\$(PlatformName)\$(ConfigurationName);..\..\lib\$(PlatformName);$(IFORT_COMPILER21)compiler\lib\ia32_win;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\heclib_f\$(PlatformName)\$(ConfigurationName);..\..\lib\$(PlatformName);$(IFORT_COMPILER21)compiler\lib\ia32_win;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>zlibstatic.lib;heclib_f.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -134,17 +134,17 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;PINVOKE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;HECDSS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>..\..\heclib\heclib_c\src\headers;..\..\heclib\heclib_c\src\headers\zlib;..\..\heclib\grid</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\heclib_c\src\headers;..\heclib_c\src\headers\zlib;..\grid</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>..\..\heclib\heclib_f\$(PlatformName)\$(ConfigurationName);..\..\lib\$(PlatformName);$(IFORT_COMPILER21)compiler\lib\intel64_win;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\heclib_f\$(PlatformName)\$(ConfigurationName);..\..\lib\$(PlatformName);$(IFORT_COMPILER21)compiler\lib\intel64_win;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>zlibstatic.lib;heclib_f.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -154,11 +154,11 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;PINVOKE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;HECDSS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>..\..\heclib\heclib_c\src\headers;..\..\heclib\heclib_c\src\headers\zlib;..\..\heclib\grid</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\heclib_c\src\headers;..\heclib_c\src\headers\zlib;..\grid</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -166,7 +166,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>..\..\heclib\heclib_f\$(PlatformName)\$(ConfigurationName);..\..\lib\$(PlatformName);$(IFORT_COMPILER21)compiler\lib\intel64_win;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\heclib_f\$(PlatformName)\$(ConfigurationName);..\..\lib\$(PlatformName);$(IFORT_COMPILER21)compiler\lib\intel64_win;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>zlibstatic.lib;heclib_f.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -189,8 +189,8 @@
     <ClCompile Include="NativeSpatialGridWrapper.cpp" />
     <ClCompile Include="NativeTimeSeriesWrapper.cpp" />
     <ClCompile Include="pch.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
@@ -198,10 +198,10 @@
     <ClCompile Include="pinvokeTools.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\heclib\grid\grid.vcxproj">
+    <ProjectReference Include="..\grid\grid.vcxproj">
       <Project>{da5797bb-96e9-41d8-b4ad-7937afc6ea19}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\..\heclib\heclib_c\heclib_c.vcxproj">
+    <ProjectReference Include="..\heclib_c\heclib_c.vcxproj">
       <Project>{dd025a40-2426-4cce-b43a-380466b80a9a}</Project>
     </ProjectReference>
   </ItemGroup>
