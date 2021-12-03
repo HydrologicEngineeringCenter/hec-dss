@@ -1,5 +1,5 @@
 HECLIBS=..\..\heclib\heclib7\heclib_c_v6v7\x64\Debug\heclib_c_v6v7.lib ..\..\heclib\heclib7\heclib_f_v6v7\x64\Debug\heclib_f_v6v7.lib
-CFLAGS= -I ..\..\heclib\heclib7\headers /c -mmacosx-version-min=11.3
+CFLAGS= -I ..\..\heclib\heclib7\headers /c
 OUT=/out:
 LINK=link /NODEFAULTLIB:LIBCMTD
 
