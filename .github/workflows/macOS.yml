@@ -15,7 +15,7 @@ jobs:
 
       - name: link gfortran
         run: |
-          ln -s /usr/local/bin/gfortran-9 /usr/local/bin/gfortran
+          ln -s /usr/local/bin/gfortran-11 /usr/local/bin/gfortran
           gfortran -v
 
       - name: install openjdk
@@ -28,7 +28,8 @@ jobs:
           make
         env:
           JAVA_HOME: /usr/local/opt/openjdk@11/libexec/openjdk.jdk/Contents/Home
-          GFORTRAN_PATH: /usr/local/opt/gcc@9/lib/gcc/9/
+          GFORTRAN_PATH: /usr/local/opt/gcc@11/lib/gcc/11/
+          MACOSX_DEPLOYMENT_TARGET: 11.5
 
       - name: run C test
         run: |
@@ -39,3 +40,4 @@ jobs:
         env:
           JAVA_HOME: /usr/local/opt/openjdk@11/libexec/openjdk.jdk/Contents/Home
           GFORTRAN_PATH: /usr/local/opt/gcc@9/lib/gcc/9/
+          MACOSX_DEPLOYMENT_TARGET: 11.5

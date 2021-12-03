@@ -20,6 +20,9 @@
 	int boolRetrieveQualityNotes = 0;
 	float expected;
 
+    // FIXME: for testing
+    zset("mlvl", "", 15);
+
 	status = zopen(ifltab, "v6-pc.dss");
 	zsetMessageLevel(6, 17);
 	if (status != STATUS_OKAY)
