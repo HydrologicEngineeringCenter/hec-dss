@@ -15,7 +15,7 @@ ifeq ($(UNAME_S),Darwin)
 	CWARNING=-Werror=implicit-function-declaration
 	CFLAGS=-m64 -c -fPIC -g -std=gnu99 -Isrc/headers $(CWARNING) -D__darwin__
 	Make_OS=MacOS
-	MAKE=make
+	MAKE=make CXXFLAGS="-mmacosx-version-min=11.0"
 endif
 all:
 	( cd ../nws_shef; $(MAKE) -j -f Makefile.$(Make_OS))
