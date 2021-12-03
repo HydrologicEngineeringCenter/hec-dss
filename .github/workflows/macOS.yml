@@ -32,6 +32,7 @@ jobs:
 
       - name: run C test
         run: |
-          cd ../test/C
+          ls
+          cd test/C
           chmod +x unix_test
           ./unix_test
