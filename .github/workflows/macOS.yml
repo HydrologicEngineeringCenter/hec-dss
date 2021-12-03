@@ -32,7 +32,10 @@ jobs:
 
       - name: run C test
         run: |
-          ls
           cd test/C
           chmod +x unix_test
+          ls -ll
           ./unix_test
+        env:
+          JAVA_HOME: /usr/local/opt/openjdk@11/libexec/openjdk.jdk/Contents/Home
+          GFORTRAN_PATH: /usr/local/opt/gcc@9/lib/gcc/9/
