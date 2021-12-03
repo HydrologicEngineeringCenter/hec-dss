@@ -39,5 +39,5 @@ jobs:
           ./unix_test
         env:
           JAVA_HOME: /usr/local/opt/openjdk@11/libexec/openjdk.jdk/Contents/Home
-          GFORTRAN_PATH: /usr/local/opt/gcc@9/lib/gcc/9/
+          GFORTRAN_PATH: /usr/local/opt/gcc@11/lib/gcc/11/
           MACOSX_DEPLOYMENT_TARGET: 11.5
