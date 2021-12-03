@@ -2,7 +2,7 @@
 FFLAGS=-c -cpp -m64 -fPIC -O
 Solaris_FFLAGS=-m64 -c -fpp -mt -xcode=pic32 -xpagesize=4M -O
 Solaris_FORTRAN=f95
-FORTRAN=gfortran-9
+FORTRAN=gfortran
 
 
 all:libshefdss.a 

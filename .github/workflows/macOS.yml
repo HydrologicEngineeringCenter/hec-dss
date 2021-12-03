@@ -13,19 +13,17 @@ jobs:
           repository: HydrologicEngineeringCenter/dss-test-data
           path: dss-test-data
 
-#      - name: install openjdk
-#        run: |
-#          brew install openjdk@11
-
-      - name: test gfortran
+      - name: link gfortran
         run: |
-          gfortran-9 -v
-          brew install gfortran
-          gcc-9 -v
+          ln -s /usr/local/bin/gfortran-9 /usr/local/bin/gfortran
+          gfortran -v
+
+      - name: install openjdk
+        run: |
+          brew install openjdk@11
 
       - name: build main library
         run: |
-          alias
           cd heclib
           make
         env:
