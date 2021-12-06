@@ -79,7 +79,7 @@ int zcatSortPath(int handle, const char *pathname, size_t pathnameLen, int dataT
 	char cdate[MAX_PART_SIZE];
 	int interval;
 	char cinterval[MAX_PART_SIZE];
-	char cline[400];
+	char cline[MAX_PATHNAME_SIZE*2];
 
 
 	number = zpathnamePartPositions (pathname, pathnameLen, positions, 7);

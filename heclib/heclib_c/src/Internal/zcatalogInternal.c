@@ -103,7 +103,7 @@ int zcatalogInternal (long long *ifltab, const char *pathWithWild, zStructCatalo
 	int partMax[6];
 
 	char apart[MAX_PART_SIZE];
-	char fpart[MAX_PART_SIZE];
+	char fpart[MAX_F_PART_SIZE];
 	char bpart[MAX_PART_SIZE];
 	char cpart[MAX_PART_SIZE];
 	char dpart[MAX_PART_SIZE];

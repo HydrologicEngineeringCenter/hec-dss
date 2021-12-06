@@ -46,8 +46,8 @@ char* zsetCollectionSequence(char* pathname, int sequenceNumber)
 	int i;
 	int collectionBar;
 	char *pathnameCollection;
-	char fPart[MAX_PART_SIZE];
-	char fPartColl[MAX_PART_SIZE];
+	char fPart[MAX_F_PART_SIZE];
+	char fPartColl[MAX_F_PART_SIZE];
 
 
 	len = (int)strlen(pathname);
