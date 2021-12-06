@@ -10,12 +10,12 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1zgpnp
 {
     const char *inputString;
 
-    char aPart[65];
-    char bPart[65];
-    char cPart[65];
-    char dPart[65];
-    char ePart[65];
-    char fPart[65];
+    char aPart[MAX_PART_SIZE];
+    char bPart[MAX_PART_SIZE];
+    char cPart[MAX_PART_SIZE];
+    char dPart[MAX_PART_SIZE];
+    char ePart[MAX_PART_SIZE];
+    char fPart[MAX_F_PART_SIZE];
     int nstats[6];
     int i;
 

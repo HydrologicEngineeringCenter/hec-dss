@@ -12,7 +12,7 @@ JNIEXPORT void JNICALL Java_hec_heclib_util_Heclib_Hec_1ztsGetStandardInterval
 	int vers;
     const char *ePart;
     int *status;
-    char cEpart[65];
+    char cEpart[MAX_PART_SIZE];
 
 	vers     = (int)dssVersion;
     interval = (*env)->GetIntArrayElements (env, j_interval, 0);
@@ -35,13 +35,13 @@ JNIEXPORT void JNICALL Java_hec_heclib_util_Heclib_Hec_1ztsGetStandardInterval7
     int *interval;
     const char *ePart;
     int *status;
-    char cEpart[65];
+    char cEpart[MAX_PART_SIZE];
 
     interval = (*env)->GetIntArrayElements (env, j_interval, 0);
     ePart    = (*env)->GetStringUTFChars (env, j_ePart, 0);
     status   = (*env)->GetIntArrayElements (env, j_status, 0);
 
-	stringCopy(cEpart, 65, ePart, strlen(ePart));
+	stringCopy(cEpart, MAX_PART_SIZE, ePart, strlen(ePart));
 
 	*interval *= 60;
 	ztsGetStandardInterval(7, interval, cEpart, sizeof(cEpart)-1, status);

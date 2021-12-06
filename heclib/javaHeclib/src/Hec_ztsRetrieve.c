@@ -61,7 +61,7 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1ztsRetrieve(
 	int len;
 	int boolMalloced;
 	int number;
-	char cpart[65];
+	char cpart[MAX_PART_SIZE];
 	zStructTimeSeries *tss;
 	
 	int *ifltab;

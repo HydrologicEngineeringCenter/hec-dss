@@ -35,7 +35,7 @@ const char *cpath;
 	int status;
 	char *dash;
 	int idx;
-	char cpart[65];
+	char cpart[MAX_PART_SIZE];
 	int *ifltab;
 
 	zStructPairedData *pdc;
