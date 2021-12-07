@@ -14,7 +14,7 @@ C
 C
 C     Declare variables
          CHARACTER CA*(*),CB*(*),CC*(*),CD*(*),CE*(*),CF*(*)
-         CHARACTER CPART(6)*64, CPATH*(*)
+         CHARACTER CPART(6)*100, CPATH*(*)   ! Fpart supports 100 characters
          INTEGER IBEG, IEND, KEND
 C
       integer npath, maxlen, i, j, ilen, jchar, jlen

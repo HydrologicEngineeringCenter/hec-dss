@@ -140,6 +140,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="source\Bulletin_17C_SSP_Issue.c" />
+    <ClCompile Include="source\PathnameTesting.c" />
     <ClCompile Include="source\testDateFunctions.c" />
     <ClCompile Include="source\addLocation.c" />
     <ClCompile Include="source\comparePDs.c" />

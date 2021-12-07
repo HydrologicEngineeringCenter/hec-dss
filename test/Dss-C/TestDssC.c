@@ -27,6 +27,7 @@ void usage(char* exeName)
 	printf("\nworkout, performs reads/writes on file.dss, can be used with multiple instances");
 	printf("\nversion, dss version (6 or 7)");
 	printf("\nexport file.dss path metaDataOnly(0|1)  # writes the contents of a DSS record to the console");
+	printf("\n%s pathnameTesting,  tests large fparts such as when using collections", exeName);
 	
 
 	printf("\n\nExamples:\n%s workout 7 2000 5000 test.dss", exeName);
@@ -40,6 +41,7 @@ void usage(char* exeName)
 	printf("\n%s zcheckLinks myfile.dss", exeName);;
 	printf("\n%s zcheckPathnames myfile.dss", exeName);
 	printf("\n%s export myfile.dss /SHG/EFRUSSIAN20/PRECIPITATION/01OCT2004:2400/02OCT2004:0100/GAGEINTERP/ 1", exeName);
+	printf("\n%s pathnameTesting file.dss", exeName);
 	printf("\n");
 
 }
@@ -104,6 +106,9 @@ int main(int argc, char* argv[])
 	}
 	else if (argc == 3 && strcmp(argv[1], "recordinfo") == 0) {
 		testRecordInfo6(argv[2]);
+	}
+	else if (argc == 3 && strcmp(argv[1], "pathnameTesting") == 0) {
+		PathnameTesting(argv[2]);
 	}
 	else
 	{
