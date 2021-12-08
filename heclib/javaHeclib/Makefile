@@ -15,7 +15,7 @@ endif
 ifeq ($(UNAME_S),Darwin)
 	CWARNING=-Werror=implicit-function-declaration
     FDEBUG=-fcheck=all,no-recursion
-    CFLAGS=-m64 -dynamiclib -fPIC -g -std=gnu99 $(CWARNING) $(INC_DIRS_MACOS) -D__darwin__
+    CFLAGS=-m64 -dynamiclib -fPIC -g -std=gnu99 $(CWARNING) $(INC_DIRS_MACOS)
     LDFLAGS=-L${GFORTRAN_PATH} -lz -lgfortran -lm
 endif
 

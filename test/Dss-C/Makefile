@@ -14,7 +14,7 @@ endif
 ifeq ($(UNAME_S),Darwin)
     LDFLAGS=-L${GFORTRAN_PATH} -lz -lgfortran -lm
 	CWARNING=-Werror=implicit-function-declaration
-    CFLAGS=-m64 -dynamiclib -fPIC -g -std=gnu99 -I../../heclib/heclib_c/src/headers -I. $(CWARNING) -D__darwin__
+    CFLAGS=-m64 -dynamiclib -fPIC -g -std=gnu99 -I../../heclib/heclib_c/src/headers -I. $(CWARNING)
 endif
 
 TARGET := Dss-C

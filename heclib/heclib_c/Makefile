@@ -10,7 +10,7 @@ ifeq ($(UNAME_S),SunOS)
 endif
 ifeq ($(UNAME_S),Darwin)
 	CWARNING=-Werror=implicit-function-declaration
-    CFLAGS=-m64 -c -fPIC -g -std=gnu99 -Isrc/headers $(CWARNING) -D__darwin__
+    CFLAGS=-m64 -c -fPIC -g -std=gnu99 -Isrc/headers $(CWARNING)
 endif
 
 TARGET_LIB := libhec_c.a
