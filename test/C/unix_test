@@ -13,6 +13,10 @@ if [[ "$os" = "Linux" ]]; then
    CFLAGS="-m64 -c -fPIC -g -std=gnu99 -I${HINC}"
    LINK1="cc -m64 -fPIC "
    LINK2="-lz -lrt -lgfortran -lm"
+elif [[ "$os" = "Darwin" ]]; then
+   CFLAGS="-m64 -c -fPIC -g -std=gnu99 -I${HINC}"
+   LINK1="cc -m64 -fPIC "
+   LINK2="-L${GFORTRAN_PATH} -lz -lgfortran -lm"
 elif [[ "$os" = "SunOS" ]]; then
    CFLAGS="-m64 -c -I${HINC} -mt -xcode=pic32 -xstrconst -xc99=all -xCC -g -xs"
    LINK1="f95 -mt -m64 -xcode=pic32 -xpagesize=4M -lrt -lz -g -xs"
