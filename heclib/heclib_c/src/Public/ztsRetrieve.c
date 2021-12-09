@@ -523,9 +523,9 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 					fflush(stdout);
 					printf("  old address = %p\n", headerString);
 					fflush(stdout);
-					printf("  old length  = %d\n,", strlen(headerString));
+					printf("  old length  = %ld\n,", strlen(headerString));
 					fflush(stdout);
-					printf("  new length  = %d\n", strlen(headerString) + VERTICAL_DATUM_USER_HEADER_PARAM_LEN + strlen(cvertical_datum) + 3);
+					printf("  new length  = %ld\n", strlen(headerString) + VERTICAL_DATUM_USER_HEADER_PARAM_LEN + strlen(cvertical_datum) + 3);
 					fflush(stdout);
 					headerString = (char *)realloc(
 						headerString,
