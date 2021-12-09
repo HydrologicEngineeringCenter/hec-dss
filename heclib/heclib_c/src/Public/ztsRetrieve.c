@@ -519,7 +519,13 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 					//--------------------------------------------//
 					// add the requested datum to the user header //
 					//--------------------------------------------//
-					printf("Reallocing user header to accomodate default vertical datum");
+					printf("Reallocing user header to accomodate default vertical datum\n");
+					fflush(stdout);
+					printf("  old address = %p\n", headerString);
+					fflush(stdout);
+					printf("  old length  = %d\n,", strlen(headerString));
+					fflush(stdout);
+					printf("  new length  = %d\n", strlen(headerString) + VERTICAL_DATUM_USER_HEADER_PARAM_LEN + strlen(cvertical_datum) + 3);
 					fflush(stdout);
 					headerString = (char *)realloc(
 						headerString,
