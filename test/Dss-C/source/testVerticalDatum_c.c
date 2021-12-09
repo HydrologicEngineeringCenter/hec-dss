@@ -79,11 +79,11 @@ void testGzipAndEncodingOps() {
     errmsg = gzipAndEncode(&compressed, input_text);
     if (errmsg != NULL) printf("%s\n", errmsg);
     assert(errmsg == NULL);
-    free(compressed);
     errmsg = decodeAndGunzip(&expanded, compressed);
     if (errmsg != NULL) printf("%s\n", errmsg);
     assert(errmsg == NULL);
     assert(!strcmp(expanded, input_text));
+    free(compressed);
     free(expanded);
 }
 void testUserHeaderOps() {
