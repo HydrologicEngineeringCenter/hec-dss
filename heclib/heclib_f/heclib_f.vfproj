@@ -248,6 +248,7 @@
 		<File RelativePath=".\src\Support\remblk.f"/>
 		<File RelativePath=".\src\Support\rjstr.f"/>
 		<File RelativePath=".\src\Support\sd32r.f"/>
+		<File RelativePath=".\src\Support\set_user_header_param.f"/>
 		<File RelativePath=".\src\Support\setdlm.f"/>
 		<File RelativePath=".\src\Support\strcpy.f"/>
 		<File RelativePath=".\src\Support\systim.f"/>
