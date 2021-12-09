@@ -1,4 +1,5 @@
 #include <string.h>
+#include <errno.h>
 
 #include "hecdssInternal.h"
 #include "heclib.h"
@@ -519,20 +520,23 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 					//--------------------------------------------//
 					// add the requested datum to the user header //
 					//--------------------------------------------//
-					printf("Reallocing user header to accomodate default vertical datum\n");
+					printf("Reallocing user header to accomodate requested vertical datum\n");
 					fflush(stdout);
 					printf("  old address = %p\n", headerString);
 					fflush(stdout);
-					printf("  old length  = %ld\n,", strlen(headerString));
+					printf("  old length  = %ld\n", strlen(headerString));
 					fflush(stdout);
 					printf("  new length  = %ld\n", strlen(headerString) + VERTICAL_DATUM_USER_HEADER_PARAM_LEN + strlen(cvertical_datum) + 3);
 					fflush(stdout);
+					errno = 0;
 					headerString = (char *)realloc(
 						headerString,
 						strlen(headerString)
 						+ VERTICAL_DATUM_USER_HEADER_PARAM_LEN
 						+ strlen(cvertical_datum)
 						+ 3);
+					printf("Error is %d\n", errno);
+					fflush(stdout);
 					printf("Address = %p\nAdding default vertical datum\n", headerString);
 					fflush(stdout);
 					sprintf(
