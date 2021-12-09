@@ -585,30 +585,46 @@ void testStoreRetrieveTimeSeries() {
                                         assert(status == STATUS_OKAY);
                                         zset("VDOW", "", FALSE);
                                     }
+                                    printf("calling zclose\n");
+                                    fflush(stdout);
                                     zclose(ifltab);
+                                    printf("calling zstructFree\n");
+                                    fflush(stdout);
                                     zstructFree(tss);
                                     if (status == STATUS_OKAY) {
                                         //--------------------------------------------------------//
                                         // retrieve the time series in the default vertical datum //
                                         //-------------------------------------------------------//
+                                        printf("calling zopen\n");
+                                        fflush(stdout);
                                         if (i == 0) {
                                             status = zopen6(ifltab, filename[i]);
                                         }
                                         else {
                                             status = zopen7(ifltab, filename[i]);
                                         }
+                                        printf("zopen returned %d\n", status);
+                                        fflush(stdout);
                                         assert(status == STATUS_OKAY);
+                                        printf("calling zstructTsNewTimes\n");
+                                        fflush(stdout);
                                         tss = zstructTsNewTimes(
                                             pathnames[n][o],
                                             startDate,
                                             startTime,
                                             endDate,
                                             endTime);
+                                        printf("sturcture created: %s\n", tss==NULL ? "False" : "True");
+                                        fflush(stdout);
                                         assert(tss != NULL);
                                         //------------------------------------------------------------//
                                         // set the default vertical datum to the datum we stored with //
                                         //------------------------------------------------------------//
+                                        printf("calling zset\n");
+                                        fflush(stdout);
                                         zset("VDTM", verticalDatums[K], 0);
+                                        printf("calling ztsRetrieve\n");
+                                        fflush(stdout);
                                         status = ztsRetrieve(ifltab, tss, -1, 0, 1);
                                         printf("ztsRetrieve returned %d\n", status);
                                         fflush(stdout);
