@@ -567,14 +567,10 @@ void testStoreRetrieveTimeSeries() {
                                     // store the time series in the specified vertical datum //
                                     //-------------------------------------------------------//
                                     printf("Time series test %3d: expecting %s\n", count, expectSuccess ? "SUCESS" : "ERROR");
-                                    if (count == 437) printf("Calling ztsStore\n");
                                     fflush(stdout);
                                     status = ztsStore(ifltab, tss, 0);
+                                    printf("ztsStore returned %d\n", status);
                                     fflush(stdout);
-                                    if (count == 437) {
-                                        printf("ztsStore returned %d\n", status);
-                                        fflush(stdout);
-                                    }
                                     assert((status == STATUS_OKAY) == expectSuccess);
                                     if (i == 1 && j == 1 && k+l+n+m+o+p == 0) {
                                         //-------------------------------------------------------------------------------//
@@ -584,6 +580,7 @@ void testStoreRetrieveTimeSeries() {
                                         printf("Test %d: expecting SUCESS\n", ++count);
                                         fflush(stdout);
                                         status = ztsStore(ifltab, tss, 0);
+                                        printf("ztsStore returned %d\n", status);
                                         fflush(stdout);
                                         assert(status == STATUS_OKAY);
                                         zset("VDOW", "", FALSE);
@@ -613,6 +610,7 @@ void testStoreRetrieveTimeSeries() {
                                         //------------------------------------------------------------//
                                         zset("VDTM", verticalDatums[K], 0);
                                         status = ztsRetrieve(ifltab, tss, -1, 0, 1);
+                                        printf("ztsRetrieve returned %d\n", status);
                                         fflush(stdout);
                                         assert(status == STATUS_OKAY);
                                         //------------------------------------------------------//

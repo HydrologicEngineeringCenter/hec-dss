@@ -49,4 +49,3 @@ $(BUILD_DIR)/%.f90.o: %.f90
 .PHONY: clean
 clean:
 	rm -r $(BUILD_DIR)
-	rm -r $(shell find $(SRC_DIRS) -name '*.mod')
