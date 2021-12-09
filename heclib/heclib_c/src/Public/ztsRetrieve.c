@@ -396,6 +396,8 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 		//--------------------------------------------------//
 		// convert to requested vertical datum if necessary //
 		//--------------------------------------------------//
+		printf("==> Start vertical datum processing.\n");
+		fflush(stdout);
 		char cPart[65];
 		zpathnameGetPart(tss->pathname, 3, cPart, sizeof(cPart));
 		if (!strncasecmp(cPart, "ELEV", 4)) {
@@ -569,6 +571,8 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 				free(vdi);
 			}
 		}
+		printf("==> End vertical datum processing.\n");
+		fflush(stdout);
 	}
 	//  Do we need to trim the data?
 	if (status == STATUS_OKAY) {
