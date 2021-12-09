@@ -623,11 +623,13 @@ void testStoreRetrieveTimeSeries() {
                                         printf("calling zset\n");
                                         fflush(stdout);
                                         zset("VDTM", verticalDatums[K], 0);
+                                        zset("MLVL", "", 10);
                                         printf("calling ztsRetrieve\n");
                                         fflush(stdout);
                                         status = ztsRetrieve(ifltab, tss, -1, 0, 1);
                                         printf("ztsRetrieve returned %d\n", status);
                                         fflush(stdout);
+                                        zset("MLVL", "", 1);
                                         assert(status == STATUS_OKAY);
                                         //------------------------------------------------------//
                                         // compare the retrieved time seires to what was stored //
