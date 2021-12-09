@@ -76,10 +76,10 @@ void testGzipAndEncodingOps() {
         "</vertical-datum-info>\n";
 
     errmsg = gzipAndEncode(&compressed, input_text);
-    if (errmsg != NULL) fprintf(stderr, "%s\n", errmsg);
+    if (errmsg != NULL) printf("%s\n", errmsg);
     assert(errmsg == NULL);
     errmsg = decodeAndGunzip(&expanded, compressed);
-    if (errmsg != NULL) fprintf(stderr, "%s\n", errmsg);
+    if (errmsg != NULL) printf("%s\n", errmsg);
     assert(errmsg == NULL);
     assert(!strcmp(expanded, input_text));
 }
@@ -128,7 +128,7 @@ void testVerticalDatumInfoSerialization() {
         "</vertical-datum-info>\n";
 
     errmsg = stringToVerticalDatumInfo(&vdi, xml1);
-    if (errmsg != NULL) fprintf(stderr, "%s\n", errmsg);
+    if (errmsg != NULL) printf("%s\n", errmsg);
     assert(errmsg == NULL);
     assert(!strcmp(vdi.nativeDatum, CVERTICAL_DATUM_NGVD29));
     assert(vdi.elevation == 615.2);
@@ -138,7 +138,7 @@ void testVerticalDatumInfoSerialization() {
     assert(vdi.offsetToNgvd29IsEstimate == 0);
 
     errmsg = stringToVerticalDatumInfo(&vdi, xml2);
-    if (errmsg != NULL) fprintf(stderr, "%s\n", errmsg);
+    if (errmsg != NULL) printf("%s\n", errmsg);
     assert(errmsg == NULL);
     assert(!strcmp(vdi.nativeDatum, "Pensacola"));
     assert(vdi.elevation == 757.);
@@ -367,7 +367,8 @@ void testStoreRetrieveTimeSeries() {
                                     //------------------------//
                                     // create the time series //
                                     //------------------------//
-                                    // fprintf(stderr, "%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n", i,j,k,l,m,n,o,p);
+                                    printf("%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n", i,j,k,l,m,n,o,p);
+                                    fflush(stdout);
                                     if (i == 0) {
                                         status = zopen6(ifltab, filename[i]);
                                     }
@@ -565,16 +566,20 @@ void testStoreRetrieveTimeSeries() {
                                     //-------------------------------------------------------//
                                     // store the time series in the specified vertical datum //
                                     //-------------------------------------------------------//
-                                    fprintf(stderr, "Time series test %3d: expecting %s\n", count, expectSuccess ? "SUCESS" : "ERROR");
+                                    printf("Time series test %3d: expecting %s\n", count, expectSuccess ? "SUCESS" : "ERROR");
+                                    fflush(stdout);
                                     status = ztsStore(ifltab, tss, 0);
+                                    fflush(stdout);
                                     assert((status == STATUS_OKAY) == expectSuccess);
                                     if (i == 1 && j == 1 && k+l+n+m+o+p == 0) {
                                         //-------------------------------------------------------------------------------//
                                         // change of vertical datum information in DSS 7, need to update location record //
                                         //-------------------------------------------------------------------------------//
                                         zset("VDOW", "", TRUE);
-                                        fprintf(stderr, "Test %d: expecting SUCESS\n", ++count);
+                                        printf("Test %d: expecting SUCESS\n", ++count);
+                                        fflush(stdout);
                                         status = ztsStore(ifltab, tss, 0);
+                                        fflush(stdout);
                                         assert(status == STATUS_OKAY);
                                         zset("VDOW", "", FALSE);
                                     }
@@ -603,6 +608,7 @@ void testStoreRetrieveTimeSeries() {
                                         //------------------------------------------------------------//
                                         zset("VDTM", verticalDatums[K], 0);
                                         status = ztsRetrieve(ifltab, tss, -1, 0, 1);
+                                        fflush(stdout);
                                         assert(status == STATUS_OKAY);
                                         //------------------------------------------------------//
                                         // compare the retrieved time seires to what was stored //
@@ -632,7 +638,8 @@ void testStoreRetrieveTimeSeries() {
             }
         }
     }
-    fprintf(stderr, "\n\n%3d Time series tests passed\n\n\n", count);
+    printf("\n\n%3d Time series tests passed\n\n\n", count);
+    fflush(stdout);
 }
 void testStoreRetrievePairedData() {
     // test storing and retrieving paired data
@@ -757,7 +764,7 @@ void testStoreRetrievePairedData() {
                                     //------------------------//
                                     // create the paired data //
                                     //------------------------//
-                                    // fprintf(stderr, "%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n", i,j,k,l,m,n,o,p);
+                                    // printf("%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n", i,j,k,l,m,n,o,p);
                                     if (i == 0) {
                                         status = zopen6(ifltab, filename[i]);
                                     }
@@ -939,7 +946,7 @@ void testStoreRetrievePairedData() {
                                     //--------------------------------------------------------//
                                     // store the paired data in the overridden vertical datum //
                                     //--------------------------------------------------------//
-                                    fprintf(stderr, "Paired data test %3d: expecting %s\n", count, expectSuccess ? "SUCESS" : "ERROR");
+                                    printf("Paired data test %3d: expecting %s\n", count, expectSuccess ? "SUCESS" : "ERROR");
                                     status = zpdStore(ifltab, pds, 0);
                                     assert((status == STATUS_OKAY) == expectSuccess);
                                     if (i == 1 && j == 1 && k+l+n+m+o+p == 0) {
@@ -947,7 +954,7 @@ void testStoreRetrievePairedData() {
                                         // change of vertical datum information in DSS 7, need to update location record //
                                         //-------------------------------------------------------------------------------//
                                         zset("VDOW", "", TRUE);
-                                        fprintf(stderr, "Test %d: expecting SUCESS\n", ++count);
+                                        printf("Test %d: expecting SUCESS\n", ++count);
                                         status = zpdStore(ifltab, pds, 0);
                                         assert(status == STATUS_OKAY);
                                         zset("VDOW", "", FALSE);
@@ -1014,5 +1021,5 @@ void testStoreRetrievePairedData() {
             }
         }
     }
-    fprintf(stderr, "\n\n%3d Paired data tests passed\n\n\n", count);
+    printf("\n\n%3d Paired data tests passed\n\n\n", count);
 }
