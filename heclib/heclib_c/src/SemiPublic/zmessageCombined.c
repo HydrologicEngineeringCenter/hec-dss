@@ -68,19 +68,16 @@ void zmessageLen(long long *ifltab, const char *message, size_t length)
 	if (fortUnit > 0) {
 		one = 1;
 		status = fortranwritelc_(&fortUnit, message, &one, length);
-		flush_(&fortUnit); // REMOVE THIS LINE - it is only for testing
 	}
 
 	if (handle > 0) {
 		writeBytes(handle, message, (unsigned int)length);
 		writeBytes(handle, "\n", (unsigned int)1);
-		flushFile(handle); // REMOVE THIS LINE - it is only for testing
 	}
 
 	if ((handle <= 0) && (fortUnit <= 0)) {
 		fwrite(message, sizeof(char), length, stdout);
 		fwrite("\n", (size_t)1, (size_t)1, stdout);
-		fflush(stdout); // REMOVE THIS LINE - it is only for testing
 	}
 
 }
