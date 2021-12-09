@@ -189,15 +189,17 @@ char *extractFromDelimitedString(
         strncpy(value, valueStart, len);
         value[len] = '\0';
         if (removeFromString) {
-            char *lastChar;
             if (*valueEnd) {
                 ++valueEnd;
+                memmove(paramStart, valueEnd, strlen(valueEnd)+1);
             }
-            memmove(paramStart, valueEnd, strlen(valueEnd)+1);
-            lastChar = *delimitedString + strlen(*delimitedString) - 1;
-            if (*lastChar == delimiter) {
-                *lastChar = '\0';
+            else {
+                *paramStart = '\0';
             }
+            char *cp = *delimitedString;
+            while (*cp) cp++;
+            if (cp > *delimitedString) --cp;
+            if (*cp == delimiter) *cp = '\0';
         }
     }
     free(param);
@@ -387,10 +389,13 @@ int b64Encode(char **encoded, const char *toEncode, int toEncodeLen) {
 //
 int b64Decode(char **decoded, int *decodedLen, const char *toDecode) {
     int len = b64DecodedLen(strlen(toDecode));
-    if (*(toDecode - 2) == '=') {
+    if (len < 4) {
+        len = -1;
+    }
+    else if (*(toDecode + len - 2) == '=') {
         len -= 2;
     }
-    else if (*(toDecode - 1) == '=') {
+    else if (*(toDecode + len - 1) == '=') {
         --len;
 
     }

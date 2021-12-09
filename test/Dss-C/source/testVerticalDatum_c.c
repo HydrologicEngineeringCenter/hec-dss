@@ -44,6 +44,7 @@ void testDelimitedStringOps() {
     free(cp);
     cp = extractFromDelimitedString(&text, "theSecondParameter", ":", TRUE, TRUE, ';');
     assert(!strcmp(cp, "theSecondValue"));
+    free(cp);
     assert(!strcmp(text, "theFirstParameter:theFirstValue"));
     assert(insertIntoDelimitedString(&text, text_size, "anotherParameter", "anotherValue", ":", FALSE, ';') ==  0);
     assert(!strcmp(text, "theFirstParameter:theFirstValue;anotherParameter:anotherValue"));
@@ -78,10 +79,12 @@ void testGzipAndEncodingOps() {
     errmsg = gzipAndEncode(&compressed, input_text);
     if (errmsg != NULL) printf("%s\n", errmsg);
     assert(errmsg == NULL);
+    free(compressed);
     errmsg = decodeAndGunzip(&expanded, compressed);
     if (errmsg != NULL) printf("%s\n", errmsg);
     assert(errmsg == NULL);
     assert(!strcmp(expanded, input_text));
+    free(expanded);
 }
 void testUserHeaderOps() {
     // test stringToUserHeader() and userHeaderToString()
@@ -367,8 +370,7 @@ void testStoreRetrieveTimeSeries() {
                                     //------------------------//
                                     // create the time series //
                                     //------------------------//
-                                    printf("%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n", i,j,k,l,m,n,o,p);
-                                    fflush(stdout);
+                                    // printf("%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n", i,j,k,l,m,n,o,p);
                                     if (i == 0) {
                                         status = zopen6(ifltab, filename[i]);
                                     }
@@ -603,11 +605,7 @@ void testStoreRetrieveTimeSeries() {
                                         // set the default vertical datum to the datum we stored with //
                                         //------------------------------------------------------------//
                                         zset("VDTM", verticalDatums[K], 0);
-                                        printf("calling ztsRetrieve\n");
-                                        fflush(stdout);
                                         status = ztsRetrieve(ifltab, tss, -1, 0, 1);
-                                        printf("ztsRetrieve returned %d\n", status);
-                                        fflush(stdout);
                                         assert(status == STATUS_OKAY);
                                         //------------------------------------------------------//
                                         // compare the retrieved time seires to what was stored //
@@ -638,7 +636,6 @@ void testStoreRetrieveTimeSeries() {
         }
     }
     printf("\n\n%3d Time series tests passed\n\n\n", count);
-    fflush(stdout);
 }
 void testStoreRetrievePairedData() {
     // test storing and retrieving paired data

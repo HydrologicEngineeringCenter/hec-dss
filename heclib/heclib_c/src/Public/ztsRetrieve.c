@@ -1,5 +1,4 @@
 #include <string.h>
-#include <errno.h>
 
 #include "hecdssInternal.h"
 #include "heclib.h"
@@ -397,8 +396,6 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 		//--------------------------------------------------//
 		// convert to requested vertical datum if necessary //
 		//--------------------------------------------------//
-		printf("==> Start vertical datum processing.\n");
-		fflush(stdout);
 		char cPart[65];
 		zpathnameGetPart(tss->pathname, 3, cPart, sizeof(cPart));
 		if (!strncasecmp(cPart, "ELEV", 4)) {
@@ -412,8 +409,6 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 			char *vdiStr;
 			char errmsg[1024];
 			zquery("VDTM", cvertical_datum, sizeof(cvertical_datum), &ivertical_datum);
-			printf("Default vertical datum = %s\n", cvertical_datum);
-			fflush(stdout);
 			if (ivertical_datum != IVERTICAL_DATUM_UNSET) {
 				//-----------------------------------//
 				// specific vertical datum requested //
@@ -429,8 +424,6 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 							FALSE,
 							'\n');
 						if (vdiStr) {
-							printf("Location record VDI = %s\n", vdiStr);
-							fflush(stdout);
 							char *msg = stringToVerticalDatumInfo(&_vdi, vdiStr);
 							if(msg == NULL) {
 								vdi = &_vdi;
@@ -438,10 +431,6 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 							free(vdiStr);
 						}
 					}
-				}
-				else {
-					printf("User header VDI = %s\n", vdiStr);
-					fflush(stdout);
 				}
 				if (vdi == NULL) {
 					sprintf(
@@ -469,86 +458,56 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 					// ensure the vertical datum info is returned in the user header //
 					//---------------------------------------------------------------//
 					verticalDatumInfoToString(&vdiStr, vdi, TRUE);
-					printf("VDI from object = %s\n", vdiStr);
-					fflush(stdout);
 					char *headerString;
 					if (tss->userHeader) {
 						headerString = userHeaderToString(tss->userHeader, tss->userHeaderNumber);
-						printf("Existing user header string = %s\n", headerString);
-						fflush(stdout);
 						if (!strstr(headerString, VERTICAL_DATUM_INFO_USER_HEADER_PARAM)) {
-							printf("Reallocing header string to accomodate VDI\n");
-							fflush(stdout);
 							headerString = (char *)realloc(
 								headerString,
 								strlen(headerString)
 								+ VERTICAL_DATUM_INFO_USER_HEADER_PARAM_LEN
 								+ strlen(vdiStr)
 								+ 3);
-							printf("Address = %p\nAdding VDI\n", headerString);
-							fflush(stdout);
 							sprintf(
 								headerString+strlen(headerString),
 								";%s:%s",
 								VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
 								vdiStr);
-							printf("Freeing existing user header\n");
-							fflush(stdout);
 							free(tss->userHeader);
 						}
 					}
 					else {
-						printf("Creating new header string\n");
 						headerString = (char *)malloc(
 							VERTICAL_DATUM_INFO_USER_HEADER_PARAM_LEN
-							+ strlen(vdiStr));
-						printf("Address = %p\nAdding VDI\n", headerString);
-						fflush(stdout);
+							+ strlen(vdiStr)
+							+ 2);
 						sprintf(
 							headerString,
 							"%s:%s",
 							VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
 							vdiStr);
 					}
-					printf("Creating new user header from header string\n");
-					fflush(stdout);
-					tss->userHeader = stringToUserHeader(headerString, &tss->userHeaderNumber);
-					tss->allocated[zSTRUCT_userHeader] = TRUE;
-					printf("Freeing VDI string\n");
-					fflush(stdout);
 					free(vdiStr);
 					//--------------------------------------------//
 					// add the requested datum to the user header //
 					//--------------------------------------------//
-					printf("Reallocing user header to accomodate requested vertical datum\n");
-					fflush(stdout);
-					printf("  old address = %p\n", headerString);
-					fflush(stdout);
-					printf("  old length  = %ld\n", strlen(headerString));
-					fflush(stdout);
-					printf("  new length  = %ld\n", strlen(headerString) + VERTICAL_DATUM_USER_HEADER_PARAM_LEN + strlen(cvertical_datum) + 3);
-					fflush(stdout);
-					errno = 0;
 					headerString = (char *)realloc(
 						headerString,
 						strlen(headerString)
 						+ VERTICAL_DATUM_USER_HEADER_PARAM_LEN
 						+ strlen(cvertical_datum)
 						+ 3);
-					printf("Error is %d\n", errno);
-					fflush(stdout);
-					printf("Address = %p\nAdding default vertical datum\n", headerString);
-					fflush(stdout);
 					sprintf(
 						headerString+strlen(headerString),
 						";%s:%s",
 						VERTICAL_DATUM_USER_HEADER_PARAM,
 						cvertical_datum);
+					tss->userHeader = stringToUserHeader(headerString, &tss->userHeaderNumber);
+					tss->allocated[zSTRUCT_userHeader] = TRUE;
+					free(headerString);
 					//-----------------------------//
 					// determine the offset to use //
 					//-----------------------------//
-					printf("Determining offset to use\n");
-					fflush(stdout);
 					double offset;
 					switch(ivertical_datum) {
 						case IVERTICAL_DATUM_NAVD88 :
@@ -566,14 +525,8 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 							}
 							break;
 					}
-					printf("Offset = %f\n", offset);
-					fflush(stdout);
 					if (offset != 0.) {
-						printf("Adjusting offset for units\n");
-						fflush(stdout);
 						offset = getOffset(offset, vdi->unit, tss->units);
-						printf("Offset = %f\n", offset);
-						fflush(stdout);
 						if (offset == UNDEFINED_VERTICAL_DATUM_VALUE) {
 							sprintf(
 								errmsg,
@@ -595,8 +548,6 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 							return status;
 						}
 						else {
-							printf("Adding the offset to the values\n");
-							fflush(stdout);
 							//------------------------------//
 							// add the offset to the values //
 							//------------------------------//
@@ -616,14 +567,10 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 					}
 				}
 			}
-			printf("VDI = %p\n", vdi);
 			if (vdi && vdi != &_vdi) {
-				printf("Freeing VDI\n");
 				free(vdi);
 			}
 		}
-		printf("==> End vertical datum processing.\n");
-		fflush(stdout);
 	}
 	//  Do we need to trim the data?
 	if (status == STATUS_OKAY) {

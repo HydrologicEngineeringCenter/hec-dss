@@ -810,15 +810,14 @@ int zpdRetrieve(long long *ifltab, zStructPairedData *pds, int retrieveSizeFlag)
 					else {
 						headerString = (char *)malloc(
 							VERTICAL_DATUM_INFO_USER_HEADER_PARAM_LEN
-							+ strlen(vdiStr));
+							+ strlen(vdiStr)
+							+ 2);
 						sprintf(
 							headerString, 
 							"%s:%s", 
 							VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
 							vdiStr);
 					}
-					pds->userHeader = stringToUserHeader(headerString, &pds->userHeaderNumber);
-					pds->allocated[zSTRUCT_userHeader] = TRUE;
 					free(vdiStr);
 					//--------------------------------------------//
 					// add the requested datum to the user header //
@@ -834,6 +833,9 @@ int zpdRetrieve(long long *ifltab, zStructPairedData *pds, int retrieveSizeFlag)
 						";%s:%s", 
 						VERTICAL_DATUM_USER_HEADER_PARAM,
 						cvertical_datum);
+					pds->userHeader = stringToUserHeader(headerString, &pds->userHeaderNumber);
+					pds->allocated[zSTRUCT_userHeader] = TRUE;
+					free(headerString);
 					if (indElev) {
 						//-----------------------------//	
 						// determine the offset to use //

@@ -23,7 +23,7 @@
       ! local variables !
       !-----------------!  
       integer   iuhead_copy(500), max_head_len, ifirst, ilast, i, len
-      character cuhead*2000, existing*250
+      character cuhead*2000, existing*500
       logical   param_has_separator
       equivalence (iuhead_copy, cuhead)
 
@@ -57,7 +57,11 @@
       !-------------------------------------------------!
       ! see if we have enough room to set the parameter !
       !-------------------------------------------------!
-      intsAvailable = kuhead - (len_trim(cuhead)-1)/4+1
+      if (cuhead.eq." ") then
+        intsAvailable = kuhead
+      else
+        intsAvailable = kuhead - (len_trim(cuhead)-1)/4+1
+      end if
       call get_user_header_param(iuhead, kuhead, cparam, existing)
       if (existing.eq." ") then
         intsRequired = ((len_trim(cparam)+len_trim(cvalue)+2)-1)/4+1
@@ -81,10 +85,12 @@
      *    cparam)
         end if
         len = len_trim(cuhead)
-        if (cuhead(len:len).ne.";") then
-          len = len + 1  
-          cuhead(len:len) = ";"
-        end if  
+        if (len.gt.0) then
+          if (cuhead(len:len).ne.";") then
+            len = len + 1
+            cuhead(len:len) = ";"
+          end if
+        end if
         cuhead(len+1:) = cparam(:len_trim(cparam)) // ":" // 
      *    cvalue(:len_trim(cvalue))
         iuhead(:max_head_len) = iuhead_copy(:max_head_len)
