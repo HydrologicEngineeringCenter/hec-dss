@@ -148,16 +148,18 @@ void getoffset_(
     free(cDataUnit);
 }
 
-const char *strcasestr(const char *haystack, const char *needle) {
-    int   haystackLen = strlen(haystack);
-    int   needleLen = strlen(needle);
-    for (int haystackPos = 0; haystackPos < haystackLen - needleLen; ++haystackPos) {
-        if (!strncasecmp(haystack + haystackPos, needle, needleLen)) {
-            return haystack + haystackPos;
+#if defined(__GNUC__)
+    const char *strcasestr(const char *haystack, const char *needle) {
+        int   haystackLen = strlen(haystack);
+        int   needleLen = strlen(needle);
+        for (int haystackPos = 0; haystackPos < haystackLen - needleLen; ++haystackPos) {
+            if (!strncasecmp(haystack + haystackPos, needle, needleLen)) {
+                return haystack + haystackPos;
+            }
         }
+        return NULL;
     }
-    return NULL;
-}
+#endif
 //
 // See verticalDatum.h for documentation
 //
