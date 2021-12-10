@@ -13,13 +13,31 @@ jobs:
           repository: HydrologicEngineeringCenter/dss-test-data
           path: dss-test-data
 
-      - uses: actions/setup-java@v2
-        with:
-          distribution: 'adopt'
-          java-version: '8'
-                      
+      - name: link gfortran
+        run: |
+          ln -s /usr/local/bin/gfortran-11 /usr/local/bin/gfortran
+          gfortran -v
+
+      - name: install openjdk
+        run: |
+          brew install openjdk@11
+
       - name: build main library
         run: |
           cd heclib
           make
-          
+        env:
+          JAVA_HOME: /usr/local/opt/openjdk@11/libexec/openjdk.jdk/Contents/Home
+          GFORTRAN_PATH: /usr/local/opt/gcc@11/lib/gcc/11/
+          MACOSX_DEPLOYMENT_TARGET: 11.5
+
+      - name: run C test
+        run: |
+          cd test/C
+          chmod +x unix_test
+          ls -ll
+          ./unix_test
+        env:
+          JAVA_HOME: /usr/local/opt/openjdk@11/libexec/openjdk.jdk/Contents/Home
+          GFORTRAN_PATH: /usr/local/opt/gcc@11/lib/gcc/11/
+          MACOSX_DEPLOYMENT_TARGET: 11.5
