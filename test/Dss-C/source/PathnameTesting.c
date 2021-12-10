@@ -43,6 +43,12 @@ int PathnameTesting(char* dssFileName)
 	status = ztsRetrieve(ifltab, tss2, -1, 2, 0);
 
 	if (status != STATUS_OKAY) return status;
+
+	if (tss2->numberValues != 200) {
+		printf("\nError reading path '%s'", path);
+		return -1;
+	  }
+
 	char cdate[13], ctime[10];
 	for (int i = 0; i < tss2->numberValues;  i++) {
 		getDateAndTime(tss2->times[i], tss2->timeGranularitySeconds, tss2->julianBaseDate,
