@@ -131,6 +131,8 @@ int runTheTests() {
 	int status;
 
 
+	status = PathnameTesting("path_name_test.dss");
+
 	printf("\ntest stringCat\n");
 	status = test_stringCat();
 	if (status != STATUS_OKAY)
