@@ -617,7 +617,6 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 						tss->doubleValues = tmpDoubleVals;
 					}
 				}
-				printf("vdi == vdiTs = %s\n", vdi == vdiTs ? "True" : "False");
 				if (vdi == vdiTs) {
 					//----------------------------------------------------------------------------//
 					// move the vertical datum info into the time series struct embedded location //
@@ -720,7 +719,6 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 							}
 						}
 						free(compressed);
-						printf("tss->locationStruct->supplemental = %s\n", tss->locationStruct->supplemental);
 					}
 				}
 				if (vdiTs != &_vdiTs) {
@@ -791,7 +789,6 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 			}
 			tss->locationStruct->pathnameInternal = mallocAndCopy(tss->pathname);
 			tss->locationStruct->allocated[zSTRUCT_locationPathInternal] = 1;
-			printf("tss->locationStruct->supplemental = %s\n", tss->locationStruct->supplemental);
 			zlocationStore(ifltab, tss->locationStruct, allowOverwriteLocationVerticalDatum);
 		}
 	}
