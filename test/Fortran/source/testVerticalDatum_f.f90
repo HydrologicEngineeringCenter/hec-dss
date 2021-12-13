@@ -135,7 +135,7 @@ subroutine testUserHeaderOps
     equivalence (cheader, iheader)
     equivalence (cheaderShort, iheaderShort)
 
-    cheader = 'firstParam:firstValue;secondParam:secondValue;thirdParam:thirdValue'
+    cheader = 'firstParam:firstValue;secondParam:secondValue;thirdParam:thirdValue;'
 
     call get_user_header_param(iheader, size(iheader), 'firstParam', cvalue)
     call assert(cvalue.eq.'firstValue')
@@ -158,17 +158,17 @@ subroutine testUserHeaderOps
     call set_user_header_param(iheader, size(iheader), 'fourthParam', '4thValue', status)
     call assert(status.eq.0)
 
-    cheader = 'firstParam:firstValue;secondParam:secondValue;thirdParam:thirdValue'
+    cheader = 'firstParam:firstValue;secondParam:secondValue;thirdParam:thirdValue;'
     call remove_user_header_param(iheader, size(iheader), 'firstParam')
-    call assert(cheader.eq.'secondParam:secondValue;thirdParam:thirdValue')
-    cheader = 'firstParam:firstValue;secondParam:secondValue;thirdParam:thirdValue'
+    call assert(cheader.eq.'secondParam:secondValue;thirdParam:thirdValue;')
+    cheader = 'firstParam:firstValue;secondParam:secondValue;thirdParam:thirdValue;'
     call remove_user_header_param(iheader, size(iheader), 'secondParam')
-    call assert(cheader.eq.'firstParam:firstValue;thirdParam:thirdValue')
-    cheader = 'firstParam:firstValue;secondParam:secondValue;thirdParam:thirdValue'
+    call assert(cheader.eq.'firstParam:firstValue;thirdParam:thirdValue;')
+    cheader = 'firstParam:firstValue;secondParam:secondValue;thirdParam:thirdValue;'
     call remove_user_header_param(iheader, size(iheader), 'thirdParam')
-    call assert(cheader.eq.'firstParam:firstValue;secondParam:secondValue')
+    call assert(cheader.eq.'firstParam:firstValue;secondParam:secondValue;')
 
-    cheaderShort = 'firstParam:firstValue;secondParam:secondValue;thirdParam:thirdValue'
+    cheaderShort = 'firstParam:firstValue;secondParam:secondValue;thirdParam:thirdValue;'
     call set_user_header_param(iheaderShort, size(iheaderShort), 'fourthParam', '4thValue', status)
     call assert(status.ne.0)
 

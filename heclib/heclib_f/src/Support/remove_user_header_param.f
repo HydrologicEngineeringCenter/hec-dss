@@ -14,7 +14,7 @@
       !-------------------!
       ! define parameters !
       !-------------------!
-      integer   iuhead(*), nuhead, len
+      integer   iuhead(*), nuhead
       character cparam*(*)
       !-----------------!
       ! local variables !
@@ -76,14 +76,10 @@
           cuhead(ifirst:) = cuhead(ilast+1:)
         end if
       end if
-      !-------------------------------------------!
-      ! remove any leading or trailing delimiters !
-      !-------------------------------------------!
+      !-------------------------------!
+      ! remove any leading delimiters !
+      !-------------------------------!
       if (cuhead(1:1).eq.';') cuhead = cuhead(2:)
-      len = len_trim(cuhead)
-      if (len.gt.0) then
-        if (cuhead(len:len).eq.';') cuhead = cuhead(1:len-1)
-      end if
       iuhead(:max_head_len) = iuhead_copy(:max_head_len)
       return
       end

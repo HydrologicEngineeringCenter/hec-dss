@@ -198,10 +198,6 @@ char *extractFromDelimitedString(
             else {
                 *paramStart = '\0';
             }
-            char *cp = *delimitedString;
-            while (*cp) cp++;
-            if (cp > *delimitedString) --cp;
-            if (*cp == delimiter) *cp = '\0';
         }
     }
     free(param);
@@ -238,7 +234,7 @@ int insertIntoDelimitedString(
     if (value) {
         toInsertLen += strlen(value);
     }
-    if (!strchr(*delimitedString, delimiter)) {
+    if (delimiter) {
         ++toInsertLen;
     }
     int availableLen = delimitedStringSize - strlen(*delimitedString);
@@ -267,6 +263,9 @@ int insertIntoDelimitedString(
     }
     if (value) {
         strcat(*delimitedString, value);
+    }
+    if (delimiter) {
+        strncat(*delimitedString, &delimiter, 1);
     }
     if (existing) {
         free(existing);

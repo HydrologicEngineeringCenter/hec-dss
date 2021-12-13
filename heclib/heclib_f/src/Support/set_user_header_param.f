@@ -91,7 +91,7 @@
           end if
         end if
         cuhead(len+1:) = cparam(:len_trim(cparam)) // ":" // 
-     *    cvalue(:len_trim(cvalue))
+     *    cvalue(:len_trim(cvalue)) // ";"
         iuhead(:max_head_len) = iuhead_copy(:max_head_len)
         istat = 0
       end if  

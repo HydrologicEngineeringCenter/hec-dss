@@ -26,7 +26,7 @@ void testDelimitedStringOps() {
     int text_size = 256;
     char *text = (char *)malloc(text_size);
     char *cp;
-    char *text_value = "theFirstParameter:theFirstValue;theSecondParameter:theSecondValue";
+    char *text_value = "theFirstParameter:theFirstValue;theSecondParameter:theSecondValue;";
     sprintf(text, "%s", text_value);
     cp = extractFromDelimitedString(&text, "theFirstParameter", ":", TRUE, FALSE, ';');
     assert(!strcmp(cp, "theFirstValue"));
@@ -39,20 +39,20 @@ void testDelimitedStringOps() {
     free(cp);
     cp = extractFromDelimitedString(&text, "THEFIRSTPARAMETER", ":", FALSE, TRUE, ';');
     assert(!strcmp(cp, "theFirstValue"));
-    assert(!strcmp(text, "theSecondParameter:theSecondValue"));
+    assert(!strcmp(text, "theSecondParameter:theSecondValue;"));
     sprintf(text, "%s", text_value);
     free(cp);
     cp = extractFromDelimitedString(&text, "theSecondParameter", ":", TRUE, TRUE, ';');
     assert(!strcmp(cp, "theSecondValue"));
     free(cp);
-    assert(!strcmp(text, "theFirstParameter:theFirstValue"));
+    assert(!strcmp(text, "theFirstParameter:theFirstValue;"));
     assert(insertIntoDelimitedString(&text, text_size, "anotherParameter", "anotherValue", ":", FALSE, ';') ==  0);
-    assert(!strcmp(text, "theFirstParameter:theFirstValue;anotherParameter:anotherValue"));
+    assert(!strcmp(text, "theFirstParameter:theFirstValue;anotherParameter:anotherValue;"));
     free(extractFromDelimitedString(&text, "theFirstParameter", ":", TRUE, TRUE, ';'));
     free(extractFromDelimitedString(&text, "anotherParameter", ":", TRUE, TRUE, ';'));
     assert(strlen(text) == 0);
     assert(insertIntoDelimitedString(&text, text_size, "anotherParameter", "anotherValue", ":", FALSE, ';') == 0);
-    assert(strcmp(text, "anotherParameter:anotherValue") == 0);
+    assert(strcmp(text, "anotherParameter:anotherValue;") == 0);
     free(text);
 }
 void testGzipAndEncodingOps() {
@@ -471,12 +471,13 @@ void testStoreRetrieveTimeSeries() {
                                                 headerBuf = (char *)realloc(headerBuf, len);
                                             }
                                             else {
-                                                len = VERTICAL_DATUM_USER_HEADER_PARAM_LEN + strlen(verticalDatums[K]) + 2;
+                                                len = VERTICAL_DATUM_USER_HEADER_PARAM_LEN + strlen(verticalDatums[K]) + 3;
                                                 headerBuf = (char *)malloc(len);
                                                 headerBuf[0] = '\0';
                                             }
+                                            assert(headerBuf != NULL);
                                             status = insertIntoDelimitedString(
-                                                headerBuf ? &headerBuf : NULL,
+                                                &headerBuf,
                                                 len,
                                                 VERTICAL_DATUM_USER_HEADER_PARAM,
                                                 verticalDatums[K],
@@ -839,12 +840,13 @@ void testStoreRetrievePairedData() {
                                                 headerBuf = (char *)realloc(headerBuf, len);
                                             }
                                             else {
-                                                len = VERTICAL_DATUM_USER_HEADER_PARAM_LEN + strlen(verticalDatums[K]) + 2;
+                                                len = VERTICAL_DATUM_USER_HEADER_PARAM_LEN + strlen(verticalDatums[K]) + 3;
                                                 headerBuf = (char *)malloc(len);
                                                 headerBuf[0] = '\0';
                                             }
+                                            assert(headerBuf != NULL);
                                             status = insertIntoDelimitedString(
-                                                headerBuf ? &headerBuf : NULL,
+                                                &headerBuf,
                                                 len,
                                                 VERTICAL_DATUM_USER_HEADER_PARAM,
                                                 verticalDatums[K],
