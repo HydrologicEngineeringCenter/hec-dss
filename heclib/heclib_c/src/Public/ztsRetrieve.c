@@ -504,8 +504,10 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 						cvertical_datum);
 					tss->userHeader = stringToUserHeader(headerString, &tss->userHeaderNumber);
 					tss->allocated[zSTRUCT_userHeader] = TRUE;
-					printf("\nIn ztsRetrieve()\n");
-					printf("\ttss->userHeader = >%s<\n", headerString);
+					FILE *fp = fopen("test.log", "a");
+					fprintf(fp, "\nIn ztsRetrieve()\n");
+					fprintf(fp, "\ttss->userHeader = >%s<\n", headerString);
+					fclose(fp);
 					free(headerString);
 					//-----------------------------//
 					// determine the offset to use //

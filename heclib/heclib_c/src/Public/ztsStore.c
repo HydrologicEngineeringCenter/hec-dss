@@ -718,8 +718,10 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 									errmsg);
 							}
 						}
-						printf("\nIn ztsStore()\n");
-						printf("\ttss->locationStruct->supplemental = >%s<\n", tss->locationStruct->supplemental);
+						FILE *fp = fopen("test.log", "a");
+						fprintf(fp, "\nIn ztsStore()\n");
+						fprintf(fp, "\ttss->locationStruct->supplemental = >%s<\n", tss->locationStruct->supplemental);
+						fclose(fp);
 						free(compressed);
 					}
 				}
