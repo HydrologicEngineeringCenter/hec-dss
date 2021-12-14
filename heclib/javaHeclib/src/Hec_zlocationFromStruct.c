@@ -1,4 +1,5 @@
 #include <jni.h>
+#include <string.h>
 
 #include "heclib.h"
 #include "javaHeclib.h"
@@ -159,10 +160,17 @@ int Hec_zlocationFromStruct(JNIEnv *env, jobject obj, jobject j_dataContainer, z
 	else { 
 		if (fid) {
 			if ((*env)->GetObjectField(env, j_dataContainer, fid) == NULL) {
-				printf("Setting supplemental info from location supplemental inforation");
+				// don't overwrite existing supplemental info
 				if (locationStruct->supplemental) {
-					jstr = (*env)->NewStringUTF(env, (const char*)locationStruct->supplemental);			
+					// convert locationStruct->supplemental delimiters ('\n') to user header delimiters (';')
+					char *supplemental = (char *)malloc(strlen(locationStruct->supplemental)+1);
+					strcpy(supplemental, locationStruct->supplemental);
+					for (char *cp = supplemental; *cp; ++cp) {
+						if (*cp == '\n') *cp = ';';
+					}
+					jstr = (*env)->NewStringUTF(env, (const char*)supplemental);			
 					(*env)->SetObjectField (env, j_dataContainer, fid, jstr);
+					free(supplemental);
 				}
 			}
 		}
