@@ -651,6 +651,7 @@ C
               !--------------------------------------------!
               ! add the requested datum to the user header !
               !--------------------------------------------!
+              iuhead(nuhead+1:kuhead) = 0
               call set_user_header_param(iuhead, kuhead, 
      *          VERTICAL_DATUM_PARAM, cvdatum, istat)
               !--------------------------------------!
