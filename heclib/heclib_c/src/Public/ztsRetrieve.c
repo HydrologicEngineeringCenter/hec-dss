@@ -434,7 +434,7 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 						}
 					}
 				}
-				printf("\tvdi = >%s<\n", vdi);
+				printf("\tvdi = >%p<\n", vdi);
 				if (vdi == NULL) {
 					sprintf(
 						errmsg,
