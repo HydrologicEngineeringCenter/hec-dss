@@ -216,6 +216,10 @@ int insertIntoDelimitedString(
         return -2;
     }
 
+    printf("\nIn insertIntoDelimiteString\n");
+    printf("\tInitial = >%s<\n", *delimitedString);
+    printf("\tParam   = >%s<\n", parameter);
+    printf("\tValue   = >%s<\n", value);
     char *existing = extractFromDelimitedString(
         delimitedString,
         parameter,
@@ -270,6 +274,7 @@ int insertIntoDelimitedString(
     if (existing) {
         free(existing);
     }
+    printf("\tFinal   = >%s<\n", *delimitedString);
     return 0;
 }
 //
