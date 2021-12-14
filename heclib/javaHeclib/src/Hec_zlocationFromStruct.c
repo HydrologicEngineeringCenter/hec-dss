@@ -158,9 +158,12 @@ int Hec_zlocationFromStruct(JNIEnv *env, jobject obj, jobject j_dataContainer, z
 	}
 	else { 
 		if (fid) {
-			if (locationStruct->supplemental) {
-				jstr = (*env)->NewStringUTF(env, (const char*)locationStruct->supplemental);			
-				(*env)->SetObjectField (env, j_dataContainer, fid, jstr);
+			if ((*env)->GetObjectField(env, j_dataContainer, fid) == NULL) {
+				printf("Setting supplemental info from location supplemental inforation");
+				if (locationStruct->supplemental) {
+					jstr = (*env)->NewStringUTF(env, (const char*)locationStruct->supplemental);			
+					(*env)->SetObjectField (env, j_dataContainer, fid, jstr);
+				}
 			}
 		}
 	}

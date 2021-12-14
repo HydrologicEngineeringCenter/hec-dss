@@ -190,9 +190,6 @@ char *extractFromDelimitedString(
         value = (char *)_malloc(len + 1);
         strncpy(value, valueStart, len);
         value[len] = '\0';
-        if (value[len-1] == delimiter) {
-            value[len-1] = '\0';
-        }
         if (removeFromString) {
             if (*valueEnd) {
                 ++valueEnd;
