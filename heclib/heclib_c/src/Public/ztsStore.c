@@ -239,6 +239,7 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 	int status;
 
 
+	printf("\nIn ztsStore()\n");
 	if (!tss) {
 		return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID, zdssErrorCodes.NULL_ARGUMENT,
 			0, 0, zdssErrorSeverity.INVALID_ARGUMENT, "", "zStructTimeSeries is null");
@@ -392,6 +393,7 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 					free(vdiStr);
 				}
 			}
+			printf("\tvdiTs = %p\n", vdiTs);
 			//----------------------------------------------------------//
 			// get the info from the location struct on disk for DSS v7 //
 			//----------------------------------------------------------//
@@ -414,6 +416,7 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 				}
 				zstructFree(ls);
 			}
+			printf("\tvdiLoc = %p\n", vdiLoc);
 			if (vdiTs && vdiLoc) {
 				zquery("VDOW", "", 0, &allowOverwriteLocationVerticalDatum);
 				if (allowOverwriteLocationVerticalDatum) {
@@ -529,6 +532,7 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 				vdi = vdiTs ? vdiTs : vdiLoc;
 			}
 			if (vdi) {
+				printf("\tvdi = %p\n", vdi);
 				double offset = 0.;
 				//----------------------------------//
 				// get the effective vertical datum //
@@ -538,9 +542,9 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 				ivertical_datum = getEffectiveVerticalDatum(
 					cvertical_datum,
 					sizeof(cvertical_datum),
-					&tss->userHeader,
-					&tss->userHeaderNumber,
-					&tss->units);
+					&tss->userHeader,       // any specified datum in these parameters is removed
+					&tss->userHeaderNumber, // ...
+					&tss->units);           // ...
 				//-------------------------------------------------------//
 				// now that we have a datum, determine the offset to use //
 				//-------------------------------------------------------//
@@ -718,10 +722,7 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 									errmsg);
 							}
 						}
-						FILE *fp = fopen("test.log", "a");
-						fprintf(fp, "\nIn ztsStore()\n");
-						fprintf(fp, "\ttss->locationStruct->supplemental = >%s<\n", tss->locationStruct->supplemental);
-						fclose(fp);
+						printf("\ttss->locationStruct->supplemental = >%s<\n", tss->locationStruct->supplemental);
 						free(compressed);
 					}
 				}

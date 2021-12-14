@@ -18,6 +18,7 @@ int Hec_zlocationFromStruct(JNIEnv *env, jobject obj, jobject j_dataContainer, z
 	double j_double;
 
 
+	printf("\nIn Hec_zlocationFromStruct()\n");
 	cls = (*env)->GetObjectClass (env, j_dataContainer);
 
 	 /* Longitude, Easting or decimal degrees (negative for Western Hemisphere) */ 
@@ -162,10 +163,7 @@ int Hec_zlocationFromStruct(JNIEnv *env, jobject obj, jobject j_dataContainer, z
 			if ((*env)->GetObjectField(env, j_dataContainer, fid) == NULL) {
 				// don't overwrite existing supplemental info
 				if (locationStruct->supplemental) {
-					FILE *fp = fopen("test.log", "a");
-					fprintf(fp, "\nIn Hec_zlocationFromStruct()\n");
-					fprintf(fp, "\tlocationStruct->supplemental = >%s<\n", locationStruct->supplemental);
-					fclose(fp);
+					printf("\tlocationStruct->supplemental = >%s<\n", locationStruct->supplemental);
 					// convert locationStruct->supplemental delimiters ('\n') to user header delimiters (';')
 					char *supplemental = (char *)malloc(strlen(locationStruct->supplemental)+1);
 					strcpy(supplemental, locationStruct->supplemental);

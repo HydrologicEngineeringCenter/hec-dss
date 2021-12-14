@@ -280,6 +280,7 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 
 
 
+	printf("\nIn ztsRetrieve()\n");
 	if (!tss) {
 		return zerrorProcessing(ifltab, DSS_FUNCTION_ztsRetrieve_ID, zdssErrorCodes.NULL_ARGUMENT,
 			0, 0, zdssErrorSeverity.INVALID_ARGUMENT, "", "zStructTimeSeries is null");
@@ -504,10 +505,7 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 						cvertical_datum);
 					tss->userHeader = stringToUserHeader(headerString, &tss->userHeaderNumber);
 					tss->allocated[zSTRUCT_userHeader] = TRUE;
-					FILE *fp = fopen("test.log", "a");
-					fprintf(fp, "\nIn ztsRetrieve()\n");
-					fprintf(fp, "\ttss->userHeader = >%s<\n", headerString);
-					fclose(fp);
+					printf("\ttss->userHeader = >%s<\n", headerString);
 					free(headerString);
 					//-----------------------------//
 					// determine the offset to use //
