@@ -43,11 +43,6 @@
       end if
       max_head_len = min(kuhead, size(iuhead_copy))
       iuhead_copy(:max_head_len) = iuhead(:max_head_len)
-      write(*,*) ""
-      write(*,*) "In SET_USER_HEADER_PARAM"
-      write(*,*) "   Initial = >" // cuhead(1:len_trim(cuhead)) // "<"
-      write(*,*) "   Param   = >" // cparam(1:len_trim(cparam)) // "<"
-      write(*,*) "   Value   = >" // cvalue(1:len_trim(cvalue)) // "<"
       !--------------------------------------------------------!
       ! blank everything past the copy size or null terminator !
       !--------------------------------------------------------!
@@ -59,6 +54,11 @@
           cuhead(max_head_len*4:) = " "
         end if
       end if
+      write(*,*) ""
+      write(*,*) "In SET_USER_HEADER_PARAM"
+      write(*,*) "   Initial = >" // cuhead(1:len_trim(cuhead)) // "<"
+      write(*,*) "   Param   = >" // cparam(1:len_trim(cparam)) // "<"
+      write(*,*) "   Value   = >" // cvalue(1:len_trim(cvalue)) // "<"
       !-------------------------------------------------!
       ! see if we have enough room to set the parameter !
       !-------------------------------------------------!
