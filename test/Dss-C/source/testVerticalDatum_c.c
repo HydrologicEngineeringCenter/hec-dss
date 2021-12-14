@@ -467,8 +467,10 @@ void testStoreRetrieveTimeSeries() {
                                             ';');
                                         if (status != 0) {
                                             if (headerBuf) {
+                                                int oldlen = len;
                                                 len += VERTICAL_DATUM_USER_HEADER_PARAM_LEN + strlen(verticalDatums[K]) + 3;
                                                 headerBuf = (char *)realloc(headerBuf, len);
+                                                memset(headerBuf+oldlen, 0, len-oldlen);
                                             }
                                             else {
                                                 len = VERTICAL_DATUM_USER_HEADER_PARAM_LEN + strlen(verticalDatums[K]) + 3;
@@ -836,8 +838,10 @@ void testStoreRetrievePairedData() {
                                             ';');
                                         if (status != 0) {
                                             if (headerBuf) {
+                                                int oldlen = len;
                                                 len += VERTICAL_DATUM_USER_HEADER_PARAM_LEN + strlen(verticalDatums[K]) + 3;
                                                 headerBuf = (char *)realloc(headerBuf, len);
+                                                memset(headerBuf+oldlen, 0, len-oldlen);
                                             }
                                             else {
                                                 len = VERTICAL_DATUM_USER_HEADER_PARAM_LEN + strlen(verticalDatums[K]) + 3;
