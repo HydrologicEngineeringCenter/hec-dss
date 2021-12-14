@@ -410,6 +410,7 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 			char *vdiStr;
 			char errmsg[1024];
 			zquery("VDTM", cvertical_datum, sizeof(cvertical_datum), &ivertical_datum);
+			printf("\trequested datum = >%s<\n", cvertical_datum);
 			if (ivertical_datum != IVERTICAL_DATUM_UNSET) {
 				//-----------------------------------//
 				// specific vertical datum requested //
@@ -433,6 +434,7 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 						}
 					}
 				}
+				printf("\tvdi = >%s<\n", vdi);
 				if (vdi == NULL) {
 					sprintf(
 						errmsg,

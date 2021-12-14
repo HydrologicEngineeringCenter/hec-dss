@@ -159,11 +159,12 @@ int Hec_zlocationFromStruct(JNIEnv *env, jobject obj, jobject j_dataContainer, z
 			(*env)->ExceptionClear(env);
 	}
 	else { 
+		printf("\tfield id = >%d<\n", fid);
 		if (fid) {
 			if ((*env)->GetObjectField(env, j_dataContainer, fid) == NULL) {
 				// don't overwrite existing supplemental info
+				printf("\tlocationStruct->supplemental = >%s<\n", locationStruct->supplemental);
 				if (locationStruct->supplemental) {
-					printf("\tlocationStruct->supplemental = >%s<\n", locationStruct->supplemental);
 					// convert locationStruct->supplemental delimiters ('\n') to user header delimiters (';')
 					char *supplemental = (char *)malloc(strlen(locationStruct->supplemental)+1);
 					strcpy(supplemental, locationStruct->supplemental);
