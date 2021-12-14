@@ -43,7 +43,7 @@
       end if
       max_head_len = min(nuhead, size(iuhead_copy))
       iuhead_copy(:max_head_len) = iuhead(:max_head_len)
-      
+
       !--------------------------------------------------------!
       ! blank everything past the copy size or null terminator !
       !--------------------------------------------------------!
@@ -60,6 +60,10 @@
       if (ifirst.gt.0) then
         cparam_copy(ifirst:) = ' '
       end if
+      write(*,*)
+      write(*,*) "In get_user_header_param"
+      write(*,*) "   header = "//cuhead(1:len_trim(cuhead))
+      write(*,*) "   param  = "//cparam(1:len_trim(cparam))
       !-----------------------------------------!
       ! locate the parameter name in the header !
       !-----------------------------------------!
@@ -97,6 +101,7 @@
         end if;  
         cvalue = cuhead(ifirst:ilast)
       end if
+      write(*,*) "   value  = "//cvalue(1:len_trim(cvalue))
       return
       end
 
