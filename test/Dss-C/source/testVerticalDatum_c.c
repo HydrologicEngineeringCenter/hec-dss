@@ -23,7 +23,7 @@ int test_vertical_datums_c() {
 }
 void testDelimitedStringOps() {
     // test extract_from_delimited_string() and insertIntoDelimitedString()
-    int text_size = 256;
+    int text_size = 512;
     char *text = (char *)malloc(text_size);
     char *cp;
     char *text_value = "theFirstParameter:theFirstValue;theSecondParameter:theSecondValue;";
@@ -48,11 +48,20 @@ void testDelimitedStringOps() {
     assert(!strcmp(text, "theFirstParameter:theFirstValue;"));
     assert(insertIntoDelimitedString(&text, text_size, "anotherParameter", "anotherValue", ":", FALSE, ';') ==  0);
     assert(!strcmp(text, "theFirstParameter:theFirstValue;anotherParameter:anotherValue;"));
+    assert(insertIntoDelimitedString(&text, text_size, "theFirstParameter", "theFirstValue", ":", TRUE, ';') ==  0);
+    assert(!strcmp(text, "anotherParameter:anotherValue;theFirstParameter:theFirstValue;"));
+    assert(insertIntoDelimitedString(&text, text_size, "theFirstParameter", "THEFIRSTVALUE", ":", TRUE, ';') ==  0);
+    assert(!strcmp(text, "anotherParameter:anotherValue;theFirstParameter:THEFIRSTVALUE;"));
     free(extractFromDelimitedString(&text, "theFirstParameter", ":", TRUE, TRUE, ';'));
     free(extractFromDelimitedString(&text, "anotherParameter", ":", TRUE, TRUE, ';'));
     assert(strlen(text) == 0);
     assert(insertIntoDelimitedString(&text, text_size, "anotherParameter", "anotherValue", ":", FALSE, ';') == 0);
     assert(strcmp(text, "anotherParameter:anotherValue;") == 0);
+    strcpy(text, "verticalDatumInfo:H4sIAAAAAAAAAHWQUQvCIBSF3/crZO+brmYYOCEIeuuxd6krCE5hu/r7cxlFtXyScw7fB1cmmNBetWtuGuPYWG8Cid7iUBusVUWI9BptgtKr8+lybDZ7ST/SZQYOUs6CV7uub0XXc/Z8naTvcpkGY2ZAAjPaUSNklXYzPGy5xfDteiVlkLSLoFjLJC3fhUkLdJ2PU1zBHzJeiL/4reB81ZDD36Op6g4WwiaKSwEAAA==;verticalDatum:NGVD-29;");
+    assert(insertIntoDelimitedString(&text, text_size, "verticalDatumInfo", "H4sIAAAAAAAAAHWQUQvCIBSF3/crZO+brmYYOCEIeuuxd6krCE5hu/r7cxlFtXyScw7fB1cmmNBetWtuGuPYWG8Cid7iUBusVUWI9BptgtKr8+lybDZ7ST/SZQYOUs6CV7uub0XXc/Z8naTvcpkGY2ZAAjPaUSNklXYzPGy5xfDteiVlkLSLoFjLJC3fhUkLdJ2PU1zBHzJeiL/4reB81ZDD36Op6g4WwiaKSwEAAA==", ":", TRUE, ';') ==  0);
+    printf("\n>%s<\n\n", text);
+    fflush(stdout);
+    assert(!strcmp(text, "verticalDatum:NGVD-29;verticalDatumInfo:H4sIAAAAAAAAAHWQUQvCIBSF3/crZO+brmYYOCEIeuuxd6krCE5hu/r7cxlFtXyScw7fB1cmmNBetWtuGuPYWG8Cid7iUBusVUWI9BptgtKr8+lybDZ7ST/SZQYOUs6CV7uub0XXc/Z8naTvcpkGY2ZAAjPaUSNklXYzPGy5xfDteiVlkLSLoFjLJC3fhUkLdJ2PU1zBHzJeiL/4reB81ZDD36Op6g4WwiaKSwEAAA==;"));
     free(text);
 }
 void testGzipAndEncodingOps() {

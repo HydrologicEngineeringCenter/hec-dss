@@ -231,19 +231,16 @@ int insertIntoDelimitedString(
         free(existing);
         return 0;
     }
-    int toInsertLen = strlen(parameter);
+    int toInsertLen = strlen(parameter) + 1; // account for delimiter
     if (separator) {
         toInsertLen += strlen(separator);
     }
     if (value) {
         toInsertLen += strlen(value);
     }
-    if (delimiter) {
-        ++toInsertLen;
-    }
     int availableLen = delimitedStringSize - strlen(*delimitedString);
     if (existing) {
-        availableLen += strlen(parameter);
+        availableLen += strlen(parameter) + strlen(existing);
         if (separator) {
             availableLen += strlen(separator);
         }
