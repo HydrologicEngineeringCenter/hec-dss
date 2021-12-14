@@ -229,6 +229,7 @@ int insertIntoDelimitedString(
         TRUE,
         FALSE,
         delimiter);
+    printf("\tExisting  = >%s<\n", existing);
     if (existing && !overwriteExisting) {
         free(existing);
         return 0;
