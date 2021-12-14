@@ -59,8 +59,6 @@ void testDelimitedStringOps() {
     assert(strcmp(text, "anotherParameter:anotherValue;") == 0);
     strcpy(text, "verticalDatumInfo:H4sIAAAAAAAAAHWQUQvCIBSF3/crZO+brmYYOCEIeuuxd6krCE5hu/r7cxlFtXyScw7fB1cmmNBetWtuGuPYWG8Cid7iUBusVUWI9BptgtKr8+lybDZ7ST/SZQYOUs6CV7uub0XXc/Z8naTvcpkGY2ZAAjPaUSNklXYzPGy5xfDteiVlkLSLoFjLJC3fhUkLdJ2PU1zBHzJeiL/4reB81ZDD36Op6g4WwiaKSwEAAA==;verticalDatum:NGVD-29;");
     assert(insertIntoDelimitedString(&text, text_size, "verticalDatumInfo", "H4sIAAAAAAAAAHWQUQvCIBSF3/crZO+brmYYOCEIeuuxd6krCE5hu/r7cxlFtXyScw7fB1cmmNBetWtuGuPYWG8Cid7iUBusVUWI9BptgtKr8+lybDZ7ST/SZQYOUs6CV7uub0XXc/Z8naTvcpkGY2ZAAjPaUSNklXYzPGy5xfDteiVlkLSLoFjLJC3fhUkLdJ2PU1zBHzJeiL/4reB81ZDD36Op6g4WwiaKSwEAAA==", ":", TRUE, ';') ==  0);
-    printf("\n>%s<\n\n", text);
-    fflush(stdout);
     assert(!strcmp(text, "verticalDatum:NGVD-29;verticalDatumInfo:H4sIAAAAAAAAAHWQUQvCIBSF3/crZO+brmYYOCEIeuuxd6krCE5hu/r7cxlFtXyScw7fB1cmmNBetWtuGuPYWG8Cid7iUBusVUWI9BptgtKr8+lybDZ7ST/SZQYOUs6CV7uub0XXc/Z8naTvcpkGY2ZAAjPaUSNklXYzPGy5xfDteiVlkLSLoFjLJC3fhUkLdJ2PU1zBHzJeiL/4reB81ZDD36Op6g4WwiaKSwEAAA==;"));
     free(text);
 }
