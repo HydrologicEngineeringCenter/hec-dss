@@ -159,7 +159,7 @@ int Hec_zlocationFromStruct(JNIEnv *env, jobject obj, jobject j_dataContainer, z
 			(*env)->ExceptionClear(env);
 	}
 	else { 
-		printf("\tfield id = >%d<\n", fid);
+		printf("\tfield id = >%p<\n", fid);
 		if (fid) {
 			if ((*env)->GetObjectField(env, j_dataContainer, fid) == NULL) {
 				// don't overwrite existing supplemental info
