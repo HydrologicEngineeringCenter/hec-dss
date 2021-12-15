@@ -239,6 +239,7 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 	int status;
 
 
+	printf("\nIn ztsStore()\n");
 	if (!tss) {
 		return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID, zdssErrorCodes.NULL_ARGUMENT,
 			0, 0, zdssErrorSeverity.INVALID_ARGUMENT, "", "zStructTimeSeries is null");
@@ -375,6 +376,7 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 			// get the info from the header //
 			//------------------------------//
 			vdiTs = extractVerticalDatumInfoFromUserHeader(tss->userHeader, tss->userHeaderNumber);
+			printf("\tvdi from user header = %p\n", vdiTs);
 			if (vdiTs == NULL && tss->locationStruct && tss->locationStruct->supplemental) {
 				//------------------------------------------------------------------------------//
 				// none in the user header, see if any is passed in in embedded location struct //
@@ -409,6 +411,7 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 					if (vdiStr) {
 						stringToVerticalDatumInfo(&_vdiLoc, vdiStr);
 						vdiLoc = &_vdiLoc;
+						printf("\tvdi from location record = %p\n", vdiLoc);
 						free(vdiStr);
 					}
 				}
@@ -509,6 +512,7 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 				//--------------------------//
 				vdi = vdiTs ? vdiTs : vdiLoc;
 			}
+			printf("\tvdi = %p\n", vdi);
 			if (vdi) {
 				double offset = 0.;
 				//----------------------------------//
@@ -516,13 +520,16 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 				//----------------------------------//
 				char cvertical_datum[CVERTICAL_DATUM_SIZE];
 				int  ivertical_datum = -1;
+				printf("\tvdi native datum = %s\n", vdi->nativeDatum);
 				zquery("VDTM", cvertical_datum, CVERTICAL_DATUM_SIZE, &ivertical_datum);
+				printf("\tdefault datum = %s\n", cvertical_datum);
 				ivertical_datum = getEffectiveVerticalDatum(
 					cvertical_datum,
 					sizeof(cvertical_datum),
 					&tss->userHeader,       // any specified datum in these parameters is removed
 					&tss->userHeaderNumber, // ...
 					&tss->units);           // ...
+				printf("\tspecified datum = %s\n", cvertical_datum);
 				//-------------------------------------------------------//
 				// now that we have a datum, determine the offset to use //
 				//-------------------------------------------------------//
@@ -701,12 +708,16 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 									errmsg);
 							}
 						}
+						printf("\ttss->locationStruct->supplemental = %s\n");
 						free(compressed);
 					}
 				}
 				if (vdiTs != &_vdiTs) {
 					//--------------------------------------------------------------------//
 					// remove the vertical datum info from the user header before storing //
+					//                                                                    //
+					// don't need to remove current vertical datum, that is done in the   //
+					// getEffectiveVerticalDatum()                                        //
 					//--------------------------------------------------------------------//
 					char *userHeaderString = userHeaderToString(tss->userHeader, tss->userHeaderNumber);
 					if (userHeaderString) {
