@@ -829,7 +829,7 @@ int zpdRetrieve(long long *ifltab, zStructPairedData *pds, int retrieveSizeFlag)
 						+ strlen(cvertical_datum)
 						+ 3);
 					sprintf(
-						headerString+strlen(headerString), 
+						headerString+strlen(headerString),
 						"%s:%s;", 
 						VERTICAL_DATUM_USER_HEADER_PARAM,
 						cvertical_datum);
