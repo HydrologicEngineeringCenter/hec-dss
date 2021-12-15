@@ -280,7 +280,6 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 
 
 
-	printf("\nIn ztsRetrieve()\n");
 	if (!tss) {
 		return zerrorProcessing(ifltab, DSS_FUNCTION_ztsRetrieve_ID, zdssErrorCodes.NULL_ARGUMENT,
 			0, 0, zdssErrorSeverity.INVALID_ARGUMENT, "", "zStructTimeSeries is null");
@@ -410,7 +409,6 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 			char *vdiStr;
 			char errmsg[1024];
 			zquery("VDTM", cvertical_datum, sizeof(cvertical_datum), &ivertical_datum);
-			printf("\trequested datum = >%s<\n", cvertical_datum);
 			if (ivertical_datum != IVERTICAL_DATUM_UNSET) {
 				//-----------------------------------//
 				// specific vertical datum requested //
@@ -434,7 +432,6 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 						}
 					}
 				}
-				printf("\tvdi = >%p<\n", vdi);
 				if (vdi == NULL) {
 					sprintf(
 						errmsg,
@@ -507,7 +504,6 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 						cvertical_datum);
 					tss->userHeader = stringToUserHeader(headerString, &tss->userHeaderNumber);
 					tss->allocated[zSTRUCT_userHeader] = TRUE;
-					printf("\ttss->userHeader = >%s<\n", headerString);
 					free(headerString);
 					//-----------------------------//
 					// determine the offset to use //

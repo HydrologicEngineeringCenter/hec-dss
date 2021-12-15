@@ -54,11 +54,6 @@
           cuhead(max_head_len*4:) = " "
         end if
       end if
-      write(*,*)
-      write(*,*) "In set_user_header_param"
-      write(*,*) "   header = "//cuhead(1:len_trim(cuhead))
-      write(*,*) "   param  = "//cparam(1:len_trim(cparam))
-      write(*,*) "   value  = "//cvalue(1:len_trim(cvalue))
       !-------------------------------------------------!
       ! see if we have enough room to set the parameter !
       !-------------------------------------------------!
@@ -101,7 +96,6 @@
         iuhead(:max_head_len) = iuhead_copy(:max_head_len)
         istat = 0
       end if  
-      write(*,*) "   result = "//cuhead(1:len_trim(cuhead))
       return
 
       end subroutine set_user_header_param

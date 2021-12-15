@@ -52,10 +52,6 @@
           cuhead(ifirst:) = ' '
         end if
       end if
-      write(*,*)
-      write(*,*) "In remove_user_header_param"
-      write(*,*) "   header = "//cuhead(1:len_trim(cuhead))
-      write(*,*) "   param  = "//cparam(1:len_trim(cparam))
       !-----------------------------------------!
       ! locate the parameter name in the header !
       !-----------------------------------------!
@@ -85,7 +81,6 @@
       !-------------------------------!
       if (cuhead(1:1).eq.';') cuhead = cuhead(2:)
       iuhead(:max_head_len) = iuhead_copy(:max_head_len)
-      write(*,*) "   result = "//cuhead(1:len_trim(cuhead))
       return
       end
 
