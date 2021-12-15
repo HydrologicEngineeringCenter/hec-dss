@@ -280,7 +280,6 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 
 
 
-	printf("\nIn ztsRetrieve()\n");
 	if (!tss) {
 		return zerrorProcessing(ifltab, DSS_FUNCTION_ztsRetrieve_ID, zdssErrorCodes.NULL_ARGUMENT,
 			0, 0, zdssErrorSeverity.INVALID_ARGUMENT, "", "zStructTimeSeries is null");
@@ -410,13 +409,11 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 			char *vdiStr;
 			char errmsg[1024];
 			zquery("VDTM", cvertical_datum, sizeof(cvertical_datum), &ivertical_datum);
-			printf("\trequested vertical datum = %s\n", cvertical_datum);
 			if (ivertical_datum != IVERTICAL_DATUM_UNSET) {
 				//-----------------------------------//
 				// specific vertical datum requested //
 				//-----------------------------------//
 				vdi = extractVerticalDatumInfoFromUserHeader(tss->userHeader, tss->userHeaderNumber);
-				printf("\tvdi from user header = %p\n", vdi);
 				if (!vdi) {
 					if (tss->locationStruct && tss->locationStruct->supplemental) {
 						vdiStr = extractFromDelimitedString(
@@ -426,7 +423,6 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 							TRUE,
 							FALSE,
 							'\n');
-						printf("\tvdi from location record = %p\n", vdiStr);
 						if (vdiStr) {
 							char *msg = stringToVerticalDatumInfo(&_vdi, vdiStr);
 							if(msg == NULL) {
@@ -461,7 +457,6 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 					//---------------------------------------------------------------//
 					// ensure the vertical datum info is returned in the user header //
 					//---------------------------------------------------------------//
-					printf("\tvdi native datum = %s\n", vdi->nativeDatum);
 					verticalDatumInfoToString(&vdiStr, vdi, TRUE);
 					char *headerString;
 					if (tss->userHeader) {
@@ -492,7 +487,6 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 							VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
 							vdiStr);
 					}
-					printf("\tvdi put in user header = %s\n", vdiStr);
 					free(vdiStr);
 					//--------------------------------------------//
 					// add the requested datum to the user header //
