@@ -141,7 +141,6 @@ void testVerticalDatumInfoSerialization() {
     if (errmsg != NULL) printf("%s\n", errmsg);
     assert(errmsg == NULL);
     assert(!strcmp(vdi.nativeDatum, CVERTICAL_DATUM_NGVD29));
-    assert(vdi.elevation == 615.2);
     assert(vdi.offsetToNavd88 == 0.3855);
     assert(vdi.offsetToNavd88IsEstimate == 1);
     assert(vdi.offsetToNgvd29 == 0.f);
@@ -151,7 +150,6 @@ void testVerticalDatumInfoSerialization() {
     if (errmsg != NULL) printf("%s\n", errmsg);
     assert(errmsg == NULL);
     assert(!strcmp(vdi.nativeDatum, "Pensacola"));
-    assert(vdi.elevation == 757.);
     assert(vdi.offsetToNavd88 == 1.457);
     assert(vdi.offsetToNavd88IsEstimate == 1);
     assert(vdi.offsetToNgvd29 == 1.07);

@@ -27,7 +27,6 @@ C     Vertical datum varible dimensions
       character*400 vdiStr, errMsg
       character*16 unit
       character*16 nativeDatum
-      double precision elevation
       double precision offsetNavd88, offsetNgvd29, vertDatumOffset
       logical l_Navd88Estimated, l_Ngvd29Estimated
       logical l_indElev, l_depElev
@@ -254,9 +253,9 @@ C
         l_depElev = .true.
       endif
       if (l_indElev.or.l_depElev) then
-        !-----------------------------------------------------!
-        ! paired data has elevation in oridates and/or values !
-        !-----------------------------------------------------!
+        !------------------------------------------------------!
+        ! paired data has elevation in ordinates and/or values !
+        !------------------------------------------------------!
         call zinqir(ifltab, 'VDTM', cvdatum, ivdatum)
         if (cvdatum.ne.CVD_UNSET) then
           !----------------------------------------!
@@ -283,7 +282,6 @@ C
      *        errMsg,
      *        nativeDatum,
      *        unit,
-     *        elevation,
      *        offsetNgvd29,
      *        l_Ngvd29Estimated,
      *        offsetNavd88,

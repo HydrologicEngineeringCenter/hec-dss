@@ -94,8 +94,8 @@ extern "C" {
 #define ERROR_ON_INFLATEINIT2                           "Error on InflateInit2()"
 #define INPUT_STRING_IS_NULL                            "Input string is NULL"
 #define INVALID_DATUM_IN_SPECIFIED_IN_XML               "Invalid datum in <to-datum>...</to-datum> block in XML"
-#define INVALID_ELEVATION_UNIT_IN_XML                   "Invalid elevation unit in XML"
-#define INVALID_ELEVATION_VALUE_IN_XML                  "Invalid elevation value in XML"
+#define INVALID_OFFSET_UNIT_IN_XML                      "Invalid offset unit in XML"
+#define INVALID_OFFSET_VALUE_IN_XML                     "Invalid offset value in XML"
 #define INVALID_NATIVE_DATUM_IN_XML                     "Invalid native datum in XML"
 #define INVALID_NAVD_88_OFFSET_BLOCK_IN_XML             "Invalid NAVD-88 offset block in XML"
 #define INVALID_NAVD_88_OFFSET_VALUE_IN_XML             "Invalid NAVD-88 offset value in XML"
@@ -106,7 +106,7 @@ extern "C" {
 #define INVALID_XML_STRUCTURE                           "Invalid XML Structure"
 #define MULTIPLE_NAVD_88_OFFSET_BLOCKS_IN_XML           "Multiple NAVD-88 offset blocks in XML"
 #define MULTIPLE_NGVD_29_OFFSET_BLOCKS_IN_XML           "Multiple NGVD-29 offset blocks in XML"
-#define NO_ELEVATION_UNIT_IN_XML                        "No elevation unit in XML"
+#define NO_OFFSET_UNIT_IN_XML                           "No offset unit in XML"
 #define NO_NATIVE_DATUM_IN_XML                          "No native datum in XML"
 #define NO_NAVD_88_OFFSET_VALUE_IN_XML                  "No NAVD-88 offset value in XML"
 #define NO_NGVD_29_OFFSET_VALUE_IN_XML                  "No NGVD-29 offset value in XML"
@@ -131,7 +131,6 @@ extern "C" {
 
 typedef struct verticalDatumInfo_s {
     char   nativeDatum[CVERTICAL_DATUM_SIZE];
-    double elevation;
     char   unit[UNIT_SIZE];
     double offsetToNgvd29;
     int    offsetToNgvd29IsEstimate;
@@ -400,7 +399,6 @@ int	getEffectiveVerticalDatum(
  *          errorMessage,                     &
  *          nativeDatum,                      &
  *          unit,                             &
- *          elevation,                        &
  *          offsetNgvd29,                     &
  *          offsetNgvd29IsEstimate,           &
  *          offsetNavd88,                     &
@@ -409,7 +407,6 @@ int	getEffectiveVerticalDatum(
  *          character (len = *),  intent(out) :: errorMessage
  *          character (len = *),  intent(out) :: nativeDatum
  *          character (len = *),  intent(out) :: unit
- *          real      (kind = 8), intent(out) :: elevation
  *          real      (kind = 8), intent(out) :: offsetNgvd29
  *          logical   (kind = 4), intent(out) :: offsetNgvd29IsEstimate
  *          real      (kind = 8), intent(out) :: offsetNavd88
@@ -420,8 +417,7 @@ int	getEffectiveVerticalDatum(
  * @param inputStr                   Fortran CHARACTER (LEN=*) input for input XML in raw or compressed format.
  * @param errorMessage              Fortran CHARACTER (LEN=*) output for error message. Empty on success. Length should be >= 64
  * @param nativeDatum                Fortran CHARACTER (LEN=*) output for native datum. Length should be >= 16.
- * @param unit                       Fortran CHARACTER (LEN=*) output for unit of elevation and offsets. Length should be >= 2
- * @param elevation                  Fortran REAL (KIND=4) output for elevation. UNDEFINED_VERTICAL_DATUM_VALUE if no value in XML
+ * @param unit                       Fortran CHARACTER (LEN=*) output for unit of offsets. Length should be >= 2
  * @param offsetNgvd29             Fortran REAL (KIND=4) output for the offset to NGVD-29. UNDEFINED_VERTICAL_DATUM_VALUE if no value in XML
  * @param offsetNgvd29IsEstimate Fortran LOGICAL (KIND=4) output for whether the offset to NGVD-29 is estimated
  * @param offsetNavd88             Fortran REAL (KIND=4) output for the offset to NAVD-88. UNDEFINED_VERTICAL_DATUM_VALUE if no value in XML
@@ -436,7 +432,6 @@ void stringtoverticaldatuminfo_(
         char    *errorMessage,
         char    *nativeDatum,
         char    *unit,
-        double  *elevation,
         double  *offsetNgvd29,
         int32_t *offsetNgvd29IsEstimate,
         double  *offsetNavd88,
@@ -456,7 +451,6 @@ void stringtoverticaldatuminfo_(
  *          errorMessage,                     &
  *          nativeDatum,                      &
  *          unit,                             &
- *          elevation,                        &
  *          offsetNgvd29,                     &
  *          offsetNgvd29IsEstimate,           &
  *          offsetNavd88,                     &
@@ -466,7 +460,6 @@ void stringtoverticaldatuminfo_(
  *          character (len = *),  intent(out) :: errorMessage
  *          character (len = *),  intent(in)  :: nativeDatum
  *          character (len = *),  intent(in)  :: unit
- *          real      (kind = 8), intent(in)  :: elevation
  *          real      (kind = 8), intent(in)  :: offsetNgvd29
  *          logical   (kind = 4), intent(in)  :: offsetNgvd29IsEstimate
  *          real      (kind = 8), intent(in)  :: offsetNavd88
@@ -478,8 +471,7 @@ void stringtoverticaldatuminfo_(
  * @param outputStr              Fortran CHARACTER (LEN=*) output in raw (XML) or compressed format. Length should be >= 400
  * @param errorMessage           Fortran CHARACTER (LEN=*) output for error message. Empty on success. Length should be >= 64
  * @param nativeDatum            Fortran CHARACTER (LEN=*) input for native datum.
- * @param unit                   Fortran CHARACTER (LEN=*) input for unit of elevation and offsets.
- * @param elevation              Fortran REAL (KIND=4) input for elevation. UNDEFINED_VERTICAL_DATUM_VALUE if unknown or n/a
+ * @param unit                   Fortran CHARACTER (LEN=*) input for unit of offsets.
  * @param offsetNgvd29           Fortran REAL (KIND=4) input for the offset to NGVD-29. UNDEFINED_VERTICAL_DATUM_VALUE if n/a
  * @param offsetNgvd29IsEstimate Fortran LOGICAL (KIND=4) input for whether the offset to NGVD-29 is estimated
  * @param offsetNavd88           Fortran REAL (KIND=4) input for the offset to NAVD-88. UNDEFINED_VERTICAL_DATUM_VALUE if n/a
@@ -495,7 +487,6 @@ void verticaldatuminfotostring_(
         char    *errorMessage,
         char    *nativeDatum,
         char    *unit,
-        double  *elevation,
         double  *offsetNgvd29,
         int32_t *offsetNgvd29IsEstimate,
         double  *offsetNavd88,

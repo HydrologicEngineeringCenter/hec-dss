@@ -734,7 +734,6 @@ char *stringToVerticalDatumInfo(verticalDatumInfo *vdi, const char *inputStr) {
     double dtmp;
     textBoundaryInfo tbi;
 
-    vdi->elevation = UNDEFINED_VERTICAL_DATUM_VALUE;
     vdi->offsetToNgvd29 = UNDEFINED_VERTICAL_DATUM_VALUE;
     vdi->offsetToNgvd29IsEstimate = FALSE;
     vdi->offsetToNavd88 = UNDEFINED_VERTICAL_DATUM_VALUE;
@@ -778,18 +777,18 @@ char *stringToVerticalDatumInfo(verticalDatumInfo *vdi, const char *inputStr) {
         free(xml);
         return XML_IS_NOT_A_VALID_VERTICAL_DATUM_INFO_INSTANCE;
     }
-    //------------------------//
-    // get the elevation unit //
-    //------------------------//
+    //---------------------//
+    // get the offset unit //
+    //---------------------//
     errmsg = findTextBetween(&tbi, tbi.first, "unit=\"", "\"");
     if (errmsg != NULL || tbi.lenNonBlank == 0) {
         free(xml);
-        return NO_ELEVATION_UNIT_IN_XML;
+        return NO_OFFSET_UNIT_IN_XML;
     }
     strncpy(vdi->unit, tbi.firstNonBlank, MIN(tbi.lenNonBlank, sizeof(vdi->unit)-1));
     if (strcmp(vdi->unit, "ft") && strcmp(vdi->unit, "m")) {
         free(xml);
-        return INVALID_ELEVATION_UNIT_IN_XML;
+        return INVALID_OFFSET_UNIT_IN_XML;
     }
     //----------------------//
     // get the native datum //
@@ -822,21 +821,6 @@ char *stringToVerticalDatumInfo(verticalDatumInfo *vdi, const char *inputStr) {
     else {
         free(xml);
         return INVALID_NATIVE_DATUM_IN_XML;
-    }
-    //--------------------------------//
-    // get the elevation if it exists //
-    //--------------------------------//
-    errmsg = findTextBetween(&tbi, xml, "<elevation>", "</elevation>");
-    if (errmsg == NULL) {
-        errno = 0;
-        dtmp = strtod(tbi.firstNonBlank, &tbi.lastNonBlank);
-        if (dtmp != 0. || errno == 0) {
-            vdi->elevation = dtmp;
-        }
-        else {
-            free(xml);
-            return INVALID_ELEVATION_VALUE_IN_XML;
-        }
     }
     //----------------------------------------//
     // get the sub-xml blocks for the offsets //
@@ -966,10 +950,6 @@ char *verticalDatumInfoToString(char **results, verticalDatumInfo *vdi, int gene
         sprintf(cp, "  <native-datum>OTHER</native-datum>\n  <local-datum-name>%s</local-datum-name>\n", vdi->nativeDatum);
     }
     while (*cp)++cp;
-    if (vdi->elevation != UNDEFINED_VERTICAL_DATUM_VALUE) {
-        sprintf(cp, "  <elevation>%lf</elevation>\n", vdi->elevation);
-        while (*cp)++cp;
-    }
     if (vdi->offsetToNgvd29 != UNDEFINED_VERTICAL_DATUM_VALUE) {
         sprintf(
             cp,
@@ -1149,7 +1129,6 @@ void stringtoverticaldatuminfo_(
         char    *errorMessage,
         char    *nativeDatum,
         char    *unit,
-        double  *elevation,
         double  *offsetNgvd29,
         int32_t *offsetNgvd29IsEstimate,
         double  *offsetNavd88,
@@ -1169,7 +1148,6 @@ void stringtoverticaldatuminfo_(
         C2F(errmsg, errorMessage, lenErrorMessage);
         C2F(CVERTICAL_DATUM_UNSET, nativeDatum, lenNativeDatum);
         C2F(" ", unit, lenUnit);
-        *elevation = UNDEFINED_VERTICAL_DATUM_VALUE;
         *offsetNgvd29 = UNDEFINED_VERTICAL_DATUM_VALUE;
         *offsetNgvd29IsEstimate = -1;
         *offsetNavd88 = UNDEFINED_VERTICAL_DATUM_VALUE;
@@ -1179,7 +1157,6 @@ void stringtoverticaldatuminfo_(
         C2F(" ", errorMessage, lenErrorMessage);
         C2F(vdi.nativeDatum, nativeDatum, lenNativeDatum);
         C2F(vdi.unit, unit, lenUnit);
-        *elevation = vdi.elevation;
         *offsetNgvd29 = vdi.offsetToNgvd29;
         *offsetNgvd29IsEstimate = vdi.offsetToNgvd29IsEstimate;
         *offsetNavd88 = vdi.offsetToNavd88;
@@ -1195,7 +1172,6 @@ void verticaldatuminfotostring_(
         char    *errorMessage,
         char    *nativeDatum,
         char    *unit,
-        double  *elevation,
         double  *offsetNgvd29,
         int32_t *offsetNgvd29IsEstimate,
         double  *offsetNavd88,
@@ -1211,7 +1187,6 @@ void verticaldatuminfotostring_(
     verticalDatumInfo vdi;
     F2C(nativeDatum, vdi.nativeDatum, lenNativeDatum, sizeof(vdi.nativeDatum));
     F2C(unit, vdi.unit, lenUnit, sizeof(vdi.unit));
-    vdi.elevation = *elevation;
     vdi.offsetToNgvd29 = *offsetNgvd29;
     vdi.offsetToNavd88IsEstimate = *offsetNgvd29IsEstimate;
     vdi.offsetToNavd88 = *offsetNavd88;

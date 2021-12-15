@@ -44,7 +44,6 @@ C     Vertical datum varible dimensions
       character*16 unit, unit2, cvdatum2, cvdatum_ind, cvdatum_dep
       character*16 nativeDatum
       character*64 unitSpec
-      double precision elevation
       double precision offsetNavd88, offsetNgvd29
       double precision vertDatumOffset_ind, vertDatumOffset_dep
       logical l_Navd88Estimated, l_Ngvd29Estimated, l_modified
@@ -111,9 +110,9 @@ C     Check that IFLTAB is valid (e.g., the DSS file is open)
         l_depElev = .true.
       endif
       if (l_indElev.or.l_depElev) then
-        !---------------------------------!
-        ! elevation in oridates or values !
-        !---------------------------------!
+        !----------------------------------!
+        ! elevation in ordinates or values !
+        !----------------------------------!
         if (nuhead.eq.0) then
           !------------------------------------------------!
           ! no user header provided, is there one on disk? !
@@ -180,7 +179,6 @@ C     Check that IFLTAB is valid (e.g., the DSS file is open)
      *      errMsg,
      *      nativeDatum,
      *      unit,
-     *      elevation,
      *      offsetNgvd29,
      *      l_Ngvd29Estimated,
      *      offsetNavd88,

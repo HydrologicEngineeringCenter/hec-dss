@@ -446,25 +446,6 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 							0, zdssErrorSeverity.WARNING, tss->pathname,
 							errmsg);
 					}
-					//--------------------//
-					// compare elevations //
-					//--------------------//
-					if (vdiTs->elevation != vdiLoc->elevation) {
-						sprintf(
-							errmsg,
-							"\nIncoming elevation of %f %s conflicts with location's elevation of %f %s.\n"
-							"Call 'zset(\"VDOW\", \"\", 1)' to allow overwriting the location's vertical datum information.\n"
-							"Conversion to datum '%s' was not performed.\n"
-							"No data stored.",
-							vdiTs->elevation, vdiTs->unit, vdiLoc->elevation, vdiLoc->unit, vdiLoc->nativeDatum);
-						if (vdiTs != &_vdiTs) {
-							free(vdiTs);
-						}
-						return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID,
-							zdssErrorCodes.INCOMPATIBLE_CALL, 0,
-							0, zdssErrorSeverity.WARNING, tss->pathname,
-							errmsg);
-					}
 					//----------------------//
 					// compare offset units //
 					//----------------------//
@@ -539,12 +520,15 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 				//----------------------------------//
 				char cvertical_datum[CVERTICAL_DATUM_SIZE];
 				int  ivertical_datum = -1;
+				zquery("VDTM", cvertical_datum, CVERTICAL_DATUM_SIZE, &ivertical_datum);
+				printf("\tDefault vertical datum = %s\n", cvertical_datum);
 				ivertical_datum = getEffectiveVerticalDatum(
 					cvertical_datum,
 					sizeof(cvertical_datum),
 					&tss->userHeader,       // any specified datum in these parameters is removed
 					&tss->userHeaderNumber, // ...
 					&tss->units);           // ...
+				printf("\tSpecified vertical datum = %s\n", cvertical_datum);
 				//-------------------------------------------------------//
 				// now that we have a datum, determine the offset to use //
 				//-------------------------------------------------------//
@@ -604,6 +588,7 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 					// use temporary arrays so the values stored to disk are modified but the   //
 					// values in the zstructTs object aren't modified after the call            //
 					//--------------------------------------------------------------------------//
+					fflush(stdout);
 					if (tss->floatValues) {
 						tmpFloatVals = (float *)calloc(tss->numberValues, sizeof(float));
 						for (int i = 0; i < tss->numberValues; ++i) {

@@ -85,7 +85,6 @@ C
 C     Vertical datum varible dimensions
       character*400 vdiStr, errMsg
       character*16 nativeDatum, unit
-      double precision elevation
       double precision offsetNavd88, offsetNgvd29, vertDatumOffset
       logical l_Navd88Estimated, l_Ngvd29Estimated
       integer vdiStrLen
@@ -643,7 +642,6 @@ C
      *          errMsg,
      *          nativeDatum,
      *          unit,
-     *          elevation,
      *          offsetNgvd29,
      *          l_Ngvd29Estimated,
      *          offsetNavd88,

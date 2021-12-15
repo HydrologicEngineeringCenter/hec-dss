@@ -401,25 +401,6 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 						0, zdssErrorSeverity.WARNING, pds->pathname,
 						errmsg);
 				}
-				//--------------------//
-				// compare elevations //
-				//--------------------//
-				if (vdiPd->elevation != vdiLoc->elevation) {
-					sprintf(
-						errmsg,
-						"\nIncoming elevation of %f %s conflicts with location's elevation of %f %s.\n"
-						"Call 'zset(\"VDOW\", \"\", 1)' to allow overwriting the location's vertical datum information.\n"
-						"Conversion to datum '%s' was not performed.\n"
-						"No data stored.",
-						vdiPd->elevation, vdiPd->unit, vdiLoc->elevation, vdiLoc->unit, vdiLoc->nativeDatum);
-					if (vdiPd != &_vdiPd) {
-						free(vdiPd);
-					}
-					return zerrorProcessing(ifltab, DSS_FUNCTION_zpdStore_ID,
-						zdssErrorCodes.INCOMPATIBLE_CALL, 0,
-						0, zdssErrorSeverity.WARNING, pds->pathname,
-						errmsg);
-				}
 				//----------------------//
 				// compare offset units //
 				//----------------------//

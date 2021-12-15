@@ -18,7 +18,7 @@ module modVerticalDatumInfo
     character (len=cverticalDatumLen), parameter :: CVD_LOCAL  = 'OTHER  '
 
     type verticalDatumInfo
-        real (kind=8) :: elevation, offsetToNgvd29, offsetToNavd88
+        real (kind=8) :: offsetToNgvd29, offsetToNavd88
         character (len=cverticalDatumLen) :: nativeDatum
         character (len=unitLen) :: unit
         logical :: offsetToNgvd29IsEstimate, offsetToNavd88IsEstimate
@@ -30,7 +30,6 @@ module modVerticalDatumInfo
             errorMessage,                     &
             nativeDatum,                      &
             unit,                             &
-            elevation,                        &
             offsetNgvd29,                     &
             offsetNgvd29IsEstimate,           &
             offsetNavd88,                     &
@@ -40,7 +39,6 @@ module modVerticalDatumInfo
             character (len = *),  intent(out) :: errorMessage
             character (len = *),  intent(in)  :: nativeDatum
             character (len = *),  intent(in)  :: unit
-            real      (kind = 8), intent(in)  :: elevation
             real      (kind = 8), intent(in)  :: offsetNgvd29
             logical   (kind = 4), intent(in)  :: offsetNgvd29IsEstimate
             real      (kind = 8), intent(in)  :: offsetNavd88
@@ -53,7 +51,6 @@ module modVerticalDatumInfo
             errorMessage,                     &
             nativeDatum,                      &
             unit,                             &
-            elevation,                        &
             offsetNgvd29,                     &
             offsetNgvd29IsEstimate,           &
             offsetNavd88,                     &
@@ -62,7 +59,6 @@ module modVerticalDatumInfo
             character (len = *),  intent(out) :: errorMessage
             character (len = *),  intent(out) :: nativeDatum
             character (len = *),  intent(out) :: unit
-            real      (kind = 8), intent(out) :: elevation
             real      (kind = 8), intent(out) :: offsetNgvd29
             logical   (kind = 4), intent(out) :: offsetNgvd29IsEstimate
             real      (kind = 8), intent(out) :: offsetNavd88
@@ -81,7 +77,6 @@ module modVerticalDatumInfo
     contains
         subroutine initVerticalDatumInfo(vdi)
             type(verticalDatumInfo) vdi
-            vdi%elevation = UNDEFINED_VERTICAL_DATUM_VALUE
             vdi%offsetToNavd88 = UNDEFINED_VERTICAL_DATUM_VALUE
             vdi%offsetToNgvd29 = UNDEFINED_VERTICAL_DATUM_VALUE
             vdi%nativeDatum = ' '
@@ -245,13 +240,11 @@ subroutine testStoreRetrieveTimeSeries()
         call initVerticalDatumInfo(vdi(j))
         if (j == 1) then
             vdi(j)%nativeDatum = CVD_NGVD29
-            vdi(j)%elevation = 615.2
             vdi(j)%unit = 'ft'
             vdi(j)%offsetToNavd88 = 0.3855
             vdi(j)%offsetToNavd88IsEstimate = .true.
         else
             vdi(j)%nativeDatum = 'Pensacola'
-            vdi(j)%elevation = 757
             vdi(j)%unit = 'ft'
             vdi(j)%offsetToNavd88 = 1.457
             vdi(j)%offsetToNavd88IsEstimate = .true.
@@ -309,7 +302,6 @@ subroutine testStoreRetrieveTimeSeries()
                 errmsg,                           &
                 vdi(j)%nativeDatum,               &
                 vdi(j)%unit,                      &
-                vdi(j)%elevation,                 &
                 vdi(j)%offsetToNgvd29,            &
                 vdi(j)%offsetToNgvd29IsEstimate,  &
                 vdi(j)%offsetToNavd88,            &
@@ -321,7 +313,6 @@ subroutine testStoreRetrieveTimeSeries()
                 errmsg,                          &
                 vdi(j)%nativeDatum,              &
                 vdi(j)%unit,                     &
-                vdi(j)%elevation,                &
                 vdi(j)%offsetToNgvd29,           &
                 vdi(j)%offsetToNgvd29IsEstimate, &
                 vdi(j)%offsetToNavd88,           &
@@ -846,13 +837,11 @@ subroutine testStoreRetrievePairedData()
         call initVerticalDatumInfo(vdi(j))
         if (j == 1) then
             vdi(j)%nativeDatum = CVD_NGVD29
-            vdi(j)%elevation = 615.2
             vdi(j)%unit = 'ft'
             vdi(j)%offsetToNavd88 = 0.3855
             vdi(j)%offsetToNavd88IsEstimate = .true.
         else
             vdi(j)%nativeDatum = 'Pensacola'
-            vdi(j)%elevation = 757
             vdi(j)%unit = 'ft'
             vdi(j)%offsetToNavd88 = 1.457
             vdi(j)%offsetToNavd88IsEstimate = .true.
@@ -910,7 +899,6 @@ subroutine testStoreRetrievePairedData()
                 errmsg,                           &
                 vdi(j)%nativeDatum,               &
                 vdi(j)%unit,                      &
-                vdi(j)%elevation,                 &
                 vdi(j)%offsetToNgvd29,            &
                 vdi(j)%offsetToNgvd29IsEstimate,  &
                 vdi(j)%offsetToNavd88,            &
@@ -922,7 +910,6 @@ subroutine testStoreRetrievePairedData()
                 errmsg,                          &
                 vdi(j)%nativeDatum,              &
                 vdi(j)%unit,                     &
-                vdi(j)%elevation,                &
                 vdi(j)%offsetToNgvd29,           &
                 vdi(j)%offsetToNgvd29IsEstimate, &
                 vdi(j)%offsetToNavd88,           &
