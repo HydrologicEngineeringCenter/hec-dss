@@ -708,7 +708,7 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 									errmsg);
 							}
 						}
-						printf("\ttss->locationStruct->supplemental = %s\n");
+						printf("\ttss->locationStruct->supplemental = %s\n", tss->locationStruct->supplemental);
 						free(compressed);
 					}
 				}
