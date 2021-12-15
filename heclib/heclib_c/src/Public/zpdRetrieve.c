@@ -801,7 +801,7 @@ int zpdRetrieve(long long *ifltab, zStructPairedData *pds, int retrieveSizeFlag)
 								+ 3);
 							sprintf(
 								headerString+strlen(headerString), 
-								";%s:%s", 
+								"%s:%s;", 
 								VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
 								vdiStr);
 							free(pds->userHeader);
@@ -811,10 +811,10 @@ int zpdRetrieve(long long *ifltab, zStructPairedData *pds, int retrieveSizeFlag)
 						headerString = (char *)malloc(
 							VERTICAL_DATUM_INFO_USER_HEADER_PARAM_LEN
 							+ strlen(vdiStr)
-							+ 2);
+							+ 3);
 						sprintf(
 							headerString, 
-							"%s:%s", 
+							"%s:%s;", 
 							VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
 							vdiStr);
 					}
@@ -830,7 +830,7 @@ int zpdRetrieve(long long *ifltab, zStructPairedData *pds, int retrieveSizeFlag)
 						+ 3);
 					sprintf(
 						headerString+strlen(headerString), 
-						";%s:%s", 
+						"%s:%s;", 
 						VERTICAL_DATUM_USER_HEADER_PARAM,
 						cvertical_datum);
 					pds->userHeader = stringToUserHeader(headerString, &pds->userHeaderNumber);

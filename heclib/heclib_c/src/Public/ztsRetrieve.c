@@ -475,7 +475,7 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 								+ 3);
 							sprintf(
 								headerString+strlen(headerString),
-								";%s:%s",
+								"%s:%s;",
 								VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
 								vdiStr);
 							free(tss->userHeader);
@@ -485,14 +485,14 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 						headerString = (char *)malloc(
 							VERTICAL_DATUM_INFO_USER_HEADER_PARAM_LEN
 							+ strlen(vdiStr)
-							+ 2);
+							+ 3);
 						sprintf(
 							headerString,
-							"%s:%s",
+							"%s:%s;",
 							VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
 							vdiStr);
 					}
-					printf("\tvdi put in in user header = %s\n", vdiStr);
+					printf("\tvdi put in user header = %s\n", vdiStr);
 					free(vdiStr);
 					//--------------------------------------------//
 					// add the requested datum to the user header //
@@ -505,7 +505,7 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 						+ 3);
 					sprintf(
 						headerString+strlen(headerString),
-						";%s:%s",
+						"%s:%s;",
 						VERTICAL_DATUM_USER_HEADER_PARAM,
 						cvertical_datum);
 					tss->userHeader = stringToUserHeader(headerString, &tss->userHeaderNumber);
