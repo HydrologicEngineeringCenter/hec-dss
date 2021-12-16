@@ -762,6 +762,33 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 					free(compressed);
 				}
 				if (vdiPd != &_vdiPd) {
+					//--------------------------------------------------------------------//
+					// remove the vertical datum info from the user header before storing //
+					//                                                                    //
+					// don't need to remove current vertical datum, that is done in the   //
+					// getEffectiveVerticalDatum()                                        //
+					//--------------------------------------------------------------------//
+					char *userHeaderString = userHeaderToString(pds->userHeader, pds->userHeaderNumber);
+					if (userHeaderString) {
+						char *vdiStr = extractFromDelimitedString(
+							&userHeaderString,
+							VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
+							":",
+							TRUE,
+							TRUE,
+							';');
+						if (vdiStr) {
+							free(vdiStr);
+							int newHeaderSize;
+							int *newHeader = stringToUserHeader(userHeaderString, &newHeaderSize);
+							// free (pds->userHeader); -- don't know why this is a double free() !!!
+							pds->userHeader = newHeader;
+							pds->userHeaderNumber = newHeaderSize;
+							pds->allocated[zSTRUCT_userHeader] = TRUE;
+							// don't free newHeader - the zstructFree() call will get it.
+						}
+						free(userHeaderString);
+					}
 					free(vdiPd);
 				}
 			}
