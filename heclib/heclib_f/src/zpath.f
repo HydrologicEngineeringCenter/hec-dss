@@ -24,11 +24,11 @@ C     Fill pathname string with blanks
 C      call strcpy(CPATH, ' ')
 C
 C     Fill dummy character array
-      call strcpy(CPART(1), CA(:64))
-      call strcpy(CPART(2), CB(:64))
-      call strcpy(CPART(3), CC(:64))
-      call strcpy(CPART(4), CD(:64))
-      call strcpy(CPART(5), CE(:64))
+      call strcpy(CPART(1), CA)
+      call strcpy(CPART(2), CB)
+      call strcpy(CPART(3), CC)
+      call strcpy(CPART(4), CD)
+      call strcpy(CPART(5), CE)
       call strcpy(CPART(6), CF)
 C
 C
