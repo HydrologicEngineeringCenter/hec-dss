@@ -474,6 +474,12 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 			double offset = 0.;
 			char   cvertical_datum[CVERTICAL_DATUM_SIZE];
 			int    ivertical_datum = -1;
+			int    headerCopyNumber = pds->userHeaderNumber;
+			int   *headerCopy = NULL;
+			if (headerCopyNumber > 0) {
+				headerCopy = (int *)calloc(headerCopyNumber, 4);
+				memcpy(headerCopy, pds->userHeader, headerCopyNumber * 4);
+			}
 			if (indElev) {
 				ivertical_datum = getEffectiveVerticalDatum(
 					cvertical_datum,
@@ -591,7 +597,33 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 							offset = 0;
 						}
 						else {
-							offset = UNDEFINED_VERTICAL_DATUM_VALUE;
+							if (indElev) {
+								ivertical_datum = getEffectiveVerticalDatum(
+									cvertical_datum,
+									sizeof(cvertical_datum),
+									&headerCopy,
+									&headerCopyNumber,
+									&pds->unitsDependent);
+								switch(ivertical_datum) {
+									case IVERTICAL_DATUM_NAVD88 :
+										offset = vdi->offsetToNavd88;
+										break;
+									case IVERTICAL_DATUM_NGVD29 :
+										offset = vdi->offsetToNgvd29;
+										break;
+									default :
+										if(!strcmp(cvertical_datum, vdi->nativeDatum) || !strcmp(cvertical_datum, CVERTICAL_DATUM_OTHER)) {
+											offset = 0;
+										}
+										else {
+											offset = UNDEFINED_VERTICAL_DATUM_VALUE;
+										}
+										break;
+								}
+							}
+							else {
+								offset = UNDEFINED_VERTICAL_DATUM_VALUE;
+							}
 						}
 						break;
 				}
@@ -663,6 +695,9 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 						}
 					}
 				}
+			}
+			if (headerCopy) {
+				free(headerCopy);
 			}
 			if (vdi == vdiPd) {
 				//----------------------------------------------------------------------------//
