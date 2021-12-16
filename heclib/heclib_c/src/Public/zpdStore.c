@@ -323,7 +323,6 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 		depElev = TRUE;
 	}
 	if (indElev || depElev) {
-		printf("In zpdStore()\n\tpds->locationStruct = %p\n", pds->locationStruct);
 		//------------------------------------------------------//
 		// see if we have one or more verticalDatumInfo objects //
 		//------------------------------------------------------//
@@ -336,7 +335,6 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 		// get the info from the header //
 		//------------------------------//
 		vdiPd = extractVerticalDatumInfoFromUserHeader(pds->userHeader, pds->userHeaderNumber);
-		printf("\tvdi from user header = %p\n", vdiPd);
 		if (vdiPd == NULL && pds->locationStruct && pds->locationStruct->supplemental) {
 			//------------------------------------------------------------------------------//
 			// none in the user header, see if any is passed in in embedded location struct //
@@ -352,7 +350,6 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 				stringToVerticalDatumInfo(&_vdiPd, vdiStr);
 				vdiPd = &_vdiPd;
 				free(vdiStr);
-				printf("\tvdi from internal location struct = %p\n", vdiPd);
 			}
 		}
 		//----------------------------------------------------------//
@@ -372,7 +369,6 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 				stringToVerticalDatumInfo(&_vdiLoc, vdiStr);
 				vdiLoc = &_vdiLoc;
 				free(vdiStr);
-				printf("\tvdi from location record = %p\n", vdiLoc);
 			}
 		}
 		zstructFree(ls);
@@ -471,7 +467,6 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 			//--------------------------//
 			vdi = vdiPd ? vdiPd : vdiLoc;
 		}
-		printf("\tvdi = %p\n", vdi);
 		if (vdi) {
 			//----------------------------------//
 			// get the effective vertical datum //
@@ -670,7 +665,6 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 				}
 			}
 			if (vdi == vdiPd) {
-				printf("\tmoving the vdi into the location struct\n");
 				//----------------------------------------------------------------------------//
 				// move the vertical datum info into the paired data struct embedded location //
 				//----------------------------------------------------------------------------//
@@ -691,7 +685,6 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 				char *compressed = NULL;
 				verticalDatumInfoToString(&compressed, vdi, TRUE);
 				char errmsg[256];
-				printf("compressed = %s\n", compressed);
 				if (compressed) { // should never be NULL
 					if (pds->locationStruct->supplemental) {
 						status = insertIntoDelimitedString(
@@ -798,14 +791,6 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 					}
 					free(vdiPd);
 				}
-			}
-		}
-		if (pds->locationStruct) {
-			if (pds->locationStruct->supplemental) {
-				printf("\tpds->locationStruct->supplemental = >%s<\n", pds->locationStruct->supplemental);
-			}
-			else {
-				printf("\tpds->locationStruct->supplemental = %p\n", pds->locationStruct->supplemental);
 			}
 		}
 	}

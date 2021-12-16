@@ -356,13 +356,11 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1zpdStore(
 
 	
 	//  User header
-	printf("\nIn Hec_zpdStore\n");
 	fid = (*env)->GetFieldID (env, cls, "supplementalInfo", "Ljava/lang/String;");
 	if (fid) {
 		jstr = (*env)->GetObjectField(env, j_pairedDataContainer, fid); 
 		if (jstr) {
 			cstr = (*env)->GetStringUTFChars(env, jstr,  0);
-			printf("\tsupplementalInfo = >%s<\n", cstr);
 			if (cstr) {
 				len = (int)strlen(cstr);
 				if (len > 0) {

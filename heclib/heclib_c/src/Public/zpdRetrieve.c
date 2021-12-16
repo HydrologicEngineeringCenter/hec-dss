@@ -707,15 +707,6 @@ int zpdRetrieve(long long *ifltab, zStructPairedData *pds, int retrieveSizeFlag)
 	if ((status == STATUS_OKAY) && pds->locationStruct) {
 		zlocationRetrieve(ifltab, pds->locationStruct);
 
-		printf("In zpdRetrieve()\n\tpds->locationStruct = %p\n", pds->locationStruct);
-		if (pds->locationStruct) {
-			if (pds->locationStruct->supplemental) {
-				printf("\tpds->locationStruct->supplemental = >%s<\n", pds->locationStruct->supplemental);
-			}
-			else {
-				printf("\tpds->locationStruct->supplemental = %p\n", pds->locationStruct->supplemental);
-			}
-		}
 		int indElev = FALSE;
 		int depElev = FALSE;
 		char cPart[65];
