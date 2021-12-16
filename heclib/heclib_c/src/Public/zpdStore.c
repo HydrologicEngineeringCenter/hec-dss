@@ -794,6 +794,15 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 			}
 		}
 	}
+	printf("In zpdStore()\n\tpds->locationStruct = %p\n", pds->locationStruct);
+	if (pds->locationStruct) {
+		if (pds->locationStruct->supplemental) {
+			printf("\tpds->locationStruct->supplemental = >%s<\n", pds->locationStruct->supplemental);
+		}
+		else {
+			printf("\tpds->locationStruct->supplemental = %p\n", pds->locationStruct->supplemental);
+		}
+	}
 	//  Messages and debug
 	if (zmessageLevel(ifltab, MESS_METHOD_WRITE_ID, MESS_LEVEL_USER_DIAG)) {
 		zmessage(ifltab, " ");
