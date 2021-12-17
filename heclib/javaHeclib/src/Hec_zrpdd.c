@@ -91,6 +91,11 @@ JNIEXPORT void JNICALL Java_hec_heclib_util_Heclib_Hec_1zrpdd
            strlen(pathname), sizeof(c1unit)-1, sizeof(c1type)-1,
            sizeof(c2unit)-1, sizeof(c2type)-1, 100);
 
+    printf("\nIn Hec_zrpdd");
+    printf("\tnhead  = %d\n", *nheadu);
+    printf("\tkhead  = %d\n", kheadu);
+    printf("\theader = >%s<\n", (char *)headu);
+
 
     /* Set the units and types */
     cls = (*env)->GetObjectClass (env, j_c1unit);
