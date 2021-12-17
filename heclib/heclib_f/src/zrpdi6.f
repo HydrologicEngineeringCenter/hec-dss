@@ -24,7 +24,8 @@ C     Pathname variable dimensions
       integer na, nb, nc, nd, ne, nf, npath
 C
 C     Vertical datum varible dimensions
-      character*400 vdiStr, errMsg
+      integer iuhead_copy(100)
+      character*400 vdiStr, errMsg, cuhead
       character*16 unit
       character*16 nativeDatum
       double precision offsetNavd88, offsetNgvd29, vertDatumOffset
@@ -300,10 +301,15 @@ C
             !--------------------------------------------!
             ! add the requested datum to the user header !
             !--------------------------------------------!
+            iuhead_copy(:min(kuhead, size(iuhead_copy))) = 
+     *        iuhead(:min(kuhead, size(iuhead_copy)))
+            write(*,*) nuhead, kuhead, ">"//cuhead//"<"
             iuhead(nuhead+1:kuhead) = 0
-            write(*,*) cvdatum, nuhead, kuhead
             call set_user_header_param(iuhead, kuhead, 
      *        VERTICAL_DATUM_PARAM, cvdatum, istat)
+            iuhead_copy(:min(kuhead, size(iuhead_copy))) = 
+     *        iuhead(:min(kuhead, size(iuhead_copy)))
+            write(*,*) nuhead, kuhead, ">"//cuhead//"<"
             !--------------------------------------!
             ! get the vertical datum offset to use !
             !--------------------------------------!
