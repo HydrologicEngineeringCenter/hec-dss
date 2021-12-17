@@ -17,8 +17,10 @@ C
       DO 10 I=IS,IS+NC-1
       J=J+1
       CALL GETHOL(IC,I,ICH)
+      write(*,*) i, ich
       C(J:J)=CHAR(ICH)
 10    CONTINUE
+      write(*,*) '>'//c//'<'
       RETURN
       END
 
