@@ -1,10 +1,11 @@
-      subroutine set_user_header_param(iuhead, kuhead, cparam, 
+      subroutine set_user_header_param(iuhead, nuhead, kuhead, cparam, 
      *           cvalue, istat)
       !        
       ! Retrieves the value of an associated parameter name from the user header
       !
       ! iuhead  The user header integer array
-      ! kuhead  The number of integers in the user header
+      ! nuhead  The number of integers used in the user header (size)
+      ! kuhead  The number of integers in the user header (capacity)
       ! cparam  The parameter to retrieve the value for
       ! cvalue  The variable to hold the value
       !  
@@ -17,7 +18,8 @@
       !-------------------!  
       ! define parameters !
       !-------------------!  
-      integer   iuhead(*), kuhead, intsRequired, intsAvailable, istat
+      integer   iuhead(*), nuhead, kuhead, intsRequired, intsAvailable
+      integer   istat
       character cparam*(*), cvalue*(*)
       !-----------------!  
       ! local variables !
@@ -96,6 +98,7 @@
         iuhead(:max_head_len) = iuhead_copy(:max_head_len)
         istat = 0
       end if  
+      nuhead = len_trim(cuhead)
       return
 
       end subroutine set_user_header_param

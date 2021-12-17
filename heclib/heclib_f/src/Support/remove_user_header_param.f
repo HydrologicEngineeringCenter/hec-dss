@@ -81,6 +81,7 @@
       !-------------------------------!
       if (cuhead(1:1).eq.';') cuhead = cuhead(2:)
       iuhead(:max_head_len) = iuhead_copy(:max_head_len)
+      nuhead = (len_trim(cuhead)-1)/4+1
       return
       end
 

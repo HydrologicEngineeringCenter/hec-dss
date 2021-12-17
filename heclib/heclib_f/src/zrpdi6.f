@@ -45,6 +45,7 @@ C
       INCLUDE 'verticalDatumFortran.h'
 C
 C
+      equivalence(iuhead_copy, cuhead)
 C
 C     If debug is on, print out information
       IF (MLEVEL.GE.7) THEN
@@ -305,7 +306,7 @@ C
      *        iuhead(:min(kuhead, size(iuhead_copy)))
             write(*,*) nuhead, kuhead, ">"//cuhead//"<"
             iuhead(nuhead+1:kuhead) = 0
-            call set_user_header_param(iuhead, kuhead, 
+            call set_user_header_param(iuhead, nuhead, kuhead, 
      *        VERTICAL_DATUM_PARAM, cvdatum, istat)
             iuhead_copy(:min(kuhead, size(iuhead_copy))) = 
      *        iuhead(:min(kuhead, size(iuhead_copy)))
