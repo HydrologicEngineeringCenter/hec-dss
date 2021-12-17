@@ -96,7 +96,7 @@ JNIEXPORT void JNICALL Java_hec_heclib_util_Heclib_Hec_1zrpdd
     printf("\tkhead  = %d\n", kheadu);
     char *cp = (char *)headu;
     printf("\theader = >%s<\n", cp);
-    printf("%d\n", strchr(cp, ' ')-cp);
+    printf("%ld\n", strchr(cp, ' ')-cp);
 
 
     /* Set the units and types */
