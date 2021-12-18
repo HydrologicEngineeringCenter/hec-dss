@@ -304,13 +304,11 @@ C
             !--------------------------------------------!
             iuhead_copy(:min(kuhead, size(iuhead_copy))) = 
      *        iuhead(:min(kuhead, size(iuhead_copy)))
-            write(*,*) nuhead, kuhead, ">"//cuhead//"<"
             iuhead(nuhead+1:kuhead) = 0
             call set_user_header_param(iuhead, nuhead, kuhead, 
      *        VERTICAL_DATUM_PARAM, cvdatum, istat)
             iuhead_copy(:min(kuhead, size(iuhead_copy))) = 
      *        iuhead(:min(kuhead, size(iuhead_copy)))
-            write(*,*) nuhead, kuhead, ">"//cuhead//"<"
             !--------------------------------------!
             ! get the vertical datum offset to use !
             !--------------------------------------!

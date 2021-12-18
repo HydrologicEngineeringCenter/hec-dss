@@ -83,7 +83,7 @@
         ! replace the existing parameter or add a new one !
         !-------------------------------------------------!
         if (existing.ne." ") then
-          call remove_user_header_param(iuhead_copy, max_head_len, 
+          call remove_user_header_param(iuhead_copy, nuhead, kuhead, 
      *    cparam)
         end if
         len = len_trim(cuhead)
@@ -98,7 +98,7 @@
         iuhead(:max_head_len) = iuhead_copy(:max_head_len)
         istat = 0
       end if  
-      nuhead = len_trim(cuhead)
+      nuhead = (len_trim(cuhead)-1)/4+1
       return
 
       end subroutine set_user_header_param

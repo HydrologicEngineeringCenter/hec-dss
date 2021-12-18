@@ -1,9 +1,11 @@
-      subroutine remove_user_header_param(iuhead, nuhead, cparam)
+      subroutine remove_user_header_param(iuhead, nuhead, kuhead, 
+     *           cparam)
       !
       ! Removes a parameter and its associated value from the user header
       !
       ! iuhead  The user header integer array
-      ! nuhead  The number of integers in the user header
+      ! nuhead  The number of integers used in the user header (size)
+      ! kuhead  The number of integers in the user header (capacity)
       ! cparam  The parameter to retrieve the value for
       !
       ! Mike Perryman
@@ -14,7 +16,7 @@
       !-------------------!
       ! define parameters !
       !-------------------!
-      integer   iuhead(*), nuhead
+      integer   iuhead(*), nuhead, kuhead
       character cparam*(*)
       !-----------------!
       ! local variables !
@@ -22,6 +24,7 @@
       integer   iuhead_copy(500), max_head_len, ifirst, ilast, i, plen
       character cuhead*2000
       logical   param_has_separator
+      
       equivalence (iuhead_copy, cuhead)
 
       include 'zdssmz.h'
@@ -30,15 +33,15 @@
       ! copy the user header to a local variable so we can equivalence it !
       !-------------------------------------------------------------------!
       iuhead_copy = 0
-      if (nuhead.gt.size(iuhead_copy)) then
+      if (kuhead.gt.size(iuhead_copy)) then
         if (mlevel.ge.1) then
           write (munit,'(/a,/,a,i4,/,a,i4)')
      *    ' WARNING: LOCATING PARAMETER VALUE IN TRUNCATED USER HEADER',
-     *    '   User header length : ',nuhead,
+     *    '   User header length : ',kuhead,
      *    '   Truncated length   : ',size(iuhead_copy)
         end if
       end if
-      max_head_len = min(nuhead, size(iuhead_copy))
+      max_head_len = min(kuhead, size(iuhead_copy))
       iuhead_copy(:max_head_len) = iuhead(:max_head_len)
       !--------------------------------------------------------!
       ! blank everything past the copy size or null terminator !
@@ -66,13 +69,13 @@
           !------------------!
           ! at end of header !
           !------------------!
-          cuhead(ifirst:) = ' '
+          cuhead(ifirst:ifirst) = ':'
+          cuhead(ifirst+1:) = ' '
         else
           !-------------------------!
           ! in the middle of header !
           !-------------------------!
           ilast = ilast + ifirst - 1
-          cuhead(ifirst:ilast) = ' '
           cuhead(ifirst:) = cuhead(ilast+1:)
         end if
       end if
@@ -80,6 +83,7 @@
       ! remove any leading delimiters !
       !-------------------------------!
       if (cuhead(1:1).eq.';') cuhead = cuhead(2:)
+      iuhead(:kuhead) = 0
       iuhead(:max_head_len) = iuhead_copy(:max_head_len)
       nuhead = (len_trim(cuhead)-1)/4+1
       return

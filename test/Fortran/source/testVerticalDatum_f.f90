@@ -125,7 +125,7 @@ subroutine testUserHeaderOps
 
     character (len=100) :: cheader, cvalue
     character (len=72)  :: cheaderShort 
-    integer   (kind=4)  :: iheader(25), iheaderShort(18), status
+    integer   (kind=4)  :: iheader(25), iheaderShort(18), nhead, status
 
     equivalence (cheader, iheader)
     equivalence (cheaderShort, iheaderShort)
@@ -138,33 +138,34 @@ subroutine testUserHeaderOps
     call assert(cvalue.eq.'secondValue')
     call get_user_header_param(iheader, size(iheader), 'thirdParam', cvalue)
     call assert(cvalue.eq.'thirdValue')
-    call set_user_header_param(iheader, size(iheader), 'firstParam', 'FIRSTValue', status)
+    nhead = size(iheader)
+    call set_user_header_param(iheader, nhead, size(iheader), 'firstParam', 'FIRSTValue', status)
     call assert(status.eq.0)
-    call get_user_header_param(iheader, size(iheader), 'firstParam', cvalue)
+    call get_user_header_param(iheader, nhead, 'firstParam', cvalue)
     call assert(cvalue.eq.'FIRSTValue')
-    call set_user_header_param(iheader, size(iheader), 'secondParam', '2ndValue', status)
+    call set_user_header_param(iheader, nhead, size(iheader), 'secondParam', '2ndValue', status)
     call assert(status.eq.0)
-    call get_user_header_param(iheader, size(iheader), 'secondParam', cvalue)
+    call get_user_header_param(iheader, nhead, 'secondParam', cvalue)
     call assert(cvalue.eq.'2ndValue')
-    call set_user_header_param(iheader, size(iheader), 'thirdParam', 'THIRDValue', status)
+    call set_user_header_param(iheader, nhead, size(iheader), 'thirdParam', 'THIRDValue', status)
     call assert(status.eq.0)
-    call get_user_header_param(iheader, size(iheader), 'thirdParam', cvalue)
+    call get_user_header_param(iheader, nhead, 'thirdParam', cvalue)
     call assert(cvalue.eq.'THIRDValue')
-    call set_user_header_param(iheader, size(iheader), 'fourthParam', '4thValue', status)
+    call set_user_header_param(iheader, nhead, size(iheader), 'fourthParam', '4thValue', status)
     call assert(status.eq.0)
 
     cheader = 'firstParam:firstValue;secondParam:secondValue;thirdParam:thirdValue;'
-    call remove_user_header_param(iheader, size(iheader), 'firstParam')
+    call remove_user_header_param(iheader, nhead, size(iheader), 'firstParam')
     call assert(cheader.eq.'secondParam:secondValue;thirdParam:thirdValue;')
     cheader = 'firstParam:firstValue;secondParam:secondValue;thirdParam:thirdValue;'
-    call remove_user_header_param(iheader, size(iheader), 'secondParam')
+    call remove_user_header_param(iheader, nhead, size(iheader), 'secondParam')
     call assert(cheader.eq.'firstParam:firstValue;thirdParam:thirdValue;')
     cheader = 'firstParam:firstValue;secondParam:secondValue;thirdParam:thirdValue;'
-    call remove_user_header_param(iheader, size(iheader), 'thirdParam')
+    call remove_user_header_param(iheader, nhead, size(iheader), 'thirdParam')
     call assert(cheader.eq.'firstParam:firstValue;secondParam:secondValue;')
 
     cheaderShort = 'firstParam:firstValue;secondParam:secondValue;thirdParam:thirdValue;'
-    call set_user_header_param(iheaderShort, size(iheaderShort), 'fourthParam', '4thValue', status)
+    call set_user_header_param(iheaderShort, nhead, size(iheaderShort), 'fourthParam', '4thValue', status)
     call assert(status.ne.0)
 
 end subroutine testUserHeaderOps

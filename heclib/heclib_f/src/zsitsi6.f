@@ -286,7 +286,7 @@ C
           ! remove current vertical datum from user header so it's not saved to disk !
           !--------------------------------------------------------------------------!
           call remove_user_header_param(effectiveIuhead,
-     *    effectiveNuhead, VERTICAL_DATUM_PARAM)
+     *    effectiveNuhead, size(effectiveIuhead), VERTICAL_DATUM_PARAM)
         end if
         ! override both with the unit spec
         call crack_unit_spec(cunits, unit2, cvdatum2)

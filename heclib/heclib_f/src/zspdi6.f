@@ -139,7 +139,7 @@ C     Check that IFLTAB is valid (e.g., the DSS file is open)
           ! remove current vertical datum from user header so it's not saved to disk !
           !--------------------------------------------------------------------------!
           call remove_user_header_param(effectiveIuhead,
-     *    effectiveNuhead, VERTICAL_DATUM_PARAM)
+     *    effectiveNuhead, size(effectiveIuhead), VERTICAL_DATUM_PARAM)
         end if
         if (cvdatum.ne." ") then
           cvdatum_ind = cvdatum
