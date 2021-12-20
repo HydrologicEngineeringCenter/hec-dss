@@ -103,6 +103,8 @@ C     Check that IFLTAB is valid (e.g., the DSS file is open)
       call zufpn(ca, na, cb, nb, cc, nc, cd, nd, ce, ne, cf, nf,
      *           cpath, len_trim(cpath), istat)
       call upcase(cc)
+      write(*,*) "cc = "//cc
+      write(*,*) index(cc, 'ELEV'),index(cc, '-ELEV')
       if (index(cc, 'ELEV').eq.1) then
         l_indElev = .true.
       end if
@@ -161,7 +163,7 @@ C     Check that IFLTAB is valid (e.g., the DSS file is open)
               c2unit = unit2(1:len_trim(unit2))
               cvdatum_dep = cvdatum2
               write(*,*) "c2unit      = "//c1unit
-              write(*,*) "cvdatum_dep = "//cvdatum_ind
+              write(*,*) "cvdatum_dep = "//cvdatum_dep
             end if
           end if
           call get_user_header_param(
