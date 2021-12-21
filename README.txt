@@ -42,22 +42,15 @@ It has been reported the Centos binaries worked in ubunto,after installing the f
 zlib, math, quadmath, and gfortran for pydsstools to work in Ubuntu.
 
 
-to build heclib, cd heclib/heclib
-
-make -j -f Makefile.Linux
-or
-make -f Makefile.Solaris
-
-
+To build heclib, cd heclib/heclib
+>make 
 
 
 Windows
-build_fortran.bat  -- for FORTRAN part
-build_c.bat   -- for C part and JNI Layer
-
+>build_release.bat 
 
 ===========
-
+The primary user interface for DSS files is HEC-DssVue.
 https://www.hec.usace.army.mil/confluence/dssvuedocs/latest
 
 
