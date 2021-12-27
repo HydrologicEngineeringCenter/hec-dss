@@ -92,7 +92,6 @@ JNIEXPORT void JNICALL Java_hec_heclib_util_Heclib_Hec_1zrpdd
            sizeof(c2unit)-1, sizeof(c2type)-1, 100);
 
 
-
     /* Set the units and types */
     cls = (*env)->GetObjectClass (env, j_c1unit);
     fid = (*env)->GetFieldID (env, cls, "string", "Ljava/lang/String;");

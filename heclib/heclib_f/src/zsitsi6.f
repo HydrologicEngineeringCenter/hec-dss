@@ -63,7 +63,7 @@ C     Vertical datum varible dimensions
       character*64 cc, unitSpec
       double precision offsetNavd88, offsetNgvd29, vertDatumOffset
       logical l_Navd88Estimated, l_Ngvd29Estimated, l_modified
-      integer vdiStrLen, effectiveNuhead, effectiveIuhead(100)
+      integer vdiStrLen, nuhead_copy, iuhead_copy(100)
 C
 C
       INCLUDE 'zdssmz.h'
@@ -85,7 +85,7 @@ C
 C
 C
       l_modified = .false.
-      effectiveNuhead = 0
+      nuhead_copy = 0
       ispace = index(cunits, ' ')
       if (ispace.gt.1) then
         cunits = cunits(1:ispace-1)
@@ -249,11 +249,15 @@ C
       !-----------------------------------------------!
       ! convert to native vertical datum if necessary !
       !-----------------------------------------------!
-      effectiveNuhead = nuhead
-      effectiveIuhead = 0
-      do i = 1, min(size(effectiveIuhead), nuhead)
-        effectiveIuhead(i) = iuhead(i)
-      end do
+      !--------------------------------------------------------------------!
+      ! make a copy of the user header becuase we have to be able to know  !
+      ! its size when passing to user header manipulation routintes and we !
+      ! cant know the size of an assumed-size array                        !
+      !--------------------------------------------------------------------!
+      nuhead_copy = nuhead
+      iuhead_copy = 0
+      iCopyLen = min(size(iuhead_copy), nuhead)
+      iuhead_copy(:iCopyLen) = iuhead(:iCopyLen)
       cc = cpath(ibpart(3):iepart(3))
       call upcase(cc)
       if (index(cc,'ELEV').eq.1) then
@@ -264,11 +268,11 @@ C
           !------------------------------------------------!
           ! no user header provided, is there one on disk? !
           !------------------------------------------------!
-          effectiveNuhead = INFO(NPPWRD+KINUHE)
-          if (effectiveNuhead.GT.0) then
-            call zgtrec6(IFLTAB, effectiveIuhead, effectiveNuhead,
+          nuhead_copy = INFO(NPPWRD+KINUHE)
+          if (nuhead_copy.GT.0) then
+            call zgtrec6(IFLTAB, iuhead_copy, nuhead_copy,
      *        INFO(NPPWRD+KIAUHE), .TRUE.)
-            call get_user_header_param(effectiveIuhead, effectiveNuhead,
+            call get_user_header_param(iuhead_copy, nuhead_copy,
      *        VERTICAL_DATUM_INFO_PARAM, vdiStr)
           end if
         end if
@@ -278,15 +282,15 @@ C
         ! first get any default vertical datum
         call zinqir6(IFLTAB, 'VDTM', cvdatum, ivdatum)
         ! override the default with any datum in the user header
-        call get_user_header_param(effectiveIuhead, effectiveNuhead,
+        call get_user_header_param(iuhead_copy, nuhead_copy,
      *    VERTICAL_DATUM_PARAM, cvdatum2)
         if (cvdatum2.ne." ") then
           cvdatum = cvdatum2
-          !--------------------------------------------------------------------------!
-          ! remove current vertical datum from user header so it's not saved to disk !
-          !--------------------------------------------------------------------------!
-          call remove_user_header_param(effectiveIuhead,
-     *    effectiveNuhead, size(effectiveIuhead), VERTICAL_DATUM_PARAM)
+          !---------------------------------------------------------------------------!
+          ! remove current vertical datum from user header so it is not saved to disk !
+          !---------------------------------------------------------------------------!
+          call remove_user_header_param(iuhead_copy,
+     *    nuhead_copy, size(iuhead_copy), VERTICAL_DATUM_PARAM)
         end if
         ! override both with the unit spec
         call crack_unit_spec(cunits, unit2, cvdatum2)
@@ -298,7 +302,7 @@ C
           !--------------------------------------------!
           ! we possibly need to convert the elevations !
           !--------------------------------------------!
-          call get_user_header_param(effectiveIuhead, effectiveNuhead,
+          call get_user_header_param(iuhead_copy, nuhead_copy,
      *      VERTICAL_DATUM_INFO_PARAM, vdiStr)
           if (vdiStr.eq." ") then
             if (mlevel.ge.1) then
@@ -430,7 +434,7 @@ C     block--don't read, just replace block
 C
 C
       CALL zreadx6 (IFLTAB, CPATH1, INTBUF, NIBUFF, N,
-     * ICHEAD, 0, J, effectiveIuhead, 0, N, BUFF, KLBUFF, NDA, 2, LF)
+     * ICHEAD, 0, J, iuhead_copy, 0, N, BUFF, KLBUFF, NDA, 2, LF)
       CALL zinqir6 (IFLTAB, 'STATUS', CSCRAT, JSTAT)
       IF (JSTAT.NE.0) GO TO 940
 C
@@ -954,7 +958,7 @@ C     Write data to DSS
       IF (LQUAL) CALL zset6 ('QUAL', 'ON', 1)
       NDA = IBSIZE * IMULT
       CALL zwritex6 (IFLTAB, CPATH1, NPATH, IIHEAD, KIHEAD, IDUM, 0,
-     * effectiveIuhead, effectiveNuhead, BUFF, NDA, ITYPE, 0, IST, LF)
+     * iuhead_copy, nuhead_copy, BUFF, NDA, ITYPE, 0, IST, LF)
       CALL zinqir6 (IFLTAB, 'STATUS', CSCRAT, JSTAT)
       IF (JSTAT.NE.0) GO TO 940
       CALL zsetfi6(IFLTAB, 'PSEU', CPATH1(1:NPATH), INTLPS, IST)

@@ -581,7 +581,6 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 					// use temporary arrays so the values stored to disk are modified but the   //
 					// values in the zstructTs object aren't modified after the call            //
 					//--------------------------------------------------------------------------//
-					fflush(stdout);
 					if (tss->floatValues) {
 						tmpFloatVals = (float *)calloc(tss->numberValues, sizeof(float));
 						for (int i = 0; i < tss->numberValues; ++i) {
@@ -617,10 +616,32 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 					else {
 						tss->locationStruct->verticalDatum = IVERTICAL_DATUM_OTHER;
 					}
-					char *compressed = NULL;
-					verticalDatumInfoToString(&compressed, vdi, TRUE);
 					char errmsg[256];
-					if (compressed) { // should never be NULL
+					char *compressed = NULL;
+					char *cp = verticalDatumInfoToString(&compressed, vdi, TRUE);
+					if (compressed == NULL) {
+						sprintf(
+							errmsg,
+							"\nVertical datum information could not be assigned to location record.\n%s\n"
+							"No data stored.",
+							cp ? cp : "Error processing vertical datum representation");
+						if (vdiTs != &_vdiTs) {
+							free(vdiTs);
+						}
+						if (tmpFloatVals != NULL) {
+							tss->floatValues = origFloatVals;
+							free(tmpFloatVals);
+						}
+						if (tmpDoubleVals != NULL) {
+							tss->doubleValues = origDoubleVals;
+							free(tmpDoubleVals);
+						}
+						return zerrorProcessing(ifltab, DSS_FUNCTION_zpdStore_ID,
+							zdssErrorCodes.INCOMPATIBLE_CALL, 0,
+							0, zdssErrorSeverity.WARNING, tss->pathname,
+							errmsg);
+					}
+					else { 
 						if (tss->locationStruct->supplemental) {
 							status = insertIntoDelimitedString(
 								&tss->locationStruct->supplemental,
@@ -659,6 +680,14 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 										free(vdiTs);
 									}
 									free(compressed);
+									if (tmpFloatVals != NULL) {
+										tss->floatValues = origFloatVals;
+										free(tmpFloatVals);
+									}
+									if (tmpDoubleVals != NULL) {
+										tss->doubleValues = origDoubleVals;
+										free(tmpDoubleVals);
+									}
 									return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID,
 										zdssErrorCodes.INCOMPATIBLE_CALL, 0,
 										0, zdssErrorSeverity.WARNING, tss->pathname,
@@ -694,6 +723,14 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 									free(vdiTs);
 								}
 								free(compressed);
+								if (tmpFloatVals != NULL) {
+									tss->floatValues = origFloatVals;
+									free(tmpFloatVals);
+								}
+								if (tmpDoubleVals != NULL) {
+									tss->doubleValues = origDoubleVals;
+									free(tmpDoubleVals);
+								}
 								return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID,
 									zdssErrorCodes.INCOMPATIBLE_CALL, 0,
 									0, zdssErrorSeverity.WARNING, tss->pathname,

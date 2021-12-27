@@ -652,6 +652,16 @@ C
               iuhead(nuhead+1:kuhead) = 0
               call set_user_header_param(iuhead, nuhead, kuhead, 
      *          VERTICAL_DATUM_PARAM, cvdatum, istat)
+              if (istat.ne.0) then
+                if (mlevel.ge.1) then
+                    write (munit,'(/,a,a,/,a)')
+     *              ' *****DSS*** zrits6:  ERROR  - VERTICAL DATUM',
+     *              ' TRUNCATED',
+     *              ' No values retrieved.'
+                  end if
+                  istat = 13
+                  return
+                end if
               !--------------------------------------!
               ! get the vertical datum offset to use !
               !--------------------------------------!
@@ -675,7 +685,7 @@ C
      *              ' *****DSS*** zrits6:  ERROR  - NO VERTICAL DATUM',
      *              ' OFFSET for ',nativeDatum(1:len_trim(nativeDatum)),
      *              ' to ',cvdatum(1:len_trim(cvdatum)),
-     *              ' Elevations were not converted.'
+     *              ' No values retrieved.'
                   end if
                   istat = 13
                   return
@@ -692,7 +702,7 @@ C
      *              '(',cunits(1:len_trim(cunits)),') OR OFFSET UNIT (',
      *              unit(1:len_trim(unit)),') FOR VERTICAL DATUM',
      *              ' CONVERSION',
-     *              ' Elevations were not converted.'
+     *              ' No values retrieved.'
                   end if
                   istat = 13
                   return

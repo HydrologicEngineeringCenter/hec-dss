@@ -437,7 +437,7 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 						errmsg,
 						"Cannot convert from native vertical datum of '%s' to '%s'.\n"
 						"Record has no conversion information.\n"
-						"Values not converted.",
+						"No values retrieved.",
 						tss->locationStruct->verticalDatum == 0 ? "UNSET"   :
 						tss->locationStruct->verticalDatum == 1 ? "NAVD-88" :
 						tss->locationStruct->verticalDatum == 2 ? "NGVD-29" : "OTHER",
@@ -526,13 +526,31 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 							break;
 					}
 					if (offset != 0.) {
+						if (offset == UNDEFINED_VERTICAL_DATUM_VALUE) {
+							sprintf(
+								errmsg,
+								"\nVertical datum offset is undefined for datum '%s'.\n"
+								"Datum conversion could not be performed.\n"
+								"No values retrieved.",
+								cvertical_datum);
+							status = zerrorProcessing(
+								ifltab,
+								DSS_FUNCTION_ztsRetrieve_ID,
+								zdssErrorCodes.INVALID_HEADER_PARAMETER,
+								0,
+								0,
+								zdssErrorSeverity.WARNING,
+								tss->pathname,
+								errmsg);
+							return status;
+						}
 						offset = getOffset(offset, vdi->unit, tss->units);
 						if (offset == UNDEFINED_VERTICAL_DATUM_VALUE) {
 							sprintf(
 								errmsg,
 								"\nData unit (%s) and/or offset unit (%s) is invalid for vertical datum conversion.\n"
 								"Conversion to datum '%s' could not be performed.\n"
-								"Values not converted.",
+								"No values retrieved.",
 								tss->units,
 								vdi->unit,
 								cvertical_datum);
@@ -540,7 +558,7 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 								ifltab,
 								DSS_FUNCTION_ztsRetrieve_ID,
 								zdssErrorCodes.INVALID_HEADER_PARAMETER,
-								intervalType,
+								0,
 								0,
 								zdssErrorSeverity.WARNING,
 								tss->pathname,

@@ -79,7 +79,7 @@ C     Vertical datum varible dimensions
       character*64 cc, unitSpec
       double precision offsetNavd88, offsetNgvd29, vertDatumOffset
       logical l_Navd88Estimated, l_Ngvd29Estimated, l_modified
-      integer vdiStrLen, effectiveNuhead, effectiveIuhead(100)
+      integer vdiStrLen, nuhead_copy, iuhead_copy(100)
 C
       INCLUDE 'zdssts.h'
 C
@@ -229,11 +229,15 @@ C
       !-----------------------------------------------!
       ! convert to native vertical datum if necessary !
       !-----------------------------------------------!
-      effectiveNuhead = nuhead
-      effectiveIuhead = 0
-      do i = 1, min(size(effectiveIuhead), nuhead)
-        effectiveIuhead(i) = iuhead(i)
-      end do
+      !--------------------------------------------------------------------!
+      ! make a copy of the user header becuase we have to be able to know  !
+      ! its size when passing to user header manipulation routintes and we !
+      ! cant know the size of an assumed-size array                        !
+      !--------------------------------------------------------------------!
+      nuhead_copy = nuhead
+      iuhead_copy = 0
+      iCopyLen = min(size(iuhead_copy), nuhead)
+      iuhead_copy(:iCopyLen) = iuhead(:iCopyLen)
       cc = cpart(3)
       call upcase(cc)
       if (index(cc,'ELEV').eq.1) then
@@ -244,11 +248,11 @@ C
           !------------------------------------------------!
           ! no user header provided, is there one on disk? !
           !------------------------------------------------!
-          effectiveNuhead = INFO(NPPWRD+KINUHE)
-          if (effectiveNuhead.GT.0) then
-            call zgtrec6(IFLTAB, effectiveIuhead, effectiveNuhead,
+          nuhead_copy = INFO(NPPWRD+KINUHE)
+          if (nuhead_copy.GT.0) then
+            call zgtrec6(IFLTAB, iuhead_copy, nuhead_copy,
      *        INFO(NPPWRD+KIAUHE), .TRUE.)
-            call get_user_header_param(effectiveIuhead, effectiveNuhead,
+            call get_user_header_param(iuhead_copy, nuhead_copy,
      *        VERTICAL_DATUM_INFO_PARAM, vdiStr)
           end if
         end if
@@ -258,15 +262,15 @@ C
         ! first get any default vertical datum
         call zinqir6(IFLTAB, 'VDTM', cvdatum, ivdatum)
         ! override the default with any datum in the user header
-        call get_user_header_param(effectiveiuhead, effectivenuhead,
+        call get_user_header_param(iuhead_copy, nuhead_copy,
      *    VERTICAL_DATUM_PARAM, cvdatum2)
         if (cvdatum2.ne." ") then
           cvdatum = cvdatum2
-          !--------------------------------------------------------------------------!
-          ! remove current vertical datum from user header so it's not saved to disk !
-          !--------------------------------------------------------------------------!
-          call remove_user_header_param(effectiveIuhead,
-     *    effectiveNuhead, size(effectiveIuhead), VERTICAL_DATUM_PARAM)
+          !---------------------------------------------------------------------------!
+          ! remove current vertical datum from user header so it is not saved to disk !
+          !---------------------------------------------------------------------------!
+          call remove_user_header_param(iuhead_copy,
+     *    nuhead_copy, size(iuhead_copy), VERTICAL_DATUM_PARAM)
         end if
         ! override both with the unit spec
         call crack_unit_spec(cunits, unit2, cvdatum2)
@@ -278,7 +282,7 @@ C
           !--------------------------------------------!
           ! we possibly need to convert the elevations !
           !--------------------------------------------!
-          call get_user_header_param(effectiveiuhead, effectivenuhead,
+          call get_user_header_param(iuhead_copy, nuhead_copy,
      *      VERTICAL_DATUM_INFO_PARAM, vdiStr)
           if (vdiStr.eq." ") then
             if (mlevel.ge.1) then
@@ -559,8 +563,8 @@ C     Don't use if there are any doubles involved
 C     Can't use if we need to update (check missing data)
       IF (IPLAN.NE.0)  LUPRTS = .FALSE.
 C     Can't use if we need to change the user header
-      IF (JHEAD.NE.effectiveNuhead) THEN
-      IF (effectiveNuhead.NE.-1) LUPRTS = .FALSE.
+      IF (JHEAD.NE.nuhead_copy) THEN
+      IF (nuhead_copy.NE.-1) LUPRTS = .FALSE.
       ENDIF
 C     Can't use if internal header size different
       IF (JIHEAD.NE.KIHEAD) LUPRTS = .FALSE.
@@ -822,10 +826,10 @@ C     Set the compression value and quality flag to be used in the write
       IQUAL = 0
       IF ((LQUAL).OR.(LQREAD)) IQUAL = 1
 C
-C     If we are updating, and effectiveNuhead is -1, do not write over the
+C     If we are updating, and nuhead_copy is -1, do not write over the
 C     the existing user header
-      IF (effectiveNuhead.GE.0) THEN
-      NUH = effectiveNuhead
+      IF (nuhead_copy.GE.0) THEN
+      NUH = nuhead_copy
       ELSE
       NUH = JHEAD
       ENDIF
@@ -910,8 +914,8 @@ C     Now store the header arrays
       CALL zptrec6(IFLTAB, IIHEAD, KIHEAD, INFO(NPPWRD+KIAIHE), .FALSE.)
       IF (NCHEAD.GT.0) CALL zptrec6 (IFLTAB, IDCH, NCHEAD,
      * INFO(NPPWRD+KIACHE), .FALSE.)
-      IF (effectiveNuhead.GT.0) CALL zptrec6 (IFLTAB, effectiveIuhead,
-     * effectiveNuhead, INFO(NPPWRD+KIAUHE), .FALSE.)
+      IF (nuhead_copy.GT.0) CALL zptrec6 (IFLTAB, iuhead_copy,
+     * nuhead_copy, INFO(NPPWRD+KIAUHE), .FALSE.)
 C
 C     Now store the data array
 C

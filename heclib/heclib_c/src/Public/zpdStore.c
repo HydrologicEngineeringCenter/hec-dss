@@ -13,15 +13,15 @@
 if (tmpFloatOrds) {                        \
 	pds->floatOrdinates = origFloatOrds;   \
 	free(tmpFloatOrds);                    \
-}                                          \
+}	                                       \
 if (tmpFloatVals) {                        \
 	pds->floatValues = origFloatVals;      \
 	free(tmpFloatVals);                    \
-}                                          \
+}	                                       \
 if (tmpDoubleOrds) {                       \
 	pds->doubleOrdinates = origDoubleOrds; \
 	free(tmpDoubleOrds);                   \
-}                                          \
+}	                                       \
 if (tmpDoubleVals) {                       \
 	pds->doubleValues = origDoubleVals;    \
 	free(tmpDoubleVals);                   \
@@ -276,9 +276,8 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 		if (pds->endingCurve != 0) boolStoreEntire = 0;
 	}
 
-	int version = zgetVersion(ifltab);
 	//  Check for correct DSS Version
-	if (version != 7) {
+	if (zgetVersion(ifltab) != 7) {
 		if (boolStoreEntire) {
 			//  Be sure we have units, etc. defined.
 			if (!pds->unitsDependent) {
@@ -294,8 +293,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 				pds->typeIndependent = '\0';
 			}
 		}
-		status = zpdStore6(ifltab, pds, storageFlag);
-		return status;
+		return zpdStore6(ifltab, pds, storageFlag);
 	}
 	//-----------------------------------------------//
 	// convert to native vertical datum if necessary //
@@ -474,6 +472,9 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 			double offset = 0.;
 			char   cvertical_datum[CVERTICAL_DATUM_SIZE];
 			int    ivertical_datum = -1;
+			// Make a copy of the user header before we run getEffectiveVerticalDatum(),
+			// which will remove any VDI from the header. We may need to call it twice
+			// (once for indElev and once for depElev)
 			int    headerCopyNumber = pds->userHeaderNumber;
 			int   *headerCopy = NULL;
 			if (headerCopyNumber > 0) {
@@ -484,9 +485,9 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 				ivertical_datum = getEffectiveVerticalDatum(
 					cvertical_datum,
 					sizeof(cvertical_datum),
-					&pds->userHeader,
-					&pds->userHeaderNumber,
-					&pds->unitsIndependent);
+					&pds->userHeader,        // this call removes any VDI specifed in these variables
+					&pds->userHeaderNumber,  // ...
+					&pds->unitsIndependent); // ...
 				//-------------------------------------------------------//
 				// now that we have a datum, determine the offset to use //
 				//-------------------------------------------------------//
@@ -525,22 +526,12 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 					}
 					offset = getOffset(offset, vdi->unit, indElev ? pds->unitsIndependent : pds->unitsDependent);
 					if (offset == UNDEFINED_VERTICAL_DATUM_VALUE) {
-						if (indElev) {
-							sprintf(
-								errmsg,
-								"\nOrdinate unit (%s) and/or offset unit (%s) is invalid for vertical datum conversion.\n"
-								"Conversion to datum '%s' could not be performed.\n"
-								"No data stored.",
-								pds->unitsIndependent, vdi->unit, cvertical_datum);
-						}
-						else {
-							sprintf(
-								errmsg,
-								"\nValue unit (%s) and/or offset unit (%s) is invalid for vertical datum conversion.\n"
-								"Conversion to datum '%s' could not be performed.\n"
-								"No data stored.",
-								pds->unitsDependent, vdi->unit, cvertical_datum);
-						}
+						sprintf(
+							errmsg,
+							"\nOrdinate unit (%s) and/or offset unit (%s) is invalid for vertical datum conversion.\n"
+							"Conversion to datum '%s' could not be performed.\n"
+							"No data stored.",
+							pds->unitsIndependent, vdi->unit, cvertical_datum);
 						if (vdiPd && vdiPd != &_vdiPd) {
 							free(vdiPd);
 						}
@@ -553,7 +544,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 					// use the offset to put the values back to the native datum before storing //
 					//--------------------------------------------------------------------------//
 					// use temporary arrays so the values stored to disk are modified but the   //
-					// values in the zstructTs object aren't modified after the call            //
+					// values in the zstructPd object aren't modified after the call            //
 					//--------------------------------------------------------------------------//
 					if (offset != 0.) {
 						if (pds->floatOrdinates) {
@@ -579,9 +570,9 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 				ivertical_datum = getEffectiveVerticalDatum(
 					cvertical_datum,
 					sizeof(cvertical_datum),
-					&pds->userHeader,
-					&pds->userHeaderNumber,
-					&pds->unitsDependent);
+					&pds->userHeader,       // this call removes any VDI specifed in these variables
+					&pds->userHeaderNumber, // ...
+					&pds->unitsDependent);  // ...
 				//-------------------------------------------------------//
 				// now that we have a datum, determine the offset to use //
 				//-------------------------------------------------------//
@@ -598,6 +589,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 						}
 						else {
 							if (indElev) {
+								// possibly already removed the VDI from the user header, so try the copy
 								ivertical_datum = getEffectiveVerticalDatum(
 									cvertical_datum,
 									sizeof(cvertical_datum),
@@ -646,25 +638,16 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 					}
 					offset = getOffset(offset, vdi->unit, indElev ? pds->unitsIndependent : pds->unitsDependent);
 					if (offset == UNDEFINED_VERTICAL_DATUM_VALUE) {
-						if (indElev) {
-							sprintf(
-								errmsg,
-								"\nOrdinate unit (%s) and/or offset unit (%s) is invalid for vertical datum conversion.\n"
-								"Conversion to datum '%s' could not be performed.\n"
-								"No data stored.",
-								pds->unitsIndependent, vdi->unit, cvertical_datum);
-						}
-						else {
-							sprintf(
-								errmsg,
-								"\nValue unit (%s) and/or offset unit (%s) is invalid for vertical datum conversion.\n"
-								"Conversion to datum '%s' could not be performed.\n"
-								"No data stored.",
-								pds->unitsDependent, vdi->unit, cvertical_datum);
-						}
+						sprintf(
+							errmsg,
+							"\nValue unit (%s) and/or offset unit (%s) is invalid for vertical datum conversion.\n"
+							"Conversion to datum '%s' could not be performed.\n"
+							"No data stored.",
+							pds->unitsDependent, vdi->unit, cvertical_datum);
 						if (vdiPd && vdiPd != &_vdiPd) {
 							free(vdiPd);
 						}
+						FREE_TEMPS_AND_RESTORE
 						return zerrorProcessing(ifltab, DSS_FUNCTION_zpdStore_ID,
 							zdssErrorCodes.INCOMPATIBLE_CALL, 0,
 							0, zdssErrorSeverity.WARNING, pds->pathname,
@@ -717,10 +700,25 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 				else {
 					pds->locationStruct->verticalDatum = IVERTICAL_DATUM_OTHER;
 				}
-				char *compressed = NULL;
-				verticalDatumInfoToString(&compressed, vdi, TRUE);
 				char errmsg[256];
-				if (compressed) { // should never be NULL
+				char *compressed = NULL;
+				char *cp = verticalDatumInfoToString(&compressed, vdi, TRUE);
+				if (compressed == NULL) {
+					sprintf(
+						errmsg,
+						"\nVertical datum information could not be assigned to location record.\n%s\n"
+						"No data stored.",
+						cp ? cp : "Error processing vertical datum representation");
+					if (vdiPd != &_vdiPd) {
+						free(vdiPd);
+					}
+					FREE_TEMPS_AND_RESTORE
+					return zerrorProcessing(ifltab, DSS_FUNCTION_zpdStore_ID,
+						zdssErrorCodes.INCOMPATIBLE_CALL, 0,
+						0, zdssErrorSeverity.WARNING, pds->pathname,
+						errmsg);
+				}
+				else { 
 					if (pds->locationStruct->supplemental) {
 						status = insertIntoDelimitedString(
 							&pds->locationStruct->supplemental,
@@ -756,6 +754,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 									free(vdiPd);
 								}
 								free(compressed);
+								FREE_TEMPS_AND_RESTORE
 								return zerrorProcessing(ifltab, DSS_FUNCTION_zpdStore_ID,
 									zdssErrorCodes.INCOMPATIBLE_CALL, 0,
 									0, zdssErrorSeverity.WARNING, pds->pathname,
@@ -788,6 +787,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 								free(vdiPd);
 							}
 							free(compressed);
+							FREE_TEMPS_AND_RESTORE
 							return zerrorProcessing(ifltab, DSS_FUNCTION_zpdStore_ID,
 								zdssErrorCodes.INCOMPATIBLE_CALL, 0,
 								0, zdssErrorSeverity.WARNING, pds->pathname,

@@ -307,6 +307,16 @@ C
             iuhead(nuhead+1:kuhead) = 0
             call set_user_header_param(iuhead, nuhead, kuhead, 
      *        VERTICAL_DATUM_PARAM, cvdatum, istat)
+            if (istat.ne.0) then
+              if (mlevel.ge.1) then
+                write (munit,'(/,a,a,/,a)')
+     *          ' *****DSS*** zrpdi6:  ERROR  - VERTICAL DATUM',
+     *          ' TRUNCATED',
+     *          ' No values retrieved.'
+                end if
+                istat = 13
+                return
+              end if
             iuhead_copy(:min(kuhead, size(iuhead_copy))) = 
      *        iuhead(:min(kuhead, size(iuhead_copy)))
             !--------------------------------------!
