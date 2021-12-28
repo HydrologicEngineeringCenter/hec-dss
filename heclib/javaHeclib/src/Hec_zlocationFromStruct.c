@@ -5,6 +5,9 @@
 #include "heclib.h"
 #include "javaHeclib.h"
 
+#ifdef _MSC_VER 
+    #define strtok_r strtok_s
+#endif
 
 /*
 *	Takes information from a location struct and puts in a Java DataContainer
