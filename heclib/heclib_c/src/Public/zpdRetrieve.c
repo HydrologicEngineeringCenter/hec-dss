@@ -865,6 +865,7 @@ int zpdRetrieve(long long *ifltab, zStructPairedData *pds, int retrieveSizeFlag)
 									"\nVertical datum offset is undefined for datum '%s'.\n"
 									"Conversion to datum '%s' could not be performed.\n"
 									"No values retrieved.",
+									cvertical_datum,
 									cvertical_datum);
 								status = zerrorProcessing(
 									ifltab,
@@ -942,6 +943,7 @@ int zpdRetrieve(long long *ifltab, zStructPairedData *pds, int retrieveSizeFlag)
 									"\nVertical datum offset is undefined for datum '%s'.\n"
 									"Conversion to datum '%s' could not be performed.\n"
 									"No values retrieved.",
+									cvertical_datum,
 									cvertical_datum);
 								if (ind_offset != UNDEFINED_VERTICAL_DATUM_VALUE && ind_offset != 0.) {
 									if (pds->doubleOrdinates) {
