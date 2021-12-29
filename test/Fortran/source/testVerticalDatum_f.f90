@@ -235,7 +235,7 @@ subroutine testStoreRetrieveTimeSeries()
 
     endTime = '2400'
 
-    verticalDatums = (/CVD_NAVD88, CVD_NGVD29, 'Pensacola'/)
+    verticalDatums = (/CVD_NAVD88, CVD_NGVD29, 'Pensacola       '/)
 
     do j = 1, 2
         call initVerticalDatumInfo(vdi(j))
@@ -832,7 +832,7 @@ subroutine testStoreRetrievePairedData()
 
     type = 'UNT'
 
-    verticalDatums = (/CVD_NAVD88, CVD_NGVD29, 'Pensacola'/)
+    verticalDatums = (/CVD_NAVD88, CVD_NGVD29, 'Pensacola       '/)
 
     do j = 1, 2
         call initVerticalDatumInfo(vdi(j))
