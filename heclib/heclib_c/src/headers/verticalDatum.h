@@ -119,7 +119,7 @@ extern "C" {
     #define strtok_r strtok_s
 #endif
 
-#ifdef __GNUC__
+#if defined(__GNUC__) || defined(__sun__)
     #define MIN(a, b) ({         \
         __typeof__ (a) _a = (a); \
         __typeof__ (b) _b = (b); \
