@@ -148,7 +148,7 @@ void getoffset_(
     free(cDataUnit);
 }
 
-#if !defined(__APPLE__)
+#if !defined(__APPLE__) && !defined(__sun__)
     const char *strcasestr(const char *haystack, const char *needle) {
         int   haystackLen = strlen(haystack);
         int   needleLen = strlen(needle);
