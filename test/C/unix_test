@@ -15,7 +15,7 @@ if [[ "$os" = "Linux" ]]; then
    LINK2="-lz -lrt -lgfortran -lm"
 elif [[ "$os" = "SunOS" ]]; then
    CFLAGS="-m64 -c -I${HINC} -mt -xcode=pic32 -xstrconst -xc99=all -xCC -g -xs"
-   LINK1="f95 -mt -m64 -xcode=pic32 -xpagesize=4M -lrt -lz -g -xs"
+   LINK1="f95 -mt -m64 -xcode=pic32 -xpagesize=4M -lm -lrt -lz -g -xs"
 fi
 echo ${CFLAGS}
 pass_count=0

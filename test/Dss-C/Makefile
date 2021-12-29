@@ -29,7 +29,7 @@ OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
 
 $(BUILD_DIR)/$(TARGET): $(OBJS)
 	mkdir -p $(BUILD_DIR)
-	$(F90) $(CFLAGS) -o $@ $^ $(HLIBS) $(HLIBS)  $(HLIBS) $(LDFLAGS)
+	$(F90)  -o $@ $^ $(HLIBS) $(HLIBS)  $(HLIBS) $(LDFLAGS)
 
 test:$(BUILD_DIR)/$(TARGET)
 	mkdir -p $(BUILD_DIR)

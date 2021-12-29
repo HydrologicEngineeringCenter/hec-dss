@@ -103,6 +103,8 @@ void testUserHeaderOps() {
     userHeader = stringToUserHeader(userHeaderStringIn, &userHeaderNumber);
     assert(userHeaderNumber == (strlen(userHeaderStringIn)-1)/4+1);
     userHeaderStringOut = userHeaderToString(userHeader, userHeaderNumber);
+    printf("\nuserHeaderStringOut='%s'",userHeaderStringOut);
+
     assert(!strcmp(userHeaderStringIn, userHeaderStringOut));
     free(userHeader);
     free(userHeaderStringOut);
