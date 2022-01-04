@@ -276,7 +276,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 		if (pds->endingCurve != 0) boolStoreEntire = 0;
 	}
 
->	//  Check for correct DSS Version
+	//  Check for correct DSS Version
 	if (zgetVersion(ifltab) != 7) {
 		if (boolStoreEntire) {
 			//  Be sure we have units, etc. defined.
@@ -298,7 +298,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 	//-----------------------------------------------//
 	// convert to native vertical datum if necessary //
 	//-----------------------------------------------//
->	int allowOverwriteLocationVerticalDatum;
+	int allowOverwriteLocationVerticalDatum;
 	float  *tmpFloatOrds = NULL;
 	float  *origFloatOrds = NULL;
 	float  *tmpFloatVals = NULL;
@@ -321,7 +321,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 		depElev = TRUE;
 	}
 	if (indElev || depElev) {
->		//------------------------------------------------------//
+		//------------------------------------------------------//
 		// see if we have one or more verticalDatumInfo objects //
 		//------------------------------------------------------//
 		verticalDatumInfo *vdi;
@@ -353,7 +353,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 		//----------------------------------------------------------//
 		// get the info from the location struct on disk for DSS v7 //
 		//----------------------------------------------------------//
->		zStructLocation *ls = zstructLocationNew(pds->pathname);
+		zStructLocation *ls = zstructLocationNew(pds->pathname);
 		zlocationRetrieve(ifltab, ls);
 		if (ls->supplemental) {
 			char *vdiStr = extractFromDelimitedString(
@@ -369,7 +369,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 				free(vdiStr);
 			}
 		}
->		zstructFree(ls);
+		zstructFree(ls);
 		if (vdiPd && vdiLoc) {
 			zquery("VDOW", "", 0, &allowOverwriteLocationVerticalDatum);
 			if (allowOverwriteLocationVerticalDatum) {
@@ -466,7 +466,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 			vdi = vdiPd ? vdiPd : vdiLoc;
 		}
 		if (vdi) {
->			//----------------------------------//
+			//----------------------------------//
 			// get the effective vertical datum //
 			//----------------------------------//
 			double offset = 0.;
@@ -482,7 +482,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 				memcpy(headerCopy, pds->userHeader, headerCopyNumber * 4);
 			}
 			if (indElev) {
->				ivertical_datum = getEffectiveVerticalDatum(
+				ivertical_datum = getEffectiveVerticalDatum(
 					cvertical_datum,
 					sizeof(cvertical_datum),
 					&pds->userHeader,        // this call removes any VDI specifed in these variables
@@ -567,7 +567,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 				}
 			}
 			if (depElev) {
->				ivertical_datum = getEffectiveVerticalDatum(
+				ivertical_datum = getEffectiveVerticalDatum(
 					cvertical_datum,
 					sizeof(cvertical_datum),
 					&pds->userHeader,       // this call removes any VDI specifed in these variables
@@ -682,7 +682,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 			if (headerCopy) {
 				free(headerCopy);
 			}
->			if (vdi == vdiPd) {
+			if (vdi == vdiPd) {
 				//----------------------------------------------------------------------------//
 				// move the vertical datum info into the paired data struct embedded location //
 				//----------------------------------------------------------------------------//
@@ -829,7 +829,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 			}
 		}
 	}
->	//  Messages and debug
+	//  Messages and debug
 	if (zmessageLevel(ifltab, MESS_METHOD_WRITE_ID, MESS_LEVEL_USER_DIAG)) {
 		zmessage(ifltab, " ");
 		zmessageDebugInt(ifltab, DSS_FUNCTION_zpdStore_ID, "Handle: ", zhandle(ifltab));
@@ -858,7 +858,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 		}
 	}
 
->	if (!zinquire(ifltab, "write")) {
+	if (!zinquire(ifltab, "write")) {
 		FREE_TEMPS_AND_RESTORE
 		return zerrorProcessing(ifltab, DSS_FUNCTION_zpdStore_ID,
 			zdssErrorCodes.WRITE_ON_READ_ONLY, 0, 0,
@@ -868,7 +868,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 
 	//  Normal case first - write the full record
 	//  (If the record already exists, overwrite it)
->	if (boolStoreEntire) {
+	if (boolStoreEntire) {
 		//  Determine if we will be writing floats or doubles
 		boolStoreDoubles = -1;
 		if (storageFlag == 1) {
@@ -899,7 +899,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 			}
 		}
 
->		if (boolStoreDoubles == 0) {
+		if (boolStoreDoubles == 0) {
 			valueSize = 1;
 			dataType = DATA_TYPE_PD;
 		}
@@ -918,7 +918,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 			zmessageDebugInt(ifltab, DSS_FUNCTION_zpdStore_ID, "dataType: ", dataType);
 		}
 
->		internalHeader[INT_HEAD_pdPrecision] = 0;
+		internalHeader[INT_HEAD_pdPrecision] = 0;
 		internalHeader[INT_HEAD_pdNumberOrdinates] = pds->numberOrdinates;
 		internalHeader[INT_HEAD_pdNumberCurves] = pds->numberCurves;
 		internalHeader[INT_HEAD_pdBoolIndependentIsXaxis] = pds->boolIndependentIsXaxis;
@@ -938,7 +938,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 		}
 
 		//  Store labels in internalheader2
->		lengthInternalHeader2 = 0;
+		lengthInternalHeader2 = 0;
 		internalHeader2 = 0;
 		labelsLength = pds->labelsLength;
 		if (pds->labelsLength > 0) {
@@ -978,7 +978,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 		ztransfer->numberValues = (pds->numberCurves + 1) * pds->numberOrdinates;
 		ztransfer->dataType = dataType;
 
->		sizeOrdinates = pds->numberOrdinates * valueSize;
+		sizeOrdinates = pds->numberOrdinates * valueSize;
 		sizeValues = pds->numberCurves * pds->numberOrdinates * valueSize;
 
 		if (zmessageLevel(ifltab, MESS_METHOD_WRITE_ID, MESS_LEVEL_USER_DIAG)) {
@@ -1000,7 +1000,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 
 		//  Do we need to convert doubles to floats or visa versa?
 		if (pds->floatOrdinates) {
->			if (boolStoreDoubles) {
+			if (boolStoreDoubles) {
 				//  Need to convert floats to doubles
 				ordinates = (int *)calloc((size_t)pds->numberOrdinates, DOUBLE_SIZE);
 				if (!ordinates) {
@@ -1045,7 +1045,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 			}
 		}
 		else if (pds->doubleOrdinates) {
->			if (!boolStoreDoubles) {
+			if (!boolStoreDoubles) {
 				//  Need to convert doubles to floats
 				number = numberLongsInInts(pds->numberOrdinates) * 2;
 				ordinates = (int *)calloc((size_t)number, FLOAT_SIZE);
@@ -1078,7 +1078,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 			}
 		}
 
->		if (!boolStoreDoubles) {
+		if (!boolStoreDoubles) {
 			if (getEndian()) {
 				zswitchInts(ztransfer->values1, ztransfer->values1Number);
 				zswitchInts(ztransfer->values2, ztransfer->values2Number);
@@ -1093,8 +1093,8 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 			}
 		}
 
->		status = zwrite(ifltab, ztransfer);
->
+		status = zwrite(ifltab, ztransfer);
+
 		if (internalHeader2) {
 			free(internalHeader2);
 			internalHeader2 = 0;
@@ -1116,7 +1116,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 		//  Ignore ordinates, labels, etc.
 
 		//  First determine what we have on disk
->		ztransfer = zstructTransferNew(pds->pathname, 0);
+		ztransfer = zstructTransferNew(pds->pathname, 0);
 		if (!ztransfer) {
 			FREE_TEMPS_AND_RESTORE
 			return zerrorProcessing(ifltab, DSS_FUNCTION_zpdStore_ID,
@@ -1141,7 +1141,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 			FREE_TEMPS_AND_RESTORE
 			return zerrorUpdate(ifltab, status, DSS_FUNCTION_zpdStore_ID);
 		}
->		if ((ztransfer->dataType != DATA_TYPE_PD) && (ztransfer->dataType != DATA_TYPE_PDD)) {
+		if ((ztransfer->dataType != DATA_TYPE_PD) && (ztransfer->dataType != DATA_TYPE_PDD)) {
 			status = zerrorProcessing(ifltab, DSS_FUNCTION_zpdStore_ID,
 				zdssErrorCodes.WRONG_RECORD_TYPE, DATA_TYPE_PD,
 				(long long)ztransfer->dataType, zdssErrorSeverity.WARNING, ztransfer->pathname, "");
@@ -1164,7 +1164,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 		numberCurves = ztransfer->internalHeader[INT_HEAD_pdNumberCurves];
 		numberValues = numberOrdinates * numberCurves;
 
->		if (zmessageLevel(ifltab, MESS_METHOD_WRITE_ID, MESS_LEVEL_USER_DIAG)) {
+		if (zmessageLevel(ifltab, MESS_METHOD_WRITE_ID, MESS_LEVEL_USER_DIAG)) {
 			zmessageDebugInt(ifltab, DSS_FUNCTION_zpdStore_ID, "Data set read, data type: ", dataType);
 			zmessageDebugInt(ifltab, DSS_FUNCTION_zpdStore_ID, "numberOrdinates: ", numberOrdinates);
 			zmessageDebugInt(ifltab, DSS_FUNCTION_zpdStore_ID, "numberCurves: ", numberCurves);
@@ -1185,7 +1185,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 		numberRows = endOrdinate - startOrdinate;
 
 		//  Now each curve
->		startCurve = pds->startingCurve - 1;
+		startCurve = pds->startingCurve - 1;
 		if (startCurve < 0) startCurve = 0;
 		endCurve = pds->endingCurve;
 		if ((endCurve == 0) || (endCurve > numberCurves)){
@@ -1214,7 +1214,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 									zdssErrorCodes.CANNOT_ALLOCATE_MEMORY, numberRows, 0,
 									zdssErrorSeverity.MEMORY_ERROR, pds->pathname, "Allocating values");
 		}
->		ztransfer->allocated[zSTRUCT_TRANS_values2] = 1;
+		ztransfer->allocated[zSTRUCT_TRANS_values2] = 1;
 
 		for (i=startCurve; i<endCurve; i++) {
 			number = startOrdinate + (i * numberOrdinates);
@@ -1246,7 +1246,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 			}
 			//  Now Convert to float or double
 			ipos = (i - startCurve) * numberRows;
->			if (pds->floatValues) {
+			if (pds->floatValues) {
 				if (boolStoreDoubles) {
 					convertDataArray((void *)(&pds->floatValues[ipos]), (void *)&ztransfer->values2[offset],  numberRows, 1, 2);
 					sizeValues = 2;
@@ -1281,11 +1281,11 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 			status = zputBuff(ifltab, address, ztransfer->values2, (numberRows + offset), sizeValues, BUFF_WRITE, bufferControl, buffer);
 
 		}
->
+
 		//  If labels are being stored, add them in
 		//  len = pds->labelsLength  internalHeader[INT_HEAD_pdLabelsLength] = pds->labelsLength;
 		if (pds->labelsLength > 0) {
->			len = pds->labelsLength + ztransfer->internalHeader[INT_HEAD_pdLabelsLength];
+			len = pds->labelsLength + ztransfer->internalHeader[INT_HEAD_pdLabelsLength];
 			clabels = (char *)calloc((size_t)len, 1);
 			clabelsRead = (char*)calloc(ztransfer->internalHeader[INT_HEAD_pdLabelsLength], 1);
 			charInt(ztransfer->header2, clabelsRead, ztransfer->internalHeader[INT_HEAD_pdLabelsLength], ztransfer->internalHeader[INT_HEAD_pdLabelsLength], 0, 0, 0);
@@ -1320,7 +1320,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 					break;
 				}
 			}
->			if (clabelsRead) free(clabelsRead);
+			if (clabelsRead) free(clabelsRead);
 			clabelsRead = 0;
 			originalSize = (int)ztransfer->info[zdssInfoKeys.kinfoHeader2Number];
 			if (ipos > ztransfer->internalHeader[INT_HEAD_pdLabelsLength]) {
@@ -1355,7 +1355,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 				//  Read it, put in new label array, then write (with expanded array)
 				zstructFree(ztransfer);
 				ztransfer = zstructTransferNew(pds->pathname, 1);
->				if (!ztransfer) {
+				if (!ztransfer) {
 					FREE_TEMPS_AND_RESTORE
 					return zerrorProcessing(ifltab, DSS_FUNCTION_zpdStore_ID,
 											zdssErrorCodes.CANNOT_ALLOCATE_MEMORY, 0, 0,
@@ -1367,7 +1367,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 					FREE_TEMPS_AND_RESTORE
 					return zerrorUpdate(ifltab, status, DSS_FUNCTION_zpdStore_ID);
 				}
->				if ((ztransfer->dataType != DATA_TYPE_PD) && (ztransfer->dataType != DATA_TYPE_PDD)) {
+				if ((ztransfer->dataType != DATA_TYPE_PD) && (ztransfer->dataType != DATA_TYPE_PDD)) {
 					status = zerrorProcessing(ifltab, DSS_FUNCTION_zpdStore_ID,
 						zdssErrorCodes.WRONG_RECORD_TYPE, DATA_TYPE_PD,
 						(long long)ztransfer->dataType, zdssErrorSeverity.WARNING, ztransfer->pathname, "");
@@ -1377,7 +1377,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 				}
 				//  Now we have the full record.  Replace the label array
 				free(ztransfer->header2);
->				ztransfer->header2 = (int *)calloc(newSize + 2, 4);
+				ztransfer->header2 = (int *)calloc(newSize + 2, 4);
 				charInt(clabels, ztransfer->header2, ztransfer->internalHeader[INT_HEAD_pdLabelsLength], (newSize * 4), 1, 1, 0);
 				ztransfer->header2Number = newSize;
 				ztransfer->internalHeader[INT_HEAD_pdLabelsLength] = newSize * 4;
@@ -1394,7 +1394,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 				clabels = 0;
 			}
 		}
->		zlockActive(ifltab, LOCKING_LEVEL_HIGH, LOCKING_LOCK_OFF, LOCKING_FLUSH_ON);
+		zlockActive(ifltab, LOCKING_LEVEL_HIGH, LOCKING_LOCK_OFF, LOCKING_FLUSH_ON);
 			if (zisError(status)) {
 			FREE_TEMPS_AND_RESTORE
 			return zerrorUpdate(ifltab, status, DSS_FUNCTION_zwriteInternal_ID);
@@ -1404,7 +1404,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 	}
 
 
->	if ((pds->locationStruct) && (status == STATUS_OKAY)) {
+	if ((pds->locationStruct) && (status == STATUS_OKAY)) {
 		zlocationStore(ifltab, pds->locationStruct, allowOverwriteLocationVerticalDatum);
 	}
 
@@ -1413,7 +1413,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 		zmessageDebugInt(ifltab, DSS_FUNCTION_zpdStore_ID, "Status: ", status);
 	}
 
->	FREE_TEMPS_AND_RESTORE
->	return status;
+	FREE_TEMPS_AND_RESTORE
+	return status;
 }
 
