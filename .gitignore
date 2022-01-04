@@ -137,4 +137,4 @@ test/VB/bin/*
 *.dll
 
 packages/
-test/Fortran/Output/fort.7
+test/Fortran/Output/**

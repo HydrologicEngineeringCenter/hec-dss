@@ -31,12 +31,12 @@ jobs:
       - name: build and run Dss-C test program
         run: |
           cd test/Dss-C
-          make -f Makefile test
+          make test
 
       - name: build and run Fortran test program
         run: |
           cd test/Fortran
-          make -f Makefile.Linux test
+          make test
 
       # Runs a single command using the runners shell
       - name: Run a one-line script
