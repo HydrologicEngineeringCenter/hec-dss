@@ -47,6 +47,7 @@
 				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration></Configurations>
 	<Files>
 		<Filter Name="Header Files" Filter="fi;fd">
+		<File RelativePath=".\dss_parameters.h"/>
 		<File RelativePath=".\src\headers\zdssbf.h"/>
 		<File RelativePath=".\src\headers\zdssbz.h"/>
 		<File RelativePath=".\src\headers\zdssca.h"/>
