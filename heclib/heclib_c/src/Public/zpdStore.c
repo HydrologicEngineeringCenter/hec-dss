@@ -27,6 +27,7 @@ if (tmpDoubleVals) {                       \
 	free(tmpDoubleVals);                   \
 }
 
+#define PRINT_LOC {printf("%s:%d\n", __FILE__, __LINE__); fflush(stdout);}
 /**
 *  Function:	zpdStore
 *
@@ -276,6 +277,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 		if (pds->endingCurve != 0) boolStoreEntire = 0;
 	}
 
+PRINT_LOC
 	//  Check for correct DSS Version
 	if (zgetVersion(ifltab) != 7) {
 		if (boolStoreEntire) {
@@ -298,6 +300,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 	//-----------------------------------------------//
 	// convert to native vertical datum if necessary //
 	//-----------------------------------------------//
+PRINT_LOC
 	int allowOverwriteLocationVerticalDatum;
 	float  *tmpFloatOrds = NULL;
 	float  *origFloatOrds = NULL;
@@ -321,6 +324,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 		depElev = TRUE;
 	}
 	if (indElev || depElev) {
+PRINT_LOC
 		//------------------------------------------------------//
 		// see if we have one or more verticalDatumInfo objects //
 		//------------------------------------------------------//
@@ -353,6 +357,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 		//----------------------------------------------------------//
 		// get the info from the location struct on disk for DSS v7 //
 		//----------------------------------------------------------//
+PRINT_LOC
 		zStructLocation *ls = zstructLocationNew(pds->pathname);
 		zlocationRetrieve(ifltab, ls);
 		if (ls->supplemental) {
@@ -369,6 +374,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 				free(vdiStr);
 			}
 		}
+PRINT_LOC
 		zstructFree(ls);
 		if (vdiPd && vdiLoc) {
 			zquery("VDOW", "", 0, &allowOverwriteLocationVerticalDatum);
@@ -466,6 +472,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 			vdi = vdiPd ? vdiPd : vdiLoc;
 		}
 		if (vdi) {
+PRINT_LOC
 			//----------------------------------//
 			// get the effective vertical datum //
 			//----------------------------------//
@@ -482,6 +489,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 				memcpy(headerCopy, pds->userHeader, headerCopyNumber * 4);
 			}
 			if (indElev) {
+PRINT_LOC
 				ivertical_datum = getEffectiveVerticalDatum(
 					cvertical_datum,
 					sizeof(cvertical_datum),
@@ -567,6 +575,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 				}
 			}
 			if (depElev) {
+PRINT_LOC
 				ivertical_datum = getEffectiveVerticalDatum(
 					cvertical_datum,
 					sizeof(cvertical_datum),
@@ -682,6 +691,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 			if (headerCopy) {
 				free(headerCopy);
 			}
+PRINT_LOC
 			if (vdi == vdiPd) {
 				//----------------------------------------------------------------------------//
 				// move the vertical datum info into the paired data struct embedded location //
@@ -829,6 +839,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 			}
 		}
 	}
+PRINT_LOC
 	//  Messages and debug
 	if (zmessageLevel(ifltab, MESS_METHOD_WRITE_ID, MESS_LEVEL_USER_DIAG)) {
 		zmessage(ifltab, " ");
