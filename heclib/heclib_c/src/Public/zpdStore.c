@@ -27,7 +27,6 @@ if (tmpDoubleVals) {                       \
 	free(tmpDoubleVals);                   \
 }
 
-#define PRINT_LOC {printf("%s:%d\n", __FILE__, __LINE__); fflush(stdout);}
 /**
 *  Function:	zpdStore
 *
@@ -277,8 +276,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 		if (pds->endingCurve != 0) boolStoreEntire = 0;
 	}
 
-PRINT_LOC
-	//  Check for correct DSS Version
+>	//  Check for correct DSS Version
 	if (zgetVersion(ifltab) != 7) {
 		if (boolStoreEntire) {
 			//  Be sure we have units, etc. defined.
@@ -300,8 +298,7 @@ PRINT_LOC
 	//-----------------------------------------------//
 	// convert to native vertical datum if necessary //
 	//-----------------------------------------------//
-PRINT_LOC
-	int allowOverwriteLocationVerticalDatum;
+>	int allowOverwriteLocationVerticalDatum;
 	float  *tmpFloatOrds = NULL;
 	float  *origFloatOrds = NULL;
 	float  *tmpFloatVals = NULL;
@@ -324,8 +321,7 @@ PRINT_LOC
 		depElev = TRUE;
 	}
 	if (indElev || depElev) {
-PRINT_LOC
-		//------------------------------------------------------//
+>		//------------------------------------------------------//
 		// see if we have one or more verticalDatumInfo objects //
 		//------------------------------------------------------//
 		verticalDatumInfo *vdi;
@@ -357,8 +353,7 @@ PRINT_LOC
 		//----------------------------------------------------------//
 		// get the info from the location struct on disk for DSS v7 //
 		//----------------------------------------------------------//
-PRINT_LOC
-		zStructLocation *ls = zstructLocationNew(pds->pathname);
+>		zStructLocation *ls = zstructLocationNew(pds->pathname);
 		zlocationRetrieve(ifltab, ls);
 		if (ls->supplemental) {
 			char *vdiStr = extractFromDelimitedString(
@@ -374,8 +369,7 @@ PRINT_LOC
 				free(vdiStr);
 			}
 		}
-PRINT_LOC
-		zstructFree(ls);
+>		zstructFree(ls);
 		if (vdiPd && vdiLoc) {
 			zquery("VDOW", "", 0, &allowOverwriteLocationVerticalDatum);
 			if (allowOverwriteLocationVerticalDatum) {
@@ -472,8 +466,7 @@ PRINT_LOC
 			vdi = vdiPd ? vdiPd : vdiLoc;
 		}
 		if (vdi) {
-PRINT_LOC
-			//----------------------------------//
+>			//----------------------------------//
 			// get the effective vertical datum //
 			//----------------------------------//
 			double offset = 0.;
@@ -489,8 +482,7 @@ PRINT_LOC
 				memcpy(headerCopy, pds->userHeader, headerCopyNumber * 4);
 			}
 			if (indElev) {
-PRINT_LOC
-				ivertical_datum = getEffectiveVerticalDatum(
+>				ivertical_datum = getEffectiveVerticalDatum(
 					cvertical_datum,
 					sizeof(cvertical_datum),
 					&pds->userHeader,        // this call removes any VDI specifed in these variables
@@ -575,8 +567,7 @@ PRINT_LOC
 				}
 			}
 			if (depElev) {
-PRINT_LOC
-				ivertical_datum = getEffectiveVerticalDatum(
+>				ivertical_datum = getEffectiveVerticalDatum(
 					cvertical_datum,
 					sizeof(cvertical_datum),
 					&pds->userHeader,       // this call removes any VDI specifed in these variables
@@ -691,8 +682,7 @@ PRINT_LOC
 			if (headerCopy) {
 				free(headerCopy);
 			}
-PRINT_LOC
-			if (vdi == vdiPd) {
+>			if (vdi == vdiPd) {
 				//----------------------------------------------------------------------------//
 				// move the vertical datum info into the paired data struct embedded location //
 				//----------------------------------------------------------------------------//
@@ -839,8 +829,7 @@ PRINT_LOC
 			}
 		}
 	}
-PRINT_LOC
-	//  Messages and debug
+>	//  Messages and debug
 	if (zmessageLevel(ifltab, MESS_METHOD_WRITE_ID, MESS_LEVEL_USER_DIAG)) {
 		zmessage(ifltab, " ");
 		zmessageDebugInt(ifltab, DSS_FUNCTION_zpdStore_ID, "Handle: ", zhandle(ifltab));
@@ -869,8 +858,7 @@ PRINT_LOC
 		}
 	}
 
-PRINT_LOC
-	if (!zinquire(ifltab, "write")) {
+>	if (!zinquire(ifltab, "write")) {
 		FREE_TEMPS_AND_RESTORE
 		return zerrorProcessing(ifltab, DSS_FUNCTION_zpdStore_ID,
 			zdssErrorCodes.WRITE_ON_READ_ONLY, 0, 0,
@@ -880,8 +868,7 @@ PRINT_LOC
 
 	//  Normal case first - write the full record
 	//  (If the record already exists, overwrite it)
-PRINT_LOC
-	if (boolStoreEntire) {
+>	if (boolStoreEntire) {
 		//  Determine if we will be writing floats or doubles
 		boolStoreDoubles = -1;
 		if (storageFlag == 1) {
@@ -912,8 +899,7 @@ PRINT_LOC
 			}
 		}
 
-PRINT_LOC
-		if (boolStoreDoubles == 0) {
+>		if (boolStoreDoubles == 0) {
 			valueSize = 1;
 			dataType = DATA_TYPE_PD;
 		}
@@ -932,8 +918,7 @@ PRINT_LOC
 			zmessageDebugInt(ifltab, DSS_FUNCTION_zpdStore_ID, "dataType: ", dataType);
 		}
 
-PRINT_LOC
-		internalHeader[INT_HEAD_pdPrecision] = 0;
+>		internalHeader[INT_HEAD_pdPrecision] = 0;
 		internalHeader[INT_HEAD_pdNumberOrdinates] = pds->numberOrdinates;
 		internalHeader[INT_HEAD_pdNumberCurves] = pds->numberCurves;
 		internalHeader[INT_HEAD_pdBoolIndependentIsXaxis] = pds->boolIndependentIsXaxis;
@@ -953,8 +938,7 @@ PRINT_LOC
 		}
 
 		//  Store labels in internalheader2
-PRINT_LOC
-		lengthInternalHeader2 = 0;
+>		lengthInternalHeader2 = 0;
 		internalHeader2 = 0;
 		labelsLength = pds->labelsLength;
 		if (pds->labelsLength > 0) {
@@ -994,8 +978,7 @@ PRINT_LOC
 		ztransfer->numberValues = (pds->numberCurves + 1) * pds->numberOrdinates;
 		ztransfer->dataType = dataType;
 
-PRINT_LOC
-		sizeOrdinates = pds->numberOrdinates * valueSize;
+>		sizeOrdinates = pds->numberOrdinates * valueSize;
 		sizeValues = pds->numberCurves * pds->numberOrdinates * valueSize;
 
 		if (zmessageLevel(ifltab, MESS_METHOD_WRITE_ID, MESS_LEVEL_USER_DIAG)) {
@@ -1017,8 +1000,7 @@ PRINT_LOC
 
 		//  Do we need to convert doubles to floats or visa versa?
 		if (pds->floatOrdinates) {
-PRINT_LOC
-			if (boolStoreDoubles) {
+>			if (boolStoreDoubles) {
 				//  Need to convert floats to doubles
 				ordinates = (int *)calloc((size_t)pds->numberOrdinates, DOUBLE_SIZE);
 				if (!ordinates) {
@@ -1063,8 +1045,7 @@ PRINT_LOC
 			}
 		}
 		else if (pds->doubleOrdinates) {
-PRINT_LOC
-			if (!boolStoreDoubles) {
+>			if (!boolStoreDoubles) {
 				//  Need to convert doubles to floats
 				number = numberLongsInInts(pds->numberOrdinates) * 2;
 				ordinates = (int *)calloc((size_t)number, FLOAT_SIZE);
@@ -1097,8 +1078,7 @@ PRINT_LOC
 			}
 		}
 
-PRINT_LOC
-		if (!boolStoreDoubles) {
+>		if (!boolStoreDoubles) {
 			if (getEndian()) {
 				zswitchInts(ztransfer->values1, ztransfer->values1Number);
 				zswitchInts(ztransfer->values2, ztransfer->values2Number);
@@ -1113,10 +1093,8 @@ PRINT_LOC
 			}
 		}
 
-PRINT_LOC
-		status = zwrite(ifltab, ztransfer);
-PRINT_LOC
-
+>		status = zwrite(ifltab, ztransfer);
+>
 		if (internalHeader2) {
 			free(internalHeader2);
 			internalHeader2 = 0;
@@ -1138,8 +1116,7 @@ PRINT_LOC
 		//  Ignore ordinates, labels, etc.
 
 		//  First determine what we have on disk
-PRINT_LOC
-		ztransfer = zstructTransferNew(pds->pathname, 0);
+>		ztransfer = zstructTransferNew(pds->pathname, 0);
 		if (!ztransfer) {
 			FREE_TEMPS_AND_RESTORE
 			return zerrorProcessing(ifltab, DSS_FUNCTION_zpdStore_ID,
@@ -1164,8 +1141,7 @@ PRINT_LOC
 			FREE_TEMPS_AND_RESTORE
 			return zerrorUpdate(ifltab, status, DSS_FUNCTION_zpdStore_ID);
 		}
-PRINT_LOC
-		if ((ztransfer->dataType != DATA_TYPE_PD) && (ztransfer->dataType != DATA_TYPE_PDD)) {
+>		if ((ztransfer->dataType != DATA_TYPE_PD) && (ztransfer->dataType != DATA_TYPE_PDD)) {
 			status = zerrorProcessing(ifltab, DSS_FUNCTION_zpdStore_ID,
 				zdssErrorCodes.WRONG_RECORD_TYPE, DATA_TYPE_PD,
 				(long long)ztransfer->dataType, zdssErrorSeverity.WARNING, ztransfer->pathname, "");
@@ -1188,8 +1164,7 @@ PRINT_LOC
 		numberCurves = ztransfer->internalHeader[INT_HEAD_pdNumberCurves];
 		numberValues = numberOrdinates * numberCurves;
 
-PRINT_LOC
-		if (zmessageLevel(ifltab, MESS_METHOD_WRITE_ID, MESS_LEVEL_USER_DIAG)) {
+>		if (zmessageLevel(ifltab, MESS_METHOD_WRITE_ID, MESS_LEVEL_USER_DIAG)) {
 			zmessageDebugInt(ifltab, DSS_FUNCTION_zpdStore_ID, "Data set read, data type: ", dataType);
 			zmessageDebugInt(ifltab, DSS_FUNCTION_zpdStore_ID, "numberOrdinates: ", numberOrdinates);
 			zmessageDebugInt(ifltab, DSS_FUNCTION_zpdStore_ID, "numberCurves: ", numberCurves);
@@ -1210,8 +1185,7 @@ PRINT_LOC
 		numberRows = endOrdinate - startOrdinate;
 
 		//  Now each curve
-PRINT_LOC
-		startCurve = pds->startingCurve - 1;
+>		startCurve = pds->startingCurve - 1;
 		if (startCurve < 0) startCurve = 0;
 		endCurve = pds->endingCurve;
 		if ((endCurve == 0) || (endCurve > numberCurves)){
@@ -1240,8 +1214,7 @@ PRINT_LOC
 									zdssErrorCodes.CANNOT_ALLOCATE_MEMORY, numberRows, 0,
 									zdssErrorSeverity.MEMORY_ERROR, pds->pathname, "Allocating values");
 		}
-PRINT_LOC
-		ztransfer->allocated[zSTRUCT_TRANS_values2] = 1;
+>		ztransfer->allocated[zSTRUCT_TRANS_values2] = 1;
 
 		for (i=startCurve; i<endCurve; i++) {
 			number = startOrdinate + (i * numberOrdinates);
@@ -1273,8 +1246,7 @@ PRINT_LOC
 			}
 			//  Now Convert to float or double
 			ipos = (i - startCurve) * numberRows;
-PRINT_LOC
-			if (pds->floatValues) {
+>			if (pds->floatValues) {
 				if (boolStoreDoubles) {
 					convertDataArray((void *)(&pds->floatValues[ipos]), (void *)&ztransfer->values2[offset],  numberRows, 1, 2);
 					sizeValues = 2;
@@ -1309,13 +1281,11 @@ PRINT_LOC
 			status = zputBuff(ifltab, address, ztransfer->values2, (numberRows + offset), sizeValues, BUFF_WRITE, bufferControl, buffer);
 
 		}
-PRINT_LOC
-
+>
 		//  If labels are being stored, add them in
 		//  len = pds->labelsLength  internalHeader[INT_HEAD_pdLabelsLength] = pds->labelsLength;
 		if (pds->labelsLength > 0) {
-PRINT_LOC
-			len = pds->labelsLength + ztransfer->internalHeader[INT_HEAD_pdLabelsLength];
+>			len = pds->labelsLength + ztransfer->internalHeader[INT_HEAD_pdLabelsLength];
 			clabels = (char *)calloc((size_t)len, 1);
 			clabelsRead = (char*)calloc(ztransfer->internalHeader[INT_HEAD_pdLabelsLength], 1);
 			charInt(ztransfer->header2, clabelsRead, ztransfer->internalHeader[INT_HEAD_pdLabelsLength], ztransfer->internalHeader[INT_HEAD_pdLabelsLength], 0, 0, 0);
@@ -1350,8 +1320,7 @@ PRINT_LOC
 					break;
 				}
 			}
-PRINT_LOC
-			if (clabelsRead) free(clabelsRead);
+>			if (clabelsRead) free(clabelsRead);
 			clabelsRead = 0;
 			originalSize = (int)ztransfer->info[zdssInfoKeys.kinfoHeader2Number];
 			if (ipos > ztransfer->internalHeader[INT_HEAD_pdLabelsLength]) {
@@ -1386,8 +1355,7 @@ PRINT_LOC
 				//  Read it, put in new label array, then write (with expanded array)
 				zstructFree(ztransfer);
 				ztransfer = zstructTransferNew(pds->pathname, 1);
-PRINT_LOC
-				if (!ztransfer) {
+>				if (!ztransfer) {
 					FREE_TEMPS_AND_RESTORE
 					return zerrorProcessing(ifltab, DSS_FUNCTION_zpdStore_ID,
 											zdssErrorCodes.CANNOT_ALLOCATE_MEMORY, 0, 0,
@@ -1399,8 +1367,7 @@ PRINT_LOC
 					FREE_TEMPS_AND_RESTORE
 					return zerrorUpdate(ifltab, status, DSS_FUNCTION_zpdStore_ID);
 				}
-PRINT_LOC
-				if ((ztransfer->dataType != DATA_TYPE_PD) && (ztransfer->dataType != DATA_TYPE_PDD)) {
+>				if ((ztransfer->dataType != DATA_TYPE_PD) && (ztransfer->dataType != DATA_TYPE_PDD)) {
 					status = zerrorProcessing(ifltab, DSS_FUNCTION_zpdStore_ID,
 						zdssErrorCodes.WRONG_RECORD_TYPE, DATA_TYPE_PD,
 						(long long)ztransfer->dataType, zdssErrorSeverity.WARNING, ztransfer->pathname, "");
@@ -1410,8 +1377,7 @@ PRINT_LOC
 				}
 				//  Now we have the full record.  Replace the label array
 				free(ztransfer->header2);
-PRINT_LOC
-				ztransfer->header2 = (int *)calloc(newSize + 2, 4);
+>				ztransfer->header2 = (int *)calloc(newSize + 2, 4);
 				charInt(clabels, ztransfer->header2, ztransfer->internalHeader[INT_HEAD_pdLabelsLength], (newSize * 4), 1, 1, 0);
 				ztransfer->header2Number = newSize;
 				ztransfer->internalHeader[INT_HEAD_pdLabelsLength] = newSize * 4;
@@ -1428,8 +1394,7 @@ PRINT_LOC
 				clabels = 0;
 			}
 		}
-PRINT_LOC
-		zlockActive(ifltab, LOCKING_LEVEL_HIGH, LOCKING_LOCK_OFF, LOCKING_FLUSH_ON);
+>		zlockActive(ifltab, LOCKING_LEVEL_HIGH, LOCKING_LOCK_OFF, LOCKING_FLUSH_ON);
 			if (zisError(status)) {
 			FREE_TEMPS_AND_RESTORE
 			return zerrorUpdate(ifltab, status, DSS_FUNCTION_zwriteInternal_ID);
@@ -1439,8 +1404,7 @@ PRINT_LOC
 	}
 
 
-PRINT_LOC
-	if ((pds->locationStruct) && (status == STATUS_OKAY)) {
+>	if ((pds->locationStruct) && (status == STATUS_OKAY)) {
 		zlocationStore(ifltab, pds->locationStruct, allowOverwriteLocationVerticalDatum);
 	}
 
@@ -1449,9 +1413,7 @@ PRINT_LOC
 		zmessageDebugInt(ifltab, DSS_FUNCTION_zpdStore_ID, "Status: ", status);
 	}
 
-PRINT_LOC
-	FREE_TEMPS_AND_RESTORE
-PRINT_LOC
-	return status;
+>	FREE_TEMPS_AND_RESTORE
+>	return status;
 }
 
