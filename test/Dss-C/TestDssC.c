@@ -44,6 +44,9 @@ void usage(char* exeName)
 	printf("\n%s pathnameTesting file.dss", exeName);
 	printf("\n");
 
+	printf("\nSupported Environmnet variable examples:");
+	printf("\nDSS_DEBUG_LEVEL=17");
+
 }
 
 int main(int argc, char* argv[])
@@ -51,7 +54,11 @@ int main(int argc, char* argv[])
 	int status = 0;
 	long long start_time = getCurrentTimeMillis();
 
-
+	char* debugLevel = getenv("DSS_DEBUG_LEVEL");
+	if (debugLevel && strlen(debugLevel) > 0) {
+		int mlev = atoi(debugLevel);
+		zset("mlev", "", mlev);
+	}
 
 	if (argc < 2)
 	{
@@ -107,8 +114,8 @@ int main(int argc, char* argv[])
 	else if (argc == 3 && strcmp(argv[1], "recordinfo") == 0) {
 		testRecordInfo6(argv[2]);
 	}
-	else if (argc == 3 && strcmp(argv[1], "pathnameTesting") == 0) {
-		PathnameTesting(argv[2]);
+	else if (argc == 4 && strcmp(argv[1], "pathnameTesting") == 0) {
+		PathnameTesting(argv[2],atoi(argv[3]));
 	}
 	else
 	{
@@ -136,6 +143,8 @@ int runTheTests() {
 	if (status != STATUS_OKAY)
 		return status;
 
+	status = PathnameTesting("path_name_test7.dss",7);
+	status = PathnameTesting("path_name_test6.dss", 6);
 
 	printf("\ntest stringCat\n");
 	status = test_stringCat();

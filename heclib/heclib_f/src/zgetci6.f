@@ -1,6 +1,7 @@
       SUBROUTINE zgetci6 (IFLTAB, CPARTI, JCOMP, DBASE,
      * LDBASE, LDHIGH, NPRE)
-C
+
+      include 'dss_parameters.h'
 C
 C     Determine if data for this pathname, based on its pathname parts,
 C     should be compressed by default.  This routine reads the default
@@ -17,7 +18,7 @@ C
 C
 C     CPARTF are the parts set in the file,
 C     CPARTI are the parts being passed in.
-      CHARACTER CPARTF(6)*64
+      CHARACTER(len=dss_maxpart) CPARTF(6)
       INTEGER ILENF(6), ILENI(6)
 C
       INCLUDE 'zdsskz.h'

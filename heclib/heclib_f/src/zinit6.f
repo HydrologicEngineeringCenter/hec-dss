@@ -910,13 +910,6 @@ C
       DATA CERRMS /' '/
       DATA IERRMS /0/
 C
-C     Set the default maximum length of pathnames and pathname parts
-C     Max 392 characters and 64 character per part
-C     (default of 80 char pathnames and 32 char parts)
-C     6 x 64 + 7 slashes = 391 + 1 for "c" null string ender = 392
-      DATA MXPATH /392/
-      DATA MAXPART /64/
-C
 C     LOGICAL NUMBER OF DATA.  IF -1, USE NDATA BY DEFAULT
       DATA NLDATA /-1/
 C

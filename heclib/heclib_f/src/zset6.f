@@ -293,21 +293,6 @@ C     (Better know what we are doing - can ruin a recoverable file!)
       ENDIF
 C
 C
-C     Allow the writing of Long Pathnames
-C     Max 392 characters and 64 character per part
-C     (default of 80 char pathnames and 32 char parts)
-C     6 x 64 + 7 slashes = 391 + 1 for "c" null string ender = 392
-      ELSE IF (CFLAG.EQ.'LONG') THEN
-         CALL UPCASE (CSTRIN)
-         IF ((CSTRIN(1:3).EQ.'ON').OR.(CSTRIN(1:3).EQ.'YES').OR.
-     *       (CSTRIN(1:3).EQ.'TRU')) THEN
-            MXPATH = 392
-            MAXPART = 64
-         ELSE
-            MXPATH = 80
-            MAXPART = 32
-         ENDIF
-C
 C
 C     Should the record time be updated at write time instead of the
 C     time that the file was opened (only for programs that run a

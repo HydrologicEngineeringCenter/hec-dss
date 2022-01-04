@@ -1,6 +1,8 @@
       SUBROUTINE zfpn (CA, NA, CB, NB, CC, NC, CD, ND, CE, NE, CF, NF,
      *                 CPATH, NPATH)
 C
+      include 'dss_parameters.h'
+
 C     FORM PATH NAME (Obsolete)
 C
 C     Subroutine zpath should be called instead of this routine
@@ -23,7 +25,7 @@ C
 C
       CHARACTER CA*(*), CB*(*), CC*(*), CD*(*), CE*(*), CF*(*)
       CHARACTER CPATH*(*)
-      CHARACTER CPART(6)*64
+      CHARACTER(len=dss_maxpart) CPART(6)
       INTEGER ILEN(6)
 C
 C
@@ -42,8 +44,8 @@ C
       ILEN(6) = NF
 C
       DO 40 I=1,6
-      IF (ILEN(I).GT.392) THEN
-      ILEN(I) = MAXPART
+      IF (ILEN(I).GT.dss_maxpath) THEN
+      ILEN(I) = dss_maxpart
       ELSE IF (ILEN(I).LE.0) THEN
       ILEN(I) = 1
       CPART(I) = ' '

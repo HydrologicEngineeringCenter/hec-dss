@@ -93,6 +93,7 @@ int Zqueeze(char* dssFileName);
 int CheckFile(char* dssFileName);
 void usage(char* exeName);
 int Export(char* dssFileName, char* path, int metaDataOnly);
-int PathnameTesting(char* dssFileName);
+int PathnameTesting(char* dssFileName, int dssVersion);
+
 
 #endif

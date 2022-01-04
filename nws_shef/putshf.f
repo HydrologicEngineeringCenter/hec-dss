@@ -5,6 +5,7 @@ C
       INCLUDE 'pstbls.h'
       INCLUDE 'shfids.h'
       INCLUDE 'century.h'
+      INCLUDE 'dss_parameters.h'
 C
       REAL DATA(NDATA)
       INTEGER ITIME(*)
@@ -12,7 +13,7 @@ C
 C
 C DSS DECLARATIONS
       CHARACTER CPATH*(*),PCTS*(*), CTYPE*8
-      CHARACTER*64 CA,CB,CC,CD,CE,CF
+      CHARACTER(len=dss_maxpart) CA,CB,CC,CD,CE,CF
 C
 C DECLARATIONS FOR MISC.
       CHARACTER TZONE*(*)      
