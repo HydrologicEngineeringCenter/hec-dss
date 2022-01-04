@@ -869,6 +869,7 @@ PRINT_LOC
 		}
 	}
 
+PRINT_LOC
 	if (!zinquire(ifltab, "write")) {
 		FREE_TEMPS_AND_RESTORE
 		return zerrorProcessing(ifltab, DSS_FUNCTION_zpdStore_ID,
@@ -879,6 +880,7 @@ PRINT_LOC
 
 	//  Normal case first - write the full record
 	//  (If the record already exists, overwrite it)
+PRINT_LOC
 	if (boolStoreEntire) {
 		//  Determine if we will be writing floats or doubles
 		boolStoreDoubles = -1;
@@ -910,6 +912,7 @@ PRINT_LOC
 			}
 		}
 
+PRINT_LOC
 		if (boolStoreDoubles == 0) {
 			valueSize = 1;
 			dataType = DATA_TYPE_PD;
@@ -929,6 +932,7 @@ PRINT_LOC
 			zmessageDebugInt(ifltab, DSS_FUNCTION_zpdStore_ID, "dataType: ", dataType);
 		}
 
+PRINT_LOC
 		internalHeader[INT_HEAD_pdPrecision] = 0;
 		internalHeader[INT_HEAD_pdNumberOrdinates] = pds->numberOrdinates;
 		internalHeader[INT_HEAD_pdNumberCurves] = pds->numberCurves;
@@ -949,6 +953,7 @@ PRINT_LOC
 		}
 
 		//  Store labels in internalheader2
+PRINT_LOC
 		lengthInternalHeader2 = 0;
 		internalHeader2 = 0;
 		labelsLength = pds->labelsLength;
@@ -989,6 +994,7 @@ PRINT_LOC
 		ztransfer->numberValues = (pds->numberCurves + 1) * pds->numberOrdinates;
 		ztransfer->dataType = dataType;
 
+PRINT_LOC
 		sizeOrdinates = pds->numberOrdinates * valueSize;
 		sizeValues = pds->numberCurves * pds->numberOrdinates * valueSize;
 
@@ -1011,6 +1017,7 @@ PRINT_LOC
 
 		//  Do we need to convert doubles to floats or visa versa?
 		if (pds->floatOrdinates) {
+PRINT_LOC
 			if (boolStoreDoubles) {
 				//  Need to convert floats to doubles
 				ordinates = (int *)calloc((size_t)pds->numberOrdinates, DOUBLE_SIZE);
@@ -1056,6 +1063,7 @@ PRINT_LOC
 			}
 		}
 		else if (pds->doubleOrdinates) {
+PRINT_LOC
 			if (!boolStoreDoubles) {
 				//  Need to convert doubles to floats
 				number = numberLongsInInts(pds->numberOrdinates) * 2;
@@ -1089,6 +1097,7 @@ PRINT_LOC
 			}
 		}
 
+PRINT_LOC
 		if (!boolStoreDoubles) {
 			if (getEndian()) {
 				zswitchInts(ztransfer->values1, ztransfer->values1Number);
@@ -1104,7 +1113,9 @@ PRINT_LOC
 			}
 		}
 
+PRINT_LOC
 		status = zwrite(ifltab, ztransfer);
+PRINT_LOC
 
 		if (internalHeader2) {
 			free(internalHeader2);
@@ -1127,6 +1138,7 @@ PRINT_LOC
 		//  Ignore ordinates, labels, etc.
 
 		//  First determine what we have on disk
+PRINT_LOC
 		ztransfer = zstructTransferNew(pds->pathname, 0);
 		if (!ztransfer) {
 			FREE_TEMPS_AND_RESTORE
@@ -1152,6 +1164,7 @@ PRINT_LOC
 			FREE_TEMPS_AND_RESTORE
 			return zerrorUpdate(ifltab, status, DSS_FUNCTION_zpdStore_ID);
 		}
+PRINT_LOC
 		if ((ztransfer->dataType != DATA_TYPE_PD) && (ztransfer->dataType != DATA_TYPE_PDD)) {
 			status = zerrorProcessing(ifltab, DSS_FUNCTION_zpdStore_ID,
 				zdssErrorCodes.WRONG_RECORD_TYPE, DATA_TYPE_PD,
@@ -1175,6 +1188,7 @@ PRINT_LOC
 		numberCurves = ztransfer->internalHeader[INT_HEAD_pdNumberCurves];
 		numberValues = numberOrdinates * numberCurves;
 
+PRINT_LOC
 		if (zmessageLevel(ifltab, MESS_METHOD_WRITE_ID, MESS_LEVEL_USER_DIAG)) {
 			zmessageDebugInt(ifltab, DSS_FUNCTION_zpdStore_ID, "Data set read, data type: ", dataType);
 			zmessageDebugInt(ifltab, DSS_FUNCTION_zpdStore_ID, "numberOrdinates: ", numberOrdinates);
@@ -1196,6 +1210,7 @@ PRINT_LOC
 		numberRows = endOrdinate - startOrdinate;
 
 		//  Now each curve
+PRINT_LOC
 		startCurve = pds->startingCurve - 1;
 		if (startCurve < 0) startCurve = 0;
 		endCurve = pds->endingCurve;
@@ -1225,6 +1240,7 @@ PRINT_LOC
 									zdssErrorCodes.CANNOT_ALLOCATE_MEMORY, numberRows, 0,
 									zdssErrorSeverity.MEMORY_ERROR, pds->pathname, "Allocating values");
 		}
+PRINT_LOC
 		ztransfer->allocated[zSTRUCT_TRANS_values2] = 1;
 
 		for (i=startCurve; i<endCurve; i++) {
@@ -1257,6 +1273,7 @@ PRINT_LOC
 			}
 			//  Now Convert to float or double
 			ipos = (i - startCurve) * numberRows;
+PRINT_LOC
 			if (pds->floatValues) {
 				if (boolStoreDoubles) {
 					convertDataArray((void *)(&pds->floatValues[ipos]), (void *)&ztransfer->values2[offset],  numberRows, 1, 2);
@@ -1292,10 +1309,12 @@ PRINT_LOC
 			status = zputBuff(ifltab, address, ztransfer->values2, (numberRows + offset), sizeValues, BUFF_WRITE, bufferControl, buffer);
 
 		}
+PRINT_LOC
 
 		//  If labels are being stored, add them in
 		//  len = pds->labelsLength  internalHeader[INT_HEAD_pdLabelsLength] = pds->labelsLength;
 		if (pds->labelsLength > 0) {
+PRINT_LOC
 			len = pds->labelsLength + ztransfer->internalHeader[INT_HEAD_pdLabelsLength];
 			clabels = (char *)calloc((size_t)len, 1);
 			clabelsRead = (char*)calloc(ztransfer->internalHeader[INT_HEAD_pdLabelsLength], 1);
@@ -1331,6 +1350,7 @@ PRINT_LOC
 					break;
 				}
 			}
+PRINT_LOC
 			if (clabelsRead) free(clabelsRead);
 			clabelsRead = 0;
 			originalSize = (int)ztransfer->info[zdssInfoKeys.kinfoHeader2Number];
@@ -1366,6 +1386,7 @@ PRINT_LOC
 				//  Read it, put in new label array, then write (with expanded array)
 				zstructFree(ztransfer);
 				ztransfer = zstructTransferNew(pds->pathname, 1);
+PRINT_LOC
 				if (!ztransfer) {
 					FREE_TEMPS_AND_RESTORE
 					return zerrorProcessing(ifltab, DSS_FUNCTION_zpdStore_ID,
@@ -1378,6 +1399,7 @@ PRINT_LOC
 					FREE_TEMPS_AND_RESTORE
 					return zerrorUpdate(ifltab, status, DSS_FUNCTION_zpdStore_ID);
 				}
+PRINT_LOC
 				if ((ztransfer->dataType != DATA_TYPE_PD) && (ztransfer->dataType != DATA_TYPE_PDD)) {
 					status = zerrorProcessing(ifltab, DSS_FUNCTION_zpdStore_ID,
 						zdssErrorCodes.WRONG_RECORD_TYPE, DATA_TYPE_PD,
@@ -1388,6 +1410,7 @@ PRINT_LOC
 				}
 				//  Now we have the full record.  Replace the label array
 				free(ztransfer->header2);
+PRINT_LOC
 				ztransfer->header2 = (int *)calloc(newSize + 2, 4);
 				charInt(clabels, ztransfer->header2, ztransfer->internalHeader[INT_HEAD_pdLabelsLength], (newSize * 4), 1, 1, 0);
 				ztransfer->header2Number = newSize;
@@ -1405,6 +1428,7 @@ PRINT_LOC
 				clabels = 0;
 			}
 		}
+PRINT_LOC
 		zlockActive(ifltab, LOCKING_LEVEL_HIGH, LOCKING_LOCK_OFF, LOCKING_FLUSH_ON);
 			if (zisError(status)) {
 			FREE_TEMPS_AND_RESTORE
@@ -1415,6 +1439,7 @@ PRINT_LOC
 	}
 
 
+PRINT_LOC
 	if ((pds->locationStruct) && (status == STATUS_OKAY)) {
 		zlocationStore(ifltab, pds->locationStruct, allowOverwriteLocationVerticalDatum);
 	}
@@ -1424,7 +1449,9 @@ PRINT_LOC
 		zmessageDebugInt(ifltab, DSS_FUNCTION_zpdStore_ID, "Status: ", status);
 	}
 
+PRINT_LOC
 	FREE_TEMPS_AND_RESTORE
+PRINT_LOC
 	return status;
 }
 
