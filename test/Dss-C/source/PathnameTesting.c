@@ -2,17 +2,28 @@
 #include <string.h>
 /*
 * Testing to support larger F part.
+* 
+* args:
+*   dssFileName -  dss file to be created (existing file will be overwritten)
+*  dssVersion   - verions of dss file (6 or 7) 
 */
-int PathnameTesting(char* dssFileName)
+int PathnameTesting(char* dssFileName, int dssVersion)
 {
 	long long ifltab[250];
 	zStructTimeSeries* tss1;
 	double dvalues[200];
 	int status, i;
 
+	deleteFile(dssFileName);
 	
-	//  Open the DSS file; Create if it doesn't exist
-	status = zopen(ifltab, dssFileName);
+	if (dssVersion == 7)
+		status = zopen(ifltab, dssFileName);
+	else if (dssVersion == 6)
+		status = zopen6(ifltab, dssFileName);
+	else {
+		printf("\n invalid DSS version %d PathnameTesting failed", dssVersion);
+		return -1;
+	}
 	if (status != STATUS_OKAY) return status;
 
 	//  Write a regular interval data set.  Gen up the data

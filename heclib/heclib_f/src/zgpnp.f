@@ -1,5 +1,5 @@
       SUBROUTINE zgpnp (CLINE, CA, CB, CC, CD, CE, CF, NPARTS)
-C
+      include 'dss_parameters.h'
 C     Searches character string CLINE for pathname parts
 C     The parts are specified by their part letter (A, B, C, D, E,
 C     or F), followed by an equal sign then the corresponding part.
@@ -14,7 +14,8 @@ C
       CHARACTER CA*(*), CB*(*), CC*(*), CD*(*), CE*(*), CF*(*)
       CHARACTER CLINE*(*)
       INTEGER NPARTS(6), IST(6)
-      CHARACTER CLETTR(12)*1, CPART*64
+      CHARACTER CLETTR(12)*1
+      CHARACTER(len=dss_maxpart) CPART
       INTEGER IBF(12), IEF(12), ILF(12)
       LOGICAL LSET
 C

@@ -10,7 +10,9 @@ C     IPLAN = 0   Always write
 C     IPLAN = 1   Only write if new record
 C     IPLAN = 2   Only write if old record
 C
-C
+
+      include 'dss_parameters.h'
+      
       INCLUDE 'zdsskz.h'
 C
       INCLUDE 'zdsslz.h'
@@ -42,7 +44,7 @@ C
      * /,T12,'Pathname: ',A)
 C
 C     Check for garbage write
-      IF ((NPATH.LE.3).OR.(NPATH.GT.MXPATH)) GO TO 920
+      IF ((NPATH.LE.3).OR.(NPATH.GT.dss_maxpath)) GO TO 920
       IF (ICHAR(CPATH(1:1)).LT.47) GO TO 920
       IF (NDATA.LE.0) GO TO 930
 C

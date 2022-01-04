@@ -12,9 +12,11 @@ C
 C     Written by John Miwa at HEC, 1988.
 C
 C
+       include 'dss_parameters.h'
 C     Declare variables
          CHARACTER CA*(*),CB*(*),CC*(*),CD*(*),CE*(*),CF*(*)
-         CHARACTER CPART(6)*128, CPATH*(*)   ! Fpart supports 128 characters
+         CHARACTER(len=dss_maxpart) CPART(6)
+         CHARACTER CPATH*(*)   
          INTEGER IBEG, IEND, KEND
 C
       integer npath, maxlen, i, j, ilen, jchar, jlen

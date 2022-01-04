@@ -69,9 +69,11 @@ C     Argument Dimensions
       DOUBLE PRECISION DVALUES(*), COORDS(*)
       LOGICAL LCOORDS
 C
+      include 'dss_parameters.h'
+
 C     Local Dimensions
       INTEGER IBPART(6), IEPART(6), ILPART(6)
-      CHARACTER CTSPAT*392
+      CHARACTER(len=dss_maxpath) CTSPAT
       CHARACTER CDATE1*12, CDATE2*12, CTIME1*4, CTIME2*4, CSCRAT*8
       LOGICAL LFOUND, LTIMEW, LPATH, LQUAL, LQREAD, LQBLOK
       LOGICAL LGETDOB, LFILDOB
@@ -79,6 +81,8 @@ C     Local Dimensions
       INTEGER IIHEAD(KIHEAD)
 C
 C
+
+
       INCLUDE 'zdsskz.h'
 C
       INCLUDE 'zdssiz.h'
@@ -119,7 +123,7 @@ C
 C
 C     Unform the pathname
       CALL CHRLNB (CPATH, NPATH)
-      IF ((NPATH.GT.MXPATH).OR.(NPATH.LE.1)) GO TO 900
+      IF ((NPATH.GT.dss_maxpath).OR.(NPATH.LE.1)) GO TO 900
       IF (CPATH(1:1).NE.'/') GO TO 900
       CALL zupath (CPATH, IBPART, IEPART, ILPART, IERR)
       IF (IERR.NE.0) GO TO 900
