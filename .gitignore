@@ -139,3 +139,5 @@ test/VB/bin/*
 
 packages/
 test/Fortran/Output/**
+*.7
+*.u2d
