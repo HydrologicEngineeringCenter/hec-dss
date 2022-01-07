@@ -274,11 +274,19 @@ int insertIntoDelimitedString(
 //
 int *stringToUserHeader(const char *str, int *intCount) {
     int  numBytes = strlen(str);
-    int  numInts = numberIntsInBytes(numBytes);
+	int numInts = (numBytes-1) / 4 + 1;
     int *userHeader = NULL;
     if (numInts > 0) {
         userHeader = (int *)_calloc(numInts, 4);
-        charInt ((void *)str, userHeader, numBytes, numInts * 4, 0, 1, 0);
+        int *buf = (int *)_calloc(numInts, 4);
+		strcpy((char *)userHeader, str);
+		if (ntohl(0x12345678) == 0x12345678) {
+			// big endian
+			uint32_t *_4bytes = (uint32_t *)userHeader;
+			for (int i = 0; i < numInts; ++i) {
+				BYTESWAP(*_4bytes++);
+			}
+		}
     }
     *intCount = numInts;
     return userHeader;
@@ -289,7 +297,16 @@ int *stringToUserHeader(const char *str, int *intCount) {
 char *userHeaderToString(const int *userHeader, const int userHeaderSize) {
     char *str = NULL;
     if (userHeader != NULL && userHeaderSize > 0) {
-        char *start = (char *)userHeader;
+		int *buf = (int *)calloc(userHeaderSize, 4);
+		memcpy(buf, userHeader, 4 * userHeaderSize);
+		if (ntohl(0x12345678) == 0x12345678) {
+			// big endian
+			uint32_t *_4bytes = (uint32_t *)buf;
+			for (int i = 0; i < userHeaderSize; ++i) {
+				BYTESWAP(*_4bytes++);
+			}
+		}
+        char *start = (char *)buf;
         char *cp;
         int   len;
         for (cp = start; *cp && cp - start < userHeaderSize * 4; ++cp);
@@ -298,9 +315,11 @@ char *userHeaderToString(const int *userHeader, const int userHeaderSize) {
         str = _malloc(len+1);
         strncpy(str, start, len);
         str[len] = '\0';
+		free(buf);
     }
     return str;
 }
+
 //
 // See verticalDatum.h for documentation
 //
@@ -667,8 +686,8 @@ char *validateXmlStructure(const char *xml) {
 
     strcpy(buf, xml);
     while (TRUE) {
-        char strtokBuf[4096];
-        cp1 = first ? strtok_r(buf, "<", (char **)&strtokBuf) : strtok_r(NULL, "<", (char **)&strtokBuf);
+        char *saveptr;
+        cp1 = first ? strtok_r(buf, "<", &saveptr) : strtok_r(NULL, "<", &saveptr);
         first = FALSE;
         if (!cp1) {
             break;
@@ -1075,21 +1094,21 @@ int	getEffectiveVerticalDatum(
     //---------------------------------------//
     if (unit != NULL && *unit != NULL) {
         if (strchr(*unit, '|')) {
-            char  strtokBuf[256];
+            char  *saveptr;
             char *value;
             char *unitValue = NULL;
             char *verticalDatum = NULL;
             char *unitSpec = mallocAndCopy(*unit);
-            char *key = strtok_r(unitSpec, "|=", (char **)&strtokBuf);
+            char *key = strtok_r(unitSpec, "|=", &saveptr);
             while (key) {
-                value = strtok_r(NULL, "|=", (char **)&strtokBuf);
+                value = strtok_r(NULL, "|=", &saveptr);
                 if (!strcasecmp(key, "U")) {
                     unitValue = value;
                 }
                 else if (!strcasecmp(key, "V")) {
                     verticalDatum = value;
                 }
-                key = strtok_r(NULL, "|=", (char **)&strtokBuf);
+                key = strtok_r(NULL, "|=", &saveptr);
             }
             if (unitValue) {
                 //----------------------------------------------//

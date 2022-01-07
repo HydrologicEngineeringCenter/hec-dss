@@ -7,13 +7,19 @@ extern "C" {
  
 #include <float.h>
 #include <stdint.h>
+
+#if defined(_MSC_VER)
+	#include <winsock.h>
+#else
+	#include <netinet/in.h>
+#endif
  
 #if defined(_MSC_VER)
-        #ifdef _WIN64
-                typedef int64_t slen_t;
-        #else
-                typedef int32_t slen_t;
-        #endif
+	#ifdef _WIN64
+			typedef int64_t slen_t;
+	#else
+			typedef int32_t slen_t;
+	#endif
 #else
     # if __GNUC__
         #if __GNUC__ > 7
@@ -47,58 +53,58 @@ extern "C" {
     }                                              \
 }
 
-#define BYTESWAP(d)               \
-{                                 \
-    BYTE *b1 = (BYTE *)&d, b2[8]; \
-    switch(sizeof(d))             \
-    {                             \
-        case 1:                   \
-            break;                \
-                                  \
-        case 2:                   \
-            b2[0] = b1[1];        \
-            b2[1] = b1[0];        \
-                                  \
-            b1[0] = b2[0];        \
-            b1[1] = b2[1];        \
-            break;                \
-                                  \
-        case 4:                   \
-            b2[0] = b1[3];        \
-            b2[1] = b1[2];        \
-            b2[2] = b1[1];        \
-            b2[3] = b1[0];        \
-                                  \
-            b1[0] = b2[0];        \
-            b1[1] = b2[1];        \
-            b1[2] = b2[2];        \
-            b1[3] = b2[3];        \
-            break;                \
-                                  \
-        case 8:                   \
-		    b2[0] = b1[7];        \
-		    b2[1] = b1[6];        \
-		    b2[2] = b1[5];        \
-		    b2[3] = b1[4];        \
-		    b2[4] = b1[3];        \
-		    b2[5] = b1[2];        \
-		    b2[6] = b1[1];        \
-		    b2[7] = b1[0];        \
-		    					  \
-		    b1[0] = b2[0];        \
-		    b1[1] = b2[1];        \
-		    b1[2] = b2[2];        \
-		    b1[3] = b2[3];        \
-		    b1[4] = b2[4];        \
-		    b1[5] = b2[5];        \
-		    b1[6] = b2[6];        \
-		    b1[7] = b2[7];        \
-		    break;                \
-                                  \
-        default:                  \
-            assert(0);            \
-            break;                \
-    }                             \
+#define BYTESWAP(d)                     \
+{                                       \
+    uint8_t *b1 = (uint8_t *)&d, b2[8]; \
+    switch(sizeof(d))                   \
+    {                                   \
+        case 1:                         \
+            break;                      \
+                                        \
+        case 2:                         \
+            b2[0] = b1[1];              \
+            b2[1] = b1[0];              \
+                                        \
+            b1[0] = b2[0];              \
+            b1[1] = b2[1];              \
+            break;                      \
+                                        \
+        case 4:                         \
+            b2[0] = b1[3];              \
+            b2[1] = b1[2];              \
+            b2[2] = b1[1];              \
+            b2[3] = b1[0];              \
+                                        \
+            b1[0] = b2[0];              \
+            b1[1] = b2[1];              \
+            b1[2] = b2[2];              \
+            b1[3] = b2[3];              \
+            break;                      \
+                                        \
+        case 8:                         \
+            b2[0] = b1[7];              \
+            b2[1] = b1[6];              \
+            b2[2] = b1[5];              \
+            b2[3] = b1[4];              \
+            b2[4] = b1[3];              \
+            b2[5] = b1[2];              \
+            b2[6] = b1[1];              \
+            b2[7] = b1[0];              \
+                                        \
+            b1[0] = b2[0];              \
+            b1[1] = b2[1];              \
+            b1[2] = b2[2];              \
+            b1[3] = b2[3];              \
+            b1[4] = b2[4];              \
+            b1[5] = b2[5];              \
+            b1[6] = b2[6];              \
+            b1[7] = b2[7];              \
+            break;                      \
+                                        \
+        default:                        \
+            assert(0);                  \
+            break;                      \
+    }                                   \
 }
 
 //----------------// 

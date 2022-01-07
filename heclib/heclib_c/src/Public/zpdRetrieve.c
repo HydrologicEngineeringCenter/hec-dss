@@ -708,7 +708,7 @@ int zpdRetrieve(long long *ifltab, zStructPairedData *pds, int retrieveSizeFlag)
 		int indElev = FALSE;
 		int depElev = FALSE;
 		char cPart[65];
-		char strtokBuf[65];
+		char *saveptr;
 		char cvertical_datum[CVERTICAL_DATUM_SIZE];
 		int  ivertical_datum = IVERTICAL_DATUM_UNSET;
 		int  ivertical_datum2;
@@ -716,11 +716,11 @@ int zpdRetrieve(long long *ifltab, zStructPairedData *pds, int retrieveSizeFlag)
 		verticalDatumInfo *vdi = NULL;
 		char errmsg[1024];
 		zpathnameGetPart(pds->pathname, 3, cPart, sizeof(cPart));
-		char *cp = strtok_r(cPart, "-", (char **)&strtokBuf);
+		char *cp = strtok_r(cPart, "-", &saveptr);
 		if (!strncasecmp(cp, "ELEV", 4)) {
 			indElev = TRUE;
 		}
-		cp = strtok_r(NULL, "-", (char **)&strtokBuf);
+		cp = strtok_r(NULL, "-", &saveptr);
 		if (cp && !strncasecmp(cp, "ELEV", 4)) {
 			depElev = TRUE;
 		}

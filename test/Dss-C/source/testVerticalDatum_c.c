@@ -99,12 +99,10 @@ void testUserHeaderOps() {
     int   userHeaderNumber;
     char *userHeaderStringIn;
     char *userHeaderStringOut;
-    userHeaderStringIn = "This is a test string for the user header";
+    userHeaderStringIn = "0123456789abcdefABCDEF0123456789abcd";
     userHeader = stringToUserHeader(userHeaderStringIn, &userHeaderNumber);
     assert(userHeaderNumber == (strlen(userHeaderStringIn)-1)/4+1);
     userHeaderStringOut = userHeaderToString(userHeader, userHeaderNumber);
-    printf("\nuserHeaderStringOut='%s'",userHeaderStringOut);
-
     assert(!strcmp(userHeaderStringIn, userHeaderStringOut));
     free(userHeader);
     free(userHeaderStringOut);
@@ -615,7 +613,12 @@ void testStoreRetrieveTimeSeries() {
                                         // set the default vertical datum to the datum we stored with //
                                         //------------------------------------------------------------//
                                         zset("VDTM", verticalDatums[K], 0);
-                                        status = ztsRetrieve(ifltab, tss, -1, 0, 1);
+                                        status = ztsRetrieve(
+											ifltab,
+											tss,
+											n == 0 ? -1 : 0, // trim regular time series
+											0,
+											1);
                                         assert(status == STATUS_OKAY);
                                         //------------------------------------------------------//
                                         // compare the retrieved time seires to what was stored //
