@@ -276,12 +276,9 @@ int *stringToUserHeader(const char *str, int *intCount) {
     int  numBytes = strlen(str);
 	int  numInts = numBytes == 0 ? 0 : (numBytes-1) / 4 + 1;
     int *userHeader = NULL;
-    printf("\n==>In stringToUserHeader\n");
-    printf("==>\tnumBytes   = %d\n", numBytes);
-    printf("==>\tnumInts    = %d\n", numInts);
     if (numInts > 0) {
         userHeader = (int *)_calloc(numInts, 4);
-		strcpy((char *)userHeader, str);
+		memcpy((char *)userHeader, str, numBytes);
 		if (ntohl(0x12345678) == 0x12345678) {
 			// big endian
 			uint32_t *_4bytes = (uint32_t *)userHeader;
@@ -291,9 +288,6 @@ int *stringToUserHeader(const char *str, int *intCount) {
 		}
     }
     *intCount = numInts;
-    printf("==>\tintCount   = %d\n", *intCount);
-    printf("==>\tuserHeader = %p\n", userHeader);
-    fflush(stdout);
     return userHeader;
 }
 //
@@ -301,12 +295,8 @@ int *stringToUserHeader(const char *str, int *intCount) {
 //
 char *userHeaderToString(const int *userHeader, const int userHeaderSize) {
     char *str = NULL;
-    printf("\n==>In userHeaderToString\n");
-    printf("==>\tuserHeader = %p\n", userHeader);
-    printf("==>\theaderSize = %d\n", userHeaderSize);
     if (userHeader != NULL && userHeaderSize > 0) {
 		int *buf = (int *)calloc(userHeaderSize, 4);
-		printf("==>\tbuf        = %p\n", buf);
 		memcpy(buf, userHeader, 4 * userHeaderSize);
 		if (ntohl(0x12345678) == 0x12345678) {
 			// big endian
@@ -316,26 +306,16 @@ char *userHeaderToString(const int *userHeader, const int userHeaderSize) {
 			}
 		}
         char *start = (char *)buf;
-		printf("==>\tstart      = %p\n", start);
         char *cp;
         int   len;
         for (cp = start; *cp && cp - start < userHeaderSize * 4; ++cp);
-		printf("==>\tcp         = %p\n", cp);
         while (*(cp-1) == ' ') --cp;
-		printf("==>\tcp         = %p\n", cp);
         len = cp - start;
-		printf("==>\tlen        = %d\n", len);
         str = _malloc(len+1);
-		printf("==>\tstr        = %p\n", start);
         strncpy(str, start, len);
         str[len] = '\0';
-		printf("==>\tstr        = %s\n", start);
-		printf("==>\tfreeing    = %p\n", buf);
-        fflush(stdout);
 		free(buf);
     }
-    printf("==>\tstr        = %p\n", str);
-    printf("==>\tstr        = %s\n", str);
     return str;
 }
 
