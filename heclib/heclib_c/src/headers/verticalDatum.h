@@ -557,7 +557,7 @@ void verticaldatuminfotostring_(
         slen_t   lenOutputStr,
         slen_t   lenNativeDatum,
         slen_t   lenUnit);
- 
+
 #ifdef __cplusplus
 } // extern "C"
 #endif

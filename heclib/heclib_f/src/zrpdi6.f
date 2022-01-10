@@ -25,7 +25,7 @@ C     Pathname variable dimensions
 C
 C     Vertical datum varible dimensions
       integer iuhead_copy(100)
-      character*400 vdiStr, errMsg, cuhead
+      character*400 vdiStr, errMsg
       character*16 unit
       character*16 nativeDatum
       double precision offsetNavd88, offsetNgvd29, vertDatumOffset
@@ -44,8 +44,6 @@ C
 C
       INCLUDE 'verticalDatumFortran.h'
 C
-C
-      equivalence(iuhead_copy, cuhead)
 C
 C     If debug is on, print out information
       IF (MLEVEL.GE.7) THEN
@@ -128,8 +126,8 @@ C              Data on disk is single, double requested
  60            CONTINUE
             ELSE
 C              Data on disk is double, single requested
-               IF (IFLTAB(KDSWAP).NE.0) CALL zdswap6(DVALUES, NVALS)
                NVALS = MIN0(NVALS, KVALS)
+               IF (IFLTAB(KDSWAP).NE.0) CALL zdswap6(DBUFF, NVALS)
                DO 70 I=1,NVALS
                   SVALUES(I) = SNGL(DBUFF(I))
  70            CONTINUE
@@ -317,8 +315,8 @@ C
                 istat = 13
                 return
               end if
-            iuhead_copy(:min(kuhead, size(iuhead_copy))) = 
-     *        iuhead(:min(kuhead, size(iuhead_copy)))
+            iuhead(:min(kuhead, size(iuhead_copy))) = 
+     *        iuhead_copy(:min(kuhead, size(iuhead_copy)))
             !--------------------------------------!
             ! get the vertical datum offset to use !
             !--------------------------------------!
@@ -413,6 +411,13 @@ C
           end if
         end if
       end if
+	  call getEndian(itemp)
+	  if (itemp.eq.1 .and. nuhead.gt.0) then
+	    do i = 1, nuhead
+		  call zswap6(iuhead(i), itemp)
+		  iuhead(i) = itemp
+		end do
+	  end if
       RETURN
 C
  900  CONTINUE

@@ -1214,3 +1214,4 @@ void verticaldatuminfotostring_(
     C2F(results, outputStr, lenOutputStr);
     free(results);
 }
+
