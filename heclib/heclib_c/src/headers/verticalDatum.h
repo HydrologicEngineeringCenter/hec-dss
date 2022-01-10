@@ -9,12 +9,6 @@ extern "C" {
 #include <stdint.h>
 
 #if defined(_MSC_VER)
-	#include <winsock2.h>
-#else
-	#include <netinet/in.h>
-#endif
- 
-#if defined(_MSC_VER)
 	#ifdef _WIN64
 			typedef int64_t slen_t;
 	#else

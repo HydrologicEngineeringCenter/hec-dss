@@ -173,7 +173,7 @@ int zpdStore6(long long *ifltab, zStructPairedData *pds, int storageFlag)
 
 	int *userHeader = (int *)calloc(pds->userHeaderNumber, 4);
 	memcpy(userHeader, pds->userHeader, pds->userHeaderNumber * 4);
-	if (ntohl(0x12345678) == 0x12345678) {
+	if (getEndian()) {
 		// big endian
 		uint32_t *_4bytes = (uint32_t *)userHeader;
 		for (int i = 0; i < pds->userHeaderNumber; ++i) {
