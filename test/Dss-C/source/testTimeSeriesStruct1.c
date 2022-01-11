@@ -61,15 +61,15 @@ int testztsStruct1(long long *ifltab)
 	/**/
 
 	tss1 = zstructTsNewRegFloats("/Basin/Location/Flow//30Min/User Header/", fvalues, 200, "21Jan2001", "1200", "cfs", "Inst-Val");
-
-	tss1->userHeader = (int *)calloc(6,4);
-	tss1->userHeader[0] = 1;
-	tss1->userHeader[1] = 2;
-	tss1->userHeader[2] = 3;
-	tss1->userHeader[3] = 4;
-	tss1->userHeader[4] = 5;
-	tss1->userHeader[5] = 6;
-	tss1->userHeaderNumber = 6;
+	// The ztsStruct user header should be tested with text data instead of non-character integers, which will likely 
+	// cause errors. This is becuase the lower level routines (ztsStoreRegArgs, ztsStoreIrregArgs) call their
+	// respective Fortrans routines (zsrtsc6, zsitsc6) with character variables instead of integer arrays. Those
+	// Fortran routines operate on the character variables passed in using character CHRLNB() to process them into
+	// integer arrays for passing into the next lower-level routines (zsrtsi6, zsiti6).
+	char *headerStr = "This is a 6 byte string.";
+	tss1->userHeaderNumber = (strlen(headerStr)-1)/4+1;
+	tss1->userHeader = (int *)calloc(tss1->userHeaderNumber,4);
+	memcpy(tss1->userHeader, headerStr, strlen(headerStr));
 
 	if (getEndian() && (zgetVersion(ifltab) == 7)) {
 		zswitchInts(tss1->userHeader, 6);
