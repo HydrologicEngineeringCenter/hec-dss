@@ -238,6 +238,12 @@ C
       iuhead_copy = 0
       iCopyLen = min(size(iuhead_copy), nuhead)
       iuhead_copy(:iCopyLen) = iuhead(:iCopyLen)
+	  if (ifltab(kswap).ne.0) then
+	    do i = i, icopyLen
+	      call zswap6(iuhead_copy(i), itemp)
+		  iuhead_copy(i) = itemp
+	    end do
+	  end if
       cc = cpart(3)
       call upcase(cc)
       if (index(cc,'ELEV').eq.1) then

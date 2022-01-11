@@ -1,6 +1,7 @@
 #include <string.h>
 
 #include "heclib.h"
+#include "verticalDatum.h"
 
 
 //  Full method to store regular interval time series data,
@@ -136,7 +137,7 @@ int ztsStoreRegArgs(long long *ifltab, const char *pathname,
 		}
 		
 		if ((userHeader) && (userHeaderNumber > 0)) {
-			csupp = (char *)userHeader;
+			csupp = userHeaderToString(userHeader, userHeaderNumber);
 			lenuserHeader = userHeaderNumber * 4;
 		}
 		else {

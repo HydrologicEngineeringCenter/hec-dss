@@ -111,6 +111,13 @@ module modVerticalDatumInfo
         end function mpm
 end module modVerticalDatumInfo
 
+integer function iswap(iin)
+	implicit none
+	integer (kind=4) iin, iswap
+	call zswap6(iin, iswap)
+end function iswap
+
+
 integer function test_vertical_datums_f()
     implicit none
     call testUserHeaderOps()
@@ -178,7 +185,7 @@ subroutine testStoreRetrieveTimeSeries()
     integer (kind=4)        :: status, numberValues, i, j, k, k2, k3, kk, l, m, n, o, p, ii, len, iVerticalDatum
     integer (kind=4)        :: quality(24), itimes(6,2),userHeader(100), userHeaderLen, count
     integer (kind=4)        :: intervalOffset, compressionMethod, timesRetrieved(24), baseDate
-    integer (kind=4)        :: startDay, endDay
+    integer (kind=4)        :: startDay, endDay, iswap, bigEndian
     real (kind=8)           :: dvalues(6,3), dvals(24), dvals_out(24)
     real (kind=4)           :: fvalues(6,3), fvals(24), fvals_out(24)
     character (len=300)     :: errmsg, vdiStr
@@ -293,6 +300,7 @@ subroutine testStoreRetrieveTimeSeries()
     !     1 = specify
     !     2 = don't specify (use previously stored)
     !
+	call getEndian(bigEndian)
     call zset('MLVL', '', 1)
     count = 0
     do i = 1, 2
@@ -439,6 +447,11 @@ subroutine testStoreRetrieveTimeSeries()
                                     ! store the time series in the specified vertical datum !
                                     !-------------------------------------------------------!
                                     userHeaderLen = byteCountToIntCount(len_trim(userHeaderStr))
+									if (bigEndian == 1) then
+										do ii = 1, userHeaderLen
+											userHeader(ii) = iswap(userHeader(ii))
+										end do
+									end if
                                     numberValues = 6
                                     if (n == 1) then
                                         if (o == 1) then
@@ -784,6 +797,7 @@ subroutine testStoreRetrievePairedData()
     integer (kind=8)        :: ifltab(250)
     integer (kind=4)        :: status, numberOrdinates, numberCurves, ihoriz, nvals, count, iVerticalDatum
     integer (kind=4)        :: userHeader(100), userHeaderLen, i, j, k, k2, k3, kk, l, m, n, o, p, ii, len
+	integer (kind=4)        :: bigEndian, iswap
     real (kind=8)           :: dordinates(6,3), dvalues(6,3), dvals(12), dvals_out(12)
     real (kind=4)           :: fordinates(6,3), fvalues(6,3), fvals(12), fvals_out(12)
     character (len=300)     :: errmsg, vdiStr
@@ -890,6 +904,7 @@ subroutine testStoreRetrievePairedData()
     !     1 = specify
     !     2 = don't specify (use previously stored)
     !
+	call getEndian(bigEndian)
     call zset('MLVL', '', 1)
     count = 0
     do i = 1, 2
@@ -927,7 +942,7 @@ subroutine testStoreRetrievePairedData()
                                     userHeaderStr = ' '
                                     unitSpec = unit(l)
                                     count = count + 1
-                                    ! write(0,*) i, j, k, l, m, n, o, p
+                                    write(0,*) i, j, k, l, m, n, o, p
                                     ifltab = 0
                                     if (i == 1) then
                                         call zopen6(ifltab, filename(i), status)
@@ -1041,6 +1056,11 @@ subroutine testStoreRetrievePairedData()
                                     ! store the paried data in the specified vertical datum !
                                     !-------------------------------------------------------!
                                     userHeaderLen = byteCountToIntCount(len_trim(userHeaderStr))
+									if (bigEndian == 1) then
+										do ii = 1, userHeaderLen
+											userHeader(ii) = iswap(userHeader(ii))
+										end do
+									end if
                                     if (o == 1) then
                                         !---------!
                                         ! doubles !
@@ -1288,6 +1308,7 @@ subroutine testStoreRetrievePairedData()
                                                 userHeaderLen,    & ! NUHEAD
                                                 status)             ! ISTAT
                                         end if
+										call zclose(ifltab)
                                         call assert(status == 0)
                                         call assert(numberOrdinates == 6)
                                         call assert(numberCurves == 1)
@@ -1321,5 +1342,7 @@ end subroutine testStoreRetrievePairedData
 
 subroutine assert(logical_test)
     logical :: logical_test
-    if (.not.logical_test) call abort
+    if (.not.logical_test) then
+		call abort
+	end if
 end subroutine assert

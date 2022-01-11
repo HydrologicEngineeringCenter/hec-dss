@@ -171,23 +171,13 @@ int zpdStore6(long long *ifltab, zStructPairedData *pds, int storageFlag)
 	zset6_("PREC", "", &precision, 4, 0);
 
 
-	int *userHeader = (int *)calloc(pds->userHeaderNumber, 4);
-	memcpy(userHeader, pds->userHeader, pds->userHeaderNumber * 4);
-	if (getEndian()) {
-		// big endian
-		uint32_t *_4bytes = (uint32_t *)userHeader;
-		for (int i = 0; i < pds->userHeaderNumber; ++i) {
-			BYTESWAP(*_4bytes++);
-		}
-	}
 	zspdi6_(ifltab, pds->pathname, &pds->numberOrdinates, &pds->numberCurves, &pds->boolIndependentIsXaxis,
 		unitsIndependent, typeIndependent, unitsDependent, typeDependent,
-		(void *)svalues, (void *)dvalues, &boolDouble, (const char *)clabel, &labels, userHeader, &pds->userHeaderNumber,
+		(void *)svalues, (void *)dvalues, &boolDouble, (const char *)clabel, &labels, pds->userHeader, &pds->userHeaderNumber,
 		&storageFlag, &status,
 		strlen(pds->pathname), strlen(unitsIndependent), strlen(typeIndependent),
         strlen(unitsDependent), strlen(typeDependent), sizeof(clabel[0]));
 
-	free(userHeader);
 	if (storageFlag < 10) {
 		if (svalues) {
 			free(svalues);

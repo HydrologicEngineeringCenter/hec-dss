@@ -1,6 +1,7 @@
 #include <string.h>
 
 #include "heclib.h"
+#include "verticalDatum.h"
 
 
 //  Full method to store irregular interval time series data,
@@ -28,6 +29,7 @@ int ztsStoreIrregArgs(long long *ifltab, const char *pathname,
 	int *qualityPassed;
 	char unitsPassed[24];
 	char typePassed[24];
+	char *csupp;
 	char cdummy[5];
 
 	double *coords;
@@ -158,9 +160,11 @@ int ztsStoreIrregArgs(long long *ifltab, const char *pathname,
 		}
 
 		if ((userHeader) && (userHeaderNumber > 0)) {
+			csupp = userHeaderToString(userHeader, userHeaderNumber);
 			lenuserHeader = userHeaderNumber * 4;
 		}
 		else {
+			csupp = NULL;
 			lenuserHeader = 0;
 		}
 
@@ -181,7 +185,7 @@ int ztsStoreIrregArgs(long long *ifltab, const char *pathname,
 			&julianBase, qualityPassed, &boolQuality,
 			unitsPassed, typePassed,
 			coords, &numberCoords, coordDesc, &numberDescription,
-			(char *)userHeader, &zero, timezone, 
+			csupp, &zero, timezone, 
 			&storageFlag,  &status,
 			strlen(pathname), 
 			strlen (unitsPassed), strlen (typePassed), (size_t) lenuserHeader,
