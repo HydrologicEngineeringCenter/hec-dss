@@ -78,7 +78,7 @@ int zcatParsePath(const char *pathWithWild, int *partAction, int *lengths,
 	int istart;
 	int startsWith;
 	int endsWith;
-	char part[MAX_F_PART_SIZE]; // size to largest (F)
+	char part[MAX_PART_SIZE]; // size to largest (F)
 
 	if (!pathWithWild)
 		return 0;

@@ -34,7 +34,7 @@ C     Fill dummy character array
       call strcpy(CPART(6), CF)
 C
 C
-      MAXLEN = MIN0(LEN(CPATH),392)
+      MAXLEN = MIN0(LEN(CPATH),dss_maxpath)
 C
       NPATH = 1
       DO 40 I=1,6

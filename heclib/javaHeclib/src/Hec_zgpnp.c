@@ -15,7 +15,7 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1zgpnp
     char cPart[MAX_PART_SIZE];
     char dPart[MAX_PART_SIZE];
     char ePart[MAX_PART_SIZE];
-    char fPart[MAX_F_PART_SIZE];
+    char fPart[MAX_PART_SIZE];
     int nstats[6];
     int i;
 

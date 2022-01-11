@@ -66,8 +66,8 @@ int zcatComparePath(const char *cpath, int *partAction, int *lengths,
 	int i1;
 	int i2;
 	int boolCollectionPart;
-	char pathPart[MAX_F_PART_SIZE]; // size to largest possible part (F).
-	char stringToFind[MAX_F_PART_SIZE];
+	char pathPart[MAX_PART_SIZE]; 
+	char stringToFind[MAX_PART_SIZE];
 
 	if (!cpath)
 		return 1;
