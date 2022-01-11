@@ -300,9 +300,9 @@ C
             !--------------------------------------------!
             ! add the requested datum to the user header !
             !--------------------------------------------!
-            iuhead_copy(:min(kuhead, size(iuhead_copy))) = 
-     *        iuhead(:min(kuhead, size(iuhead_copy)))
-            iuhead(nuhead+1:kuhead) = 0
+            iuhead_copy = 0
+            max_copy_len = min(kuhead, size(iuhead_copy))
+            iuhead_copy(max_copy_len) = iuhead(max_copy_len)
             call set_user_header_param(iuhead, nuhead, kuhead, 
      *        VERTICAL_DATUM_PARAM, cvdatum, istat)
             if (istat.ne.0) then
@@ -311,12 +311,12 @@ C
      *          ' *****DSS*** zrpdi6:  ERROR  - VERTICAL DATUM',
      *          ' TRUNCATED',
      *          ' No values retrieved.'
-                end if
-                istat = 13
-                return
               end if
-            iuhead(:min(kuhead, size(iuhead_copy))) = 
-     *        iuhead_copy(:min(kuhead, size(iuhead_copy)))
+              istat = 13
+              return
+            end if
+            max_copy_len = min(kuhead, size(iuhead_copy))
+            iuhead(max_copy_len) = iuhead_copy(max_copy_len)
             !--------------------------------------!
             ! get the vertical datum offset to use !
             !--------------------------------------!
