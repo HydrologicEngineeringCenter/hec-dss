@@ -253,7 +253,7 @@ void testZsetZquery() {
     zquery("VDOW", "", 0, &intVal);
     assert(intVal == FALSE);
 }
-void testStoreRetrieveTimeSeries() {
+void testStoreRetrieveTimeSeries()  {
 // test storing and retriving time series data
     long long ifltab[250];
     int status;
