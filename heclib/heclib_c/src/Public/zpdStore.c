@@ -343,7 +343,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 				":",
 				TRUE,
 				FALSE,
-				'\n');
+				';');
 			if (vdiStr) {
 				stringToVerticalDatumInfo(&_vdiPd, vdiStr);
 				vdiPd = &_vdiPd;
@@ -362,7 +362,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 				":",
 				TRUE,
 				FALSE,
-				'\n');
+				';');
 			if (vdiStr) {
 				stringToVerticalDatumInfo(&_vdiLoc, vdiStr);
 				vdiLoc = &_vdiLoc;
@@ -727,7 +727,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 							compressed,
 							":",
 							TRUE,
-							'\n');
+							';');
 						if (status) { // not enough space to insert
 							int newLen =
 								strlen(pds->locationStruct->supplemental) +
@@ -744,7 +744,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 								compressed,
 								":",
 								TRUE,
-								'\n');
+								';');
 							if (status) { // unexpected error
 								sprintf(
 									errmsg,
@@ -777,7 +777,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 							compressed,
 							":",
 							TRUE,
-							'\n');
+							';');
 						if (status) { // unexpected error
 							sprintf(
 								errmsg,
@@ -797,36 +797,36 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 					free(compressed);
 				}
 				if (vdiPd != &_vdiPd) {
-					//--------------------------------------------------------------------//
-					// remove the vertical datum info from the user header before storing //
-					//                                                                    //
-					// don't need to remove current vertical datum, that is done in the   //
-					// getEffectiveVerticalDatum()                                        //
-					//--------------------------------------------------------------------//
-					char *userHeaderString = userHeaderToString(pds->userHeader, pds->userHeaderNumber);
-					if (userHeaderString) {
-						char *vdiStr = extractFromDelimitedString(
-							&userHeaderString,
-							VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
-							":",
-							TRUE,
-							TRUE,
-							';');
-						if (vdiStr) {
-							free(vdiStr);
-							int newHeaderSize;
-							int *newHeader = stringToUserHeader(userHeaderString, &newHeaderSize);
-							// free (pds->userHeader); -- don't know why this is a double free() !!!
-							pds->userHeader = newHeader;
-							pds->userHeaderNumber = newHeaderSize;
-							pds->allocated[zSTRUCT_userHeader] = TRUE;
-							// don't free newHeader - the zstructFree() call will get it.
-						}
-						free(userHeaderString);
-					}
 					free(vdiPd);
 				}
 			}
+		}
+		//--------------------------------------------------------------------//
+		// remove the vertical datum info from the user header before storing //
+		//                                                                    //
+		// don't need to remove current vertical datum, that is done in the   //
+		// getEffectiveVerticalDatum()                                        //
+		//--------------------------------------------------------------------//
+		char *userHeaderString = userHeaderToString(pds->userHeader, pds->userHeaderNumber);
+		if (userHeaderString) {
+			char *vdiStr = extractFromDelimitedString(
+				&userHeaderString,
+				VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
+				":",
+				TRUE,
+				TRUE,
+				';');
+			if (vdiStr) {
+				free(vdiStr);
+				int newHeaderSize;
+				int *newHeader = stringToUserHeader(userHeaderString, &newHeaderSize);
+				// free (pds->userHeader); -- don't know why this is a double free() !!!
+				pds->userHeader = newHeader;
+				pds->userHeaderNumber = newHeaderSize;
+				pds->allocated[zSTRUCT_userHeader] = TRUE;
+				// don't free newHeader - the zstructFree() call will get it.
+			}
+			free(userHeaderString);
 		}
 	}
 	//  Messages and debug

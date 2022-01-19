@@ -385,7 +385,7 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 					":",
 					TRUE,
 					FALSE,
-					'\n');
+					';');
 				if (vdiStr) {
 					stringToVerticalDatumInfo(&_vdiTs, vdiStr);
 					vdiTs = &_vdiTs;
@@ -405,7 +405,7 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 						":",
 						TRUE,
 						FALSE,
-						'\n');
+						';');
 					if (vdiStr) {
 						stringToVerticalDatumInfo(&_vdiLoc, vdiStr);
 						vdiLoc = &_vdiLoc;
@@ -650,7 +650,7 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 								compressed,
 								":",
 								TRUE,
-								'\n');
+								';');
 							if (status) { // not enough space to insert
 								int newLen =
 									strlen(tss->locationStruct->supplemental) +
@@ -667,7 +667,7 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 									compressed,
 									":",
 									TRUE,
-									'\n');
+									';');
 								if (status) { // unexpected error
 									if (vdiTs != &_vdiTs) {
 										free(vdiTs);
@@ -710,7 +710,7 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 								compressed,
 								":",
 								TRUE,
-								'\n');
+								';');
 							if (status) { // unexpected error
 								if (vdiTs != &_vdiTs) {
 									free(vdiTs);

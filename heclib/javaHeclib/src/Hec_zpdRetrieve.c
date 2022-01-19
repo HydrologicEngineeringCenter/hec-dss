@@ -4,6 +4,7 @@
 
 #include "heclib.h"
 #include "javaHeclib.h"
+#include "verticalDatum.h"
 
 JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1zpdRetrieve(
 	JNIEnv       *env, 
@@ -317,9 +318,19 @@ const char *cpath;
 	if (pdc->userHeaderNumber > 0) {
 		fid = (*env)->GetFieldID (env, cls, "supplementalInfo", "Ljava/lang/String;");
 		if (fid) {
-			jstr = (*env)->NewStringUTF(env, (const char *)pdc->userHeader);
+			char *headerString = NULL;
+			if (zgetVersion((long long *)ifltab) == 7) {
+				headerString = userHeaderToString(pdc->userHeader, pdc->userHeaderNumber);
+			}
+			else {
+				headerString = (char *)pdc->userHeader;
+			}
+			jstr = (*env)->NewStringUTF(env, (const char *)headerString);
 			(*env)->SetObjectField (env, j_pairedDataContainer, fid, jstr);
 			(*env)->DeleteLocalRef(env, jstr);
+			if (zgetVersion((long long *)ifltab) == 7) {
+				free(headerString);
+			}
 		}
 	}
 

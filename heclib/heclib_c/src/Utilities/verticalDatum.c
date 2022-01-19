@@ -39,15 +39,15 @@ const char *meterUnitAliases[] = {"M","METER","METERS","METRE","METRES"};
 const int footUnitAliasCount = sizeof(footUnitAliases) / sizeof(footUnitAliases[0]);
 const int meterUnitAliasCount = sizeof(meterUnitAliases) / sizeof(meterUnitAliases[0]);
 
-void *_malloc(size_t size) {
-    void *buf = malloc(size);
-    memset(buf, 0, size);
-    return buf;
-}
+// void *_malloc(size_t size) {
+    // void *buf = malloc(size);
+    // memset(buf, 0, size);
+    // return buf;
+// }
 
-void *_calloc(size_t num, size_t size) {
-    return _malloc((int)num * (int)size);
-}
+// void *_calloc(size_t num, size_t size) {
+    // return _malloc((int)num * (int)size);
+// }
 //
 // See verticalDatum.h for documentation
 //
@@ -63,9 +63,11 @@ int unitIsFeet(const char *unit) {
 // Fortran wrapper for unitIsFeet
 //
 int unitisfeet_(char *unit, slen_t lenUnit) {
-    char *cUnit = (char *)_malloc(lenUnit+1);
+	printf("Calling malloc from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
+    char *cUnit = (char *)malloc(lenUnit+1);
     F2C(unit, cUnit, lenUnit, lenUnit+1);
     int isFeet = unitIsFeet(cUnit);
+	printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
     free(cUnit);
     return isFeet;
 }
@@ -84,9 +86,11 @@ int unitIsMeters(const char *unit) {
 // Fortran wrapper for unitIsMeters
 //
 int unitismeters_(char *unit, slen_t lenUnit) {
-    char *cUnit = (char *)_malloc(lenUnit+1);
+	printf("Calling malloc from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
+    char *cUnit = (char *)malloc(lenUnit+1);
     F2C(unit, cUnit, lenUnit, lenUnit+1);
     int isMeters = unitIsMeters(cUnit);
+	printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
     free(cUnit);
     return isMeters;
 }
@@ -99,13 +103,15 @@ double getOffset(double offset, const char *offsetUnit, const char *_dataUnit) {
     int offsetInFeet   = 0;
     int offsetInMeters = 0;
     // blank trim the data unit (shouldn't have to do this)
-    char *dataUnit = (char *)_malloc(strlen(_dataUnit)+1);
+	printf("Calling malloc from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
+    char *dataUnit = (char *)malloc(strlen(_dataUnit)+1);
     strcpy(dataUnit, _dataUnit);
     for (int i = strlen(dataUnit)-1; dataUnit[i] == 32; --i) {
         dataUnit[i] = '\0';
     }
     if (offsetUnit == NULL || dataUnit == NULL) return UNDEFINED_VERTICAL_DATUM_VALUE;
     if (!strcasecmp(offsetUnit, dataUnit)) {
+		printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
         free(dataUnit);
         return offset;
     }
@@ -113,6 +119,7 @@ double getOffset(double offset, const char *offsetUnit, const char *_dataUnit) {
     if (!dataInFeet) {
         dataInMeters = unitIsMeters(dataUnit);
     }
+	printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
     free(dataUnit);
     offsetInFeet = unitIsFeet(offsetUnit);
     if (!offsetInFeet) {
@@ -139,12 +146,16 @@ void getoffset_(
         slen_t lenOffsetUnit,
         slen_t lenDataUnit) {
 
-    char *cOffsetUnit = (char *)_malloc(lenOffsetUnit+1);
-    char *cDataUnit   = (char *)_malloc(lenDataUnit+1);
+	printf("Calling malloc from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
+    char *cOffsetUnit = (char *)malloc(lenOffsetUnit+1);
+	printf("Calling malloc from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
+    char *cDataUnit   = (char *)malloc(lenDataUnit+1);
     F2C(offsetUnit, cOffsetUnit, lenOffsetUnit, lenOffsetUnit+1);
     F2C(dataUnit, cDataUnit, lenDataUnit, lenDataUnit+1);
     *offset = getOffset(*offset, cOffsetUnit, cDataUnit);
+	printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
     free(cOffsetUnit);
+	printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
     free(cDataUnit);
 }
 
@@ -175,7 +186,8 @@ char *extractFromDelimitedString(
     if (separator) {
         len += strlen(separator);
     }
-    char *param = _malloc(len);
+	printf("Calling malloc from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
+    char *param = malloc(len);
     strcpy(param, parameter);
     if (separator) {
         strcat(param, separator);
@@ -187,8 +199,9 @@ char *extractFromDelimitedString(
         char *valueEnd;
         for(valueEnd = valueStart+1; *valueEnd && *valueEnd != delimiter; ++valueEnd);
         len = valueEnd - valueStart;
-        value = (char *)_malloc(len + 1);
-        strncpy(value, valueStart, len);
+		printf("Calling malloc from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
+        value = (char *)malloc(len + 1);
+        memcpy(value, valueStart, len);
         value[len] = '\0';
         if (removeFromString) {
             if (*valueEnd) {
@@ -200,6 +213,7 @@ char *extractFromDelimitedString(
             }
         }
     }
+	printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
     free(param);
     return value;
 }
@@ -224,47 +238,42 @@ int insertIntoDelimitedString(
         FALSE,
         delimiter);
     if (existing && !overwriteExisting) {
+		printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
         free(existing);
         return 0;
     }
-    int toInsertLen = strlen(parameter) + 1; // account for delimiter
+    if (existing && overwriteExisting) {
+		printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
+        free(extractFromDelimitedString(delimitedString, parameter, separator, TRUE, TRUE, delimiter));
+    }
+	int len = strlen(*delimitedString);
+    if (len > 0 && (*delimitedString)[len-1] != delimiter) {
+		(*delimitedString)[len++] = delimiter;
+    }
+	for (char *cp = parameter; *cp && len < delimitedStringSize; ++cp) {
+		(*delimitedString)[len++] = *cp;
+	}
     if (separator) {
-        toInsertLen += strlen(separator);
+		for (char *cp = separator; *cp && len < delimitedStringSize; ++cp) {
+			(*delimitedString)[len++] = *cp;
+		}
     }
     if (value) {
-        toInsertLen += strlen(value);
+		for (char *cp = value; *cp && len < delimitedStringSize; ++cp) {
+			(*delimitedString)[len++] = *cp;
+		}
     }
-    int availableLen = delimitedStringSize - strlen(*delimitedString);
-    if (existing) {
-        availableLen += strlen(parameter) + strlen(existing);
-        if (separator) {
-            availableLen += strlen(separator);
-        }
-    }
-    if (availableLen < toInsertLen) {
+	if (len > delimitedStringSize -2) {
         if (existing) {
+			printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
             free(existing);
         }
         return -1;
-    }
-    if (existing && overwriteExisting) {
-        char *dummy = extractFromDelimitedString(delimitedString, parameter, separator, TRUE, TRUE, delimiter);
-        free(dummy);
-    }
-    if (strlen(*delimitedString) > 0 && (*delimitedString)[strlen(*delimitedString)-1] != delimiter) {
-        sprintf(*delimitedString+strlen(*delimitedString), "%c", delimiter);
-    }
-    strcat(*delimitedString, parameter);
-    if (separator) {
-        strcat(*delimitedString, separator);
-    }
-    if (value) {
-        strcat(*delimitedString, value);
-    }
-    if (delimiter) {
-        strncat(*delimitedString, &delimiter, 1);
-    }
+	}
+    (*delimitedString)[len++] = delimiter;
+    (*delimitedString)[len] = '\0';
     if (existing) {
+		printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
         free(existing);
     }
     return 0;
@@ -272,13 +281,14 @@ int insertIntoDelimitedString(
 //
 // See verticalDatum.h for documentation
 //
-int *stringToUserHeader(const char *str, int *intCount) {
+int *stringToUserHeader(const char *str, int *userHeaderNumber) {
     int  numBytes = strlen(str);
 	int  numInts = numBytes == 0 ? 0 : (numBytes-1) / 4 + 1;
     int *userHeader = NULL;
     if (numInts > 0) {
-        userHeader = (int *)_calloc(numInts, 4);
-		memcpy((char *)userHeader, str, numBytes);
+		printf("Calling calloc from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
+        userHeader = (int *)calloc(numInts, 4);
+		memcpy((char *)userHeader, str, numBytes * 4);
 		if (getEndian()) {
 			// big endian
 			uint32_t *_4bytes = (uint32_t *)userHeader;
@@ -287,33 +297,36 @@ int *stringToUserHeader(const char *str, int *intCount) {
 			}
 		}
     }
-    *intCount = numInts;
+    *userHeaderNumber = numInts;
     return userHeader;
 }
 //
 // See verticalDatum.h for documentation
 //
-char *userHeaderToString(const int *userHeader, const int userHeaderSize) {
+char *userHeaderToString(const int *userHeader, const int userHeaderNumber) {
     char *str = NULL;
-    if (userHeader != NULL && userHeaderSize > 0) {
-		int *buf = (int *)calloc(userHeaderSize, 4);
-		memcpy(buf, userHeader, 4 * userHeaderSize);
+    if (userHeader != NULL && userHeaderNumber > 0) {
+		printf("Calling calloc from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
+		int *buf = (int *)calloc(userHeaderNumber, 4);
+		memcpy(buf, userHeader, 4 * userHeaderNumber);
 		if (getEndian()) {
 			// big endian
 			uint32_t *_4bytes = (uint32_t *)buf;
-			for (int i = 0; i < userHeaderSize; ++i) {
+			for (int i = 0; i < userHeaderNumber; ++i) {
 				BYTESWAP(*_4bytes++);
 			}
 		}
         char *start = (char *)buf;
         char *cp;
         int   len;
-        for (cp = start; *cp && cp - start < userHeaderSize * 4; ++cp);
+        for (cp = start; *cp && cp - start < userHeaderNumber * 4; ++cp);
         while (*(cp-1) == ' ') --cp;
         len = cp - start;
-        str = _malloc(len+1);
-        strncpy(str, start, len);
+		printf("Calling malloc from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
+        str = malloc(len+1);
+        memcpy(str, start, len);
         str[len] = '\0';
+		printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
 		free(buf);
     }
     return str;
@@ -350,7 +363,8 @@ int b64DecodedLen(int toDecodeLen) {
 int b64Encode(char **encoded, const char *toEncode, int toEncodeLen) {
     int len = b64EncodedLen(toEncodeLen);
     if (len < 0) return len;
-    *encoded = (char *)_malloc(len+1);
+	printf("Calling malloc from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
+    *encoded = (char *)malloc(len+1);
     const char *i = toEncode;
     char *o = *encoded;
     int remainingLen = toEncodeLen;
@@ -418,7 +432,8 @@ int b64Decode(char **decoded, int *decodedLen, const char *toDecode) {
     if (len < 0) {
         return len;
     }
-    *decoded = (char *)_malloc(strlen(toDecode));
+	printf("Calling malloc from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
+    *decoded = (char *)malloc(strlen(toDecode));
     const char *c = toDecode;
     char i[4];
     char *o = *decoded;
@@ -428,6 +443,7 @@ int b64Decode(char **decoded, int *decodedLen, const char *toDecode) {
         i[2] = base64bytes[c[2]];
         i[3] = base64bytes[c[3]];
         if (i[0] == 255 || i[1] == 255) {
+			printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
             free(*decoded);
             *decodedLen = 0;
             return -3;
@@ -523,6 +539,7 @@ char *decodeAndGunzip(char **results, const char *inputBuf) {
     zstr.next_out  = textBuf;
     rc = inflateInit2(&zstr, 16+MAX_WBITS);
     if (rc != Z_OK) {
+		printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
         free(decodedBuf);
         return ERROR_ON_INFLATEINIT2;
     }
@@ -531,20 +548,24 @@ char *decodeAndGunzip(char **results, const char *inputBuf) {
     //---------------------------------//
     rc = inflate(&zstr, Z_FINISH);
     if (rc != Z_OK && rc != Z_STREAM_END) {
+		printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
         free(decodedBuf);
         return ERROR_ON_INFLATE;
     }
     rc = inflateEnd(&zstr);
     if (rc != Z_OK) {
+		printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
         free(decodedBuf);
         return ERROR_ON_INFLATEEND;
     }
     //--------------------//
     // return the results //
     //--------------------//
-    *results = (char *)_malloc(zstr.total_out+1);
     textBuf[zstr.total_out] = '\0';
+	printf("Calling malloc from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
+    *results = (char *)malloc(strlen(textBuf)+1);
     strcpy(*results, textBuf);
+	printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
     free(decodedBuf);
     return NULL;
 }
@@ -562,7 +583,8 @@ char *gzipAndEncode(char **results, const char *inputBuf) {
     //-----------------------------------//
     // setup structure for gzip compress //
     //-----------------------------------//
-    compressedBuf = (char *)_malloc(inputLen);
+	printf("Calling malloc from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
+    compressedBuf = (char *)malloc(inputLen);
     zstr.zalloc    = Z_NULL;
     zstr.zfree     = Z_NULL;
     zstr.opaque    = Z_NULL;
@@ -579,11 +601,13 @@ char *gzipAndEncode(char **results, const char *inputBuf) {
     }
     rc = deflate(&zstr, Z_FINISH);
     if (rc != Z_OK && rc != Z_STREAM_END) {
+		printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
         free(compressedBuf);
         return ERROR_ON_DEFLATE;
     }
     rc = deflateEnd(&zstr);
     if (rc != Z_OK) {
+		printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
         free(compressedBuf);
         return ERROR_ON_DEFLATEEND;
     }
@@ -591,13 +615,13 @@ char *gzipAndEncode(char **results, const char *inputBuf) {
     // Base64 encode the compressed buf //
     //----------------------------------//
     if (b64Encode(&encodedBuf, compressedBuf, zstr.total_out)) {
+		printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
         free(compressedBuf);
         return BASE64_ENCODING_ERROR;
     }
-    *results = (char *)_malloc(strlen(encodedBuf)+1);
-    strcpy(*results, encodedBuf);
+    *results = encodedBuf;
+	printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
     free(compressedBuf);
-    free(encodedBuf);
     return NULL;
 }
 //
@@ -607,9 +631,11 @@ char *expandEmptyXmlTags(char **outputBuf, const char *inputBuf) {
     const char *in;
     char *out;
     int   tagBufLen = 32;
-    char *tagBuf = (char *)_malloc(tagBufLen);
+	printf("Calling malloc from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
+    char *tagBuf = (char *)malloc(tagBufLen);
     int   xmlBufLen = strlen(inputBuf) * 3;
-    char *xmlBuf = (char *)_malloc(xmlBufLen);
+	printf("Calling malloc from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
+    char *xmlBuf = (char *)malloc(xmlBufLen);
     int   inTag = FALSE;
     int   tagPos;
     char *tagChar;
@@ -619,7 +645,9 @@ char *expandEmptyXmlTags(char **outputBuf, const char *inputBuf) {
         switch (*in) {
             case '<' :
                 if (inTag) {
+					printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
                     free(tagBuf);
+					printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
                     free(xmlBuf);
                     return XML_IS_NOT_WELL_FORMED;
                 }
@@ -631,7 +659,9 @@ char *expandEmptyXmlTags(char **outputBuf, const char *inputBuf) {
             case '/' :
                 switch (*(in+1)) {
                     case '\0':
+						printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
                         free(tagBuf);
+						printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
                         free(xmlBuf);
                         return XML_IS_NOT_WELL_FORMED;
                     case '>' :
@@ -666,6 +696,7 @@ char *expandEmptyXmlTags(char **outputBuf, const char *inputBuf) {
                 *out++ = *in++;
         }
     }
+	printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
     free(tagBuf);
     *outputBuf = xmlBuf;
     return NULL;
@@ -676,8 +707,10 @@ char *expandEmptyXmlTags(char **outputBuf, const char *inputBuf) {
 char *validateXmlStructure(const char *xml) {
     int    size = 20;
     int    count = 0;
-    char **tagNames = (char **)_malloc(size * sizeof(char *));
-    char  *buf = (char *)_malloc(strlen(xml)+1);
+	printf("Calling malloc from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
+    char **tagNames = (char **)malloc(size * sizeof(char *));
+	printf("Calling malloc from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
+    char  *buf = (char *)malloc(strlen(xml)+1);
     char  *cp1;
     char  *cp2;
     int    len;
@@ -698,9 +731,12 @@ char *validateXmlStructure(const char *xml) {
         }
         if (!*cp2) {
             for (int i = 0; i < count; ++i) {
+				printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
                 free(tagNames[i]);
             }
+			printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
             free(tagNames);
+			printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
             free(buf);
             return INVALID_XML_STRUCTURE;
         }
@@ -711,9 +747,11 @@ char *validateXmlStructure(const char *xml) {
             ++cp1;
             len = cp2 - cp1;
             if (strncmp(cp1, tagNames[count-1], len)) {
+				printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
                 free(buf);
                 return INVALID_XML_STRUCTURE;
             }
+			printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
             free(tagNames[--count]);
             if (count == 0) {
                 break;
@@ -728,15 +766,18 @@ char *validateXmlStructure(const char *xml) {
                 tagNames = (char **)realloc(tagNames, size * sizeof(char *));
             }
             len = cp2 - cp1;
-            tagNames[count-1] = (char *)_malloc(len+1);
+			printf("Calling malloc from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
+            tagNames[count-1] = (char *)malloc(len+1);
             strncpy(tagNames[count-1], cp1, len);
             tagNames[count-1][len] = '\0';
         }
     }
+	printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
     free(tagNames);
     for (int i = 0; i < count; ++i) {
         free(tagNames[i]);
     }
+	printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
     free(buf);
     return NULL;
 }
@@ -781,6 +822,7 @@ char *stringToVerticalDatumInfo(verticalDatumInfo *vdi, const char *inputStr) {
     }
     errmsg = expandEmptyXmlTags(&xml, xml1);
     if (freeXml1) {
+		printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
         free(xml1);
     }
     if (errmsg) {
@@ -792,6 +834,7 @@ char *stringToVerticalDatumInfo(verticalDatumInfo *vdi, const char *inputStr) {
     }
     errmsg = findTextBetween(&tbi, xml, "<vertical-datum-info", "</vertical-datum-info>");
     if (errmsg != NULL || tbi.lenNonBlank == 0) {
+		printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
         free(xml);
         return XML_IS_NOT_A_VALID_VERTICAL_DATUM_INFO_INSTANCE;
     }
@@ -800,11 +843,13 @@ char *stringToVerticalDatumInfo(verticalDatumInfo *vdi, const char *inputStr) {
     //---------------------//
     errmsg = findTextBetween(&tbi, tbi.first, "unit=\"", "\"");
     if (errmsg != NULL || tbi.lenNonBlank == 0) {
+		printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
         free(xml);
         return NO_OFFSET_UNIT_IN_XML;
     }
     strncpy(vdi->unit, tbi.firstNonBlank, MIN(tbi.lenNonBlank, sizeof(vdi->unit)-1));
     if (strcmp(vdi->unit, "ft") && strcmp(vdi->unit, "m")) {
+		printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
         free(xml);
         return INVALID_OFFSET_UNIT_IN_XML;
     }
@@ -813,6 +858,7 @@ char *stringToVerticalDatumInfo(verticalDatumInfo *vdi, const char *inputStr) {
     //----------------------//
     errmsg = findTextBetween(&tbi, xml, "<native-datum>", "</native-datum>");
     if (errmsg != NULL || tbi.lenNonBlank == 0) {
+		printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
         free(xml);
         return NO_NATIVE_DATUM_IN_XML;
     }
@@ -837,6 +883,7 @@ char *stringToVerticalDatumInfo(verticalDatumInfo *vdi, const char *inputStr) {
         }
     }
     else {
+		printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
         free(xml);
         return INVALID_NATIVE_DATUM_IN_XML;
     }
@@ -857,6 +904,7 @@ char *stringToVerticalDatumInfo(verticalDatumInfo *vdi, const char *inputStr) {
     for (int i = 0; i < 2; ++i) {
         if (offsetBuf[i][0] == '\0') {
             if (i == 0) {
+				printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
                 free(xml);
                 return MISSING_OFFSET_BLOCK_IN_XML;
             }
@@ -864,17 +912,20 @@ char *stringToVerticalDatumInfo(verticalDatumInfo *vdi, const char *inputStr) {
         }
         errmsg = findTextBetween(&tbi, offsetBuf[i], "<to-datum>", "</to-datum>");
         if (errmsg != NULL || tbi.lenNonBlank == 0) {
+			printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
             free(xml);
             return INVALID_OFFSET_BLOCK_IN_XML;
         }
         if (!strncmp(tbi.firstNonBlank, CVERTICAL_DATUM_NGVD29, 7)) {
             if (ngvd29OffsetProcessed) {
+				printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
                 free(xml);
                 return MULTIPLE_NGVD_29_OFFSET_BLOCKS_IN_XML;
             }
             ngvd29OffsetProcessed = 1;
             errmsg = findTextBetween(&tbi, offsetBuf[i], "<value>", "</value>");
             if (errmsg != NULL || tbi.lenNonBlank == 0) {
+			printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
             free(xml);
             return NO_NGVD_29_OFFSET_VALUE_IN_XML;
             }
@@ -884,11 +935,13 @@ char *stringToVerticalDatumInfo(verticalDatumInfo *vdi, const char *inputStr) {
                 vdi->offsetToNgvd29 = dtmp;
             }
             else {
+				printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
                 free(xml);
                 return INVALID_NGVD_29_OFFSET_VALUE_IN_XML;
             }
             errmsg = findTextBetween(&tbi, offsetBuf[i], "estimate=\"", "\"");
             if (errmsg != NULL || tbi.lenNonBlank == 0) {
+				printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
                 free(xml);
                 return INVALID_NGVD_29_OFFSET_BLOCK_IN_XML;
             }
@@ -899,18 +952,21 @@ char *stringToVerticalDatumInfo(verticalDatumInfo *vdi, const char *inputStr) {
                 vdi->offsetToNgvd29IsEstimate = FALSE;
             }
             else {
+				printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
                 free(xml);
                 return INVALID_NGVD_29_OFFSET_BLOCK_IN_XML;
             }
         }
         else if (!strncmp(tbi.firstNonBlank, CVERTICAL_DATUM_NAVD88, 7)) {
             if (navd88OffsetProcessed) {
+				printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
                 free(xml);
                 return MULTIPLE_NAVD_88_OFFSET_BLOCKS_IN_XML;
             }
             navd88OffsetProcessed = 1;
             errmsg = findTextBetween(&tbi, offsetBuf[i], "<value>", "</value>");
             if (errmsg != NULL || tbi.lenNonBlank == 0) {
+				printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
                 free(xml);
                 return NO_NAVD_88_OFFSET_VALUE_IN_XML;
             }
@@ -920,13 +976,15 @@ char *stringToVerticalDatumInfo(verticalDatumInfo *vdi, const char *inputStr) {
                 vdi->offsetToNavd88 = dtmp;
             }
             else {
+				printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
                 free(xml);
                 return INVALID_NAVD_88_OFFSET_VALUE_IN_XML;
 
             }
             errmsg = findTextBetween(&tbi, offsetBuf[i], "estimate=\"", "\"");
             if (errmsg != NULL || tbi.lenNonBlank == 0) {
-                free(xml);
+				printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
+				free(xml);
                 return INVALID_NAVD_88_OFFSET_BLOCK_IN_XML;
             }
             if (!strncmp(tbi.firstNonBlank, "true", tbi.lenNonBlank)) {
@@ -936,15 +994,18 @@ char *stringToVerticalDatumInfo(verticalDatumInfo *vdi, const char *inputStr) {
                 vdi->offsetToNavd88IsEstimate = FALSE;
             }
             else {
+				printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
                 free(xml);
                 return INVALID_NAVD_88_OFFSET_BLOCK_IN_XML;
             }
         }
         else {
+			printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
             free(xml);
             return INVALID_DATUM_IN_SPECIFIED_IN_XML;
         }
     }
+	printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
     free(xml);
     return NULL;
 }
@@ -992,7 +1053,8 @@ char *verticalDatumInfoToString(char **results, verticalDatumInfo *vdi, int gene
         }
     }
     else {
-        *results = (char *)_malloc(strlen(xml)+1);
+		printf("Calling malloc from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
+		*results = (char *)malloc(strlen(xml)+1);
         strcpy(*results, xml);
     }
     return NULL;
@@ -1012,16 +1074,20 @@ verticalDatumInfo *extractVerticalDatumInfoFromUserHeader(const int *userHeader,
             FALSE,
             ';');
         if (vdiStr) {
-            vdi = (verticalDatumInfo *)_malloc(sizeof(verticalDatumInfo));
+			printf("Calling malloc from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
+            vdi = (verticalDatumInfo *)malloc(sizeof(verticalDatumInfo));
             char *errmsg = stringToVerticalDatumInfo(vdi, vdiStr);
             if (errmsg != NULL) {
                 if (vdi) {
+					printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
                     free(vdi);
                 }
                 vdi = NULL;
             }
+			printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
             free(vdiStr);
         }
+		printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
         free(cp);
     }
     return vdi;
@@ -1079,12 +1145,11 @@ int	getEffectiveVerticalDatum(
                 // remove vertical datum from userHeader //
                 //---------------------------------------//
                 int  newHeaderSize;
-                int *dummy = stringToUserHeader(userHeaderString, &newHeaderSize);
-                free(dummy);
-                sprintf((char *)*userHeader, "%s", userHeaderString); // safe because new string is always shorter than old string
+                *userHeader = stringToUserHeader(userHeaderString, &newHeaderSize);
                 *userHeaderSize = newHeaderSize;
                 free(verticalDatum);
             }
+			printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
             free(userHeaderString);
         }
     }
@@ -1133,6 +1198,7 @@ int	getEffectiveVerticalDatum(
                     strcpy(cverticalDatum, verticalDatum);
                 }
             }
+			printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
             free(unitSpec);
         }
     }
@@ -1156,7 +1222,8 @@ void stringtoverticaldatuminfo_(
         slen_t   lenNativeDatum,
         slen_t   lenUnit) {
 
-    char *lInputStr = (char *)_malloc(lenInputStr+1);
+	printf("Calling malloc from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
+    char *lInputStr = (char *)malloc(lenInputStr+1);
     F2C(inputStr, lInputStr, lenInputStr, lenInputStr+1);
     char *errmsg;
     verticalDatumInfo vdi;
@@ -1180,6 +1247,7 @@ void stringtoverticaldatuminfo_(
         *offsetNavd88 = vdi.offsetToNavd88;
         *offsetNavd88IsEstimate = vdi.offsetToNavd88IsEstimate;
     }
+	printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
     free(lInputStr);
 }
 //
@@ -1212,6 +1280,7 @@ void verticaldatuminfotostring_(
     errmsg = verticalDatumInfoToString(&results, &vdi, *generateCompressed);
     C2F(errmsg, errorMessage, lenErrorMessage);
     C2F(results, outputStr, lenOutputStr);
+	printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
     free(results);
 }
 

@@ -49,6 +49,7 @@ extern "C" {
 
 #define BYTESWAP(d)                     \
 {                                       \
+    printf("BYTESWAP called at %s:%d\n", __FILE__, __LINE__); fflush(stderr); \
     uint8_t *b1 = (uint8_t *)&d, b2[8]; \
     switch(sizeof(d))                   \
     {                                   \
@@ -274,17 +275,17 @@ int insertIntoDelimitedString(
  * Returns a string representation of a DSS record user header
  * 
  * @param userHeader     The user header (integer array)
- * @param userHeaderSize The size of the user header in number of integers
+ * @param userHeaderNumber The size of the user header in number of integers
  * 
  * @return The string representation of the user header. Memory for this buffer 
  *         is dynamically allocated using malloc() and must be freed using free().
  */
-char *userHeaderToString(const int *userHeader, const int userHeaderSize);
+char *userHeaderToString(const int *userHeader, const int userHeaderNumber);
 /**
  * Creates a DSS record user header from a string
  * 
  * @param str            The string to create the user header from
- * @param userHeaderSize Pointer to an int that receives the number of integers allocated.
+ * @param userHeaderNumber Pointer to an int that receives the number of integers allocated.
  *                       This should always be (len_str - 1) / 4 + 1.
  * 
  * @return The user header (array of integers).  Memory for this buffer is dynamically 
@@ -292,7 +293,7 @@ char *userHeaderToString(const int *userHeader, const int userHeaderSize);
  *         zStructTime* structure. In that case the "allocated" structure member should
  *         be set to 1 to all zStructFree() to free the memory.
  */
-int *stringToUserHeader(const char *str, int *userHeaderSize);
+int *stringToUserHeader(const char *str, int *userHeaderNumber);
 /**
  * Returns the length of a buffer required to hold a base-64 encoding of an input buffer of the specified length.
  *

@@ -422,7 +422,7 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 							":",
 							TRUE,
 							FALSE,
-							'\n');
+							';');
 						if (vdiStr) {
 							char *msg = stringToVerticalDatumInfo(&_vdi, vdiStr);
 							if(msg == NULL) {
@@ -446,7 +446,7 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 						ifltab,
 						DSS_FUNCTION_ztsRetrieve_ID,
 						zdssErrorCodes.INVALID_HEADER_PARAMETER,
-						intervalType,
+						0,
 						0,
 						zdssErrorSeverity.WARNING,
 						tss->pathname,

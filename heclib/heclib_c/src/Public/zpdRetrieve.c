@@ -745,7 +745,7 @@ int zpdRetrieve(long long *ifltab, zStructPairedData *pds, int retrieveSizeFlag)
 						":",
 						TRUE,
 						FALSE,
-						'\n');
+						';');
 					if (vdiStr) {
 						char *msg = stringToVerticalDatumInfo(&_vdi, vdiStr);
 						if (msg) {

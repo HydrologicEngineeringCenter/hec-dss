@@ -6,6 +6,7 @@
 #include "zdssMessages.h"
 #include "zerrorCodes.h"
 #include "javaHeclib.h"
+#include "verticalDatum.h"
 
 JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1zpdStore(
 	JNIEnv       *env, 
@@ -361,15 +362,8 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1zpdStore(
 		jstr = (*env)->GetObjectField(env, j_pairedDataContainer, fid); 
 		if (jstr) {
 			cstr = (*env)->GetStringUTFChars(env, jstr,  0);
-			if (cstr) {
-				len = (int)strlen(cstr);
-				if (len > 0) {
-					pdc->userHeaderNumber = numberIntsInBytes(len);					
-					pdc->userHeader = (int *)calloc(pdc->userHeaderNumber, 4);
-					charInt ((void *)cstr, pdc->userHeader, len, (pdc->userHeaderNumber * 4), 1, 1, 0);
-					pdc->allocated[zSTRUCT_userHeader] = 1;
-				}
-			}
+			pdc->userHeader = stringToUserHeader(cstr, &pdc->userHeaderNumber);
+			pdc->allocated[zSTRUCT_userHeader] = 1;
 			(*env)->ReleaseStringUTFChars(env, jstr,  cstr);
 		}
     }

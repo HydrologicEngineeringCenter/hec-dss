@@ -942,7 +942,7 @@ subroutine testStoreRetrievePairedData()
                                     userHeaderStr = ' '
                                     unitSpec = unit(l)
                                     count = count + 1
-                                    write(0,*) i, j, k, l, m, n, o, p
+                                    ! write(0,*) i, j, k, l, m, n, o, p
                                     ifltab = 0
                                     if (i == 1) then
                                         call zopen6(ifltab, filename(i), status)
