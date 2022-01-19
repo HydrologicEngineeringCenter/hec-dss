@@ -112,9 +112,8 @@ module modVerticalDatumInfo
 end module modVerticalDatumInfo
 
 integer function iswap(iin)
-	implicit none
-	integer (kind=4) iin, iswap
-	call zswap6(iin, iswap)
+    integer (kind=4) :: iin
+    call zswap6(iin, iswap)
 end function iswap
 
 
@@ -1343,6 +1342,6 @@ end subroutine testStoreRetrievePairedData
 subroutine assert(logical_test)
     logical :: logical_test
     if (.not.logical_test) then
-		call abort
+        call abort
 	end if
 end subroutine assert
