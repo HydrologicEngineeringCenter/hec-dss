@@ -262,7 +262,7 @@ void testStoreRetrieveTimeSeries() {
     char *errmsg;
     char *filename[]      = {"v6_c.dss", "v7_c.dss"};
     char *pathnames[2][2] = {{"//TestTsLoc/Elev//1Hour/Doubles/",    "//TestTsLoc/Elev//1Hour/Floats/"},
-                             {"//TestTsLoc/Elev//Ir-Month/Doubles/", "//TestTsLoc/Elev//Ir-Month/Floats/"}};
+                             {"//TestTsLoc/Elev//IR-MONTH/Doubles/", "//TestTsLoc/Elev//IR-MONTH/Floats/"}};
     double dvalues[3][6]  = {{1000,1001,1002,1003,1004,1005},                           // ft
                              {304.8,305.1048,305.4096,305.7144,306.0192,306.324},       // m
                              {1000,1001,1002,1003,1004,1005}};                          // cfs
