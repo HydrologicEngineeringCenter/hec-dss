@@ -233,16 +233,16 @@ int insertIntoDelimitedString(
     if (len > 0 && (*delimitedString)[len-1] != delimiter) {
 		(*delimitedString)[len++] = delimiter;
     }
-	for (char *cp = parameter; *cp && len < delimitedStringSize; ++cp) {
+	for (const char *cp = parameter; *cp && len < delimitedStringSize; ++cp) {
 		(*delimitedString)[len++] = *cp;
 	}
     if (separator) {
-		for (char *cp = separator; *cp && len < delimitedStringSize; ++cp) {
+		for (const char *cp = separator; *cp && len < delimitedStringSize; ++cp) {
 			(*delimitedString)[len++] = *cp;
 		}
     }
     if (value) {
-		for (char *cp = value; *cp && len < delimitedStringSize; ++cp) {
+		for (const char *cp = value; *cp && len < delimitedStringSize; ++cp) {
 			(*delimitedString)[len++] = *cp;
 		}
     }
