@@ -49,7 +49,6 @@ extern "C" {
 
 #define BYTESWAP(d)                     \
 {                                       \
-    printf("BYTESWAP called at %s:%d\n", __FILE__, __LINE__); fflush(stderr); \
     uint8_t *b1 = (uint8_t *)&d, b2[8]; \
     switch(sizeof(d))                   \
     {                                   \

@@ -24,32 +24,26 @@ int test_vertical_datums_c() {
 void testDelimitedStringOps() {
     // test extract_from_delimited_string() and insertIntoDelimitedString()
     int text_size = 512;
-	printf("Calling malloc from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
     char *text = (char *)malloc(text_size);
     char *cp;
     char *text_value = "theFirstParameter:theFirstValue;theSecondParameter:theSecondValue;";
     sprintf(text, "%s", text_value);
     cp = extractFromDelimitedString(&text, "theFirstParameter", ":", TRUE, FALSE, ';');
     assert(!strcmp(cp, "theFirstValue"));
-	printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
     free(cp);
     cp = extractFromDelimitedString(&text, "theSecondParameter", ":", TRUE, FALSE, ';');
     assert(!strcmp(cp, "theSecondValue"));
-	printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
     free(cp);
     cp = extractFromDelimitedString(&text, "THEFIRSTPARAMETER", ":", FALSE, FALSE, ';');
     assert(!strcmp(cp, "theFirstValue"));
-	printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
     free(cp);
     cp = extractFromDelimitedString(&text, "THEFIRSTPARAMETER", ":", FALSE, TRUE, ';');
     assert(!strcmp(cp, "theFirstValue"));
     assert(!strcmp(text, "theSecondParameter:theSecondValue;"));
     sprintf(text, "%s", text_value);
-	printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
     free(cp);
     cp = extractFromDelimitedString(&text, "theSecondParameter", ":", TRUE, TRUE, ';');
     assert(!strcmp(cp, "theSecondValue"));
-	printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
     free(cp);
     assert(!strcmp(text, "theFirstParameter:theFirstValue;"));
     assert(insertIntoDelimitedString(&text, text_size, "anotherParameter", "anotherValue", ":", FALSE, ';') ==  0);
@@ -58,9 +52,7 @@ void testDelimitedStringOps() {
     assert(!strcmp(text, "anotherParameter:anotherValue;theFirstParameter:theFirstValue;"));
     assert(insertIntoDelimitedString(&text, text_size, "theFirstParameter", "THEFIRSTVALUE", ":", TRUE, ';') ==  0);
     assert(!strcmp(text, "anotherParameter:anotherValue;theFirstParameter:THEFIRSTVALUE;"));
-	printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
     free(extractFromDelimitedString(&text, "theFirstParameter", ":", TRUE, TRUE, ';'));
-	printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
     free(extractFromDelimitedString(&text, "anotherParameter", ":", TRUE, TRUE, ';'));
     assert(strlen(text) == 0);
     assert(insertIntoDelimitedString(&text, text_size, "anotherParameter", "anotherValue", ":", FALSE, ';') == 0);
@@ -68,7 +60,6 @@ void testDelimitedStringOps() {
     strcpy(text, "verticalDatumInfo:H4sIAAAAAAAAAHWQUQvCIBSF3/crZO+brmYYOCEIeuuxd6krCE5hu/r7cxlFtXyScw7fB1cmmNBetWtuGuPYWG8Cid7iUBusVUWI9BptgtKr8+lybDZ7ST/SZQYOUs6CV7uub0XXc/Z8naTvcpkGY2ZAAjPaUSNklXYzPGy5xfDteiVlkLSLoFjLJC3fhUkLdJ2PU1zBHzJeiL/4reB81ZDD36Op6g4WwiaKSwEAAA==;verticalDatum:NGVD-29;");
     assert(insertIntoDelimitedString(&text, text_size, "verticalDatumInfo", "H4sIAAAAAAAAAHWQUQvCIBSF3/crZO+brmYYOCEIeuuxd6krCE5hu/r7cxlFtXyScw7fB1cmmNBetWtuGuPYWG8Cid7iUBusVUWI9BptgtKr8+lybDZ7ST/SZQYOUs6CV7uub0XXc/Z8naTvcpkGY2ZAAjPaUSNklXYzPGy5xfDteiVlkLSLoFjLJC3fhUkLdJ2PU1zBHzJeiL/4reB81ZDD36Op6g4WwiaKSwEAAA==", ":", TRUE, ';') ==  0);
     assert(!strcmp(text, "verticalDatum:NGVD-29;verticalDatumInfo:H4sIAAAAAAAAAHWQUQvCIBSF3/crZO+brmYYOCEIeuuxd6krCE5hu/r7cxlFtXyScw7fB1cmmNBetWtuGuPYWG8Cid7iUBusVUWI9BptgtKr8+lybDZ7ST/SZQYOUs6CV7uub0XXc/Z8naTvcpkGY2ZAAjPaUSNklXYzPGy5xfDteiVlkLSLoFjLJC3fhUkLdJ2PU1zBHzJeiL/4reB81ZDD36Op6g4WwiaKSwEAAA==;"));
-	printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
     free(text);
 }
 void testGzipAndEncodingOps() {
@@ -99,9 +90,7 @@ void testGzipAndEncodingOps() {
     if (errmsg != NULL) printf("%s\n", errmsg);
     assert(errmsg == NULL);
     assert(!strcmp(expanded, input_text));
-	printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
     free(compressed);
-	printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
     free(expanded);
 }
 void testUserHeaderOps() {
@@ -115,9 +104,7 @@ void testUserHeaderOps() {
     assert(userHeaderNumber == (strlen(userHeaderStringIn)-1)/4+1);
     userHeaderStringOut = userHeaderToString(userHeader, userHeaderNumber);
     assert(!strcmp(userHeaderStringIn, userHeaderStringOut));
-	printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
     free(userHeader);
-	printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
     free(userHeaderStringOut);
 }
 void testVerticalDatumInfoSerialization() {
@@ -266,7 +253,7 @@ void testZsetZquery() {
     zquery("VDOW", "", 0, &intVal);
     assert(intVal == FALSE);
 }
-void testStoreRetrieveTimeSeries()  {
+void testStoreRetrieveTimeSeries() {
 // test storing and retriving time series data
     long long ifltab[250];
     int status;
@@ -454,8 +441,7 @@ void testStoreRetrieveTimeSeries()  {
                                         //------------------------------------------------//
                                         errmsg = gzipAndEncode(&compressed, xml[j]);
                                         assert(errmsg == NULL);
-                                        len = VERTICAL_DATUM_INFO_USER_HEADER_PARAM_LEN + strlen(compressed) + 1;
-										printf("Calling malloc from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
+                                        len = VERTICAL_DATUM_INFO_USER_HEADER_PARAM_LEN + strlen(compressed) + 2;
                                         headerBuf = (char *)malloc(len+1);
                                         memset(headerBuf, 0, len+1);
                                         status = insertIntoDelimitedString(
@@ -467,7 +453,6 @@ void testStoreRetrieveTimeSeries()  {
                                             FALSE,
                                             ';');
                                         assert(status == 0);
-										printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
                                         free(compressed);
                                         tss->userHeader = stringToUserHeader(headerBuf, &tss->userHeaderNumber);
                                         tss->allocated[zSTRUCT_userHeader] = TRUE;
@@ -494,7 +479,6 @@ void testStoreRetrieveTimeSeries()  {
                                             }
                                             else {
                                                 len = VERTICAL_DATUM_USER_HEADER_PARAM_LEN + strlen(verticalDatums[K]) + 3;
-												printf("Calling malloc from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
                                                 headerBuf = (char *)malloc(len);
                                                 headerBuf[0] = '\0';
                                             }
@@ -509,7 +493,6 @@ void testStoreRetrieveTimeSeries()  {
                                                 ';');
                                             assert(status == 0);
                                         }
-										printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
                                         if (tss->userHeader) free(tss->userHeader);
                                         tss->userHeader = stringToUserHeader(headerBuf, &tss->userHeaderNumber);
                                         tss->allocated[zSTRUCT_userHeader] = TRUE;
@@ -520,7 +503,6 @@ void testStoreRetrieveTimeSeries()  {
                                         //--------------------------------------------------------//
                                         K = k3;
                                         sprintf(unitSpec, "U=%s|V=%s", unit[l], verticalDatums[K]);
-										printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
                                         free(tss->units);
                                         tss->units = mallocAndCopy(unitSpec);
                                     }
@@ -657,7 +639,6 @@ void testStoreRetrieveTimeSeries()  {
                                         zclose(ifltab);
                                         zstructFree(tss);
                                     }
-									printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
                                     if (headerBuf) free(headerBuf);
                                 }
                             }
@@ -836,8 +817,7 @@ void testStoreRetrievePairedData() {
                                         //------------------------------------------------//
                                         errmsg = gzipAndEncode(&compressed, xml[j]);
                                         assert(errmsg == NULL);
-                                        len = VERTICAL_DATUM_INFO_USER_HEADER_PARAM_LEN + strlen(compressed) + 1;
-										printf("Calling malloc from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
+                                        len = VERTICAL_DATUM_INFO_USER_HEADER_PARAM_LEN + strlen(compressed) + 2;
                                         headerBuf = (char *)malloc(len+1);
                                         memset(headerBuf, 0, len+1);
                                         status = insertIntoDelimitedString(
@@ -849,7 +829,6 @@ void testStoreRetrievePairedData() {
                                             FALSE,
                                             ';');
                                         assert(status == 0);
-										printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
                                         free(compressed);
                                         pds->userHeader = stringToUserHeader(headerBuf, &pds->userHeaderNumber);
                                         pds->allocated[zSTRUCT_userHeader] = 1;
@@ -876,7 +855,6 @@ void testStoreRetrievePairedData() {
                                             }
                                             else {
                                                 len = VERTICAL_DATUM_USER_HEADER_PARAM_LEN + strlen(verticalDatums[K]) + 3;
-												printf("Calling malloc from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
                                                 headerBuf = (char *)malloc(len);
                                                 headerBuf[0] = '\0';
                                             }
@@ -891,7 +869,6 @@ void testStoreRetrievePairedData() {
                                                 ';');
                                             assert(status == 0);
                                         }
-										printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
                                         if (pds->userHeader) free(pds->userHeader);
                                         pds->userHeader = stringToUserHeader(headerBuf, &pds->userHeaderNumber);
                                         pds->allocated[zSTRUCT_userHeader] = 1;
@@ -902,13 +879,10 @@ void testStoreRetrievePairedData() {
                                             K = k3;
                                             sprintf(unitSpec, "U=%s|V=%s", unit[l], verticalDatums[K]);
                                             if (n == 0) {
-												printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
                                                 free(pds->unitsDependent);
-												printf("Calling malloc from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
                                                 pds->unitsDependent = mallocAndCopy(unitSpec);
                                             }
                                             else {
-												printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
                                                 free(pds->unitsIndependent);
                                                 pds->unitsIndependent = mallocAndCopy(unitSpec);
                                             }
@@ -1050,7 +1024,6 @@ void testStoreRetrievePairedData() {
                                         zclose(ifltab);
                                         zstructFree(pds);
                                     }
-									printf("Calling free from %s:%d\n", __FILE__, __LINE__); fflush(stdout);
                                     if (headerBuf) free(headerBuf);
                                 }
                             }
