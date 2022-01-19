@@ -375,7 +375,6 @@ void testStoreRetrieveTimeSeries() {
                                     //------------------------//
                                     // create the time series //
                                     //------------------------//
-                                    // printf("%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n", i,j,k,l,m,n,o,p);
                                     if (i == 0) {
                                         status = zopen6(ifltab, filename[i]);
                                     }

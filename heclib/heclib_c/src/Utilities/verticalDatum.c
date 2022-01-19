@@ -39,15 +39,15 @@ const char *meterUnitAliases[] = {"M","METER","METERS","METRE","METRES"};
 const int footUnitAliasCount = sizeof(footUnitAliases) / sizeof(footUnitAliases[0]);
 const int meterUnitAliasCount = sizeof(meterUnitAliases) / sizeof(meterUnitAliases[0]);
 
-// void *_malloc(size_t size) {
-    // void *buf = malloc(size);
-    // memset(buf, 0, size);
-    // return buf;
-// }
+void *_malloc(size_t size) {
+    void *buf = malloc(size);
+    memset(buf, 0, size);
+    return buf;
+}
 
-// void *_calloc(size_t num, size_t size) {
-    // return _malloc((int)num * (int)size);
-// }
+void *_calloc(size_t num, size_t size) {
+    return _malloc((int)num * (int)size);
+}
 //
 // See verticalDatum.h for documentation
 //
@@ -63,7 +63,7 @@ int unitIsFeet(const char *unit) {
 // Fortran wrapper for unitIsFeet
 //
 int unitisfeet_(char *unit, slen_t lenUnit) {
-    char *cUnit = (char *)malloc(lenUnit+1);
+    char *cUnit = (char *)_malloc(lenUnit+1);
     F2C(unit, cUnit, lenUnit, lenUnit+1);
     int isFeet = unitIsFeet(cUnit);
     free(cUnit);
@@ -84,7 +84,7 @@ int unitIsMeters(const char *unit) {
 // Fortran wrapper for unitIsMeters
 //
 int unitismeters_(char *unit, slen_t lenUnit) {
-    char *cUnit = (char *)malloc(lenUnit+1);
+    char *cUnit = (char *)_malloc(lenUnit+1);
     F2C(unit, cUnit, lenUnit, lenUnit+1);
     int isMeters = unitIsMeters(cUnit);
     free(cUnit);
@@ -99,7 +99,7 @@ double getOffset(double offset, const char *offsetUnit, const char *_dataUnit) {
     int offsetInFeet   = 0;
     int offsetInMeters = 0;
     // blank trim the data unit (shouldn't have to do this)
-    char *dataUnit = (char *)malloc(strlen(_dataUnit)+1);
+    char *dataUnit = (char *)_malloc(strlen(_dataUnit)+1);
     strcpy(dataUnit, _dataUnit);
     for (int i = strlen(dataUnit)-1; dataUnit[i] == 32; --i) {
         dataUnit[i] = '\0';
@@ -138,8 +138,8 @@ void getoffset_(
         const char *dataUnit,
         slen_t lenOffsetUnit,
         slen_t lenDataUnit) {
-    char *cOffsetUnit = (char *)malloc(lenOffsetUnit+1);
-    char *cDataUnit   = (char *)malloc(lenDataUnit+1);
+    char *cOffsetUnit = (char *)_malloc(lenOffsetUnit+1);
+    char *cDataUnit   = (char *)_malloc(lenDataUnit+1);
     F2C(offsetUnit, cOffsetUnit, lenOffsetUnit, lenOffsetUnit+1);
     F2C(dataUnit, cDataUnit, lenDataUnit, lenDataUnit+1);
     *offset = getOffset(*offset, cOffsetUnit, cDataUnit);
@@ -174,7 +174,7 @@ char *extractFromDelimitedString(
     if (separator) {
         len += strlen(separator);
     }
-    char *param = malloc(len);
+    char *param = _malloc(len);
     strcpy(param, parameter);
     if (separator) {
         strcat(param, separator);
@@ -186,7 +186,7 @@ char *extractFromDelimitedString(
         char *valueEnd;
         for(valueEnd = valueStart+1; *valueEnd && *valueEnd != delimiter; ++valueEnd);
         len = valueEnd - valueStart;
-        value = (char *)malloc(len + 1);
+        value = (char *)_malloc(len + 1);
         memcpy(value, valueStart, len);
         value[len] = '\0';
         if (removeFromString) {
@@ -267,7 +267,7 @@ int *stringToUserHeader(const char *str, int *userHeaderNumber) {
 	int  numInts = numBytes == 0 ? 0 : (numBytes-1) / 4 + 1;
     int *userHeader = NULL;
     if (numInts > 0) {
-        userHeader = (int *)calloc(numInts, 4);
+        userHeader = (int *)_calloc(numInts, 4);
 		memcpy((char *)userHeader, str, numInts * 4);
 		if (getEndian()) {
 			// big endian
@@ -286,7 +286,7 @@ int *stringToUserHeader(const char *str, int *userHeaderNumber) {
 char *userHeaderToString(const int *userHeader, const int userHeaderNumber) {
     char *str = NULL;
     if (userHeader != NULL && userHeaderNumber > 0) {
-		int *buf = (int *)calloc(userHeaderNumber, 4);
+		int *buf = (int *)_calloc(userHeaderNumber, 4);
 		memcpy(buf, userHeader, 4 * userHeaderNumber);
 		if (getEndian()) {
 			// big endian
@@ -301,7 +301,7 @@ char *userHeaderToString(const int *userHeader, const int userHeaderNumber) {
         for (cp = start; *cp && cp - start < userHeaderNumber * 4; ++cp);
         while (*(cp-1) == ' ') --cp;
         len = cp - start;
-        str = malloc(len+1);
+        str = _malloc(len+1);
         memcpy(str, start, len);
         str[len] = '\0';
 		free(buf);
@@ -340,7 +340,7 @@ int b64DecodedLen(int toDecodeLen) {
 int b64Encode(char **encoded, const char *toEncode, int toEncodeLen) {
     int len = b64EncodedLen(toEncodeLen);
     if (len < 0) return len;
-    *encoded = (char *)malloc(len+1);
+    *encoded = (char *)_malloc(len+1);
     const char *i = toEncode;
     char *o = *encoded;
     int remainingLen = toEncodeLen;
@@ -408,7 +408,7 @@ int b64Decode(char **decoded, int *decodedLen, const char *toDecode) {
     if (len < 0) {
         return len;
     }
-    *decoded = (char *)malloc(strlen(toDecode));
+    *decoded = (char *)_malloc(strlen(toDecode));
     const char *c = toDecode;
     char i[4];
     char *o = *decoded;
@@ -533,7 +533,7 @@ char *decodeAndGunzip(char **results, const char *inputBuf) {
     // return the results //
     //--------------------//
     textBuf[zstr.total_out] = '\0';
-    *results = (char *)malloc(strlen(textBuf)+1);
+    *results = (char *)_malloc(strlen(textBuf)+1);
     strcpy(*results, textBuf);
     free(decodedBuf);
     return NULL;
@@ -552,7 +552,7 @@ char *gzipAndEncode(char **results, const char *inputBuf) {
     //-----------------------------------//
     // setup structure for gzip compress //
     //-----------------------------------//
-    compressedBuf = (char *)malloc(inputLen);
+    compressedBuf = (char *)_malloc(inputLen);
     zstr.zalloc    = Z_NULL;
     zstr.zfree     = Z_NULL;
     zstr.opaque    = Z_NULL;
@@ -595,9 +595,9 @@ char *expandEmptyXmlTags(char **outputBuf, const char *inputBuf) {
     const char *in;
     char *out;
     int   tagBufLen = 32;
-    char *tagBuf = (char *)malloc(tagBufLen);
+    char *tagBuf = (char *)_malloc(tagBufLen);
     int   xmlBufLen = strlen(inputBuf) * 3;
-    char *xmlBuf = (char *)malloc(xmlBufLen);
+    char *xmlBuf = (char *)_malloc(xmlBufLen);
     int   inTag = FALSE;
     int   tagPos;
     char *tagChar;
@@ -664,8 +664,8 @@ char *expandEmptyXmlTags(char **outputBuf, const char *inputBuf) {
 char *validateXmlStructure(const char *xml) {
     int    size = 20;
     int    count = 0;
-    char **tagNames = (char **)malloc(size * sizeof(char *));
-    char  *buf = (char *)malloc(strlen(xml)+1);
+    char **tagNames = (char **)_malloc(size * sizeof(char *));
+    char  *buf = (char *)_malloc(strlen(xml)+1);
     char  *cp1;
     char  *cp2;
     int    len;
@@ -716,7 +716,7 @@ char *validateXmlStructure(const char *xml) {
                 tagNames = (char **)realloc(tagNames, size * sizeof(char *));
             }
             len = cp2 - cp1;
-            tagNames[count-1] = (char *)malloc(len+1);
+            tagNames[count-1] = (char *)_malloc(len+1);
             strncpy(tagNames[count-1], cp1, len);
             tagNames[count-1][len] = '\0';
         }
@@ -980,7 +980,7 @@ char *verticalDatumInfoToString(char **results, verticalDatumInfo *vdi, int gene
         }
     }
     else {
-		*results = (char *)malloc(strlen(xml)+1);
+		*results = (char *)_malloc(strlen(xml)+1);
         strcpy(*results, xml);
     }
     return NULL;
@@ -1000,7 +1000,7 @@ verticalDatumInfo *extractVerticalDatumInfoFromUserHeader(const int *userHeader,
             FALSE,
             ';');
         if (vdiStr) {
-            vdi = (verticalDatumInfo *)malloc(sizeof(verticalDatumInfo));
+            vdi = (verticalDatumInfo *)_malloc(sizeof(verticalDatumInfo));
             char *errmsg = stringToVerticalDatumInfo(vdi, vdiStr);
             if (errmsg != NULL) {
                 if (vdi) {
@@ -1141,7 +1141,7 @@ void stringtoverticaldatuminfo_(
         slen_t   lenErrorMessage,
         slen_t   lenNativeDatum,
         slen_t   lenUnit) {
-    char *lInputStr = (char *)malloc(lenInputStr+1);
+    char *lInputStr = (char *)_malloc(lenInputStr+1);
     F2C(inputStr, lInputStr, lenInputStr, lenInputStr+1);
     char *errmsg;
     verticalDatumInfo vdi;
