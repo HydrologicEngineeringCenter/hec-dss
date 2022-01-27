@@ -355,7 +355,7 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 		//-----------------------------------------------//
 		// convert to native vertical datum if necessary //
 		//-----------------------------------------------//
-		int allowOverwriteLocationVerticalDatum;
+		int allowOverwriteLocationVerticalDatum = FALSE;
 		float  *tmpFloatVals = NULL;
 		float  *origFloatVals = NULL;
 		double *tmpDoubleVals = NULL;

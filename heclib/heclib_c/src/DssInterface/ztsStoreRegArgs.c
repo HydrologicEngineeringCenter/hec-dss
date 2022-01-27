@@ -165,14 +165,14 @@ int ztsStoreRegArgs(long long *ifltab, const char *pathname,
 			stringCToFort(unitsPassed, sizeof(unitsPassed), units);
 		}
 		else {
-			stringFill(unitsPassed, '\0', sizeof(unitsPassed));
+			stringFill(unitsPassed, ' ', sizeof(unitsPassed));
 		}
 
 		if (type) {
 			stringCToFort(typePassed, sizeof(typePassed), type);
 		}
 		else {
-			stringFill(typePassed, '\0', sizeof(typePassed));
+			stringFill(typePassed, ' ', sizeof(typePassed));
 		}
 
 		compression = 0;
@@ -191,7 +191,7 @@ int ztsStoreRegArgs(long long *ifltab, const char *pathname,
 			&storageFlag, &compression, &baseValue, &setBase, &setDeltaHigh,
 			&deltaPrec, &status,
 			strlen (pathname), strlen (startDate), strlen (startTime),
-			strlen (unitsPassed), strlen (typePassed), (size_t) lenuserHeader,
+			sizeof(unitsPassed), sizeof(typePassed), (size_t) lenuserHeader,
 			strlen(timezone));
 /*
 SUBROUTINE zsrtsc6 ( IFLTAB, CPATH, CDATE, CTIME, NVALS,

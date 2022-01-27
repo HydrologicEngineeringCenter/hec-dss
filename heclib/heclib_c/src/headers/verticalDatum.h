@@ -137,6 +137,7 @@ extern "C" {
 //----------------//
 // error messages //
 //----------------//
+#define MEMORY_ALLOCATION_ERROR                         "Memory allocation error"
 #define BASE64_DECODING_ERROR                           "Base64 decoding error"
 #define BASE64_ENCODING_ERROR                           "Base64 encoding error"
 #define BEGINNING_BOUNDARY_NOT_FOUND                    "Beginning boundary not found"

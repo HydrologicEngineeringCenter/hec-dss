@@ -298,7 +298,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 	//-----------------------------------------------//
 	// convert to native vertical datum if necessary //
 	//-----------------------------------------------//
-	int allowOverwriteLocationVerticalDatum;
+	int allowOverwriteLocationVerticalDatum = FALSE;
 	float  *tmpFloatOrds = NULL;
 	float  *origFloatOrds = NULL;
 	float  *tmpFloatVals = NULL;

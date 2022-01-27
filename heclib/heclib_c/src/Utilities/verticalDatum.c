@@ -41,12 +41,14 @@ const int meterUnitAliasCount = sizeof(meterUnitAliases) / sizeof(meterUnitAlias
 
 void *_malloc(size_t size) {
     void *buf = malloc(size);
-    memset(buf, 0, size);
+    if (buf != NULL) {
+        memset(buf, 0, size);
+    }
     return buf;
 }
 
 void *_calloc(size_t num, size_t size) {
-    return _malloc((int)num * (int)size);
+    return _malloc(num * size);
 }
 //
 // See verticalDatum.h for documentation
@@ -287,7 +289,7 @@ char *userHeaderToString(const int *userHeader, const int userHeaderNumber) {
     char *str = NULL;
     if (userHeader != NULL && userHeaderNumber > 0) {
 		int *buf = (int *)_calloc(userHeaderNumber, 4);
-		memcpy(buf, userHeader, 4 * userHeaderNumber);
+		memcpy(buf, userHeader, 4 * (size_t)userHeaderNumber);
 		if (getEndian()) {
 			// big endian
 			uint32_t *_4bytes = (uint32_t *)buf;
@@ -297,14 +299,18 @@ char *userHeaderToString(const int *userHeader, const int userHeaderNumber) {
 		}
         char *start = (char *)buf;
         char *cp;
-        int   len;
-        for (cp = start; *cp && cp - start < userHeaderNumber * 4; ++cp);
+        int   len = userHeaderNumber * 4;
+        for (cp = start; (cp - start) < len; ++cp) {
+            if (!*cp) {
+                break;
+            }
+        }
         while (*(cp-1) == ' ') --cp;
         len = cp - start;
-        str = _malloc(len+1);
+        str = _malloc((size_t)len+1);
         memcpy(str, start, len);
         str[len] = '\0';
-		free(buf);
+        free(buf);
     }
     return str;
 }
@@ -647,7 +653,13 @@ char *expandEmptyXmlTags(char **outputBuf, const char *inputBuf) {
                 if (inTag) {
                     if (tagPos >= tagBufLen) {
                         tagBufLen *= 2;
-                        tagBuf = (char *)realloc(tagBuf, tagBufLen);
+                        char *cp = (char*)realloc(tagBuf, tagBufLen);
+                        if (cp == NULL) {
+                            free(tagBuf);
+                            free(xmlBuf);
+                            return MEMORY_ALLOCATION_ERROR;
+                        }
+                        tagBuf = cp;
                     }
                     tagBuf[tagPos++] = *in;
                 }
@@ -662,20 +674,25 @@ char *expandEmptyXmlTags(char **outputBuf, const char *inputBuf) {
 // See verticalDatum.h for documentation
 //
 char *validateXmlStructure(const char *xml) {
-    int    size = 20;
-    int    count = 0;
-    char **tagNames = (char **)_malloc(size * sizeof(char *));
-    char  *buf = (char *)_malloc(strlen(xml)+1);
-    char  *cp1;
-    char  *cp2;
-    int    len;
-    int    first = TRUE;
+    int     size = 20;
+    int     count = 0;
+    char  **tagNames = (char **)_malloc(size * sizeof(char *));
+    char   *buf = (char *)_malloc(strlen(xml)+1);
+    char   *cp1;
+    char   *cp2;
+    size_t  len;
+    int     first = TRUE;
+    char   *saveptr = NULL;
 
     strcpy(buf, xml);
     while (TRUE) {
-        char *saveptr;
-        cp1 = first ? strtok_r(buf, "<", &saveptr) : strtok_r(NULL, "<", &saveptr);
-        first = FALSE;
+        if (first) {
+            cp1 = strtok_r(buf, "<", &saveptr);
+            first = FALSE;
+        }
+        else {
+            cp1 = strtok_r(NULL, "<", &saveptr);
+        }
         if (!cp1) {
             break;
         }
@@ -713,7 +730,13 @@ char *validateXmlStructure(const char *xml) {
             //-----------------//
             if (count++ == size) {
                 size *= 2;
-                tagNames = (char **)realloc(tagNames, size * sizeof(char *));
+                char **cpp = (char**)realloc(tagNames, size * sizeof(char*));
+                if (cpp == NULL) {
+                    free(tagNames);
+                    free(buf);
+                    return MEMORY_ALLOCATION_ERROR;
+                }
+                tagNames = cpp;
             }
             len = cp2 - cp1;
             tagNames[count-1] = (char *)_malloc(len+1);
@@ -721,10 +744,10 @@ char *validateXmlStructure(const char *xml) {
             tagNames[count-1][len] = '\0';
         }
     }
-    free(tagNames);
     for (int i = 0; i < count; ++i) {
         free(tagNames[i]);
     }
+    free(tagNames);
     free(buf);
     return NULL;
 }

@@ -24,10 +24,15 @@ int test_vertical_datums_c() {
 void testDelimitedStringOps() {
     // test extract_from_delimited_string() and insertIntoDelimitedString()
     int text_size = 512;
-    char *text = (char *)malloc(text_size);
     char *cp;
     char *text_value = "theFirstParameter:theFirstValue;theSecondParameter:theSecondValue;";
-    sprintf(text, "%s", text_value);
+    char* text = (char*)malloc(text_size);
+    if (text) {
+        sprintf(text, "%s", text_value);
+    }
+    else {
+        assert(text);
+    }
     cp = extractFromDelimitedString(&text, "theFirstParameter", ":", TRUE, FALSE, ';');
     assert(!strcmp(cp, "theFirstValue"));
     free(cp);
@@ -280,7 +285,6 @@ void testStoreRetrieveTimeSeries() {
     char *compressed   = NULL;
     char *headerBuf    = NULL;
     int   len          = 0;
-    char  buf[80];
     char  unitSpec[24];
     char *xml[]       = {
         "<vertical-datum-info unit=\"ft\">\n"
@@ -375,6 +379,7 @@ void testStoreRetrieveTimeSeries() {
                                     //------------------------//
                                     // create the time series //
                                     //------------------------//
+                                    // printf("%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n", i,j,k,l,m,n,o,p);
                                     if (i == 0) {
                                         status = zopen6(ifltab, filename[i]);
                                     }
@@ -678,7 +683,6 @@ void testStoreRetrievePairedData() {
     char  *compressed   = NULL;
     char  *headerBuf    = NULL;
     int    len          = 0;
-    char   buf[80];
     char   unitSpec[24];
     char *xml[]       = {
         "<vertical-datum-info unit=\"ft\">\n"

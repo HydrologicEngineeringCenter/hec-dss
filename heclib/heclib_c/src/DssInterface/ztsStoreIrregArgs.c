@@ -136,14 +136,14 @@ int ztsStoreIrregArgs(long long *ifltab, const char *pathname,
 			stringCToFort(unitsPassed, sizeof(unitsPassed), units);
 		}
 		else {
-			stringFill(unitsPassed, '\0', sizeof(unitsPassed));
+			stringFill(unitsPassed, ' ', sizeof(unitsPassed));
 		}
 
 		if (type) {
 			stringCToFort(typePassed, sizeof(typePassed), type);
 		}
 		else {
-			stringFill(typePassed, '\0', sizeof(typePassed));
+			stringFill(typePassed, ' ', sizeof(typePassed));
 		}
 
 		if (boolCoordinatesUsed) {
@@ -188,7 +188,7 @@ int ztsStoreIrregArgs(long long *ifltab, const char *pathname,
 			csupp, &zero, timezone, 
 			&storageFlag,  &status,
 			strlen(pathname), 
-			strlen (unitsPassed), strlen (typePassed), (size_t) lenuserHeader,
+			sizeof(unitsPassed), sizeof(typePassed), (size_t) lenuserHeader,
 			strlen(timezone));
 
 
