@@ -182,17 +182,20 @@ int Hec_zlocationFromStruct(JNIEnv *env, jobject obj, jobject j_dataContainer, z
 				cp = strtok_r((char *)buf, ";", &saveptr);
 				while (cp) {
 					int i = existing_elem_count++;
-					existing_si = (si_elem*)realloc(existing_si, existing_elem_count * sizeof(si_elem));
-					existing_si[i].key = strdup(cp);
-					cp = strchr(existing_si[i].key, ':');
-					if (cp) {
-						*cp = '\0';
-						existing_si[i].value = ++cp;
+					si_elem *elem = (si_elem*)realloc(existing_si, existing_elem_count * sizeof(si_elem));
+					if (elem) {
+						existing_si = elem;
+						existing_si[i].key = strdup(cp);
+						cp = strchr(existing_si[i].key, ':');
+						if (cp) {
+							*cp = '\0';
+							existing_si[i].value = ++cp;
+						}
+						else {
+							existing_si[i].value = NULL;
+						}
+						cp = strtok_r(NULL, ";", &saveptr);
 					}
-					else {
-						existing_si[i].value = NULL;
-					}
-					cp = strtok_r(NULL, ";", &saveptr);
 				}
 				free(buf);
 				(*env)->ReleaseStringUTFChars(env, jstr, existing);
@@ -202,28 +205,31 @@ int Hec_zlocationFromStruct(JNIEnv *env, jobject obj, jobject j_dataContainer, z
 				// parse the location supplemental info //
 				//--------------------------------------//
 				buf = strdup(locationStruct->supplemental);
-				cp = strtok_r((char *)buf, "\n", &saveptr);
+				cp = strtok_r((char *)buf, ";", &saveptr);
 				while (cp) {
 					int i = location_elem_count++;
-					location_si = (si_elem*)realloc(location_si, location_elem_count * sizeof(si_elem));
-					location_si[i].key = strdup(cp);
-					cp = strchr(location_si[i].key, ':');
-					if (cp) {
-						*cp = '\0';
-						location_si[i].value = ++cp;
+					si_elem* elem = (si_elem*)realloc(location_si, location_elem_count * sizeof(si_elem));
+					if (elem) {
+						location_si = elem;
+						location_si[i].key = strdup(cp);
+						cp = strchr(location_si[i].key, ':');
+						if (cp) {
+							*cp = '\0';
+							location_si[i].value = ++cp;
+						}
+						else {
+							location_si[i].value = NULL;
+						}
+						cp = strtok_r(NULL, ";", &saveptr);
 					}
-					else {
-						location_si[i].value = NULL;
-					}
-					cp = strtok_r(NULL, "\n", &saveptr);
 				}
 				free(buf);
 				if (location_elem_count > 0) {
 					//---------------------------------------------------------//
 					// combine the two, giving preference to the existing info //
 					//---------------------------------------------------------//
-					char *combined = NULL;
-					int oldLen = 0;
+					char* combined = NULL;
+					int oldLen = 1;
 					int newLen;
 					bool inExisting;
 					for (int i = 0; i < existing_elem_count; ++i) {
@@ -231,14 +237,20 @@ int Hec_zlocationFromStruct(JNIEnv *env, jobject obj, jobject j_dataContainer, z
 						if (existing_si[i].value) {
 							newLen += strlen(existing_si[i].value) + 1;
 						}
-						combined = (char*)realloc(combined, newLen);
-						strcpy(combined+oldLen, existing_si[i].key);
-						if (existing_si[i].value) {
-							strcat(combined, ":");
-							strcat(combined, existing_si[i].value);
-					}
-						strcat(combined, ";");
-						oldLen = newLen;
+						char* cp = (char*)realloc(combined, newLen);
+						if (cp) {
+							combined = cp;
+							if (oldLen == 1) {
+								combined[0] = '\0';
+							}
+							strcat(combined, existing_si[i].key);
+							if (existing_si[i].value) {
+								strcat(combined, ":");
+								strcat(combined, existing_si[i].value);
+							}
+							strcat(combined, ";");
+							oldLen = newLen;
+						}
 					}
 					for (int i = 0; i < location_elem_count; ++i) {
 						inExisting = false;
@@ -253,14 +265,20 @@ int Hec_zlocationFromStruct(JNIEnv *env, jobject obj, jobject j_dataContainer, z
 							if (location_si[i].value) {
 								newLen += strlen(location_si[i].value) + 1;
 							}
-							combined = (char*)realloc(combined, newLen);
-							strcpy(combined+oldLen, location_si[i].key);
-							if (location_si[i].value) {
-								strcat(combined, ":");
-								strcat(combined, location_si[i].value);
+							char *cp = (char*)realloc(combined, newLen);
+							combined = cp;
+							if (cp) {
+								if (oldLen == 1) {
+									combined[0] = '\0';
+								}
+								strcat(combined, location_si[i].key);
+								if (location_si[i].value) {
+									strcat(combined, ":");
+									strcat(combined, location_si[i].value);
+								}
+								strcat(combined, ";");
+								oldLen = newLen;
 							}
-							strcat(combined, ";");
-							oldLen = newLen;
 						}
 					}
 					jstr = (*env)->NewStringUTF(env, (const char*)combined);			
