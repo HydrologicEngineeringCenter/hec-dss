@@ -439,7 +439,7 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 							free(vdiTs);
 						}
 						return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID,
-							zdssErrorCodes.INCOMPATIBLE_CALL, 0,
+							zdssErrorCodes.VERTICAL_DATUM_ERROR, 0,
 							0, zdssErrorSeverity.WARNING, tss->pathname,
 							errmsg);
 					}
@@ -458,7 +458,7 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 							free(vdiTs);
 						}
 						return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID,
-							zdssErrorCodes.INCOMPATIBLE_CALL, 0,
+							zdssErrorCodes.VERTICAL_DATUM_ERROR, 0,
 							0, zdssErrorSeverity.WARNING, tss->pathname,
 							errmsg);
 					}
@@ -477,7 +477,7 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 							free(vdiTs);
 						}
 						return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID,
-							zdssErrorCodes.INCOMPATIBLE_CALL, 0,
+							zdssErrorCodes.VERTICAL_DATUM_ERROR, 0,
 							0, zdssErrorSeverity.WARNING, tss->pathname,
 							errmsg);
 					}
@@ -496,7 +496,7 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 							free(vdiTs);
 						}
 						return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID,
-							zdssErrorCodes.INCOMPATIBLE_CALL, 0,
+							zdssErrorCodes.VERTICAL_DATUM_ERROR, 0,
 							0, zdssErrorSeverity.WARNING, tss->pathname,
 							errmsg);
 					}
@@ -554,7 +554,7 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 							free(vdiTs);
 						}
 						return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID,
-							zdssErrorCodes.INCOMPATIBLE_CALL, 0,
+							zdssErrorCodes.VERTICAL_DATUM_ERROR, 0,
 							0, zdssErrorSeverity.WARNING, tss->pathname,
 							errmsg);
 					}
@@ -571,7 +571,7 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 							free(vdiTs);
 						}
 						return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID,
-							zdssErrorCodes.INCOMPATIBLE_CALL, 0,
+							zdssErrorCodes.VERTICAL_DATUM_ERROR, 0,
 							0, zdssErrorSeverity.WARNING, tss->pathname,
 							errmsg);
 					}
@@ -637,7 +637,7 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 							free(tmpDoubleVals);
 						}
 						return zerrorProcessing(ifltab, DSS_FUNCTION_zpdStore_ID,
-							zdssErrorCodes.INCOMPATIBLE_CALL, 0,
+							zdssErrorCodes.VERTICAL_DATUM_ERROR, 0,
 							0, zdssErrorSeverity.WARNING, tss->pathname,
 							errmsg);
 					}
@@ -689,7 +689,7 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 										free(tmpDoubleVals);
 									}
 									return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID,
-										zdssErrorCodes.INCOMPATIBLE_CALL, 0,
+										zdssErrorCodes.VERTICAL_DATUM_ERROR, 0,
 										0, zdssErrorSeverity.WARNING, tss->pathname,
 										errmsg);
 								}
@@ -732,7 +732,7 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 									free(tmpDoubleVals);
 								}
 								return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID,
-									zdssErrorCodes.INCOMPATIBLE_CALL, 0,
+									zdssErrorCodes.VERTICAL_DATUM_ERROR, 0,
 									0, zdssErrorSeverity.WARNING, tss->pathname,
 									errmsg);
 							}
@@ -783,7 +783,7 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 				//  Programming error - profile values must only be in profile struct
 				//  values detected in time series struct.
 				return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID,
-				zdssErrorCodes.INCOMPATIBLE_CALL, 0,
+				zdssErrorCodes.VERTICAL_DATUM_ERROR, 0,
 				0, zdssErrorSeverity.WARNING, tss->pathname,
 				"Either doubles or floats may be stored, not both");
 			}

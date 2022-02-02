@@ -763,7 +763,7 @@ int zpdRetrieve(long long *ifltab, zStructPairedData *pds, int retrieveSizeFlag)
 							status = zerrorProcessing(
 								ifltab,
 								DSS_FUNCTION_zpdRetrieve_ID,
-								zdssErrorCodes.INVALID_HEADER_PARAMETER,
+								zdssErrorCodes.VERTICAL_DATUM_ERROR,
 								0,
 								0,
 								zdssErrorSeverity.WARNING,
@@ -790,7 +790,7 @@ int zpdRetrieve(long long *ifltab, zStructPairedData *pds, int retrieveSizeFlag)
 						status = zerrorProcessing(
 							ifltab,
 							DSS_FUNCTION_zpdRetrieve_ID,
-							zdssErrorCodes.INVALID_HEADER_PARAMETER,
+							zdssErrorCodes.VERTICAL_DATUM_ERROR,
 							0,
 							0,
 							zdssErrorSeverity.WARNING,
@@ -870,7 +870,7 @@ int zpdRetrieve(long long *ifltab, zStructPairedData *pds, int retrieveSizeFlag)
 								status = zerrorProcessing(
 									ifltab,
 									DSS_FUNCTION_zpdRetrieve_ID,
-									zdssErrorCodes.INVALID_HEADER_PARAMETER,
+									zdssErrorCodes.VERTICAL_DATUM_ERROR,
 									0,
 									0,
 									zdssErrorSeverity.WARNING,
@@ -892,7 +892,7 @@ int zpdRetrieve(long long *ifltab, zStructPairedData *pds, int retrieveSizeFlag)
 									status = zerrorProcessing(
 										ifltab,
 										DSS_FUNCTION_zpdRetrieve_ID,
-										zdssErrorCodes.INVALID_HEADER_PARAMETER,
+										zdssErrorCodes.VERTICAL_DATUM_ERROR,
 										0,
 										0,
 										zdssErrorSeverity.WARNING,
@@ -960,7 +960,7 @@ int zpdRetrieve(long long *ifltab, zStructPairedData *pds, int retrieveSizeFlag)
 								status = zerrorProcessing(
 									ifltab,
 									DSS_FUNCTION_zpdRetrieve_ID,
-									zdssErrorCodes.INVALID_HEADER_PARAMETER,
+									zdssErrorCodes.VERTICAL_DATUM_ERROR,
 									0,
 									0,
 									zdssErrorSeverity.WARNING,
@@ -994,7 +994,7 @@ int zpdRetrieve(long long *ifltab, zStructPairedData *pds, int retrieveSizeFlag)
 									status = zerrorProcessing(
 										ifltab,
 										DSS_FUNCTION_zpdRetrieve_ID,
-										zdssErrorCodes.INVALID_HEADER_PARAMETER,
+										zdssErrorCodes.VERTICAL_DATUM_ERROR,
 										0,
 										0,
 										zdssErrorSeverity.WARNING,
