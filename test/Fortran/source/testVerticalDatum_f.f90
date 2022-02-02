@@ -93,29 +93,18 @@ module modVerticalDatumInfo
             end if
         end function byteCountToIntCount
 
-        integer function mpm(ctime)
-            implicit none
-            !--------------------------------------------------------------------!
-            ! Minutes Past Midnight - convert a 4-digit time in hhmm to minutes  !
-            !--------------------------------------------------------------------!
-            ! heclib function ihm2m errored on '0100' and this is simpler anyway !
-            !--------------------------------------------------------------------!
-            character(len=*) :: ctime
-            integer          :: itime = -1
-            read(ctime,'(i4)') itime
-            if (itime >= 0 .and. itime < 2500) then
-                mpm = itime / 100 * 60 + mod(itime, 100)
-            else
-                mpm = -1
-            end if
-        end function mpm
+        integer function iswap(iin)
+            integer (kind=4) :: iin
+            call zswap6(iin, iswap)
+        end function iswap
+
+        logical function bigEndian()
+            integer i;
+            call getEndian(i)
+            bigEndian = i.eq.1
+        end function bigEndian
+
 end module modVerticalDatumInfo
-
-integer function iswap(iin)
-    integer (kind=4) :: iin
-    call zswap6(iin, iswap)
-end function iswap
-
 
 integer function test_vertical_datums_f()
     implicit none
@@ -184,7 +173,7 @@ subroutine testStoreRetrieveTimeSeries()
     integer (kind=4)        :: status, numberValues, i, j, k, k2, k3, kk, l, m, n, o, p, ii, len, iVerticalDatum
     integer (kind=4)        :: quality(24), itimes(6,2),userHeader(100), userHeaderLen, count
     integer (kind=4)        :: intervalOffset, compressionMethod, timesRetrieved(24), baseDate
-    integer (kind=4)        :: startDay, endDay, iswap, bigEndian
+    integer (kind=4)        :: startDay, endDay, ihm2m
     real (kind=8)           :: dvalues(6,3), dvals(24), dvals_out(24)
     real (kind=4)           :: fvalues(6,3), fvals(24), fvals_out(24)
     character (len=300)     :: errmsg, vdiStr
@@ -299,7 +288,6 @@ subroutine testStoreRetrieveTimeSeries()
     !     1 = specify
     !     2 = don't specify (use previously stored)
     !
-	call getEndian(bigEndian)
     call zset('MLVL', '', 1)
     count = 0
     do i = 1, 2
@@ -446,7 +434,7 @@ subroutine testStoreRetrieveTimeSeries()
                                     ! store the time series in the specified vertical datum !
                                     !-------------------------------------------------------!
                                     userHeaderLen = byteCountToIntCount(len_trim(userHeaderStr))
-									if (bigEndian == 1) then
+									if (bigEndian()) then
 										do ii = 1, userHeaderLen
 											userHeader(ii) = iswap(userHeader(ii))
 										end do
@@ -712,9 +700,9 @@ subroutine testStoreRetrieveTimeSeries()
                                                     ifltab,            & ! IFLTAB  in/out
                                                     pathnames(o,n),    & ! CPATH   in
                                                     startDay,          & ! JULS    in
-                                                    mpm(startTime),    & ! ISTIME  in
+                                                    ihm2m(startTime),    & ! ISTIME  in
                                                     endDay,            & ! JULE    in
-                                                    mpm(endTime),      & ! IETIME  in
+                                                    ihm2m(endTime),      & ! IETIME  in
                                                     timesRetrieved,    & ! ITIMES  out
                                                     dvals_out,         & ! DVALUES out
                                                     size(dvals_out),   & ! KVALS   in
@@ -739,9 +727,9 @@ subroutine testStoreRetrieveTimeSeries()
                                                     ifltab,            & ! IFLTAB
                                                     pathnames(o,n),    & ! CPATH
                                                     startDay,          & ! JULS
-                                                    mpm(startTime),    & ! ISTIME
+                                                    ihm2m(startTime),    & ! ISTIME
                                                     endDay,            & ! JULE
-                                                    mpm(endTime),      & ! IETIME
+                                                    ihm2m(endTime),      & ! IETIME
                                                     timesRetrieved,    & ! ITIMES
                                                     fvals_out,         & ! SVALUES
                                                     size(fvals_out),   & ! KVALS
@@ -796,7 +784,6 @@ subroutine testStoreRetrievePairedData()
     integer (kind=8)        :: ifltab(250)
     integer (kind=4)        :: status, numberOrdinates, numberCurves, ihoriz, nvals, count, iVerticalDatum
     integer (kind=4)        :: userHeader(100), userHeaderLen, i, j, k, k2, k3, kk, l, m, n, o, p, ii, len
-	integer (kind=4)        :: bigEndian, iswap
     real (kind=8)           :: dordinates(6,3), dvalues(6,3), dvals(12), dvals_out(12)
     real (kind=4)           :: fordinates(6,3), fvalues(6,3), fvals(12), fvals_out(12)
     character (len=300)     :: errmsg, vdiStr
@@ -903,7 +890,6 @@ subroutine testStoreRetrievePairedData()
     !     1 = specify
     !     2 = don't specify (use previously stored)
     !
-	call getEndian(bigEndian)
     call zset('MLVL', '', 1)
     count = 0
     do i = 1, 2
@@ -1055,7 +1041,7 @@ subroutine testStoreRetrievePairedData()
                                     ! store the paried data in the specified vertical datum !
                                     !-------------------------------------------------------!
                                     userHeaderLen = byteCountToIntCount(len_trim(userHeaderStr))
-									if (bigEndian == 1) then
+									if (bigEndian()) then
 										do ii = 1, userHeaderLen
 											userHeader(ii) = iswap(userHeader(ii))
 										end do
