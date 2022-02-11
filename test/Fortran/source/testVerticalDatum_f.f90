@@ -342,17 +342,13 @@ subroutine testStoreRetrieveTimeSeries()
                                         !------------------------------------------------!
                                         ! add the vertical datum info to the user header !
                                         !------------------------------------------------!
-                                        userHeaderStr = VERTICAL_DATUM_INFO_PARAM//':'//vdiStr
+                                        userHeaderStr = VERTICAL_DATUM_INFO_PARAM//':'//vdiStr//';'
                                     end if
                                     if (m > 1) then
                                         !----------------------------------------------------------!
                                         ! override the default vertical datum with the user header !
                                         !----------------------------------------------------------!
                                         kk = k2
-                                        if (userHeaderStr /= ' ') then
-                                            len = len_trim(userHeaderStr) + 1
-                                            userHeaderStr(len:) = ';'
-                                        end if
                                         len = len_trim(userHeaderStr) + 1
                                         write(userHeaderStr(len:), '(3a)') &
                                             VERTICAL_DATUM_PARAM,':',verticalDatums(kk)

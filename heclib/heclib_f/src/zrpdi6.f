@@ -27,7 +27,7 @@ C     Vertical datum varible dimensions
       integer iuhead_copy(100)
       character*400 vdiStr, errMsg
       character*16 unit
-      character*16 nativeDatum
+      character*16 nativeDatum, cvdatum1
       double precision offsetNavd88, offsetNgvd29, vertDatumOffset
       logical l_Navd88Estimated, l_Ngvd29Estimated
       logical l_indElev, l_depElev
@@ -256,8 +256,9 @@ C
         !------------------------------------------------------!
         ! paired data has elevation in ordinates and/or values !
         !------------------------------------------------------!
-        call zinqir(ifltab, 'VDTM', cvdatum, ivdatum)
-        if (cvdatum.ne.CVD_UNSET) then
+        call zinqir(ifltab, 'VDTM', cvdatum1, ivdatum1)
+        write(*,*) 'Requested datum = '//cvdatum1
+        if (cvdatum1.ne.CVD_UNSET) then
           !----------------------------------------!
           ! we possibly need to convert the values !
           !----------------------------------------!
@@ -268,8 +269,8 @@ C
               write (munit,'(/,a,a,/,a,a,a,/,a)')
      *          ' *****DSS*** zrpdi6:  ERROR  - NO VERTICAL DATUM',
      *          ' OFFSET INFORMATION.',' Cannot convert from ',
-     *          cvdatum(1:len_trim(cvdatum)),
-     *          ' to native datum.',' No values retrieved.'
+     *          ' native datum to ', cvdatum1(1:len_trim(cvdatum1)),
+     *          ' Elevations were not converted.'
             end if
             istat = 13
             return
@@ -291,8 +292,8 @@ C
                 write (munit,'(/,a,a,/,a,/,a)')
      *            ' *****DSS*** zrpdi6:  ERROR  - ',
      *            errMsg(1:len_trim(errMsg)),
-     *            ' Cannot convert to native datum.',
-     *            ' No values retrieved.'
+     *            ' Cannot convert from native datum.',
+     *            ' Elevations were not converted.'
               end if
               istat = 13
               return
@@ -304,13 +305,14 @@ C
             max_copy_len = min(kuhead, size(iuhead_copy))
             iuhead_copy(max_copy_len) = iuhead(max_copy_len)
             call set_user_header_param(iuhead, nuhead, kuhead, 
-     *        VERTICAL_DATUM_PARAM, cvdatum, istat)
+     *        VERTICAL_DATUM_PARAM, cvdatum1, istat)
             if (istat.ne.0) then
               if (mlevel.ge.1) then
                 write (munit,'(/,a,a,/,a)')
      *          ' *****DSS*** zrpdi6:  ERROR  - VERTICAL DATUM',
      *          ' TRUNCATED',
-     *          ' No values retrieved.'
+     *          ' Elevations were not converted.'
+                
               end if
               istat = 13
               return
@@ -320,12 +322,12 @@ C
             !--------------------------------------!
             ! get the vertical datum offset to use !
             !--------------------------------------!
-            if (cvdatum.eq.CVD_NAVD88) then
+            if (cvdatum1.eq.CVD_NAVD88) then
               vertDatumOffset = offsetNavd88
-            elseif (cvdatum.eq.CVD_NGVD29) then
+            elseif (cvdatum1.eq.CVD_NGVD29) then
               vertDatumOffset = offsetNgvd29
             else
-              if (nativeDatum.eq.cvdatum.or.
+              if (nativeDatum.eq.cvdatum1.or.
      *            nativeDatum.eq.CVD_OTHER) then
                 vertDatumOffset = 0.
               else
@@ -339,7 +341,7 @@ C
                   write (munit,'(/,a,a,a,a,a,/,a)')
      *            ' *****DSS*** zrpdi6:  ERROR  - NO VERTICAL DATUM',
      *            ' OFFSET for ',nativeDatum(1:len_trim(nativeDatum)),
-     *            ' to ',cvdatum(1:len_trim(cvdatum)),
+     *            ' to ',cvdatum1(1:len_trim(cvdatum1)),
      *            ' Elevations were not converted.'
                 end if
                 istat = 13

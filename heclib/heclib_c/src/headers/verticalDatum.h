@@ -445,6 +445,15 @@ int	getEffectiveVerticalDatum(
     int   *userHeaderSize,
     char **unit);
 /**
+ * Normalizes the VDI representation in the user header
+ * 
+ * @param userHeader       the integer array
+ * @param userHeaderNumber the number of integers in the array
+ * 
+ * @return NULL on success, otherwise an error message
+ */
+char* normalizeVdiInUserHeader(int *userHeader, int *userHeaderNumber);
+/**
  * Fortan wrapper for stringToVerticalDatumInfo
  *
  * Use the following Fortran interface for this routine:
@@ -470,18 +479,18 @@ int	getEffectiveVerticalDatum(
  *      end subroutine stringToVerticalDatumInfo
  *  end interface
  *
- * @param inputStr                   Fortran CHARACTER (LEN=*) input for input XML in raw or compressed format.
- * @param errorMessage              Fortran CHARACTER (LEN=*) output for error message. Empty on success. Length should be >= 64
- * @param nativeDatum                Fortran CHARACTER (LEN=*) output for native datum. Length should be >= 16.
- * @param unit                       Fortran CHARACTER (LEN=*) output for unit of offsets. Length should be >= 2
- * @param offsetNgvd29             Fortran REAL (KIND=4) output for the offset to NGVD-29. UNDEFINED_VERTICAL_DATUM_VALUE if no value in XML
+ * @param inputStr               Fortran CHARACTER (LEN=*) input for input XML in raw or compressed format.
+ * @param errorMessage           Fortran CHARACTER (LEN=*) output for error message. Empty on success. Length should be >= 64
+ * @param nativeDatum            Fortran CHARACTER (LEN=*) output for native datum. Length should be >= 16.
+ * @param unit                   Fortran CHARACTER (LEN=*) output for unit of offsets. Length should be >= 2
+ * @param offsetNgvd29           Fortran REAL (KIND=4) output for the offset to NGVD-29. UNDEFINED_VERTICAL_DATUM_VALUE if no value in XML
  * @param offsetNgvd29IsEstimate Fortran LOGICAL (KIND=4) output for whether the offset to NGVD-29 is estimated
- * @param offsetNavd88             Fortran REAL (KIND=4) output for the offset to NAVD-88. UNDEFINED_VERTICAL_DATUM_VALUE if no value in XML
+ * @param offsetNavd88           Fortran REAL (KIND=4) output for the offset to NAVD-88. UNDEFINED_VERTICAL_DATUM_VALUE if no value in XML
  * @param offsetNavd88IsEstimate Fortran LOGICAL (KIND=4) output for whether the offset to NAVD-88 is estimated
- * @param lenInputStr              Fortran hidden parameter for declared length of inputStr parameter
- * @param lenErrorMessage          Fortran hidden parameter for declared length of error_message parameter
- * @param lenNativeDatum           Fortran hidden parameter for declared length of nativeDatum parameter
- * @param lenUnit                   Fortran hidden parameter for declared length of unit parameter
+ * @param lenInputStr            Fortran hidden parameter for declared length of inputStr parameter
+ * @param lenErrorMessage        Fortran hidden parameter for declared length of error_message parameter
+ * @param lenNativeDatum         Fortran hidden parameter for declared length of nativeDatum parameter
+ * @param lenUnit                Fortran hidden parameter for declared length of unit parameter
  */
 void stringtoverticaldatuminfo_(
         char    *inputStr,
@@ -552,7 +561,14 @@ void verticaldatuminfotostring_(
         slen_t   lenOutputStr,
         slen_t   lenNativeDatum,
         slen_t   lenUnit);
-
+/**
+ * Fortran wrapper for normalizeVdiInUserHeader
+ */
+void normalizevdiinuserheader_(
+    int   *userHeader, 
+    int   *userHeaderNumber, 
+    char  *errorMesage, 
+    slen_t lenErrorMessage);
 #ifdef __cplusplus
 } // extern "C"
 #endif

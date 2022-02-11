@@ -186,7 +186,7 @@ char *extractFromDelimitedString(
     if (paramStart) {
         char *valueStart = paramStart + strlen(param);
         char *valueEnd;
-        for(valueEnd = valueStart+1; *valueEnd && *valueEnd != delimiter; ++valueEnd);
+        for (valueEnd = valueStart + 1; *valueEnd && (*valueEnd != delimiter); ++valueEnd);
         len = valueEnd - valueStart;
         value = (char *)_malloc(len + 1);
         memcpy(value, valueStart, len);
@@ -1193,6 +1193,85 @@ void stringtoverticaldatuminfo_(
 //
 // See verticalDatum.h for documentation
 //
+char *normalizeVdiInUserHeader(int* userHeader, int* userHeaderNumber) {
+    char *headerString = userHeaderToString(userHeader, *userHeaderNumber);
+    if (!headerString) return NULL;
+    int headerStringSize = strlen(headerString);
+    char *vdiStr = extractFromDelimitedString(
+        &headerString,
+        VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
+        ":",
+        TRUE,
+        FALSE,
+        ';');
+    if (!vdiStr) {
+        free(headerString);
+        return NULL;
+    }
+    char* xml;
+    decodeAndGunzip(&xml, vdiStr);
+    free(xml);
+    verticalDatumInfo vdi;
+    char *errmsg = stringToVerticalDatumInfo(&vdi, vdiStr);
+    free(vdiStr);
+    if (errmsg) {
+        free(headerString);
+        return errmsg;
+    }
+    errmsg = verticalDatumInfoToString(&vdiStr, &vdi, TRUE);
+    if (errmsg) {
+        free(headerString);
+        return errmsg;
+    }
+    decodeAndGunzip(&xml, vdiStr);
+    free(xml);
+    int status = insertIntoDelimitedString(
+        &headerString,
+        headerStringSize,
+        VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
+        vdiStr,
+        ":",
+        TRUE,
+        ';');
+    if (status == -1) {
+        headerStringSize *= 2;
+        char* cp = (char*)realloc(headerString, headerStringSize);
+        if (!cp) {
+            status = 1;
+        }
+        else {
+            headerString = cp;
+            status = insertIntoDelimitedString(
+                &headerString,
+                headerStringSize,
+                VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
+                vdiStr,
+                ":",
+                TRUE,
+                ';');
+        }
+    }
+    if (status) {
+        free(headerString);
+        return "Memory reallocation error";
+    }
+    int newHeaderNumber;
+    int *newHeader = stringToUserHeader(headerString, &newHeaderNumber);
+    if (newHeaderNumber > *userHeaderNumber) {
+        free(headerString);
+        free(newHeader);
+        return "New header too large";
+    }
+    for (int i = 0; i < *userHeaderNumber; ++i) {
+        userHeader[i] = i < newHeaderNumber ? newHeader[i] : 0;
+    }
+    free(headerString);
+    free(newHeader);
+    return NULL;
+}
+//
+// See verticalDatum.h for documentation
+//
 void verticaldatuminfotostring_(
         char    *outputStr,
         char    *errorMessage,
@@ -1221,5 +1300,19 @@ void verticaldatuminfotostring_(
     C2F(errmsg, errorMessage, lenErrorMessage);
     C2F(results, outputStr, lenOutputStr);
     free(results);
+}
+//
+// See verticalDatum.h for documentation
+//
+void normalizevdiinuserheader_(
+    int* userHeader,
+    int* userHeaderNumber,
+    char* errorMesage,
+    slen_t lenErrorMessage) {
+
+    char* errmsg = normalizeVdiInUserHeader(userHeader, userHeaderNumber);
+    if (errmsg) {
+        C2F(errmsg, errorMesage, lenErrorMessage);
+    }
 }
 

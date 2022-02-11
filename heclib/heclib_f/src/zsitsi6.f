@@ -58,7 +58,7 @@ C
 C
 C     Vertical datum varible dimensions
       character*400 vdiStr, errMsg
-      character*16 unit, unit2, cvdatum2
+      character*16 unit, unit2, cvdatum1, cvdatum2
       character*16 nativeDatum
       character*64 cc, unitSpec
       double precision offsetNavd88, offsetNgvd29, vertDatumOffset
@@ -264,6 +264,7 @@ C
 		  iuhead_copy(i) = itemp
 	    end do
 	  end if
+      call normalizeVdiInUserHeader(iuhead_copy, nuhead_copy, errMsg)
       cc = cpath(ibpart(3):iepart(3))
       call upcase(cc)
       if (index(cc,'ELEV').eq.1) then
@@ -286,12 +287,12 @@ C
         ! get the vertical datum of the values !
         !--------------------------------------!
         ! first get any default vertical datum
-        call zinqir6(IFLTAB, 'VDTM', cvdatum, ivdatum)
+        call zinqir6(IFLTAB, 'VDTM', cvdatum1, ivdatum1)
         ! override the default with any datum in the user header
         call get_user_header_param(iuhead_copy, nuhead_copy,
      *    VERTICAL_DATUM_PARAM, cvdatum2)
         if (cvdatum2.ne." ") then
-          cvdatum = cvdatum2
+          cvdatum1 = cvdatum2
           !---------------------------------------------------------------------------!
           ! remove current vertical datum from user header so it is not saved to disk !
           !---------------------------------------------------------------------------!
@@ -302,9 +303,9 @@ C
         call crack_unit_spec(cunits, unit2, cvdatum2)
         if (cvdatum2.ne.' ') then
           cunits = unit2(1:len_trim(unit2))
-          cvdatum = cvdatum2
+          cvdatum1 = cvdatum2
         end if
-        if (cvdatum.ne.CVD_UNSET) then
+        if (cvdatum1.ne.CVD_UNSET) then
           !--------------------------------------------!
           ! we possibly need to convert the elevations !
           !--------------------------------------------!
@@ -315,7 +316,7 @@ C
               write (munit,'(/,a,a,/,a,a,a,/,a)')
      *          ' *****DSS*** zsitsi6:  ERROR  - NO VERTICAL DATUM',
      *          ' OFFSET INFORMATION.',' Cannot convert from ',
-     *          cvdatum(1:len_trim(cvdatum)),' to native datum.',
+     *          cvdatum1(1:len_trim(cvdatum1)),' to native datum.',
      *          ' No values stored.'
             end if
             istat = 13
@@ -341,12 +342,12 @@ C
               istat = 13
               return
             end if
-            if (cvdatum.eq.CVD_NAVD88) then
+            if (cvdatum1.eq.CVD_NAVD88) then
               vertDatumOffset = offsetNavd88
-            elseif (cvdatum.eq.CVD_NGVD29) then
+            elseif (cvdatum1.eq.CVD_NGVD29) then
               vertDatumOffset = offsetNgvd29
             else
-              if (nativeDatum.eq.cvdatum.or.
+              if (nativeDatum.eq.cvdatum1.or.
      *            nativeDatum.eq.CVD_OTHER) then
                 vertDatumOffset = 0.
               else
@@ -359,7 +360,7 @@ C
                   write (munit,'(/,a,a,a,a,a,/,a)')
      *            ' *****DSS*** zsitsi6:  ERROR  - NO VERTICAL DATUM',
      *            ' OFFSET for ',nativeDatum(1:len_trim(nativeDatum)),
-     *            ' to ',cvdatum(1:len_trim(cvdatum)),
+     *            ' to ',cvdatum1(1:len_trim(cvdatum1)),
      *            ' No values stored.'
                 end if
                 istat = 13

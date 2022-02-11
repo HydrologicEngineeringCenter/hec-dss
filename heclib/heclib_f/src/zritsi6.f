@@ -84,7 +84,7 @@ C     Pathname variable dimensions
 C
 C     Vertical datum varible dimensions
       character*400 vdiStr, errMsg
-      character*16 nativeDatum, unit
+      character*16 nativeDatum, unit, cvdatum1
       double precision offsetNavd88, offsetNgvd29, vertDatumOffset
       logical l_Navd88Estimated, l_Ngvd29Estimated
       integer vdiStrLen
@@ -621,8 +621,8 @@ C
         !--------------------------!
         ! time series is elevation !
         !--------------------------!
-        call zinqir(ifltab, 'VDTM', cvdatum, ivdatum)
-        if (ivdatum.ne.IVD_UNSET) then
+        call zinqir(ifltab, 'VDTM', cvdatum1, ivdatum1)
+        if (ivdatum1.ne.IVD_UNSET) then
           !-----------------------------------------!
           ! a specific vertical datum was requested !
           !-----------------------------------------!
@@ -651,7 +651,7 @@ C
               !--------------------------------------------!
               iuhead(nuhead+1:kuhead) = 0
               call set_user_header_param(iuhead, nuhead, kuhead, 
-     *          VERTICAL_DATUM_PARAM, cvdatum, istat)
+     *          VERTICAL_DATUM_PARAM, cvdatum1, istat)
               if (istat.ne.0) then
                 if (mlevel.ge.1) then
                     write (munit,'(/,a,a,/,a)')
@@ -665,12 +665,12 @@ C
               !--------------------------------------!
               ! get the vertical datum offset to use !
               !--------------------------------------!
-              if (ivdatum.eq.IVD_NAVD88) then
+              if (ivdatum1.eq.IVD_NAVD88) then
                 vertDatumOffset = offsetNavd88
-              elseif (ivdatum.eq.IVD_NGVD29) then
+              elseif (ivdatum1.eq.IVD_NGVD29) then
                 vertDatumOffset = offsetNgvd29
               else
-                if (nativeDatum.eq.cvdatum.or.
+                if (nativeDatum.eq.cvdatum1.or.
      *              nativeDatum.eq.CVD_OTHER) then
                   vertDatumOffset = 0.
                 else
@@ -684,7 +684,7 @@ C
                     write (munit,'(/,a,a,a,a,a,/,a)')
      *              ' *****DSS*** zrits6:  ERROR  - NO VERTICAL DATUM',
      *              ' OFFSET for ',nativeDatum(1:len_trim(nativeDatum)),
-     *              ' to ',cvdatum(1:len_trim(cvdatum)),
+     *              ' to ',cvdatum1(1:len_trim(cvdatum1)),
      *              ' No values retrieved.'
                   end if
                   istat = 13
