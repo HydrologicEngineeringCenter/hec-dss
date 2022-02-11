@@ -140,7 +140,7 @@ C     Check that IFLTAB is valid (e.g., the DSS file is open)
         !--------------------------------------!
         ! get the vertical datum of the values !
         !--------------------------------------!
-        l_vdtm = false  
+        l_vdtm = .false.
         ! first get the default vertical datum
         call zinqir(ifltab, 'VDTM', cvdatum1, ivdatum1)
         ! override the default with any datum in the user header
@@ -163,7 +163,7 @@ C     Check that IFLTAB is valid (e.g., the DSS file is open)
             if (cvdatum2.ne." ") then
               c1unit = unit2(1:len_trim(unit2))
               cvdatum_ind = cvdatum2
-              if (cvdatum_ind.ne.CVD_UNSET) l_vdtm = true
+              if (cvdatum_ind.ne.CVD_UNSET) l_vdtm = .true.
             end if
           end if
           if (l_depElev) then
@@ -171,7 +171,7 @@ C     Check that IFLTAB is valid (e.g., the DSS file is open)
             if (cvdatum2.ne." ") then
               c2unit = unit2(1:len_trim(unit2))
               cvdatum_dep = cvdatum2
-              if (cvdatum_dep.ne.CVD_UNSET) l_vdtm = true
+              if (cvdatum_dep.ne.CVD_UNSET) l_vdtm = .true.
             end if
           end if
           if (l_vdtm) then
