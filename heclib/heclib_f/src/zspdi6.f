@@ -163,16 +163,16 @@ C     Check that IFLTAB is valid (e.g., the DSS file is open)
             if (cvdatum2.ne." ") then
               c1unit = unit2(1:len_trim(unit2))
               cvdatum_ind = cvdatum2
-              if (cvdatum_ind.ne.CVD_UNSET) l_vdtm = .true.
             end if
+            if (cvdatum_ind.ne.CVD_UNSET) l_vdtm = .true.
           end if
           if (l_depElev) then
             call crack_unit_spec(c2unit, unit2, cvdatum2)
             if (cvdatum2.ne." ") then
               c2unit = unit2(1:len_trim(unit2))
               cvdatum_dep = cvdatum2
-              if (cvdatum_dep.ne.CVD_UNSET) l_vdtm = .true.
             end if
+            if (cvdatum_dep.ne.CVD_UNSET) l_vdtm = .true.
           end if
           if (l_vdtm) then
             call get_user_header_param(
