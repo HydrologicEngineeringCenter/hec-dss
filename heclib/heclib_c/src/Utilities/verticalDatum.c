@@ -305,11 +305,13 @@ char *userHeaderToString(const int *userHeader, const int userHeaderNumber) {
                 break;
             }
         }
-        while (*(cp-1) == ' ') --cp;
+        while (*(cp-1) == ' ' && (cp - start) > 1) --cp;
         len = cp - start;
-        str = _malloc((size_t)len+1);
-        memcpy(str, start, len);
-        str[len] = '\0';
+		if (len > 0) {
+			str = _malloc((size_t)len+1);
+			memcpy(str, start, len);
+			str[len] = '\0';
+		}
         free(buf);
     }
     return str;
@@ -1208,9 +1210,6 @@ char *normalizeVdiInUserHeader(int* userHeader, int* userHeaderNumber) {
         free(headerString);
         return NULL;
     }
-    char* xml;
-    decodeAndGunzip(&xml, vdiStr);
-    free(xml);
     verticalDatumInfo vdi;
     char *errmsg = stringToVerticalDatumInfo(&vdi, vdiStr);
     free(vdiStr);
@@ -1223,8 +1222,6 @@ char *normalizeVdiInUserHeader(int* userHeader, int* userHeaderNumber) {
         free(headerString);
         return errmsg;
     }
-    decodeAndGunzip(&xml, vdiStr);
-    free(xml);
     int status = insertIntoDelimitedString(
         &headerString,
         headerStringSize,

@@ -3,6 +3,7 @@
 #include "heclib7.h"
 #include "hecdssFort.h"
 #include "hecdssInternal.h"
+#include "verticalDatum.h" // for userHeaderToString and stringToUserHeader
 
 
 //  C Callable - Accesses both DSS-6 and DSS-7 files
@@ -30,7 +31,26 @@ int zwrite(long long *ifltab, zStructTransfer* ztransfer)
 			0, 0, zdssErrorSeverity.INVALID_ARGUMENT, "", "ztransfer pathname is null");
 	}
 
-
+	// ensure the user header doesn't get truncated if used for a string
+	int *oldHeader = ztransfer->userHeader;
+	int *newHeader = ztransfer->userHeader;
+	int oldHeaderNumber = ztransfer->userHeaderNumber;
+	int newHeaderNumber = ztransfer->userHeaderNumber;
+	if (ztransfer->userHeaderMode < 2 && ztransfer->userHeaderNumber % 2) {
+		char *headerString = userHeaderToString(ztransfer->userHeader, ztransfer->userHeaderNumber);
+		if (headerString && strlen(headerString)  && (strlen(headerString)-1) / 4 + 1 == ztransfer->userHeaderNumber) {
+			char *cp = (char *)realloc(headerString, strlen(headerString)+5);
+			if (cp) {
+				headerString = cp;
+				strcat(headerString, "    ");
+				newHeader = stringToUserHeader(headerString, &newHeaderNumber);
+				ztransfer->userHeader = newHeader;
+				ztransfer->userHeaderNumber = newHeaderNumber;
+			}
+		}
+		free(headerString);
+	}
+	// do the writing
 	if (zgetVersion(ifltab) == 6) {
 
 		stringCToFort(pathname, sizeof(pathname),  ztransfer->pathname);
@@ -45,16 +65,22 @@ int zwrite(long long *ifltab, zStructTransfer* ztransfer)
 				 &ztransfer->dataType,
 				 &zero, &status, &recordFound, strlen(ztransfer->pathname));
 
-		return status;
-
 	}
 	else if (zgetVersion(ifltab) == 7) {
-		return zwriteInternal(ifltab, ztransfer, 0, bufferControl, buffer, 0);
+		status = zwriteInternal(ifltab, ztransfer, 0, bufferControl, buffer, 0);
 	}
 	else {
-		return zerrorProcessing(ifltab, DSS_FUNCTION_zwriteInternal_ID, zdssErrorCodes.NOT_OPENED,
+		status = zerrorProcessing(ifltab, DSS_FUNCTION_zwriteInternal_ID, zdssErrorCodes.NOT_OPENED,
 			0, 0, zdssErrorSeverity.WARNING_NO_FILE_ACCESS, ztransfer->pathname, "");
 	}
+	// restore user header if we lengthed it for writing
+	if (newHeader != oldHeader) {
+		ztransfer->userHeader = oldHeader;
+		ztransfer->userHeaderNumber = oldHeaderNumber;
+		free(newHeader);
+	}
+
+	return status;
 
 }
 

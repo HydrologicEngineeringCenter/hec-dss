@@ -105,13 +105,13 @@ C     Check that IFLTAB is valid (e.g., the DSS file is open)
       iuhead_copy = 0
       iCopyLen = min(size(iuhead_copy), nuhead)
       iuhead_copy(:iCopyLen) = iuhead(:iCopyLen)
-	if (ifltab(kswap).ne.0) then
-	  do i = 1, iCopyLen
-	    call zswap6(iuhead_copy(i), itemp)
-	    iuhead_copy(i) = itemp
-	  end do
-	end if
       call normalizeVdiInUserHeader(iuhead_copy, nuhead_copy, errMsg)
+	  if (ifltab(kswap).ne.0) then
+	    do i = 1, iCopyLen
+	      call zswap6(iuhead_copy(i), itemp)
+	      iuhead_copy(i) = itemp
+	    end do
+	  end if
       call zufpn(ca, na, cb, nb, cc, nc, cd, nd, ce, ne, cf, nf,
      *           cpath, len_trim(cpath), istat)
       call upcase(cc)

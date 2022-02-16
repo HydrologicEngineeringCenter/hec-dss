@@ -257,7 +257,6 @@ C
         ! paired data has elevation in ordinates and/or values !
         !------------------------------------------------------!
         call zinqir(ifltab, 'VDTM', cvdatum1, ivdatum1)
-        write(*,*) 'Requested datum = '//cvdatum1
         if (cvdatum1.ne.CVD_UNSET) then
           !----------------------------------------!
           ! we possibly need to convert the values !
