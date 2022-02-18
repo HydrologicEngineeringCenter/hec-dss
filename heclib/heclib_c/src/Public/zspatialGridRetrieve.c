@@ -291,10 +291,17 @@ int zspatialGridRetrieve(long long *ifltab, zStructSpatialGrid *gridStruct, int 
 
 		//  Retrieve floats: _cellSize,_xCoordOfGridCellZero,_yCoordOfGridCellZero,_nullValue
 		if (ztransfer->userHeader && (ztransfer->userHeaderNumber > 0)) {
-			convertDataArray(&ztransfer->userHeader[0], (int *)&gridStruct->_cellSize, 1, 1, 1);
-			convertDataArray(&ztransfer->userHeader[1], (int *)&gridStruct->_xCoordOfGridCellZero, 1, 1, 1);
-			convertDataArray(&ztransfer->userHeader[2], (int *)&gridStruct->_yCoordOfGridCellZero, 1, 1, 1);
-			convertDataArray(&ztransfer->userHeader[3], (int *)&gridStruct->_nullValue, 1, 1, 1);
+			// convertDataArray(&ztransfer->userHeader[0], (int *)&gridStruct->_cellSize, 1, 1, 1);
+			// convertDataArray(&ztransfer->userHeader[1], (int *)&gridStruct->_xCoordOfGridCellZero, 1, 1, 1);
+			// convertDataArray(&ztransfer->userHeader[2], (int *)&gridStruct->_yCoordOfGridCellZero, 1, 1, 1);
+			// convertDataArray(&ztransfer->userHeader[3], (int *)&gridStruct->_nullValue, 1, 1, 1);
+			if (getEndian()) {
+				zswitchInts(ztransfer->userHeader, ztransfer->userHeaderNumber);
+			}
+			memcpy(&gridStruct->_cellSize, &ztransfer->userHeader[0], 4);
+			memcpy(&gridStruct->_xCoordOfGridCellZero, &ztransfer->userHeader[1], 4);
+			memcpy(&gridStruct->_yCoordOfGridCellZero, &ztransfer->userHeader[2], 4);
+			memcpy(&gridStruct->_nullValue, &ztransfer->userHeader[3], 4);
 		}
 
 		if (gridStruct->_storageDataType == GRID_FLOAT) {

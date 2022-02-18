@@ -7,11 +7,11 @@
 #include <errno.h>
 #else
 #include <unistd.h>
-#include <stdint.h>
 #endif
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 
 #include "heclib7.h"
 #include "zdssKeys.h"
@@ -106,7 +106,6 @@ int zwriteDisk (int ihandle, int iswap, long long address, void *iarray, int num
    if (iswap) {
 		zswap((void *)iarray, numberInts);
 	}
-
 	if (status == 0) {
 #ifdef _MSC_VER
 		ntrans = _write(ihandle, iarray, (size_t)nbytes);

@@ -7,11 +7,11 @@
 #include <errno.h>
 #else
 #include <unistd.h>
-#include <stdint.h>
 #endif
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 
 #include "heclib7.h"
 #include "zdssKeys.h"
