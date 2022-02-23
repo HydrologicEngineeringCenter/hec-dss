@@ -99,6 +99,7 @@
 		<File RelativePath="source\testReclaim.f90"/>
 		<File RelativePath="source\testRegRetClear.f90"/>
 		<File RelativePath="source\testUtilities.f90"/>
+		<File RelativePath=".\source\testVerticalDatum_f.f90"/>
 		<File RelativePath="source\testWrite.f90"/>
 		<File RelativePath="source\timeTestCopyRTS.f90"/>
 		<File RelativePath="source\timeTestFileParams.f90"/>

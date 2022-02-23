@@ -438,6 +438,7 @@
     <ClCompile Include="src\Utilities\trimLength.c" />
     <ClCompile Include="src\Utilities\trimPositions.c" />
     <ClCompile Include="src\Utilities\upperCase.c" />
+    <ClCompile Include="src\Utilities\verticalDatum.c" />
     <ClCompile Include="src\Utilities\zeroFill.c" />
     <ClCompile Include="src\Utilities\zmissingFlag.c" />
   </ItemGroup>
@@ -449,6 +450,7 @@
     <ClInclude Include="src\headers\heclib6.h" />
     <ClInclude Include="src\headers\heclib7.h" />
     <ClInclude Include="src\headers\heclibDate.h" />
+    <ClInclude Include="src\headers\verticalDatum.h" />
     <ClInclude Include="src\headers\zcontrol.h" />
     <ClInclude Include="src\headers\zdataTypeDescriptions.h" />
     <ClInclude Include="src\headers\zdssKeys.h" />
@@ -563,6 +565,10 @@
       <AdditionalIncludeDirectories>src\headers;src\headers\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
+    <Lib>
+      <AdditionalDependencies>zlibstatic.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\lib\$(PlatformName)</AdditionalLibraryDirectories>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Midl>
@@ -589,6 +595,8 @@
     </ClCompile>
     <Lib>
       <OutputFile>$(OutDir)heclib_c.lib</OutputFile>
+      <AdditionalDependencies>zlibstatic.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\lib\$(PlatformName)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -606,6 +614,10 @@
       <AdditionalIncludeDirectories>src\headers;src\headers\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
+    <Lib>
+      <AdditionalDependencies>zlibstatic.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\lib\$(PlatformName)</AdditionalLibraryDirectories>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Midl>
@@ -629,6 +641,8 @@
     <Lib>
       <LinkTimeCodeGeneration>true</LinkTimeCodeGeneration>
       <Verbose>true</Verbose>
+      <AdditionalDependencies>zlibstatic.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\lib\$(PlatformName)</AdditionalLibraryDirectories>
     </Lib>
     <ProjectReference>
       <LinkLibraryDependencies>false</LinkLibraryDependencies>

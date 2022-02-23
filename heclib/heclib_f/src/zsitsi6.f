@@ -56,6 +56,14 @@ C
       PARAMETER (KIHEAD = 28)
       INTEGER IIHEAD(KIHEAD), IDUM(2)
 C
+C     Vertical datum varible dimensions
+      character*400 vdiStr, errMsg
+      character*16 unit, unit2, cvdatum1, cvdatum2
+      character*16 nativeDatum
+      character*64 cc, unitSpec
+      double precision offsetNavd88, offsetNgvd29, vertDatumOffset
+      logical l_Navd88Estimated, l_Ngvd29Estimated, l_modified
+      integer vdiStrLen, nuhead_copy, iuhead_copy(100)
 C
 C
       INCLUDE 'zdssmz.h'
@@ -68,10 +76,20 @@ C
 C
       INCLUDE 'zdsskz.h'
 C
+      INCLUDE 'zdssiz.h'
+C
+      INCLUDE 'verticalDatumFortran.h'
+C
 C
       LOGICAL LF, LCLEAR, LQUAL, LSQUAL, LDEL, LDSWAP
 C
 C
+      l_modified = .false.
+      nuhead_copy = 0
+      ispace = index(cunits, ' ')
+      if (ispace.gt.1) then
+        cunits = cunits(1:ispace-1)
+      end if
       ISTAT = 0
       IPOS = 1
       I1440 = 1440
@@ -228,6 +246,161 @@ C
          IF (JSTAT.NE.0) GO TO 940
           CALL zsetfi (IFLTAB, 'PSEU', CPATH1(1:NPATH), INTLPS, IST)
       ENDIF
+      !-----------------------------------------------!
+      ! convert to native vertical datum if necessary !
+      !-----------------------------------------------!
+      !--------------------------------------------------------------------!
+      ! make a copy of the user header becuase we have to be able to know  !
+      ! its size when passing to user header manipulation routintes and we !
+      ! cant know the size of an assumed-size array                        !
+      !--------------------------------------------------------------------!
+      nuhead_copy = nuhead
+      iuhead_copy = 0
+      iCopyLen = min(size(iuhead_copy), nuhead)
+      iuhead_copy(:iCopyLen) = iuhead(:iCopyLen)
+	  if (ifltab(kswap).ne.0) then
+	    do i = i, icopyLen
+	      call zswap6(iuhead_copy(i), itemp)
+		  iuhead_copy(i) = itemp
+	    end do
+	  end if
+      call normalizeVdiInUserHeader(iuhead_copy, nuhead_copy, errMsg)
+      cc = cpath(ibpart(3):iepart(3))
+      call upcase(cc)
+      if (index(cc,'ELEV').eq.1) then
+        !-----------------------!
+        ! elevation time series !
+        !-----------------------!
+        if (nuhead.eq.0) then
+          !------------------------------------------------!
+          ! no user header provided, is there one on disk? !
+          !------------------------------------------------!
+          nuhead_copy = INFO(NPPWRD+KINUHE)
+          if (nuhead_copy.GT.0) then
+            call zgtrec6(IFLTAB, iuhead_copy, nuhead_copy,
+     *        INFO(NPPWRD+KIAUHE), .TRUE.)
+            call get_user_header_param(iuhead_copy, nuhead_copy,
+     *        VERTICAL_DATUM_INFO_PARAM, vdiStr)
+          end if
+        end if
+        !--------------------------------------!
+        ! get the vertical datum of the values !
+        !--------------------------------------!
+        ! first get any default vertical datum
+        call zinqir6(IFLTAB, 'VDTM', cvdatum1, ivdatum1)
+        ! override the default with any datum in the user header
+        call get_user_header_param(iuhead_copy, nuhead_copy,
+     *    VERTICAL_DATUM_PARAM, cvdatum2)
+        if (cvdatum2.ne." ") then
+          cvdatum1 = cvdatum2
+          !---------------------------------------------------------------------------!
+          ! remove current vertical datum from user header so it is not saved to disk !
+          !---------------------------------------------------------------------------!
+          call remove_user_header_param(iuhead_copy,
+     *    nuhead_copy, size(iuhead_copy), VERTICAL_DATUM_PARAM)
+        end if
+        ! override both with the unit spec
+        call crack_unit_spec(cunits, unit2, cvdatum2)
+        if (cvdatum2.ne.' ') then
+          cunits = unit2(1:len_trim(unit2))
+          cvdatum1 = cvdatum2
+        end if
+        if (cvdatum1.ne.CVD_UNSET) then
+          !--------------------------------------------!
+          ! we possibly need to convert the elevations !
+          !--------------------------------------------!
+          call get_user_header_param(iuhead_copy, nuhead_copy,
+     *      VERTICAL_DATUM_INFO_PARAM, vdiStr)
+          if (vdiStr.eq." ") then
+            if (mlevel.ge.1) then
+              write (munit,'(/,a,a,/,a,a,a,/,a)')
+     *          ' *****DSS*** zsitsi6:  ERROR  - NO VERTICAL DATUM',
+     *          ' OFFSET INFORMATION.',' Cannot convert from ',
+     *          cvdatum1(1:len_trim(cvdatum1)),' to native datum.',
+     *          ' No values stored.'
+            end if
+            istat = 13
+            return
+          else
+            call stringToVerticalDatumInfo(
+     *        vdiStr,
+     *        errMsg,
+     *        nativeDatum,
+     *        unit,
+     *        offsetNgvd29,
+     *        l_Ngvd29Estimated,
+     *        offsetNavd88,
+     *        l_Navd88Estimated)
+            if (errMsg.ne.' ') then
+              if (mlevel.ge.1) then
+                write (munit,'(/,a,a,/,a,/,a)')
+     *            ' *****DSS*** zsitsi6:  ERROR  - ',
+     *            errMsg(1:len_trim(errMsg)),
+     *            ' Cannot convert to native datum.',
+     *            ' No values stored.'
+              end if
+              istat = 13
+              return
+            end if
+            if (cvdatum1.eq.CVD_NAVD88) then
+              vertDatumOffset = offsetNavd88
+            elseif (cvdatum1.eq.CVD_NGVD29) then
+              vertDatumOffset = offsetNgvd29
+            else
+              if (nativeDatum.eq.cvdatum1.or.
+     *            nativeDatum.eq.CVD_OTHER) then
+                vertDatumOffset = 0.
+              else
+                vertDatumOffset = UNDEFINED_VERTICAL_DATUM_VALUE
+              end if
+            end if
+            if (vertDatumOffset.ne.0) then
+              if(vertDatumOffset.eq.UNDEFINED_VERTICAL_DATUM_VALUE) then
+                if (mlevel.ge.1) then
+                  write (munit,'(/,a,a,a,a,a,/,a)')
+     *            ' *****DSS*** zsitsi6:  ERROR  - NO VERTICAL DATUM',
+     *            ' OFFSET for ',nativeDatum(1:len_trim(nativeDatum)),
+     *            ' to ',cvdatum1(1:len_trim(cvdatum1)),
+     *            ' No values stored.'
+                end if
+                istat = 13
+                return
+              end if
+              call getOffset(
+     *              vertDatumOffset,
+     *              unit(1:len_trim(unit)),
+     *              cunits(1:len_trim(cunits)))
+              if (vertDatumOffset.eq.
+     *          UNDEFINED_VERTICAL_DATUM_VALUE)then
+                if (mlevel.ge.1) then
+                  write (munit,'(/,a,a,a,a,a,a,a,a,/,a)')
+     *            ' *****DSS*** zsitsi6:  ERROR  - INVALID DATA UNIT',
+     *            ' (',cunits(1:len_trim(cunits)),') OR OFFSET UNIT',
+     *            ' (',unit(1:len_trim(unit)),') FOR VERTICAL DATUM',
+     *            ' CONVERSION',
+     *            ' No values stored.'
+                end if
+                istat = 13
+                return
+              end if
+              if (ldouble) then
+                do ii = 1, nvals
+                  if (dvalues(ii).ne.-901.and.dvalues(ii).ne.-902.) then
+                    dvalues(ii) = dvalues(ii) - vertdatumoffset
+                  end if
+                end do
+              else
+                do ii = 1, nvals
+                  if (svalues(ii).ne.-901.and.svalues(ii).ne.-902.) then
+                    svalues(ii) = svalues(ii) - vertdatumoffset
+                  end if
+                end do
+              end if
+              l_modified = .true.
+            end if
+          end if
+        end if
+      end if
 C
 C
 C     Get starting date of first block
@@ -268,7 +441,7 @@ C     block--don't read, just replace block
 C
 C
       CALL zreadx6 (IFLTAB, CPATH1, INTBUF, NIBUFF, N,
-     * ICHEAD, 0, J, IUHEAD, 0, N, BUFF, KLBUFF, NDA, 2, LF)
+     * ICHEAD, 0, J, iuhead_copy, 0, N, BUFF, KLBUFF, NDA, 2, LF)
       CALL zinqir6 (IFLTAB, 'STATUS', CSCRAT, JSTAT)
       IF (JSTAT.NE.0) GO TO 940
 C
@@ -309,8 +482,8 @@ C              record without flags to one that has flags
                GO TO 620
             ENDIF
             IF (MLEVEL.GE.3) WRITE (MUNIT, 120) CPATH1(1:NPATH1)
- 120        FORMAT (' -----DSS---zsits6: Caution:  Writing data without',
-     *      ' flags to an existing data set that has flags.',/,
+ 120        FORMAT (' -----DSS---zsits6: Caution:  Writing data ',
+     *      ' without flags to an existing data set that has flags.',/,
      *      ' Pathname: ',A)
          ENDIF
       ENDIF
@@ -792,7 +965,7 @@ C     Write data to DSS
       IF (LQUAL) CALL zset6 ('QUAL', 'ON', 1)
       NDA = IBSIZE * IMULT
       CALL zwritex6 (IFLTAB, CPATH1, NPATH, IIHEAD, KIHEAD, IDUM, 0,
-     * IUHEAD, NUHEAD, BUFF, NDA, ITYPE, 0, IST, LF)
+     * iuhead_copy, nuhead_copy, BUFF, NDA, ITYPE, 0, IST, LF)
       CALL zinqir6 (IFLTAB, 'STATUS', CSCRAT, JSTAT)
       IF (JSTAT.NE.0) GO TO 940
       CALL zsetfi6(IFLTAB, 'PSEU', CPATH1(1:NPATH), INTLPS, IST)
@@ -809,6 +982,24 @@ C
 C
 C     Finished
  800  CONTINUE
+      !-----------------------------------------!
+      ! restore the original values in the call !
+      !-----------------------------------------!
+      if (l_modified) then
+        if (ldouble) then
+          do ii = 1, nvals
+            if (dvalues(ii).ne.-901.and.dvalues(ii).ne.-902.) then
+              dvalues(ii) = dvalues(ii) + vertdatumoffset
+            end if
+          end do
+        else
+          do ii = 1, nvals
+            if (svalues(ii).ne.-901.and.svalues(ii).ne.-902.) then
+              svalues(ii) = svalues(ii) + vertdatumoffset
+            end if
+          end do
+        end if
+      end if
       IF ((NVALS.EQ.0).AND.(ISTAT.EQ.0)) ISTAT = 4
       IF (MLEVEL.GE.9) WRITE (MUNIT, 820) NVALS, ISTAT
  820  FORMAT (T5,'----- Exiting zsits6; Values Written:',I5,

@@ -5,6 +5,7 @@
 #include "heclib7.h"
 #include "heclib6.h"
 #include "hecdssInternal.h"
+#include "verticalDatum.h"
 /*
 CALL ZSPDI6 (IFLTAB, CPATH, NORD, NCURVE, IHORIZ,
      *    C1UNIT, C1TYPE, C2UNIT, C2TYPE, SVALUES, DVALUES,

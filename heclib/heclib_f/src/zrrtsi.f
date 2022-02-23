@@ -78,6 +78,16 @@ C     Local Dimensions
 	PARAMETER (KIHEAD = 24)
       INTEGER IIHEAD(KIHEAD)
 C
+C     Pathname variable dimensions
+      character*64 ca, cb, cc, cd, ce, cf
+      integer na, nb, nc, nd, ne, nf, npath
+C
+C     Vertical datum varible dimensions
+      character*400 vdiStr, errMsg
+      character*16 nativeDatum, unit, cvdatum1
+      double precision offsetNavd88, offsetNgvd29, vertDatumOffset
+      logical l_Navd88Estimated, l_Ngvd29Estimated
+      integer vdiStrLen
 C
       INCLUDE 'zdsskz.h'
 C
@@ -88,6 +98,8 @@ C
       INCLUDE 'zdssnz.h'
 C
       INCLUDE 'zdssts.h'
+C
+      INCLUDE 'verticalDatumFortran.h'
 C
 C
 C
@@ -120,7 +132,7 @@ C
 C     Unform the pathname
       CALL CHRLNB (CPATH, NPATH)
       IF ((NPATH.GT.MXPATH).OR.(NPATH.LE.1)) GO TO 900
-      IF (CPATH(1:1).NE.'/') GO TO 900
+      IF (CPATH(1:1).NE."/") GO TO 900
       CALL zupath (CPATH, IBPART, IEPART, ILPART, IERR)
       IF (IERR.NE.0) GO TO 900
       IF (ILPART(5).LT.4) GO TO 960
@@ -150,7 +162,7 @@ C     (such as a unit hydrograph or mean maximum daily temperatures)
 C
       IF (ILPART(4).GT.3) THEN
          CALL UPCASE (CPATH(IBPART(4):IEPART(4)))
-         IF (CPATH(IBPART(4):IBPART(4)+2).EQ.'TS-') THEN
+         IF (CPATH(IBPART(4):IBPART(4)+2).EQ."TS-") THEN
             IF (LGETDOB) THEN
 C              Time pattern data is always single precision.
                NVALS = KLBUFF
@@ -478,8 +490,125 @@ C
      * CUNITS, CTYPE
  820  FORMAT(T8,'----- Exiting zrrts6, Number of data values:',I7,
      * ',  Status:',I3/,T10,'Offset:',I8,',  Units: ',A,',  Type:',A)
-*      CALL FLUSH(MUNIT)  
+*      CALL FLUSH(MUNIT)
 C
+      !---------------------------------------------------------!
+      ! convert values to requested vertical datum if necessary !
+      !---------------------------------------------------------!
+      call zufpn(ca, na, cb, nb, cc, nc, cd, nd, ce, ne, cf, nf,
+     *           cpath, len_trim(cpath), istat)
+      call upcase(cc)
+      if (index(cc, 'ELEV').eq.1) then
+        !--------------------------!
+        ! time series is elevation !
+        !--------------------------!
+        call zinqir(ifltab, 'VDTM', cvdatum1, ivdatum1)
+        if (ivdatum1.ne.IVD_UNSET) then
+          !-----------------------------------------!
+          ! a specific vertical datum was requested !
+          !-----------------------------------------!
+          if (nuhead.gt.0) then
+            call get_user_header_param(
+     *        iuhead,
+     *        nuhead,
+     *        VERTICAL_DATUM_INFO_PARAM,
+     *        vdiStr)
+            vdiStrLen = len_trim(vdiStr)
+            if (vdiStrLen.gt.0) then
+              !-----------------------------------------------------------!
+              ! we retrieved a user header and it has vertical datum info !
+              !-----------------------------------------------------------!
+              call stringToVerticalDatumInfo(
+     *          vdiStr,
+     *          errMsg,
+     *          nativeDatum,
+     *          unit,
+     *          offsetNgvd29,
+     *          l_Ngvd29Estimated,
+     *          offsetNavd88,
+     *          l_Navd88Estimated)
+              !--------------------------------------------!
+              ! add the requested datum to the user header !
+              !--------------------------------------------!
+              iuhead(nuhead+1:kuhead) = 0
+              call set_user_header_param(iuhead, nuhead, kuhead, 
+     *          VERTICAL_DATUM_PARAM, cvdatum1, istat)
+              if (istat.ne.0) then
+                if (mlevel.ge.1) then
+                    write (munit,'(/,a,a,/,a)')
+     *              ' *****DSS*** zrrtsi6:  ERROR  - VERTICAL DATUM',
+     *              ' TRUNCATED',
+     *              ' No values retrieved.'
+                  end if
+                  istat = 13
+                  return
+                end if
+              !--------------------------------------!
+              ! get the vertical datum offset to use !
+              !--------------------------------------!
+              if (ivdatum1.eq.IVD_NAVD88) then
+                vertDatumOffset = offsetNavd88
+              elseif (ivdatum1.eq.IVD_NGVD29) then
+                vertDatumOffset = offsetNgvd29
+              else
+                if (nativeDatum.eq.cvdatum1.or.
+     *              nativeDatum.eq.CVD_OTHER) then
+                  vertDatumOffset = 0.
+                else
+                  vertDatumOffset = UNDEFINED_VERTICAL_DATUM_VALUE
+                end if
+              end if
+              if (vertDatumOffset.ne.0) then
+                if (vertDatumOffset.eq.
+     *            UNDEFINED_VERTICAL_DATUM_VALUE) then
+                  if (mlevel.ge.1) then
+                    write (munit,'(/,a,a,a,a,a,/,a)')
+     *              ' *****DSS*** zrrts6:  ERROR  - NO VERTICAL DATUM',
+     *              ' OFFSET for ',nativeDatum(1:len_trim(nativeDatum)),
+     *              ' to ',cvdatum1(1:len_trim(cvdatum1)),
+     *              ' Elevations were not converted.'
+                  end if
+                  istat = 13
+                  go to 990
+                end if
+                !------------------------------------------------------------!
+                ! convert the vertical datum offset to the units of the data !
+                !------------------------------------------------------------!
+                call getoffset(vertDatumOffset, unit, cunits)
+                if (vertDatumOffset.eq.
+     *            UNDEFINED_VERTICAL_DATUM_VALUE)then
+                  if (mlevel.ge.1) then
+                    write (munit,'(/,a,a,a,a,a,a,a,/,a)')
+     *              ' *****DSS*** zrrts6:  ERROR  - INVALID DATA UNIT ',
+     *              '(',cunits(1:len_trim(cunits)),') OR OFFSET UNIT (',
+     *              unit(1:len_trim(unit)),') FOR VERTICAL DATUM',
+     *              ' CONVERSION',
+     *              ' Elevations were not converted.'
+                  end if
+                  istat = 13
+                  go to 990
+                end if
+                !-----------------------------------!
+                ! add the offset to the data values !
+                !-----------------------------------!
+                if (lgetdob) then
+                  do i = 1, nvals
+                    if (dvalues(i).ne.-901.and.dvalues(i).ne.-902) then
+                      dvalues(i) = dvalues(i) + vertDatumOffset
+                    end if
+                  end do
+                else
+                  do i = 1, nvals
+                    if (svalues(i).ne.-901.and.svalues(i).ne.-902) then
+                      svalues(i) = svalues(i) + vertDatumOffset
+                    end if
+                  end do
+                end if
+              end if
+            end if
+          end if
+        end if
+      end if
       RETURN
 C
 C

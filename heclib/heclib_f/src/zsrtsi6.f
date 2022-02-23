@@ -72,6 +72,15 @@ C     Local Dimensions
       INTEGER NPART(6)
       LOGICAL LFOUND, LERR, LFILDOB
 C
+C     Vertical datum varible dimensions
+      character*400 vdiStr, errMsg
+      character*16 unit, unit2, cvdatum1, cvdatum2
+      character*16 nativeDatum
+      character*64 cc, unitSpec
+      double precision offsetNavd88, offsetNgvd29, vertDatumOffset
+      logical l_Navd88Estimated, l_Ngvd29Estimated, l_modified
+      integer vdiStrLen, nuhead_copy, iuhead_copy(100)
+C
       INCLUDE 'zdssts.h'
 C
       INCLUDE 'zdsskz.h'
@@ -86,6 +95,7 @@ C
 C
       INCLUDE 'zdssdc.h'
 C
+      INCLUDE 'verticalDatumFortran.h'
 C
 C
 C
@@ -108,21 +118,30 @@ C     If a debug level is on, print out information
               WRITE (MUNIT, 5) I, DVALUES(I)
  5            FORMAT (T5, I4,3X,F16.6)
  4         CONTINUE
-           DO 6 I=JUMB,NVALS
-              WRITE (MUNIT, 5) I, DVALUES(I)
- 6         CONTINUE
-        ELSE
+           IF (JUMB.GT.0) THEN
+             DO 6 I=JUMB,NVALS
+                WRITE (MUNIT, 5) I, DVALUES(I)
+6            CONTINUE
+           ENDIF
+         ELSE
            DO 7 I=1,NUMB
               WRITE (MUNIT, 5) I, SVALUES(I)
  7         CONTINUE
-           DO 8 I=JUMB,NVALS
-              WRITE (MUNIT, 5) I, SVALUES(I)
- 8         CONTINUE
-        ENDIF
+           IF (JUMB.GT.0) THEN
+             DO 8 I=JUMB,NVALS
+                WRITE (MUNIT, 5) I, SVALUES(I)
+ 8           CONTINUE
+           ENDIF
+         ENDIF
       ENDIF
       ENDIF
 C
 C
+      l_modified = .false.
+      ispace = index(cunits, ' ')
+      if (ispace.gt.1) then
+        cunits = cunits(1:ispace-1)
+      end if
       NSTART = 1
       ISTAT = 0
       LPROT2 = LPROTC
@@ -144,7 +163,7 @@ C     Unform the pathname
  30   CONTINUE
       CALL CHRLNB (CPATH, NPATH)
       IF ((NPATH.GT.MXPATH).OR.(NPATH.LE.1)) GO TO 900
-      IF (CPATH(1:1).NE.'/') GO TO 900
+      IF (CPATH(1:1).NE."/") GO TO 900
       CALL zufpn (CPART(1), NPART(1), CPART(2), NPART(2),
      * CPART(3), NPART(3), CPART(4), NPART(4), CPART(5), NPART(5),
      * CPART(6), NPART(6), CPATH, NPATH, IERR)
@@ -201,12 +220,167 @@ C     has no specific time associated with it
 C     (such as a unit hydrograph or mean maximum daily temperatures)
 C
       CALL UPCASE (CPART(4))
-      IF (CPART(4)(1:3).EQ.'TS-') THEN
+      IF (CPART(4)(1:3).EQ."TS-") THEN
          IF (LDOUBLE) GO TO 995
          CALL zsrtpa6 (IFLTAB, CPATH, SVALUES, NVALS, CUNITS, CTYPE,
      *                IUHEAD, NUHEAD, IPLAN, ISTAT)
          GO TO 800
       ENDIF
+      !-----------------------------------------------!
+      ! convert to native vertical datum if necessary !
+      !-----------------------------------------------!
+      !--------------------------------------------------------------------!
+      ! make a copy of the user header becuase we have to be able to know  !
+      ! its size when passing to user header manipulation routintes and we !
+      ! cant know the size of an assumed-size array                        !
+      !--------------------------------------------------------------------!
+      nuhead_copy = nuhead
+      iuhead_copy = 0
+      iCopyLen = min(size(iuhead_copy), nuhead)
+      iuhead_copy(:iCopyLen) = iuhead(:iCopyLen)
+	  if (ifltab(kswap).ne.0) then
+	    do i = i, icopyLen
+	      call zswap6(iuhead_copy(i), itemp)
+		  iuhead_copy(i) = itemp
+	    end do
+	  end if
+      call normalizeVdiInUserHeader(iuhead_copy, nuhead_copy, errMsg)
+      cc = cpart(3)
+      call upcase(cc)
+      if (index(cc,'ELEV').eq.1) then
+        !-----------------------!
+        ! elevation time series !
+        !-----------------------!
+        if (nuhead.eq.0) then
+          !------------------------------------------------!
+          ! no user header provided, is there one on disk? !
+          !------------------------------------------------!
+          nuhead_copy = INFO(NPPWRD+KINUHE)
+          if (nuhead_copy.GT.0) then
+            call zgtrec6(IFLTAB, iuhead_copy, nuhead_copy,
+     *        INFO(NPPWRD+KIAUHE), .TRUE.)
+            call get_user_header_param(iuhead_copy, nuhead_copy,
+     *        VERTICAL_DATUM_INFO_PARAM, vdiStr)
+          end if
+        end if
+        !--------------------------------------!
+        ! get the vertical datum of the values !
+        !--------------------------------------!
+        ! first get any default vertical datum
+        call zinqir6(IFLTAB, 'VDTM', cvdatum1, ivdatum1)
+        ! override the default with any datum in the user header
+        call get_user_header_param(iuhead_copy, nuhead_copy,
+     *    VERTICAL_DATUM_PARAM, cvdatum2)
+        if (cvdatum2.ne." ") then
+          cvdatum1 = cvdatum2
+          !---------------------------------------------------------------------------!
+          ! remove current vertical datum from user header so it is not saved to disk !
+          !---------------------------------------------------------------------------!
+          call remove_user_header_param(iuhead_copy,
+     *    nuhead_copy, size(iuhead_copy), VERTICAL_DATUM_PARAM)
+        end if
+        ! override both with the unit spec
+        call crack_unit_spec(cunits, unit2, cvdatum2)
+        if (cvdatum2.ne." ") then
+          cunits = unit2(1:len_trim(unit2))
+          cvdatum1 = cvdatum2
+        end if
+        if (cvdatum1.ne.CVD_UNSET) then
+          !--------------------------------------------!
+          ! we possibly need to convert the elevations !
+          !--------------------------------------------!
+          call get_user_header_param(iuhead_copy, nuhead_copy,
+     *      VERTICAL_DATUM_INFO_PARAM, vdiStr)
+          if (vdiStr.eq." ") then
+            if (mlevel.ge.1) then
+            write (munit,'(/,a,a,/,a,a,a,/,a)')
+     *        ' *****DSS*** zsrtsi6:  ERROR  - NO VERTICAL DATUM',
+     *        ' OFFSET INFORMATION.',' Cannot convert from ',
+     *        cvdatum1(1:len_trim(cvdatum1)),' to native datum.',
+     *        ' No values stored.'
+          end if
+          istat = 13
+          return
+          else
+            call stringToVerticalDatumInfo(
+     *        vdiStr,
+     *        errMsg,
+     *        nativeDatum,
+     *        unit,
+     *        offsetNgvd29,
+     *        l_Ngvd29Estimated,
+     *        offsetNavd88,
+     *        l_Navd88Estimated)
+            if (errMsg.ne." ") then
+            if (mlevel.ge.1) then
+              write (munit,'(/,a,a,/,a,/,a)')
+     *          ' *****DSS*** zsrtsi6:  ERROR  - ',
+     *          errMsg(1:len_trim(errMsg)),
+     *          ' Cannot convert  to native datum.',
+     *          ' No values stored.'
+            end if
+            istat = 13
+            return
+            end if
+            if (cvdatum1.eq.CVD_NAVD88) then
+              vertDatumOffset = offsetNavd88
+            elseif (cvdatum1.eq.CVD_NGVD29) then
+              vertDatumOffset = offsetNgvd29
+            else
+              if (nativeDatum.eq.cvdatum1.or.
+     *            nativeDatum.eq.CVD_OTHER) then
+                vertDatumOffset = 0.
+              else
+                vertDatumOffset = UNDEFINED_VERTICAL_DATUM_VALUE
+              end if
+            end if
+            if (vertDatumOffset.ne.0) then
+              if(vertDatumOffset.eq.UNDEFINED_VERTICAL_DATUM_VALUE) then
+                if (mlevel.ge.1) then
+                  write (munit,'(/,a,a,a,a,a,/,a)')
+     *            ' *****DSS*** zsrtsi6:  ERROR  - NO VERTICAL DATUM',
+     *            ' OFFSET for ',nativeDatum(1:len_trim(nativeDatum)),
+     *            ' to ',cvdatum1(1:len_trim(cvdatum1)),
+     *            ' No values stored.'
+                end if
+                istat = 13
+                return
+              end if
+              call getOffset(
+     *              vertDatumOffset,
+     *              unit(1:len_trim(unit)),
+     *              cunits(1:len_trim(cunits)))
+              if (vertDatumOffset.eq.
+     *          UNDEFINED_VERTICAL_DATUM_VALUE)then
+                if (mlevel.ge.1) then
+                  write (munit,'(/,a,a,a,a,a,a,a,a,/,a)')
+     *            ' *****DSS*** zsrtsi6:  ERROR  - INVALID DATA UNIT',
+     *            ' (',cunits(1:len_trim(cunits)),') OR OFFSET UNIT',
+     *            ' (',unit(1:len_trim(unit)),') FOR VERTICAL DATUM',
+     *            ' CONVERSION',
+     *            ' No values stored.'
+                end if
+                istat = 13
+                return
+              end if
+              if (ldouble) then
+                do ii = 1, nvals
+                  if (dvalues(ii).ne.-901.and.dvalues(ii).ne.-902.) then
+                    dvalues(ii) = dvalues(ii) - vertdatumoffset
+                  end if
+                end do
+              else
+                do ii = 1, nvals
+                  if (svalues(ii).ne.-901.and.svalues(ii).ne.-902.) then
+                    svalues(ii) = svalues(ii) - vertdatumoffset
+                  end if
+                end do
+              end if
+              l_modified = .true.
+            end if
+          end if
+        end if
+      end if
 C
 C     Get time window
       CALL DATJUL ( CDATE, JULS, IERR)
@@ -396,8 +570,8 @@ C     Don't use if there are any doubles involved
 C     Can't use if we need to update (check missing data)
       IF (IPLAN.NE.0)  LUPRTS = .FALSE.
 C     Can't use if we need to change the user header
-      IF (JHEAD.NE.NUHEAD) THEN
-      IF (NUHEAD.NE.-1) LUPRTS = .FALSE.
+      IF (JHEAD.NE.nuhead_copy) THEN
+      IF (nuhead_copy.NE.-1) LUPRTS = .FALSE.
       ENDIF
 C     Can't use if internal header size different
       IF (JIHEAD.NE.KIHEAD) LUPRTS = .FALSE.
@@ -659,10 +833,10 @@ C     Set the compression value and quality flag to be used in the write
       IQUAL = 0
       IF ((LQUAL).OR.(LQREAD)) IQUAL = 1
 C
-C     If we are updating, and NUHEAD is -1, do not write over the
+C     If we are updating, and nuhead_copy is -1, do not write over the
 C     the existing user header
-      IF (NUHEAD.GE.0) THEN
-      NUH = NUHEAD
+      IF (nuhead_copy.GE.0) THEN
+      NUH = nuhead_copy
       ELSE
       NUH = JHEAD
       ENDIF
@@ -722,8 +896,8 @@ C              record without flags to one that has flags
                GO TO 600
             ENDIF
             IF (MLEVEL.GE.3) WRITE (MUNIT, 420) CTSPAT(1:NTSPAT)
- 420        FORMAT (' -----DSS---zsrts6: Caution:  Writing data without',
-     *      ' flags to an existing data set that has flags.',/,
+ 420        FORMAT (' -----DSS---zsrts6: Caution:  Writing data ',
+     *      ' without flags to an existing data set that has flags.',/,
      *      ' Pathname: ',A)
          ENDIF
       ENDIF
@@ -747,8 +921,8 @@ C     Now store the header arrays
       CALL zptrec6(IFLTAB, IIHEAD, KIHEAD, INFO(NPPWRD+KIAIHE), .FALSE.)
       IF (NCHEAD.GT.0) CALL zptrec6 (IFLTAB, IDCH, NCHEAD,
      * INFO(NPPWRD+KIACHE), .FALSE.)
-      IF (NUHEAD.GT.0) CALL zptrec6 (IFLTAB, IUHEAD, NUHEAD,
-     * INFO(NPPWRD+KIAUHE), .FALSE.)
+      IF (nuhead_copy.GT.0) CALL zptrec6 (IFLTAB, iuhead_copy,
+     * nuhead_copy, INFO(NPPWRD+KIAUHE), .FALSE.)
 C
 C     Now store the data array
 C
@@ -840,6 +1014,25 @@ C
 C
 C     Done.  Exit zsrts6.
  800  CONTINUE
+      !-----------------------------------------!
+      ! restore the original values in the call !
+      !-----------------------------------------!
+      if (l_modified) then
+        if (ldouble) then
+          do ii = 1, nvals
+            if (dvalues(ii).ne.-901.and.dvalues(ii).ne.-902.) then
+              dvalues(ii) = dvalues(ii) + vertdatumoffset
+            end if
+          end do
+        else
+          do ii = 1, nvals
+            if (svalues(ii).ne.-901.and.svalues(ii).ne.-902.) then
+              svalues(ii) = svalues(ii) + vertdatumoffset
+            end if
+          end do
+        end if
+      end if
+
 C     Unlock the file and dump all buffers
       LWRITE = .FALSE.
       LTOL = .FALSE.
@@ -932,8 +1125,8 @@ C
 C
  980  CONTINUE
       IF (MLEVEL.GE.1) WRITE (MUNIT, 981) IACOMP
- 981  FORMAT (/,' *** ERROR:  zsrtsx6;  Illegal Data compression scheme',
-     * /,' Setting:',I6,';  Min Allowed: 0,  Max: 5')
+ 981  FORMAT (/,' *** ERROR:  zsrtsx6;  Illegal Data compression ',
+     *  'scheme',/,' Setting:',I6,';  Min Allowed: 0,  Max: 5')
       ISTAT = 51
       GO TO 990
 C

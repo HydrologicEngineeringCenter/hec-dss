@@ -192,10 +192,14 @@ int zspatialGridStore(long long *ifltab, zStructSpatialGrid *gridStruct) {
 	ztransfer->userHeaderNumber = (4*2)+3;
 	ztransfer->userHeader = (int *)calloc(ztransfer->userHeaderNumber, 4);
 	ztransfer->userHeaderMode = 1;
-	convertDataArray((int *)(&gridStruct->_cellSize), &ztransfer->userHeader[0], 1, 1, 1);
-	convertDataArray((int *)(&gridStruct->_xCoordOfGridCellZero), &ztransfer->userHeader[1], 1, 1, 1);
-	convertDataArray((int *)(&gridStruct->_yCoordOfGridCellZero), &ztransfer->userHeader[2], 1, 1, 1);
-	convertDataArray((int *)(&gridStruct->_nullValue), &ztransfer->userHeader[3], 1, 1, 1);
+	memset(ztransfer->userHeader, 0, ztransfer->userHeaderNumber * 4);
+	memcpy(&ztransfer->userHeader[0], &gridStruct->_cellSize, 4);
+	memcpy(&ztransfer->userHeader[1], &gridStruct->_xCoordOfGridCellZero, 4);
+	memcpy(&ztransfer->userHeader[2], &gridStruct->_yCoordOfGridCellZero, 4);
+	memcpy(&ztransfer->userHeader[3], &gridStruct->_nullValue, 4);
+	if (getEndian()) {
+		zswitchInts(ztransfer->userHeader, ztransfer->userHeaderNumber);
+	}
 
 	//  Store additional compression parameters (for future use)
 	ztransfer->values2Number = 0;

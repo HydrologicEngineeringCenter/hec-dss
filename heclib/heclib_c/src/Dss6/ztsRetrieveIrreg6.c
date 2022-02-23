@@ -47,7 +47,7 @@ int ztsRetrieveIrreg6(long long *ifltab, zStructTimeSeries *tss,
 	int i;
 	int baseDateMins;
 
-	char userHeader[2000];
+	int userHeader[500];
 	int kuserHeader;
 	int nuserHeader;
 
@@ -121,8 +121,8 @@ int ztsRetrieveIrreg6(long long *ifltab, zStructTimeSeries *tss,
 
 	zeroFill(cunits, sizeof(cunits));
 	zeroFill(ctype, sizeof(ctype));
-	zeroFill(userHeader, sizeof(userHeader));
-	kuserHeader = sizeof(userHeader);
+	memset(userHeader, 0, sizeof(userHeader));
+	kuserHeader = sizeof(userHeader) / sizeof(userHeader[0]);
 	boolCoordinates = 1;
 
 	minsStart = tss->timeWindow->startTimeSeconds / 60;

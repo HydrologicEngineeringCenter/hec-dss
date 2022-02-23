@@ -17,12 +17,12 @@ jobs:
         with:
           distribution: 'adopt'
           java-version: '8'
-                      
+
       - name: build main library
         run: |
           cd heclib
           make
-          
+
       - name: build and run basic C test programs
         run: |
           cd test/C

@@ -2,7 +2,7 @@
 UNAME_S := $(shell uname -s)
 
 ifeq ($(UNAME_S),Linux)
-	CWARNING=-Werror=implicit-function-declaration
+	CWARNING=-Werror
 	CFLAGS=-m64 -c -fPIC -g -std=gnu99 -Isrc/headers $(CWARNING) -D__linux__
 endif
 ifeq ($(UNAME_S),SunOS)

@@ -5,6 +5,8 @@
 #include "heclib.h"
 #include "hecdss7.h"
 
+int test_vertical_datums_c();
+int test_vertical_datums_f_();
 int test_stringCat();
 int testAdHoc();
 int testMultiUser();

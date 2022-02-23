@@ -6,6 +6,7 @@
 #include "zdssMessages.h"
 #include "zerrorCodes.h"
 #include "javaHeclib.h"
+#include "verticalDatum.h"
 
 JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1ztsStore(
 	JNIEnv       *env, 
@@ -600,16 +601,9 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1ztsStore(
 		jstr = (*env)->GetObjectField(env, j_timeSeriesContainer, fid); 
 		if (jstr) {
 			cstr = (*env)->GetStringUTFChars(env, jstr,  0);
-			if (cstr) {
-				len = (int)strlen(cstr);
-				if (len > 0) {
-					tss->userHeaderNumber = numberIntsInBytes(len);
-					tss->userHeaderSize = tss->userHeaderNumber; 
-					tss->userHeader = (int *)calloc(tss->userHeaderNumber, 4);
-					tss->allocated[zSTRUCT_userHeader] = 1;
-					charInt ((void *)cstr, tss->userHeader, len, (tss->userHeaderNumber * 4), 0, 1, 0);
-				}
-			}
+			tss->userHeader = stringToUserHeader(cstr, &tss->userHeaderNumber);
+			tss->userHeaderSize = tss->userHeaderNumber;
+			tss->allocated[zSTRUCT_userHeader] = 1;
 			(*env)->ReleaseStringUTFChars(env, jstr,  cstr);
 		}
     }
@@ -637,7 +631,6 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1ztsStore(
 	if (zmessageLevel((long long*)ifltab, MESS_METHOD_JNI_ID, MESS_LEVEL_USER_DIAG)) {		
 		zmessageDebugInt((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "Hec_ztsStore; ready to store, storageFlag: ", storageFlag);
 	}
-
 	status = ztsStore((long long*)ifltab, tss, storageFlag);
 
 	if (zmessageLevel((long long*)ifltab, MESS_METHOD_JNI_ID, MESS_LEVEL_USER_DIAG)) {		

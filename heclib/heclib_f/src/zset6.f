@@ -6,7 +6,7 @@ C     SET VARIABLES FOR DSS COMMON BLOCKS
 C
 C     Written by Bill Charley at HEC, 1982.
 C
-      CHARACTER CFLG*(*), CSTR*(*), CFLAG*4, CSTRIN*4
+      CHARACTER CFLG*(*), CSTR*(*), CFLAG*4, CSTRIN*16, UCSTRIN*16
 C
       INCLUDE 'zdsskz.h'
 C
@@ -23,6 +23,8 @@ C
       INCLUDE 'zdsscm.h'
 C
       INCLUDE 'zdssts.h'
+C
+      INCLUDE 'verticalDatumFortran.h'
 C
       COMMON /ZSTATUS/ TOTAL_NUMB,  CURRENT_NUMB,
      *                 INTERRUPT, NERROR, MAXERROR
@@ -371,6 +373,45 @@ C     Force a squeeze when called, even though might not be needed?
            LFSQUEEZE = .TRUE.
         ELSE
            LFSQUEEZE = .FALSE.
+        ENDIF
+C
+C     Set default vertical datum
+      ELSE IF (CFLAG.EQ.'VDTM') THEN
+        UCSTRIN = CSTRIN
+        CALL UPCASE(UCSTRIN)
+        IF (UCSTRIN.EQ.'') THEN
+           IF (NUMB.EQ.IVD_UNSET) THEN
+              CVDATUM = CVD_UNSET
+              IVDATUM = IVD_UNSET
+           ELSE IF (NUMB.EQ.IVD_NAVD88) THEN
+              CVDATUM = CVD_NAVD88
+              IVDATUM = IVD_NAVD88
+           ELSE IF (NUMB.EQ.IVD_NGVD29) THEN
+              CVDATUM = CVD_NGVD29
+              IVDATUM = IVD_NGVD29
+           ELSE IF (NUMB.EQ.IVD_OTHER) THEN
+              CVDATUM = CVD_OTHER
+              IVDATUM = IVD_OTHER
+           ELSE
+              ! NOP - BAD INPUT NUMBER
+              CVDATUM = CVDATUM
+              IVDATUM = IVDATUM
+           ENDIF   
+        ELSE IF (UCSTRIN.EQ.CVD_UNSET) THEN
+           CVDATUM = CVD_UNSET
+           IVDATUM = IVD_UNSET
+        ELSE IF (UCSTRIN.EQ.CVD_NAVD88) THEN
+           CVDATUM = CVD_NAVD88
+           IVDATUM = IVD_NAVD88
+        ELSE IF (UCSTRIN.EQ.CVD_NGVD29) THEN
+           CVDATUM = CVD_NGVD29
+           IVDATUM = IVD_NGVD29
+        ELSE IF (UCSTRIN.EQ.CVD_OTHER) THEN
+           CVDATUM = CVD_OTHER
+           IVDATUM = IVD_OTHER
+        ELSE
+           CVDATUM = CSTRIN
+           IVDATUM = IVD_OTHER
         ENDIF
 C
 C

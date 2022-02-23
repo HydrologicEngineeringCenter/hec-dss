@@ -215,6 +215,8 @@ C
 C
       INCLUDE 'zdssmz.h'
 C
+      INCLUDE 'verticalDatumFortran.h'      
+C
       INTEGER IERR
 C
 C
@@ -777,6 +779,10 @@ C     allow the file be be opened in a multi-user advisory mode
 C     (MUCH faster on the PC, if we don't have several users)
       LMULTU = .FALSE.
 C
+C     Initialize default vertical datum to UNSET
+      IVDATUM = IVD_UNSET
+      CVDATUM = CVD_UNSET
+C
 C
 C     For Intel compiler and running 'java', if standard out is not
 C     opened, the library aborts on the first write to standard out
@@ -825,6 +831,8 @@ c
       INCLUDE 'zdssShared.h'
       INCLUDE 'zopenDefault.h'
 C
+      INCLUDE 'verticalDatumFortran.h'
+C
 C
       COMMON /ZDSSFZ/ LFIRST
       LOGICAL LFIRST
@@ -844,7 +852,7 @@ C   DO NOT CHANGE THE STYLE OF THE FIRST TWO CHARACTERS OF CVERS
 C   THE FIRST CHARACTER IDENTIFIES THE VERSION NUMBER (4,5,6, ETC)
 C   THE SECOND CHARACTER IDENTIFIES THE FILE AS A DSS FILE.
 C
-      DATA CVERS /'6-YN'/
+      DATA CVERS /'6-YO'/
       
       !DATA INT_MIN /-2147483648/ == 0
       DATA ITIME_UNDEF /-2147483647/
@@ -1039,6 +1047,17 @@ C     Extrapolation (Under- & Over-flow) types for rating objects
 C
 C
       DATA MEMSIZES /0,0,0,0,0,0,0,0,0,0/
+C
+C     Vertical Datums (same order as java DataContainer)
+      DATA  CVD_UNSET  /'UNSET'  /, IVD_UNSET  /0/ 
+      DATA  CVD_NAVD88 /'NAVD-88'/, IVD_NAVD88 /1/  
+      DATA  CVD_NGVD29 /'NGVD-29'/, IVD_NGVD29 /2/   
+      DATA  CVD_OTHER  /'OTHER'  /, IVD_OTHER  /3/ 
+      DATA  CVD_LOCAL  /'OTHER'  /, IVD_LOCAL  /3/
+      
+      DATA VERTICAL_DATUM_INFO_PARAM      /'verticalDatumInfo'    /
+      DATA VERTICAL_DATUM_PARAM           /'verticalDatum'        /
+      DATA UNDEFINED_VERTICAL_DATUM_VALUE /-3.4028234663852886e+38/
 C
 C
 C     Variables for INTEGER*6 on Harris

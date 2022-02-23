@@ -140,7 +140,8 @@ int zerrorProcessing(long long *ifltab, int functionID, int errorNumber, int sta
 		zmessage(ifltab, " ");
 		zmessage(ifltab, " ");
 	}
-	errorMessage[0] = '\0';
+	memset(errorMessage, 0, sizeof(errorMessage));
+	memset(systemErrorMessage, 0, sizeof(systemErrorMessage));
 
 #ifdef _MSC_VER
 	_get_errno( &err );

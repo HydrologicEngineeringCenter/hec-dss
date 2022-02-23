@@ -11,12 +11,12 @@ ifeq ($(UNAME_S),Linux)
 	MAKE=make
 endif
 ifeq ($(UNAME_S),SunOS)
-	CFLAGS=-m64 -I../../heclib/heclib_c/src/headers -I. -mt -xcode=pic32 -xstrconst -xc99=all -xCC -g -xs 
+	CFLAGS=-m64 -I../../heclib/heclib_c/src/headers -I. -mt -xcode=pic32 -xstrconst -xc99=all -xCC -g -xs
 	LDFLAGS = -lz -lrt -lm -lfsu -g -xs -lsunmath
 	MAKE=gmake
 endif
 
-TARGET := Dss-C
+TARGET := Dss-Fortran
 BUILD_DIR := ./Output
 SRC_DIRS := .
 CC=cc
@@ -29,13 +29,13 @@ OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
 
 $(BUILD_DIR)/$(TARGET): $(OBJS)
 	mkdir -p $(BUILD_DIR)
-	$(F90)  -o $@ $^ $(HLIBS) $(HLIBS)  $(HLIBS) $(LDFLAGS)
+	$(F90) $(CFLAGS) -o $@ $^ $(HLIBS) $(HLIBS)  $(HLIBS) $(LDFLAGS)
 
 test:$(BUILD_DIR)/$(TARGET)
 	mkdir -p $(BUILD_DIR)
 	rm -f $(BUILD_DIR)/*.dss
 	cp ../../dss-test-data/*.dss $(BUILD_DIR)
-	(cd $(BUILD_DIR); ./Dss-C test)
+	(cd $(BUILD_DIR); ./Dss-Fortran test)
 
 
 $(BUILD_DIR)/%.c.o: %.c
@@ -49,3 +49,4 @@ $(BUILD_DIR)/%.f90.o: %.f90
 .PHONY: clean
 clean:
 	rm -r $(BUILD_DIR)
+	rm -r $(shell find $(SRC_DIRS) -name '*.mod')

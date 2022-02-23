@@ -26,6 +26,8 @@ C
 C
       INCLUDE 'zdssShared.h'
 C
+      INCLUDE 'verticalDatumFortran.h'
+C
       COMMON /WORDS/ IWORD(10)
 C
       COMMON /ZDSSFZ/ LFIRST
@@ -360,6 +362,11 @@ C     NUMB  < 0 if error
          ELSE
             INUMB = NFIXED
          ENDIF
+C
+C     Get default vertical datum
+      ELSE IF (CFLAG.EQ.'VDTM') THEN
+         CALPHA = CVDATUM
+         INUMB  = IVDATUM
 C
 C
       ELSE

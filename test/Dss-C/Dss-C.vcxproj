@@ -189,6 +189,7 @@
     <ClCompile Include="source\testTimeSeriesStruct4.c" />
     <ClCompile Include="source\testTimeSeriesStruct5.c" />
     <ClCompile Include="source\testTin.c" />
+    <ClCompile Include="source\testVerticalDatum_c.c" />
     <ClCompile Include="source\testWriteRead.c" />
     <ClCompile Include="source\testZtsProcessTimes.c" />
     <ClCompile Include="source\testztsStructBill.c" />

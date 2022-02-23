@@ -1,7 +1,7 @@
 #
 #  Dss-Fortran testing makefile for Solaris
 #
-FFLAGS= -m64  -xmemalign=2i -c -fpp -mt -xcode=pic32 -xpagesize=4M -O
+FFLAGS= -m64 -g -xmemalign=2i -c -fpp -mt -xcode=pic32 -xpagesize=4M -O
 FORTRAN=f95
 HLIBS=../../heclib/heclib_f/Output/libhec_f.a ../../heclib/heclib_c/Output/libhec_c.a
 
@@ -32,7 +32,8 @@ test:dss Dss-Fortran
 	(cd Output; ./Dss-Fortran)
 #	(cd Output; valgrind --track-origins=yes  --log-file=vg.txt ./Dss-Fortran)
 
-
+Output/test_vertical_datums_f_.o:./source/testVerticalDatum_f.f90
+	$(FORTRAN) $(FFLAGS) source/testVerticalDatum_f.f90 -o Output/test_vertical_datums_f_.o
 Output/DssCodeTest7.o:source/DssCodeTest7.f90
 	$(FORTRAN) $(FFLAGS) source/DssCodeTest7.f90 -o Output/DssCodeTest7.o
 Output/miscTests.o:source/miscTests.f90
@@ -214,8 +215,8 @@ Output/timeTestWrite.o\
 Output/timeTestWriteFile.o\
 Output/timeTestWriteFileRTS.o\
 Output/timeTestWritingRTS.o\
-Output/writeARec.o
-
+Output/writeARec.o\
+Output/test_vertical_datums_f_.o
 
 
 Dss-Fortran:$(OBJS)

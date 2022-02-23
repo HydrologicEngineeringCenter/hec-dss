@@ -123,6 +123,7 @@ void ztsregstorefull_(long long *ifltab, const char *path,
 	if (*userHeaderNumber) {
 		tss->userHeader = userHeader;
 		tss->userHeaderNumber = *userHeaderNumber;
+		tss->userHeaderSize = *userHeaderNumber;
 	}
 
 	if ((*boolCnotesProvided != 0) && (*inoteElementSize > 0)) {

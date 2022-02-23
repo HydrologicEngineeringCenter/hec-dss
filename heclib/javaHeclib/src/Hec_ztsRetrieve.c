@@ -4,6 +4,7 @@
 
 #include "heclib.h"
 #include "javaHeclib.h"
+#include "verticalDatum.h"
 
 JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1ztsRetrieve(
 	JNIEnv       *env,
@@ -631,9 +632,19 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1ztsRetrieve(
 			}
 			else { 
 				if (fid) {
-					jstr = (*env)->NewStringUTF(env, (const char *)tss->userHeader);
+					char *headerString = NULL;
+					if (zgetVersion((long long *)ifltab) == 7) {
+						headerString = userHeaderToString(tss->userHeader, tss->userHeaderNumber);
+					}
+					else {
+						headerString = (char *)tss->userHeader;
+					}
+					jstr = (*env)->NewStringUTF(env, (const char *)headerString);
 					(*env)->SetObjectField (env, j_timeSeriesContainer, fid, jstr);
 					(*env)->DeleteLocalRef(env, jstr);
+					if (zgetVersion((long long *)ifltab) == 7) {
+						free(headerString);
+					}
 				}
 			}
 		}

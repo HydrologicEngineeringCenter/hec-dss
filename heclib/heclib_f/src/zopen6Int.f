@@ -541,7 +541,13 @@ C
 C
 C     Determine if we have to swap words for double precsion values
 C     on big endian machines to keep compatitable with little endians
-      IF((IFLTAB(KSWAP).NE.0).AND.((IFLTAB(KVERNO).GE.67900)).OR.
+      if (ifltab(kverno).eq.63232) then
+          ! file version = "6-  " (i.e., new file)
+          iversion = 60000+ 100*(ichar(cvers(3:3)))+ichar(cvers(4:4))
+	  else
+          iversion = ifltab(kverno)
+	  end if
+      IF((IFLTAB(KSWAP).NE.0).AND.(IVERSION.GE.67900).OR.
      * (IFLTAB(KNV).GT.6))  THEN
           IFLTAB(KDSWAP) = 1
           IF(MLEVEL.GE.10)WRITE(MUNIT,*)'Double precision swap set on'
