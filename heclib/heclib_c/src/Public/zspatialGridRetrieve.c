@@ -298,18 +298,6 @@ int zspatialGridRetrieve(long long *ifltab, zStructSpatialGrid *gridStruct, int 
 			memcpy(&gridStruct->_xCoordOfGridCellZero, &ztransfer->userHeader[1], 4);
 			memcpy(&gridStruct->_yCoordOfGridCellZero, &ztransfer->userHeader[2], 4);
 			memcpy(&gridStruct->_nullValue,            &ztransfer->userHeader[3], 4);
-			if (gridStruct->_cellSize == 0 || gridStruct->_nullValue != 0) {
-				/*
-				DSS 7 up though version 7-IG stored and retrieved the user header for grids incorrectly on big endian
-				systems. This only showed up if you retrieved a DSS 7 grid on a different-endian system that what it 
-				was stored with. This block allows this to be a non-breaking change as incorrect user headers are 
-				silently corrected on retrieve, and will be subsequently stored correctly.
-				*/
-				memcpy(&gridStruct->_cellSize,             &ztransfer->userHeader[1], 4);
-				memcpy(&gridStruct->_xCoordOfGridCellZero, &ztransfer->userHeader[0], 4);
-				memcpy(&gridStruct->_yCoordOfGridCellZero, &ztransfer->userHeader[3], 4);
-				memcpy(&gridStruct->_nullValue,            &ztransfer->userHeader[2], 4);
-			}
 		}
 
 		if (gridStruct->_storageDataType == GRID_FLOAT) {
