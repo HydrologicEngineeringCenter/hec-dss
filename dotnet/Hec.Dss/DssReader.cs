@@ -51,7 +51,7 @@ namespace Hec.Dss
 
     public DssReader(string filename, int version, MethodID messageMethod = MethodID.MESS_METHOD_GENERAL_ID, LevelID messageLevel = LevelID.MESS_LEVEL_GENERAL)
     {
-      DSS.ZSet("DSSV", "", version);
+      DssGlobals.SetDefaultVersion(version);
       GetDssFile(filename, messageMethod, messageLevel);
     }
 
@@ -64,10 +64,7 @@ namespace Hec.Dss
       ActiveReaders.Add(this);
       if (messageMethod != MethodID.MESS_METHOD_GENERAL_ID || messageLevel != LevelID.MESS_LEVEL_GENERAL)
       {
-        //Call the version 6 and 7 set message level first, if the file is 6 then the ZSetMessageLevel will not work, and we can still use MethodIDs for 7.
-        DSS.ZSet("mlvl", "", (int)messageLevel);
-        DSS.ZSetMessageLevel((int)messageMethod, (int)messageLevel);
-
+        DssGlobals.SetMessageLevel(messageMethod,messageLevel);
       }
       _iflTabGC = GCHandle.Alloc(ifltab, GCHandleType.Pinned);
       int status;
