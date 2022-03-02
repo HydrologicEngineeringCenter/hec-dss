@@ -518,7 +518,7 @@ namespace Hec.Dss
           DateTime t1 = startDateTime.AddSeconds(-TimeWindow.SecondsInInterval(dssPath));
           DateTime t2 = endDateTime.AddSeconds(TimeWindow.SecondsInInterval(dssPath));
           var ts = GetTimeSeries(dssPath, compression, t1, t2);
-          ts = TimeWindow.TrimWithTimeWindow(ts, startDateTime, endDateTime);
+          ts = TimeWindow.Trim(ts, startDateTime, endDateTime);
           return ts;
         }
         else // time series is irregular

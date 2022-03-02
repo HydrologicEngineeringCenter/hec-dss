@@ -18,7 +18,7 @@ namespace Hec.Dss
     /// <param name="t1">Start Date</param>
     /// <param name="t2">End Date</param>
     /// <returns></returns>
-    public static TimeSeries TrimWithTimeWindow(TimeSeries ts, DateTime t1, DateTime t2)
+    public static TimeSeries Trim(TimeSeries ts, DateTime t1, DateTime t2)
     {
       if (ValidWindowForTrim(ts, t1, t2))
       {
