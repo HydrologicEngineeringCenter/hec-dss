@@ -496,7 +496,7 @@ C
       ! convert values to requested vertical datum if necessary !
       !---------------------------------------------------------!
       call zufpn(ca, na, cb, nb, cc, nc, cd, nd, ce, ne, cf, nf,
-     *           cpath, len_trim(cpath), istat)
+     *           cpath, len_trim(cpath), iistat)
       call upcase(cc)
       if (index(cc, 'ELEV').eq.1) then
         !--------------------------!
@@ -532,8 +532,8 @@ C
               !--------------------------------------------!
               iuhead(nuhead+1:kuhead) = 0
               call set_user_header_param(iuhead, nuhead, kuhead, 
-     *          VERTICAL_DATUM_PARAM, cvdatum1, istat)
-              if (istat.ne.0) then
+     *          VERTICAL_DATUM_PARAM, cvdatum1, iistat)
+              if (iistat.ne.0) then
                 if (mlevel.ge.1) then
                     write (munit,'(/,a,a,/,a)')
      *              ' *****DSS*** zrrtsi6:  ERROR  - VERTICAL DATUM',
