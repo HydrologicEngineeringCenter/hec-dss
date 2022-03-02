@@ -11,19 +11,42 @@ namespace Hec.Dss
 
     /// <summary>
     /// Get a set of data between two dates in a TimeSeries
+    /// trims data outside t1,t2
+    /// 
     /// </summary>
     /// <param name="ts">TimeSeries</param>
     /// <param name="t1">Start Date</param>
     /// <param name="t2">End Date</param>
     /// <returns></returns>
-    public static TimeSeries TimeSnap(TimeSeries ts, DateTime t1, DateTime t2)
+    public static TimeSeries TrimWithTimeWindow(TimeSeries ts, DateTime t1, DateTime t2)
     {
-      ScanLeftToRight(ts, t1, t2);
-      ScanRightToLeft(ts, t1, t2);
+      if (ValidWindowForTrim(ts, t1, t2))
+      {
+        TrimLeft(ts, t1, t2);
+        TrimRight(ts, t1, t2);
+      }
       return ts;
     }
+    private static bool ValidWindowForTrim(TimeSeries ts, DateTime t1, DateTime t2)
+    {
+      if( ts.Count == 0 ) return false;
+      if( t2 < t1) return false;
+      var last = ts.Times[ts.Count - 1];
 
-    private static void TimeWindowTrim(TimeSeries ts, int Start, int End)
+      // time ranges before data?
+      if (t1 > last) return false;
+      if (t2 < ts.StartDateTime) return false;
+
+      return true;
+    }
+
+    /// <summary>
+    /// Remove dates and values in the range specfied
+    /// </summary>
+    /// <param name="ts"></param>
+    /// <param name="Start"></param>
+    /// <param name="End"></param>
+    private static void RemoveRange(TimeSeries ts, int Start, int End)
     {
       var l = new List<DateTime>(ts.Times);
       var d = new List<double>(ts.Values);
@@ -33,52 +56,37 @@ namespace Hec.Dss
       ts.Values = d.ToArray();
     }
 
-    private static void ScanLeftToRight(TimeSeries ts, DateTime t1, DateTime t2)
+    private static void TrimLeft(TimeSeries ts, DateTime t1, DateTime t2)
     {
-      int i = 0;
-      while (i != ts.Times.Length) // scan left to right
-      {
-        if (ts.Times[i] >= t1)
-        {
-          if (ts.Times[0] > t1) // check if user inputted data is smaller than start date in time series
-            break;
-          if (ts.Times[i] != t1)
-          {
-            TimeWindowTrim(ts, 0, i - 1);
-            break;
-          }
-          else // if user inputted time is equal to a time within the time series
-          {
-            TimeWindowTrim(ts, 0, i);
-            break;
-          }
-        }
-        i++;
-      }
-    }
+      if (ts.Count == 0 || t1 < ts.StartDateTime)
+        return;
 
-    private static void ScanRightToLeft(TimeSeries ts, DateTime t1, DateTime t2)
-    {
-      int j = ts.Times.Length - 1;
-      while (j != 0) // scan right to left
+      int idx = Array.FindIndex(ts.Times, t => t >= t1);
+      if (ts.Times[idx] != t1) // need to backup one time-step
       {
-        if (ts.Times[j] <= t2)
-        {
-          if (ts.Times[ts.Times.Length - 1] < t2) // if user inputted time is greater than end date in time series
-            break;
-          if (ts.Times[j] != t2)
-          {
-            TimeWindowTrim(ts, j + 2, ts.Times.Length - (j + 2));
-            break;
-          }
-          else // if user inputted time is equal to a time within the time series
-          {
-            TimeWindowTrim(ts, j + 1, ts.Times.Length - (j + 1));
-            break;
-          }
-        }
-        j--;
+        idx--;
       }
+      RemoveRange(ts, 0, idx);
+      return;
+
+    }    
+
+    private static void TrimRight(TimeSeries ts, DateTime t1, DateTime t2)
+    {
+      if (ts.Count == 0 || t2 > ts.Times[ts.Count-1])
+        return;
+
+      int idx = Array.FindLastIndex(ts.Times, t => t <= t2);
+
+      if (ts.Times[idx] == t2)
+      {
+        idx += 1;
+      }else
+      {
+        idx += 2;
+      }
+
+      RemoveRange(ts, idx, ts.Times.Length - idx);
     }
 
     internal static int SecondsInInterval(TimeSeries ts)
@@ -144,7 +152,13 @@ namespace Hec.Dss
     /// </summary>
     public enum TimeWindowBehavior 
     { 
+      /// <summary>
+      /// return data that is strictly within the time window.
+      /// </summary>
       StrictlyInclusive, 
+      /// <summary>
+      /// Extend data if needed to cover/support interpolation within the time window.
+      /// </summary>
       Cover 
     };
 

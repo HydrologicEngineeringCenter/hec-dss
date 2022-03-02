@@ -69,8 +69,30 @@ ConsecutiveValueCompression.AnyValue
 
       }
 
-    }
+        }
 
+        /// <summary>
+        ///   1/1/1985 10:30:00 AM 0
+        ///   1/2/1985 10:30:00 AM 1
+        ///   1/3/1985 10:30:00 AM 2
+        ///   1/4/1985 10:30:00 AM 3
+        ///   1/5/1985 10:30:00 AM 4
+        ///   1/6/1985 10:30:00 AM 5
+        ///   1/7/1985 10:30:00 AM 6
+        ///   1/8/1985 10:30:00 AM 7
+        ///   1/9/1985 10:30:00 AM 8
+        ///   1/10/1985 10:30:00 AM 9
+        ///   
+        /// 1/2/1985 10:30:00 AM 1
+        /// 1/3/1985 10:30:00 AM 2
+        /// 1/4/1985 10:30:00 AM 3
+        /// 1/5/1985 10:30:00 AM 4
+        /// 1/6/1985 10:30:00 AM 5
+        /// 1/7/1985 10:30:00 AM 6
+        /// 1/8/1985 10:30:00 AM 7
+        /// 1/9/1985 10:30:00 AM 8
+        /// 1/10/1985 10:30:00 AM 9
+        /// </summary>
     [TestMethod]
     public void TimeWindowBehavior_Cover_EndShiftedLeft()
     {
@@ -79,13 +101,14 @@ ConsecutiveValueCompression.AnyValue
       using (DssWriter dss = new DssWriter(fn))
       {
         var ts = CreateRegularTimeSeries();
+        ts.WriteToConsole();
         dss.Write(ts);
 
         DateTime t1 = ts.Times[1];
         DateTime t2 = ts.Times[8].AddHours(6);
 
         var ts2 = dss.GetTimeSeries(ts.Path, t1, t2, TimeWindow.TimeWindowBehavior.Cover);
-
+        ts2.WriteToConsole();
         Assert.AreEqual(ts.Times[1], ts2.Times[0]);
         Assert.AreEqual(ts.Times[9], ts2.Times[ts2.Times.Length - 1]);
 
@@ -121,23 +144,7 @@ ConsecutiveValueCompression.AnyValue
 
     }
 
-    private static TimeSeries GetCoverTimeSeries(DssWriter dss, TimeSeries ts, DateTime t1, DateTime t2)
-    {
-      if (!ts.IsRegular())
-        throw new Exception("Requries regular interval.");
-
-      DateTime t1a = t1.AddSeconds(-SecondsInInterval(ts));
-      DateTime t2a = t2.AddSeconds(SecondsInInterval(ts));
-
-      var ts2 = dss.GetTimeSeries(ts.Path, t1a, t2a);
-      ts2 = TimeWindow.TimeSnap(ts2, t1, t2);
-
-
-      return ts2;
-
-    }
-
-    private static int SecondsInInterval(TimeSeries ts)
+       private static int SecondsInInterval(TimeSeries ts)
     {// ztsGetStandardInterval.c  -- later... TO DO.
       if (String.Compare(ts.Path.Epart, "1day", true) == 0)
         return 86400;

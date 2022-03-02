@@ -460,7 +460,7 @@ namespace Hec.Dss
 
       // if path is valid, and is time series, (status -1 proably means no data in the time window)
 
-      if (status == 0)
+      if (status == 0 )
       {
         SetTimeSeriesInfo(blockTimeSeries, innerTimeSeries);
 
@@ -518,7 +518,7 @@ namespace Hec.Dss
           DateTime t1 = startDateTime.AddSeconds(-TimeWindow.SecondsInInterval(dssPath));
           DateTime t2 = endDateTime.AddSeconds(TimeWindow.SecondsInInterval(dssPath));
           var ts = GetTimeSeries(dssPath, compression, t1, t2);
-          ts = TimeWindow.TimeSnap(ts, startDateTime, endDateTime);
+          ts = TimeWindow.TrimWithTimeWindow(ts, startDateTime, endDateTime);
           return ts;
         }
         else // time series is irregular
