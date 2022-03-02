@@ -72,6 +72,7 @@ ConsecutiveValueCompression.AnyValue
         }
 
         /// <summary>
+        /// -- original --
         ///   1/1/1985 10:30:00 AM 0
         ///   1/2/1985 10:30:00 AM 1
         ///   1/3/1985 10:30:00 AM 2
@@ -82,7 +83,7 @@ ConsecutiveValueCompression.AnyValue
         ///   1/8/1985 10:30:00 AM 7
         ///   1/9/1985 10:30:00 AM 8
         ///   1/10/1985 10:30:00 AM 9
-        ///   
+        ///   -- trimed -- 
         /// 1/2/1985 10:30:00 AM 1
         /// 1/3/1985 10:30:00 AM 2
         /// 1/4/1985 10:30:00 AM 3
@@ -101,14 +102,12 @@ ConsecutiveValueCompression.AnyValue
       using (DssWriter dss = new DssWriter(fn))
       {
         var ts = CreateRegularTimeSeries();
-        ts.WriteToConsole();
         dss.Write(ts);
 
         DateTime t1 = ts.Times[1];
         DateTime t2 = ts.Times[8].AddHours(6);
 
         var ts2 = dss.GetTimeSeries(ts.Path, t1, t2, TimeWindow.TimeWindowBehavior.Cover);
-        ts2.WriteToConsole();
         Assert.AreEqual(ts.Times[1], ts2.Times[0]);
         Assert.AreEqual(ts.Times[9], ts2.Times[ts2.Times.Length - 1]);
 
