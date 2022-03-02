@@ -72,29 +72,9 @@ ConsecutiveValueCompression.AnyValue
         }
 
         /// <summary>
-        /// -- original --
-        ///   1/1/1985 10:30:00 AM 0
-        ///   1/2/1985 10:30:00 AM 1
-        ///   1/3/1985 10:30:00 AM 2
-        ///   1/4/1985 10:30:00 AM 3
-        ///   1/5/1985 10:30:00 AM 4
-        ///   1/6/1985 10:30:00 AM 5
-        ///   1/7/1985 10:30:00 AM 6
-        ///   1/8/1985 10:30:00 AM 7
-        ///   1/9/1985 10:30:00 AM 8
-        ///   1/10/1985 10:30:00 AM 9
-        ///   -- trimed -- 
-        /// 1/2/1985 10:30:00 AM 1
-        /// 1/3/1985 10:30:00 AM 2
-        /// 1/4/1985 10:30:00 AM 3
-        /// 1/5/1985 10:30:00 AM 4
-        /// 1/6/1985 10:30:00 AM 5
-        /// 1/7/1985 10:30:00 AM 6
-        /// 1/8/1985 10:30:00 AM 7
-        /// 1/9/1985 10:30:00 AM 8
-        /// 1/10/1985 10:30:00 AM 9
+        /// Test TimeWindow.TimeWindowBehavior.Cover where one value is trimed from the left
         /// </summary>
-    [TestMethod]
+        [TestMethod]
     public void TimeWindowBehavior_Cover_EndShiftedLeft()
     {
       var fn = "TimeWindowBehavior_Cover_EndShiftedLeft.dss";
