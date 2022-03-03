@@ -69,9 +69,12 @@ ConsecutiveValueCompression.AnyValue
 
       }
 
-    }
+        }
 
-    [TestMethod]
+        /// <summary>
+        /// Test TimeWindow.TimeWindowBehavior.Cover where one value is trimed from the left
+        /// </summary>
+        [TestMethod]
     public void TimeWindowBehavior_Cover_EndShiftedLeft()
     {
       var fn = "TimeWindowBehavior_Cover_EndShiftedLeft.dss";
@@ -85,7 +88,6 @@ ConsecutiveValueCompression.AnyValue
         DateTime t2 = ts.Times[8].AddHours(6);
 
         var ts2 = dss.GetTimeSeries(ts.Path, t1, t2, TimeWindow.TimeWindowBehavior.Cover);
-
         Assert.AreEqual(ts.Times[1], ts2.Times[0]);
         Assert.AreEqual(ts.Times[9], ts2.Times[ts2.Times.Length - 1]);
 
@@ -121,23 +123,7 @@ ConsecutiveValueCompression.AnyValue
 
     }
 
-    private static TimeSeries GetCoverTimeSeries(DssWriter dss, TimeSeries ts, DateTime t1, DateTime t2)
-    {
-      if (!ts.IsRegular())
-        throw new Exception("Requries regular interval.");
-
-      DateTime t1a = t1.AddSeconds(-SecondsInInterval(ts));
-      DateTime t2a = t2.AddSeconds(SecondsInInterval(ts));
-
-      var ts2 = dss.GetTimeSeries(ts.Path, t1a, t2a);
-      ts2 = TimeWindow.TimeSnap(ts2, t1, t2);
-
-
-      return ts2;
-
-    }
-
-    private static int SecondsInInterval(TimeSeries ts)
+       private static int SecondsInInterval(TimeSeries ts)
     {// ztsGetStandardInterval.c  -- later... TO DO.
       if (String.Compare(ts.Path.Epart, "1day", true) == 0)
         return 86400;

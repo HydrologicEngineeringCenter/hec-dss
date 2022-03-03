@@ -54,7 +54,7 @@ namespace DSSUnitTests
 
 
     [TestMethod]
-    public void TestInvalidTimeWindow7()
+    public void TestOutofRangeTimeWindow7()
     {
      var filename = System.IO.Path.Combine(TestUtility.BasePath, "rainfall7.dss");
 
@@ -80,7 +80,7 @@ namespace DSSUnitTests
     }
 
     [TestMethod]
-    public void TestInvalidTimeWindow()
+    public void TestOutofRangeTimeWindow()
     {
       var filename = System.IO.Path.Combine(TestUtility.BasePath, "rainfall.dss");
 
@@ -234,7 +234,7 @@ namespace DSSUnitTests
       {
         var path = new DssPath("//SACRAMENTO/PRECIP-INC/01JAN1944/1Day/OBS/");
         var timeSeries = r.GetTimeSeries(path, new DateTime(2009, 11, 1), new DateTime(2025, 10, 31));
-        Assert.AreEqual(5844, timeSeries.Values.Length);
+        Assert.AreEqual(0, timeSeries.Values.Length);
       }
     }
 
@@ -768,5 +768,30 @@ namespace DSSUnitTests
             Assert.IsTrue(r.GetDSSFileVersion() == 7);
         }
     }
-  }
+
+        [TestMethod]
+        public void TestTrim()
+        {
+          TrimWorkout(new double[] { -902.0, -901.0, -3.402823466e+38, -3.4028234663852886E+38 },0, "all missing");
+          TrimWorkout(new double[] { -902.0, 12.0, 14.0}, 2, "first missing");
+          TrimWorkout(new double[] {12.0, 14.0 ,-901.0}, 2, "last missing");
+          TrimWorkout(new double[] { 12.0, 14.0, -901.0 , 17.0, 18.0}, 5, "missing point in middle (should not trim)");
+
+        }
+        private static void TrimWorkout(double[] values,int expectedCountAfterTrim, string message)
+        {
+            TimeSeries s = new TimeSeries();
+            s.Values = values;
+            s.Times = new DateTime[values.Length];
+            DateTime t = DateTime.Now;
+            for (int i = 0; i < values.Length; i++)
+            {
+                s.Times[i] = t.AddDays(i);
+            }
+            s.Trim();
+            Assert.AreEqual(expectedCountAfterTrim, s.Count,message);
+
+     }
+
+    }
 }

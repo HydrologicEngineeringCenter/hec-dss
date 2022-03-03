@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using static Hec.Dss.TimeWindow;
 
 namespace Hec.Dss
@@ -327,24 +328,16 @@ namespace Hec.Dss
     /// </summary>
     public void Trim()
     {
-      int first = 0, last = Count - 1;
-      for (int i = 0; i < Count; ++i)
-      {
-        if (DssReader.IsValid(Values[i]))
-        {
-          first = i;
-          break;
-        }
-      }
 
-      for (int i = Count - 1; i >= 0; --i)
+      int first = Array.FindIndex(Values, val => DssReader.IsValid(val));
+
+      if( first <0)
       {
-        if (DssReader.IsValid(Values[i]))
-        {
-          last = i;
-          break;
-        }
+        Clear(); // no value data, clear all
+        return;
       }
+      int last = Array.FindLastIndex(Values, val => DssReader.IsValid(val));
+
 
       int newSize = last - first + 1;
       double[] tempValues = new double[newSize];
@@ -360,6 +353,18 @@ namespace Hec.Dss
       Times = tempDates;
       if (HasQuality)
         Qualities = tempQuality;
+    }
+
+    /// <summary>
+    /// Clear all values and times from the TimeSeries instance
+    /// </summary>
+    /// <exception cref="NotImplementedException"></exception>
+    private void Clear()
+    {
+      Values = new double[0];
+      Times = new DateTime[0];
+      if (HasQuality)
+        Qualities = new int[0];
     }
 
     public TimeSpan TimeSpanInterval()
