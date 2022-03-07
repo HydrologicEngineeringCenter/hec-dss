@@ -149,6 +149,7 @@
     <ClCompile Include="source\miscTests.c" />
     <ClCompile Include="source\profileExcel.c" />
     <ClCompile Include="source\runTests.c" />
+    <ClCompile Include="source\testNormalizeFPart.c" />
     <ClCompile Include="source\TestUtility.c" />
     <ClCompile Include="source\SampleTimeSeries3.c" />
     <ClCompile Include="source\testAdHoc.c" />
