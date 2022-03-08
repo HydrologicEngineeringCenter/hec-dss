@@ -78,7 +78,8 @@ C     Vertical datum varible dimensions
       character*400 vdiStr, errMsg
       character*16 unit, unit2, cvdatum1, cvdatum2
       character*16 nativeDatum
-      character*64 cc, unitSpec
+      character*64 unitSpec
+      character(len=dss_maxpart) cc
       double precision offsetNavd88, offsetNgvd29, vertDatumOffset
       logical l_Navd88Estimated, l_Ngvd29Estimated, l_modified
       integer vdiStrLen, nuhead_copy, iuhead_copy(100)
