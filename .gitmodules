@@ -1,0 +1,3 @@
+[submodule "dss-test-data"]
+	path = dss-test-data
+	url = https://github.com/HydrologicEngineeringCenter/dss-test-data

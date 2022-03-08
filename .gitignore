@@ -132,7 +132,6 @@ test/Fortran/interop
 fort.8
 /jar/*.jar
 *.jar
-/dss-test-data
 test/VB/obj/*
 test/VB/bin/*
 *.dll
