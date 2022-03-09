@@ -140,3 +140,4 @@ packages/
 test/Fortran/Output/**
 *.7
 *.u2d
+test/Fortran/modverticaldatuminfo.mod
