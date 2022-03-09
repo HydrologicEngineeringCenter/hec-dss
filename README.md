@@ -44,19 +44,32 @@ zlib, math, quadmath, and gfortran for pydsstools to work in Ubuntu.
 
 ## To build and test heclib
 
+### Linux 
 ```
-1.	git pull origin master
-2.  git submodule update --init --recursive   # this loads up the dss-test-data directory
-3.	In the hec-dss/heclib directory, execute make clean ; make
+1.	git clone -j2 --recurse-submodules https://github.com/HydrologicEngineeringCenter/hec-dss.git
+2.	In the hec-dss/heclib directory, execute make clean ; make
 3.	In the hec-dss/test/C directory, execute ./unix_test
 4.	In the hec-dss/test/Dss-C directory, execute make clean ; make test
 5.	In the hec-dss/test/Fortran directory, execute make clean ; make test
 
 ```
 
+### Solaris sparc sun4v  
+
+```
+1.  bash
+2.	git clone -j2 --recurse-submodules https://github.com/HydrologicEngineeringCenter/hec-dss.git
+3.	In the hec-dss/heclib directory, execute gmake clean ; gmake
+4.	In the hec-dss/test/C directory, execute ./unix_test
+5.	In the hec-dss/test/Dss-C directory, execute gmake clean ; gmake test
+6.	In the hec-dss/test/Fortran directory, execute gmake -f Makefile.Solaris clean ; gmake -f Makefile.Solaris test
+
+```
+
+### Windows
 
 ```cmd
-Windows
+
 build_release.bat 
 ```
 
