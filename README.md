@@ -60,7 +60,7 @@ developerstudio12.6
 #pkg contents system/library/fortran-runtime
 export PATH=$PATH:/opt/developerstudio12.6/bin:/usr/gcc/7/bin
 export JAVA_HOME=/usr/jdk/instances/jdk1.8.0
-LD_LIBRARY_PATH=/usr/gcc/7/lib/sparcv9
+export LD_LIBRARY_PATH=/usr/gcc/7/lib/sparcv9
 
 ```
 1.  bash
