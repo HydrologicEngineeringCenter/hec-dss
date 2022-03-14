@@ -9,18 +9,19 @@ ifeq ($(UNAME_S),Linux)
 	FFLAGS=-c -g -cpp -m64 -fPIC $(FWARNINGS) $(FDEBUG) -I../../heclib/heclib_f/src/headers
 	LDFLAGS = -lz -lrt -lgfortran -lm
 	MAKE=make
+        F90=gfortran
 endif
 ifeq ($(UNAME_S),SunOS)
 	CFLAGS=-m64 -I../../heclib/heclib_c/src/headers -I. -mt -xcode=pic32 -xstrconst -xc99=all -xCC -g -xs 
 	LDFLAGS = -lz -lrt -lm -lfsu -g -xs -lsunmath
 	MAKE=gmake
+	F90=gfortran
 endif
 
 TARGET := Dss-C
 BUILD_DIR := ./Output
 SRC_DIRS := .
 CC=cc
-F90=gfortran
 HLIBS=../../heclib/heclib_f/Output/libhec_f.a ../../heclib/heclib_c/Output/libhec_c.a
 
 SRCS := $(shell find $(SRC_DIRS) -name '*.c' -o -name '*.f90' )
