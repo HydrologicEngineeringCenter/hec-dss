@@ -56,6 +56,9 @@ zlib, math, quadmath, and gfortran for pydsstools to work in Ubuntu.
 
 ### Solaris sparc sun4v  
 
+required  --  developerstudio12.6 
+required -- #pkg contents system/library/fortran-runtime
+
 ```
 1.  bash
 2.	git clone -j2 --recurse-submodules https://github.com/HydrologicEngineeringCenter/hec-dss.git
