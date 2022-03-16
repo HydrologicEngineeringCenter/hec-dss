@@ -18,7 +18,7 @@
 *
 *				int partPosition:  The part number to get, where A part = 1, B part = 2, etc.
 *
-*				char *part:  A string to hold the part that is returned.  This should be dimensioned to 65 chars.
+*				char *part:  A string to hold the part that is returned.  This should be dimensioned to MAX_PART_SIZE chars.
 *
 *				int sizeofPart:  The size of part.
 *
@@ -60,12 +60,12 @@ int zpathnameGetPart (const char *pathname, int partPosition, char *part, size_t
 		part[0] = '\0';
 		return 0;
 	}
-	else {
-		if (partLen >= MAX_PART_SIZE) {
-			partLen = MAX_PART_SIZE - 1;   //  MAX_PART_SIZE includes space for '\0'
-		}
-		stringCopy(part, sizeofPart, &pathname[start], (size_t)partLen);
+	
+	if (partLen >= MAX_PART_SIZE) {
+		partLen = MAX_PART_SIZE - 1;   //  MAX_PART_SIZE includes space for '\0'
 	}
+	stringCopy(part, sizeofPart, &pathname[start], (size_t)partLen);
+	
 	return partLen;
 }
 

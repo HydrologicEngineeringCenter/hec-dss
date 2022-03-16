@@ -43,7 +43,7 @@
 *
 *				char *apart, size_t apartSize, etc.
 *					A character string that will be returned with the part to match.  For example, *Flow* will be returned as Flow.
-*					Each part should be 65 elements long.  That length is to be passed in the size parameter following the part.
+*					Each part should be MAX_PART_SIZE elements long.  That length is to be passed in the size parameter following the part.
 *
 *
 *	Returns		0:	Match all (don't do compare)
@@ -78,7 +78,7 @@ int zcatParsePath(const char *pathWithWild, int *partAction, int *lengths,
 	int istart;
 	int startsWith;
 	int endsWith;
-	char part[MAX_PART_SIZE];
+	char part[MAX_PART_SIZE]; // size to largest (F)
 
 	if (!pathWithWild)
 		return 0;

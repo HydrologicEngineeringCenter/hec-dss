@@ -43,6 +43,8 @@ C
 C     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 C
       CHARACTER *(*) CPATH
+
+      include 'dss_parameters.h'
 C
       INCLUDE 'zdssmz.h'
 C
@@ -143,7 +145,7 @@ C
  951  FORMAT (1X,A)
 C
       ELSE IF (ISTAT.EQ.-5) THEN
-      WRITE (MUNIT,960) MXPATH, NPATH
+      WRITE (MUNIT,960) dss_maxpath, NPATH
  960  FORMAT (' The pathname contains more than',I4,' characters;  ',
      * 'Length:',I7)
       WRITE (MUNIT,951) CPATH(1:MIN(392,NPATH))

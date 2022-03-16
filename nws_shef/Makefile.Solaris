@@ -1,4 +1,4 @@
-FFLAGS=-m64 -c -fpp -mt -xcode=abs64 -xpagesize=4M -O
+FFLAGS=-I ../heclib/heclib_f/src/headers -m64 -c -fpp -mt -xcode=abs64 -xpagesize=4M -O
 FORTRAN=f95
 
 

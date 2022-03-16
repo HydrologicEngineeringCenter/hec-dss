@@ -12,9 +12,11 @@ C
 C     Written by John Miwa at HEC, 1988.
 C
 C
+       include 'dss_parameters.h'
 C     Declare variables
          CHARACTER CA*(*),CB*(*),CC*(*),CD*(*),CE*(*),CF*(*)
-         CHARACTER CPART(6)*64, CPATH*(*)
+         CHARACTER(len=dss_maxpart) CPART(6)
+         CHARACTER CPATH*(*)   
          INTEGER IBEG, IEND, KEND
 C
       integer npath, maxlen, i, j, ilen, jchar, jlen
@@ -32,7 +34,7 @@ C     Fill dummy character array
       call strcpy(CPART(6), CF)
 C
 C
-      MAXLEN = MIN0(LEN(CPATH),392)
+      MAXLEN = MIN0(LEN(CPATH),dss_maxpath)
 C
       NPATH = 1
       DO 40 I=1,6

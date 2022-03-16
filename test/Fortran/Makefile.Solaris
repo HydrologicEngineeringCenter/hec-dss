@@ -1,7 +1,7 @@
 #
 #  Dss-Fortran testing makefile for Solaris
 #
-FFLAGS= -m64 -g -xmemalign=2i -c -fpp -mt -xcode=pic32 -xpagesize=4M -O
+FFLAGS=-I ../heclib/heclib_f/src/headers -m64 -g -xmemalign=2i -c -fpp -mt -xcode=pic32 -xpagesize=4M -O
 FORTRAN=f95
 HLIBS=../../heclib/heclib_f/Output/libhec_f.a ../../heclib/heclib_c/Output/libhec_c.a
 

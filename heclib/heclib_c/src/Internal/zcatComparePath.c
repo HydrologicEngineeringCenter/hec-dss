@@ -66,7 +66,7 @@ int zcatComparePath(const char *cpath, int *partAction, int *lengths,
 	int i1;
 	int i2;
 	int boolCollectionPart;
-	char pathPart[MAX_PART_SIZE];
+	char pathPart[MAX_PART_SIZE]; 
 	char stringToFind[MAX_PART_SIZE];
 
 	if (!cpath)
@@ -115,7 +115,7 @@ int zcatComparePath(const char *cpath, int *partAction, int *lengths,
 						i1 = toupper(stringToFind[0]);
 						i2 = toupper(pathPart[0]);
 						//  Look for "C:"
-						if ((i1 == i2) && (i1 = 'C')) {
+						if ((i1 == i2) && (i1 == 'C')) {
 							if ((stringToFind[1] == ':') && (pathPart[1] == ':')) {
 								boolCollectionPart = 0;
 								for (j = 2; j < lengths[i]; j++) {

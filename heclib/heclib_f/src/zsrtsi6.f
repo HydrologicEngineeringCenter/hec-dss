@@ -65,9 +65,11 @@ C
 C
       INTEGER NCDESC, NCOORDS, ICDESC(*)
 C
+      include 'dss_parameters.h'
 C     Local Dimensions
       CHARACTER CTPATH*260
-      CHARACTER CPART(6)*64, CTSPAT*392
+      CHARACTER(len=dss_maxpart) CPART(6)
+      CHARACTER(len=dss_maxpath) CTSPAT
       CHARACTER CDATE1*12, CDATE2*12, CTIME1*4, CTIME2*4, CSCRAT*20
       INTEGER NPART(6)
       LOGICAL LFOUND, LERR, LFILDOB
@@ -76,7 +78,8 @@ C     Vertical datum varible dimensions
       character*400 vdiStr, errMsg
       character*16 unit, unit2, cvdatum1, cvdatum2
       character*16 nativeDatum
-      character*64 cc, unitSpec
+      character*64 unitSpec
+      character(len=dss_maxpart) cc
       double precision offsetNavd88, offsetNgvd29, vertDatumOffset
       logical l_Navd88Estimated, l_Ngvd29Estimated, l_modified
       integer vdiStrLen, nuhead_copy, iuhead_copy(100)
@@ -162,8 +165,8 @@ C     Unform the pathname
       CPART(I) = ' '
  30   CONTINUE
       CALL CHRLNB (CPATH, NPATH)
-      IF ((NPATH.GT.MXPATH).OR.(NPATH.LE.1)) GO TO 900
-      IF (CPATH(1:1).NE."/") GO TO 900
+      IF ((NPATH.GT.dss_maxpath).OR.(NPATH.LE.1)) GO TO 900
+      IF (CPATH(1:1).NE.'/') GO TO 900
       CALL zufpn (CPART(1), NPART(1), CPART(2), NPART(2),
      * CPART(3), NPART(3), CPART(4), NPART(4), CPART(5), NPART(5),
      * CPART(6), NPART(6), CPATH, NPATH, IERR)

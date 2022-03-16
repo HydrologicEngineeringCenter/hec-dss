@@ -5,10 +5,10 @@ C
 C     Depricated.  Use zcopyRecord (C version) instead.
       implicit none
 C
-C
+      include 'dss_parameters.h'
       INTEGER ifltabFrom(*), ifltabTo(*)
       CHARACTER cpathFrom*(*), cpathTo*(*)
-      CHARACTER CPATH*392
+      CHARACTER(len=dss_maxpath) CPATH
       INTEGER ISTAT, iversion, jversion,zdssVersion
 C
       INTEGER NDATA, IDTYPE, NPATH, IOFSET, JCOMP, IPLAN, NPREC
@@ -19,7 +19,8 @@ C
       LOGICAL LBASEV, LDHIGH
       DOUBLE PRECISION COORDS(3)
       REAL BASEV
-      CHARACTER CPART(6)*64, CEPART*64, CALPHA*4
+      CHARACTER(len=dss_maxpart) CPART(6), CEPART
+      CHARACTER CALPHA*4
       INTEGER NPART(6), INUMB
       INTEGER M2IHM
       INTEGER JULS, ISTIME, JULE, IETIME, INTL, NVALS, N, I

@@ -29,14 +29,18 @@ c
 c     Mike Perryman
 c     Nov, 2003
 c
-      CHARACTER CPATH*(*), CPATH1*391, CFNAME*256
-      CHARACTER CCATPN*391, CCATTAG*8, CTYPE*20
-      CHARACTER*64  CA, CB, CC, CD, CE, CF, CA1, CB1, CC1, CD1, CE1, CF1
+      INCLUDE 'dss_parameters.h'
+      CHARACTER(len=dss_maxpath) CPATH1, CCATPN
+      CHARACTER CPATH*(*), CFNAME*256
+      CHARACTER CCATTAG*8, CTYPE*20
+      CHARACTER(len=dss_maxpart) CA, CB, CC, CD, CE, CF, CA1, CB1,
+     * CC1, CD1, CE1, CF1
       INTEGER*4 IFLTAB(*), IFCAT, IINTRP, IUFLOW, IOFLOW, KTIMES,
      * NTIMES, ITIMES(*), ISTAT, NPATH, NA, NB, NC, ND, NE, NF, NFRECS,
      * NCRECS, NPATHS, NFOUND, NA1, NB1, NC1, ND1, NE1, NF1, ITIME
       LOGICAL*4   LFOUND, LCATO, LCATV, LCCATO, LCCATV, LFOUND1
 
+      
       INCLUDE 'zdsskz.h'
       INCLUDE 'zdssiz.h'
       INCLUDE 'zdssmz.h'
