@@ -394,9 +394,6 @@ int zcharTo8Byte(char *carray, char *itemToCopy, int *ipos, int carraySize);
 int appendStringToHeader(char* src, char* dest, int* ipos, int destSize);
 int unitsHavePadding(int* internalHeader, int offsetToUnits);
 char* readStringFromHeader(char* carray, int* ipos, int size);
-int validateTagTime(const char* value, int includeSeconds);
-int validateFPartTag(const char tag, const char* value);
-int normalizeFPart(char** normalized, const char* fPart);
 //  Function primarily for DSS unit testing
 //  int zcompareDataSets(long long *ifltab, void *struct1, void *struct2, int verboseLevel, int boolExact, const char *message);
 //  Semi public

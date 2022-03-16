@@ -1,17 +1,34 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <assert.h>
 #include <stdbool.h>
+#include <normalizeFPart.h>
 #include <hecdssInternal.h>
 
 #ifdef _MSC_VER
 #define strtok_r strtok_s
+#define strdup _strdup
 #endif
 
 typedef struct TagValue_s {
 	char  tag;
 	char* value;
 } TagValue;
+
+#define JAN  1
+#define FEB  2
+#define MAR  3
+#define APR  4
+#define MAY  5
+#define JUN  6
+#define JUL  7
+#define AUG  8
+#define SEP  9
+#define OCT 10
+#define NOV 11
+#define DEC 12
+#define IS_LEAPYEAR(yr) (yr % 4 == 0 && (yr % 100 != 0 || yr % 400 == 0))
 
 int validateTagTime(const char* value, int includeSeconds) {
 	int yr, mon, day, hr, min, sec;
@@ -35,23 +52,23 @@ int validateTagTime(const char* value, int includeSeconds) {
 		sec = value[14] - '0' + 10 * (value[13] - '0');
 	}
 	switch (mon) {
-	case 1:
-	case 3:
-	case 5:
-	case 7:
-	case 8:
-	case 10:
-	case 12:
+	case JAN:
+	case MAR:
+	case MAY:
+	case JUL:
+	case AUG:
+	case OCT:
+	case DEC:
 		if (day > 31) return false;
 		break;
-	case 4:
-	case 6:
-	case 9:
-	case 11:
+	case APR:
+	case JUN:
+	case SEP:
+	case NOV:
 		if (day > 30) return false;
 		break;
-	case 2:
-		if (yr % 4 == 0 && (yr % 100 != 0 || yr % 400 == 0)) {
+	case FEB:
+		if (IS_LEAPYEAR(yr)) {
 			if (day > 29) return false;
 		}
 		else {
@@ -68,10 +85,25 @@ int validateTagTime(const char* value, int includeSeconds) {
 	}
 	return true;
 }
+
+#undef JAN
+#undef FEB
+#undef MAR
+#undef APR
+#undef MAY
+#undef JUN
+#undef JUL
+#undef AUG
+#undef SEP
+#undef OCT
+#undef NOV
+#undef DEC
+#undef IS_LEAPYEAR
+
 int validateFPartTag(const char tag, const char* value) {
 	switch (tag) {
 	case 'C' :
-		// Collection number
+		// Collection (6 alphanumeric chars)
 		if (strlen(value) != 6) return false;
 		for (int i = 0; i < 6; ++i) {
 			if (!isalnum(value[i])) return false;
@@ -82,14 +114,14 @@ int validateFPartTag(const char tag, const char* value) {
 		if (!validateTagTime(value, false)) return false;
 		return true;
 	case 'N':
-		// Run Name
+		// Run Name (no constraints)
 		return true;
 	case 'V':
 		// Version time (YYYYMMDD-hhmmss)
 		if (!validateTagTime(value, true)) return false;
 		return true;
 	case 'R':
-		// Run ID
+		// Run ID (multiples of '--' or alpha char followed by digit char)
 		if (strlen(value) % 2) return false;
 		for (int i = 0; i < strlen(value); i += 2) {
 			if (value[i] == '-') {
@@ -107,59 +139,37 @@ int validateFPartTag(const char tag, const char* value) {
 	}
 }
 
-// < 10 : indicates normal F-part with possible ':' and/or '|' characters not intended for tagging
-// = 10 : indicates nothing about the intent of the F-part
-// > 10 : indicates a failed attempt at a tagged F-part
-#define SUCCESS                  0
-#define NO_TAG_SEPARATOR         1 // no ':' found
-#define INVALID_TAG_FORMAT       2 // ':' found but not in a valid tag format
-#define MULTIPLE_UNTAGGED_PARTS  3 // '|' followed by untagged text found more than once
-#define EMPTY_F_PART             4 // NULL F-Part
-#define MEMORY_ERROR            10 // error allocating memory
-#define INVALID_TAG_CHARACTER   11 // tag character not in list of valid tag characters
-#define REPEATED_TAG_CHARACTER  12 // valid tag character found more than once
-#define INVALID_C_TAG_VALUE     13 // tag value doesn't match expected format for Collection
-#define INVALID_T_TAG_VALUE     14 // tag value doesn't match expected format for Time of Forecast
-#define INVALID_V_TAG_VALUE     15 // tag value doesn't match expected format for Version Time
-#define INVALID_R_TAG_VALUE     16 // tag value doesn't match expected format for Run ID
-#define UNEXPECTED_ERROR       100 // Something unexpected went wrong!
-/**
- * Takes a DSS F Part string and
- * <ul>
- * <li>Ensures only expected tags (C:, T:, V:, N:,and R:) are included</li>
- * <li>Verifies the data for any included tags are correct</li>
- * <li>Assembles the resulting F Part with the included tags in canonical order</li>
- * </ul>
- * @param normalized The normalized string. NULL on error. Otherwise an allocated string even if identical to input string.
- *                   You MUST free it yourself.
- * @param fPart      The F Part string to normalize.
- *
- * @return
- * <dl>
- * <dt>  0 </dt><dd> success                                                      </dd>
- * <dt>  1 </dt><dd> no ':' found                                                 </dd>
- * <dt>  2 </dt><dd> ':' found but not in a valid tag format                      </dd>
- * <dt>  3 </dt><dd> '|' followed by untagged text found more than once           </dd>
- * <dt>  4 </dt><dd> NULL F-part                                                  </dd>
- * <dt> 10 </dt><dd> error allocating memory                                      </dd>
- * <dt> 11 </dt><dd> tag character not in list of valid tag characters            </dd>
- * <dt> 12 </dt><dd> valid tag character found more than once                     </dd>
- * <dt> 13 </dt><dd> tag value doesn't match expected format for Collection       </dd>
- * <dt> 14 </dt><dd> tag value doesn't match expected format for Time of Forecast </dd>
- * <dt> 15 </dt><dd> tag value doesn't match expected format for Version Time     </dd>
- * <dt> 16 </dt><dd> tag value doesn't match expected format for Run ID           </dd>
- * </dl>
- */
+int canUseOriginalFPart(const int errorCode) {
+	return errorCode < normalizeFPartStatus.MEMORY_ERROR;
+}
+
+const char* normalizeFPartErrorMessage(const int errorCode) {
+	// unable to use struct members in switch/case construct
+	/*  0 */ if (errorCode == normalizeFPartStatus.SUCCESS)                 return "Success";
+	/*  1 */ if (errorCode == normalizeFPartStatus.NO_TAG_SEPARATOR)        return "No ':' character found";
+	/*  2 */ if (errorCode == normalizeFPartStatus.INVALID_TAG_FORMAT)      return "':' character found but not in a valid tag format";
+	/*  3 */ if (errorCode == normalizeFPartStatus.MULTIPLE_UNTAGGED_PARTS) return "'|' character followed by untagged text found more than once";
+	/*  4 */ if (errorCode == normalizeFPartStatus.EMPTY_F_PART)            return "Empty F-part";
+	/* 10 */ if (errorCode == normalizeFPartStatus.MEMORY_ERROR)            return "Error allocating memory";
+	/* 11 */ if (errorCode == normalizeFPartStatus.INVALID_TAG_CHARACTER)   return "Tag character not in list of valid tag characters";
+	/* 12 */ if (errorCode == normalizeFPartStatus.REPEATED_TAG_CHARACTER)  return "Valid tag character found more than once";
+	/* 13 */ if (errorCode == normalizeFPartStatus.INVALID_C_TAG_VALUE)     return "Tag value doesn't match expected format for Collection";
+	/* 14 */ if (errorCode == normalizeFPartStatus.INVALID_T_TAG_VALUE)     return "Tag value doesn't match expected format or invalid date/time for Time of Forecast";
+	/* 15 */ if (errorCode == normalizeFPartStatus.INVALID_V_TAG_VALUE)     return "Tag value doesn't match expected format or invalid date/time for Version Time";
+	/* 16 */ if (errorCode == normalizeFPartStatus.INVALID_R_TAG_VALUE)     return "Tag value doesn't match expected format for Run ID";
+	return "Unexpected error";
+}
+
 int normalizeFPart(char** normalized, const char* fPart) {
 	const char* TAG_DELIMITER = "|";
 	const char* TAG_SEPARATOR = ":";
 	const char* TAG_CHARACTERS = "CTNVR"; // determines canonical (normalized) order of tags
-	int status = SUCCESS;
+	int status = normalizeFPartStatus.SUCCESS;
 
 	assert(strlen(TAG_DELIMITER) == 1);
 	assert(strlen(TAG_SEPARATOR) == 1);
 	*normalized = NULL;
-	if (fPart) {
+	if (fPart && strlen(fPart) > 0) {
 		TagValue* tagValues = NULL;
 		int       tagCount = 0;
 		char*     untaggedPortion = NULL;
@@ -169,13 +179,13 @@ int normalizeFPart(char** normalized, const char* fPart) {
 			// parse the F Part //
 			//------------------//
 			if (!strstr(fPart, TAG_SEPARATOR)) {
-				status = NO_TAG_SEPARATOR;
+				status = normalizeFPartStatus.NO_TAG_SEPARATOR;
 				break;
 			}
-			int len = strlen(fPart);
+			size_t len = strlen(fPart);
 			buf = strdup(fPart);
 			if (buf == NULL) {
-				status = MEMORY_ERROR;
+				status = normalizeFPartStatus.MEMORY_ERROR;
 				break;
 			}
 			char* saveptr = NULL;
@@ -184,24 +194,24 @@ int normalizeFPart(char** normalized, const char* fPart) {
 				char* cp2 = strstr(cp1, TAG_SEPARATOR);
 				if (cp2) {
 					if (cp2 - cp1 != 1) {
-						status = INVALID_TAG_FORMAT;
+						status = normalizeFPartStatus.INVALID_TAG_FORMAT;
 						break;
 					}
 					char c = toupper(*cp1);
 					if (!strchr(TAG_CHARACTERS, c)) {
-						status = INVALID_TAG_CHARACTER;
+						status = normalizeFPartStatus.INVALID_TAG_CHARACTER;
 						break;
 					}
 					for (int i = 0; i < tagCount; ++i) {
 						if (tagValues[i].tag == c) {
-							status = REPEATED_TAG_CHARACTER;
+							status = normalizeFPartStatus.REPEATED_TAG_CHARACTER;
 							break;
 						}
 					}
-					if (status != SUCCESS) break;
+					if (status != normalizeFPartStatus.SUCCESS) break;
 					void* vp = realloc(tagValues, ++tagCount * sizeof(TagValue));
 					if (vp == NULL) {
-						status = MEMORY_ERROR;
+						status = normalizeFPartStatus.MEMORY_ERROR;
 						--tagCount;
 						break;
 					}
@@ -209,28 +219,27 @@ int normalizeFPart(char** normalized, const char* fPart) {
 					tagValues[tagCount - 1].tag = c;
 					tagValues[tagCount - 1].value = strdup(cp2 + 1);
 					if (!tagValues[tagCount - 1].value) {
-						status = MEMORY_ERROR;
+						status = normalizeFPartStatus.MEMORY_ERROR;
 						break;
 					}
 					if (!validateFPartTag(tagValues[tagCount - 1].tag, tagValues[tagCount - 1].value)) {
 						switch (c) {
-						case 'C': return INVALID_C_TAG_VALUE;
-						case 'T': return INVALID_T_TAG_VALUE;
-						case 'V': return INVALID_V_TAG_VALUE;
-						case 'R': return INVALID_R_TAG_VALUE;
-						default: return UNEXPECTED_ERROR;
+						case 'C': return normalizeFPartStatus.INVALID_C_TAG_VALUE;
+						case 'T': return normalizeFPartStatus.INVALID_T_TAG_VALUE;
+						case 'V': return normalizeFPartStatus.INVALID_V_TAG_VALUE;
+						case 'R': return normalizeFPartStatus.INVALID_R_TAG_VALUE;
+						default: return normalizeFPartStatus.UNEXPECTED_ERROR;
 						}
-						break;
 					}
 				}
 				else {
 					if (untaggedPortion) {
-						status = MULTIPLE_UNTAGGED_PARTS;
+						status = normalizeFPartStatus.MULTIPLE_UNTAGGED_PARTS;
 						break;
 					}
 					untaggedPortion = strdup(cp1);
 					if (untaggedPortion == NULL) {
-						status = MEMORY_ERROR;
+						status = normalizeFPartStatus.MEMORY_ERROR;
 						break;
 					}
 				}
@@ -239,22 +248,22 @@ int normalizeFPart(char** normalized, const char* fPart) {
 			if (fPart[strlen(fPart) - 1] == TAG_DELIMITER[0]) {
 				// this will be hidden by strtok
 				if (untaggedPortion) {
-					status = MULTIPLE_UNTAGGED_PARTS;
+					status = normalizeFPartStatus.MULTIPLE_UNTAGGED_PARTS;
 				}
 			}
-			if (status != SUCCESS) break;
+			if (status != normalizeFPartStatus.SUCCESS) break;
 			//-----------------------------//
 			// build the normalized F Part //
 			//-----------------------------//
 			if (tagCount > 0 || untaggedPortion != NULL) {
-				for (int i = 0; i < strlen(TAG_CHARACTERS) && status == SUCCESS; ++i) {
-					for (int j = 0; j < tagCount && status == SUCCESS; ++j) {
+				for (int i = 0; i < strlen(TAG_CHARACTERS) && status == normalizeFPartStatus.SUCCESS; ++i) {
+					for (int j = 0; j < tagCount && status == normalizeFPartStatus.SUCCESS; ++j) {
 						if (tagValues[j].tag == TAG_CHARACTERS[i]) {
 							size_t currentLen = *normalized == NULL ? 0 : strlen(*normalized);
 							size_t extraLen = strlen(tagValues[j].value) + 4;
 							cp1 = (char*)realloc(*normalized, currentLen + extraLen);
 							if (cp1 == NULL) {
-								status = MEMORY_ERROR;
+								status = normalizeFPartStatus.MEMORY_ERROR;
 								free(*normalized);
 								*normalized = NULL;
 								break;
@@ -273,7 +282,7 @@ int normalizeFPart(char** normalized, const char* fPart) {
 					size_t extraLen = strlen(untaggedPortion) + 1;
 					cp1 = (char*)realloc(*normalized, currentLen + extraLen);
 					if (cp1 == NULL) {
-						status = MEMORY_ERROR;
+						status = normalizeFPartStatus.MEMORY_ERROR;
 						free(*normalized);
 						*normalized = NULL;
 						break;
@@ -291,15 +300,56 @@ int normalizeFPart(char** normalized, const char* fPart) {
 		if (untaggedPortion) free(untaggedPortion);
 		if (tagValues) {
 			for (int i = 0; i < tagCount; ++i) {
-				if (tagValues[i].value != NULL) {
-					free(tagValues[i].value);
-				}
+				free(tagValues[i].value);
 			}
 			free(tagValues);
 		}
 	}
 	else {
-		status = EMPTY_F_PART;
+		status = normalizeFPartStatus.EMPTY_F_PART;
 	}
 	return status;
+}
+
+int normalizeFPartInPathname(char** normalized, const char* pathname) {
+	*normalized = NULL;
+	char pathnameParts[6][MAX_PART_SIZE];
+	for (int i = 0; i < 6; ++i) {
+		zpathnameGetPart(pathname, i + 1, pathnameParts[i], MAX_PART_SIZE);
+	}
+	char* normalizedFPart = NULL;
+	int status = normalizeFPart(&normalizedFPart, pathnameParts[5]);
+	if (status == normalizeFPartStatus.SUCCESS) {
+		size_t len = 0;
+		for (int i = 0; i < 5; ++i) {
+			len += strlen(pathnameParts[i]);
+		}
+		len += strlen(normalizedFPart) + 8; // 7 slashes + null
+		char* buf = (char*)malloc(len);
+		if (buf == NULL) {
+			return normalizeFPartStatus.MEMORY_ERROR;
+		}
+		*normalized = buf;
+		sprintf(
+			*normalized,
+			"/%s/%s/%s/%s/%s/%s/",
+			pathnameParts[0],
+			pathnameParts[1],
+			pathnameParts[2],
+			pathnameParts[3],
+			pathnameParts[4],
+			normalizedFPart);
+		free(normalizedFPart);
+		return normalizeFPartStatus.SUCCESS;
+	}
+	else {
+		if (canUseOriginalFPart(status)) {
+			*normalized = strdup(pathname);
+			if (*normalized == NULL) {
+				return normalizeFPartStatus.MEMORY_ERROR;
+			}
+			return normalizeFPartStatus.SUCCESS;
+		}
+		return status;
+	}
 }

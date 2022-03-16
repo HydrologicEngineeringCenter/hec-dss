@@ -45,9 +45,12 @@ extern struct hec_zdssVals zdssVals;
 static int messageHandle = -1;
 static int fortranMessageUnit = -1;
 
-#define MAX_PATHNAME_LENGTH 393
-#define MAX_PATHNAME_SIZE   394
-#define MAX_PART_SIZE 65
+// #define MAX_PATHNAME_LENGTH 393
+// #define MAX_PATHNAME_SIZE   394
+// #define MAX_PART_SIZE 65
+#define MAX_PATHNAME_LENGTH 775
+#define MAX_PATHNAME_SIZE   776
+#define MAX_PART_SIZE 129
 
 #define MAX_FILENAME_LENGTH 256
 

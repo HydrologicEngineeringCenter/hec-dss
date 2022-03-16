@@ -1415,5 +1415,8 @@
     <ClInclude Include="src\headers\verticalDatum.h">
       <Filter>src\headers</Filter>
     </ClInclude>
+    <ClInclude Include="src\headers\normalizeFPart.h">
+      <Filter>src\headers</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -19,7 +19,7 @@ static const char *INFORMATION_PREAMBLE	= "-----DSS--- %s  Notice: ";
 static const char *WARNING_PREAMBLE		= "-----DSS--- %s  Warning: ";
 
 
-#define NUMBER_ERROR_MESSAGES 66
+#define NUMBER_ERROR_MESSAGES 67
 static const char *errorMess[NUMBER_ERROR_MESSAGES] = {
 	/* STATUS_OKAY */					"",
 	/* INVALID_FILE_VERSION */			"Incompatible DSS file versions\nThis library is only compatible with version 7 DSS files\nThis file is version %s",
@@ -86,6 +86,7 @@ static const char *errorMess[NUMBER_ERROR_MESSAGES] = {
 	/* NULL_ARGUMENT */					"NULL argument passed.  A null pointer was given instead of a argument.",
 	/* NULL_ARRAY */					"NULL pointer / array.  A null pointer was given instead of an expected array.",
 	/* VERTICAL_DATUM_ERROR */			"Cannot perform vertical datum conversion.",
+	/* INVALID_F_PART_TAGS*/            "Cannot normalize F part tags. Error is %s",
 
 
 
@@ -158,6 +159,7 @@ static struct {
 		int NULL_ARGUMENT;
 		int NULL_ARRAY;
 		int VERTICAL_DATUM_ERROR;
+		int INVALID_F_PART_TAGS;
 		int UNDEFINED_ERROR;
 } zdssErrorCodes = {
 	0,
@@ -225,7 +227,8 @@ static struct {
 	62,
 	63,
 	64,
-	65
+	65,
+	66
 };
 
 static struct {

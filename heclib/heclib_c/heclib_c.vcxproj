@@ -451,6 +451,7 @@
     <ClInclude Include="src\headers\heclib6.h" />
     <ClInclude Include="src\headers\heclib7.h" />
     <ClInclude Include="src\headers\heclibDate.h" />
+    <ClInclude Include="src\headers\normalizeFPart.h" />
     <ClInclude Include="src\headers\verticalDatum.h" />
     <ClInclude Include="src\headers\zcontrol.h" />
     <ClInclude Include="src\headers\zdataTypeDescriptions.h" />
