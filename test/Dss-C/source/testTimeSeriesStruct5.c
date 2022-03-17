@@ -465,7 +465,11 @@ int testztsStruct5(long long *ifltab)
 	free(path);
 
 	path = mallocAndCopy("/Basin/Location/Flow//1Day/Store Flag test with notes Flag 4/");
-	tss4->pathname = path;
+	if (tss4->allocated[zSTRUCT_pathname]) {
+		free(tss4->pathname);
+	}
+	tss4->pathname = strdup(path);
+	tss4->allocated[zSTRUCT_pathname] = 1;
 
 	status = ztsStore(ifltab, tss4, 0);
 	if (zcheckStatus(ifltab, status, 1, "Fail in testztsStruct5 Loc 140, store status")) return status;

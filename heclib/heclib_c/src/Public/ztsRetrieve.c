@@ -388,8 +388,11 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 		char* normalized = NULL;
 		status = normalizeFPartInPathname(&normalized, tss->pathname);
 		if (status == normalizeFPartStatus.SUCCESS) {
-			free(tss->pathname);
+			if (tss->allocated[zSTRUCT_pathname]) {
+				free(tss->pathname);
+			}
 			tss->pathname = normalized;
+			tss->allocated[zSTRUCT_pathname] = TRUE;
 		}
 		else {
 			char message[2048];

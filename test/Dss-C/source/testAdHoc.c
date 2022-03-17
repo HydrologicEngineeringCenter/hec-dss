@@ -1294,7 +1294,10 @@ return status;
 		//strcat_s (cpath1, sizeof(cpath1), cpath2);
 		strncat (cpath1, cpath2,sizeof(cpath1));
 
-		tss1->pathname = cpath1;
+		if (tss1->allocated[zSTRUCT_pathname]) {
+			free(tss1->pathname);
+		}
+		tss1->pathname = strdup(cpath1);
 		ztsStore(ifltab2, tss1, 0);
 		j = i/100;
 		j *= 100;
