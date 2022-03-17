@@ -13,9 +13,9 @@ ifeq ($(UNAME_S),Linux)
 endif
 ifeq ($(UNAME_S),SunOS)
 	CFLAGS=-m64 -I../../heclib/heclib_c/src/headers -I. -mt -xcode=pic32 -xstrconst -xc99=all -xCC -g -xs 
-	LDFLAGS = -lz -lrt -lm -lfsu -g -xs -lsunmath
+	LDFLAGS = -m64 -lz -lrt -lm -lfsu -g -xs -lsunmath
 	MAKE=gmake
-	F90=gfortran
+	F90=f95
 endif
 
 TARGET := Dss-C
