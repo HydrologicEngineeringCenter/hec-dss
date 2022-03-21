@@ -18,6 +18,7 @@ namespace DSSUnitTests
 
      }
 
+
     ////SACRAMENTO/PRECIP-INC/01Jan1877/1Day/OBS/
 
     [TestMethod]
@@ -30,12 +31,13 @@ namespace DSSUnitTests
         TimeSeries s = new TimeSeries();
 
 
+            ///YYYYMMDD-hhmm
         string[] unsorted = new string[] {
 "/Z/csharp/values/31Dec2000/1Day//",
-"/A/csharp/values/31Dec2000/1Day/C:000001|T:3102013/",
+"/A/csharp/values/31Dec2000/1Day/C:000001|T:20130312-1201|/",
 "/B/csharp/values/31Dec2000/1Day//",
-"/A/csharp/values/31Dec2000/1Day/C:000001|T:3052013/",
-"/B/csharp/values/01Jan2000/1Day/C:000002|T:3102013/"
+"/A/csharp/values/31Dec2000/1Day/C:000001|T:20130311-1201|/",
+"/B/csharp/values/01Jan2000/1Day/C:000002|T:20130312-1201|/"
         };
         for (int i = 0; i < unsorted.Length; i++)
         {
@@ -46,13 +48,19 @@ namespace DSSUnitTests
         }
 
         string[] sorted = new string[] {
-"/A/csharp/values/31Dec2000/1Day/C:000001|T:3052013/",
-"/A/csharp/values/31Dec2000/1Day/C:000001|T:3102013/",
-"/B/csharp/values/01Jan2000/1Day/C:000002|T:3102013/",
+"/A/csharp/values/31Dec2000/1Day/C:000001|T:20130311-1201|/",
+"/A/csharp/values/31Dec2000/1Day/C:000001|T:20130312-1201|/",
+"/B/csharp/values/01Jan2000/1Day/C:000002|T:20130312-1201|/",
 "/B/csharp/values/31Dec2000/1Day//",
-"/Z/csharp/values/31Dec2000/1Day//" };
+"/Z/csharp/values/31Dec2000/1Day//"
+        };
 
-        var paths = w.GetCatalog();
+            var paths = w.GetCatalog();
+         foreach (var path in paths)
+            {
+               Console.WriteLine(path.FullPath);
+            }
+            Console.WriteLine();
 
         for (int i = 0; i < paths.Count; i++)
         {
