@@ -1302,7 +1302,12 @@
     <ClCompile Include="src\System\zwritedisk.c">
       <Filter>src\System</Filter>
     </ClCompile>
-    <ClCompile Include="src\Utilities\verticalDatum.c" />
+    <ClCompile Include="src\Utilities\verticalDatum.c">
+      <Filter>src\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\normalizeFPart.c">
+      <Filter>src\Utilities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\headers\zlib\zconf.h">
@@ -1407,6 +1412,11 @@
     <ClInclude Include="src\headers\zStructTsTimeWindow.h">
       <Filter>src\headers</Filter>
     </ClInclude>
-    <ClInclude Include="src\headers\verticalDatum.h" />
+    <ClInclude Include="src\headers\verticalDatum.h">
+      <Filter>src\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\headers\normalizeFPart.h">
+      <Filter>src\headers</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
