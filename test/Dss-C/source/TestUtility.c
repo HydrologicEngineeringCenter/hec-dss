@@ -28,7 +28,36 @@ int CheckPathnames(char* dssFileName)
 	return status;
 }
 
+int PrintHashTable(const char* dssFilename) {
+	long long ifltab[250];
+	long long tableHash=-1;
+	long long binAddress;
+	int status = zopen(ifltab, dssFilename);
+	if (status < 0) {
+		printf("Error opening file.  status = %d\n", status);
+		return status;
+	}
+	long long* fileHeader = (long long*)ifltab[zdssKeys.kfileHeader];
+	printf("\n Hash Table:  fileHeader[zdssFileKeys.kmaxHash] = %lld", (long long)fileHeader[zdssFileKeys.kmaxHash]);
+	printf("\n hash    bin-address");
+	printf("\n-------------------");
 
+	while (1) {
+		//  Need to read next hash from the hash table
+		// and then pathname bin
+		tableHash++;
+		if (tableHash == fileHeader[zdssFileKeys.kmaxHash]) {
+			//  All done - no more pathnames in file
+			break;
+		}
+
+		ifltab[zdssKeys.kaddTableHash] = tableHash + fileHeader[zdssFileKeys.kaddHashTableStart];
+		status = zget(ifltab, ifltab[zdssKeys.kaddTableHash], (int*)&binAddress, 1, 2);
+		printf("\n %5lld %lld",tableHash, binAddress);
+	}
+
+
+}
 
 int CheckFile(char* dssFileName)
 {
