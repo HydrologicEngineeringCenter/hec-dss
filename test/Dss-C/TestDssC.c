@@ -7,57 +7,7 @@
 
 
 int runTheTests();
-int ReadGrids(const char* file1);
 
-int TodaysTest() {
-
-	//PrintHashTable("C:\\tmp\\file1-7.dss");
-	const char* file1 = "C:\\Temp\\grid\\EF_Russian_Precip7.dss";
-	const char* file2 = "C:\\Temp\\grid\\EF_Russian_Precip7-squeeze.dss";
-	//PrintHashTable(file1);
-	zsqueeze(file2);
-	
-	ReadGrids(file1);
-	ReadGrids(file2);
-	//unlink(file1);
-	
-    }
-	int ReadGrids(const char* file1){
-	long long start_time = getCurrentTimeMillis();
-	long long ifltab1[250];
-	int status = zopen(ifltab1, file1);
-
-	zStructCatalog* catStruct = zstructCatalogNew();
-	status = zcatalog(ifltab1, (const char*)0, catStruct, 1);
-	if (status < 0) {
-		printf("Error during catalog.  Error code %d\n", status);
-		return status;
-	}
-	for (int i = 0; i < catStruct->numberPathnames; i++)
-	{
-		zStructRecordBasics* recordBasics = zstructRecordBasicsNew(catStruct->pathnameList[i]);
-		status = zgetRecordBasics(ifltab1, recordBasics);
-		//printf("[%d] \"%s\" %d\n", i, catStruct->pathnameList[i], recordBasics->recordType);
-		
-
-		if (recordBasics->recordType == 420)// grid
-		{
-			zStructSpatialGrid* grid =  zstructSpatialGridNew(catStruct->pathnameList[i]);
-			zspatialGridRetrieve(ifltab1, grid, 1);
-			if(i%100 == 0)
-			   printf(".");
-		}
-		zstructFree(recordBasics);
-		
-	}
-	double elapsed = (getCurrentTimeMillis() - start_time) / 1000.0;
-
-	printf("\nSeconds elapsed: %f", elapsed);
-
-	zstructFree(catStruct);
-	zclose(ifltab1);
-	return status;
-}
 
 
 void usage(char* exeName)
