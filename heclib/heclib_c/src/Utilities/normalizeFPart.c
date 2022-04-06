@@ -122,14 +122,14 @@ int validateFPartTag(const char tag, const char* value) {
 		if (!validateTagTime(value, true)) return false;
 		return true;
 	case 'R':
-		// Run ID (multiples of '--' or alpha char followed by digit char)
+		// Run ID (multiples of '--' or alphanum char followed by digit char)
 		if (strlen(value) % 2) return false;
 		for (int i = 0; i < strlen(value); i += 2) {
 			if (value[i] == '-') {
 				if (value[i + 1] != '-') return false;
 			}
 			else {
-				if (!isalpha(value[i])) return false;
+				if (!isalnum(value[i])) return false;
 				if (!isdigit(value[i + 1])) return false; // allow for trials to come back, otherwise should always be '0'
 			}
 		}
@@ -164,7 +164,7 @@ const char* normalizeFPartErrorMessage(const int errorCode) {
 int normalizeFPart(char** normalized, const char* fPart) {
 	const char* TAG_DELIMITER = "|";
 	const char* TAG_SEPARATOR = ":";
-	const char* TAG_CHARACTERS = "CTNVR"; // determines canonical (normalized) order of tags
+	const char* TAG_CHARACTERS = "CNTRV"; // determines canonical (normalized) order of tags
 	int status = normalizeFPartStatus.SUCCESS;
 
 	assert(strlen(TAG_DELIMITER) == 1);
