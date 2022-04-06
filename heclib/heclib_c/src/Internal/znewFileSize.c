@@ -108,8 +108,8 @@ void znewFileSize(long long *ifltab, int maxExpectedPaths, int hashSize, int bin
 		 fileHeader[zdssFileKeys.kbinSize] = 200;
 	 }
 	 else if (maxExpectedPaths <= 10000) {
-		 fileHeader[zdssFileKeys.kmaxHash] = 4096;
-		 fileHeader[zdssFileKeys.kbinSize] = 100;
+		 fileHeader[zdssFileKeys.kmaxHash] = 8192;
+		 fileHeader[zdssFileKeys.kbinSize] = 200;
 	 }
 	 else if (maxExpectedPaths <= 50000) {
 		 fileHeader[zdssFileKeys.kmaxHash] = 8192;

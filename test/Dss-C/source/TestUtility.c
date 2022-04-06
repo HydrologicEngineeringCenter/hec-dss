@@ -28,7 +28,36 @@ int CheckPathnames(char* dssFileName)
 	return status;
 }
 
+int PrintHashTable(const char* dssFilename) {
+	long long ifltab[250];
+	long long tableHash=-1;
+	long long binAddress;
+	int status = zopen(ifltab, dssFilename);
+	if (status < 0) {
+		printf("Error opening file.  status = %d\n", status);
+		return status;
+	}
+	long long* fileHeader = (long long*)ifltab[zdssKeys.kfileHeader];
+	printf("\n Hash Table:  fileHeader[zdssFileKeys.kmaxHash] = %lld", (long long)fileHeader[zdssFileKeys.kmaxHash]);
+	printf("\n hash    bin-address");
+	printf("\n-------------------");
 
+	while (1) {
+		//  Need to read next hash from the hash table
+		// and then pathname bin
+		tableHash++;
+		if (tableHash == fileHeader[zdssFileKeys.kmaxHash]) {
+			//  All done - no more pathnames in file
+			break;
+		}
+
+		ifltab[zdssKeys.kaddTableHash] = tableHash + fileHeader[zdssFileKeys.kaddHashTableStart];
+		status = zget(ifltab, ifltab[zdssKeys.kaddTableHash], (int*)&binAddress, 1, 2);
+		printf("\n %5lld %lld",tableHash, binAddress);
+	}
+
+
+}
 
 int CheckFile(char* dssFileName)
 {
@@ -390,3 +419,39 @@ int Export(char* dssFileName, char* path, int metaDataOnly)
 	return 0;
 }
 
+int ReadGrids(const char* file1){
+	long long start_time = getCurrentTimeMillis();
+	long long ifltab1[250];
+	int status = zopen(ifltab1, file1);
+
+	zStructCatalog* catStruct = zstructCatalogNew();
+	status = zcatalog(ifltab1, (const char*)0, catStruct, 1);
+	if (status < 0) {
+		printf("Error during catalog.  Error code %d\n", status);
+		return status;
+	}
+	for (int i = 0; i < catStruct->numberPathnames; i++)
+	{
+		zStructRecordBasics* recordBasics = zstructRecordBasicsNew(catStruct->pathnameList[i]);
+		status = zgetRecordBasics(ifltab1, recordBasics);
+		//printf("[%d] \"%s\" %d\n", i, catStruct->pathnameList[i], recordBasics->recordType);
+		
+
+		if (recordBasics->recordType == 420)// grid
+		{
+			zStructSpatialGrid* grid =  zstructSpatialGridNew(catStruct->pathnameList[i]);
+			zspatialGridRetrieve(ifltab1, grid, 1);
+			if(i%100 == 0)
+			   printf(".");
+		}
+		zstructFree(recordBasics);
+		
+	}
+	double elapsed = (getCurrentTimeMillis() - start_time) / 1000.0;
+
+	printf("\nSeconds elapsed: %f", elapsed);
+
+	zstructFree(catStruct);
+	zclose(ifltab1);
+	return status;
+}

@@ -9,6 +9,7 @@
 int runTheTests();
 
 
+
 void usage(char* exeName)
 {
 	printf("\nUsage:\n %s command [options] [dssfilename]  ", exeName);
@@ -51,6 +52,7 @@ void usage(char* exeName)
 
 int main(int argc, char* argv[])
 {
+	
 	int status = 0;
 	long long start_time = getCurrentTimeMillis();
 
