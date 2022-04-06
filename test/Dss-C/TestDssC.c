@@ -7,7 +7,7 @@
 
 
 int runTheTests();
-void ReadGrids(const char* file1);
+int ReadGrids(const char* file1);
 
 int TodaysTest() {
 
@@ -22,7 +22,7 @@ int TodaysTest() {
 	//unlink(file1);
 	
     }
-	void ReadGrids(const char* file1){
+	int ReadGrids(const char* file1){
 	long long start_time = getCurrentTimeMillis();
 	long long ifltab1[250];
 	int status = zopen(ifltab1, file1);
