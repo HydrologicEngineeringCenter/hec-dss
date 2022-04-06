@@ -35,7 +35,7 @@
 *				long long *pathnameHash (output)
 *					a almost unique hash code that distinguishes the pathname from other
 *					pathnames with the same table hash.  This will always be a very large, almost unique
-*					almost unique number.  pathnameHash will not be zero.
+*					number.  pathnameHash will not be zero.
 *					pathnameHash is returned with any value  (-max Int) < *pathnameHash < max Int
 *
 *
