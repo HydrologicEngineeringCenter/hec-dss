@@ -60,8 +60,8 @@ int ztsGetDateRange(long long *ifltab, const char *pathname, int boolFullSet,
 	int status;
 	int seconds;
 	int dummy;
-	char dPart[65];
-	char ePart[65];
+	char dPart[MAX_PART_SIZE];
+	char ePart[MAX_PART_SIZE];
 	int flagSecondsToChar;
 	int intervalSeconds;
 	int len;

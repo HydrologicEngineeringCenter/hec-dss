@@ -5,6 +5,7 @@
 #include "zStructTsTimeWindow.h"
 #include "zStructTimeSeries.h"
 #include "verticalDatum.h"
+#include "normalizeFPart.h"
 
 /**
 *  Function:	ztsRetrieve
@@ -381,6 +382,28 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 		}
 	}
 	else {
+		//--------------------------------------//
+		// normalize tagged F-part (DSS 7 only) //
+		//--------------------------------------//
+		char* normalized = NULL;
+		status = normalizeFPartInPathname(&normalized, tss->pathname);
+		if (status == normalizeFPartStatus.SUCCESS) {
+			if (tss->allocated[zSTRUCT_pathname]) {
+				free(tss->pathname);
+			}
+			tss->pathname = normalized;
+			tss->allocated[zSTRUCT_pathname] = TRUE;
+		}
+		else {
+			char message[2048];
+			sprintf(message, "Error normalizing F-part tags: %s", normalizeFPartErrorMessage(status));
+			status = zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID, zdssErrorCodes.INVALID_PATHNAME,
+				0, 0, zdssErrorSeverity.MEMORY_ERROR, tss->pathname, message);
+			if (zmessageLevel(ifltab, MESS_METHOD_TS_WRITE_ID, MESS_LEVEL_USER_DIAG)) {
+				zmessage2(ifltab, "Pathname: ", tss->pathname);
+			}
+			return status;
+		}
 		if (intervalType == 0) {
 			status = ztsRetrieveReg7(ifltab, tss,
 									retrieveFlag, retrieveDoublesFlag, boolRetrieveQualityNotes);

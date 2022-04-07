@@ -26,7 +26,7 @@ C         WRITE ( LFNOUT,10 ) HEAD(N)
          I = IFIRST(N)
   20     CONTINUE
             WRITE ( LFNOUT,25 ) JDATE(I),MTIME(I),DATA(I),DQ(I)
-  25        FORMAT ( 2I6,1X,E9.3,1X,A )
+  25        FORMAT ( 2I6,1X,E10.3,1X,A )
             I = NXTDAT(I)
             IF ( I.GT.0 ) GO TO 20
   50  CONTINUE

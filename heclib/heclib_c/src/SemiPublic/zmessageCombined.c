@@ -158,7 +158,7 @@ void zmessageFlush(long long *ifltab)
 int zmessHandle(long long *ifltab, int *messHandle, int *fortMessUnit)
 {
 	//  boolMessSet is informational only;
-	int boolMessSet;
+	int boolMessSet=0;
 	char cval[5];
 	int inumb;
 

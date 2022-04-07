@@ -9,6 +9,7 @@
 int runTheTests();
 
 
+
 void usage(char* exeName)
 {
 	printf("\nUsage:\n %s command [options] [dssfilename]  ", exeName);
@@ -27,6 +28,7 @@ void usage(char* exeName)
 	printf("\nworkout, performs reads/writes on file.dss, can be used with multiple instances");
 	printf("\nversion, dss version (6 or 7)");
 	printf("\nexport file.dss path metaDataOnly(0|1)  # writes the contents of a DSS record to the console");
+	printf("\n%s pathnameTesting 6|7,  tests large fparts such as when using collections", exeName);
 	
 
 	printf("\n\nExamples:\n%s workout 7 2000 5000 test.dss", exeName);
@@ -40,16 +42,25 @@ void usage(char* exeName)
 	printf("\n%s zcheckLinks myfile.dss", exeName);;
 	printf("\n%s zcheckPathnames myfile.dss", exeName);
 	printf("\n%s export myfile.dss /SHG/EFRUSSIAN20/PRECIPITATION/01OCT2004:2400/02OCT2004:0100/GAGEINTERP/ 1", exeName);
+	printf("\n%s pathnameTesting file.dss 7", exeName);
 	printf("\n");
+
+	printf("\nSupported Environmnet variable examples:");
+	printf("\nDSS_DEBUG_LEVEL=17");
 
 }
 
 int main(int argc, char* argv[])
 {
+	
 	int status = 0;
 	long long start_time = getCurrentTimeMillis();
 
-
+	char* debugLevel = getenv("DSS_DEBUG_LEVEL");
+	if (debugLevel && strlen(debugLevel) > 0) {
+		int mlev = atoi(debugLevel);
+		zset("mlev", "", mlev);
+	}
 
 	if (argc < 2)
 	{
@@ -105,6 +116,9 @@ int main(int argc, char* argv[])
 	else if (argc == 3 && strcmp(argv[1], "recordinfo") == 0) {
 		testRecordInfo6(argv[2]);
 	}
+	else if (argc == 4 && strcmp(argv[1], "pathnameTesting") == 0) {
+		status = PathnameTesting(argv[2],atoi(argv[3]));
+	}
 	else
 	{
 		usage(argv[0]);
@@ -126,11 +140,18 @@ int runTheTests() {
 	int status;
 
 
+	printf("\ntest format F part with tags\n");
+	status = test_normalize_f_part();
+	if (status != STATUS_OKAY)
+		return status;
+
 	printf("\ntest vertical datum operations (C API)\n");
 	status = test_vertical_datums_c();
 	if (status != STATUS_OKAY)
 		return status;
 
+	status = PathnameTesting("path_name_test7.dss",7);
+	status = PathnameTesting("path_name_test6.dss", 6);
 
 	printf("\ntest stringCat\n");
 	status = test_stringCat();

@@ -39,7 +39,7 @@
 *					Start of F part = positions[6];
 *					End of F part = positions[7] - 2;
 *					Length of F part = positions[7] - positions[6] - 1;
-*					F part = pathname(positions[7], positions[7] - 2)
+*					F part = pathname(positions[6], positions[7] - 2)
 *
 *
 *	Author:			Bill Charley

@@ -14,7 +14,7 @@ JNIEXPORT jstring JNICALL Java_hec_heclib_util_Heclib_Hec_1zpath
     const char *Epart;
     const char *Fpart;
 
-    char pathname[392];
+    char pathname[MAX_PATHNAME_LENGTH];
     int  npath;
 
     Apart = (const char *) (*env)->GetStringUTFChars (env, j_apart, 0);

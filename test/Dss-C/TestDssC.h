@@ -5,6 +5,7 @@
 #include "heclib.h"
 #include "hecdss7.h"
 
+int test_normalize_f_part();
 int test_vertical_datums_c();
 int test_vertical_datums_f_();
 int test_stringCat();
@@ -93,5 +94,7 @@ int Zqueeze(char* dssFileName);
 int CheckFile(char* dssFileName);
 void usage(char* exeName);
 int Export(char* dssFileName, char* path, int metaDataOnly);
+int PathnameTesting(char* dssFileName, int dssVersion);
+int PrintHashTable(const char* dssFilename);
 
 #endif
