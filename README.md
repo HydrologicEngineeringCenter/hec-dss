@@ -54,6 +54,13 @@ zlib, math, quadmath, and gfortran for pydsstools to work in Ubuntu.
 
 ```
 
+### MacOS
+same as linux above except first run the following to setup some environment variables
+
+```
+. heclib/heclib/macOS-env-vars.sh
+```
+
 ### Solaris sparc sun4v  
 
 developerstudio12.6 
