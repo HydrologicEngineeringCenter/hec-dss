@@ -165,11 +165,19 @@ void testZsetZquery() {
     // test zset() and zquery() for vertical datums
     int   intVal;
     char  charVal[17];
+    int   status;
 
     charVal[0] = '\0';
 
     zquery("VERS", charVal, sizeof(charVal), &intVal);
     assert(intVal == 7);
+
+    //----------------------------------------------------//
+    // test setting an illegal value (Jira issue DSS-122) //
+    //----------------------------------------------------//
+    status = zset("XXXX", "", 1);
+    printf("zset returned %d\n", status);
+    assert(status == STATUS_NOT_OKAY);
 
     //------------------------------------//
     // query values that haven't been set //
@@ -194,8 +202,7 @@ void testZsetZquery() {
     assert(intVal == IVERTICAL_DATUM_NGVD29);
     assert(!strcmp(charVal, CVERTICAL_DATUM_NGVD29));
 
-    intVal = zset("VDTM", "", 4);
-    // assert(intVal == STATUS_NOT_OKAY); bug, always returns STATUS_OK - Jira issue DSS-122
+    zset("VDTM", "", 4);
     zquery("VDTM", charVal, sizeof(charVal), &intVal);
     assert(intVal == IVERTICAL_DATUM_NGVD29);         // unchanged from previous call
     assert(!strcmp(charVal, CVERTICAL_DATUM_NGVD29)); // unchanged from previous call
