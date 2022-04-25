@@ -17,7 +17,7 @@ all:
 	(cd heclib_f; $(MAKE) )		
 	(mkdir -p Output)
 	( rm -f Output/heclib.a)
-	($(AR) -rcT Output/heclib.a ./heclib_c/Output/libhec_c.a ./heclib_f/Output/libhec_f.a )  
+	($(AR) -rc Output/heclib.a ./heclib_c/Output/libhec_c.a ./heclib_f/Output/libhec_f.a )  
 	(cd javaHeclib; $(MAKE) )
 
 	ls -la ./javaHeclib/Output/*javaHeclib.*
