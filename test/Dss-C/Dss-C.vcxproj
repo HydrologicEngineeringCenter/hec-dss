@@ -203,8 +203,7 @@
     <ClInclude Include="TestDssC.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Makefile.Linux" />
-    <None Include="Makefile.Solaris" />
+    <None Include="Makefile" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
