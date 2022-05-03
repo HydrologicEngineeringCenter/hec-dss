@@ -5,15 +5,20 @@
 
 int zset(const char* parameter, const char* charVal, int integerValue)
 {
-	int ival;
+	int  ival;
+	int  status = 0;
+	char cval[17];
 
 	ival = integerValue;
 	zset_(parameter, charVal, &ival, strlen(parameter), strlen(charVal));
 
-	//zset6_(parameter, charVal, &ival, strlen(parameter), strlen(charVal));
-	//zset7(parameter, charVal, integerValue);
+	cval[0] = '\0';
+	zquery("VERS", cval, sizeof(cval), &ival);
+	if (ival == 7) {
+		status = zquery(parameter, cval, sizeof(cval), &ival);
+	}
 
-	return 0;
+	return status;
 }
 
 int zset7_(const char* parameter, const char* charVal, int *integerValue, size_t lenParam, size_t lenCharVal)
