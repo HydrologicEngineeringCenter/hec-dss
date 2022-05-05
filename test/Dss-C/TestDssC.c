@@ -122,9 +122,9 @@ int main(int argc, char* argv[])
 	else if (argc == 4 && strcmp(argv[1], "pathnameTesting") == 0) {
 		status = PathnameTesting(argv[2],atoi(argv[3]));
 	}
-	else if (argc == 8 && strcmp(argv[1], "import-profile") == 0){
-		//int ImportProfile(const char* csvFilename, const char* dssFilename, const char* path, const char* datetime, const char* units, const char* datatype);
-		status = ImportProfile(argv[2], argv[3], argv[4], argv[5], argv[6], argv[7]);
+	else if (argc == 9 && strcmp(argv[1], "import-profile") == 0){
+		//int ImportProfile(const char* csvFilename, const char* dssFilename, const char* path, const char* date, const char* time, const char* units, const char* datatype);
+		status = ImportProfile(argv[2], argv[3], argv[4], argv[5], argv[6], argv[7],argv[8]);
 	}
 	else
 	{

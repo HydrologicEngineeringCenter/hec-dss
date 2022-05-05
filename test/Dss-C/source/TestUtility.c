@@ -456,16 +456,29 @@ int ReadGrids(const char* file1){
 	return status;
 }
 
-int ImportProfile(const char* csvFilename, const char* dssFilename, const char* path, const char* datetime, 
-	const char* units, const char* datatype) {
+int ImportProfile(const char* csvFilename, const char* dssFilename, const char* path, const char* date, 
+	const char* time, const char* units, const char* datatype) {
 
-	zStructTimeSeries* tss = zstructTsNew(path);
+	int rval = 0;
+	zStructTimeSeries* tss = zstructTsNewTimes(path,date,time,"","");
+	
 	read_profile_from_csv(tss, csvFilename);
-	int retrieveDoublesFlag = 1; // read floats
-	int boolRetrieveQualityNotes = 0; // no quality data
 
-	int retrieveFlag = 0; // not used in this context
-	// Write to DSS
+	tss->unitsProfileValues = units;
+	tss->unitsProfileDepths = ""; // units for columns
+	
+	tss->type = datatype;
+
+	long long ifltab[250];
+	int status = zopen(ifltab, dssFilename);
+	if (status != 0)
+	{
+		rval = -1;
+	}
+	int storageFlag = 0;  // Always replace data.
+
+	if( status ==0 )
+	   ztsStore(ifltab, tss, storageFlag);
 
 	//timeSeriesRecordSizes.dataType == DATA_TYPE_RTS_PROFILE;
 	zstructFree(tss);

@@ -96,7 +96,8 @@ void usage(char* exeName);
 int Export(char* dssFileName, char* path, int metaDataOnly);
 int PathnameTesting(char* dssFileName, int dssVersion);
 int PrintHashTable(const char* dssFilename);
-int ImportProfile(const char* csvFilename, const char* dssFilename, const char* path, const char* datetime, const char* units, const char* datatype);
+int ImportProfile(const char* csvFilename, const char* dssFilename, const char* path, const char* date,
+	const char* time, const char* units, const char* datatype);
 int read_profile_from_csv(zStructTimeSeries* tss, const char* csvFilename);
 
 #endif

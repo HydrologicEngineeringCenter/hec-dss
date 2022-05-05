@@ -48,6 +48,7 @@ int read_profile_from_csv(zStructTimeSeries* tss, const char* csvFilename) {
 	tss->numberValues = rows;
 	tss->floatProfileValues = values;
 	tss->floatProfileDepths = profileDepths;
+	tss->profileDepthsNumber = columns;
 
 	
 	return 0;
@@ -67,6 +68,7 @@ int read_csv_file_into_array(const char* csvFilename, float* data, int rows, int
 	int skippedRows = 0;
 	int col = 0;
 	int row = 0;
+	int pos = 0;
 	while (fgets(line, MAX_ROW_SIZE, stream))
 	{
 		if (skippedRows < rowsToSkip) {
@@ -79,17 +81,16 @@ int read_csv_file_into_array(const char* csvFilename, float* data, int rows, int
 		// parse csv text line
 		float f = 0.0;
 		char* s = strtok_r(line, seps, &context);
+		
 		while (s && col < columns && row < rows) { 
 
 			if (strlen(s) > 0)
 				f = (float)atof(s);
 			else
 				f = UNDEFINED_FLOAT;
-			int idx = row + rows * col;
-			if (rows == 1) // just read one row into array
-				idx = col;
-			data[idx] = f;
+			data[pos] = f;
 			col++;
+			pos++;
 			s = strtok_r(NULL, seps, &context);
 		}
 		row++;
