@@ -45,7 +45,7 @@ void usage(char* exeName)
 	printf("\n%s zcheckPathnames myfile.dss", exeName);
 	printf("\n%s export myfile.dss /SHG/EFRUSSIAN20/PRECIPITATION/01OCT2004:2400/02OCT2004:0100/GAGEINTERP/ 1", exeName);
 	printf("\n%s pathnameTesting file.dss 7", exeName);
-	printf("\n%s import-profile input.csv output.dss //location1/id-depth//10Second/ADCIRC-run12/ '2022-05-04 10:12:30' feet INST-VAL",exeName);
+	printf("\n%s import-profile input.csv output.dss //location1/id-depth//10Second/ADCIRC-run12/ 2022-05-04 10:12:30 feet INST-VAL",exeName);
 	printf("\n");
 
 	printf("\nSupported Environmnet variable examples:");
