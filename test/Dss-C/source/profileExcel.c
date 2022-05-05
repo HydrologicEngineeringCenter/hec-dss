@@ -50,7 +50,9 @@ int read_profile_from_csv(zStructTimeSeries* tss, const char* csvFilename) {
 	tss->floatProfileDepths = profileDepths;
 	tss->profileDepthsNumber = columns;
 
-	
+	tss->allocated[zSTRUCT_TS_profileFloatDepths] = 1;
+	tss->allocated[zSTRUCT_TS_profileFloatValues] = 1;
+
 	return 0;
 
 }

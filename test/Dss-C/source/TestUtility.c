@@ -8,6 +8,10 @@
 #include "zdssKeys.h"
 #include "zdssLocking.h"
 
+#ifdef _MSC_VER
+#define strtok_r strtok_s
+#define strdup _strdup
+#endif
 
 int CheckPathnames(char* dssFileName)
 {
@@ -56,7 +60,7 @@ int PrintHashTable(const char* dssFilename) {
 		printf("\n %5lld %lld",tableHash, binAddress);
 	}
 
-
+	return 0;
 }
 
 int CheckFile(char* dssFileName)
@@ -464,10 +468,14 @@ int ImportProfile(const char* csvFilename, const char* dssFilename, const char* 
 	
 	read_profile_from_csv(tss, csvFilename);
 
-	tss->unitsProfileValues = units;
-	tss->unitsProfileDepths = ""; // units for columns
-	
-	tss->type = datatype;
+	tss->unitsProfileValues = strdup(units);
+	tss->allocated[zSTRUCT_TS_profileUnitsValues] = 1;
+
+	tss->unitsProfileDepths = strdup(""); // units for columns
+	tss->allocated[zSTRUCT_TS_profileUnitsDepths] = 1;
+
+	tss->type = strdup(datatype);
+	tss->allocated[zSTRUCT_TS_type] = 1;
 
 	long long ifltab[250];
 	int status = zopen(ifltab, dssFilename);
@@ -482,6 +490,6 @@ int ImportProfile(const char* csvFilename, const char* dssFilename, const char* 
 
 	//timeSeriesRecordSizes.dataType == DATA_TYPE_RTS_PROFILE;
 	zstructFree(tss);
-
+	return 0;
 	
 }
