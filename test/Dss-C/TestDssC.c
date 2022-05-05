@@ -12,6 +12,8 @@ int runTheTests();
 
 void usage(char* exeName)
 {
+	printf("Version: %s %s\n",__DATE__,__TIME__);
+	
 	printf("\nUsage:\n %s command [options] [dssfilename]  ", exeName);
 	printf("\ncommands: test|catalog|zqueeze|lock seconds|check-lock|zcheck(File|Links|Pathnames) |workout version timeSeriesCount timeSeriesLength");
 	printf("\nWhere:");
