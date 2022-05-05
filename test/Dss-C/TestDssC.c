@@ -28,7 +28,7 @@ void usage(char* exeName)
 	printf("\nworkout, performs reads/writes on file.dss, can be used with multiple instances");
 	printf("\nversion, dss version (6 or 7)");
 	printf("\nexport file.dss path metaDataOnly(0|1)  # writes the contents of a DSS record to the console");
-	printf("\nimport-profile input.csv output.dss path start-date-and-time units datatype");
+	printf("\nimport-profile input.csv output.dss path date time units datatype");
 
 	printf("\n%s pathnameTesting 6|7,  tests large fparts such as when using collections", exeName);
 	
