@@ -7,6 +7,8 @@
 #include "TestDssC.h"
 #include "zdssKeys.h"
 #include "zdssLocking.h"
+#include <string.h>
+
 
 #ifdef _MSC_VER
 #define strtok_r strtok_s
