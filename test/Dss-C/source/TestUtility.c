@@ -455,3 +455,20 @@ int ReadGrids(const char* file1){
 	zclose(ifltab1);
 	return status;
 }
+
+int ImportProfile(const char* csvFilename, const char* dssFilename, const char* path, const char* datetime, 
+	const char* units, const char* datatype) {
+
+	zStructTimeSeries* tss = zstructTsNew(path);
+	read_profile_from_csv(tss, csvFilename);
+	int retrieveDoublesFlag = 1; // read floats
+	int boolRetrieveQualityNotes = 0; // no quality data
+
+	int retrieveFlag = 0; // not used in this context
+	// Write to DSS
+
+	//timeSeriesRecordSizes.dataType == DATA_TYPE_RTS_PROFILE;
+	zstructFree(tss);
+
+	
+}

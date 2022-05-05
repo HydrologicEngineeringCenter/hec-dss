@@ -28,6 +28,8 @@ void usage(char* exeName)
 	printf("\nworkout, performs reads/writes on file.dss, can be used with multiple instances");
 	printf("\nversion, dss version (6 or 7)");
 	printf("\nexport file.dss path metaDataOnly(0|1)  # writes the contents of a DSS record to the console");
+	printf("\nimport-profile input.csv output.dss path start-date-and-time units datatype");
+
 	printf("\n%s pathnameTesting 6|7,  tests large fparts such as when using collections", exeName);
 	
 
@@ -43,6 +45,7 @@ void usage(char* exeName)
 	printf("\n%s zcheckPathnames myfile.dss", exeName);
 	printf("\n%s export myfile.dss /SHG/EFRUSSIAN20/PRECIPITATION/01OCT2004:2400/02OCT2004:0100/GAGEINTERP/ 1", exeName);
 	printf("\n%s pathnameTesting file.dss 7", exeName);
+	printf("\n%s import-profile input.csv output.dss //location1/id-depth//10Second/ADCIRC-run12/ '2022-05-04 10:12:30' feet INST-VAL",exeName);
 	printf("\n");
 
 	printf("\nSupported Environmnet variable examples:");
@@ -118,6 +121,10 @@ int main(int argc, char* argv[])
 	}
 	else if (argc == 4 && strcmp(argv[1], "pathnameTesting") == 0) {
 		status = PathnameTesting(argv[2],atoi(argv[3]));
+	}
+	else if (argc == 8 && strcmp(argv[1], "import-profile") == 0){
+		//int ImportProfile(const char* csvFilename, const char* dssFilename, const char* path, const char* datetime, const char* units, const char* datatype);
+		status = ImportProfile(argv[2], argv[3], argv[4], argv[5], argv[6], argv[7]);
 	}
 	else
 	{
