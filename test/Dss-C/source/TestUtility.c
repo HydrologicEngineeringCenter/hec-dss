@@ -492,6 +492,7 @@ int ImportProfile(const char* csvFilename, const char* dssFilename, const char* 
 
 	//timeSeriesRecordSizes.dataType == DATA_TYPE_RTS_PROFILE;
 	zstructFree(tss);
+	zclose(ifltab);
 	return 0;
 	
 }
