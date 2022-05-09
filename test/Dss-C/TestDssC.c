@@ -148,6 +148,10 @@ int runTheTests() {
 	char fileName6[80];
 	int status;
 
+	printf("\ntest Unit\n");
+	status = units_issue_126();
+	if (status != STATUS_OKAY)
+		return status;
 
 	printf("\ntest format F part with tags\n");
 	status = test_normalize_f_part();
@@ -464,36 +468,63 @@ int SolarisTesting()
 
 }
 
-int UnitPaddingIssue()
+int units_issue_126()
 {
+	const char* dssFileName = "units_issue_126.dss";
+
+	deleteFile(dssFileName);
+	
+	char* path = "//Subbasin-3/TEMPERATURE-MINIMUM//1DAY/MET:GageWts Daily/";
+	zStructTimeSeries* tss1 = zstructTsNewTimes(path, "15 January 1974", "24:00", "25 January 1974", "24:00");
+
+	float* fvalues = malloc(11 * sizeof(float));
+	if (fvalues == 0)
+		return -1;
+	fvalues[0] = 1;
+	fvalues[1] = 2;
+	fvalues[2] = 3;
+	fvalues[3] = 4;
+	fvalues[4] = 5;
+	fvalues[5] = 6;
+	fvalues[6] = 7;
+	fvalues[7] = 8;
+	fvalues[8] = 9;
+	fvalues[9] = 10;
+	fvalues[10] = 11;
+	tss1->floatValues = fvalues;
+	tss1->units = "DEG C";
+	tss1->type = "INST-VAL";
+
 	long long ifltab[250];
-	char* path = "//Dry Creek/Flow/01Feb2014/1Hour/N0H0B0";
-	zStructTimeSeries* tss1 = zstructTsNew(path);
-	int status = zopen(ifltab, "k7-small.dss");
+	int status = zopen6(ifltab, dssFileName);
 	if (status) return status;
-
-	status = ztsRetrieve(ifltab, tss1, -1, 1, 0);
-	printf("\nunits= '%s'", tss1->units);
-	printf("\ntype= '%s'", tss1->type);
-	printf("\ntimeZoneName= '%s'", tss1->timeZoneName);
-	printf("\n");
-
-	long long ifltab2[250];
-	deleteFile("k7-small-updated.dss");
-	status = zopen(ifltab2, "k7-small-updated.dss");
-	tss1->pathname = "//Dry Creek/Flow/01Feb2014/1Hour/karl";
-	ztsStore(ifltab2, tss1, 0);
+	
+	ztsStore(ifltab, tss1, 0);
 	zstructFree(tss1);
+	zclose(ifltab);
+
 	zStructTimeSeries* tss2 = zstructTsNew(path);
-
-
-	zcopyFile(ifltab, ifltab2, 0);
+	long long ifltab2[250];
+	zopen(ifltab2, dssFileName);
 	status = ztsRetrieve(ifltab2, tss2, -1, 1, 0);
+	
 	printf("\nunits= '%s'", tss2->units);
 	printf("\ntype= '%s'", tss2->type);
 	printf("\ntimeZoneName= '%s'", tss2->timeZoneName);
+	
 	printf("\n");
+	
+	const char* expectedUnits = "DEG C";
+
+	if (strncmp(expectedUnits, tss2->units, strlen(expectedUnits))) {
+		status = -2;
+	}
+	if (strncmp("INST-VAL", tss2->type, 8) !=0 )
+		status = -3;
+
 	zstructFree(tss2);
+	zclose(ifltab2);
+
 	return status;
 }
 
@@ -512,3 +543,5 @@ void decodeError(int errorCode)
 	printf("\n%s\n", message);
 
 }
+
+ 

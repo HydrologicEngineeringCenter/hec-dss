@@ -82,7 +82,6 @@ int Bulletin_17C_SSP_Issue();
 int writeDoubleArray();
 int multipleWriteDeleteSlowDown();
 int SolarisTesting();
-int UnitPaddingIssue();
 void decodeError(int errorCode);
 int Lock(char* dssFileName, int sleepSeconds);
 int CheckLocking(char* dssFileName);
@@ -99,5 +98,6 @@ int PrintHashTable(const char* dssFilename);
 int ImportProfile(const char* csvFilename, const char* dssFilename, const char* path, const char* date,
 	const char* time, const char* units, const char* datatype);
 int read_profile_from_csv(zStructTimeSeries* tss, const char* csvFilename);
+int units_issue_126();
 
 #endif
