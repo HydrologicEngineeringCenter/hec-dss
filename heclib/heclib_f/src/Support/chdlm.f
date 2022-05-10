@@ -18,8 +18,8 @@ C
       DO 20 I = IBEG, NUMB
           ICH = ICHAR (CSTRNG(I:I))
 C         ICH = IEB2AS (ICH)
+          ITBL(ICH) = ITYPE*100 + I
 20        CONTINUE
-      ITBL(ICH) = ITYPE*100 + I
       RETURN
       END
 
