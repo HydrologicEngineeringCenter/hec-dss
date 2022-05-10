@@ -1,1 +1,1 @@
-call "%%ONEAPI_ROOT%%compiler\latest\env\vars.bat" intel64 vs2019
+call "%%ONEAPI_ROOT%%\setvars.bat" intel64 vs2022
