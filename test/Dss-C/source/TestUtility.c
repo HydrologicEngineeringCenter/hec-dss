@@ -7,7 +7,13 @@
 #include "TestDssC.h"
 #include "zdssKeys.h"
 #include "zdssLocking.h"
+#include <string.h>
 
+
+#ifdef _MSC_VER
+#define strtok_r strtok_s
+#define strdup _strdup
+#endif
 
 int CheckPathnames(char* dssFileName)
 {
@@ -56,7 +62,7 @@ int PrintHashTable(const char* dssFilename) {
 		printf("\n %5lld %lld",tableHash, binAddress);
 	}
 
-
+	return 0;
 }
 
 int CheckFile(char* dssFileName)
@@ -454,4 +460,39 @@ int ReadGrids(const char* file1){
 	zstructFree(catStruct);
 	zclose(ifltab1);
 	return status;
+}
+
+int ImportProfile(const char* csvFilename, const char* dssFilename, const char* path, const char* date, 
+	const char* time, const char* units, const char* datatype) {
+
+	int rval = 0;
+	zStructTimeSeries* tss = zstructTsNewTimes(path,date,time,"","");
+	
+	read_profile_from_csv(tss, csvFilename);
+
+	tss->unitsProfileValues = strdup(units);
+	tss->allocated[zSTRUCT_TS_profileUnitsValues] = 1;
+
+	tss->unitsProfileDepths = strdup(""); // units for columns
+	tss->allocated[zSTRUCT_TS_profileUnitsDepths] = 1;
+
+	tss->type = strdup(datatype);
+	tss->allocated[zSTRUCT_TS_type] = 1;
+
+	long long ifltab[250];
+	int status = zopen(ifltab, dssFilename);
+	if (status != 0)
+	{
+		rval = -1;
+	}
+	int storageFlag = 0;  // Always replace data.
+
+	if( status ==0 )
+	   ztsStore(ifltab, tss, storageFlag);
+
+	//timeSeriesRecordSizes.dataType == DATA_TYPE_RTS_PROFILE;
+	zstructFree(tss);
+	zclose(ifltab);
+	return 0;
+	
 }
