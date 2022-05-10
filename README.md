@@ -31,11 +31,12 @@ yum install -y \
 
 # Ubuntu -- Install Build Dependencies
 
+```
 sudo apt-get install build-essential
 sudo apt-get install gfortran
 sudo apt-get install zlib1g-dev
 apt-get install default-jdk
-
+```
 
 It has been reported the Centos binaries worked in ubunto,after installing the following:
 
