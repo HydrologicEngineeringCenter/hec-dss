@@ -86,10 +86,6 @@ C
 C
       l_modified = .false.
       nuhead_copy = 0
-      ispace = index(cunits, ' ')
-      if (ispace.gt.1) then
-        cunits = cunits(1:ispace-1)
-      end if
       ISTAT = 0
       IPOS = 1
       I1440 = 1440
@@ -401,6 +397,8 @@ C
           end if
         end if
       end if
+      cunits = cunits(:len_trim(cunits))
+      cunits = cunits(:8)
 C
 C
 C     Get starting date of first block

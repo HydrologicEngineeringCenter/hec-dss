@@ -141,10 +141,6 @@ C     If a debug level is on, print out information
 C
 C
       l_modified = .false.
-      ispace = index(cunits, ' ')
-      if (ispace.gt.1) then
-        cunits = cunits(1:ispace-1)
-      end if
       NSTART = 1
       ISTAT = 0
       LPROT2 = LPROTC
@@ -384,6 +380,8 @@ C
           end if
         end if
       end if
+      cunits = cunits(:len_trim(cunits))
+      cunits = cunits(:8)
 C
 C     Get time window
       CALL DATJUL ( CDATE, JULS, IERR)
