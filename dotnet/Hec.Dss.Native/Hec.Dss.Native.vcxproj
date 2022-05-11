@@ -124,7 +124,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>zlibstatic.lib;heclib_f.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\..\heclib\heclib_f\$(PlatformName)\$(ConfigurationName);..\..\lib\$(PlatformName);$(IFORT_COMPILER21)compiler\lib\intel64_win;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\heclib\heclib_f\$(PlatformName)\$(ConfigurationName);..\..\lib\$(PlatformName);"$(ONEAPI_ROOT)compiler\latest\windows\compiler\lib\intel64_win";%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>LIBMTD.lb;LIBCMT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>

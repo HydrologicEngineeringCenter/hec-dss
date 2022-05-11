@@ -84,7 +84,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\..\heclib\heclib_c\$(PlatformName)\$(ConfigurationName);..\..\heclib\heclib_f\$(PlatformName)\$(ConfigurationName);..\..\lib\$(Platform);$(IFORT_COMPILER21)compiler\lib\intel64_win</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\heclib\heclib_c\$(PlatformName)\$(ConfigurationName);..\..\heclib\heclib_f\$(PlatformName)\$(ConfigurationName);..\..\lib\$(Platform);$(ONEAPI_ROOT)compiler\latest\windows\compiler\lib\intel64_win</AdditionalLibraryDirectories>
       <AdditionalDependencies>heclib_f.lib;heclib_c.lib;zlibstatic.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>LIBCMTD;MSVCRT</IgnoreSpecificDefaultLibraries>
       <Profile>true</Profile>
