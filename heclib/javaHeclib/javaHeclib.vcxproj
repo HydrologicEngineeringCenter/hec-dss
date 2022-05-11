@@ -120,7 +120,7 @@
     <Link>
       <AdditionalDependencies>javaShefDssLib.lib;heclib_f.lib;heclib_c.lib;zlibstatic.lib</AdditionalDependencies>
       <OutputFile>$(ProjectDir)$(Platform)\$(Configuration)\javaHeclib.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\heclib_c\$(PlatformName)\$(ConfigurationName);..\heclib_f\$(PlatformName)\$(ConfigurationName);..\..\lib\$(PlatformName);$(IFORT_COMPILER21)compiler\lib\intel64_win;..\..\nws_shef\$(PlatformName)\$(ConfigurationName)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\heclib_c\$(PlatformName)\$(ConfigurationName);..\heclib_f\$(PlatformName)\$(ConfigurationName);..\..\lib\$(PlatformName);$(ONEAPI_ROOT)compiler\latest\windows\compiler\lib\intel64_win;..\..\nws_shef\$(PlatformName)\$(ConfigurationName)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>MSVCRT</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
