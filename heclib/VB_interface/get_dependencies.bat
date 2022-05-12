@@ -1,7 +1,7 @@
 echo "Hi"
 cd %~dp0 
 
-set SRC="%IFORT_COMPILER19%redist\intel64_win\compiler\"
+set SRC="%IFORT_COMPILER22%redist\intel64_win\compiler\"
 set DEST=x64\Debug\
 
 copy %SRC%libifcoremdd.dll %DEST%
@@ -16,7 +16,7 @@ copy "C:\Program Files (x86)\Microsoft SDKs\Windows Kits\10\ExtensionSDKs\Micros
 dir %DEST%
 
 
-set SRC="%IFORT_COMPILER19%redist\ia32_win\compiler\"
+set SRC="%IFORT_COMPILER22%redist\ia32_win\compiler\"
 set DEST=Win32\Debug\
 
 copy %SRC%libifcoremdd.dll %DEST%
