@@ -12,6 +12,7 @@ dssVersion.exe heclib\heclib_c\src\headers\hecdssInternal.h %build_number% > hec
 
 
 devenv dss.sln  /ReBuild  "Debug|x64"
+exit
 ::devenv dss.sln  /ReBuild  "Release|x64"
 
 ::call vs_env32.bat
