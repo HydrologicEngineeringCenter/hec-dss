@@ -10,9 +10,15 @@ echo %build_number%
 
 dssVersion.exe heclib\heclib_c\src\headers\hecdssInternal.h %build_number% > heclib\javaheclib\version_build.h
 
+cd heclib\heclib_f
+nmake -f Makefile.win  DEBUG=1 clean all
+nmake -f Makefile.win  clean all
 
-devenv dss.sln  /ReBuild  "Debug|x64"
-exit
+cd ..\..
+msbuild dss.sln /p:Configuration=Release /p:Platform=x64
+::msbuild dss.sln /p:Configuration=Debug /p:Platform=x64
+::devenv dss.sln  /ReBuild  "Debug|x64"
+::exit
 ::devenv dss.sln  /ReBuild  "Release|x64"
 
 ::call vs_env32.bat
