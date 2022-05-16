@@ -149,6 +149,7 @@
 		<File RelativePath=".\src\DssInterface\v6and7\ztsinfoInterface.f"/>
 		<File RelativePath=".\src\DssInterface\v6and7\ztssrchInterface.f"/>
 		<File RelativePath=".\src\DssInterface\v6and7\zwritx.f"/></Filter>
+		<File RelativePath=".\src\DssInterface\checks.f"/>
 		<File RelativePath=".\src\DssInterface\zbegdt7.f"/>
 		<File RelativePath=".\src\DssInterface\zdebug7.f"/>
 		<File RelativePath=".\src\DssInterface\zdebugout7.f"/>
