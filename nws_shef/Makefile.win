@@ -42,5 +42,5 @@ $(TARGET): $(OBJ)
     $(FC) $(FFLAGS) $<
 
 clean:
-	del *.obj
-	del $(TARGET)
+	del *.obj 2>nul
+	del $(TARGET) 2>nul

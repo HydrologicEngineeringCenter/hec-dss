@@ -48,10 +48,9 @@ $(OUT_DIR)\heclib_f.lib: $(OBJ)
 		$(FPP) /object:src\DssInterface\v6and7\ $(FFLAGS) $**
 
 clean:
-    del $(OUT_DIR)\heclib_f.lib
-	del src\Support\*.obj
-    del src\*.obj
-	del src\Deprecated\*.obj
-	del src\DssInterface\v6and7\*.obj
-	del src\DssInterface\*.obj
-	del heclib_f.lib
+    del $(OUT_DIR)\heclib_f.lib 2>nul
+	del src\Support\*.obj 2>nul
+    del src\*.obj 2>nul
+	del src\Deprecated\*.obj 2>nul
+	del src\DssInterface\v6and7\*.obj 2>nul
+	del src\DssInterface\*.obj 2>nul
