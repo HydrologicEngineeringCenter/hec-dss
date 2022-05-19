@@ -3,6 +3,10 @@
 call vs_env.bat
 echo on
 
+dotnet restore dss.sln
+dotnet restore dotnet\Hec.Dss\Hec.Dss.csproj
+dotnet restore dotnet\DotNetTests\DotNetTests.csproj
+
 :: set version and build_number for javaheclib.dll
 set build_number=9999
 if not "%1" == "" (set build_number=%1)
@@ -27,7 +31,7 @@ msbuild dss.sln /p:Configuration=Release /p:Platform=x64
 ::nmake -f Makefile.win  clean all
 
 
-::msbuild dss.sln /p:Configuration=Debug /p:Platform=x64
+msbuild dss.sln /p:Configuration=Debug /p:Platform=x64
 ::devenv dss.sln  /ReBuild  "Debug|x64"
 ::exit
 ::devenv dss.sln  /ReBuild  "Release|x64"
