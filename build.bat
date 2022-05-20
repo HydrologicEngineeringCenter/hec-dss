@@ -25,19 +25,8 @@ nmake -f Makefile.win  clean all
 
 cd %~dp0
 msbuild dss.sln /p:Configuration=Release /p:Platform=x64
-
-::cd test\Fortran
-::nmake -f Makefile.win  DEBUG=1 clean all
-::nmake -f Makefile.win  clean all
-
-
 msbuild dss.sln /p:Configuration=Debug /p:Platform=x64
-::devenv dss.sln  /ReBuild  "Debug|x64"
-::exit
-::devenv dss.sln  /ReBuild  "Release|x64"
 
-::call vs_env32.bat
-::devenv dss.sln  /ReBuild "Release|Win32"
-::devenv dss.sln  /ReBuild  "Debug|Win32"
-  
+cd %~dp0\test\Fortran
+build.bat
 
