@@ -47,8 +47,8 @@
 				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration></Configurations>
 	<Files>
 		<Filter Name="Header Files" Filter="fi;fd">
-		<File RelativePath=".\src\headers\verticalDatumFortran.h"/>
 		<File RelativePath=".\dss_parameters.h"/>
+		<File RelativePath=".\src\headers\verticalDatumFortran.h"/>
 		<File RelativePath=".\src\headers\zdssbf.h"/>
 		<File RelativePath=".\src\headers\zdssbz.h"/>
 		<File RelativePath=".\src\headers\zdssca.h"/>
@@ -149,7 +149,7 @@
 		<File RelativePath=".\src\DssInterface\v6and7\ztsinfoInterface.f"/>
 		<File RelativePath=".\src\DssInterface\v6and7\ztssrchInterface.f"/>
 		<File RelativePath=".\src\DssInterface\v6and7\zwritx.f"/></Filter>
-		<File RelativePath=".\src\DssInterface\checks.f90"/>
+		<File RelativePath=".\src\DssInterface\checks.f"/>
 		<File RelativePath=".\src\DssInterface\zbegdt7.f"/>
 		<File RelativePath=".\src\DssInterface\zdebug7.f"/>
 		<File RelativePath=".\src\DssInterface\zdebugout7.f"/>
@@ -210,7 +210,7 @@
 		<File RelativePath=".\src\Support\idaywk.f"/>
 		<File RelativePath=".\src\Support\ihm2m.f"/>
 		<File RelativePath=".\src\Support\ihm2s.f"/>
-		<File RelativePath=".\src\Support\ihms2s.for"/>
+		<File RelativePath=".\src\Support\ihms2s.f"/>
 		<File RelativePath=".\src\Support\inctim.f"/>
 		<File RelativePath=".\src\Support\inctim2.f"/>
 		<File RelativePath=".\src\Support\indexr.f"/>
