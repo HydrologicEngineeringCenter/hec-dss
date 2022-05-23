@@ -381,7 +381,7 @@ C
         end if
       end if
       cunits = cunits(:len_trim(cunits))
-      cunits = cunits(:8)
+C      cunits = cunits(:8)
 C
 C     Get time window
       CALL DATJUL ( CDATE, JULS, IERR)

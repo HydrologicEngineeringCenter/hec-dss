@@ -148,6 +148,10 @@ int runTheTests() {
 	char fileName6[80];
 	int status;
 
+	status = units_issue_126();
+	if (status != STATUS_OKAY)
+		return status;
+
 
 	printf("\ntest format F part with tags\n");
 	status = test_normalize_f_part();
@@ -512,3 +516,65 @@ void decodeError(int errorCode)
 	printf("\n%s\n", message);
 
 }
+
+int units_issue_126()
+{
+	const char* dssFileName = "units_issue_126.dss";
+
+	deleteFile(dssFileName);
+
+	char* path = "//Subbasin-3/TEMPERATURE-MINIMUM//1DAY/MET:GageWts Daily/";
+	zStructTimeSeries* tss1 = zstructTsNewTimes(path, "15 January 1974", "24:00", "25 January 1974", "24:00");
+
+	float* fvalues = malloc(11 * sizeof(float));
+	if (fvalues == 0)
+		return -1;
+	fvalues[0] = 1;
+	fvalues[1] = 2;
+	fvalues[2] = 3;
+	fvalues[3] = 4;
+	fvalues[4] = 5;
+	fvalues[5] = 6;
+	fvalues[6] = 7;
+	fvalues[7] = 8;
+	fvalues[8] = 9;
+	fvalues[9] = 10;
+	fvalues[10] = 11;
+	tss1->numberValues = 11;
+	tss1->floatValues = fvalues;
+	tss1->units = "DEG C";
+	tss1->type = "INST-VAL";
+
+	long long ifltab[250];
+	int status = zopen6(ifltab, dssFileName);
+	if (status) return status;
+
+	ztsStore(ifltab, tss1, 0);
+	zstructFree(tss1);
+	zclose(ifltab);
+
+	zStructTimeSeries* tss2 = zstructTsNew(path);
+	long long ifltab2[250];
+	zopen(ifltab2, dssFileName);
+	status = ztsRetrieve(ifltab2, tss2, -1, 1, 0);
+
+	printf("\nunits= '%s'", tss2->units);
+	printf("\ntype= '%s'", tss2->type);
+	printf("\ntimeZoneName= '%s'", tss2->timeZoneName);
+
+	printf("\n");
+
+	const char* expectedUnits = "DEG C";
+
+	if (strncmp(expectedUnits, tss2->units, strlen(expectedUnits))) {
+		status = -2;
+	}
+	if (strncmp("INST-VAL", tss2->type, 8) != 0)
+		status = -3;
+
+	zstructFree(tss2);
+	zclose(ifltab2);
+
+	return status;
+}
+
