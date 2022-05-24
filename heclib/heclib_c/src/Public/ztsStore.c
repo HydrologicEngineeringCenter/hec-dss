@@ -97,7 +97,6 @@
 *
 *				const char *type
 *					The type of data.  Valid values include "PER-AVER", "PER-CUM", "INST-VAL", and "INST-CUM".
-*					The number of characters in units is not limited, but generally should not be greater than 25.
 *
 *				int numberValues
 *					The number of values to store (and the number of values in the data array and other optional arrays (e.g., quality))
