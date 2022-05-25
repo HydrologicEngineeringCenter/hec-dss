@@ -186,5 +186,8 @@
 		<File RelativePath="shyear.f"/>
 		<File RelativePath="tasg.f"/>
 		<File RelativePath="toshef.f"/>
-		<File RelativePath="tzshft.f"/></Filter></Files>
+		<File RelativePath="tzshft.f"/></Filter>
+		<File RelativePath=".\Makefile.Linux"/>
+		<File RelativePath=".\Makefile.Solaris"/>
+		<File RelativePath=".\Makefile.win"/></Files>
 	<Globals/></VisualStudioProject>

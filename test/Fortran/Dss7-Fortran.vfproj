@@ -113,6 +113,7 @@
 		<File RelativePath="source\timeTestWriteFileRTS.f90"/>
 		<File RelativePath="source\timeTestWritingRTS.f90"/>
 		<File RelativePath="source\writeARec.f90"/></Filter>
-		<File RelativePath=".\Makefile.Linux"/>
+		<File RelativePath=".\build.bat"/>
+		<File RelativePath=".\Makefile"/>
 		<File RelativePath=".\Makefile.Solaris"/></Files>
 	<Globals/></VisualStudioProject>

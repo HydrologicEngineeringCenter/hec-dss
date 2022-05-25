@@ -428,5 +428,6 @@
 		<File RelativePath=".\src\zwrbuf6.f"/>
 		<File RelativePath=".\src\zwrec6.f"/>
 		<File RelativePath=".\src\zwrite6.f"/>
-		<File RelativePath=".\src\zwritex6.f"/></Filter></Files>
+		<File RelativePath=".\src\zwritex6.f"/></Filter>
+		<File RelativePath=".\Makefile.win"/></Files>
 	<Globals/></VisualStudioProject>
