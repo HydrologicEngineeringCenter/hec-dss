@@ -154,7 +154,8 @@ C       Open the new file with write lock on
          endif
          CALL ZOPEN6(IFTAB2, CNAME2(1:ILAST), IERR)
          call zinqir6 (IFTAB1, 'MAXP', CSCRAT, ISIZE)
-         !  If the size is way larger than the current size, reset it to something more reasonable
+         !  If the size is way larger than the current size, 
+         !  reset it to something more reasonable
          IF ((ISIZE > 0).AND.(NRECS < ISIZE)) THEN
             JSIZE = NRECS * 3
             IF (JSIZE < ISIZE) THEN

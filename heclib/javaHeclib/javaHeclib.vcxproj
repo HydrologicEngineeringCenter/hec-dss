@@ -369,8 +369,6 @@
     <ClCompile Include="src\Hec_zritsxd.c" />
     <ClCompile Include="src\Hec_zrpd.c" />
     <ClCompile Include="src\Hec_zrpdd.c" />
-    <ClCompile Include="src\Hec_zrrst.c" />
-    <ClCompile Include="src\Hec_zrrsti.c" />
     <ClCompile Include="src\Hec_zrrts.c" />
     <ClCompile Include="src\Hec_zrrtsc.c" />
     <ClCompile Include="src\Hec_zrrtsx.c" />
@@ -388,8 +386,6 @@
     <ClCompile Include="src\Hec_zspd.c" />
     <ClCompile Include="src\Hec_zspdd.c" />
     <ClCompile Include="src\Hec_zsqueeze.c" />
-    <ClCompile Include="src\Hec_zsrst.c" />
-    <ClCompile Include="src\Hec_zsrsti.c" />
     <ClCompile Include="src\Hec_zsrts.c" />
     <ClCompile Include="src\Hec_zsrtsc.c" />
     <ClCompile Include="src\Hec_zsrtsx.c" />

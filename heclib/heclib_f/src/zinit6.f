@@ -949,31 +949,7 @@ C     Record data types
       DATA IRTYPE(15) /421/, CRTYPE(15) /'GA '/
       DATA IRTYPE(16) /430/, CRTYPE(16) /'GST'/
       DATA IRTYPE(17) /431/, CRTYPE(17) /'GS '/
-      DATA IRTYPE(18) /500/, CRTYPE(18) /'RGN'/
-      DATA IRTYPE(19) /501/, CRTYPE(19) /'RGI'/
-      DATA IRTYPE(20) /505/, CRTYPE(20) /'RND'/
-      DATA IRTYPE(21) /510/, CRTYPE(21) /'RSM'/
-      DATA IRTYPE(22) /511/, CRTYPE(22) /'RSI'/
-      DATA IRTYPE(23) /515/, CRTYPE(23) /'RMD'/
-      DATA IRTYPE(24) /520/, CRTYPE(24) /'RCS'/
-      DATA IRTYPE(25) /521/, CRTYPE(25) /'RCI'/
-      DATA IRTYPE(26) /525/, CRTYPE(26) /'RSD'/
-      DATA IRTYPE(27) /530/, CRTYPE(27) /'RCP'/
-      DATA IRTYPE(28) /531/, CRTYPE(28) /'RPI'/
-      DATA IRTYPE(29) /535/, CRTYPE(29) /'RPD'/
-      DATA IRTYPE(30) /540/, CRTYPE(30) /'RPR'/
-      DATA IRTYPE(31) /541/, CRTYPE(31) /'RRI'/
-      DATA IRTYPE(32) /545/, CRTYPE(32) /'RRD'/
-      DATA IRTYPE(33) /550/, CRTYPE(33) /'RPV'/
-      DATA IRTYPE(34) /551/, CRTYPE(34) /'RVI'/
-      DATA IRTYPE(35) /555/, CRTYPE(35) /'RVD'/
-      DATA IRTYPE(36) /560/, CRTYPE(36) /'RST'/
-      DATA IRTYPE(37) /561/, CRTYPE(37) /'RTI'/
-      DATA IRTYPE(38) /565/, CRTYPE(38) /'RT2'/
-      DATA IRTYPE(39) /570/, CRTYPE(39) /'RCN'/
-      DATA IRTYPE(40) /571/, CRTYPE(40) /'RCF'/
-      DATA IRTYPE(41) /575/, CRTYPE(41) /'RN2'/
-      DATA NRTYPE /41/
+      DATA NRTYPE /17/
 
       DATA CRDESC(1)  /'Regular-interval time series'/
       DATA CRDESC(2)  /'Regular-interval time series pattern'/
@@ -992,51 +968,7 @@ C     Record data types
       DATA CRDESC(15) /'Gridded - Albers'/
       DATA CRDESC(16) /'Gridded - SHG with time reference'/
       DATA CRDESC(17) /'Gridded - SHG'/
-      DATA CRDESC(18) /'Generalized Rating'/
-      DATA CRDESC(19) /'Generalized Rating series'/
-      DATA CRDESC(20) /'Generalized Rating doubles'/
-      DATA CRDESC(21) /'Simple Rating'/
-      DATA CRDESC(22) /'Simple Rating series'/
-      DATA CRDESC(23) /'Simple Rating doubles'/
-      DATA CRDESC(24) /'Composite Rating'/
-      DATA CRDESC(25) /'Composite Rating series'/
-      DATA CRDESC(26) /'Composite Rating doubles'/
-      DATA CRDESC(27) /'Compound Rating'/
-      DATA CRDESC(28) /'Compound Rating series'/
-      DATA CRDESC(29) /'Compound Rating doubles'/
-      DATA CRDESC(30) /'Periodic Rating'/
-      DATA CRDESC(31) /'Periodic Rating series'/
-      DATA CRDESC(32) /'Periodic Rating doubles'/
-      DATA CRDESC(33) /'Periodic Values'/
-      DATA CRDESC(34) /'Periodic Values series'/
-      DATA CRDESC(35) /'Periodic Values doubles'/
-      DATA CRDESC(36) /'Stream Rating'/
-      DATA CRDESC(37) /'Stream Rating series'/
-      DATA CRDESC(38) /'Stream Rating doubles'/
-      DATA CRDESC(39) /'Conic Reservoir Rating'/
-      DATA CRDESC(40) /'Conic Reservoir Rating series'/
-      DATA CRDESC(41) /'Conic Reservoir Rating doubles'/
-      DATA CRDESC(42) /'Undefined data type'/
-C
-C
-C     Interpolation types for rating objects
-      DATA IINTYP(1)  /1/, CINTYP(1) /'LIN_INTERP'/
-      DATA IINTYP(2)  /2/, CINTYP(2) /'LOG_INTERP'/
-      DATA IINTYP(3)  /3/, CINTYP(3) /'STEP_PREV'/
-      DATA IINTYP(4)  /4/, CINTYP(4) /'STEP_NEXT'/
-      DATA IINTYP(5)  /5/, CINTYP(5) /'STEP_NEAREST'/
-      DATA NINTYP /5/
-C
-C
-C     Extrapolation (Under- & Over-flow) types for rating objects
-      DATA IEXTYP(1) /11/, CEXTYP(1) /'NOT_ALLOWED'/
-      DATA IEXTYP(2) /12/, CEXTYP(2) /'EXTRAPOLATE'/
-      DATA IEXTYP(3) /13/, CEXTYP(3) /'USE_NEAREST'/
-      DATA IEXTYP(4) /14/, CEXTYP(4) /'USE_VALUE'/
-      DATA IEXTYP(5) /15/, CEXTYP(5) /'USE_OFFSET'/
-      DATA IEXTYP(6) /16/, CEXTYP(6) /'USE_NONE'/
-      DATA IEXTYP(7) /17/, CEXTYP(7) /'LIN_INTERP_TO_NONE'/
-      DATA NEXTYP /7/
+      DATA CRDESC(18) /'Undefined data type'/
 C
 C
       DATA MEMSIZES /0,0,0,0,0,0,0,0,0,0/

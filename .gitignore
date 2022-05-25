@@ -141,3 +141,5 @@ test/Fortran/Output/**
 *.7
 *.u2d
 test/Fortran/modverticaldatuminfo.mod
+/heclib/heclib_f/source.txt
+/test/Fortran/source.txt
