@@ -18,10 +18,10 @@ DLIB=
 !ENDIF
 
 
-FFLAGS=/nologo /debug:$(D_LEVEL) /MP /Od /fpp /I"../heclib/heclib_f/src/headers" \
+FFLAGS=/nologo /debug:$(D_LEVEL) /MP /Od /I"../heclib/heclib_f/src/headers" \
  /reentrancy:threaded /warn:noalignments \
  /Qsave /Qinit:zero /names:lowercase /iface:cref /assume:underscore  /traceback \
-  /check:all /libs:static $(DLIB) /threads /4Yportlib /c 
+ /libs:static $(DLIB) /threads /c 
 
 OBJ=addsen.obj aplnb.obj bsrch.obj chrono.obj ckmiss.obj dbgout.obj getdes.obj getext.obj getint.obj getsen.obj j2sdt.obj loadparam.obj lodpar.obj lodsen.obj lodsta.obj lsrch.obj magn.obj putdss.obj putshf.obj rd2cd.obj round.obj rptscr.obj rt2ct.obj sdbuff.obj sdflsh.obj sdinit.obj sdmain.obj sh2adj.obj sh2beg.obj sh2bla.obj sh2dt2.obj sh2fnd.obj sh2loc.obj sh2nu2.obj sh2num.obj sh2nxd.obj sh2skp.obj sh2st1.obj sh2st2.obj sh2tya.obj sh2tyd.obj sh3ad7.obj sh3add.obj sh3adh.obj sh3adk.obj sh3adt.obj sh3ady.obj sh3dec.obj sh3dlm.obj sh3dt0.obj sh3dt1.obj sh3dt2.obj sh3dt3.obj sh3dt4.obj sh3dt5.obj sh3dt6.obj sh3dt7.obj sh3dt8.obj sh3tz0.obj sh4dt0.obj sh4dt2.obj shcdat.obj shctim.obj shdble.obj shdcod.obj shdeca.obj shdecb.obj shdece.obj shdotb.obj shdriv.obj shdura.obj shedln.obj sherr.obj sherrk.obj sherrm.obj sherrs.obj shexcd.obj shfact.obj shfdi.obj shfdur.obj shfmt1.obj shfmt2.obj shgcal.obj shgetk.obj shgjul.obj shhrfx.obj shieom.obj shihr.obj shijul.obj shimn.obj shimo.obj shise.obj shiyr.obj shline.obj shmaxe.obj shout.obj shoza1.obj shoze1.obj shoze2.obj shpabg.obj shpcod.obj shpdec.obj shpos.obj shprob.obj shqual.obj shquot.obj shsava.obj shsavd.obj shsavi.obj shsavj.obj shsavk.obj shsavl.obj shsavm.obj shsavn.obj shsavp.obj shsavq.obj shsavs.obj shsavu.obj shsend.obj shtscd.obj shtypa.obj shtypd.obj shtype.obj shvern.obj shyear.obj tasg.obj toshef.obj tzshft.obj RunShefDss.obj shcurd.obj
 
