@@ -61,7 +61,6 @@
 		<File RelativePath=".\src\headers\zdsslz.h"/>
 		<File RelativePath=".\src\headers\zdssmz.h"/>
 		<File RelativePath=".\src\headers\zdssnz.h"/>
-		<File RelativePath=".\src\headers\zdssrst.h"/>
 		<File RelativePath=".\src\headers\zdssShared.h"/>
 		<File RelativePath=".\src\headers\zdssts.h"/>
 		<File RelativePath=".\src\headers\zopenDefault.h"/></Filter>
@@ -245,7 +244,6 @@
 		<File RelativePath=".\src\Support\prtwrd.f"/>
 		<File RelativePath=".\src\Support\puthol.f"/>
 		<File RelativePath=".\src\Support\r2sd3.f"/>
-		<File RelativePath=".\src\Support\rattim.f"/>
 		<File RelativePath=".\src\Support\remblk.f"/>
 		<File RelativePath=".\src\Support\rjstr.f"/>
 		<File RelativePath=".\src\Support\sd32r.f"/>
@@ -381,8 +379,6 @@
 		<File RelativePath=".\src\zritsi6.f"/>
 		<File RelativePath=".\src\zrpdi6.f"/>
 		<File RelativePath=".\src\zrrec6.f"/>
-		<File RelativePath=".\src\zrrst.f"/>
-		<File RelativePath=".\src\zrrsti.f"/>
 		<File RelativePath=".\src\zrrtpa6.f"/>
 		<File RelativePath=".\src\zrrtsb6.f"/>
 		<File RelativePath=".\src\zrrtsc6.f"/>
@@ -405,8 +401,6 @@
 		<File RelativePath=".\src\zspdi6.f"/>
 		<File RelativePath=".\src\zsqprm6.f"/>
 		<File RelativePath=".\src\zsqueeze6.f"/>
-		<File RelativePath=".\src\zsrst.f"/>
-		<File RelativePath=".\src\zsrsti.f"/>
 		<File RelativePath=".\src\zsrtpa6.f"/>
 		<File RelativePath=".\src\zsrtsc6.f"/>
 		<File RelativePath=".\src\zsrtsi6.f"/>
