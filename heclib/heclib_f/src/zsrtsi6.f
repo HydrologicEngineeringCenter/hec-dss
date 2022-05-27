@@ -251,15 +251,32 @@ C
         ! elevation time series !
         !-----------------------!
         if (nuhead.eq.0) then
+          write(*,*) '==> NO USER HEADER SPECIFIED'
+          write(*,*) '==> NPPWRD = ', NPPWRD
+          write(*,*) '==> KINUHE = ', KINUHE
+          write(*,*) '==> KIAUHE = ', KIAUHE
           !------------------------------------------------!
           ! no user header provided, is there one on disk? !
           !------------------------------------------------!
           nuhead_copy = INFO(NPPWRD+KINUHE)
+          write(*,*) '==> Size of user header on disk = ', nuhead_copy
           if (nuhead_copy.GT.0) then
-            call zgtrec6(IFLTAB, iuhead_copy, nuhead_copy,
-     *        INFO(NPPWRD+KIAUHE), .TRUE.)
-            call get_user_header_param(iuhead_copy, nuhead_copy,
-     *        VERTICAL_DATUM_INFO_PARAM, vdiStr)
+            if (nuhead_copy.GT.size(iuhead_copy)) then
+              if (mlevel.ge.1) then
+                write (munit,'(/,a,a,a,/,a)')
+     *            ' *****DSS*** zsrtsi6:  User header size is ',
+     *            'reported to be larger than the size of the ',
+     *            'available variable.',
+     *            ' User header not read from disk.';
+              end if
+            else
+              write(*,*) '==> Reading user header from address ',
+     *          INFO(NPPWRD+KIAUHE)
+              call zgtrec6(IFLTAB, iuhead_copy, nuhead_copy,
+     *          INFO(NPPWRD+KIAUHE), .TRUE.)
+              call get_user_header_param(iuhead_copy, nuhead_copy,
+     *          VERTICAL_DATUM_INFO_PARAM, vdiStr)
+            end if
           end if
         end if
         !--------------------------------------!
