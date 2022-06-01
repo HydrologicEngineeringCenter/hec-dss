@@ -1138,6 +1138,7 @@ C
       GO TO 990
 C
  987  CONTINUE
+      CALL CHRLNB (CPATH, NPATH)
       IF (MLEVEL.GE.1) WRITE (MUNIT, 988) CPATH(1:NPATH)
  988  FORMAT (' -----DSS---zsrtsx6:  ERROR;  File has Read Access Only',
      * /,' Pathname: ',A)
