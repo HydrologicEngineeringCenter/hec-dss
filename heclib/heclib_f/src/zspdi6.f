@@ -74,7 +74,7 @@ C     If a debug level is on, print out information
       IF (MLEVEL.GE.7) THEN
       WRITE (MUNIT,20) NORD, NCURVE, IHORIZ, LABEL, IPLAN, NUHEAD,
      * CPATH(1:NPATH)
- 20   FORMAT (T5,'----- Enter zspd6 -----',/,
+ 20   FORMAT (T5,'----- Enter zspdi6 -----',/,
      * T11,'NORD:',I6,',  NCURVE:',I4,',  IHORIZ:',I4,/,
      * T11,'LABEL: ',L1,',  IPLAN:',I3,',  NUHEAD:',I5,/,
      * T11,'Pathname: ',A)
@@ -87,7 +87,7 @@ C     If a debug level is on, print out information
 C
 C
 C     Check that IFLTAB is valid (e.g., the DSS file is open)
-      IF (IFLTAB(1).NE.6) CALL zerror6(IFLTAB, 5, 'ZSPD  ',
+      IF (IFLTAB(1).NE.6) CALL zerror6(IFLTAB, 5, 'ZSPDI6',
      * 0, IFLTAB, ' ', 0, ' ',0)
       !--------------------------------------------------------------!
       ! convert the values to the native vertical datum if necessary !
@@ -131,10 +131,20 @@ C     Check that IFLTAB is valid (e.g., the DSS file is open)
           !------------------------------------------------!
           nuhead_copy = INFO(NPPWRD+KINUHE)
           if (nuhead_copy.GT.0) then
-            call zgtrec6(IFLTAB, iuhead_copy, nuhead_copy,
-     *        INFO(NPPWRD+KIAUHE), .TRUE.)
-            call get_user_header_param(iuhead_copy, nuhead_copy,
-     *        VERTICAL_DATUM_INFO_PARAM, vdiStr)
+            if (nuhead_copy.GT.size(iuhead_copy)) then
+              if (mlevel.ge.1) then
+                write (munit,'(/,a,a,a,/,a)')
+     *            ' *****DSS*** zspdi6:  User header size is ',
+     *            'reported to be larger than the size of the ',
+     *            'available variable.',
+     *            ' User header not read from disk.';
+              end if
+            else
+              call zgtrec6(IFLTAB, iuhead_copy, nuhead_copy,
+     *          INFO(NPPWRD+KIAUHE), .TRUE.)
+              call get_user_header_param(iuhead_copy, nuhead_copy,
+     *          VERTICAL_DATUM_INFO_PARAM, vdiStr)
+            end if
           end if
         end if
         !--------------------------------------!
@@ -623,7 +633,7 @@ C
         end if
       end if
       IF (MLEVEL.GE.7) WRITE (MUNIT,820) NVALS, ISTAT
- 820  FORMAT(T5,'----- Exit zspd6, Number of data values ',
+ 820  FORMAT(T5,'----- Exit zspdi6, Number of data values ',
      * 'stored:',I7,',  Status:',I4,/)
 C
       RETURN
@@ -631,27 +641,27 @@ C
 C
  900  CONTINUE
       IF (MLEVEL.GE.1) WRITE (MUNIT, 901) CPATH(1:NPATH)
- 901  FORMAT (/,' *** ERROR:  zspd6;  Error writting record',
+ 901  FORMAT (/,' *** ERROR:  zspdi6;  Error writting record',
      * /,' Pathname: ',A,/)
       GO TO 800
 C
  905  CONTINUE
       IF (MLEVEL.GE.1) WRITE (MUNIT, 906) NORD, CPATH(1:NPATH)
- 906  FORMAT (/,' *** ERROR:  zspd6;  The Number of Ordinates is Less',
+ 906  FORMAT (/,' *** ERROR:  zspdi6;  The Number of Ordinates is Less',
      * ' than One ***',/,' Number Supplied:',I6,/,' Pathname: ',A,/)
       ISTAT = -4
       GO TO 800
 C
  910  CONTINUE
       IF (MLEVEL.GE.1) WRITE (MUNIT, 911) NCURVE, CPATH(1:NPATH)
- 911  FORMAT (/,' *** ERROR:  ZSPD6;  The Number of Curves is Less',
+ 911  FORMAT (/,' *** ERROR:  zspdi6;  The Number of Curves is Less',
      * ' than One ***',/,' Number Supplied:',I6,/,' Pathname: ',A,/)
       ISTAT = -5
       GO TO 800
 C
  920  CONTINUE
       IF (MLEVEL.GE.1) WRITE (MUNIT, 921) NCURVE, CPATH(1:NPATH)
- 921  FORMAT (/,' *** ERROR:  zspd6;  The Number of Curves is Greater',
+ 921  FORMAT (/,' *** ERROR:  zspdi6;  The Number of Curves is Greater',
      * ' than 100 ***',/,' Number Supplied:',I6,'(Up to 100 curves may',
      * ' be stored in one record)',/,' Pathname: ',A)
       ISTAT = -5
@@ -660,7 +670,7 @@ C
 C
  930  CONTINUE
       IF (MLEVEL.GE.1) WRITE (MUNIT, 931)  CPATH(1:NPATH)
- 931  FORMAT (/,' *** ERROR:  zspd6;  Exceeded size limit for number',
+ 931  FORMAT (/,' *** ERROR:  zspdi6;  Exceeded size limit for number',
      * ' of data ***',/,' Pathname: ',A)
       WRITE (MUNIT,932) NVALS, NTOT, KLBUFF
  932  FORMAT('    Number values to store:',I7,
