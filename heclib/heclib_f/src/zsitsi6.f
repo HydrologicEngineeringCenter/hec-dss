@@ -107,7 +107,7 @@ C
       CALL JULDAT (JULE, 114, CDATE2, N)
       WRITE (MUNIT, 20) JULS, ISTIME, CDATE1, JULE, IETIME, CDATE2,
      * CPATH(1:NPATH)
- 20   FORMAT(T10,'----- ENTERING zsits6-----',
+ 20   FORMAT(T10,'----- ENTERING zsitsi6-----',
      */,T5,'Starting date and time: ',3X,2I8,2X,A,
      */,T5,'Ending date and time:   ',3X,2I8,2X,A,
      */,T5,'Pathname: ',A)
@@ -127,7 +127,7 @@ C
 C
 C
 C     Check that IFLTAB is valid (e.g., the DSS file is open)
-      IF (IFLTAB(1).NE.6) CALL zerror6 (IFLTAB, 5, 'zsitsx6', 0,
+      IF (IFLTAB(1).NE.6) CALL zerror6 (IFLTAB, 5, 'zsitsi6', 0,
      * IFLTAB, ' ', 0, ' ',0)
 C
 C
@@ -137,7 +137,7 @@ C     Check that the dates are in order
       K = J + 1
       IF (ITIMES(K).LT.ITIMES(J)) THEN
       WRITE (MUNIT,60) CPATH(1:NPATH), ITIMES(J), ITIMES(K)
- 60   FORMAT(' -----DSS*** zsits6:  Error - Times are not Ascending:',
+ 60   FORMAT(' -----DSS*** zsitsi6:  Error - Times are not Ascending:',
      * /,' Pathname: ',A,/,' Relative Times: ',2I10)
 C
 C     Figure out dates/times to write out in a nice fashion
@@ -273,10 +273,20 @@ C
           !------------------------------------------------!
           nuhead_copy = INFO(NPPWRD+KINUHE)
           if (nuhead_copy.GT.0) then
-            call zgtrec6(IFLTAB, iuhead_copy, nuhead_copy,
-     *        INFO(NPPWRD+KIAUHE), .TRUE.)
-            call get_user_header_param(iuhead_copy, nuhead_copy,
-     *        VERTICAL_DATUM_INFO_PARAM, vdiStr)
+            if (nuhead_copy.GT.size(iuhead_copy)) then
+              if (mlevel.ge.1) then
+                write (munit,'(/,a,a,a,/,a)')
+     *            ' *****DSS*** zsitsi6:  User header size is ',
+     *            'reported to be larger than the size of the ',
+     *            'available variable.',
+     *            ' User header not read from disk.';
+              end if
+            else
+              call zgtrec6(IFLTAB, iuhead_copy, nuhead_copy,
+     *          INFO(NPPWRD+KIAUHE), .TRUE.)
+              call get_user_header_param(iuhead_copy, nuhead_copy,
+     *          VERTICAL_DATUM_INFO_PARAM, vdiStr)
+            end if
           end if
         end if
         !--------------------------------------!
@@ -463,7 +473,7 @@ C
          CALL CHRLNB(CPATH1, NPATH1)
          IF (LSQUAL) THEN
             IF (MLEVEL.GE.3) WRITE (MUNIT, 110) CPATH1(1:NPATH1)
- 110        FORMAT (' -----DSS---zsits6: Caution:  Writing flags to an',
+ 110        FORMAT (' -----DSS---zsitsi6: Caution:  Writing flags to an',
      *      ' existing data set that does not have flags.',/,
      *      ' Pathname: ',A)
          ELSE
@@ -479,7 +489,7 @@ C              record without flags to one that has flags
                GO TO 620
             ENDIF
             IF (MLEVEL.GE.3) WRITE (MUNIT, 120) CPATH1(1:NPATH1)
- 120        FORMAT (' -----DSS---zsits6: Caution:  Writing data ',
+ 120        FORMAT (' -----DSS---zsitsi6: Caution:  Writing data ',
      *      ' without flags to an existing data set that has flags.',/,
      *      ' Pathname: ',A)
          ENDIF
@@ -999,7 +1009,7 @@ C     Finished
       end if
       IF ((NVALS.EQ.0).AND.(ISTAT.EQ.0)) ISTAT = 4
       IF (MLEVEL.GE.9) WRITE (MUNIT, 820) NVALS, ISTAT
- 820  FORMAT (T5,'----- Exiting zsits6; Values Written:',I5,
+ 820  FORMAT (T5,'----- Exiting zsitsi6; Values Written:',I5,
      * ',  Status:',I4)
       IWTZONE = -1
       CWTZONE  = ' '
@@ -1011,7 +1021,7 @@ C     Not enough buffer space to write record to DSS
  900  CONTINUE
       CALL CHRLNB(CPATH1,N)
       WRITE (MUNIT,901) CPATH1(1:N), KLBUFF
- 901  FORMAT(/,' ***** ERROR - zsits6;  Buffer size not large enough',
+ 901  FORMAT(/,' ***** ERROR - zsitsi6;  Buffer size not large enough',
      * ' to store this amount of data *****',/,' Pathname: ',A,/,
      * ' Buffer Size:',I6,/)
       ISTAT = 21
@@ -1020,7 +1030,7 @@ C
  910  CONTINUE
       CALL CHRLNB(CPATH,N)
       WRITE (MUNIT,911) CPATH(1:N)
- 911  FORMAT (' -----DSS*** zsits6:  Error - Unable to ',
+ 911  FORMAT (' -----DSS*** zsitsi6:  Error - Unable to ',
      *' Recognize Pathname as Irregular Time-Series',/,
      *' Pathname: ',A)
       ISTAT = 24
@@ -1029,7 +1039,7 @@ C
  920  CONTINUE
       CALL CHRLNB(CPATH1,N)
       WRITE (MUNIT,921) CPATH1(1:N), NDA, KLBUFF
- 921  FORMAT (/,' ***** ERROR - zsits6;  The Buffer Array is not',
+ 921  FORMAT (/,' ***** ERROR - zsitsi6;  The Buffer Array is not',
      *' Large Enough to Read Record',/,
      *' Record: ',A,/' Buffer Size Required:',I6,'  Size Provided',I6/)
       ISTAT = 21
@@ -1040,7 +1050,7 @@ C
       ISTAT = JSTAT
       CALL CHRLNB(CPATH,N)
       IF (MLEVEL.GE.1) WRITE (MUNIT,941) ISTAT, CPATH(1:N)
- 941  FORMAT (/,' *****DSS*** zsits6:  ERROR  - UNABLE TO ',
+ 941  FORMAT (/,' *****DSS*** zsitsi6:  ERROR  - UNABLE TO ',
      * ' STORE DATA',/,' Status: ',I8,/,' Pathname: ',A,/)
       RETURN
 C

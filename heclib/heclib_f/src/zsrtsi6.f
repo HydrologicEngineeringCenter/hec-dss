@@ -43,7 +43,7 @@ C                 successfullness of the data storage.
 C                 ISTAT = 0  All ok.
 C                 ISTAT = 4  All missing data flags - no data stored
 C                            unless IPLAN set to 2.
-C                 ISTAT > 9  Illegal call to zsrts6
+C                 ISTAT > 9  Illegal call to zsrtsi6
 C
 C     Written by Bill Charley at HEC, 1987.
 C
@@ -109,7 +109,7 @@ C     If a debug level is on, print out information
       CALL CHRLNB(CPATH, N)
       IF (N.LE.0) N = 1
       WRITE (MUNIT,20) IFUNIT, CPATH(1:N), IPLAN
- 20   FORMAT (T10,'----- Enter zsrts6 for unit',I5,' -----',/,
+ 20   FORMAT (T10,'----- Enter zsrtsi6 for unit',I5,' -----',/,
      *        T10,'      Path: ',A,/,
      *        T10,'      IPLAN: ',I4)
          IF (MLEVEL.GE.8) THEN
@@ -149,7 +149,7 @@ C
 C
 C
 C     Check that IFLTAB is valid (e.g., the DSS file is open)
-      IF (IFLTAB(1).NE.6) CALL zerror6 (IFLTAB, 5, 'zsrtsx6', 0,
+      IF (IFLTAB(1).NE.6) CALL zerror6 (IFLTAB, 5, 'zsrtsi6', 0,
      * IFLTAB, ' ', 0, ' ',0)
 C
 C
@@ -256,10 +256,20 @@ C
           !------------------------------------------------!
           nuhead_copy = INFO(NPPWRD+KINUHE)
           if (nuhead_copy.GT.0) then
-            call zgtrec6(IFLTAB, iuhead_copy, nuhead_copy,
-     *        INFO(NPPWRD+KIAUHE), .TRUE.)
-            call get_user_header_param(iuhead_copy, nuhead_copy,
-     *        VERTICAL_DATUM_INFO_PARAM, vdiStr)
+            if (nuhead_copy.GT.size(iuhead_copy)) then
+              if (mlevel.ge.1) then
+                write (munit,'(/,a,a,a,/,a)')
+     *            ' *****DSS*** zsrtsi6:  User header size is ',
+     *            'reported to be larger than the size of the ',
+     *            'available variable.',
+     *            ' User header not read from disk.';
+              end if
+            else
+              call zgtrec6(IFLTAB, iuhead_copy, nuhead_copy,
+     *          INFO(NPPWRD+KIAUHE), .TRUE.)
+              call get_user_header_param(iuhead_copy, nuhead_copy,
+     *          VERTICAL_DATUM_INFO_PARAM, vdiStr)
+            end if
           end if
         end if
         !--------------------------------------!
@@ -548,7 +558,7 @@ C
 C     Be sure we have enough buffer space to use data compression
       IF ((IACOMP.NE.0).AND.(NUMDAT.GT.KSBUFF)) THEN
       IF (MLEVEL.GE.2) WRITE (MUNIT, 238) CTSPAT(1:NTSPAT)
- 238  FORMAT (' -----DSS---zsrtsx6:  Unable to compress data with',
+ 238  FORMAT (' -----DSS---zsrtsi6:  Unable to compress data with',
      * ' this time interval;',/,' Pathname: ',A)
       IACOMP = 0
       ENDIF
@@ -799,7 +809,7 @@ C
       NCHEAD = 0
       IF (IST.EQ.0) IST = -1
       IF (MLEVEL.GE.2) WRITE (MUNIT,340) IST, CTSPAT(1:NTSPAT)
- 340  FORMAT (' -----DSS---zsrtsx6;  WARNING:  Unable to Compress',
+ 340  FORMAT (' -----DSS---zsrtsi6;  WARNING:  Unable to Compress',
      * ' Data.  Status:',I6,/,' Pathname: ',A)
       ELSE
       NTDATA = NRB
@@ -862,7 +872,7 @@ C     Check to see if we should write the record if all missing
          ENDIF
 C        Data is all missing, bypass
          IF (MLEVEL.GE.3) WRITE (MUNIT, 380) CTSPAT(1:NTSPAT)
- 380        FORMAT (' -----DSS---zsrts6: All values set to missing',/,
+ 380        FORMAT (' -----DSS---zsrtsi6: All values set to missing',/,
      *      ' Pathname: ',A)
          GO TO 600
       ENDIF
@@ -876,7 +886,7 @@ C
 C     Be sure that we have permission to write this record
       IF (LPROT2) THEN
       IF (MLEVEL.GE.2) WRITE (MUNIT, 400) CTSPAT(1:NTSPAT)
- 400  FORMAT (' -----DSS---zsrtsx6:  Write Protection for Existing',
+ 400  FORMAT (' -----DSS---zsrtsi6:  Write Protection for Existing',
      * ' Record (no data written)',/,
      * ' Pathname: ',A)
       GO TO 600
@@ -885,8 +895,8 @@ C
       IF (LQUAL.NEQV.LQREAD) THEN
          IF (LQUAL) THEN
             IF (MLEVEL.GE.3) WRITE (MUNIT, 410) CTSPAT(1:NTSPAT)
- 410        FORMAT (' -----DSS---zsrts6: Caution:  Writing flags to an',
-     *      ' existing data set that does not have flags.',/,
+ 410        FORMAT (' -----DSS---zsrtsi6: Caution:  Writing flags to',/,
+     *      ' an existing data set that does not have flags.',/,
      *      ' Pathname: ',A)
          ELSE
             IF (LQPBIT) THEN
@@ -896,7 +906,7 @@ C              record without flags to one that has flags
                GO TO 600
             ENDIF
             IF (MLEVEL.GE.3) WRITE (MUNIT, 420) CTSPAT(1:NTSPAT)
- 420        FORMAT (' -----DSS---zsrts6: Caution:  Writing data ',
+ 420        FORMAT (' -----DSS---zsrtsi6: Caution:  Writing data ',
      *      ' without flags to an existing data set that has flags.',/,
      *      ' Pathname: ',A)
          ENDIF
@@ -1012,7 +1022,7 @@ C     Need to store more data, loop back to 100
       GO TO 100
 C
 C
-C     Done.  Exit zsrts6.
+C     Done.  Exit zsrtsi6.
  800  CONTINUE
       !-----------------------------------------!
       ! restore the original values in the call !
@@ -1041,7 +1051,7 @@ C     Unlock the file and dump all buffers
       CALL zmultu6 (IFLTAB, .FALSE., .TRUE.)
 C
       IF (MLEVEL.GE.7) WRITE (MUNIT,820) NVALS, ISTAT
- 820  FORMAT(T10,'----- Exit zsrts6, Number of data values ',
+ 820  FORMAT(T10,'----- Exit zsrtsi6, Number of data values ',
      * 'stored:',I7,',  Status:',I4,/)
 *      CALL FLUSH(MUNIT)                                         Mu
 C
@@ -1052,28 +1062,28 @@ C     --- ERROR STATEMENTS ---
 C
  900  CONTINUE
       IF (MLEVEL.GE.1) WRITE (MUNIT,901) NPATH, CPATH(1:NPATH)
- 901  FORMAT (/,' *****DSS*** zsrts6:  ERROR  - ILLEGAL PATHNAME',
+ 901  FORMAT (/,' *****DSS*** zsrtsi6:  ERROR  - ILLEGAL PATHNAME',
      * ' OR PATHAME LENGTH',/,' Length: ',I5,/,' Pathname: ',A,/)
       ISTAT = 24
       GO TO 990
 C
  910  CONTINUE
       IF (MLEVEL.GE.1) WRITE (MUNIT,911) CPART(5), INTL, CPATH(1:NPATH)
- 911  FORMAT (/,' *****DSS*** zsrts6:  ERROR  - NON-STANDARD TIME',
+ 911  FORMAT (/,' *****DSS*** zsrtsi6:  ERROR  - NON-STANDARD TIME',
      * ' INTERVAL',/,' Interval: ',A,2X,I8,/,' Pathname: ',A,/)
       ISTAT = 12
       GO TO 990
 C
  920  CONTINUE
       IF (MLEVEL.GE.1) WRITE (MUNIT,921) NVALS, CPATH(1:NPATH)
- 921  FORMAT (/,' *****DSS*** zsrts6:  ERROR  - NUMBER OF VALUES',
+ 921  FORMAT (/,' *****DSS*** zsrtsi6:  ERROR  - NUMBER OF VALUES',
      * ' TO STORE IS LESS THAN 1',/,' NVALS: ',I8,/,' Pathname: ',A,/)
       ISTAT = 11
       GO TO 990
 C
  925  CONTINUE
       IF (MLEVEL.GE.1) WRITE (MUNIT,926) NVALS, CPATH(1:NPATH)
- 926  FORMAT (/,' *****DSS*** zsrts6:  ERROR  - Insufficent',
+ 926  FORMAT (/,' *****DSS*** zsrtsi6:  ERROR  - Insufficent',
      * ' internal memory to store data',/,
      * ' NVALS: ',I8,/,' Pathname: ',A,/)
       ISTAT = 16
@@ -1081,14 +1091,14 @@ C
 C
  930  CONTINUE
       IF (MLEVEL.GE.1) WRITE (MUNIT,931) CDATE, JULS, CPATH(1:NPATH)
- 931  FORMAT (/,' *****DSS*** zsrts6:  ERROR  - ILLEGAL STARTING',
+ 931  FORMAT (/,' *****DSS*** zsrtsi6:  ERROR  - ILLEGAL STARTING',
      * ' DATE SPECIFIED',/,' Date: ',A,3X,I8,/,' Pathname: ',A,/)
       ISTAT = 15
       GO TO 990
 C
  940  CONTINUE
       IF (MLEVEL.GE.1) WRITE (MUNIT,941) CTIME, ISTIME, CPATH(1:NPATH)
- 941  FORMAT (/,' *****DSS*** zsrts6:  ERROR  - ILLEGAL STARTING',
+ 941  FORMAT (/,' *****DSS*** zsrtsi6:  ERROR  - ILLEGAL STARTING',
      * ' TIME SPECIFIED',/,' Time: ',A,3X,I8,/,' Pathname: ',A,/)
       ISTAT = 15
       GO TO 990
@@ -1096,14 +1106,14 @@ C
  950  CONTINUE
       IF (MLEVEL.GE.1) WRITE (MUNIT,951) CDATE1, IYR, IMON, IDAY,
      * CPATH(1:NPATH)
- 951  FORMAT(/,' *****DSS*** zsrts6:  ERROR  - UNABLE TO GENERATE',
+ 951  FORMAT(/,' *****DSS*** zsrtsi6:  ERROR  - UNABLE TO GENERATE',
      * ' BLOCK DATE',/,' Date: ',A,3X,3I8,/,' Pathname: ',A,/)
       ISTAT = 15
       GO TO 990
 C
  960  CONTINUE
       NP = INFO(KINPAT)
-      CALL zerror6 (IFLTAB, 11, 'zsrtsx6', 0, IADD, CTSPAT, NTSPAT,
+      CALL zerror6 (IFLTAB, 11, 'zsrtsi6', 0, IADD, CTSPAT, NTSPAT,
      * CTPATH, NP)
 C
  961  CONTINUE
@@ -1111,13 +1121,13 @@ C
 C
  970  CONTINUE
       IF (MLEVEL.GE.1) WRITE (MUNIT,971) ISTAT, CPATH(1:NPATH)
- 971  FORMAT (/,' *****DSS*** zsrts6:  ERROR  - UNABLE TO ',
+ 971  FORMAT (/,' *****DSS*** zsrtsi6:  ERROR  - UNABLE TO ',
      * ' STORE DATA',/,' Status: ',I8,/,' Pathname: ',A,/)
       GO TO 990
 C
  974  CONTINUE
       IF (MLEVEL.GE.1) WRITE (MUNIT,975) CPATH(1:NPATH)
- 975  FORMAT (/,' *****DSS*** zsrts6:  ERROR  - Attempting ',
+ 975  FORMAT (/,' *****DSS*** zsrtsi6:  ERROR  - Attempting ',
      * ' to store',/,' a different type of data set than'
      * ' what already exists.',/,' Pathname: ',A,/)
       ISTAT=511
@@ -1125,28 +1135,28 @@ C
 C
  980  CONTINUE
       IF (MLEVEL.GE.1) WRITE (MUNIT, 981) IACOMP
- 981  FORMAT (/,' *** ERROR:  zsrtsx6;  Illegal Data compression ',
+ 981  FORMAT (/,' *** ERROR:  zsrtsi6;  Illegal Data compression ',
      *  'scheme',/,' Setting:',I6,';  Min Allowed: 0,  Max: 5')
       ISTAT = 51
       GO TO 990
 C
  985  CONTINUE
       IF (MLEVEL.GE.1) WRITE (MUNIT, 986) NPRE
- 986  FORMAT (/,' *** ERROR:  zsrtsx6;  Illegal Data Compression',
+ 986  FORMAT (/,' *** ERROR:  zsrtsi6;  Illegal Data Compression',
      * ' Precision Value'/,' Value:',I6,';  Min Allowed: -6,  Max: 6')
       ISTAT = 52
       GO TO 990
 C
  987  CONTINUE
       IF (MLEVEL.GE.1) WRITE (MUNIT, 988) CPATH(1:NPATH)
- 988  FORMAT (' -----DSS---zsrtsx6:  ERROR;  File has Read Access Only',
+ 988  FORMAT (' -----DSS---zsrtsi6:  ERROR;  File has Read Access Only',
      * /,' Pathname: ',A)
       ISTAT = 30
       GO TO 990
 C
  995  CONTINUE
       WRITE (MUNIT, 996) CPATH(1:NPATH)
- 996  FORMAT (' -----DSS---zsrtsx6:  ERROR;  Unable to store time ',
+ 996  FORMAT (' -----DSS---zsrtsi6:  ERROR;  Unable to store time ',
      * 'pattern data in double precision.',
      * /,' Pathname: ',A)
       ISTAT = 30
@@ -1155,7 +1165,7 @@ C
 C
  990  CONTINUE
       IF (MLEVEL.GE.7) WRITE (MUNIT,991) ISTAT
- 991  FORMAT(T10,'----- Exit zsrts6, Error return; Status:',I4)
+ 991  FORMAT(T10,'----- Exit zsrtsi6, Error return; Status:',I4)
       GO TO 800
 C
       END
