@@ -26,13 +26,13 @@
 !
       WRITE(messageUnit, *)'Begin testPairedData'
       nOrdinates = 10
-      do 20 i=1, nOrdinates
+      do i=1, nOrdinates
        data1(i) =FLOAT(i)       
- 20  continue
+      end do
 
-    do 30 i=11, 20
+      do  i=11, 20
        data1(i) = FLOAT(i) * 100.0 
- 30  continue
+      end do
   ! 
 !
  1  Format('Paired Data test FAILED') 
@@ -120,14 +120,15 @@
     cpath1 = '/Paired Data/Fifty Curves/Stage-Flow/F/With Labels/Floats/'
     ncurves = 50
     nOrdinates = 100
-    do 200 i=1,(ncurves+1)
-    write (labels(i), 199) i
-199 format('Curve ', I2)
-    do 200 j=1,nOrdinates
-        n = j + ((i-1) *nOrdinates )
-        data1(n) = (i * 1000) + j
-        ddata1(n) = data1(n)
- 200  continue    
+    do i=1,(ncurves+1)
+       write (labels(i), 199) i
+199    format('Curve ', I2)
+       do j=1,nOrdinates
+           n = j + ((i-1) *nOrdinates )
+           data1(n) = (i * 1000) + j
+           ddata1(n) = data1(n)
+       end do
+    end do
     call zspd (ifltab1, cpath1, nOrdinates, ncurves, 1, 'Feet', 'UNT', 'CFS', 'UNT', data1, labels, .true.,&
      userHeader, 0, 0, status)
     if (status.ne.0) go to 900
@@ -166,10 +167,10 @@
         status = -1
         go to 900
     endif
-    do 220 i=1,ncurves
+    do i=1,ncurves
         call checkString(labels(i), labelsRead(i), 'testPairedData labels, loc 30', status)
         if (status.ne.0) go to 900
-220 continue
+    end do
    
   
      !   Read floats as doubles 
@@ -205,10 +206,10 @@
         status = -1
         go to 900
     endif
-    do 222 i=1,ncurves
+    do i=1,ncurves
         call checkString(labels(i), labelsRead(i), 'testPairedData labels, loc 35', status)
         if (status.ne.0) go to 900
-222 continue
+    end do
    
     
    
@@ -217,12 +218,13 @@
     cpath1 = '/Paired Data/Fifty Curves/Stage-Flow/F/With Labels/Doubles/'
     ncurves = 50
     nOrdinates = 100
-    do 300 i=1,(ncurves+1)
-    write (labels(i), 199) i
-    do 300 j=1,nOrdinates
-        n = j + ((i-1) *nOrdinates )
-        ddata1(n) = (i * 1000) + j
- 300  continue    
+    do i=1,(ncurves+1)
+       write (labels(i), 199) i
+       do  j=1,nOrdinates
+           n = j + ((i-1) *nOrdinates )
+           ddata1(n) = (i * 1000) + j
+       end do
+    end do
     call zspdd (ifltab1, cpath1, nOrdinates, ncurves, 1, 'Feet', 'UNT', 'CFS', 'UNT', ddata1, labels, .true.,&
      userHeader, 0, 0, status)
     if (status.ne.0) go to 900
@@ -261,10 +263,10 @@
         status = -1
         go to 900
     endif
-    do 320 i=1,ncurves
+    do i=1,ncurves
         call checkString(labels(i), labelsRead(i), 'testPairedData labels, loc 40', status)
         if (status.ne.0) go to 900
-320 continue
+    end do
    
    !   Read doubles as floats 
    cpath1 = '/Paired Data/Fifty Curves/Stage-Flow/F/With Labels/Doubles/'  
@@ -299,10 +301,10 @@
         status = -1
         go to 900
     endif
-    do 420 i=1,ncurves
+    do i=1,ncurves
         call checkString(labels(i), labelsRead(i), 'testPairedData labels, loc 50', status)
         if (status.ne.0) go to 900
-420 continue
+    end do
    
    
    !   Read floats as doubles 
@@ -338,10 +340,10 @@
         status = -1
         go to 900
     endif
-    do 520 i=1,ncurves
+    do i=1,ncurves
         call checkString(labels(i), labelsRead(i), 'testPairedData labels, loc 60', status)
         if (status.ne.0) go to 900
-520 continue
+    end do
 
 
  ! Now, double precision, one curve at at a time
@@ -349,12 +351,13 @@
     cpath1 = '/Paired Data/Fifty Curves - one at a time/Stage-Flow/F/With Labels/Doubles/'
     ncurves = 50
     nOrdinates = 100
-    do 540 i=1,(ncurves+1)
-    write (labels(i), 199) i
-    do 540 j=1,nOrdinates
-        n = j + ((i-1) *nOrdinates )
-        ddata1(n) = (i * 1000) + j
- 540  continue   
+    do i=1,(ncurves+1)
+       write (labels(i), 199) i
+       do j=1,nOrdinates
+           n = j + ((i-1) *nOrdinates )
+           ddata1(n) = (i * 1000) + j
+       end do
+    end do
     iplan = 10 
     call zspdd (ifltab1, cpath1, nOrdinates, ncurves, 1, 'Feet', 'UNT', 'CFS', 'UNT', ddata1, labels, .true., &
      userHeader, 0, iplan, status)
@@ -362,7 +365,7 @@
     call zinqir(ifltab1, 'error', ctemp, status)
     if (status.ne.0) go to 900
 
-    do 560 i=1,ncurves
+    do i=1,ncurves
         iplan = 11 
         ipos = (i * nOrdinates) + 1
         call zspdd(ifltab1, cpath1, nOrdinates, i, 1, '', '', '', '', ddata1(ipos), labels(i), .true., &
@@ -370,7 +373,7 @@
         if (status.ne.0) go to 900
         call zinqir(ifltab1, 'error', ctemp, status)
         if (status.ne.0) go to 900
- 560  continue
+    end do
 
 !   Check   
     call zrpdd(ifltab1, cpath1, numberOrdinates, numberCurves, iHorizontal, &
@@ -404,23 +407,24 @@
         status = -1
         go to 900
     endif
-    do 580 i=1,ncurves
+    do i=1,ncurves
         call checkString(labels(i), labelsRead(i), 'testPairedData labels, loc 140', status)
         if (status.ne.0) go to 900
-580 continue
+    end do
 
     !  Now with extended labels
     cpath1 = '/Paired Data/Fifty Curves - one at a time/Stage-Flow/F/Extended Labels/Doubles/'
     ncurves = 50
     nOrdinates = 100
-    do 740 i=1,(ncurves+1)
-    write (labels(i), 730) i
-730  format('Extended label for this curve, number ',I2.2)
-    do 740 j=1,nOrdinates
-        n = j + ((i-1) *nOrdinates )
-        ddata1(n) = (i * 1000) + j
-        data1(n) = ddata1(n)
- 740  continue   
+    do i=1,(ncurves+1)
+       write (labels(i), 730) i
+730    format('Extended label for this curve, number ',I2.2)
+       do j=1,nOrdinates
+           n = j + ((i-1) *nOrdinates )
+           ddata1(n) = (i * 1000) + j
+           data1(n) = ddata1(n)
+       end do
+    end do
     iplan = 10 
     call zspdd (ifltab1, cpath1, nOrdinates, ncurves, 1, 'Feet', 'UNT', 'CFS', 'UNT', ddata1, labels, .true.,&
      userHeader, 0, iplan, status)
@@ -428,14 +432,14 @@
     call zinqir(ifltab1, 'error', ctemp, status)
     if (status.ne.0) go to 900
 
-    do 760 i=1,ncurves
+    do i=1,ncurves
         iplan = 11 
         ipos = (i * nOrdinates) + 1
         call zspdd(ifltab1, cpath1, nOrdinates, i, 1, '', '', '', '', ddata1(ipos), labels(i), .true., userHeader, 0, iplan, status)
         if (status.ne.0) go to 900
         call zinqir(ifltab1, 'error', ctemp, status)
         if (status.ne.0) go to 900
- 760  continue
+    end do
 
 !   Check   
     call zrpdd(ifltab1, cpath1, numberOrdinates, numberCurves, iHorizontal, &
@@ -469,10 +473,10 @@
         status = -1
         go to 900
     endif
-    do 780 i=1,ncurves
+    do i=1,ncurves
         call checkString(labels(i), labelsRead(i), 'testPairedData labels, loc 150', status)
         if (status.ne.0) go to 900
-780 continue
+    end do
    
    !   Read doubles as floats  
     call zrpd (ifltab1, cpath1, numberOrdinates, numberCurves, iHorizontal, &
@@ -507,10 +511,10 @@
         status = -1
         go to 900
     endif
-    do 590 i=1,ncurves
+    do i=1,ncurves
         call checkString(labels(i), labelsRead(i), 'testPairedData labels, loc 160', status)
         if (status.ne.0) go to 900
-590 continue
+   end do
    
    
 

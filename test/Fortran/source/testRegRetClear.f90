@@ -31,17 +31,17 @@
 
       
  
-      do 20 i=1, kvals
-      do 12 j=1,sizeData
-         data2(j, i) = 0
- 12   continue
-      do 13 j=1,sizeQuality
-         quality2(j, i) = 0
- 13   continue
-      do 14 j=1,sizeNotes
-         notes2(j, i) = 0
- 14   continue          
- 20   continue
+      do i=1, kvals
+         do j=1,sizeData
+            data2(j, i) = 0
+         end do
+         do j=1,sizeQuality
+            quality2(j, i) = 0
+         end do
+         do j=1,sizeNotes
+            notes2(j, i) = 0
+         end do
+      end do
 
       lenData = 0
       lenQuality = 0
@@ -51,9 +51,9 @@
       ctype = ' ' 
 
       if (sizeCnotes .gt. 0) then
-        do 40 i=1,sizeCnotes
+        do i=1,sizeCnotes
            cnotes(i) = ' '
- 40     continue
+        end do
       endif
 
         status = -1

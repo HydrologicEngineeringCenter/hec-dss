@@ -27,10 +27,10 @@
       WRITE(messageUnit, *)'Begin test_RTS_Basic'
       nvals = 1000
       maxVals = 1000
-      do 20 i=1, nvals
+      do i=1, nvals
        data1(i) =FLOAT(i)
        data3(i) = data1(i)  
-20    continue
+      end do
   !  goto 210
       
       call zopen6(ifltab1, "test.dss", status)

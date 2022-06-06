@@ -44,15 +44,16 @@
       lenNotes = 4
 
       nvals = 1000
-      do 20 i=1, nvals
+      do i=1, nvals
        data1(i) =FLOAT(i)
        data3(i) = data1(i)
-       do 10 j=1,2
+       do j=1,2
         quality3(j,i) = 0
- 10    continue 
-        do 20 j=1,4
+       end do
+        do j=1,4
         notes3(j,i) = 0     
- 20  continue
+        end do
+      end do
     kvals = nvals
 !
  1  Format('Basic Time Series double basic test FAILED')   
@@ -125,20 +126,21 @@
 !     Now test with quality and notes
  100    continue
       nvals = 1010
-      do 120 i=1, nvals
+      do i=1, nvals
        data1(i) = FLOAT(i)
       if (i.le.10) data1(i) = zmissingFlag()
        data3(i) = data1(i) 
-       do 110 j=1,2
+       do j=1,2
         quality1(j,i) = (i*100) + j
         if ((i.gt.100).and.(i.lt.300)) quality1(j,i) = 123
         quality3(j,i) = quality1(j,i) 
- 110    continue 
-        do 120 j=1,4
+       end do
+        do j=1,4
         notes1(j,i) = (i*10000) + j
         if ((i.gt.400).and.(i.lt.600)) notes1(j,i) = 456
         notes3(j,i) = notes1(j,i)        
- 120  continue
+        end do
+      end do
 ! 
     cpath1 = '/Time Series With Quailty/1/Flow/date/1Hour/F/'
     nvals = 1000
@@ -315,10 +317,10 @@
     !Now, write out all missing, but with quality
 2    cpath1 = '/Time Series With Quailty/All Missing/Flow/date/1Hour/F/'
     nvals = 1000
-    do 210 i=1,nvals
+    do i=1,nvals
         data1(i) = zmissingFlag()
         data3(i) = zmissingFlag()
-210 continue    
+    end do
       
     call ztsRegStoreFull (ifltab1, cpath1, '25JUN1957', '2400', nvals, &
     data1, 2, quality1, 2, notes1, 0, cnotes, 0, userHeader, 0, &  
@@ -392,10 +394,10 @@
     call zinqir(ifltab1, 'error', ctemp, status)
     if (status.ne.0) go to 900
     
-    do 220 i=1,nvals
+    do i=1,nvals
         quality3(1,i) = 0
         quality3(2,i) = 0
-220 continue 
+    end do
 
     call checkNumbers(kvals,nvals, 'test_RTS_DoubleQual number stored, loc 80', status)
     if (status.ne.0) go to 900
@@ -438,10 +440,10 @@
     call zinqir(ifltab1, 'error', ctemp, status)
     if (status.ne.0) go to 900
     
-        do 230 i=1,nvals
+        do i=1,nvals
         quality3(1,i) = 0
         quality3(2,i) = 0
-230 continue
+        end do
 
     call checkNumbers(kvals,nvals, 'test_RTS_DoubleQual number stored, loc 90', status)
     if (status.ne.0) go to 900
@@ -484,14 +486,14 @@
     call zinqir(ifltab1, 'error', ctemp, status)
     if (status.ne.0) go to 900
     
-    do 240 i=1,480
+    do i=1,480
         quality3(1,i) = 0
         quality3(2,i) = 0
-240 continue
-    do 250 i=481,nvals
+    end do
+    do i=481,nvals
         quality3(1,i) = quality1(1,i-480)
         quality3(2,i) = quality1(2,i-480)
-250 continue
+    end do
 
 
     call checkNumbers(kvals,nvals, 'test_RTS_DoubleQual number stored, loc 100', status)
@@ -536,14 +538,14 @@
     call zinqir(ifltab1, 'error', ctemp, status)
     if (status.ne.0) go to 900
     
-    do 260 i=1,nvals
+    do i=1,nvals
         quality3(1,i) = 0
         quality3(2,i) = 0
-260 continue
-    do 270 i=1,(nvals-96)
+    end do
+    do i=1,(nvals-96)
         quality3(1,i) = quality1(1,i+96)
         quality3(2,i) = quality1(2,i+96)
-270 continue
+    end do
 
 
     call checkNumbers(kvals,nvals, 'test_RTS_DoubleQual number stored, loc 110', status)
@@ -574,12 +576,12 @@
     !Now, write out all missing, but with quality and notes
     cpath1 = '/Time Series With Quailty And Notes/All Missing/Flow/date/1Hour/F/'
     nvals = 1000
-    do 310 i=1,nvals
+    do i=1,nvals
         data1(i) = zmissingFlag()
         data3(i) = zmissingFlag()
         quality3(1,i) = quality1(1,i)
         quality3(2,i) = quality1(2,i)
-310 continue    
+    end do
       
     call ztsRegStoreFull (ifltab1, cpath1, '25JUN1957', '2400', nvals, &
     data1, 2, quality1, 2, notes1, 4, cnotes, 0, userHeader, 0, &  
@@ -655,12 +657,13 @@
     call zinqir(ifltab1, 'error', ctemp, status)
     if (status.ne.0) go to 900
     
-    do 420 i=1,nvals
+    do i=1,nvals
         quality3(1,i) = 0
         quality3(2,i) = 0
-    do 420 j=1,4
+    do j=1,4
         notes3(j,i) = 0
-420 continue 
+    end do
+    end do
 
     call checkNumbers(kvals,nvals, 'test_RTS_DoubleQual number stored, loc 180', status)
     if (status.ne.0) go to 900
@@ -705,12 +708,13 @@
     call zinqir(ifltab1, 'error', ctemp, status)
     if (status.ne.0) go to 900
     
-    do 430 i=1,nvals
+    do i=1,nvals
         quality3(1,i) = 0
         quality3(2,i) = 0
-    do 430 j=1,4
+    do j=1,4
             notes3(j,i) = 0
-430 continue
+    end do
+    end do
 
     call checkNumbers(kvals,nvals, 'test_RTS_DoubleQual number stored, loc 190', status)
     if (status.ne.0) go to 900
@@ -755,18 +759,20 @@
     call zinqir(ifltab1, 'error', ctemp, status)
     if (status.ne.0) go to 900
     
-    do 440 i=1,480
+    do i=1,480
         quality3(1,i) = 0
         quality3(2,i) = 0
-     do 440 j=1,4
+     do j=1,4
         notes3(j,i) = 0
-440 continue
-    do 450 i=481,nvals
+    end do
+    end do
+    do i=481,nvals
         quality3(1,i) = quality1(1,i-480)
         quality3(2,i) = quality1(2,i-480)
-     do 450 j=1,4
+     do j=1,4
         notes3(j,i) = notes1(j,i-480)        
-450 continue
+    end do
+    end do
 
 
     call checkNumbers(kvals,nvals, 'test_RTS_DoubleQual number stored, loc 200', status)
@@ -813,18 +819,20 @@
     call zinqir(ifltab1, 'error', ctemp, status)
     if (status.ne.0) go to 900
     
-    do 460 i=1,nvals
+    do i=1,nvals
         quality3(1,i) = 0
         quality3(2,i) = 0
-    do 460 j=1,4
+    do j=1,4
         notes3(j,i) = 0
-460 continue
-    do 470 i=1,(nvals-96)
+    end do
+    end do
+    do i=1,(nvals-96)
         quality3(1,i) = quality1(1,i+96)
         quality3(2,i) = quality1(2,i+96)
-    do 470 j=1,4
+    do j=1,4
         notes3(j,i) = notes1(j,i+96)
-470 continue
+    end do
+    end do
 
 
     call checkNumbers(kvals,nvals, 'test_RTS_DoubleQual number stored, loc 210', status)

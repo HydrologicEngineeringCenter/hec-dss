@@ -36,10 +36,10 @@
       !  Simple zwrite check      
       nvals = number
       if (nvals > 1000) nvals = 1000
-      do 20 i=1,nvals
+      do i=1,nvals
         data1(i) = float(i)
         userHeader(i) = i
- 20   continue
+      end do
 
       iplan = 0
       call zwritea(ifltab1, pathname, npath, userHeader, nvals, data1, nvals, iplan, lfound)

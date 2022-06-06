@@ -117,7 +117,7 @@
     if (status.ne.0) go to 900
     
     if (checkAsending) then
-    do 110 i=startData+1,nvals
+    do i=startData+1,nvals
         if (itimes2(i).le.itimes2(i-1)) then
             write (*,*)'Times not acending in function test_ITS_Full secondary verify ', label
             write (*,*)i, itimes2(i), itimes2(i-1)
@@ -128,7 +128,7 @@
             write (*,*)i, data2(i), data2(i-1)
             go to 900
         endif
-110 continue
+    end do
     else
         call checkInts(itimes4(startData), itimes2(startData), 1, NVALS, 'test_ITS_Full secondary verify times, loc 300 ' &
           // label, status)

@@ -44,19 +44,20 @@
     
 !
       nvals = 100
-      do 120 i=1, nvals
+      do i=1, nvals
        data1(i) = FLOAT(i)
        data3(i) = data1(i) 
-       do 110 j=1,2
+       do j=1,2
         quality1(j,i) = (i*100) + j        
- 110  continue          
+       end do
         quality3(i) = quality1(1,i) 
-        do 115 j=1,4
+        do j=1,4
         notes1(j,i) = (i*10000) + j        
- 115    continue
-        do 120 j=1,3        
+        end do
+        do j=1,3
         notes3(j,i) = notes1(j,i)        
- 120  continue
+        end do
+      end do
 ! 
     cpath1 = '/Time Series/No Repeats/Quality and Notes/date/1Hour/Doubles to Floats/'
     
@@ -113,12 +114,13 @@
     call checkInts(notes3, notes2, 3, nvals, 'test_RTS_NoRepeatsDoubleToFloat Notes, loc 10', status)
     if (status.ne.0) go to 900
 
-    do 170, i=1,nvals
+    do  i=1,nvals
         data3(i) = zmissingFlag()        
         quality3(i) = 0 
-        do 170 j=1,3
+        do j=1,3
             notes3(j,i) = 0
-170 continue
+        end do
+    end do
 
     !  Now, before...  all data should be missing
     call ztsRegRetClear(ifltab1, cpath1, '10JUN1987', '2400', kvals, nvals, iofset, &
@@ -200,12 +202,13 @@
 
 
  !  Now, partly before, so 1/2 of data is there, the other missing
-    do 240 i=49,100
+    do i=49,100
         data3(i) = data1(i - 48)
         quality3(i) = quality1(1,i-48) 
-        do 240 j=1,3
+        do j=1,3
             notes3(j,i) = notes1(j,i-48)
-240 continue
+        end do
+    end do
 
     call ztsRegRetClear(ifltab1, cpath1, '10JUN1987', '2400', kvals, nvals, iofset, &
     data2, 1, lenValuesRead, quality2, 1, lenQualityRead, notes2, 3, lenNotesRead, &
@@ -249,19 +252,21 @@
  !  Now, partly after, so 1/2 of data is there, the other missing
     nvals = 110
     kvals = 110
-    do 350 i=1,52
+    do i=1,52
         data3(i) = data1(i + 48)        
         quality3(i) = quality1(1,i+48) 
-        do 350 j=1,3
+        do j=1,3
             notes3(j,i) = notes1(j,i+48)
-350 continue
+        end do
+    end do
 
-    do 380 i=53,nvals
+    do i=53,nvals
          data3(i) = zmissingFlag()         
          quality3(i) = 0 
-        do 380 j=1,3
+        do j=1,3
             notes3(j,i) = 0
-380 continue
+        end do
+    end do
 
      zero = 0
     call ztsRegRetClear(ifltab1, cpath1, '10JUN1987', '2400', kvals, nvals, iofset, &
@@ -305,9 +310,9 @@
  !  Now, in the middle, so we are only reading valid data
     nvals = 50
     kvals = nvals
-    do 200 i=1,nvals
+    do i=1,nvals
         data3(i) = data1(i + 48)
-200 continue
+    end do
 
     max = 4
     call ztsRegRetClear(ifltab1, cpath1, '10JUN1987', '2400', kvals, nvals, iofset, &
@@ -351,21 +356,20 @@
  !  Now, before and after, so there is missing data on both sides
     nvals = 200
     kvals = 200
-    do 450 i=1,nvals
+    do i=1,nvals
         data3(i) = zmissingFlag()       
             quality3(i) = 0 
- 475    continue 
-        do 450 j=1,3
+        do j=1,3
             notes3(j,i) = 0
-450 continue
-    do 490 i=49,148
+        end do
+    end do
+    do i=49,148
          data3(i) = data1(i-48)
-          !do 485 j=1,2
             quality3(i) = quality1(1,i-48) 
- 485    continue 
-        do 490 j=1,3
+        do j=1,3
             notes3(j,i) = notes1(j,i-48)
-490 continue
+        end do
+    end do
 
     call ztsRegRetClear(ifltab1, cpath1, '10JUN1987', '2400', kvals, nvals, iofset, &
     data2, 1, lenValuesRead, quality2, 1, lenQualityRead, notes2, 3, lenNotesRead, &

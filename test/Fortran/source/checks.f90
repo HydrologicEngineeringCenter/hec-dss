@@ -72,7 +72,7 @@
 
     integer i
 
-    do 100 i=1, number
+    do i=1, number
         if (dataOrig(i).ne.dataRead(i)) then
             write (*,*)' '
             write (*,*)' '
@@ -85,7 +85,7 @@
             status = -1
             return
         endif
- 100 continue
+     end do
 
     status = 0
     return
@@ -102,7 +102,7 @@
 
     integer i
 
-    do 100 i=1, number
+    do i=1, number
         if (dataOrig(i).ne.dataRead(i)) then
             write (*,*)' '
             write (*,*)' '
@@ -115,7 +115,7 @@
             status = -1
             return
         endif
- 100 continue
+     end do
 
     status = 0
     return
@@ -132,8 +132,8 @@
 
     integer i, j
 
-    do 100 i=1, number
-        do 100 j=1, length
+    do i=1, number
+        do j=1, length
         if (dataOrig(j, i).ne.dataRead(j, i)) then
             write (*,*)' '
             write (*,*)' '
@@ -146,7 +146,8 @@
             status = -1
             return
         endif
- 100 continue
+      end do
+    end do
 
     status = 0
     return
@@ -166,7 +167,7 @@
     minutesInBaseDate = baseDate * 1440
     timeGran = timeGranularitySeconds
     if (timeGran < 1) timeGran = 60
-    do 100 i=1, number
+    do i=1, number
         timeRead = (dataRead(i) / timeGran) + minutesInBaseDate
         timeOrig = (dataOrig(i) / timeGran) + minutesInBaseDate
         if (timeOrig.ne.timeRead) then
@@ -182,7 +183,7 @@
             status = -1
             return
         endif
- 100 continue
+     end do
 
     status = 0
     return
@@ -199,19 +200,20 @@
 
     integer i, j, n2, n3
 
-    do 100 i=1, number
+    do i=1, number
         call chrlnb(dataOrig(i), n3)
         call chrlnb(dataRead(i), n2)
-        if ((n3.le.0).and.(n2.le.0)) go to 100
-        if (n3.le.0) n3 = 1
-        if (n2.le.0) n2 = 1
-        call checkString(dataOrig(i)(1:n3), dataRead(i)(1:n2), mess, status)
-        if (status.ne.0) then
-            write(*,*)'At ordinate number ',i
-            status = -1
-            return
-        endif
- 100 continue
+        if (.not.(n3.le.0).and.(n2.le.0)) then
+            if (n3.le.0) n3 = 1
+            if (n2.le.0) n2 = 1
+            call checkString(dataOrig(i)(1:n3), dataRead(i)(1:n2), mess, status)
+            if (status.ne.0) then
+                write(*,*)'At ordinate number ',i
+                status = -1
+                return
+            endif
+        end if
+    end do
 
     status = 0
     return
@@ -227,7 +229,7 @@
 
     integer i, j, n2, n3
 
-    do 100 i=1, number
+    do i=1, number
         call chrlnb(dataRead(i), n2)
         if (n2.ne.0) then
             write (*,*)' '
@@ -240,7 +242,7 @@
             status = -1
             return
         endif
- 100 continue
+    end do
 
     status = 0
     return

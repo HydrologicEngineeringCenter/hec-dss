@@ -44,7 +44,7 @@
       call datjul("06Sep1955", juls, status)
       juls = juls * 1440      
       ich = ichar('A')
-      do 20 i=1, nvals
+      do i=1, nvals
        itimes1(i) = (i * 1440) + juls
        itimes3(i) = itimes1(i) 
        itimes4(i) = itimes1(i) 
@@ -55,21 +55,21 @@
        n = mod(i-1,25) + 1
        if (n.eq.1) lowerCase = .not.lowerCase
        if (lowerCase) then
-       do 4 k=1,n
+       do k=1,n
           cnotes1(i)(k:k) = char(ich+k-1+32)          
- 4     continue
+       end do
        else
-       do 5 k=1,n
+       do k=1,n
           cnotes1(i)(k:k) = char(ich+k-1)          
- 5     continue
+       end do
        endif  
        cnotes3(i) = cnotes1(i)
        cnotes4(i) = cnotes1(i)     
-       do 10 j=1,2
+       do j=1,2
         quality1(j,i) = i+j
         quality3(j,i) = quality1(j,i)
- 10    continue 
- 20  continue
+       end do
+      end do
  
  
 !     call zset('mlvl', ' ', 12)
@@ -101,7 +101,7 @@
     nvals = 1000
     call datjul("06Sep1955", juls, status)
     juls = juls * 1440
-    do 200 i=1, nvals
+    do i=1, nvals
        data1(i) = i
        data3(i) = data1(i)
        data4(i) = data1(i)
@@ -114,10 +114,10 @@
        quality4(2,i) = quality1(2,i)
        cnotes3(i) = cnotes1(i) 
        cnotes4(i) = cnotes1(i) 
- 200 continue
+    end do
  
     ascending = .false.
-    do 500 j=1,4
+    do j=1,4
     
         if (j.eq.1) then
             letter = 'a'
@@ -137,10 +137,10 @@
         !  If we are at loop 3, we need to use offset times.  
         !  Rebuild the time array by 6 mins off
         if (j.eq.3) then
-            do 220 i=1, nvals       
+            do i=1, nvals
                itimes4(i) = itimes1(i) - 6 
                data4(i) = data1(i) - 0.5             
- 220        continue
+            end do
             !  With the offset, it would be hard to compute all the
             !  results arrays (we'd have to fix gaps), but we know
             !  that the times and data are ascending, so just check that
@@ -242,7 +242,7 @@
         if (status.ne.0) go to 900
         
     
- 500  continue   
+    end do
 !
 !
  800   Continue

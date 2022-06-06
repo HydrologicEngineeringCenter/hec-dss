@@ -27,10 +27,10 @@
       WRITE(messageUnit, *)'Begin test_RTS_Basic'
       nvals = 1000
       maxVals = 1000
-      do 20 i=1, nvals
+      do i=1, nvals
        data1(i) =FLOAT(i)
        data3(i) = data1(i)  
- 20  continue
+      end do
   !  goto 210
 !
  1  Format('Basic Time Series test FAILED')   
@@ -154,10 +154,10 @@
 
     !  How about if we write all missing?
     nvals = 100
-    do 100 i=1, nvals
+    do i=1, nvals
        data1(i) = zmissingFlag()
        data3(i) = data1(i)  
-100  continue
+    end do
 
     call zsrts (ifltab1, cpath1, '05JUN1957', '2400', nvals, data1, 'CFS', 'PER-AVER', 0, status)
     if (status.ne.0) go to 900
@@ -184,10 +184,10 @@
 
  110    continue
     nvals = 1000
-    do 120 i=1, nvals
+    do i=1, nvals
        data1(i) =FLOAT(i)
        data3(i) = data1(i)  
-120  continue
+    end do
  !call zset('mlvl', ' ', 19)
     cpath1 = '/Basic Time Series/2/Flow/date/1Hour/F/'
     call zsrts (ifltab1, cpath1, '25JUN1957', '2400', nvals, data1, 'CFS', 'PER-AVER', 0, status)
@@ -247,10 +247,10 @@
     !write(messageUnit, *)' '
 
 210 nvals = 200
-    do 220 i=49, nvals
+    do i=49, nvals
        data1(i) =FLOAT(i) + 100.
        data3(i) = data1(i)  
-220  continue
+    end do
 
     cpath1 = '/Basic Time Series/2/Flow/date/1Hour/F/'
  !call zset('mlvl', ' ', 15)
@@ -279,10 +279,10 @@
    
 
     nvals = 200
-    do 240 i=49, nvals
+    do i=49, nvals
        data1(i) = zmissingFlag()
        data3(i) = data1(i)  
-240  continue
+    end do
 
     cpath1 = '/Basic Time Series/2/Flow/date/1Hour/F/'
     call zsrts (ifltab1, cpath1, '27JUN1957', '2400', nvals, data1(49), 'CFS', 'PER-AVER', 0, status)
