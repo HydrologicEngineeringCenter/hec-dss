@@ -203,7 +203,7 @@
     do i=1, number
         call chrlnb(dataOrig(i), n3)
         call chrlnb(dataRead(i), n2)
-        if (.not.(n3.le.0).and.(n2.le.0)) then
+        if (.not.((n3.le.0).and.(n2.le.0))) then
             if (n3.le.0) n3 = 1
             if (n2.le.0) n2 = 1
             call checkString(dataOrig(i)(1:n3), dataRead(i)(1:n2), mess, status)
