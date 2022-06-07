@@ -60,7 +60,7 @@
       lowercase = .false.
       juls = juls * 1440
       ich = ichar('A')
-      do 20 i=1, nvals
+      do i=1, nvals
        itimes1(i) = (i * 1440) + juls
        itimes3(i) = itimes1(i) 
        itimes4(i) = itimes1(i) 
@@ -70,20 +70,20 @@
        n = mod(i-1,25) + 1
        if (n.eq.1) lowerCase = .not.lowerCase
        if (lowerCase) then
-       do 4 k=1,n
+       do k=1,n
           cnotes1(i)(k:k) = char(ich+k-1+32)          
- 4     continue
+       end do
        else
-       do 5 k=1,n
+       do k=1,n
           cnotes1(i)(k:k) = char(ich+k-1)          
- 5     continue
+       end do
        endif       
-       do 10 j=1,2
+       do j=1,2
         quality1(j,i) = i+j
         quality3(j,i) = quality1(j,i)
- 10    continue 
+      end do
       
- 20  continue
+      end do
     kvals = nvals
 !
  1  Format('Time Series Notes test FAILED')   
@@ -98,9 +98,9 @@
    ! cnotes1(4) = 'Frank calibrated'
    ! cnotes1(5) = ' '
     
-    do 21 i=1,nvals
+    do i=1,nvals
       cnotes3(i) = cnotes1(i)
- 21 continue    
+    end do
     
     nvals = 100
     timeGranularitySeconds = 60
@@ -213,9 +213,9 @@
     if (status.ne.0) go to 900  
     
     !  Now merge with the data off by 12 hours
-    do 70 i=1,1000
+    do i=1,1000
        itimes1(i) = itimes1(i) - 720
-70  continue
+    end do
 
     nvals = 1000    
     timeGranularitySeconds = 60
@@ -225,7 +225,7 @@
 
     
     !  Checking is difficult, as now we have 2000 values....
-    do 75 i=1,1000
+    do i=1,1000
         j = i*2 -1
         itimes4(j) = itimes1(i)        
         itimes4(j+1) = itimes1(i) + 720
@@ -237,7 +237,7 @@
         quality4(2,j+1) = quality1(2,i) 
         cnotes4(j) = cnotes1(i)
         cnotes4(j+1) = cnotes1(i)       
- 75 continue    
+    end do
     
     
     kvals = 2100
@@ -365,7 +365,7 @@
       call datjul('16Sep1955', juls, status)
       juls = juls * 1440
       ich = ichar('A')
-      do 120 i=1, nvals
+      do i=1, nvals
        itimes1(i) = (i * 1440) + juls
        itimes3(i) = itimes1(i) 
        itimes4(i) = itimes1(i) 
@@ -375,20 +375,20 @@
        n = mod(i-1,25) + 1
        if (n.eq.1) lowerCase = .not.lowerCase
        if (lowerCase) then
-       do 44 k=1,n
+       do k=1,n
           cnotes1(i)(k:k) = char(ich+k-1+32)          
- 44     continue
+       end do
        else
-       do 55 k=1,n
+       do k=1,n
           cnotes1(i)(k:k) = char(ich+k-1)          
- 55     continue
+       end do
        endif       
-       do 110 j=1,2
+       do j=1,2
         quality1(j,i) = i+j
         quality3(j,i) = quality1(j,i)
-110    continue 
+       end do
       
-120  continue
+       end do
     kvals = nvals   
 ! 
     cpath1 = '/Time Series With Notes/Basic 2/Flow/date/IR-year//'
@@ -657,9 +657,9 @@
     cnotes2, (50*kvals), totalNotesRead, userHeader, zero, length, &
      cunits, ctype, precision, ctemp, 0, status)
     
-    do 123 i=1,nvals
+    do i=1,nvals
        cnotes3(i) = ''
- 123 continue       
+    end do
 
     if (status.ne.0) go to 900
     call zinqir(ifltab1, 'error', ctemp, status)
@@ -691,9 +691,9 @@
     call checkNotes(cnotes3, cnotes2, nvals, 'test_ITS_CharNotes cNotes, loc 140', status)
     if (status.ne.0) go to 900
     
-     do 124 i=1,nvals
+     do i=1,nvals
        cnotes3(i) = cnotes1(i)
- 124 continue 
+     end do
   
     
     !  Now store the full array

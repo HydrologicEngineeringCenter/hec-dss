@@ -65,33 +65,34 @@
 !
       
       ich = ichar('A')
-      do 120 i=1, 1100
+      do i=1, 1100
        data1(i) = FLOAT(i)
        data3(i) = data1(i) 
        cnotes1(i) = ' '
        n = mod(i-1,25) + 1
        if (n.eq.1) lowerCase = .not.lowerCase
        if (lowerCase) then
-       do 4 k=1,n
+       do k=1,n
           cnotes1(i)(k:k) = char(ich+k-1+32)          
- 4     continue
+       end do
        else
-       do 5 k=1,n
+       do k=1,n
           cnotes1(i)(k:k) = char(ich+k-1)          
- 5     continue
+       end do
        endif   
-       do 110 j=1,2
+       do j=1,2
         quality1(j,i) = (i*100) + j
         quality3(j,i) = quality1(j,i) 
- 110    continue 
-        do 120 j=1,4
+       end do
+        do j=1,4
         notes1(j,i) = (i*10000) + j
         notes3(j,i) = notes1(j,i)        
- 120  continue
+        end do
+      end do
  
-     do 22 i=1,1100
+     do i=1,1100
       cnotes3(i) = cnotes1(i)
- 22 continue   
+     end do
 ! 
     cpath1 = '/Time Series With Notes/Full/Flow/date/1Hour//'
     
@@ -150,9 +151,9 @@
     
     
 
-      do 220, i=1,nvals
+      do  i=1,nvals
         data3(i) = zmissingFlag()
-220 continue
+      end do
 
     !  Now, before...  all data should be missing, notes blank
     call ztsRegRetClear(ifltab1, cpath1, '10JUN1987', '2400', kvals, nvals, iofset, &
@@ -232,9 +233,9 @@
 
 
  !  Now, partly before, so 1/2 of data is there, the other missing
-    do 140 i=49,100
+    do i=49,100
         data3(i) = data1(i-48)
-140 continue
+    end do
     call ztsRegRetClear(ifltab1, cpath1, '10JUN1987', '2400', kvals, nvals, iofset, &
     data2, 2, lenValuesRead, quality2, lenQuality, lenQualityRead, notes2, 0, lenNotes, &
     cnotes2, (50*nvals), totalNotesRead, userHeader, zero, length, &
@@ -278,12 +279,12 @@
  !  Now, partly after, so 1/2 of data is there, the other missing
     nvals = 110
     kvals = 110
-    do 150 i=1,52
+    do i=1,52
         data3(i) = data1(i+48)
-150 continue
-    do 160 i=53,nvals
+    end do
+    do i=53,nvals
          data3(i) = zmissingFlag()
-160 continue
+    end do
     call ztsRegRetClear(ifltab1, cpath1, '10JUN1987', '2400', kvals, nvals, iofset, &
     data2, 2, lenValuesRead, quality2, lenQuality, lenQualityRead, notes2, 0, lenNotes, &
     cnotes2, (50*nvals), totalNotesRead, userHeader, zero, length, &
@@ -326,9 +327,9 @@
  !  Now, in the middle, so we are only reading valid data
     nvals = 50
     kvals = nvals
-    do 200 i=1,nvals
+    do i=1,nvals
         data3(i) = data1(i+48)
-200 continue
+    end do
     call ztsRegRetClear(ifltab1, cpath1, '10JUN1987', '2400', kvals, nvals, iofset, &
     data2, 2, lenValuesRead, quality2, lenQuality, lenQualityRead, notes2, 0, lenNotes, &
     cnotes2, (50*nvals), totalNotesRead, userHeader, zero, length, &
@@ -370,12 +371,12 @@
  !  Now, before and after, so there is missing data on both sides
     nvals = 200
     kvals = 200
-    do 250 i=1,nvals
+    do i=1,nvals
         data3(i) = zmissingFlag()
-250 continue
-    do 260 i=49,148
+    end do
+    do i=49,148
          data3(i) = data1(i-48)
-260 continue
+    end do
     call ztsRegRetClear(ifltab1, cpath1, '10JUN1987', '2400', kvals, nvals, iofset, &
     data2, 2, lenValuesRead, quality2, lenQuality, lenQualityRead, notes2, 0, lenNotes, &
     cnotes2, (50*nvals), totalNotesRead, userHeader, zero, length, &
@@ -479,10 +480,10 @@
     
     cpath1 = '/Time Series All Missing/With C Notes/Flow/date/1Hour/F/'
     nvals = 1000
-    do 310 i=1,nvals
+    do i=1,nvals
         data1(i) = zmissingFlag()
         data3(i) = zmissingFlag()
-310 continue    
+    end do
       
     call ztsRegStoreFull (ifltab1, cpath1, '25JUN1957', '2400', nvals, &
     data1, 2, quality1, 0, notes1, 0, cnotes1, (50*nvals), userHeader, 0, &  
@@ -556,12 +557,13 @@
     call zinqir(ifltab1, 'error', ctemp, status)
     if (status.ne.0) go to 900
     
-    do 420 i=1,nvals
+    do i=1,nvals
         quality3(1,i) = 0
         quality3(2,i) = 0
-    do 420 j=1,4
+    do j=1,4
         notes3(j,i) = 0
-420 continue 
+    end do
+    end do
 
     call checkNumbers(kvals,nvals, 'test_RTS_CharNotesFull number stored, loc 180', status)
     if (status.ne.0) go to 900
@@ -606,12 +608,13 @@
     call zinqir(ifltab1, 'error', ctemp, status)
     if (status.ne.0) go to 900
     
-    do 430 i=1,nvals
+    do i=1,nvals
         quality3(1,i) = 0
         quality3(2,i) = 0
-    do 430 j=1,4
+    do j=1,4
             notes3(j,i) = 0
-430 continue
+    end do
+    end do
 
     call checkNumbers(kvals,nvals, 'test_RTS_CharNotesFull number stored, loc 190', status)
     if (status.ne.0) go to 900
@@ -656,18 +659,20 @@
     call zinqir(ifltab1, 'error', ctemp, status)
     if (status.ne.0) go to 900
     
-    do 440 i=1,480
+    do i=1,480
         quality3(1,i) = 0
         quality3(2,i) = 0
-     do 440 j=1,4
+     do j=1,4
         notes3(j,i) = 0
-440 continue
-    do 450 i=481,nvals
+     end do
+    end do
+    do i=481,nvals
         quality3(1,i) = quality1(1,i-480)
         quality3(2,i) = quality1(2,i-480)
-     do 450 j=1,4
+     do j=1,4
         notes3(j,i) = notes1(j,i-480)        
-450 continue
+     end do
+    end do
 
 
     call checkNumbers(kvals,nvals, 'test_RTS_CharNotesFull number stored, loc 200', status)
@@ -714,18 +719,20 @@
     call zinqir(ifltab1, 'error', ctemp, status)
     if (status.ne.0) go to 900
     
-    do 460 i=1,nvals
+    do i=1,nvals
         quality3(1,i) = 0
         quality3(2,i) = 0
-    do 460 j=1,4
+    do j=1,4
         notes3(j,i) = 0
-460 continue
-    do 470 i=1,(nvals-96)
+    end do
+    end do
+    do i=1,(nvals-96)
         quality3(1,i) = quality1(1,i+96)
         quality3(2,i) = quality1(2,i+96)
-    do 470 j=1,4
+    do j=1,4
         notes3(j,i) = notes1(j,i+96)
-470 continue
+    end do
+    end do
 
 
     call checkNumbers(kvals,nvals, 'test_RTS_CharNotesFull number stored, loc 210', status)

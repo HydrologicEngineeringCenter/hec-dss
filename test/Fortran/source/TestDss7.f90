@@ -65,9 +65,9 @@
 !   call zset('MLEVEL', ' ', 15)
    
    nvals = 1000
-   do 20 i=1, nvals
+   do i=1, nvals
        data1(i) =FLOAT(i) 
- 20  continue
+   end do
     
 ! fails  call zsrts (ifltab1, cpath, '31DEC1899', '2400', nvals, data1(2), 'CFS', 'PER-AVER', 0, status)
 !  OK call zsrts (ifltab1, cpath, '30DEC1899', '2400', nvals, data1(2), 'CFS', 'PER-AVER', 0, status)

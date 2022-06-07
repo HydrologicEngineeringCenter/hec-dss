@@ -31,9 +31,9 @@
 !  
       nvals = 1000
       maxVals = 1000
-      do 20 i=1, nvals
+      do i=1, nvals
        data1(i) = i
- 20  continue
+      end do
  
     data1(1)= zmissingFlag()
 	data1(2)= zmissingFlag()
@@ -68,17 +68,17 @@
 	data1(115)= 8.
 	data1(116) = 3.
 	
-	do 25 i=200, 400
+	do i=200, 400
 	  data1(i) = 10.0
- 25 continue 
+    end do
  
-    do 26 i=950, 1000
+    do i=950, 1000
 	  data1(i) = zmissingFlag()
- 26 continue 	  
+    end do
 !
-    do 30 i=1, nvals
+    do i=1, nvals
        data3(i) = data1(i)
- 30  continue
+    end do
  
     nvals = 1000
     cpath1 = '/Double Regular Time Series/1/Flow//1Hour/F/'    
@@ -115,7 +115,7 @@
         Write(messageUnit, *)'Number of values not correct: ',number
         go to 910
     endif
-     do 60 i=1,nvals
+     do i=1,nvals
         if (data2(i).ne.data3(i)) then
              Write(messageUnit, *)'first zrrts call failed'
             write(messageUnit, 1)
@@ -125,7 +125,7 @@
  46         Format('At ordinate: ', I8, ' Values: ', 2F8.2)
             go to 900
         endif
- 60 Continue
+     end do
 !
     if (cunits(1:3).ne.'CFS') Then
         write(messageUnit, 1)
@@ -178,7 +178,7 @@
         Write(messageUnit, *)'Number of values not correct: ',number
         go to 910
     endif
-     do 160 i=1,nvals
+     do i=1,nvals
         if (data2(i).ne.data3(i)) then
             Write(messageUnit, *)'Second zsrts call failed'
             write(messageUnit, 1)
@@ -186,7 +186,7 @@
             write(messageUnit, 46) i, data2(i), data3(i)
             go to 900
         endif
- 160 Continue
+     end do
 !
     if (cunits(1:3).ne.'CFS') Then
         write(messageUnit, 1)
@@ -205,7 +205,7 @@
         
     nvals = 20
     cpath1 = '/Double Time Series/3/Flow//1Hour/F/'
-    do 300 i=1,10
+    do i=1,10
     nvals = nvals + 5
     call zsrtsd(ifltab1, cpath1, '25JUN1957', '2400', nvals, data1, 'CFS', 'PER-AVER', 0, status)
     if (status.ne.0) then
@@ -240,7 +240,7 @@
         Write(messageUnit, *)'Number of values not correct: ',number
         go to 910
     endif
-     do 260 j=1,nvals
+     do j=1,nvals
         if (data2(j).ne.data3(j)) then
             Write(messageUnit, *)'Third zsrts call failed'
             write(messageUnit, 1)
@@ -249,7 +249,7 @@
             write(messageUnit, *)i, ' write attempt'
             go to 900
         endif
- 260 Continue
+     end do
 !
     if (cunits(1:3).ne.'CFS') Then
         write(messageUnit, 1)
@@ -262,7 +262,7 @@
         write(messageUnit, 62) ctype(1:8)
         go to 910
     endif
- 300    continue    
+    end do
 !
 !
 

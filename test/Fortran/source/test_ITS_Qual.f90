@@ -57,24 +57,25 @@
       nvals = 1000
       call datjul("06Sep1955", juls, status)
       minutesInBaseDate = juls * 1440
-      do 20 i=1, nvals
+      do i=1, nvals
        data1(i) =FLOAT(i)
        data3(i) = data1(i)
        data4(i) = data1(i)
        itimes1(i) = (i * 1440) + minutesInBaseDate
        itimes3(i) = itimes1(i) 
        itimes4(i) = itimes1(i) 
- 20  continue
+      end do
 
-    do 120 i=1, nvals
-        do 110 j=1,2
+    do i=1, nvals
+        do j=1,2
         quality1(j,i) = (i*100) + j
         quality3(j,i) = quality1(j,i) 
- 110    continue 
-        do 120 j=1,4
+        end do
+        do j=1,4
         notes1(j,i) = (i*10000) + j
         notes3(j,i) = notes1(j,i)        
- 120  continue
+        end do
+    end do
 
  
      !call zset('mlvl', ' ', 8)
@@ -302,11 +303,11 @@
 
     !offset by 12 hours and rewrite full data set
     nvals = 1000
-    do 100 i=1,nvals
+    do i=1,nvals
         itimes1(i) = itimes1(i) - 720
         itimes3(i) = itimes1(i)
         data1(i) = data1(i) - 0.5
- 100    continue        
+    end do
     baseDate = 0    
     call zsits(ifltab1, cpath1, itimes1, data1, nvals, baseDate, 'CFS', 'PER-AVER', 0, status)
     if (status.ne.0) go to 900
@@ -337,7 +338,7 @@
     !  Since data merged, we need to check times and values in a loop
     istime = itimes1(1)
     x = 0.5
-    do 111 i=1,nvals
+    do i=1,nvals
         if (itimes2(i).ne.istime) then
             !  Hoky way to get around a compiler error
             itimes1(1) = istime
@@ -354,7 +355,7 @@
         endif
         x = x + 0.5
         istime = istime + 720
-111 continue
+    end do
 
 
 
@@ -378,17 +379,17 @@
     nvals = 1000
     call datjul("06Sep1955", juls, status)
     juls = juls * 1440
-    do 200 i=1, nvals
+    do i=1, nvals
        data1(i) =FLOAT(i)
        data3(i) = data1(i)
        data4(i) = data1(i)
        itimes1(i) = (i * 60) + juls
        itimes3(i) = itimes1(i) 
        itimes4(i) = itimes1(i) 
- 200 continue
+    end do
  
     ascending = .false.
-    do 500 j=1,4
+    do j=1,4
     
         if (j.eq.1) then
             letter = 'a'
@@ -408,10 +409,10 @@
         !  If we are at loop 3, we need to use offset times.  
         !  Rebuild the time array by 30 mins off
         if (j.eq.3) then
-            do 220 i=1, nvals       
+            do i=1, nvals
                itimes4(i) = itimes1(i) - 30 
                data4(i) = data1(i) - 0.5             
- 220        continue
+            end do
             !  With the offset, it would be hard to compute all the
             !  results arrays (we'd have to fix gaps), but we know
             !  that the times and data are ascending, so just check that
@@ -494,7 +495,7 @@
         if (status.ne.0) go to 900
         
     
- 500  continue   
+    end do
 !
 !
        if (lcheck) call zcheckFile(ifltab1, status)

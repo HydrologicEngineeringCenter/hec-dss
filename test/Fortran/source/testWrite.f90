@@ -40,9 +40,9 @@
       call chrlnb(cpath1, npath1)
       !  Simple zwrite check
       nvals = 1000
-      do 20 i=1,nvals
+      do  i=1,nvals
         data1(i) = float(i)
- 20   continue
+      end do
 
     !call zset('mlvl', ' ', 17)
     
@@ -101,7 +101,7 @@
      endif 
 !
 !     Check data values
-      do 220 i=1,nvals         
+      do i=1,nvals
         if (data2(i).ne.data1(i)) then
             write(messageUnit, 1)
             write(messageUnit, 245) 
@@ -110,7 +110,7 @@
  246         Format('At ordinate: ', I8, ' Values: ', 2F8.2)
             go to 900
         endif
- 220  Continue 
+      end do
  
 !
 !

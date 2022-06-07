@@ -32,18 +32,18 @@
 !
       WRITE(messageUnit, *)'Begin test_RTS_Expansions'
 
-      do 5 i=1,ifltabSize
+      do i=1,ifltabSize
          ifltab1(i) = 0
          ifltab2(i) = 0
- 5    continue
+      end do
       
 !
   1  Format('Expanded Regular Time Series test FAILED')
 !  
       nvals = 1000
-      do 20 i=1, nvals
+      do i=1, nvals
        data1(i) = FLOAT(i)
- 20  continue
+      end do
  
     data1(1)= zmissingFlag()
 	data1(2)= zmissingFlag()
@@ -78,17 +78,17 @@
 	data1(115)= 8.
 	data1(116) = 3.
 	
-	do 25 i=200, 400
+	do i=200, 400
 	  data1(i) = 10.0
- 25 continue 
+    end do
  
-    do 26 i=950, 1000
+    do i=950, 1000
 	  data1(i) = zmissingFlag()
- 26 continue 	  
+    end do
 !
-    do 30 i=1, nvals
+    do i=1, nvals
        data3(i) = data1(i)
- 30  continue
+    end do
  
     nvals = 0
     cpath1 = '/Expanded Regular Time Series/1/Flow//1Hour/F/'
@@ -106,7 +106,7 @@
     call juldat(jul, 104, cd, nd) 
     
     
-    do 700 i=1,20
+    do i=1,20
     
         nvals = nvals + 50
         
@@ -141,7 +141,7 @@
      !  write (messageUnit, *)'Expansion ',i
 !
 !
- 700 continue
+    end do
  
  !  Now copy the file (same as a squeeze)
  !  The record for the current month should remain in an "expanded" state

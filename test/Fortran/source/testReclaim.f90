@@ -29,11 +29,11 @@
 1     Format('Basic Reclaim test FAILED')
 
       nvals = 1000
-      do 20 i=1,nvals
+      do i=1,nvals
         data1(i) = float(i)
- 20   continue
+      end do
  
-      do 30 k=1,20000
+      do k=1,20000
 !     Write a bunch of records
       cpath1 = '/Test Write/bbb/cccc/dddd/eeee/zzzzz/'
       write (ctemp, '(I5.5)') k
@@ -49,10 +49,10 @@
       call zinqir(ifltab1, 'error', ctemp, status)
       if (status.ne.0) go to 900
 !
- 30 continue 
+      end do
       WRITE(messageUnit, *)'testReclaim, Pass A'
  
-      do 40 k=1,5000
+      do k=1,5000
 !     Now write ones we will delete
       cpath1 = '/More Write/bbbbb/cccc/dddd/eeee/zzzz/'
       write (ctemp, '(I5.5)') k
@@ -64,7 +64,7 @@
       call zinqir(ifltab1, 'error', ctemp, status)
       if (status.ne.0) go to 900
 !
- 40 continue 
+      end do
     WRITE(messageUnit, *)'testReclaim, Pass B'
  
  !  zinqir7_ (_int64 *ifltab, const char *request, char *creturn, int *number,
@@ -73,7 +73,7 @@
       call zinqir7(ifltab1, 'fsiz', ctemp, ibfsiz)
       call zinqir7(ifltab1, 'dead', ctemp, ibdead)
  
-      do 50 k=1,5000
+      do k=1,5000
 !     Now delete those
       cpath1 = '/More Write/bbbbb/cccc/dddd/eeee/zzzz/'
       write (ctemp, '(I5.5)') k
@@ -85,9 +85,9 @@
       call zinqir(ifltab1, 'error', ctemp, status)
       if (status.ne.0) go to 900
 !
- 50 continue
+      end do
     WRITE(messageUnit, *)'testReclaim, Pass C'
-      do 60 k=1,5000
+      do k=1,5000
 !     Write the same paths.  They have to be the same to have same hash
 !     and allow us to test path bin recovery
        cpath1 = '/More Write/bbbbb/cccc/dddd/eeee/zzzz/'
@@ -100,14 +100,14 @@
       call zinqir(ifltab1, 'error', ctemp, status)
       if (status.ne.0) go to 900
 !
- 60 continue 
+      end do
     WRITE(messageUnit, *)'testReclaim, Pass D'
  
       call zinqir7(ifltab1, 'nrec', ctemp, ienrec)
       call zinqir7(ifltab1, 'fsiz', ctemp, iefsiz)
       call zinqir7(ifltab1, 'dead', ctemp, iedead)
       
-      do 70 k=1,5000
+      do k=1,5000
 !     Now write more to be sure file still good
       cpath1 = '/More Reclaim/b/cccc/dddd/eeee/zzzzz/'
       write (ctemp, '(I5.5)') k
@@ -119,7 +119,7 @@
       call zinqir(ifltab1, 'error', ctemp, status)
       if (status.ne.0) go to 900
 !
- 70 continue
+      end do
         WRITE(messageUnit, *)'testReclaim, Pass E'
  
         write(messageUnit,*)'starting records: ',ibnrec,'  Ending records: ',ienrec

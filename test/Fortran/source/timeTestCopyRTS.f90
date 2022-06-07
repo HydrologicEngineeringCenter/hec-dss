@@ -27,7 +27,7 @@
      ! call gettimediff (0, mills)
 
       count = 0
-      do 500 i=1,1000000
+      do i=1,1000000
         read (10, 10, end=600) cpath1
  10     format(a)
         call chrlnb(cpath1, npath)
@@ -46,7 +46,7 @@
         call zinqir(ifltabTo, 'error', ctemp, status)
         if (status.ne.0) go to 900
 
- 500    continue
+      end do
 
  600    continue
 

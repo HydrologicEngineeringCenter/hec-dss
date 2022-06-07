@@ -54,27 +54,27 @@
 
       nvals = 1000
       ich = ichar('A')
-      do 20 i=1, nvals
+      do i=1, nvals
        data1(i) =FLOAT(i)
        data3(i) = data1(i)
        cnotes1(i) = ' '
        n = mod(i-1,25) + 1
        if (n.eq.1) lowerCase = .not.lowerCase
        if (lowerCase) then
-       do 4 k=1,n
+       do k=1,n
           cnotes1(i)(k:k) = char(ich+k-1+32)          
- 4     continue
+        end do
        else
-       do 5 k=1,n
+       do k=1,n
           cnotes1(i)(k:k) = char(ich+k-1)          
- 5     continue
+        end do
        endif       
-       do 10 j=1,2
+       do j=1,2
         quality1(j,i) = i+j
         quality3(j,i) = quality1(j,i)
- 10    continue 
+       end do
       
- 20  continue
+      end do
     kvals = nvals
     c25 = cnotes1(25)
     c26 = cnotes1(26)
@@ -92,9 +92,9 @@
    ! cnotes1(4) = 'Frank calibrated'
    ! cnotes1(5) = ' '
     
-    do 21 i=1,nvals
+    do i=1,nvals
       cnotes3(i) = cnotes1(i)
- 21 continue    
+    end do
     
     call ztsRegStoreFull (ifltab1, cpath1, '25JUN1957', '2400', nvals, &
     data1, 2, quality1, 2, notes, 0, cnotes1, 1, userHeader, 0, &  
@@ -171,33 +171,34 @@
 !
       
       ich = ichar('A')
-      do 120 i=1, 1100
+      do i=1, 1100
        data1(i) = FLOAT(i)
        data3(i) = data1(i) 
        cnotes1(i) = ' '
        n = mod(i-1,25) + 1
        if (n.eq.1) lowerCase = .not.lowerCase
        if (lowerCase) then
-       do 44 k=1,n
+       do k=1,n
           cnotes1(i)(k:k) = char(ich+k-1+32)          
- 44     continue
+       end do
        else
-       do 55 k=1,n
+       do k=1,n
           cnotes1(i)(k:k) = char(ich+k-1)          
- 55     continue
+       end do
        endif   
-       do 110 j=1,2
+       do j=1,2
         quality1(j,i) = (i*100) + j
         quality3(j,i) = quality1(j,i) 
- 110    continue 
-        do 120 j=1,4
+       end do
+        do j=1,4
         notes1(j,i) = (i*10000) + j
         notes3(j,i) = notes1(j,i)        
- 120  continue
+        end do
+      end do
  
-     do 22 i=1,1100
+     do i=1,1100
       cnotes3(i) = cnotes1(i)
- 22 continue   
+     end do
 ! 
     cpath1 = '/Time Series With Notes/Regular 2/Flow/date/1Hour//'
     

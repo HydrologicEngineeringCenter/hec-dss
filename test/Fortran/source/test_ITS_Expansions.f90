@@ -62,7 +62,7 @@
       itimes3(1) = itimes1(1)
       data1(1) = 1.0
       data3(1) = 1.0
-      do 20 i=2, nvals
+      do i=2, nvals
        data1(i) =FLOAT(i)
        data3(i) = data1(i)
        if (i.lt.500) then
@@ -75,7 +75,7 @@
         itimes1(i) = itimes1(i-1) + 100
        endif
        itimes3(i) = itimes1(i) 
- 20  continue
+      end do
  
     jule = itimes1(nvals) / 1440 + 5
  
@@ -88,7 +88,7 @@
     ! 
     cpath1 = '/Irregular Time Series/Expansion/Flow/date/~1Day/F/'
     
-    do 500 i=1,40
+    do i=1,40
     
     nvals = i * 50
     baseDate = 0 
@@ -121,7 +121,7 @@
  
         
     
- 500  continue  
+    end do
  
  !  Now copy the file (same as a squeeze)
  !  The record for the current month should remain in an "expanded" state
