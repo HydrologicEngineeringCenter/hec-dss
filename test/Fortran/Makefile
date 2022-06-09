@@ -21,7 +21,7 @@ BUILD_DIR := ./Output
 SRC_DIRS := .
 CC=cc
 F90=gfortran
-HLIBS=../../heclib/heclib_f/Output/libhec_f.a ../../heclib/heclib_c/Output/libhec_c.a
+HLIBS=../../heclib/Output/heclib.a
 
 SRCS := $(shell find $(SRC_DIRS) -name '*.c' -o -name '*.f90' )
 
