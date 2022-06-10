@@ -35,7 +35,7 @@
       iuhead_copy = 0
       if (nuhead.gt.size(iuhead_copy)) then
         if (mlevel.ge.1) then
-          write (munit,'(/a,/,a,i,/,a,i)')
+          write (munit,'(/a,/,a,i0,/,a,i0)')
      *    ' WARNING: LOCATING PARAMETER VALUE IN TRUNCATED USER HEADER',
      *    '   User header length : ',nuhead,
      *    '   Truncated length   : ',size(iuhead_copy)
@@ -88,7 +88,7 @@
         end if  
         if (ilast-ifirst+1.gt.len(cvalue)) then
           if (mlevel.ge.1) then
-            write (munit,'(/a,/,a,a,/,a,i,/,a,i)')
+            write (munit,'(/a,/,a,a,/,a,i0,/,a,i0)')
      *      ' WARNING: USER HEADER PARAMETER VALUE TRUNCATED',
      *      '   Parameter       : ',cparam_copy,
      *      '   Value length    : ',ilast-ifirst+1,
