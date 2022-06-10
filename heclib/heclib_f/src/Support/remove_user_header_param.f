@@ -35,7 +35,7 @@
       iuhead_copy = 0
       if (kuhead.gt.size(iuhead_copy)) then
         if (mlevel.ge.1) then
-          write (munit,'(/a,/,a,i4,/,a,i4)')
+          write (munit,'(/a,/,a,i6,/,a,i6)')
      *    ' WARNING: LOCATING PARAMETER VALUE IN TRUNCATED USER HEADER',
      *    '   User header length : ',kuhead,
      *    '   Truncated length   : ',size(iuhead_copy)
