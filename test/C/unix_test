@@ -5,7 +5,7 @@
 
 HECLIB_HOME="../../heclib"
 HINC="${HECLIB_HOME}/heclib_c/src/headers"
-HLIBS="${HECLIB_HOME}/heclib_c/Output/libhec_c.a ${HECLIB_HOME}/heclib_f/Output/libhec_f.a"
+HLIBS="${HECLIB_HOME}//Output/heclib.a"
 os="$(uname)"
 echo "os = ${os}"
 echo ${HLIBS}
