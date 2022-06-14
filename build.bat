@@ -28,5 +28,7 @@ msbuild dss.sln /p:Configuration=Release /p:Platform=x64
 msbuild dss.sln /p:Configuration=Debug /p:Platform=x64
 
 cd %~dp0\test\Fortran
-build.bat
+call build.bat
+
+cd %~dp0
 
