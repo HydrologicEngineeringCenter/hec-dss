@@ -264,6 +264,7 @@ C
      *            'available variable.',
      *            ' User header not read from disk.';
               end if
+              nuhead_copy = nuhead 
             else
               call zgtrec6(IFLTAB, iuhead_copy, nuhead_copy,
      *          INFO(NPPWRD+KIAUHE), .TRUE.)
