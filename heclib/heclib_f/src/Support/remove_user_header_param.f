@@ -35,11 +35,16 @@
       iuhead_copy = 0
       if (kuhead.gt.size(iuhead_copy)) then
         if (mlevel.ge.1) then
-          write (munit,'(/a,/,a,i0,/,a,i0)')
-     *    ' WARNING: LOCATING PARAMETER VALUE IN TRUNCATED USER HEADER',
-     *    '   User header length : ',kuhead,
-     *    '   Truncated length   : ',size(iuhead_copy)
+          write (munit,'(/a,i0,a,/,a,i0,a,/,a)')
+     *    ' WARNING: Cannot modify user header >  ',
+     *    size(iuhead_copy) * 4,
+     *    ' characters long',
+     *    ' User header is ',
+     *    kuhead * 4,
+     *    ' characters long',
+     *    ' User header not modified'
         end if
+        return
       end if
       max_head_len = min(kuhead, size(iuhead_copy))
       iuhead_copy(:max_head_len) = iuhead(:max_head_len)
