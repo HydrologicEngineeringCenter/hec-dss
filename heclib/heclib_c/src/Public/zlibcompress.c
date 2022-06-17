@@ -4,7 +4,7 @@
 #ifdef _MSC_VER
 #include "windows.h"  // get BYTE et al.
 #endif
-#include "zlib.h"
+#include <zlib.h>
 #include <stdlib.h>
 
 int GetMaxCompressedLen(int size)
