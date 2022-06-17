@@ -1,0 +1,6 @@
+file(GLOB_RECURSE F_SRC LIST_DIRECTORIES true heclib_f/src/*.f  heclib_f/src/*.f90)
+file(GLOB_RECURSE C_SRC LIST_DIRECTORIES true heclib_c/src/*.c)
+include_directories(heclib_c/src/headers)
+include_directories(heclib_f/src/headers)
+add_library(heclib STATIC ${F_SRC} ${C_SRC})
+target_link_libraries(heclib ZLIB::ZLIB)
