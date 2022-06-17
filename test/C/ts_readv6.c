@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <math.h>
-#include "heclib.h"
+#include <heclib.h>
 
  int main()
 {

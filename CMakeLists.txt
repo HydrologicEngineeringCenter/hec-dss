@@ -12,3 +12,6 @@ endif()
 
 add_subdirectory(deps)
 add_subdirectory(heclib)
+
+add_subdirectory(test)
+enable_testing()
