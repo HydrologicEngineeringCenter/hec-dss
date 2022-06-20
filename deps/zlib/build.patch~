@@ -1,0 +1,11 @@
+--- CMakeLists.txt	2022-06-20 06:36:56.121500201 +0000
++++ CMakeLists.txt.new	2022-06-20 06:51:10.198996227 +0000
+@@ -83,7 +83,7 @@
+ 		${ZLIB_PC} @ONLY)
+ configure_file(	${CMAKE_CURRENT_SOURCE_DIR}/zconf.h.cmakein
+ 		${CMAKE_CURRENT_BINARY_DIR}/zconf.h @ONLY)
+-include_directories(${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_SOURCE_DIR})
++include_directories(${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
+ 
+ 
+ #============================================================================
