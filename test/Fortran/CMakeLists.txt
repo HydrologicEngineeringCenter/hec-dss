@@ -17,4 +17,4 @@ add_custom_target(
 )
 
 
-add_test(NAME Dss-Fortran COMMAND Dss-Fortran test)
+add_test(NAME Dss-Fortran COMMAND Dss-Fortran test WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/test")

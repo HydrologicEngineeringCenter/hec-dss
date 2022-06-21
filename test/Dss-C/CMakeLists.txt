@@ -9,4 +9,4 @@ add_custom_target(
 )
 
 
-add_test(NAME Dss-C COMMAND Dss-C test)
+add_test(NAME Dss-C COMMAND Dss-C test WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/test")
