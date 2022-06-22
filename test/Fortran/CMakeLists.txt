@@ -1,13 +1,23 @@
 file(GLOB F_SRC LIST_DIRECTORIES true source/*.f90)
 add_executable(Dss-Fortran  ${F_SRC})
-target_link_libraries(Dss-Fortran heclib)
+target_link_libraries(Dss-Fortran heclib libc)
 target_include_directories(Dss-Fortran PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 if( NOT CMAKE_HOST_WIN32)
     target_compile_options(Dss-Fortran PRIVATE -cpp)
-else()
-    target_compile_options(Dss-Fortran PRIVATE /nologo  /MP /Od /fpp  /reentrancy:threaded /warn:noalignments 
- /Qsave /Qinit:zero /names:lowercase /iface:cref /assume:underscore  /traceback 
-  /check:all /libs:static $(DLIB) /threads /4Yportlib  )
+elseif(MSVC)
+    set_property(TARGET Dss-Fortran PROPERTY VS_SOURCE_SETTINGS_VFFortranCompiler 
+        "CallingConvention=callConventionCRef"
+        "ExternalNameUnderscore=true" 
+        "Traceback=true" "RuntimeChecks=rtChecksAll"
+        "BoundsCheck=true" 
+        "RuntimeLibrary=rtMultiThreadedDebug" 
+        "UsePortlib=true"
+    
+    )
+    
+#    target_compile_options(Dss-Fortran PRIVATE /nologo  /MP /Od /fpp  /reentrancy:threaded /warn:noalignments 
+# /Qsave /Qinit:zero /names:lowercase /iface:cref /assume:underscore  /traceback 
+#  /check:all /libs:static $(DLIB) /threads /4Yportlib  )        
 endif()
 
 add_custom_target(
