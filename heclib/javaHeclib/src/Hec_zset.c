@@ -22,6 +22,15 @@ JNIEXPORT void JNICALL Java_hec_heclib_util_Heclib_Hec_1zset
 //	zsetMessageLevel(MESS_METHOD_JNI_ID, MESS_LEVEL_INTERNAL_DIAG_1);
 	//zset("MLVL", "", 4);
 
+    
+    if (strncmp(parameter, "MLEVEL", 6) == 0) { // match
+        char* jni_message_level = getenv("DSS_JNI_MESSAGE_LEVEL");
+        if (jni_message_level) // override the message level request.
+        {
+            number = atoi(jni_message_level);
+        }
+    }
+
 	idum[0] = 0;
 	if (zmessageLevel(idum, MESS_METHOD_JNI_ID, MESS_LEVEL_INTERNAL_DIAG_1)) {
 		zmessageDebug((long long*)idum, DSS_FUNCTION_javaNativeInterface_ID, "enter Heclib_Hec_zset, parameter: ", parameter);
