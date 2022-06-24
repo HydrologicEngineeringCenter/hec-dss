@@ -3,7 +3,7 @@ add_executable(Dss-Fortran  ${F_SRC})
 target_link_libraries(Dss-Fortran heclib)
 target_include_directories(Dss-Fortran PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 if( NOT CMAKE_HOST_WIN32)
-    target_compile_options(Dss-Fortran PRIVATE -cpp)
+	target_compile_options(Dss-Fortran PRIVATE -cpp -std=gnu -Werror)   
 elseif(MSVC)
     
     set_property(TARGET Dss-Fortran PROPERTY VS_SOURCE_SETTINGS_VFFortranCompilerTool 
