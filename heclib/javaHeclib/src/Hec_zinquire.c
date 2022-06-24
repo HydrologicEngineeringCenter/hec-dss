@@ -21,6 +21,9 @@ JNIEXPORT jlong JNICALL Java_hec_heclib_util_Heclib_Hec_1zinquire
     const char *param;   
 	long long answer;
 
+	if (!j_ifltab) return -1;
+	if (!j_param) return -1;
+	
 	param = (*env)->GetStringUTFChars(env, j_param, 0);
 
     ifltab = (*env)->GetIntArrayElements(env, j_ifltab, 0);
