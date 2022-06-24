@@ -15,6 +15,8 @@ JNIEXPORT jlong JNICALL Java_hec_heclib_util_Heclib_Hec_1zlastWriteTimeFile(
 	int *ifltab;
 
 	jint capacity=40;
+	if (!j_ifltab) return -1;
+
 	(*env)->EnsureLocalCapacity(env, capacity);
 
 	ifltab		= (*env)->GetIntArrayElements(env, j_ifltab, 0);	
