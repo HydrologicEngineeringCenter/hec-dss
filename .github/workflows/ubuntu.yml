@@ -4,8 +4,7 @@ on: [push]
 jobs:
   build:
     #runs-on: ubuntu-18.04
-    #runs-on: ubuntu-latest
-    runs-on: ubuntu-20.04
+    runs-on: [ubuntu-latest,macos-latest]
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
