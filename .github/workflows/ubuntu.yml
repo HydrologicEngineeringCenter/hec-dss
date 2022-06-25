@@ -3,11 +3,17 @@ on: [push]
 
 jobs:
   build:
-    strategy:
+    strategy:      
+      fail-fast: true
       matrix:
         os: [ubuntu-20.04,macos-latest]
-        javaVersion: [8, 11]    
-    runs-on: ${{ matrix.os}}
+        javaVersion: [8, 11]   
+        experimental: [false]
+        include:
+          - javaVersion: 11
+            experimental: true
+    runs-on: ${{matrix.os}}
+    continue-on-error: ${{matrix.experimental}}
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
