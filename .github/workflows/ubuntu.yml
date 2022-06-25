@@ -42,6 +42,7 @@ jobs:
       - name: CMake initialization
         env:
           CC: gcc
+          FC: gfortran
         run: |
           cmake .        
 
