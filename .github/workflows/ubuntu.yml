@@ -12,10 +12,11 @@ jobs:
         experimental: [false]
         include:          
           - os: ubuntu-20.04
-            java: 11            
+            java: 11
+            gcc: 9  
             experimental: true
           - os: macos-latest
-            java: 9
+            java: 8
             experimental: true
             gcc: 9
           - os: macos-latest
