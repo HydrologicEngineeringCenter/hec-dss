@@ -1,5 +1,6 @@
 name: Ubuntu
 on: [push]
+
 jobs:
   build:
     #runs-on: ubuntu-18.04
