@@ -6,20 +6,22 @@ jobs:
     strategy:      
       fail-fast: true
       matrix:
-        os: [ubuntu-20.04,macos-latest]
+        os: [ubuntu-20.04]
         java: [8,11] 
-        gcc: [8]
+        gcc: [9]
         experimental: [false]
         include:          
           - os: ubuntu-20.04
             java: 11            
             experimental: true
           - os: macos-latest
-            java: 8
+            java: 9
             experimental: true
+            gcc: 9
           - os: macos-latest
             java: 11
-            experimental: true                         
+            experimental: true
+            gcc: 9
           
     runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.experimental }}
@@ -37,14 +39,14 @@ jobs:
         with:
           distribution: 'adopt'
           java-version: '${{ matrix.java }}'
-      - name: Install gcc
-        if: startsWith(matrix.os,'macos')
-        run: |
-          brew install gcc@8
-      - name: Install gcc
-        if: startsWith(matrix.os,'ubuntu')
-        run: |
-          sudo apt install gcc-8 gfortran-8
+      #- name: Install gcc
+      #  if: startsWith(matrix.os,'macos')
+      #  run: |
+      #    brew install gcc@8
+      #- name: Install gcc
+      #  if: startsWith(matrix.os,'ubuntu')
+      #  run: |
+      #    sudo apt install gcc-8 gfortran-8
       - name: CMake initialization
         env:
           CC: gcc-${{ matrix.gcc }}
