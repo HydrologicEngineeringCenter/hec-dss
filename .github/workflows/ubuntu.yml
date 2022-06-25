@@ -12,8 +12,8 @@ jobs:
         include:
           - java: 11
             experimental: true
-    runs-on: ${{matrix.os}}
-    continue-on-error: ${{matrix.experimental}}
+    runs-on: ${{ matrix.os }}
+    continue-on-error: ${{ matrix.experimental }}
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
@@ -27,7 +27,7 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: 'adopt'
-          java-version: '${{matrix.java}}'
+          java-version: '${{ matrix.java }}'
 
       - name: CMake initialization
         run: |
