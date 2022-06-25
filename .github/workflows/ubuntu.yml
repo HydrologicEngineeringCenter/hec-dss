@@ -10,9 +10,15 @@ jobs:
         java: [8]   
         experimental: [false]
         include:          
-          - java: 11
-            os: ubuntu-20.04
-            experimental: true         
+          - os: ubuntu-20.04
+            java: 11            
+            experimental: true
+          - os: macos-latest
+            java: 8
+            experimental: true
+          - os: macos-latest
+            java: 11
+            experimental: true
           
     runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.experimental }}
