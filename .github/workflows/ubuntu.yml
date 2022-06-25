@@ -7,10 +7,10 @@ jobs:
       fail-fast: true
       matrix:
         os: [ubuntu-20.04,macos-latest]
-        javaVersion: [8, 11]   
+        java: [8, 11]   
         experimental: [false]
         include:
-          - javaVersion: 11
+          - java: 11
             experimental: true
     runs-on: ${{matrix.os}}
     continue-on-error: ${{matrix.experimental}}
@@ -27,7 +27,7 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: 'adopt'
-          java-version: '${{matrix.javaVersion}}'
+          java-version: '${{matrix.java}}'
 
       - name: CMake initialization
         run: |
