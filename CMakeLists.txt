@@ -1,6 +1,8 @@
 project(heclib LANGUAGES C Fortran)
 cmake_minimum_required(VERSION 3.16)
 
+
+
 if(MSVC)
     set(CMAKE_EXE_LINKER_FLAGS /NODEFAULTLIB:MSVCRTD,LIBCMT)
 endif()

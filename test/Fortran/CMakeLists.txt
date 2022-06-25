@@ -2,7 +2,7 @@ file(GLOB F_SRC LIST_DIRECTORIES true source/*.f90)
 add_executable(Dss-Fortran  ${F_SRC})
 target_link_libraries(Dss-Fortran heclib)
 target_include_directories(Dss-Fortran PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
-if( NOT CMAKE_HOST_WIN32)
+if( ${CMAKE_Fortran_COMPILER_ID} MATCHES GNU)
 	target_compile_options(Dss-Fortran PRIVATE -cpp -std=gnu -Werror)   
 elseif(MSVC)
     
