@@ -19,11 +19,8 @@ jobs:
           - os: macos-latest
             java: 11
             experimental: true
-          - os: macos-latest
-            compiler: gcc
-            gcc: 8
-          - os: ubuntu-20.04
-            gcc: 8
+          - os: macos-latest            
+          - gcc: 8
           
     runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.experimental }}
