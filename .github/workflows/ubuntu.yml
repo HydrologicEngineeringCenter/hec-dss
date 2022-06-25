@@ -9,7 +9,7 @@ jobs:
         os: [ubuntu-20.04]
         java: [8,11] 
         cc: [gcc-9]
-        fc: [fortran-9]
+        fc: [gfortran-9]
         experimental: [false]
         include:          
           - os: ubuntu-20.04
