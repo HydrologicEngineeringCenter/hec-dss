@@ -47,8 +47,8 @@ jobs:
           brew install gcc@8
       - name: CMake initialization
         env:
-          CC: gcc-${{ gcc }}
-          FC: gfortran-${{ gcc }}
+          CC: gcc-${{ matrix.gcc }}
+          FC: gfortran-${{ matrix.gcc }}
         run: |
           cmake .        
 
