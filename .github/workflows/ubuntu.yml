@@ -44,7 +44,7 @@ jobs:
       - name: Install gcc
         if: startsWith(matrix.os,'ubuntu')
         run: |
-          sudo apt install gcc-8 gfortran
+          sudo apt install gcc-8 gfortran-8
       - name: CMake initialization
         env:
           CC: gcc-${{ matrix.gcc }}
