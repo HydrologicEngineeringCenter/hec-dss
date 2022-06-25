@@ -4,18 +4,18 @@ on: [push]
 jobs:
   build:
     strategy:      
-      #fail-fast: true
+      fail-fast: true
       matrix:
         os: [ubuntu-20.04,macos-latest]
         java: [8, 11]   
         experimental: [false]
         include:
-          - os: ubuntu-20.04
-            experimental: true
+          - os: ubuntu-20.04            
             java: 11
-          - os: macos-latest
             experimental: true
+          - os: macos-latest            
             java: 11
+            experimental: true
     runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.experimental }}
     steps:
