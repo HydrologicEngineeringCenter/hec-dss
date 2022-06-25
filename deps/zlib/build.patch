@@ -1,6 +1,8 @@
---- CMakeLists.txt	2022-06-24 05:09:33.989467563 +0000
-+++ CMakeLists.txt.new	2022-06-24 05:10:33.241570551 +0000
-@@ -83,7 +83,7 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index e6fbb37..34a1a83 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -83,7 +83,7 @@ configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/zlib.pc.cmakein
  		${ZLIB_PC} @ONLY)
  configure_file(	${CMAKE_CURRENT_SOURCE_DIR}/zconf.h.cmakein
  		${CMAKE_CURRENT_BINARY_DIR}/zconf.h @ONLY)
