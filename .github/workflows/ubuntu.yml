@@ -41,6 +41,10 @@ jobs:
         if: startsWith(matrix.os,'macos')
         run: |
           brew install gcc@8
+      - name: Install gcc
+        if: startsWith(matrix.os,'ubuntu')
+        run: |
+          apt install gcc-8 gfortran
       - name: CMake initialization
         env:
           CC: gcc-${{ matrix.gcc }}
