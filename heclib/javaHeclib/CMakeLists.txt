@@ -1,0 +1,18 @@
+if(JNI_FOUND) 
+    message(STATUS "Using JDK -> ${JAVA_JVM_LIBRARY}")
+    file(GLOB_RECURSE C_SRC LIST_DIRECTORIES true src/*.c)
+
+    add_library(javaHeclib SHARED ${C_SRC})
+
+    if( ${CMAKE_C_COMPILER_ID} MATCHES GNU)    
+        target_compile_options(javaHeclib PRIVATE -fPIC -std=gnu99)
+    elseif(${CMAKE_C_COMPILER_ID} MATCHES SunPro)
+        target_compiler_options(javaHecib PRIVATE -m64 -xmemalign=2i -xcode=pic32 -c -Isrc/headers -mt -xcode=abs64 -xstrconst -xc99=all -xCC -g -xs)
+    else()
+        message(STATUS "generic options")
+    endif()
+    target_include_directories(javaHeclib PUBLIC src/headers ${JNI_INCLUDE_DIRS})
+    target_link_libraries(javaHeclib PRIVATE heclib ${JNI_LIBRARIES})
+else()
+    message(STATUS "No JNI JDK Found. Not building Java Heclib.")
+endif()

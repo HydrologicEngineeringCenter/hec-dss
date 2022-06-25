@@ -7,6 +7,7 @@ if(MSVC)
     set(CMAKE_EXE_LINKER_FLAGS /NODEFAULTLIB:MSVCRTD,LIBCMT)
 endif()
 
+find_package(JNI QUIET)
 add_subdirectory(deps)
 add_subdirectory(heclib)
 
