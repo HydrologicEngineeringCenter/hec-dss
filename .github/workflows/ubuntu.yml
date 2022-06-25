@@ -2,27 +2,37 @@ name: Ubuntu
 on: [push]
 
 jobs:
-  build:
+  build:    
     strategy:      
       fail-fast: true
       matrix:
         os: [ubuntu-20.04]
         java: [8,11] 
-        gcc: [9]
+        cc: [gcc-9]
+        fc: [fortran-9]
         experimental: [false]
         include:          
           - os: ubuntu-20.04
             java: 11
-            gcc: 9  
+            cc: gcc-9
+            fc: gfortran-9
             experimental: true
           - os: macos-latest
             java: 8
             experimental: true
-            gcc: 9
+            cc: gcc-9
+            fc: gfortran-9
           - os: macos-latest
             java: 11
             experimental: true
-            gcc: 9
+            cc: gcc-9
+            fc: gfortran-9
+          - os: windows-latest
+            java: 8
+            experimental: true
+            cc: ""
+            fc: ""
+
           
     runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.experimental }}
@@ -40,18 +50,17 @@ jobs:
         with:
           distribution: 'adopt'
           java-version: '${{ matrix.java }}'
-      #- name: Install gcc
-      #  if: startsWith(matrix.os,'macos')
-      #  run: |
-      #    brew install gcc@8
-      #- name: Install gcc
-      #  if: startsWith(matrix.os,'ubuntu')
-      #  run: |
-      #    sudo apt install gcc-8 gfortran-8
+      - name: Install oneAPI Fortran
+        if: startsWith(matrix.os,'windows')
+        shell: cmd
+        run: |
+          curl -fSLo hpckit.exe https://registrationcenter-download.intel.com/akdlm/irc_nas/17762/w_HPCKit_p_2021.2.0.2901.exe
+          start /b /wait hpckit.exe -s -x -f hpckit_extracted --log hpckit_extracted.log
+          hpckit_extracted\bootstrapper.exe -s --action install --components=intel.oneapi.win.ifort-compiler --eula=accept --continue-with-optional-error=yes -p=NEED_VS2017_INTEGRATION=0 -p=NEED_VS2019_INTEGRATION=1 --log-dir=
       - name: CMake initialization
         env:
-          CC: gcc-${{ matrix.gcc }}
-          FC: gfortran-${{ matrix.gcc }}
+          CC: ${{ matrix.cc }}
+          FC: ${{ matrix.fc }}
         run: |
           cmake .        
 
