@@ -36,6 +36,11 @@ jobs:
         with:
           distribution: 'adopt'
           java-version: '${{ matrix.java }}'
+      - name: Install gcc
+        if: startsWith(matrix.os,'macos')
+        run: |
+          brew install gcc@8
+          
 
       - name: CMake initialization
         run: |
