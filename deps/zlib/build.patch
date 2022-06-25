@@ -1,5 +1,5 @@
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index e6fbb37..34a1a83 100644
+index e6fbb37..2ba838e 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -83,7 +83,7 @@ configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/zlib.pc.cmakein
@@ -11,3 +11,11 @@ index e6fbb37..34a1a83 100644
  
  
  #============================================================================
+@@ -185,6 +185,7 @@ endif(MINGW)
+ 
+ add_library(zlib SHARED ${ZLIB_SRCS} ${ZLIB_ASMS} ${ZLIB_DLL_SRCS} ${ZLIB_PUBLIC_HDRS} ${ZLIB_PRIVATE_HDRS})
+ add_library(zlibstatic STATIC ${ZLIB_SRCS} ${ZLIB_ASMS} ${ZLIB_PUBLIC_HDRS} ${ZLIB_PRIVATE_HDRS})
++target_compile_options(zlibstatic PRIVATE -fPIC)
+ set_target_properties(zlib PROPERTIES DEFINE_SYMBOL ZLIB_DLL)
+ set_target_properties(zlib PROPERTIES SOVERSION 1)
+ 
