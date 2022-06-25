@@ -8,6 +8,7 @@ jobs:
       matrix:
         os: [ubuntu-20.04]
         java: [8]   
+        gcc: [8]
         experimental: [false]
         include:          
           - os: ubuntu-20.04
@@ -18,9 +19,7 @@ jobs:
             experimental: true
           - os: macos-latest
             java: 11
-            experimental: true
-          - os: macos-latest            
-          - gcc: 8
+            experimental: true                         
           
     runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.experimental }}
