@@ -39,10 +39,14 @@ jobs:
         with:
           distribution: 'adopt'
           java-version: '${{ matrix.java }}'
+      - name: Install gcc
+        if: startsWith(matrix.os,'macos')
+        run: |
+          brew install gcc@8
       - name: CMake initialization
         env:
-          CC: gcc
-          FC: gfortran
+          CC: gcc-${{ gcc }}
+          FC: gfortran-${{ gcc }}
         run: |
           cmake .        
 
