@@ -85,13 +85,4 @@ C
       GO TO 800
 C
       END
-      SUBROUTINE zstags(IFLTAB, CLINE, ISTAT)
-      INTEGER IFLTAB(*)
-      CHARACTER CLINE*(*)
-      call zGetVersion(IFLTAB, iversion)
-      IF (iversion.EQ.6) THEN
-      call zstags6 (IFLTAB, CLINE, ISTAT)
-      endif
-      return
-      end
 
