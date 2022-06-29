@@ -175,6 +175,9 @@ int zlockDss (long long *ifltab, int ihandle, int mode, long long wordAddress, i
 
 #include <unistd.h>
 #include <stdint.h>
+#if defined __APPLE__
+#define lseek64 lseek
+#endif
 
 void testLock(long long* ifltab, int ihandle)
 {

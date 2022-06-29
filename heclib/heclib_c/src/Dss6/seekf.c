@@ -11,6 +11,10 @@
 #include <stdint.h>
 #endif
 
+#if defined __APPLE__
+#define lseek64 lseek
+#endif
+
 
 void
 seekf64_ (int *ihandl, int *iorigin, long long*iofset, long long*ipos, int *istat)

@@ -40,7 +40,7 @@ typedef __int64 int64_t;
 // from above.
 //
 
-#if (defined(__SUNPRO_CC) || defined(__linux__))
+#if (defined(__SUNPRO_CC) || defined(__linux__) || (defined __APPLE__))
 //
 // Sun Studio 12 C++ on 32-bit Linux doesn't support large file operations and
 // Sun Studio 12 C++ on 64-bit Linux doesn't use special names for large file operatios

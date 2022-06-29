@@ -12,6 +12,10 @@
 
 #include "heclib.h"
 
+#if defined __APPLE__
+#define lseek64 lseek
+#endif
+
 
 JNIEXPORT int JNICALL Java_hec_heclib_util_Heclib_Hec_1readf
     (JNIEnv *env, jobject obj, jint j_handle, jintArray j_array, 

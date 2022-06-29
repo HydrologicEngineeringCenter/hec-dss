@@ -187,7 +187,7 @@ extern double EXFUN(atof, (const char *));
 extern int EXFUN(atoi, (const char *));
 extern long int EXFUN(atol, (const char *));
 extern int EXFUN(rand, (void));
-#ifndef __linux__
+#if !defined __linux__ && !defined __APPLE__
 extern void EXFUN(srand, (int));
 #endif
 //extern PTR EXFUN(calloc, (size_t, size_t));

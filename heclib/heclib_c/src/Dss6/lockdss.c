@@ -64,6 +64,12 @@ void lockdss_(int *ihandle, int *mode, int *position, int *nbytes, int *istat)
 #define LOCK_NOWAIT 2
 #define TEST_LOCK 3
 
+#if defined __APPLE__
+#define off64_t off_t
+#define lseek64 lseek
+#define lockf64 lockf
+#endif
+
 void lockdss_(int *ihandle, int *mode, int *position, int *nbytes, int *istat)
 {
 	off64_t lbytes;

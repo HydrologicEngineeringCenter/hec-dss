@@ -17,6 +17,9 @@
 #include "zdssKeys.h"
 #include "hecdssInternal.h"
 
+#if defined __APPLE__
+#define lseek64 lseek
+#endif
 
 /**
 *  Function:	zwriteDisk
