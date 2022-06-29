@@ -1,5 +1,5 @@
 
-This is the HEC-DSS library source tree.  DSS is a database optimized for timeseries data.  
+This is the HEC-DSS library source tree.  DSS is a database optimized for timeseries data.
 
 
 Documentation:  https://www.hec.usace.army.mil/software/hec-dss/documentation.aspx
