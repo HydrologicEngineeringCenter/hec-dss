@@ -18,7 +18,7 @@ long long zfileSize(int handle)
 	if (!status) return status;
 	nbytes = buf.st_size; 
 	return nbytes;
-#elif __linux__  
+#elif defined __linux__ || defined __APPLE__
     struct stat buf;
 	status = fstat(handle, &buf);
 	if (!status) return status;
