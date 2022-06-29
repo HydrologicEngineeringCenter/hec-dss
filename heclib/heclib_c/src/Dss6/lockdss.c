@@ -64,18 +64,24 @@ void lockdss_(int *ihandle, int *mode, int *position, int *nbytes, int *istat)
 #define LOCK_NOWAIT 2
 #define TEST_LOCK 3
 
+#if defined __APPLE__
+#define off64_t off_t
+#define lseek64 lseek
+#define lockf64 lockf
+#endif
+
 void lockdss_(int *ihandle, int *mode, int *position, int *nbytes, int *istat)
 {
-	off_t lbytes;
-	off_t lposition;
+	off64_t lbytes;
+	off64_t lposition;
 	long newPosition;
 	/*   extern char *sys_errlist[];
 	extern int errno;  */
 
-	lbytes = (off_t)*nbytes;
-	lposition = (off_t)*position;
+	lbytes = (off64_t)*nbytes;
+	lposition = (off64_t)*position;
 
-	newPosition = lseek(*ihandle, lposition, SEEK_SET);
+	newPosition = lseek64(*ihandle, lposition, SEEK_SET);
 	if (newPosition < 0) {
 		*istat = -1;
 		return;
@@ -84,20 +90,20 @@ void lockdss_(int *ihandle, int *mode, int *position, int *nbytes, int *istat)
 	switch (*mode) {
 
 	case UNLOCK:
-		*istat = lockf(*ihandle, F_ULOCK, lbytes);
+		*istat = lockf64(*ihandle, F_ULOCK, lbytes);
 		break;
 
 	case LOCK_WAIT:
-		*istat = lockf(*ihandle, F_LOCK, lbytes);
+		*istat = lockf64(*ihandle, F_LOCK, lbytes);
 		if (*istat) printf("\nError: Lock Failed:\n");
 		break;
 
 	case LOCK_NOWAIT:
-		*istat = lockf(*ihandle, F_TLOCK, lbytes);
+		*istat = lockf64(*ihandle, F_TLOCK, lbytes);
 		break;
 
 	case TEST_LOCK:
-		*istat = lockf(*ihandle, F_TEST, lbytes);
+		*istat = lockf64(*ihandle, F_TEST, lbytes);
 		break;
 
 	default:

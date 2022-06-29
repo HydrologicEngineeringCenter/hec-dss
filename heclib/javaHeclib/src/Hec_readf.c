@@ -12,6 +12,10 @@
 
 #include "heclib.h"
 
+#if defined __APPLE__
+#define lseek64 lseek
+#endif
+
 
 JNIEXPORT int JNICALL Java_hec_heclib_util_Heclib_Hec_1readf
     (JNIEnv *env, jobject obj, jint j_handle, jintArray j_array, 
@@ -35,7 +39,7 @@ JNIEXPORT int JNICALL Java_hec_heclib_util_Heclib_Hec_1readf
 #ifdef _MSC_VER
 	jpos = _lseeki64(handle, address, 0);
 #else
-	jpos = lseek(handle, address, 0);
+	jpos = lseek64(handle, address, 0);
 #endif
     istat = ((jpos == -1) ? -1 : 0);
 	if (istat != 0)

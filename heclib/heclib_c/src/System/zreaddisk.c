@@ -17,6 +17,10 @@
 #include "zdssKeys.h"
 #include "hecdssInternal.h"
 
+#if defined __APPLE__
+#define lseek64 lseek
+#endif
+
 /**
 *  Function:	zreadDisk
 *
@@ -82,7 +86,7 @@ int zreadDisk (int ihandle, int iswap, long long address, void *iarray, int numb
 #ifdef _MSC_VER
 	jpos = _lseeki64(ihandle, address, 0);
 #else
-	jpos = lseek(ihandle, address, 0);
+	jpos = lseek64(ihandle, address, 0);
 #endif
     status = ((jpos == -1) ? -3 : 0);
 

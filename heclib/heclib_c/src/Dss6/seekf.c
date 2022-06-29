@@ -11,6 +11,10 @@
 #include <stdint.h>
 #endif
 
+#if defined __APPLE__
+#define lseek64 lseek
+#endif
+
 
 void
 seekf64_ (int *ihandl, int *iorigin, long long*iofset, long long*ipos, int *istat)
@@ -18,7 +22,7 @@ seekf64_ (int *ihandl, int *iorigin, long long*iofset, long long*ipos, int *ista
 #ifdef _MSC_VER
     *ipos = _lseeki64(*ihandl, *iofset, *iorigin);
 #else
-	*ipos = lseek(*ihandl, *iofset, *iorigin);
+	*ipos = lseek64(*ihandl, *iofset, *iorigin);
 #endif
     *istat = ((*ipos == -1) ? -1 : 0);
 }
