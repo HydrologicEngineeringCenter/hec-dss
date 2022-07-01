@@ -1,7 +1,3 @@
-#if defined(__linux__)
-#define _LARGEFILE64_SOURCE 
-#endif 
-
 #ifdef _MSC_VER
 #include <io.h>
 #include <errno.h>
@@ -82,7 +78,7 @@ int zreadDisk (int ihandle, int iswap, long long address, void *iarray, int numb
 #ifdef _MSC_VER
 	jpos = _lseeki64(ihandle, address, 0);
 #else
-	jpos = lseek64(ihandle, address, 0);
+	jpos = lseek(ihandle, address, 0);
 #endif
     status = ((jpos == -1) ? -3 : 0);
 
