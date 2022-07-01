@@ -29,9 +29,7 @@
 int zgetVersion(long long *ifltab)
 {
 	
-#ifdef _MSC_VER
-	return (int)ifltab[0];
-#elif __linux__
+#ifndef __sun__
 	return (int)ifltab[0];
 #else 
 	int vers;
