@@ -59,8 +59,11 @@
  {
 #ifdef _MSC_VER
 	struct __stat64 buf;
-#elif __linux__
+#elifn __sun__
 struct stat buf;
+#define stat64 stat
+#else
+	 struct stat64 buf;
 #endif
 	int result;
 	char name[_MAX_PATH];
@@ -164,7 +167,7 @@ struct stat buf;
 	 //  Determine if the file exists
 	 buf.st_size = 0;
 
-	result = stat(fullDssFilename, &buf );
+	result = stat64(fullDssFilename, &buf );
 	//  _stat throws an error if the file does not exist - reset it.
 	if (result == 0) {
 		//  Get the file permission
