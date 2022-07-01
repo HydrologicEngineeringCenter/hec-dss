@@ -40,15 +40,6 @@ typedef __int64 int64_t;
 // from above.
 //
 
-#if (defined(__SUNPRO_CC) || defined(__linux__))
-//
-// Sun Studio 12 C++ on 32-bit Linux doesn't support large file operations and
-// Sun Studio 12 C++ on 64-bit Linux doesn't use special names for large file operatios
-//
-#define stat64 stat
-#define fstat64 fstat
-#endif
-
 int stringCopy(char *destination, size_t sizeOfDestination, const char* source, size_t lenSource);
 
 	//-------------------//
@@ -81,8 +72,8 @@ int stringCopy(char *destination, size_t sizeOfDestination, const char* source, 
 		*nbytes = *status == 0 ? buf.st_size : -1;
 #endif
 #else
-		struct stat64 buf;
-		*status = stat64(fname, &buf) == 0 ? 0 : errno;
+		struct stat buf;
+		*status = stat(fname, &buf) == 0 ? 0 : errno;
 		*nbytes = *status == 0 ? buf.st_size : -1;
 #endif
 	}
@@ -115,8 +106,8 @@ int stringCopy(char *destination, size_t sizeOfDestination, const char* source, 
 #ifdef _MSC_VER
 		*nbytes = _filelengthi64(*handle);
 #else
-		struct stat64 buf;
-		int32_t status = fstat64(*handle, &buf) == 0 ? 0 : errno;
+		struct stat buf;
+		int32_t status = fstat(*handle, &buf) == 0 ? 0 : errno;
 		*nbytes = status == 0 ? buf.st_size : -1;
 #endif
 	}
