@@ -32,15 +32,9 @@
 
 int getEndian()
 {
-#ifdef _MSC_VER
-	return 0;
-#elif __linux__
     short int i = 0x1;
     char *c = (char*)&i;
     return (c[0] != 1);
-#else
-	return 1;
-#endif
 }
 
 void getendian_(int *iend)
