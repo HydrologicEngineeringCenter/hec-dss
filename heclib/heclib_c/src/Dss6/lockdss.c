@@ -79,20 +79,20 @@ void lockdss_(int *ihandle, int *mode, int *position, int *nbytes, int *istat)
 	switch (*mode) {
 
 	case UNLOCK:
-		*istat = lockf64(*ihandle, F_ULOCK, lbytes);
+		*istat = lockf(*ihandle, F_ULOCK, lbytes);
 		break;
 
 	case LOCK_WAIT:
-		*istat = lockf64(*ihandle, F_LOCK, lbytes);
+		*istat = lockf(*ihandle, F_LOCK, lbytes);
 		if (*istat) printf("\nError: Lock Failed:\n");
 		break;
 
 	case LOCK_NOWAIT:
-		*istat = lockf64(*ihandle, F_TLOCK, lbytes);
+		*istat = lockf(*ihandle, F_TLOCK, lbytes);
 		break;
 
 	case TEST_LOCK:
-		*istat = lockf64(*ihandle, F_TEST, lbytes);
+		*istat = lockf(*ihandle, F_TEST, lbytes);
 		break;
 
 	default:
