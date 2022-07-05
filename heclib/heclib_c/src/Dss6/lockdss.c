@@ -49,9 +49,6 @@ void lockdss_(int *ihandle, int *mode, int *position, int *nbytes, int *istat)
 
 #else
 
-#if defined(__linux__)
-#define _LARGEFILE64_SOURCE 
-#endif 
 
 #include <stdio.h>
 #include <sys/types.h>
@@ -64,22 +61,16 @@ void lockdss_(int *ihandle, int *mode, int *position, int *nbytes, int *istat)
 #define LOCK_NOWAIT 2
 #define TEST_LOCK 3
 
-#if defined __APPLE__
-#define off64_t off_t
-#define lseek64 lseek
-#define lockf64 lockf
-#endif
-
 void lockdss_(int *ihandle, int *mode, int *position, int *nbytes, int *istat)
 {
-	off64_t lbytes;
-	off64_t lposition;
+	off_t lbytes;
+	off_t lposition;
 	long newPosition;
 	/*   extern char *sys_errlist[];
 	extern int errno;  */
 
-	lbytes = (off64_t)*nbytes;
-	lposition = (off64_t)*position;
+	lbytes = (off_t)*nbytes;
+	lposition = (off_t)*position;
 
 	newPosition = lseek64(*ihandle, lposition, SEEK_SET);
 	if (newPosition < 0) {
