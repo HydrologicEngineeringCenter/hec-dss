@@ -11,6 +11,12 @@ ifeq ($(UNAME_S),SunOS)
 	Make_OS=Solaris
 	MAKE=gmake
 endif
+ifeq ($(UNAME_S),Darwin)
+	CWARNING=-Werror=implicit-function-declaration
+	CFLAGS=-m64 -c -fPIC -g -std=gnu99 -Isrc/headers $(CWARNING) -D__darwin__
+	Make_OS=MacOS
+	MAKE=make
+endif
 all:
 	( cd ../nws_shef; $(MAKE) -j -f Makefile.$(Make_OS))
 	(cd heclib_c; $(MAKE) )
@@ -36,6 +42,5 @@ clean:
 
 test:
 	( cd ../test/C; mkdir -p Output; ./unix_test)
-	( cd ../test/Java; mkdir -p Output; ./run-junit)
-	( cd ../test/Dss-C; mkdir -p Output; $(MAKE) -f Makefile.$(Make_OS) clean)
-	( cd ../test/Dss-C; mkdir -p Output; $(MAKE) -j -f Makefile.$(Make_OS) test)
+	( cd ../test/Dss-C; mkdir -p Output; $(MAKE) clean test )
+	( cd ../test/Fortran; mkdir -p Output; $(MAKE) -fMakefile.$(Make_OS) clean test )
