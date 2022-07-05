@@ -66,13 +66,11 @@ void lockdss_(int *ihandle, int *mode, int *position, int *nbytes, int *istat)
 	off_t lbytes;
 	off_t lposition;
 	long newPosition;
-	/*   extern char *sys_errlist[];
-	extern int errno;  */
-
+	
 	lbytes = (off_t)*nbytes;
 	lposition = (off_t)*position;
 
-	newPosition = lseek64(*ihandle, lposition, SEEK_SET);
+	newPosition = lseek(*ihandle, lposition, SEEK_SET);
 	if (newPosition < 0) {
 		*istat = -1;
 		return;
