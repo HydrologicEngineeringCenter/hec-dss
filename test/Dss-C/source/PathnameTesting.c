@@ -52,10 +52,14 @@ int PathnameTesting(char* dssFileName, int dssVersion)
 	tss2->boolRetrieveAllTimes = 1;
 	status = ztsRetrieve(ifltab, tss2, -1, 2, 0);
 
-	if (status != STATUS_OKAY) return status;
+	if (status != STATUS_OKAY) {
+		zstructFree(tss2);
+		return status;
+		}
 
 	if (tss2->numberValues != 200) {
 		printf("\nError reading path '%s'", path);
+		zstructFree(tss2);
 		return -1;
 	  }
 

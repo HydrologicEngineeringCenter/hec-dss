@@ -45,7 +45,7 @@ test:$(BUILD_DIR)/$(TARGET)
 	cp ../../dss-test-data/*.dss $(BUILD_DIR)
 	(cd $(BUILD_DIR); ./Dss-C test)
 
-#valgrind   --read-inline-info=yes --track-origins=yes  --read-var-info=yes --exit-on-first-error=yes --error-exitcode=-1 --leak-check=full --log-file=vg.txt
+#valgrind  --leak-check=full --show-leak-kinds=all --read-inline-info=yes --track-origins=yes  --read-var-info=yes --exit-on-first-error=yes --error-exitcode=-1 --leak-check=full --log-file=vg.txt
 valgrind:$(BUILD_DIR)/$(TARGET)
 	mkdir -p $(BUILD_DIR)
 	rm -f $(BUILD_DIR)/*.dss
