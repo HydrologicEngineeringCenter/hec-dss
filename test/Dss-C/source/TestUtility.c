@@ -218,6 +218,7 @@ int WriteTimeSeries2(long long ifltab[250],int timeSeriesCount, int timeSeriesLe
 		tss1 = zstructTsNewRegFloats(pathname, fvalues, timeSeriesLength, "01Jan1900", "1200", "cfs", "Inst-Val");
 		status = ztsStore(ifltab, tss1, 0);
 		zstructFree(tss1);
+		free(fvalues);
 		if (status != STATUS_OKAY)
 			break;
 	}
