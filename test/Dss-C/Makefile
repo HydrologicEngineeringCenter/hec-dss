@@ -35,7 +35,7 @@ SRCS := $(shell find $(SRC_DIRS) -name '*.c' -o -name '*.f90' )
 
 OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
 
-$(BUILD_DIR)/$(TARGET): $(OBJS)
+$(BUILD_DIR)/$(TARGET): $(OBJS) $(HLIBS)
 	mkdir -p $(BUILD_DIR)
 	$(F90)  -o $@ $^ $(HLIBS) $(HLIBS)  $(HLIBS) $(LDFLAGS)
 
@@ -45,6 +45,12 @@ test:$(BUILD_DIR)/$(TARGET)
 	cp ../../dss-test-data/*.dss $(BUILD_DIR)
 	(cd $(BUILD_DIR); ./Dss-C test)
 
+#valgrind   --read-inline-info=yes --track-origins=yes  --read-var-info=yes --exit-on-first-error=yes --error-exitcode=-1 --leak-check=full --log-file=vg.txt
+valgrind:$(BUILD_DIR)/$(TARGET)
+	mkdir -p $(BUILD_DIR)
+	rm -f $(BUILD_DIR)/*.dss
+	cp ../../dss-test-data/*.dss $(BUILD_DIR)
+	(cd $(BUILD_DIR); valgrind   --read-inline-info=yes --track-origins=yes  --read-var-info=yes --error-exitcode=-1 --leak-check=full --log-file=vg.txt ./Dss-C test)
 
 $(BUILD_DIR)/%.c.o: %.c
 	mkdir -p $(dir $@)
