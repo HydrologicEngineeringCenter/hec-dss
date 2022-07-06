@@ -18,7 +18,7 @@ int testMultiUser(char *filename, int version, int numberDatasets, int accessMod
 	int i, j, n;
 
 	clock_t begin, end;
-
+    memset(ifltab,0,sizeof(ifltab));
 	zStructCatalog *catStruct;
 //	int idigit;
 	//char filename[50];

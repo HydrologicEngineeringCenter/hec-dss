@@ -546,6 +546,7 @@ int units_issue_126()
 	tss1->type = "INST-VAL";
 
 	long long ifltab[250];
+	memset(ifltab,0,sizeof(ifltab));
 	int status = zopen6(ifltab, dssFileName);
 	if (status) return status;
 
@@ -555,6 +556,7 @@ int units_issue_126()
 
 	zStructTimeSeries* tss2 = zstructTsNew(path);
 	long long ifltab2[250];
+	memset(ifltab2,0,sizeof(ifltab2));
 	zopen(ifltab2, dssFileName);
 	status = ztsRetrieve(ifltab2, tss2, -1, 1, 0);
 
@@ -574,7 +576,7 @@ int units_issue_126()
 
 	zstructFree(tss2);
 	zclose(ifltab2);
-
+	free(fvalues);
 	return status;
 }
 

@@ -13,7 +13,7 @@ int PathnameTesting(char* dssFileName, int dssVersion)
 	zStructTimeSeries* tss1;
 	double dvalues[200];
 	int status, i;
-
+	memset(ifltab,0,sizeof(ifltab));
 	deleteFile(dssFileName);
 	
 	if (dssVersion == 7)

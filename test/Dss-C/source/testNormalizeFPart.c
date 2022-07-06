@@ -437,6 +437,8 @@ int test_normalize_f_part() {
 		status = ztsRetrieve(ifltab, tssRetrieve, 0, 0, 0);
 		assert(status == 0);
 		assert(!strcmp(tssRetrieve->pathname, pathname));
+		zstructFree(tssStore);
+		zstructFree(tssRetrieve);
 	}
 	//----------------------------------------------------------------//
 	// test storing/retrieveing pathnames with invalid tagged F-parts //
@@ -453,6 +455,8 @@ int test_normalize_f_part() {
 		status = ztsRetrieve(ifltab, tssRetrieve, 0, 0, 0);
 		assert(status != 0);
 		zset7("clear", "", 0);
+		zstructFree(tssStore);
+		zstructFree(tssRetrieve);
 	}
 	//-----------------------------------------------------------------------------------------------------------//
 	// test storing/retrieveing pathnames with valid tagged F-parts in canonical and reverse canonical tag order //
@@ -472,6 +476,8 @@ int test_normalize_f_part() {
 		assert(status == 0);
 		sprintf(pathname, pathname_pattern, tests[i].expected_normalized);
 		assert(!strcmp(tssRetrieve->pathname, pathname));
+		zstructFree(tssStore);
+		zstructFree(tssRetrieve);
 	}
 	zclose(ifltab);
 	return status;
