@@ -17,6 +17,13 @@ ifeq ($(UNAME_S),SunOS)
 	FORTRAN=f95
 	FIND=gfind
 endif
+ifeq ($(UNAME_S),Darwin)
+	FWARNINGS=-Warray-bounds -Wc-binding-type -Wcharacter-truncation -fallow-argument-mismatch
+	FDEBUG=-fcheck=all,no-recursion
+	FORTRAN=gfortran
+	FFLAGS=-c -g -cpp -m64 -fPIC $(FWARNINGS) $(FDEBUG) -Isrc/headers
+	FIND=find
+endif
 
 
 
