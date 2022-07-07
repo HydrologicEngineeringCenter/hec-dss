@@ -59,7 +59,7 @@
  {
 #ifdef _MSC_VER
 	struct __stat64 buf;
-#elif __linux__
+#elif !defined(__sun__)
 struct stat buf;
 #define stat64 stat
 #else

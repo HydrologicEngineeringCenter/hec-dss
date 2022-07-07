@@ -1,6 +1,3 @@
-#if defined(__linux__)
-#define _LARGEFILE64_SOURCE 
-#endif 
 #ifdef _MSC_VER
 #include <io.h>
 #else
@@ -35,7 +32,7 @@ JNIEXPORT int JNICALL Java_hec_heclib_util_Heclib_Hec_1readf
 #ifdef _MSC_VER
 	jpos = _lseeki64(handle, address, 0);
 #else
-	jpos = lseek64(handle, address, 0);
+	jpos = lseek(handle, address, 0);
 #endif
     istat = ((jpos == -1) ? -1 : 0);
 	if (istat != 0)

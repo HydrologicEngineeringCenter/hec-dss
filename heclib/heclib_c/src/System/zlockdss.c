@@ -1,7 +1,3 @@
-#if defined(__linux__)
-#define _LARGEFILE64_SOURCE 
-#endif
-
 #include <stdio.h>
 
 #include "heclib7.h"
@@ -185,7 +181,7 @@ void testLock(long long* ifltab, int ihandle)
 
 	for (i = 100; i < 120; i++) {
 		address = i * 8;
-		jpos = lseek64(ihandle, address, SEEK_SET);
+		jpos = lseek(ihandle, address, SEEK_SET);
 		status = lockf(ihandle, F_TLOCK, 8);
 		if (status == 0) {
 			lockf(ihandle, F_ULOCK, 8);
@@ -209,7 +205,7 @@ int zlockDss(long long *ifltab, int ihandle, int mode, long long wordAddress, in
 
 
 	address = wordAddress * 8;
-	jpos = lseek64(ihandle, address, SEEK_SET);
+	jpos = lseek(ihandle, address, SEEK_SET);
 	if (jpos < 0) {
 		status = STATUS_NOT_OKAY;
 		return status;

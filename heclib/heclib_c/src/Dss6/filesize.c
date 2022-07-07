@@ -40,15 +40,6 @@ typedef __int64 int64_t;
 // from above.
 //
 
-#if (defined(__SUNPRO_CC) || defined(__linux__))
-//
-// Sun Studio 12 C++ on 32-bit Linux doesn't support large file operations and
-// Sun Studio 12 C++ on 64-bit Linux doesn't use special names for large file operatios
-//
-#define stat64 stat
-#define fstat64 fstat
-#endif
-
 int stringCopy(char *destination, size_t sizeOfDestination, const char* source, size_t lenSource);
 
 	//-------------------//
@@ -58,31 +49,12 @@ int stringCopy(char *destination, size_t sizeOfDestination, const char* source, 
 	void filesizen64_(char *fname, int64_t *nbytes, int32_t *status, int32_t filename_len) {
 
 #ifdef _MSC_VER
-#if _MSC_VER < 1400
-		HANDLE h_file = CreateFile(
-			LPCSTR(fname),
-			GENERIC_READ,
-			FILE_SHARE_WRITE,
-			NULL,
-			OPEN_EXISTING,
-			FILE_ATTRIBUTE_NORMAL,
-			NULL);
-		if (h_file == INVALID_HANDLE_VALUE) {
-			*status = -1;
-		}
-		else {
-			*status = !GetFileSizeEx(h_file, reinterpret_cast<PLARGE_INTEGER>(nbytes)) == 0 ? -1 : 0;
-			CloseHandle(h_file);
-		}
-		if (*status) *nbytes = -1;
-#else
 		struct __stat64 buf;
 		*status = _stat64(fname, &buf) == 0 ? 0 : errno;
 		*nbytes = *status == 0 ? buf.st_size : -1;
-#endif
 #else
-		struct stat64 buf;
-		*status = stat64(fname, &buf) == 0 ? 0 : errno;
+		struct stat buf;
+		*status = stat(fname, &buf) == 0 ? 0 : errno;
 		*nbytes = *status == 0 ? buf.st_size : -1;
 #endif
 	}
@@ -115,8 +87,8 @@ int stringCopy(char *destination, size_t sizeOfDestination, const char* source, 
 #ifdef _MSC_VER
 		*nbytes = _filelengthi64(*handle);
 #else
-		struct stat64 buf;
-		int32_t status = fstat64(*handle, &buf) == 0 ? 0 : errno;
+		struct stat buf;
+		int32_t status = fstat(*handle, &buf) == 0 ? 0 : errno;
 		*nbytes = status == 0 ? buf.st_size : -1;
 #endif
 	}
