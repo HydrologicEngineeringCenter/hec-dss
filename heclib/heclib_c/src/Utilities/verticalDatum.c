@@ -309,7 +309,7 @@ char *userHeaderToString(const int *userHeader, const int userHeaderNumber) {
         while (*(cp-1) == ' ' && (cp - start) > 1) --cp;
         len = cp - start;
 		if (len > 0) {
-			str = _malloc((size_t)userHeaderNumber*4);
+			str = _malloc((size_t)userHeaderNumber*4+1);
 			memcpy(str, start, len);
 			str[len] = '\0';
 		}
