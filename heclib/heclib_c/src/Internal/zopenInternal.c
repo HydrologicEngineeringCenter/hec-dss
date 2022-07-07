@@ -110,7 +110,7 @@
 	 long long *fileHeader;
 	 int iswap;
 
-	 *fullDssFilename = NULL;
+	 fullDssFilename[0] ='\0';
 	 
 	 //  Initialize ifltab
 	 status = zinitIfltab(ifltab);

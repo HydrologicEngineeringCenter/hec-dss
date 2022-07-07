@@ -49,7 +49,7 @@
 	 char cdss[5];
 	 char cvers[5];	 
 
-	 *fullDssFilename = NULL;
+	 fullDssFilename[0] = '\0';
 	 fileExists = zfileName (fullDssFilename, _MAX_PATH, dssFilename, &permission);
 	 if (fileExists < 0) {
 		 return -2;
