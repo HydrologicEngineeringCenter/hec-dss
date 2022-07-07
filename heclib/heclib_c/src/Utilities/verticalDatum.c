@@ -270,7 +270,8 @@ int *stringToUserHeader(const char *str, int *userHeaderNumber) {
     int *userHeader = NULL;
     if (numInts > 0) {
         userHeader = (int *)_calloc(numInts, 4);
-		memcpy((char *)userHeader, str, numInts * 4);
+		memset((char *)userHeader, 0, numInts * 4);
+		memcpy((char *)userHeader, str, numBytes);
 		if (getEndian()) {
 			// big endian
 			uint32_t *_4bytes = (uint32_t *)userHeader;
@@ -308,7 +309,7 @@ char *userHeaderToString(const int *userHeader, const int userHeaderNumber) {
         while (*(cp-1) == ' ' && (cp - start) > 1) --cp;
         len = cp - start;
 		if (len > 0) {
-			str = _malloc((size_t)len+1);
+			str = _malloc((size_t)userHeaderNumber*4+1);
 			memcpy(str, start, len);
 			str[len] = '\0';
 		}
