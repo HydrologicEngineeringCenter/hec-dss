@@ -6,7 +6,7 @@ int main()
 
 	printf("\nyour system is: ");
     isBigEndian  =bigEndian();
-   if (bigEndian)     
+   if (isBigEndian)
        printf("Big endian\n"); 
    else
        printf("Little endian\n"); 
