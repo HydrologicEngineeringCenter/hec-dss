@@ -2,10 +2,10 @@
 #include "heclib.h"
 int main()  
 { 
-    int bigEndian=0;
+    int isBigEndian=0;
 
 	printf("\nyour system is: ");
-    bigEndian  =bigEndian();
+    isBigEndian  =bigEndian();
    if (bigEndian)     
        printf("Big endian\n"); 
    else
