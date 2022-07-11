@@ -47,7 +47,7 @@ int zrecordAddresses(long long *ifltab, const char* pathname, long long *address
 	addresses[2] = ifltab[zdssKeys.kaddTableHash];
 	addresses[3] = fileHeader[zdssFileKeys.kbinSize];
 	addresses[4] = ifltab[zdssKeys.khashTableBinAdd];
-	if (getEndian()) {
+	if (bigEndian()) {
 		i8toi4(ifltab[zdssKeys.kbinPathLen], &pathnameSize, &numberChars);
 	}
 	else {

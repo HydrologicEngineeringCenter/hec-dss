@@ -366,7 +366,7 @@ int ztsRegStoreBlock(long long *ifltab, zStructTimeSeries *tss, const char *path
 			if (zisError(status)) {
 				return zerrorUpdate(ifltab, status, DSS_FUNCTION_ztsRegStoreBlock_ID);
 			} 
-			if (getEndian()) {
+			if (bigEndian()) {
 				zswitchInts(internalHeaderRead, INT_HEAD_cnotesLength + 1);
 			}
 			if (info[zdssInfoKeys.kinfoLogicalNumber] < 1) {

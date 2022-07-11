@@ -39,7 +39,7 @@ int charLongxx(void *from, void *to, int numberBytes, int maxBytesTo, int zeroEn
 	charTo = (unsigned char *)to;
 
 	nlongwords = ((numberBytes - 1) / 8) + 1;
-	if (!getEndian()) {
+	if (!bigEndian()) {
 		if (numberBytes > 0) {
 			if (numberBytes > maxBytesTo) numberBytes = maxBytesTo;
 			for (i = 0; i < numberBytes; i++) {

@@ -69,7 +69,7 @@
 		}
 	}
 
-	iswap = getEndian();
+	iswap = bigEndian();
 	status = zreadDisk (ihandle, iswap, 0L, iarray, 2*4);
 	closeFile(ihandle);
 

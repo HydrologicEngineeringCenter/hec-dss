@@ -124,7 +124,7 @@ int zgetRecordSize7 (long long *ifltab, zStructRecordSize *recordSize)
 
 	if ((recordSize->dataType >= DATA_TYPE_RTS) && (recordSize->dataType < DATA_TYPE_PD)) {
 		//  Time series
-		if (getEndian()) {
+		if (bigEndian()) {
 			zswitchInts(internalHeader, INT_HEAD_cnotesLength + 1);
 		}
 		recordSize->tsPrecision = internalHeader[INT_HEAD_precision];

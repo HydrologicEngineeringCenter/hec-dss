@@ -125,7 +125,7 @@ int zspatialTinRetrieve(long long *ifltab, zStructSpatialTin *tinStruct, int boo
 		return status;
 	}
 
-	if (getEndian()) {
+	if (bigEndian()) {
 		zswitchInts(ztransfer->internalHeader, ztransfer->internalHeaderNumber);
 	}
 
@@ -194,7 +194,7 @@ int zspatialTinRetrieve(long long *ifltab, zStructSpatialTin *tinStruct, int boo
 		}
 	}
 
-	if (getEndian()) {
+	if (bigEndian()) {
 		zswitchInts(ztransfer->values1, ztransfer->values1Number);
 	}
 	//  Values 1, x, y, value
@@ -209,7 +209,7 @@ int zspatialTinRetrieve(long long *ifltab, zStructSpatialTin *tinStruct, int boo
 		tinStruct->allocated[zSTRUCT_TIN_yCoordinate] = 1;
 		tinStruct->allocated[zSTRUCT_TIN_value] = 1;
 	}
-	if (getEndian()) {
+	if (bigEndian()) {
 		zswitchInts(ztransfer->values2, ztransfer->values2Number);
 	}
 	//  Values 2, other arrays
@@ -221,7 +221,7 @@ int zspatialTinRetrieve(long long *ifltab, zStructSpatialTin *tinStruct, int boo
 		tinStruct->allocated[zSTRUCT_TIN_pointType] = 1;
 		tinStruct->allocated[zSTRUCT_TIN_numberConnections] = 1;
 	}
-	if (getEndian()) {
+	if (bigEndian()) {
 		zswitchInts(ztransfer->values3, ztransfer->values3Number);
 	}
 	//  Value 3, connections  tinStruct->connection

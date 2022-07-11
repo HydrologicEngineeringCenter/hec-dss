@@ -53,7 +53,7 @@ int testztsStruct1(long long *ifltab)
 	zstructFree(tss1);
 	zstructFree(tss2);
 
-	if (getEndian() && (zgetVersion(ifltab) == 6)) {
+	if (bigEndian() && (zgetVersion(ifltab) == 6)) {
 		printf("Unable to test user header for version 6 on big endian machines.\n");
 		printf("Version 6 user header is character; version 7 is ints\n");
 		return 0;
@@ -71,14 +71,14 @@ int testztsStruct1(long long *ifltab)
 	tss1->userHeader = (int *)calloc(tss1->userHeaderNumber,4);
 	memcpy(tss1->userHeader, headerStr, strlen(headerStr));
 
-	if (getEndian() && (zgetVersion(ifltab) == 7)) {
+	if (bigEndian() && (zgetVersion(ifltab) == 7)) {
 		zswitchInts(tss1->userHeader, 6);
 	}
 
 	status = ztsStore(ifltab, tss1, 0);
 	if (zcheckStatus(ifltab, status, 1, "Fail in testztsStruct1 Loc 10, store status ")) return status; 
 
-	if (getEndian() && (zgetVersion(ifltab) == 7)) {
+	if (bigEndian() && (zgetVersion(ifltab) == 7)) {
 		zswitchInts(tss1->userHeader, 6);
 	}
 
@@ -86,7 +86,7 @@ int testztsStruct1(long long *ifltab)
 	status = ztsRetrieve(ifltab, tss2, -1, 1, 0);
 	if (zcheckStatus(ifltab, status, 1, "Fail in testztsStruct1 Loc 11, retrieve status ")) return status; 
 
-	if (getEndian() && (zgetVersion(ifltab) == 7)) {
+	if (bigEndian() && (zgetVersion(ifltab) == 7)) {
 		zswitchInts(tss2->userHeader, 6);
 	}
 

@@ -98,7 +98,7 @@ int zspatialGridRetrieveVersion(long long *ifltab, const char *cpath, int* gridS
 		return status;
 	}
 
-	if (getEndian()) {
+	if (bigEndian()) {
 		zswitchInts(ztransfer->internalHeader, ztransfer->internalHeaderNumber);
 	}
 
@@ -235,7 +235,7 @@ int zspatialGridRetrieve(long long *ifltab, zStructSpatialGrid *gridStruct, int 
 		return status;
 	}
 
-	if (getEndian()) {
+	if (bigEndian()) {
 		zswitchInts(ztransfer->internalHeader, ztransfer->internalHeaderNumber);
 	}
 
@@ -291,7 +291,7 @@ int zspatialGridRetrieve(long long *ifltab, zStructSpatialGrid *gridStruct, int 
 
 		//  Retrieve floats: _cellSize,_xCoordOfGridCellZero,_yCoordOfGridCellZero,_nullValue
 		if (ztransfer->userHeader && (ztransfer->userHeaderNumber > 0)) {
-			if (getEndian()) {
+			if (bigEndian()) {
 				zswitchInts(ztransfer->userHeader, ztransfer->userHeaderNumber);
 			}
 			memcpy(&gridStruct->_cellSize,             &ztransfer->userHeader[0], 4);
@@ -301,7 +301,7 @@ int zspatialGridRetrieve(long long *ifltab, zStructSpatialGrid *gridStruct, int 
 		}
 
 		if (gridStruct->_storageDataType == GRID_FLOAT) {
-			if (getEndian()) {
+			if (bigEndian()) {
 				zswitchInts(ztransfer->values1, ztransfer->values1Number);
 			}
 			//  Values 1, x, y, value
@@ -326,7 +326,7 @@ int zspatialGridRetrieve(long long *ifltab, zStructSpatialGrid *gridStruct, int 
 				int numLongs = ((dataSize - 1) / 2) + 1;
 				switch (gridStruct->_compressionMethod) {
 				case NO_COMPRESSION:
-					if (getEndian()) {
+					if (bigEndian()) {
 						zswitchInts(ztransfer->values3, ztransfer->values3Number);
 					}
 					gridStruct->_data = (int *)calloc(dataSize, 4);
@@ -355,7 +355,7 @@ int zspatialGridRetrieve(long long *ifltab, zStructSpatialGrid *gridStruct, int 
 #endif
 						gridStruct->_data = values;
 
-						if (getEndian()) {
+						if (bigEndian()) {
 							zswap(gridStruct->_data, numLongs * 2);
 							zswitchInts(gridStruct->_data, numLongs * 2);
 						}

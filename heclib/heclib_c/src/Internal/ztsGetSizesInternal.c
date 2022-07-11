@@ -168,7 +168,7 @@ int ztsGetSizesInternal(long long *ifltab, ztsTimeWindow *timeWindow, zStructRec
 				if (zisError(status)) {
 					return status;
 				}
-				if (getEndian()) {
+				if (bigEndian()) {
 					zswitchInts(internalHeader, INT_HEAD_cnotesLength + 1);
 				}
 				i8toi4(info[zdssInfoKeys.kinfoTypeVersion], &dataType, &version);

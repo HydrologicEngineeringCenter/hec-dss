@@ -295,7 +295,7 @@ int zpdRetrieve(long long *ifltab, zStructPairedData *pds, int retrieveSizeFlag)
 		return status;
 	}
 
-	if (getEndian()) {
+	if (bigEndian()) {
 		zswitchInts(ztransfer->internalHeader, INT_HEAD_pdUnits);
 		if (ztransfer->dataType == DATA_TYPE_PD) {
 			if (ztransfer->values1Number > 0) {
@@ -558,7 +558,7 @@ int zpdRetrieve(long long *ifltab, zStructPairedData *pds, int retrieveSizeFlag)
 		}
 		//  Convert to float or double
 		if (ztransfer->dataType == DATA_TYPE_PD) {
-			if (getEndian()) {
+			if (bigEndian()) {
 				if (pds->numberOrdinatesInStruct > 0) {
 					zswitchInts(ztransfer->values1, (pds->numberOrdinatesInStruct + 1));
 				}
@@ -678,7 +678,7 @@ int zpdRetrieve(long long *ifltab, zStructPairedData *pds, int retrieveSizeFlag)
 			//  Now Convert to float or double
 			ipos = (i - startCurve) * pds->numberOrdinatesInStruct;
 			if (ztransfer->dataType == DATA_TYPE_PD) {
-				if (getEndian()) {
+				if (bigEndian()) {
 					if ((numberToRead + offset) > 0) {
 						zswitchInts(ztransfer->values2, (numberToRead + offset));
 					}

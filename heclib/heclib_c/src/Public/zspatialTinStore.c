@@ -241,7 +241,7 @@ int zspatialTinStore(long long *ifltab, zStructSpatialTin *tinStruct)
 		}
 	}
 
-	 if (getEndian()) {
+	 if (bigEndian()) {
 		 zswitchInts(ztransfer->internalHeader, ztransfer->internalHeaderNumber);
 		 zswitchInts(ztransfer->values1, ztransfer->values1Number);
 		 zswitchInts(ztransfer->values2, ztransfer->values2Number);

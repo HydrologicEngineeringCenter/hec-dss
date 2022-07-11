@@ -90,7 +90,7 @@ int zinitIfltab(long long *ifltab)
 
 	 //  0 (Zero) = LITTLE Endian (Windows/Intel, Linux/Intel)
 	 //  1 (One)  = BIG Endian (Sun Solaris/RISC)
-	 ifltab[zdssKeys.kswap] = getEndian();
+	 ifltab[zdssKeys.kswap] = bigEndian();
 
 	 /*
 	 Now allocate space for the following areas in memory:

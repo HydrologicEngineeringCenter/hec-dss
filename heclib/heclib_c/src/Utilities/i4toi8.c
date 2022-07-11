@@ -31,7 +31,7 @@ unsigned long long i4toi8(int int4a, int int4b)
 	long long *i8;
 	i8 = (long long*)&i4;
 
-	if (getEndian()) {
+	if (bigEndian()) {
 		//  Big Endian
 		i4[1] = int4a;
 		i4[0] = int4b;

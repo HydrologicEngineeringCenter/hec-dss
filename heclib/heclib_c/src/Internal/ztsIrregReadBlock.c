@@ -325,7 +325,7 @@ int ztsIrregReadBlock(long long *ifltab, const char *pathname, long long *info,
 			return status;
 		}
 
-		if (getEndian()) {
+		if (bigEndian()) {
 			zswitchInts(ztransfer->internalHeader, INT_HEAD_cnotesLength + 1);
 			if (ztransfer->header2Number > 0) {
 				zswitchInts(ztransfer->header2, ztransfer->header2Number);
