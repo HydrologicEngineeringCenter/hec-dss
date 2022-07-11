@@ -197,7 +197,7 @@ int zspatialGridStore(long long *ifltab, zStructSpatialGrid *gridStruct) {
 	memcpy(&ztransfer->userHeader[1], &gridStruct->_xCoordOfGridCellZero, 4);
 	memcpy(&ztransfer->userHeader[2], &gridStruct->_yCoordOfGridCellZero, 4);
 	memcpy(&ztransfer->userHeader[3], &gridStruct->_nullValue, 4);
-	if (getEndian()) {
+	if (bigEndian()) {
 		zswitchInts(ztransfer->userHeader, ztransfer->userHeaderNumber);
 	}
 
@@ -225,7 +225,7 @@ int zspatialGridStore(long long *ifltab, zStructSpatialGrid *gridStruct) {
 			internalHeader[INT_HEAD_grid_sizeofCompressedElements] = gridStruct->_sizeofCompressedElements;
 			ztransfer->values3Number = numLongs * 2;
 			ztransfer->values3 = (int *)dataValues;
-			if (getEndian()) {
+			if (bigEndian()) {
 				zswitchInts(ztransfer->values3, ztransfer->values3Number);
 			}
 
@@ -240,7 +240,7 @@ int zspatialGridStore(long long *ifltab, zStructSpatialGrid *gridStruct) {
 			printf("\n");
 		}
 #endif
-		if (getEndian()) {
+		if (bigEndian()) {
 			zswap((long long *)dataValues, numLongs * 2);
 			zswitchInts(dataValues, numLongs * 2);
 		}
@@ -282,7 +282,7 @@ int zspatialGridStore(long long *ifltab, zStructSpatialGrid *gridStruct) {
 				0, 0, zdssErrorSeverity.WRITE_ERROR, "", "gridStruct: Unsupported Compression");
 
 		}
-		if (getEndian()) {
+		if (bigEndian()) {
 			zswitchInts(ztransfer->values1, ztransfer->values1Number);
 		}
 	}
@@ -316,7 +316,7 @@ int zspatialGridStore(long long *ifltab, zStructSpatialGrid *gridStruct) {
 		}
 	}
 	ztransfer->internalHeader = internalHeader;
-	if (getEndian()) {
+	if (bigEndian()) {
 		zswitchInts(ztransfer->internalHeader, ztransfer->internalHeaderNumber);
 	}
 

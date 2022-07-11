@@ -211,7 +211,7 @@ int ztsWriteBlock (long long *ifltab, zStructTimeSeries *tss, const char* pathna
 	internalHeaderTemp = 0;
 	internalHeaderNumber = ztsInternalHeaderPack(tss, internalHeader);
 
-	if (getEndian()) {
+	if (bigEndian()) {
 		if (lengthEachValue == 1) {
 			if (profileDepthsNumber > 0) {
 				zswitchInts(profileDepths, profileDepthsNumber);
@@ -220,7 +220,7 @@ int ztsWriteBlock (long long *ifltab, zStructTimeSeries *tss, const char* pathna
 	}
 
 
-	if (getEndian()) {
+	if (bigEndian()) {
 		//  Don't switch ints on an array still in use
 		internalHeaderTemp = calloc(internalHeaderNumber, 4);
 		for (i = 0; i < internalHeaderNumber; i++) {

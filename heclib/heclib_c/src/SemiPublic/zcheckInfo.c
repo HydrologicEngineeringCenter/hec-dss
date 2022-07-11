@@ -272,7 +272,7 @@ int zcheckInfo(long long *ifltab, const char *pathname, long long *info, int num
 			if (zisError(status)) {
 				return zerrorUpdate(ifltab, status, DSS_FUNCTION_zcheckInfo_ID);
 			}
-			if (getEndian()) {
+			if (bigEndian()) {
 				zswitchInts(internalHeader, 18);
 			}
 			if ((internalHeader[9] == 1) && (info[zdssInfoKeys.kinfoHeader2Number] == 0)) {

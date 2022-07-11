@@ -2,13 +2,13 @@
 
 
 /**
-*  Function:	getEndian
+*  Function:	bigEndian
 *
 *  Use:			Private (Internal)
 *
 *  Description:	Gets the endian-ness for this OS / Chip
 *
-*  Declaration: int getEndian();
+*  Declaration: int bigEndian();
 *
 *
 *	Returns:
@@ -30,15 +30,15 @@
 *
 **/
 
-int getEndian()
+int bigEndian()
 {
     short int i = 0x1;
     char *c = (char*)&i;
     return (c[0] != 1);
 }
 
-void getendian_(int *iend)
+void bigendian_(int *iend)
 {
-	*iend = getEndian();
+	*iend = bigEndian();
 }
 

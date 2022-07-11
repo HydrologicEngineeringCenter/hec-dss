@@ -241,7 +241,7 @@ int ztsRegReadBlock(long long *ifltab, const char *pathname, int boolExists,
 			zstructFree(ztransfer);
 			return rval;
 		}
-		if (getEndian()) {
+		if (bigEndian()) {
 			zswitchInts(ztransfer->internalHeader, INT_HEAD_cnotesLength + 1);
 			if (ztransfer->header2Number > 0) {
 				zswitchInts(ztransfer->header2, ztransfer->header2Number);

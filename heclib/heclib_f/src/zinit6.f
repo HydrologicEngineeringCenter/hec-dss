@@ -258,7 +258,7 @@ C     this should be set to -1 to switch byte orders in CHRHOL routines,
 C     in order to preserve file compatability with DOS.
 C     Be sure to check zrrec6 and zwrec6 for byte switching also.
 C     NRECL is the record length in bytes
-      call getendian(I)
+      call bigendian(I)
       if (I.EQ.0) THEN
           IWORD(4) = 0
            NRECL = NCPW * NBSIZE

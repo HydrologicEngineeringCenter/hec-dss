@@ -65,7 +65,7 @@ int testInternalIO(long long *ifltab)
 		zdelete(ifltab, pathname);
 	}
 
-	if (getEndian() && (zgetVersion(ifltab) == 7)) {
+	if (bigEndian() && (zgetVersion(ifltab) == 7)) {
 		zswitchInts(ivalues, 499);
 		zswitchInts((int *)fvalues, 200);
 	}
@@ -81,7 +81,7 @@ int testInternalIO(long long *ifltab)
 			 999, 999,  
 			 1998, 0, 4);
 
-	if (getEndian() && (zgetVersion(ifltab) == 7)) {
+	if (bigEndian() && (zgetVersion(ifltab) == 7)) {
 		zswitchInts(ivalues, 499);
 		zswitchInts((int *)fvalues, 200);
 	}
@@ -117,7 +117,7 @@ int zreadc (long long *ifltab, const char* pathname,
 		return status;
 	}
 
-	if (getEndian() && (zgetVersion(ifltab) == 7)) {
+	if (bigEndian() && (zgetVersion(ifltab) == 7)) {
 		zswitchInts(rivalues1, numberInternalHeader);
 		zswitchInts(rivalues2, numberCompressionHeader);
 		zswitchInts((int *)rfvalues1, numberValues3);
@@ -187,7 +187,7 @@ int zreadc (long long *ifltab, const char* pathname,
 	if (status != STATUS_OKAY) return status;
 
 
-	if (getEndian() && (zgetVersion(ifltab) == 7)) {
+	if (bigEndian() && (zgetVersion(ifltab) == 7)) {
 		zswitchInts(ivalues, 499);
 		zswitchInts((int *)fvalues, 200);
 	}
@@ -202,7 +202,7 @@ int zreadc (long long *ifltab, const char* pathname,
 			 998, 998,  
 			 1996, 0, 4);
 
-	if (getEndian() && (zgetVersion(ifltab) == 7)) {
+	if (bigEndian() && (zgetVersion(ifltab) == 7)) {
 		zswitchInts(ivalues, 499);
 		zswitchInts((int *)fvalues, 200);
 	}
@@ -226,7 +226,7 @@ int zreadc (long long *ifltab, const char* pathname,
 		return status;
 	}
 
-	if (getEndian() && (zgetVersion(ifltab) == 7)) {
+	if (bigEndian() && (zgetVersion(ifltab) == 7)) {
 		zswitchInts(rivalues1, numberInternalHeader);
 		zswitchInts(rivalues2, numberCompressionHeader);
 		zswitchInts((int *)rfvalues1, numberValues3);
@@ -295,7 +295,7 @@ int zreadc (long long *ifltab, const char* pathname,
 	checkdoubles_(dvalues, rdvalues1, &i, mess, &status, strlen(mess));
 	if (status != STATUS_OKAY) return status;
 
-	if (getEndian() && (zgetVersion(ifltab) == 7)) {
+	if (bigEndian() && (zgetVersion(ifltab) == 7)) {
 		zswitchInts(ivalues, 499);
 		zswitchInts((int *)fvalues, 200);
 	}
@@ -310,7 +310,7 @@ int zreadc (long long *ifltab, const char* pathname,
 			 1000, 1000,  
 			 2000, 0, 4);
 
-		if (getEndian() && (zgetVersion(ifltab) == 7)) {
+		if (bigEndian() && (zgetVersion(ifltab) == 7)) {
 			zswitchInts(ivalues, 499);
 			zswitchInts((int *)fvalues, 200);
 		}
@@ -332,7 +332,7 @@ int zreadc (long long *ifltab, const char* pathname,
 		return status;
 	}
 
-	if (getEndian() && (zgetVersion(ifltab) == 7)) {
+	if (bigEndian() && (zgetVersion(ifltab) == 7)) {
 		zswitchInts(rivalues1, numberInternalHeader);
 		zswitchInts(rivalues2, numberCompressionHeader);
 		zswitchInts((int *)rfvalues1, numberValues3);

@@ -153,7 +153,7 @@ int zopenFile(const char *cname, int iaccess);
 void zswap(long long *iarray, int numberInts);
 void zswitchInts(int *iarray, int numberInts);
 void zswitchDoubles(int* iarray, int numberArray, int lengthEachValue, int boolStoring, int numberTimes);
-int getEndian();
+int bigEndian();
 int zwriteEOF(long long *ifltab);
 int zwriteEOFandFlush(long long *ifltab, long long bufferControl[4], int *buffer);
 int zflushToDisk (long long *ifltab, int forceFlush);

@@ -125,7 +125,7 @@
 		 }
 	 }
 
-	 iswap = getEndian();
+	 iswap = bigEndian();
 	 if (zmessageLevel(ifltab, MESS_METHOD_OPEN_ID, MESS_LEVEL_INTERNAL_DIAG_1)) {
 		 //  boolReopen is so open messeages are not displayed.  They are in diagnostic mode.
 		 boolReopen = 0;
@@ -386,7 +386,7 @@
 	ifltab[zdssKeys.kfullFilename] = (long long)malloc(size);
 	charLong(fullDssFilename, (void *)ifltab[zdssKeys.kfullFilename], 0, size, 1, 1);
 
-	if (getEndian()) {
+	if (bigEndian()) {
 		ifltab[zdssFileKeys.kendian] = 1;
 	}
 

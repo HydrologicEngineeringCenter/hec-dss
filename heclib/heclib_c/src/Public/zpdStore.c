@@ -966,7 +966,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 									zdssErrorCodes.CANNOT_ALLOCATE_MEMORY, 0, 0,
 									zdssErrorSeverity.MEMORY_ERROR, pds->pathname, "Allocating ztransfer struct");
 		}
-		if (getEndian()) {
+		if (bigEndian()) {
 			zswitchInts(internalHeader, INT_HEAD_pdPrecision);
 		}
 		ztransfer->internalHeader = internalHeader;
@@ -1025,7 +1025,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 			}
 			else {
 				//  Just floats
-				if (!getEndian()) {
+				if (!bigEndian()) {
 					ztransfer->values1 = (int *)pds->floatOrdinates;
 					if (storageFlag < 6) {
 						ztransfer->values2 = (int *)pds->floatValues;
@@ -1079,7 +1079,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 		}
 
 		if (!boolStoreDoubles) {
-			if (getEndian()) {
+			if (bigEndian()) {
 				zswitchInts(ztransfer->values1, ztransfer->values1Number);
 				zswitchInts(ztransfer->values2, ztransfer->values2Number);
 			}
@@ -1157,7 +1157,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 			boolStoreDoubles = 1;
 		}
 		dataType = ztransfer->dataType;
-		if (getEndian()) {
+		if (bigEndian()) {
 			zswitchInts(ztransfer->internalHeader, INT_HEAD_pdPrecision);
 		}
 		numberOrdinates = ztransfer->internalHeader[INT_HEAD_pdNumberOrdinates];
@@ -1239,7 +1239,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 					return zerrorUpdate(ifltab, status, DSS_FUNCTION_zreadInternal_ID);
 				}
 				if (dataType == DATA_TYPE_PD) {
-					if (getEndian()) {
+					if (bigEndian()) {
 						zswitchInts(ztransfer->values2, 2);
 					}
 				}
@@ -1274,7 +1274,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 									zdssErrorSeverity.WARNING, pds->pathname, "No values provided");
 			}
 			if (!boolStoreDoubles) {
-				if (getEndian()) {
+				if (bigEndian()) {
 					zswitchInts(ztransfer->values2, (numberRows + offset));
 				}
 			}

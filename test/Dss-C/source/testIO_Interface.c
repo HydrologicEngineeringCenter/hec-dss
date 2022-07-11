@@ -125,7 +125,7 @@ int testIO_Interface(long long *ifltab7, long long *ifltab6)
 
 	ztransfer1->totalAllocatedSize = 100000;
 	//zset("MLVL", "", 15);
-	if (getEndian() && (zgetVersion(ifltab7) == 7)) {
+	if (bigEndian() && (zgetVersion(ifltab7) == 7)) {
 		zswitchInts(ztransfer1->values1, 1000);
 		zswitchInts(ztransfer1->internalHeader, 1000);
 		zswitchInts(ztransfer1->header2, 1000);
@@ -134,7 +134,7 @@ int testIO_Interface(long long *ifltab7, long long *ifltab6)
 	}
 	status =  zwrite(ifltab7, ztransfer1);
 	if (zcheckStatus(ifltab7, status, 1, "Fail in testIO_Interface, zwrite, Loc 2")) return status;
-	if (getEndian() && (zgetVersion(ifltab7) == 7)) {
+	if (bigEndian() && (zgetVersion(ifltab7) == 7)) {
 		zswitchInts(ztransfer1->values1, 1000);
 		zswitchInts(ztransfer1->internalHeader, 1000);
 		zswitchInts(ztransfer1->header2, 1000);
@@ -152,7 +152,7 @@ int testIO_Interface(long long *ifltab7, long long *ifltab6)
 	status =  zread(ifltab7, ztransfer2);
 	if (zcheckStatus(ifltab7, status, 1, "Fail in testIO_Interface, zread, Loc 4")) return status;
 
-	if (getEndian() && (zgetVersion(ifltab7) == 7)) {
+	if (bigEndian() && (zgetVersion(ifltab7) == 7)) {
 		zswitchInts(ztransfer2->values1, ztransfer2->values1Number);
 		zswitchInts(ztransfer2->internalHeader, ztransfer2->internalHeaderNumber);
 		zswitchInts(ztransfer2->header2, ztransfer2->header2Number);
@@ -232,7 +232,7 @@ int testIO_Interface(long long *ifltab7, long long *ifltab6)
 		fvalues, dvalues, ivalues1, ivalues2,
 		ivalues3, ivalues4, ivalues5);
 
-	if (getEndian() && (zgetVersion(ifltab7) == 7)) {
+	if (bigEndian() && (zgetVersion(ifltab7) == 7)) {
 		zswitchInts(ztransfer1->values1, 1000);
 		zswitchInts(ztransfer1->internalHeader, 1000);
 		zswitchInts(ztransfer1->header2, 1000);
@@ -251,7 +251,7 @@ int testIO_Interface(long long *ifltab7, long long *ifltab6)
 			ztransfer1->totalAllocatedSize, ztransfer1->totalExpandedSize, 
 			ztransfer1->dataType);
 	if (zcheckStatus(ifltab7, status, 1, "Fail in testIO_Interface, zwritec, Loc 21")) return status;
-	if (getEndian() && (zgetVersion(ifltab7) == 7)) {
+	if (bigEndian() && (zgetVersion(ifltab7) == 7)) {
 		zswitchInts(ztransfer1->values1, 1000);
 		zswitchInts(ztransfer1->internalHeader, 1000);
 		zswitchInts(ztransfer1->header2, 1000);
@@ -267,7 +267,7 @@ int testIO_Interface(long long *ifltab7, long long *ifltab6)
 	}
 
 	status =  zread(ifltab7, ztransfer2);
-	if (getEndian() && (zgetVersion(ifltab7) == 7)) {
+	if (bigEndian() && (zgetVersion(ifltab7) == 7)) {
 		zswitchInts(ztransfer2->values1, ztransfer2->values1Number);
 		zswitchInts(ztransfer2->internalHeader, ztransfer2->internalHeaderNumber);
 		zswitchInts(ztransfer2->header2, ztransfer2->header2Number);
@@ -300,7 +300,7 @@ int testIO_Interface(long long *ifltab7, long long *ifltab6)
 			 &ztransfer2->dataType);
 	if (zcheckStatus(ifltab7, status, 1, "Fail in testIO_Interface, zreadc, Loc 26")) return status;
 
-	if (getEndian() && (zgetVersion(ifltab7) == 7)) {
+	if (bigEndian() && (zgetVersion(ifltab7) == 7)) {
 		zswitchInts(ztransfer2->values1, ztransfer2->values1Number);
 		zswitchInts(ztransfer2->internalHeader, ztransfer2->internalHeaderNumber);
 		zswitchInts(ztransfer2->header2, ztransfer2->header2Number);
@@ -429,7 +429,7 @@ int testIO_Interface(long long *ifltab7, long long *ifltab6)
 
 	len = (int)strlen(pathname);
 	plan = 0;
-	if (getEndian() && (zgetVersion(ifltab7) == 7)) {
+	if (bigEndian() && (zgetVersion(ifltab7) == 7)) {
 		zswitchInts(ztransfer1->values1, 1000);
 		zswitchInts(ztransfer1->internalHeader, 1000);
 		zswitchInts(ztransfer1->header2, 1000);
@@ -443,7 +443,7 @@ int testIO_Interface(long long *ifltab7, long long *ifltab6)
 			&ztransfer1->dataType, &plan, 
 			&status, &recordFound);
 	if (zcheckStatus(ifltab7, status, 1, "Fail in testIO_Interface, zwritex, Loc 41")) return status;
-	if (getEndian() && (zgetVersion(ifltab7) == 7)) {
+	if (bigEndian() && (zgetVersion(ifltab7) == 7)) {
 		zswitchInts(ztransfer1->values1, 1000);
 		zswitchInts(ztransfer1->internalHeader, 1000);
 		zswitchInts(ztransfer1->header2, 1000);
@@ -457,7 +457,7 @@ int testIO_Interface(long long *ifltab7, long long *ifltab6)
 	}
 	status =  zread(ifltab7, ztransfer2);
 	if (zcheckStatus(ifltab7, status, 1, "Fail in testIO_Interface, zreadc, Loc 43")) return status;
-	if (getEndian() && (zgetVersion(ifltab7) == 7)) {
+	if (bigEndian() && (zgetVersion(ifltab7) == 7)) {
 		zswitchInts(ztransfer2->values1, ztransfer2->values1Number);
 		zswitchInts(ztransfer2->internalHeader, ztransfer2->internalHeaderNumber);
 		zswitchInts(ztransfer2->header2, ztransfer2->header2Number);
@@ -498,7 +498,7 @@ int testIO_Interface(long long *ifltab7, long long *ifltab6)
 	status = -1;
 	if (recordFound) status = 0;
 	if (zcheckStatus(ifltab7, status, 1, "Fail in testIO_Interface, zreadc, Loc 46")) return status;
-	if (getEndian() && (zgetVersion(ifltab7) == 7)) {
+	if (bigEndian() && (zgetVersion(ifltab7) == 7)) {
 		zswitchInts(ztransfer2->values1, ztransfer2->values1Number);
 		zswitchInts(ztransfer2->internalHeader, ztransfer2->internalHeaderNumber);
 		zswitchInts(ztransfer2->header2, ztransfer2->header2Number);
@@ -641,7 +641,7 @@ int testIO_Interface(long long *ifltab7, long long *ifltab6)
 	
 	len = (int)strlen(pathname);
 	plan = 0;
-	if (getEndian() && (zgetVersion(ifltab7) == 7)) {
+	if (bigEndian() && (zgetVersion(ifltab7) == 7)) {
 		zswitchInts(ztransfer1->values1, 1000);
 		zswitchInts(ztransfer1->internalHeader, 1000);
 		zswitchInts(ztransfer1->header2, 1000);
@@ -654,7 +654,7 @@ int testIO_Interface(long long *ifltab7, long long *ifltab6)
 			&plan, &recordFound);
 	//  cannot check for an error without zinqir
 	//if (zcheckStatus(ifltab7, status, 1, "Fail in testIO_Interface, zwritex, Loc 61")) return status;
-	if (getEndian() && (zgetVersion(ifltab7) == 7)) {
+	if (bigEndian() && (zgetVersion(ifltab7) == 7)) {
 		zswitchInts(ztransfer1->values1, 1000);
 		zswitchInts(ztransfer1->internalHeader, 1000);
 		zswitchInts(ztransfer1->header2, 1000);
@@ -671,7 +671,7 @@ int testIO_Interface(long long *ifltab7, long long *ifltab6)
 	
 	status =  zread(ifltab7, ztransfer2);
 	if (zcheckStatus(ifltab7, status, 1, "Fail in testIO_Interface, zreadc, Loc 63")) return status;
-	if (getEndian() && (zgetVersion(ifltab7) == 7)) {
+	if (bigEndian() && (zgetVersion(ifltab7) == 7)) {
 		zswitchInts(ztransfer2->values1, ztransfer2->values1Number);
 		zswitchInts(ztransfer2->userHeader, ztransfer2->userHeaderNumber);
 	}
@@ -717,7 +717,7 @@ int testIO_Interface(long long *ifltab7, long long *ifltab6)
 			 ztransfer2->userHeader, &ztransfer2->userHeaderMode, 
 			 ztransfer2->values1, &ztransfer2->values1Mode, 
 			 &plan, &recordFound);
-	if (getEndian() && (zgetVersion(ifltab7) == 7)) {
+	if (bigEndian() && (zgetVersion(ifltab7) == 7)) {
 		zswitchInts(ztransfer2->values1, ztransfer2->values1Number);
 		zswitchInts(ztransfer2->userHeader, ztransfer2->userHeaderNumber);
 	}

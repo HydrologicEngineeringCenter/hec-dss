@@ -98,11 +98,11 @@ module modVerticalDatumInfo
             call zswap6(iin, iswap)
         end function iswap
 
-        logical function bigEndian()
+        logical function isBigEndian()
             integer i;
-            call getEndian(i)
-            bigEndian = i.eq.1
-        end function bigEndian
+            call bigEndian(i)
+            isBigEndian = i.eq.1
+        end function isBigEndian
 
 end module modVerticalDatumInfo
 
@@ -430,7 +430,7 @@ subroutine testStoreRetrieveTimeSeries()
                                     ! store the time series in the specified vertical datum !
                                     !-------------------------------------------------------!
                                     userHeaderLen = byteCountToIntCount(len_trim(userHeaderStr))
-									if (bigEndian()) then
+									if (isBigEndian()) then
 										do ii = 1, userHeaderLen
 											userHeader(ii) = iswap(userHeader(ii))
 										end do
@@ -1037,7 +1037,7 @@ subroutine testStoreRetrievePairedData()
                                     ! store the paried data in the specified vertical datum !
                                     !-------------------------------------------------------!
                                     userHeaderLen = byteCountToIntCount(len_trim(userHeaderStr))
-									if (bigEndian()) then
+									if (isBigEndian()) then
 										do ii = 1, userHeaderLen
 											userHeader(ii) = iswap(userHeader(ii))
 										end do

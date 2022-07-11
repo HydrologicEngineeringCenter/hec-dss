@@ -60,7 +60,7 @@ int unitsHavePadding(int* internalHeader, int offsetToUnits) {
 	int hasPadding = 1;
 	int i;
 	if (internalHeader[offsetToUnits] != 0) {
-		if (getEndian()) {
+		if (bigEndian()) {
 			charInt(&internalHeader[offsetToUnits - 1], cstr, 8, sizeof(cstr), 0, 0, 0);
 		}
 		else {

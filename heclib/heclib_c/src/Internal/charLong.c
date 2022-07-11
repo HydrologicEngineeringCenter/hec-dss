@@ -72,7 +72,7 @@ int charLong(void *from, void *to, int numberBytes, int maxBytesTo, int boolToLo
 
 	nlongwords = ((numberBytes - 1) / 8) + 1;
 	
-	if (!getEndian()) {
+	if (!bigEndian()) {
 		if (numberBytes > 0) {
 			if (numberBytes > maxBytesTo) numberBytes = maxBytesTo;
 			ipos = 0;

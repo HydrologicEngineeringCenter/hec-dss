@@ -98,7 +98,7 @@ int testBufferedIO(long long *ifltab)
 	buffer = (int *)calloc(buffSize, 4);
 	bufferControl[BUFF_SIZE] = buffSize;
 
-	if (getEndian() && (zgetVersion(ifltab) == 7)) {
+	if (bigEndian() && (zgetVersion(ifltab) == 7)) {
 		zswitchInts(ivalues, 499);
 		zswitchInts((int *)fvalues, 200);
 	}
@@ -120,7 +120,7 @@ int testBufferedIO(long long *ifltab)
 		return status;
 	}
 
-	if (getEndian() && (zgetVersion(ifltab) == 7)) {
+	if (bigEndian() && (zgetVersion(ifltab) == 7)) {
 		zswitchInts(ivalues, 499);
 		zswitchInts((int *)fvalues, 200);
 	}
@@ -152,7 +152,7 @@ int testBufferedIO(long long *ifltab)
 		return status;
 	}
 
-	if (getEndian() && (zgetVersion(ifltab) == 7)) {
+	if (bigEndian() && (zgetVersion(ifltab) == 7)) {
 		zswitchInts(rivalues1, numberInternalHeader);
 		zswitchInts(rivalues2, numberCompressionHeader);
 		zswitchInts((int *)rfvalues1, numberValues3);

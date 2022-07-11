@@ -32,7 +32,7 @@ void i8toi4(unsigned long long integer8, int *int4a, int *int4b)
 
 	i4 = (int *)&integer8;
 
-	if (getEndian()) {
+	if (bigEndian()) {
 		//  Big Endian
 		*int4a = i4[1];
 		*int4b = i4[0];

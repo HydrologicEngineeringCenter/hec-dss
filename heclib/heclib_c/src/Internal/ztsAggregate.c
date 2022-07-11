@@ -397,7 +397,7 @@ int ztsAggregate(long long *ifltab, int numberIn, int *internalHeader,
 		if (isOdd(ipos)) {
 			dataCompressedOut[ipos++] = 0;
 		}
-		if (getEndian()) {
+		if (bigEndian()) {
 			//  For Solaris (big endian), we need to swap for binary compatibility with little endian
 			//  This will swap both values and times, not quality or notes
 			zswitchDoubles(dataCompressedOut, ipos, valueElementSize,  1, timesNumber);
@@ -415,7 +415,7 @@ int ztsAggregate(long long *ifltab, int numberIn, int *internalHeader,
 				dataCompressedOut[ipos++] = 0;
 				number++;
 			}
-			if (getEndian()) {
+			if (bigEndian()) {
 				zswitchInts((void *)&dataCompressedOut[istart], number);
 			}
 		}
@@ -435,7 +435,7 @@ int ztsAggregate(long long *ifltab, int numberIn, int *internalHeader,
 				dataCompressedOut[ipos++] = 0;
 				number++;
 			}
-			if (getEndian()) {
+			if (bigEndian()) {
 				zswitchInts((void *)&dataCompressedOut[istart], number);
 			}
 		}
@@ -501,7 +501,7 @@ int ztsAggregate(long long *ifltab, int numberIn, int *internalHeader,
 			if (isOdd(ipos)) {
 				dataCompressedOut[ipos++] = 0;
 			}
-			if (getEndian()) {
+			if (bigEndian()) {
 				//  For Solaris (big endian), we need to swap for binary compatibility with little endian
 				zswitchDoubles(dataCompressedOut, ipos, valueElementSize,  1, timesNumber);
 			}
@@ -630,7 +630,7 @@ int ztsAggregate(long long *ifltab, int numberIn, int *internalHeader,
 	if (isOdd(ipos)) {
 		dataCompressedOut[ipos++] = 0;
 	}
-	if (getEndian()) {
+	if (bigEndian()) {
 		//  For Solaris (big endian), we need to swap for binary compatibility with little endian
 		//  This will swap both values and times, not quality or notes
 		zswitchDoubles(dataCompressedOut, ipos, valueElementSize, 1, timesNumber);
@@ -667,7 +667,7 @@ int ztsAggregate(long long *ifltab, int numberIn, int *internalHeader,
 		if (isOdd(istart)) {
 			istart++;
 		}
-		if (getEndian()) {
+		if (bigEndian()) {
 			number = ipos - istart;
 			zswitchInts((void *)&dataCompressedOut[istart], number);
 		}
@@ -703,7 +703,7 @@ int ztsAggregate(long long *ifltab, int numberIn, int *internalHeader,
 		if (isOdd(istart)) {
 			istart++;
 		}
-		if (getEndian()) {
+		if (bigEndian()) {
 			number = ipos - istart;
 			zswitchInts((void *)&dataCompressedOut[istart], number);
 		}
@@ -726,7 +726,7 @@ int ztsAggregate(long long *ifltab, int numberIn, int *internalHeader,
 	//  Done.  Return arrays and lengths.
 	*arrayOut = dataCompressedOut;
 	*arrayOutNumber = ipos;
-	if (getEndian()) {
+	if (bigEndian()) {
 		zswitchInts(compressHeader, header2Count);
 	}
 	*header2 = compressHeader;
@@ -892,7 +892,7 @@ int ztsAggregateDep(long long *ifltab, int numberIn, int *internalHeader,
 		else if ((cnotesLength > 0) && (inotesUncompressedNumber > 0)) {
 			charLong((void *)cnotes, (void *)&dataCompressedOut[ipos], cnotesLength, (inotesUncompressedNumber * 4), 1, -1);
 			//charInt((void *)cnotes, &dataCompressedOut[ipos], cnotesLength, (inotesUncompressedNumber * 4), 1, isOdd(ipos));
-			if (getEndian()) {
+			if (bigEndian()) {
 				zswitchInts((void *)&dataCompressedOut[ipos], inotesUncompressedNumber);
 			}
 			ipos += inotesUncompressedNumber;
@@ -1045,7 +1045,7 @@ int ztsAggregateDep(long long *ifltab, int numberIn, int *internalHeader,
 		if ((cnotesLength > 0) && (inoteElementSize == 0)) {
 			charLong((void *)cnotes, (void *)&dataCompressedOut[ipos], cnotesLength, (inotesUncompressedNumber * 4), 1, -1);
 			//charInt((void *)cnotes, &dataCompressedOut[ipos], cnotesLength, (inotesUncompressedNumber * 4), 1, isOdd(ipos));
-			if (getEndian()) {
+			if (bigEndian()) {
 				zswitchInts((void *)&dataCompressedOut[ipos], inotesUncompressedNumber);
 			}
 			ipos += inotesUncompressedNumber;
@@ -1212,7 +1212,7 @@ int ztsAggregateDep(long long *ifltab, int numberIn, int *internalHeader,
 		//  We have a character string to store
 		//charLong((void *)cnotes, (void *)&dataCompressedOut[ipos], cnotesLength, (inotesUncompressedNumber * 4), 1, -1);
 		charInt((void *)cnotes, &dataCompressedOut[ipos], cnotesLength, (inotesUncompressedNumber * 4), 1, 1, isOdd(ipos));
-		if (getEndian()) {
+		if (bigEndian()) {
 			zswitchInts((void *)&dataCompressedOut[ipos], inotesUncompressedNumber);
 		}
 		ipos += inotesUncompressedNumber;
@@ -1229,7 +1229,7 @@ int ztsAggregateDep(long long *ifltab, int numberIn, int *internalHeader,
 	//  Done.  Return arrays and lengths.
 	*arrayOut = dataCompressedOut;
 	*arrayOutNumber = dataCompressedOutNumber;
-	if (getEndian()) {
+	if (bigEndian()) {
 		zswitchInts(compressHeader, header2Count);
 	}
 	*header2 = compressHeader;

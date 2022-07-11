@@ -92,7 +92,7 @@ int charInt(void *fromBuff, void *toBuff, int numberBytes, int maxBytesTo, int b
 		numberBytes = maxBytesTo;
 	}
 	nwords = numberIntsInBytes(numberBytes);
-	if (!getEndian()) {
+	if (!bigEndian()) {
 		for (i = 0; i < numberBytes; i++) {
 			charTo[i] = charFrom[i];
 		}

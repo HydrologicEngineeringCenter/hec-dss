@@ -144,7 +144,7 @@ int testztsStruct13(long long *ifltab)
 	tss1->userHeader[4] = 5;
 	tss1->userHeaderNumber = 5;
 
-	if (getEndian() && (zgetVersion(ifltab) == 7)) {
+	if (bigEndian() && (zgetVersion(ifltab) == 7)) {
 		zswitchInts(tss1->userHeader, 6);
 	}
 
@@ -152,7 +152,7 @@ int testztsStruct13(long long *ifltab)
 	status = ztsStore(ifltab, tss1, 0);
 	if (zcheckStatus(ifltab, status, 1, "Fail in testztsStruct13 Loc 1, store status ")) return status;
 
-	if (getEndian() && (zgetVersion(ifltab) == 7)) {
+	if (bigEndian() && (zgetVersion(ifltab) == 7)) {
 		zswitchInts(tss1->userHeader, 6);
 	}
 
@@ -163,7 +163,7 @@ int testztsStruct13(long long *ifltab)
 	status = ztsRetrieve(ifltab, tss2, -1, 2, 1);
 	if (zcheckStatus(ifltab, status, 1, "Fail in testztsStruct13 Loc 3, retrieve status ")) return status; 
 
-	if (getEndian() && (zgetVersion(ifltab) == 7)) {
+	if (bigEndian() && (zgetVersion(ifltab) == 7)) {
 		zswitchInts(tss2->userHeader, 6);
 	}
 

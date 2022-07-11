@@ -436,7 +436,7 @@ int ztsDisaggregate(long long *ifltab, int numberToRead, int numberStored,
 		if (numberStoredToRead > 0) {
 			if (valuesSizeRequested > 0) {
 				if (valuesSizeRead > 0) {
-					if (getEndian()) {
+					if (bigEndian()) {
 						number = valuesLength + dataInPosition;
 						if (zmessageLevel(ifltab, MESS_METHOD_TS_READ_ID, MESS_LEVEL_INTERNAL_DIAG_2)) {
 							zmessageDebugInt(ifltab, DSS_FUNCTION_ztsDisaggregate_ID, "switchDoubles, number to switch: ", number);
@@ -533,7 +533,7 @@ int ztsDisaggregate(long long *ifltab, int numberToRead, int numberStored,
 			//  Uncompress quality flags
 			if (qualitySizeRequested > 0) {
 				if (qualityElementSize > 0) {
-					if (getEndian()) {
+					if (bigEndian()) {
 						zswitchInts((void *)&dataIn[dataInPosition], qualityNumber);
 					}
 					//  Are the quality compressed?
@@ -614,7 +614,7 @@ int ztsDisaggregate(long long *ifltab, int numberToRead, int numberStored,
 			//  Uncompress Notes
 			if (inotesSizeRequested > 0) {
 				if (inotesElementSize > 0) {
-					if (getEndian()) {
+					if (bigEndian()) {
 						zswitchInts((void *)&dataIn[dataInPosition], inotesNumber);
 					}
 					//  Are the inotes compressed?
@@ -695,7 +695,7 @@ int ztsDisaggregate(long long *ifltab, int numberToRead, int numberStored,
 				//  of '\0' is stored.    cnotes[cnotesPosition++]
 				//  Add the length from the values and quality
 				startElement = dataInPosition;
-				if (getEndian()) {
+				if (bigEndian()) {
 					number = numberIntsInBytes(cnotesReadLength);
 					carray = (char *)calloc(number + 1, 4);
 					charLong((void *)&dataIn[startElement], (void *)carray, cnotesReadLength, ((number + 1) * 4), 0, -1);
@@ -715,7 +715,7 @@ int ztsDisaggregate(long long *ifltab, int numberToRead, int numberStored,
 					&carray[carrayPosition], (size_t)(cnotesReadLength - carrayPosition), numberRemaining);
 				cnotesPosition += icount;
 				carrayPosition += icount;
-				if (getEndian()) {
+				if (bigEndian()) {
 					free(carray);
 				}
 			}
@@ -1260,7 +1260,7 @@ int ztsDisaggregateDep(long long *ifltab, int numberToRead, int numberStored,
 			//  of '\0' is stored.    cnotes[cnotesPosition++]
 			//  Add the length from the values and quality
 			startElement = valuesNumber + qualityNumber;
-			if (getEndian()) {
+			if (bigEndian()) {
 				number = numberIntsInBytes(cnotesReadLength);
 				zswitchInts((void *)&dataIn[startElement], number);
 				carray = (char *)calloc(number + 1, 4);
@@ -1280,7 +1280,7 @@ int ztsDisaggregateDep(long long *ifltab, int numberToRead, int numberStored,
 				&carray[carrayPosition], (size_t)(cnotesReadLength - carrayPosition), numberRemaining);
 			cnotesPosition += icount;
 			carrayPosition += icount;
-			if (getEndian()) {
+			if (bigEndian()) {
 				free(carray);
 			}
 		}
