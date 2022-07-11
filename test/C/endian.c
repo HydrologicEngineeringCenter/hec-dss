@@ -5,7 +5,7 @@ int main()
     int bigEndian=0;
 
 	printf("\nyour system is: ");
-    bigEndian  =getEndian();
+    bigEndian  =bigEndian();
    if (bigEndian)     
        printf("Big endian\n"); 
    else

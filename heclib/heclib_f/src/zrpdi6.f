@@ -412,7 +412,7 @@ C
           end if
         end if
       end if
-	  call getEndian(itemp)
+	  call bigEndian(itemp)
 	  if (itemp.eq.1 .and. nuhead.gt.0) then
 	    do i = 1, nuhead
 		  call zswap6(iuhead(i), itemp)
