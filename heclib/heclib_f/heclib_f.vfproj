@@ -252,7 +252,6 @@
 		<File RelativePath=".\src\Support\strcpy.f"/>
 		<File RelativePath=".\src\Support\systim.f"/>
 		<File RelativePath=".\src\Support\tempname.f"/>
-		<File RelativePath=".\src\Support\upcase.f"/>
 		<File RelativePath=".\src\Support\when.f"/>
 		<File RelativePath=".\src\Support\wind.f"/>
 		<File RelativePath=".\src\Support\xdoubc.f"/>

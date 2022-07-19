@@ -25,7 +25,7 @@ JNIEXPORT void JNICALL Java_hec_heclib_util_Heclib_Hec_1zgintl
     else {
 
         stringCopy(cEpart, MAX_PART_SIZE, ePart, strlen(ePart));
-        upcase_(cEpart, strlen(ePart));
+        upcase_(cEpart, strlen(cEpart));
 
         zgintl_(interval, cEpart, nvals, status,
             sizeof(cEpart) - 1);
