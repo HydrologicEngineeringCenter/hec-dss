@@ -37,7 +37,7 @@
 
 
 #define DSS_VERSION "7-IP"
-#define DSS_VERSION_DATE "7 July 2022"
+#define DSS_VERSION_DATE "27 July 2022"
 
 
 const char *ztypeName(int recordType, int boolAbbreviation);
