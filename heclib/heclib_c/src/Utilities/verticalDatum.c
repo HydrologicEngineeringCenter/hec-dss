@@ -315,6 +315,10 @@ char *userHeaderToString(const int *userHeader, const int userHeaderNumber) {
 		}
         free(buf);
     }
+    if (str == NULL) {
+        str = _malloc(1);
+        str[0] = '\0';
+    }
     return str;
 }
 
