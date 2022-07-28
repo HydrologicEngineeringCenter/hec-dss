@@ -2,7 +2,9 @@ name: macOS
 on: [workflow_dispatch]
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: macos-11
+    env:
+      GFORTRAN_PATH: "/usr/local/Cellar/gcc/11.3.0_2/lib/gcc/11"
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
@@ -13,13 +15,12 @@ jobs:
           repository: HydrologicEngineeringCenter/dss-test-data
           path: dss-test-data
 
-      - uses: actions/setup-java@v2
-        with:
-          distribution: 'adopt'
-          java-version: '8'
-                      
       - name: build main library
         run: |
+          sudo ln -s /usr/local/bin/gfortran-11 /usr/local/bin/gfortran
+          # sudo mkdir /usr/local/gfortran
+          # sudo ln -s /usr/local/Cellar/gcc/11.3.0_2/lib/gcc/11 /usr/local/gfortran/lib
+          #  find /usr/local/Cellar/gcc* | grep -i lib
           cd heclib
           make
           
