@@ -120,9 +120,6 @@
     <ClCompile Include="src\Utilities\DateTime\yearMonthDayToJulian.c">
       <Filter>src\Utilities\DateTime</Filter>
     </ClCompile>
-    <ClCompile Include="src\Utilities\catsort.c">
-      <Filter>src\Utilities</Filter>
-    </ClCompile>
     <ClCompile Include="src\Utilities\convertDataArray.c">
       <Filter>src\Utilities</Filter>
     </ClCompile>
