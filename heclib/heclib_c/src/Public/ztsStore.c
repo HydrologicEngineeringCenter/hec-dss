@@ -265,7 +265,7 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 				tss->numberValues, 0, zdssErrorSeverity.WARNING, tss->pathname, "");
 		}
 		if (!tss->floatValues && !tss->doubleValues && !tss->floatProfileValues && !tss->doubleProfileValues) {
-			status = zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID, zdssErrorCodes.NO_DATA_GIVEN,
+			return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID, zdssErrorCodes.NO_DATA_GIVEN,
 				tss->numberValues, 0, zdssErrorSeverity.WARNING, tss->pathname, "");
 		}
 	}
@@ -606,7 +606,7 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 					if (tss->floatValues) {
 						tmpFloatVals = (float *)calloc(tss->numberValues, sizeof(float));
 						for (int i = 0; i < tss->numberValues; ++i) {
-							tmpFloatVals[i] = tss->floatValues[i] - offset;
+							tmpFloatVals[i] = tss->floatValues[i] - (float) offset;
 						}
 						origFloatVals = tss->floatValues;
 						tss->floatValues = tmpFloatVals;
@@ -667,7 +667,7 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 						if (tss->locationStruct->supplemental) {
 							status = insertIntoDelimitedString(
 								&tss->locationStruct->supplemental,
-								strlen(tss->locationStruct->supplemental),
+								(int)strlen(tss->locationStruct->supplemental),
 								VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
 								compressed,
 								":",
@@ -675,9 +675,9 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 								';');
 							if (status) { // not enough space to insert
 								int newLen =
-									strlen(tss->locationStruct->supplemental) +
+									(int)strlen(tss->locationStruct->supplemental) +
 									VERTICAL_DATUM_INFO_USER_HEADER_PARAM_LEN +
-									strlen(compressed) +
+									(int)strlen(compressed) +
 									3;
 								tss->locationStruct->supplemental = (char *)realloc(
 									tss->locationStruct->supplemental,
@@ -720,7 +720,7 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 						else {
 							int len =
 								VERTICAL_DATUM_INFO_USER_HEADER_PARAM_LEN +
-								strlen(compressed) +
+								(int)strlen(compressed) +
 								3;
 							tss->locationStruct->supplemental = (char *)malloc(len);
 							memset(tss->locationStruct->supplemental, 0, len);
@@ -736,6 +736,7 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 							if (status) { // unexpected error
 								if (vdiTs != &_vdiTs) {
 									free(vdiTs);
+									vdiTs = 0;
 								}
 								sprintf(
 									errmsg,
