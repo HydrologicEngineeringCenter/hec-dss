@@ -464,31 +464,12 @@ namespace Hec {
 
 				static void MinutesToHourMin(int minutes, String^% hoursMins, size_t lenHoursMins);
 
-				static void SecondsToTimeString(int secondsPastMidnight, int millsPastSecond, int timeStyle, String^% timeString, size_t sizeofTimeString);
-
 				static int TimeStringToSeconds(String^ timeString);
-
-				static float TimeStringToSecondsMills(String^ timeString);
-
-				static int DayOfWeek(int julian);
-
-				static int IncrementTime(int intervalSeconds, int numberPeriods, int julianStart, int secondsStart, int% julianEnd, int% secondsEnd);
-
-				static int NumberPeriods(int intervalSeconds, int julianStart, int secondsStart, int julianEnd, int secondsEnd);
-
-				static int AddCentury(int year);
-
-				static int IsLeapYear(int year);
-
-				static int CleanTime(int% julianDate, int% timeMinSec, int timeGranularitySeconds);
 
 				static int DateToYearMonthDay(String^ dateString, int% year, int% month, int% day);
 
 				static int DateToJulian(String^ dateString);
 
-				static void PrintCurrentTime(int lineFeed);
-
-				static int CompareTimes(int julianFirst, int secondsFirst, int timeGranularitySecondsFirst, int julainBaseFirst, int julianSecond, int secondsSecond, int julianBaseSecond, int timeGranularitySecondsSecond);
 			};
 		}
 }}

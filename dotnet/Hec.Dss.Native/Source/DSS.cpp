@@ -1554,15 +1554,6 @@ namespace Hec {
 				Marshal::FreeHGlobal(marshallToCharStar);
 			}
 
-			void DSS::SecondsToTimeString(int secondsPastMidnight, int millsPastSecond, int timeStyle, String ^% timeString, size_t sizeofTimeString)
-			{
-				IntPtr marshallToCharStar = Marshal::StringToHGlobalAnsi(timeString);
-				char * strPtr = static_cast<char*>(marshallToCharStar.ToPointer());
-				secondsToTimeString(secondsPastMidnight, millsPastSecond, timeStyle, strPtr, sizeofTimeString);
-				timeString = gcnew String(strPtr);
-				Marshal::FreeHGlobal(marshallToCharStar);
-			}
-
 			int DSS::TimeStringToSeconds(String ^ timeString)
 			{
 				IntPtr marshallToCharStar = Marshal::StringToHGlobalAnsi(timeString);
@@ -1570,49 +1561,6 @@ namespace Hec {
 				int toReturn = timeStringToSeconds(strPtr);
 				Marshal::FreeHGlobal(marshallToCharStar);
 				return toReturn;
-			}
-
-			float DSS::TimeStringToSecondsMills(String ^ timeString)
-			{
-				IntPtr marshallToCharStar = Marshal::StringToHGlobalAnsi(timeString);
-				char * strPtr = static_cast<char*>(marshallToCharStar.ToPointer());
-				float toReturn = timeStringToSecondsMills(strPtr);
-				Marshal::FreeHGlobal(marshallToCharStar);
-				return toReturn;
-			}
-
-			int DSS::DayOfWeek(int julian)
-			{
-				return dayOfWeek(julian);
-			}
-
-			int DSS::IncrementTime(int intervalSeconds, int numberPeriods, int julianStart, int secondsStart, int % julianEnd, int % secondsEnd)
-			{
-				pin_ptr<int> julianEndPinned = &julianEnd;
-				pin_ptr<int> secondsEndPinned = &secondsEnd;
-				return incrementTime(intervalSeconds, numberPeriods, julianStart, secondsStart, julianEndPinned, secondsEndPinned);
-			}
-
-			int DSS::NumberPeriods(int intervalSeconds, int julianStart, int secondsStart, int julianEnd, int secondsEnd)
-			{
-				return numberPeriods(intervalSeconds, julianStart, secondsStart, julianEnd, secondsEnd);
-			}
-
-			int DSS::AddCentury(int year)
-			{
-				return addCentury(year);
-			}
-
-			int DSS::IsLeapYear(int year)
-			{
-				return isLeapYear(year);
-			}
-
-			int DSS::CleanTime(int % julianDate, int % timeMinSec, int timeGranularitySeconds)
-			{
-				pin_ptr<int> julianDatePinned = &julianDate;
-				pin_ptr<int> timeMinSecPinned = &timeMinSec;
-				return cleanTime(julianDatePinned, timeMinSecPinned, timeGranularitySeconds);
 			}
 
 			int DSS::DateToYearMonthDay(String ^ dateString, int % year, int % month, int % day)
@@ -1636,16 +1584,7 @@ namespace Hec {
 				return toReturn;
 			}
 
-
-			void DSS::PrintCurrentTime(int lineFeed)
-			{
-				printCurrentTime(lineFeed);
-			}
-
-			int DSS::CompareTimes(int julianFirst, int secondsFirst, int timeGranularitySecondsFirst, int julainBaseFirst, int julianSecond, int secondsSecond, int julianBaseSecond, int timeGranularitySecondsSecond)
-			{
-				return compareTimes(julianFirst, secondsFirst, julainBaseFirst, timeGranularitySecondsFirst, julianSecond, secondsSecond, julianBaseSecond, timeGranularitySecondsSecond);
-			}
+			
 		}
 	}
 }
