@@ -572,7 +572,7 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 							"Datum conversion could not be performed.\n"
 							"No data stored.",
 							cvertical_datum);
-						if (vdiTs && vdiTs != &_vdiTs) {
+						if (vdiTs && (vdiTs != &_vdiTs)) {
 							free(vdiTs);
 						}
 						return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID,
@@ -589,7 +589,7 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 							"Conversion to datum '%s' could not be performed.\n"
 							"No data stored.",
 							tss->units, vdi->unit, cvertical_datum);
-						if (vdiTs && vdiTs != &_vdiTs) {
+						if (vdiTs && (vdiTs != &_vdiTs)) {
 							free(vdiTs);
 						}
 						return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID,
@@ -698,7 +698,7 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 										errmsg,
 										"\nVertical datum information could not be assigned to location record.\n"
 										"No data stored.");
-									if (vdiTs && vdiTs != &_vdiTs) {
+									if (vdiTs && (vdiTs != &_vdiTs)) {
 										free(vdiTs);
 									}
 									free(compressed);
@@ -742,7 +742,7 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 									errmsg,
 									"\nVertical datum information could not be assigned to location record.\n"
 									"No data stored.");
-								if (vdiTs && vdiTs != &_vdiTs) {
+								if (vdiTs && (vdiTs != &_vdiTs)) {
 									free(vdiTs);
 								}
 								free(compressed);
