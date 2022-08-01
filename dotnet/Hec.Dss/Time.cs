@@ -15,6 +15,13 @@ namespace Hec.Dss
 
     static CultureInfo s_cultureInfo = new CultureInfo("en-US");
 
+    const int UNDEFINED_TIME = -2147483647;
+
+    public static bool IsUndefinedTime(int t)
+    {
+      return t == UNDEFINED_TIME;
+    }
+
     /// <summary>
     /// Converts DateTime to HEC format ddMMMyyyy (en-US)
     /// </summary>

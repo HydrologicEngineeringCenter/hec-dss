@@ -170,8 +170,6 @@
     <ClInclude Include="Source\managedToUnmanaged.h" />
     <ClInclude Include="Source\resource.h" />
     <ClInclude Include="Source\pch.h" />
-    <ClInclude Include="Source\DssFile.h" />
-    <ClInclude Include="Source\HecDateTime.h" />
     <ClInclude Include="Source\DSS.h" />
     <ClInclude Include="Source\ZStruct.h" />
     <ClInclude Include="Source\ZStructArrayWrapper.h" />
@@ -195,8 +193,6 @@
     <ResourceCompile Include="Source\app.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\DssFile.cpp" />
-    <ClCompile Include="Source\HecDateTime.cpp" />
     <ClCompile Include="Source\AssemblyInfo.cpp" />
     <ClCompile Include="Source\DSS.cpp" />
     <ClCompile Include="Source\managedToUnmanaged.cpp" />

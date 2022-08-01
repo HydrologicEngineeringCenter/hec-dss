@@ -141,12 +141,12 @@ namespace DSSUnitTests
         itimes[i] = i * 1440;
       }
       tss2 = DSS.ZStructTsNewIrregDoubles("/Basin/Location/Flow//~1Day/C Example/",ref dvalues, 300,ref itimes, 60, "20April2012", "cfs", "Inst-Val");
-      Assert.IsTrue( HecDateTime.Undefined(tss2.StartJulianDate));
+      Assert.IsTrue( Hec.Dss.Time.IsUndefinedTime(tss2.StartJulianDate));
       Assert.IsTrue(tss2.StartTimeSeconds == -1);
       status = DSS.ZTsStore(ref ifltab, ref tss2, 0);
       Assert.IsTrue(status == 0);
       tss3 = DSS.ZStructTsNew("/Basin/Location/Flow/01Jan2001/1Hour/C Test/");
-      Assert.IsTrue(HecDateTime.Undefined(tss3.StartJulianDate));
+      Assert.IsTrue(Hec.Dss.Time.IsUndefinedTime(tss3.StartJulianDate));
       Assert.IsTrue(tss3.StartTimeSeconds == -1);
       status = DSS.ZTsRetrieve(ref ifltab, ref tss3, -1, 1, 0);
       Assert.IsTrue(status == 0);
