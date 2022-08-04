@@ -361,7 +361,6 @@
     <ClCompile Include="src\System\zswitchDoubles.c" />
     <ClCompile Include="src\System\zswitchInts.c" />
     <ClCompile Include="src\System\zwritedisk.c" />
-    <ClCompile Include="src\Utilities\catsort.c" />
     <ClCompile Include="src\Utilities\convertDataArray.c" />
     <ClCompile Include="src\Utilities\convertDataLength.c" />
     <ClCompile Include="src\Utilities\convertDataType.c" />
