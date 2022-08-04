@@ -32,10 +32,12 @@ JNIEXPORT void JNICALL Java_hec_heclib_util_Heclib_Hec_1zsitsc
 	int  *coordDescription;
 	int   numbCoordDescription;
 	const char *supplementary;
+    const char* supp;
 	int	  timezoneOffset;
 	const char *timezoneName;
     int inFlag;
     int *status;
+    const char buff = '\0';
 
 	jint capacity=40;
 	(*env)->EnsureLocalCapacity(env, capacity);
@@ -62,6 +64,14 @@ JNIEXPORT void JNICALL Java_hec_heclib_util_Heclib_Hec_1zsitsc
     inFlag    = (int)j_inFlag;
     status    = (*env)->GetIntArrayElements (env, j_status, 0);
 
+    if (supplementary == NULL) {
+        supp = &buff;
+    }
+    else
+    {
+        supp = supplementary;
+    }
+
 	if (zmessageLevel((long long*)ifltab, MESS_METHOD_JNI_ID, MESS_LEVEL_INTERNAL_DIAG_1)) {		
 		zmessageDebug((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "Enter Heclib_Hec_zsitsc, pathname: ", pathname);
 	}
@@ -71,9 +81,9 @@ JNIEXPORT void JNICALL Java_hec_heclib_util_Heclib_Hec_1zsitsc
             units, type, 
 			coordinates, &numberCoordinates,
              coordDescription, &numbCoordDescription,
-			 supplementary, &timezoneOffset, timezoneName,
+			 supp, &timezoneOffset, timezoneName,
             &inFlag, status, strlen(pathname),
-            strlen(units), strlen(type), strlen(supplementary), strlen(timezoneName));
+            strlen(units), strlen(type), strlen(supp), strlen(timezoneName));
 
 
     (*env)->ReleaseIntArrayElements (env, j_ifltab, ifltab, 0);
