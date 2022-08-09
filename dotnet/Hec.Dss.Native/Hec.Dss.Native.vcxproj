@@ -179,11 +179,9 @@
     <ClInclude Include="Source\ZStructPairedDataWrapper.h" />
     <ClInclude Include="Source\ZStructRecordAddressesWrapper.h" />
     <ClInclude Include="Source\ZStructSpatialGridWrapper.h" />
-    <ClInclude Include="Source\ZStructSpatialTinWrapper.h" />
     <ClInclude Include="Source\ZStructTextWrapper.h" />
     <ClInclude Include="Source\ZStructTimeSeriesWrapper.h" />
     <ClInclude Include="Source\ZStructTransferWrapper.h" />
-    <ClInclude Include="Source\ZTSTimeWindowWrapper.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\app.ico" />

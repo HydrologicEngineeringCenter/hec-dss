@@ -12,15 +12,11 @@ namespace Hec.Dss
   {
     static PathAssist() => Assembly.Initialize();
 
-    [Obsolete("FormPathName is deprecated, please use FullPath.FullPath instead.")]
+    [Obsolete("FormPathName is deprecated, please use DssPath.FullPath instead.")]
     public static string FormPathName(string aPart, string bPart, string cPart, string dPart, string ePart, string fPart)
     {
-      int totalLength = aPart.Length + bPart.Length + cPart.Length + dPart.Length + ePart.Length + fPart.Length + 8;
-      string path = new string('1', totalLength);
-      DSS.ZPathNameForm(aPart, bPart, cPart, dPart, ePart, fPart,ref path,(uint) totalLength);
-      if (path[path.Length - 1] != '/')
-        path += "/";
-      return path;
+     var p = new DssPath(aPart,bPart,cPart,dPart,ePart,fPart);
+     return p.FullPath;
     }
 
     public static List<string> FilterByPart(IList<string> pathList, DssPath pathFilter)

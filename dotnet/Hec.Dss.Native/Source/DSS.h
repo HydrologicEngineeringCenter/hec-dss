@@ -22,7 +22,6 @@ extern "C"
 #include "ZStructSpatialTinWrapper.h"
 #include "ZStructTextWrapper.h"
 #include "ZStructTransferWrapper.h"
-#include "ZTSTimeWindowWrapper.h"
 
 namespace Hec { 
 	namespace Dss{
@@ -123,10 +122,6 @@ namespace Hec {
 
 				static ZStructTransferWrapper^ ZStructTransferNew(String^ pathName, int mode);
 
-				static ZStructSpatialTinWrapper^ ZStructSpatialTinNew(String^ pathName);
-
-				static ZTSTimeWindowWrapper^ ZStructTsNewTimeWindow();
-
 				/// <summary>
 				/// zstructPdNewFloats is for storing paired data float values.  Pass in the array of float ordinates (independent variable), and the float values array (dependent variable), the number of ordinates and number of curves.  The floatValues array must contain numberOrdinates * numberCurves values.  Since C doesn’t know about doubly dimensioned arrays (very well), the floatValues array is often a single dimensioned array numberOrdinates * numberCurves values long.
 				///</summary>
@@ -176,37 +171,11 @@ namespace Hec {
 
 				static int ZDataType(array<long long>^% ifltab, String^ pathname);
 
-				static String^ ZTypeName(array<long long>^% ifltab, String^ pathname);
-
 				static int zSqueezeNeeded(array<long long>^% ifltab);
 
 				static int zSqueeze7(array<long long>^% ifltab, int boolOnlyIfNeeded, int boolInPlace);
 
 				static long long ZGetLastWriteTimeFile(array<long long>^% ifltab);
-
-				static unsigned int zGetDataCRC(array<long long>^% ifltab, String^ pathname, unsigned int crcln);
-
-				static int ZWhatChangedSetStart(array<long long>^% ifltab, ZStructCatalogWrapper^ catStruct, String^ pathWithWildChars, int boolUseCRC);
-
-				static int ZWhatChanged(array<long long>^% ifltab, ZStructCatalogWrapper^ catStruct);
-
-				static int ZWhatChangedCompare(array<long long>^% ifltab, ZStructCatalogWrapper^% catStructBefore, ZStructCatalogWrapper^% catStructChanged, String^ pathWithWild, int boolUseCRC);
-
-				static int ZPathNameClean(String^% newPathname, size_t sizeOfNewPathName, String^ oldPathname);
-
-				static int ZPathNameCompare(String^ pathname1, array<long long>^% pathname2, size_t pathnameLength);
-
-				static int ZPathNameCompareCollection(String^ pathname1, String^ pathname2, size_t pathnameLength);
-
-				static int ZPathNameGetPart(String^ pathname, int partPosition, String^% part, size_t sizeOfPart);
-
-				static int ZPathNameSetPart(String^ pathname, size_t sizeOfPathname, String^ part, int partPosition);
-
-				static int ZPathNamePartLengths(String^ pathname, size_t pathnameLen, array<int>^% lengths, int dimOfLengths);
-
-				static int ZPathNamePartPositions(String^ pathname, size_t pathnameLen, array<int>^% positions, int dimOfPositions);
-
-				static int ZPathNameForm(String^ aPart, String^ bPart, String^ cPart, String^ dPart, String^ ePart, String^ fPart, String^% pathname, size_t sizeOfPathname);
 
 				static void ZMaxPart(array<long long>^% ifltab, array<int>^% maxParts);
 

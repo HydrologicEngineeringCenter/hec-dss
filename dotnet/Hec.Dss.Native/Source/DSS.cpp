@@ -300,19 +300,6 @@ namespace Hec {
 
 			}
 
-			ZStructSpatialTinWrapper ^ DSS::ZStructSpatialTinNew(String ^ pathName)
-			{
-				char * ptrToPathName = managedToUnmanagedString(pathName);
-				ZStructSpatialTinWrapper ^ toReturn = gcnew ZStructSpatialTinWrapper(zstructSpatialTinNew(ptrToPathName));
-				free(ptrToPathName);//all of these were copied using the dss library call
-				return toReturn;
-			}
-
-			ZTSTimeWindowWrapper ^ DSS::ZStructTsNewTimeWindow()
-			{
-				return gcnew ZTSTimeWindowWrapper(zstructTsNewTimeWindow());
-			}
-
 			/// <summary>
 			/// zstructPdNewFloats is for storing paired data float values.  Pass in the array of float ordinates (independent variable), and the float values array (dependent variable), the number of ordinates and number of curves.  The floatValues array must contain numberOrdinates * numberCurves values.  Since C doesn’t know about doubly dimensioned arrays (very well), the floatValues array is often a single dimensioned array numberOrdinates * numberCurves values long.
 			///</summary>
@@ -442,18 +429,6 @@ namespace Hec {
 				return toReturn;
 			}
 
-			String^ DSS::ZTypeName(array<long long> ^% ifltab, String ^ pathname)
-			{
-				pin_ptr<long long> ifltabPinned = &ifltab[0];
-				IntPtr marshallToCharStar = Marshal::StringToHGlobalAnsi(pathname);
-				char * strPtr = static_cast<char*>(marshallToCharStar.ToPointer());
-				int toReturn = zdataType(ifltabPinned, strPtr);
-				Marshal::FreeHGlobal(marshallToCharStar);
-
-				String^ rval = gcnew String(ztypeName(toReturn, 1));
-				return rval;
-			}
-
 			int DSS::zSqueezeNeeded(array<long long> ^% ifltab)
 			{
 				pin_ptr<long long> ifltabPinned = &ifltab[0];
@@ -470,150 +445,6 @@ namespace Hec {
 			{
 				pin_ptr<long long> ifltabPinned = &ifltab[0];
 				return zgetLastWriteTimeFile(ifltabPinned);
-			}
-
-			unsigned int DSS::zGetDataCRC(array<long long> ^% ifltab, String ^ pathname, unsigned int crcln)
-			{
-				pin_ptr<long long> ifltabPinned = &ifltab[0];
-				IntPtr marshallToCharStar = Marshal::StringToHGlobalAnsi(pathname);
-				char * strPtr = static_cast<char*>(marshallToCharStar.ToPointer());
-				unsigned int toReturn = zgetDataCRC(ifltabPinned, strPtr, crcln);
-				Marshal::FreeHGlobal(marshallToCharStar);
-				return toReturn;
-			}
-
-			int DSS::ZWhatChangedSetStart(array<long long> ^% ifltab, ZStructCatalogWrapper ^ catStruct, String ^ pathWithWildChars, int boolUseCRC)
-			{
-				pin_ptr<long long> ifltabPinned = &ifltab[0];
-				IntPtr marshallToCharStar = Marshal::StringToHGlobalAnsi(pathWithWildChars);
-				char * strPtr = static_cast<char*>(marshallToCharStar.ToPointer());
-				int toReturn = zwhatChangedSetStart(ifltabPinned, catStruct->theStruct, strPtr, boolUseCRC);
-				Marshal::FreeHGlobal(marshallToCharStar);
-				return toReturn;
-			}
-
-			int DSS::ZWhatChanged(array<long long> ^% ifltab, ZStructCatalogWrapper ^ catStruct)
-			{
-				pin_ptr<long long> ifltabPinned = &ifltab[0];
-				return zwhatChanged(ifltabPinned, catStruct->theStruct);
-			}
-
-			int DSS::ZWhatChangedCompare(array<long long> ^% ifltab, ZStructCatalogWrapper ^% catStructBefore, ZStructCatalogWrapper ^% catStructChanged, String ^ pathWithWild, int boolUseCRC)
-			{
-				pin_ptr<long long> ifltabPinned = &ifltab[0];
-				IntPtr marshallToCharStar = Marshal::StringToHGlobalAnsi(pathWithWild);
-				char * strPtr = static_cast<char*>(marshallToCharStar.ToPointer());
-				int toReturn = zwhatChangedCompare(ifltabPinned, catStructBefore->theStruct, catStructChanged->theStruct, strPtr, boolUseCRC);
-				Marshal::FreeHGlobal(marshallToCharStar);
-				return toReturn;
-			}
-
-			int DSS::ZPathNameClean(String ^% newPathname, size_t sizeOfNewPathName, String ^ oldPathname)
-			{
-				IntPtr marshallToCharStar1 = Marshal::StringToHGlobalAnsi(newPathname);
-				IntPtr marshallToCharStar2 = Marshal::StringToHGlobalAnsi(oldPathname);
-				char * ptrToFirst = static_cast<char*>(marshallToCharStar1.ToPointer());
-				char * ptrToSecond = static_cast<char*>(marshallToCharStar2.ToPointer());
-				int toReturn = zpathnameClean(ptrToFirst, sizeOfNewPathName, ptrToSecond);
-				newPathname = gcnew String(ptrToFirst);
-				Marshal::FreeHGlobal(marshallToCharStar1);
-				Marshal::FreeHGlobal(marshallToCharStar2);
-				return toReturn;
-			}
-
-			int DSS::ZPathNameCompare(String ^ pathname1, array<long long> ^% pathname2, size_t pathnameLength)
-			{
-				IntPtr marshallToCharStar1 = Marshal::StringToHGlobalAnsi(pathname1);
-				pin_ptr<long long> pathname2Pinned = &pathname2[0];
-				char * ptrToFirst = static_cast<char*>(marshallToCharStar1.ToPointer());
-				int toReturn = zpathnameCompare(ptrToFirst, pathname2Pinned, pathnameLength);
-				Marshal::FreeHGlobal(marshallToCharStar1);
-				return toReturn;
-			}
-
-			int DSS::ZPathNameCompareCollection(String ^ pathname1, String ^ pathname2, size_t pathnameLength)
-			{
-				IntPtr marshallToCharStar1 = Marshal::StringToHGlobalAnsi(pathname1);
-				IntPtr marshallToCharStar2 = Marshal::StringToHGlobalAnsi(pathname2);
-				char * ptrToFirst = static_cast<char*>(marshallToCharStar1.ToPointer());
-				char * ptrToSecond = static_cast<char*>(marshallToCharStar2.ToPointer());
-				int toReturn = zpathnameCompareCollection(ptrToFirst, ptrToSecond, pathnameLength);
-				Marshal::FreeHGlobal(marshallToCharStar1);
-				Marshal::FreeHGlobal(marshallToCharStar2);
-				return toReturn;
-			}
-
-			int DSS::ZPathNameGetPart(String ^ pathname, int partPosition, String ^% part, size_t sizeOfPart)
-			{
-				IntPtr marshallToCharStar1 = Marshal::StringToHGlobalAnsi(pathname);
-				IntPtr marshallToCharStar2 = Marshal::StringToHGlobalAnsi(part);
-				char * ptrToFirst = static_cast<char*>(marshallToCharStar1.ToPointer());
-				char * ptrToSecond = static_cast<char*>(marshallToCharStar2.ToPointer());
-				int toReturn = zpathnameGetPart(ptrToFirst, partPosition, ptrToSecond, sizeOfPart);
-				part = gcnew String(ptrToSecond);
-				Marshal::FreeHGlobal(marshallToCharStar1);
-				Marshal::FreeHGlobal(marshallToCharStar2);
-				return toReturn;
-			}
-
-			int DSS::ZPathNameSetPart(String ^ pathname, size_t sizeOfPathname, String ^ part, int partPosition)
-			{
-				IntPtr marshallToCharStar1 = Marshal::StringToHGlobalAnsi(pathname);
-				IntPtr marshallToCharStar2 = Marshal::StringToHGlobalAnsi(part);
-				char * ptrToFirst = static_cast<char*>(marshallToCharStar1.ToPointer());
-				char * ptrToSecond = static_cast<char*>(marshallToCharStar2.ToPointer());
-				int toReturn = zpathnameSetPart(ptrToFirst, sizeOfPathname, ptrToSecond, partPosition);
-				Marshal::FreeHGlobal(marshallToCharStar1);
-				Marshal::FreeHGlobal(marshallToCharStar2);
-				return toReturn;
-			}
-
-			int DSS::ZPathNamePartLengths(String ^ pathname, size_t pathnameLen, array<int> ^% lengths, int dimOfLengths)
-			{
-				pin_ptr<int> lengthPinned = &lengths[0];
-				IntPtr marshallToCharStar = Marshal::StringToHGlobalAnsi(pathname);
-				char * strPtr = static_cast<char*>(marshallToCharStar.ToPointer());
-				int toReturn = zpathnamePartLengths(strPtr, pathnameLen, lengthPinned, dimOfLengths);
-				Marshal::FreeHGlobal(marshallToCharStar);
-				return toReturn;
-			}
-
-			int DSS::ZPathNamePartPositions(String ^ pathname, size_t pathnameLen, array<int> ^% positions, int dimOfPositions)
-			{
-				pin_ptr<int> positionPinned = &positions[0];
-				IntPtr marshallToCharStar = Marshal::StringToHGlobalAnsi(pathname);
-				char * strPtr = static_cast<char*>(marshallToCharStar.ToPointer());
-				int toReturn = zpathnamePartPositions(strPtr, pathnameLen, positionPinned, dimOfPositions);
-				Marshal::FreeHGlobal(marshallToCharStar);
-				return toReturn;
-			}
-
-			int DSS::ZPathNameForm(String ^ aPart, String ^ bPart, String ^ cPart, String ^ dPart, String ^ ePart, String ^ fPart, String ^% pathname, size_t sizeOfPathname)
-			{
-				IntPtr marshallToCharStar1 = Marshal::StringToHGlobalAnsi(pathname);
-				IntPtr marshallToCharStar2 = Marshal::StringToHGlobalAnsi(aPart);
-				IntPtr marshallToCharStar3 = Marshal::StringToHGlobalAnsi(bPart);
-				IntPtr marshallToCharStar4 = Marshal::StringToHGlobalAnsi(cPart);
-				IntPtr marshallToCharStar5 = Marshal::StringToHGlobalAnsi(dPart);
-				IntPtr marshallToCharStar6 = Marshal::StringToHGlobalAnsi(ePart);
-				IntPtr marshallToCharStar7 = Marshal::StringToHGlobalAnsi(fPart);
-				char * ptrToFirst = static_cast<char*>(marshallToCharStar1.ToPointer());
-				char * ptrToSecond = static_cast<char*>(marshallToCharStar2.ToPointer());
-				char * ptrToThird = static_cast<char*>(marshallToCharStar3.ToPointer());
-				char * ptrToFourth = static_cast<char*>(marshallToCharStar4.ToPointer());
-				char * ptrToFifth = static_cast<char*>(marshallToCharStar5.ToPointer());
-				char * ptrToSixth = static_cast<char*>(marshallToCharStar6.ToPointer());
-				char * ptrToSeventh = static_cast<char*>(marshallToCharStar7.ToPointer());
-				int toReturn = zpathnameForm(ptrToSecond, ptrToThird, ptrToFourth, ptrToFifth, ptrToSixth, ptrToSeventh, ptrToFirst, sizeOfPathname);
-				pathname = gcnew String(ptrToFirst);
-				Marshal::FreeHGlobal(marshallToCharStar1);
-				Marshal::FreeHGlobal(marshallToCharStar2);
-				Marshal::FreeHGlobal(marshallToCharStar3);
-				Marshal::FreeHGlobal(marshallToCharStar4);
-				Marshal::FreeHGlobal(marshallToCharStar5);
-				Marshal::FreeHGlobal(marshallToCharStar6);
-				Marshal::FreeHGlobal(marshallToCharStar7);
-				return toReturn;
 			}
 
 			void DSS::ZMaxPart(array<long long> ^% ifltab, array<int> ^% maxParts)
