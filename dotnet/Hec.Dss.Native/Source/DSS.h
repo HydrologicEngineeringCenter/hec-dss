@@ -16,7 +16,6 @@ extern "C"
 #include "ZStructSpatialGridWrapper.h"
 #include "ZStruct.h"
 #include "ZStructCatalogWrapper.h"
-#include "ZStructRecordSizeWrapper.h"
 #include "ZStructArrayWrapper.h"
 #include "ZStructBasicWrapper.h"
 #include "ZStructRecordAddressesWrapper.h"
@@ -169,81 +168,19 @@ namespace Hec {
 				static int ZCatalog(array<long long>^% ifltab, String^ pathWithWild, ZStructCatalogWrapper^% catStruct, int boolSorted);
 
 				/// <summary>
-				/// Fills in a catalog struct of all pathnames in the DSS file.  If you want the pathnames to be sorted, set boolSorted to 1, otherwise 0.   Returns the number of pathnames in the struct, otherwise a negative for an error.
-				///</summary>
-				static int ZCatalogFile(array<long long>^% ifltab, String^ pathWithWild, int boolSorted, String^ catalogFilename);
-
-				/// <summary>
-				/// Write the catalog to a file that you have opened.  This is the same as zcatalogFile, but you are responsible for opening and closing the file.  You pass in either a valid (opened) C handle or opened Fortran unit number.  This call is usually made when you want pathnames, but do not want to allocate much memory (and in that case, you should set boolSort to zero).
-				///</summary>
-				static int ZCatalogToFile(array<long long>^% ifltab, int catalogHandle, int fortranUnit, int boolSort);
-
-				static ZStructRecordSizeWrapper^ zStructRecordSizeNew(String^ filename);
-
-				/// <summary>
-				/// //zstructFree frees all memory that HEC-DSS has allocated in the struct passed in.  It will not free memory that the calling functions (outside of the HEC-DSS library) have allocated.  There should be a matching //zstructFree for each zstructNew.
-				///</summary>
-				static void ZStructFree(ZStruct^% zStruct);
-
-				/// <summary>
-				/// To duplicate a record within a file, use the function “zduplicateRecord” with the existing pathname and the new one.  You cannot change the D (date) or E (interval) parts of a time series record; that data must be converted for those parts to change.  If you try to rename those, the record will become unreadable. Returns STATUS_OKAY for a successful rename or an error code for an unsuccessful call.  Errors include the old record does not exist, the new record already exists, you do not have write access, among others.
-				///</summary>
-				static int ZDuplicateRecord(array<long long>^% ifltab, String^ existingPathname, String^ newPathname);
-
-				/// <summary>
-				/// To copy a record to another DSS file, use the function “zcopyRecord”.  You can change the pathname when you copy with the record, buy providing a new name, or you can just use the same name.  You cannot change the D (date) or E (interval) parts of a time series record; that data must be converted for those parts to change.  Returns STATUS_OKAY for a successful rename or an error code for an unsuccessful call.  Errors include the old record does not exist, the new record already exists, you do not have write access, among others.
-				///</summary>
-				static int ZCopyRecord(array<long long>^% ifltabFrom, array<long long>^% ifltabTo, String^ existingPathname, String^ newPathname);
-
-				/// <summary>
-				/// You can rename a single record by calling the function “zrename” and providing the old pathname and the new one.  You cannot rename the D (date) or E (interval) parts of a time series record; that data set must be converted for those parts to change.  If you try to rename those, the record will become unreadable.  Returns STATUS_OKAY for a successful rename or an error code for an unsuccessful call.  Errors include the old record does not exist, the new record already exists, you do not have write access, among others.
-				///</summary>
-				static int ZRename(array<long long>^% ifltab, String^ existingPathname, String^ newPathname);
-
-				/// <summary>
 				/// You can free(a single record by calling the function “zdelete” with the pathname of the record you want to delete.  If you accidently delete a record, it might be recovered by calling zundelete.  However, deleted space is returned to the recycle pool, so that function is not guaranteed to work, and there is less probability of an unfree(as more is written to the file.  “Squeezing” a file permanently removes space from undeleted records and is recommended after many deletes or renames, etc.   Returns STATUS_OKAY for successfully deleting the record, or an error code for an unsuccessful call.  Errors include the record does not exist, or you do not have write access, among others.
 				///</summary>
 				static int ZDelete(array<long long>^% ifltab, String^ pathname);
 
-				/// <summary>
-				/// Returns STATUS_OKAY for successfully undeleting the record, or an error code for an unsuccessful call.
-				///</summary>
-				static int ZUndelete(array<long long>^% ifltab, String^ pathname);
-
-				static int ZAliasAdd(array<long long>^% ifltab, String^ existingPathname, String^ newPathname);
-
-				static int ZAliasGetPrimary(array<long long>^% ifltab, String^ aliasPathName, String^ primaryPathName, size_t maxLenPrimaryPathname);
-
-				static int ZGetFileVersion(String^ dssFilename);
-
-				static int ZGetVersion(array<long long>^% ifltab);
-
-				static int ZOpenExtended(array<long long>^% ifltab, String^ dssFilename, int fileVersion, int access, int maxExpectedPathnames, int hashSize, int binSize);
-
 				static int ZSet(String^ parameter, String^ charVal, int integerValue);
-
-				static int ZSetFile(array<long long>^% ifltab, String^ parameter, String^ charVal, int integerValue);
-
-				static int ZQuery(String^ parameter, String^ charVal, size_t lenCharVal, array<int>^% integerValue);
-
-				static long long ZInquire(array<long long>^% ifltab, String^ request);
-
-				static int ZInquireChar(array<long long>^% ifltab, String^ request, String^% creturn, size_t creturnSize, array<int>^% number);
-
-				static int ZFileName(String^% fullDssFilename, size_t sizeofFilename, String^ dssFileName, array<int>^% permission);
 
 				static int ZDataType(array<long long>^% ifltab, String^ pathname);
 
 				static String^ ZTypeName(array<long long>^% ifltab, String^ pathname);
 
-				static int ZGetRecordSize(array<long long>^% ifltab, ZStructRecordSizeWrapper^ recordSize);
-
 				static int zSqueezeNeeded(array<long long>^% ifltab);
 
 				static int zSqueeze7(array<long long>^% ifltab, int boolOnlyIfNeeded, int boolInPlace);
-
-				//doesnt work
-				//static long long ZGetLastWriteTime(array<long long> ^% ifltab, String ^ pathname);
 
 				static long long ZGetLastWriteTimeFile(array<long long>^% ifltab);
 

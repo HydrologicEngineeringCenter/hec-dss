@@ -408,95 +408,6 @@ namespace Hec {
 			}
 
 			/// <summary>
-			/// Fills in a catalog struct of all pathnames in the DSS file.  If you want the pathnames to be sorted, set boolSorted to 1, otherwise 0.   Returns the number of pathnames in the struct, otherwise a negative for an error.
-			///</summary>
-			int DSS::ZCatalogFile(array<long long> ^% ifltab, String ^ pathWithWild, int boolSorted, String ^ catalogFilename)
-			{
-				pin_ptr<long long> ifltabPinned = &ifltab[0];
-				IntPtr marshallToPathWithWild = Marshal::StringToHGlobalAnsi(pathWithWild);
-				char * ptrToPathWithWild = static_cast<char*>(marshallToPathWithWild.ToPointer());
-				IntPtr marshallToCatalogFilename = Marshal::StringToHGlobalAnsi(catalogFilename);
-				char * ptrToCatalogFilename = static_cast<char*>(marshallToCatalogFilename.ToPointer());
-				int toReturn = zcatalogFile(ifltabPinned, ptrToCatalogFilename, boolSorted, ptrToPathWithWild);
-				Marshal::FreeHGlobal(marshallToPathWithWild);
-				Marshal::FreeHGlobal(marshallToCatalogFilename);
-				return toReturn;
-			}
-
-			/// <summary>
-			/// Write the catalog to a file that you have opened.  This is the same as zcatalogFile, but you are responsible for opening and closing the file.  You pass in either a valid (opened) C handle or opened Fortran unit number.  This call is usually made when you want pathnames, but do not want to allocate much memory (and in that case, you should set boolSort to zero).
-			///</summary>
-			int DSS::ZCatalogToFile(array<long long> ^% ifltab, int catalogHandle, int fortranUnit, int boolSort)
-			{
-				pin_ptr<long long> ifltabPinned = &ifltab[0];
-				return zcatalogToFile(ifltabPinned, catalogHandle, fortranUnit, boolSort);
-			}
-
-			ZStructRecordSizeWrapper ^ DSS::zStructRecordSizeNew(String ^ filename)
-			{
-				char * ptrToFilename = managedToUnmanagedString(filename);
-				ZStructRecordSizeWrapper ^ toReturn = gcnew ZStructRecordSizeWrapper(zstructRecordSizeNew(ptrToFilename));
-				return toReturn;
-			}
-
-			/// <summary>
-			/// zstructFree frees all memory that HEC-DSS has allocated in the struct passed in.  It will not free memory that the calling functions (outside of the HEC-DSS library) have allocated.  There should be a matching zstructFree for each zstructNew.
-			///</summary>
-			void DSS::ZStructFree(ZStruct ^% zStruct)
-			{
-				delete zStruct;
-			}
-
-			/// <summary>
-			/// To duplicate a record within a file, use the function “zduplicateRecord” with the existing pathname and the new one.  You cannot change the D (date) or E (interval) parts of a time series record; that data must be converted for those parts to change.  If you try to rename those, the record will become unreadable. Returns STATUS_OKAY for a successful rename or an error code for an unsuccessful call.  Errors include the old record does not exist, the new record already exists, you do not have write access, among others.
-			///</summary>
-			int DSS::ZDuplicateRecord(array<long long> ^% ifltab, String ^ existingPathname, String ^ newPathname)
-			{
-				pin_ptr<long long> ifltabPinned = &ifltab[0];
-				IntPtr marshallToExistingPathName = Marshal::StringToHGlobalAnsi(existingPathname);
-				char * ptrToExistingPathName = static_cast<char*>(marshallToExistingPathName.ToPointer());
-				IntPtr marshallToNewPathName = Marshal::StringToHGlobalAnsi(newPathname);
-				char * ptrToNewPathName = static_cast<char*>(marshallToNewPathName.ToPointer());
-				int toReturn = zduplicateRecord(ifltabPinned, ptrToExistingPathName, ptrToNewPathName);
-				Marshal::FreeHGlobal(marshallToExistingPathName);
-				Marshal::FreeHGlobal(marshallToNewPathName);
-				return toReturn;
-			}
-
-			/// <summary>
-			/// To copy a record to another DSS file, use the function “zcopyRecord”.  You can change the pathname when you copy with the record, buy providing a new name, or you can just use the same name.  You cannot change the D (date) or E (interval) parts of a time series record; that data must be converted for those parts to change.  Returns STATUS_OKAY for a successful rename or an error code for an unsuccessful call.  Errors include the old record does not exist, the new record already exists, you do not have write access, among others.
-			///</summary>
-			int DSS::ZCopyRecord(array<long long> ^% ifltabFrom, array<long long> ^% ifltabTo, String ^ existingPathname, String ^ newPathname)
-			{
-				pin_ptr<long long> ifltabFromPinned = &ifltabFrom[0];
-				pin_ptr<long long> ifltabToPinned = &ifltabTo[0];
-				IntPtr marshallToExistingPathName = Marshal::StringToHGlobalAnsi(existingPathname);
-				char * ptrToExistingPathName = static_cast<char*>(marshallToExistingPathName.ToPointer());
-				IntPtr marshallToNewPathName = Marshal::StringToHGlobalAnsi(newPathname);
-				char * ptrToNewPathName = static_cast<char*>(marshallToNewPathName.ToPointer());
-				int toReturn = zcopyRecord(ifltabFromPinned, ifltabToPinned, ptrToExistingPathName, ptrToNewPathName);
-				Marshal::FreeHGlobal(marshallToExistingPathName);
-				Marshal::FreeHGlobal(marshallToNewPathName);
-				return toReturn;
-			}
-
-			/// <summary>
-			/// You can rename a single record by calling the function “zrename” and providing the old pathname and the new one.  You cannot rename the D (date) or E (interval) parts of a time series record; that data set must be converted for those parts to change.  If you try to rename those, the record will become unreadable.  Returns STATUS_OKAY for a successful rename or an error code for an unsuccessful call.  Errors include the old record does not exist, the new record already exists, you do not have write access, among others.
-			///</summary>
-			int DSS::ZRename(array<long long> ^% ifltab, String ^ existingPathname, String ^ newPathname)
-			{
-				pin_ptr<long long> ifltabPinned = &ifltab[0];
-				IntPtr marshallToExistingPathName = Marshal::StringToHGlobalAnsi(existingPathname);
-				IntPtr marshallToNewPathName = Marshal::StringToHGlobalAnsi(newPathname);
-				char * ptrToExistingPathName = static_cast<char*>(marshallToExistingPathName.ToPointer());
-				char * ptrToNewPathName = static_cast<char*>(marshallToNewPathName.ToPointer());
-				int toReturn = zrename(ifltabPinned, ptrToExistingPathName, ptrToNewPathName);
-				Marshal::FreeHGlobal(marshallToExistingPathName);
-				Marshal::FreeHGlobal(marshallToNewPathName);
-				return toReturn;
-			}
-
-			/// <summary>
 			/// You can delete a single record by calling the function “zdelete” with the pathname of the record you want to delete.  If you accidently delete a record, it might be recovered by calling zundelete.  However, deleted space is returned to the recycle pool, so that function is not guaranteed to work, and there is less probability of an undelete as more is written to the file.  “Squeezing” a file permanently removes space from undeleted records and is recommended after many deletes or renames, etc.   Returns STATUS_OKAY for successfully deleting the record, or an error code for an unsuccessful call.  Errors include the record does not exist, or you do not have write access, among others.
 			///</summary>
 			int DSS::ZDelete(array<long long> ^% ifltab, String ^ pathname)
@@ -509,70 +420,6 @@ namespace Hec {
 				return toReturn;
 			}
 
-			/// <summary>
-			/// Returns STATUS_OKAY for successfully undeleting the record, or an error code for an unsuccessful call.
-			///</summary>
-			int DSS::ZUndelete(array<long long> ^% ifltab, String ^ pathname)
-			{
-				pin_ptr<long long> ifltabPinned = &ifltab[0];
-				IntPtr marshallToPathName = Marshal::StringToHGlobalAnsi(pathname);
-				char * ptrToPathName = static_cast<char*>(marshallToPathName.ToPointer());
-				int toReturn = zundelete(ifltabPinned, ptrToPathName);
-				Marshal::FreeHGlobal(marshallToPathName);
-				return toReturn;
-			}
-
-			int DSS::ZAliasAdd(array<long long> ^% ifltab, String ^ existingPathname, String ^ newPathname)
-			{
-				pin_ptr<long long> ifltabPinned = &ifltab[0];
-				IntPtr marshallToExistingPathName = Marshal::StringToHGlobalAnsi(existingPathname);
-				IntPtr marshallToNewPathName = Marshal::StringToHGlobalAnsi(newPathname);
-				char * ptrToExistingPathName = static_cast<char*>(marshallToExistingPathName.ToPointer());
-				char * ptrToNewPathName = static_cast<char*>(marshallToNewPathName.ToPointer());
-				int toReturn = zaliasAdd(ifltabPinned, ptrToExistingPathName, ptrToNewPathName);
-				Marshal::FreeHGlobal(marshallToExistingPathName);
-				Marshal::FreeHGlobal(marshallToNewPathName);
-				return toReturn;
-			}
-
-			int DSS::ZAliasGetPrimary(array<long long> ^% ifltab, String ^ aliasPathName, String ^ primaryPathName, size_t maxLenPrimaryPathname)
-			{
-				pin_ptr<long long> ifltabPinned = &ifltab[0];
-				IntPtr marshallToAliasPathName = Marshal::StringToHGlobalAnsi(aliasPathName);
-				IntPtr marshallToPrimaryPathName = Marshal::StringToHGlobalAnsi(primaryPathName);
-				char * ptrToAliasPathName = static_cast<char*>(marshallToAliasPathName.ToPointer());
-				char * ptrToPrimaryPathName = static_cast<char*>(marshallToPrimaryPathName.ToPointer());
-				int toReturn = zaliasGetPrimary(ifltabPinned, ptrToAliasPathName, ptrToPrimaryPathName, maxLenPrimaryPathname);
-				Marshal::FreeHGlobal(marshallToAliasPathName);
-				Marshal::FreeHGlobal(marshallToPrimaryPathName);
-				return toReturn;
-			}
-
-			int DSS::ZGetFileVersion(String ^ dssFilename)
-			{
-				IntPtr marshallToCharStar = Marshal::StringToHGlobalAnsi(dssFilename);
-				char * strPtr = static_cast<char*>(marshallToCharStar.ToPointer());
-				int toReturn = zgetFileVersion(strPtr);
-				Marshal::FreeHGlobal(marshallToCharStar);
-				return toReturn;
-			}
-
-			int DSS::ZGetVersion(array<long long> ^% ifltab)
-			{
-				pin_ptr<long long> ifltabPinned = &ifltab[0];
-				return zgetVersion(ifltabPinned);
-			}
-
-			int DSS::ZOpenExtended(array<long long> ^% ifltab, String ^ dssFilename, int fileVersion, int access, int maxExpectedPathnames, int hashSize, int binSize)
-			{
-				pin_ptr<long long> ifltabPinned = &ifltab[0];
-				IntPtr marshallToCharStar = Marshal::StringToHGlobalAnsi(dssFilename);
-				char * strPtr = static_cast<char*>(marshallToCharStar.ToPointer());
-				int toReturn = zopenExtended(ifltabPinned, strPtr, fileVersion, access, maxExpectedPathnames, hashSize, binSize);
-				Marshal::FreeHGlobal(marshallToCharStar);
-				return toReturn;
-			}
-
 			int DSS::ZSet(String ^ parameter, String ^ charVal, int integerValue)
 			{
 				IntPtr marshallToParameter = Marshal::StringToHGlobalAnsi(parameter);
@@ -582,70 +429,6 @@ namespace Hec {
 				int toReturn = zset(ptrToParameter, ptrTocharVal, integerValue);
 				Marshal::FreeHGlobal(marshallToParameter);
 				Marshal::FreeHGlobal(marshallToCharVal);
-				return toReturn;
-			}
-
-			int DSS::ZSetFile(array<long long> ^% ifltab, String ^ parameter, String ^ charVal, int integerValue)
-			{
-				pin_ptr<long long> ifltabPinned = &ifltab[0];
-				IntPtr marshallToParameter = Marshal::StringToHGlobalAnsi(parameter);
-				IntPtr marshallToCharVal = Marshal::StringToHGlobalAnsi(charVal);
-				char * ptrToParameter = static_cast<char*>(marshallToParameter.ToPointer());
-				char * ptrTocharVal = static_cast<char*>(marshallToCharVal.ToPointer());
-				int toReturn = zsetFile(ifltabPinned, ptrToParameter, ptrTocharVal, integerValue);
-				Marshal::FreeHGlobal(marshallToParameter);
-				Marshal::FreeHGlobal(marshallToCharVal);
-				return toReturn;
-			}
-
-			int DSS::ZQuery(String ^ parameter, String ^ charVal, size_t lenCharVal, array<int> ^% integerValue)
-			{
-				pin_ptr<int> integerValuePinned = &integerValue[0];
-				IntPtr marshallToParameter = Marshal::StringToHGlobalAnsi(parameter);
-				IntPtr marshallToCharVal = Marshal::StringToHGlobalAnsi(charVal);
-				char * ptrToParameter = static_cast<char*>(marshallToParameter.ToPointer());
-				char * ptrTocharVal = static_cast<char*>(marshallToCharVal.ToPointer());
-				int toReturn = zquery(ptrToParameter, ptrTocharVal, lenCharVal, integerValuePinned);
-				Marshal::FreeHGlobal(marshallToParameter);
-				Marshal::FreeHGlobal(marshallToCharVal);
-				return toReturn;
-			}
-
-			long long DSS::ZInquire(array<long long> ^% ifltab, String ^ request)
-			{
-				pin_ptr<long long> ifltabPinned = &ifltab[0];
-				IntPtr marshallToCharStar = Marshal::StringToHGlobalAnsi(request);
-				char * strPtr = static_cast<char*>(marshallToCharStar.ToPointer());
-				long long toReturn = zinquire(ifltabPinned, strPtr);
-				Marshal::FreeHGlobal(marshallToCharStar);
-				return toReturn;
-			}
-
-			int DSS::ZInquireChar(array<long long> ^% ifltab, String ^ request, String ^% creturn, size_t creturnSize, array<int> ^% number)
-			{
-				pin_ptr<long long> ifltabPinned = &ifltab[0];
-				pin_ptr<int> numberPinned = &number[0];
-				IntPtr marshallToRequest = Marshal::StringToHGlobalAnsi(request);
-				IntPtr marshallToCReturn = Marshal::StringToHGlobalAnsi(creturn);
-				char * ptrToRequest = static_cast<char*>(marshallToRequest.ToPointer());
-				char * ptrToCReturn = static_cast<char*>(marshallToCReturn.ToPointer());
-				int toReturn = zinquireChar(ifltabPinned, ptrToRequest, ptrToCReturn, creturnSize, numberPinned);
-				creturn = gcnew String(ptrToCReturn);
-				Marshal::FreeHGlobal(marshallToRequest);
-				Marshal::FreeHGlobal(marshallToCReturn);
-				return toReturn;
-			}
-
-			int DSS::ZFileName(String ^% fullDssFilename, size_t sizeofFilename, String ^ dssFileName, array<int> ^% permission)
-			{
-				pin_ptr<int> permissionPinned = &permission[0];
-				IntPtr marshallToCharStar1 = Marshal::StringToHGlobalAnsi(fullDssFilename);
-				IntPtr marshallToCharStar2 = Marshal::StringToHGlobalAnsi(dssFileName);
-				char * ptrToFirst = static_cast<char*>(marshallToCharStar1.ToPointer());
-				char * ptrToSecond = static_cast<char*>(marshallToCharStar2.ToPointer());
-				int toReturn = zfileName(ptrToFirst, sizeofFilename, ptrToSecond, permissionPinned);
-				Marshal::FreeHGlobal(marshallToCharStar1);
-				Marshal::FreeHGlobal(marshallToCharStar2);
 				return toReturn;
 			}
 
@@ -671,14 +454,6 @@ namespace Hec {
 				return rval;
 			}
 
-
-
-			int DSS::ZGetRecordSize(array<long long> ^%  ifltab, ZStructRecordSizeWrapper ^ recordSize)
-			{
-				pin_ptr<long long> ifltabPinned = &ifltab[0];
-				return zgetRecordSize(ifltabPinned, recordSize->theStruct);
-			}
-
 			int DSS::zSqueezeNeeded(array<long long> ^% ifltab)
 			{
 				pin_ptr<long long> ifltabPinned = &ifltab[0];
@@ -690,17 +465,6 @@ namespace Hec {
 				pin_ptr<long long> ifltabPinned = &ifltab[0];
 				return zsqueeze7(ifltabPinned, boolOnlyIfNeeded, boolInPlace);
 			}
-
-			//doesnt work
-			/* long long DSS::ZGetLastWriteTime(array<long long> ^% ifltab, String ^ pathname)
-			{
-			pin_ptr<long long> ifltabPinned = &ifltab[0];
-			IntPtr marshallToCharStar = Marshal::StringToHGlobalAnsi(pathname);
-			char * strPtr = static_cast<char*>(marshallToCharStar.ToPointer());
-			long long toReturn = zgetLastWriteTime(ifltabPinned, strPtr);
-			Marshal::FreeHGlobal(marshallToCharStar);
-			return toReturn;
-			}*/
 
 			long long DSS::ZGetLastWriteTimeFile(array<long long> ^% ifltab)
 			{

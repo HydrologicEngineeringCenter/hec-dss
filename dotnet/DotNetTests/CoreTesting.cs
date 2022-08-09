@@ -102,17 +102,7 @@ namespace DSSUnitTests
       }
       DSS.ZClose(ifltab);
     }
-    [TestMethod]
-    public void TestCatalogFileV7()
-    {
-      long[] ifltab = new long[250];
-      DSS.ZOpen(ref ifltab, TestUtility.BasePath + "sample7.dss");
-      int numberPaths = DSS.ZCatalogFile(ref ifltab, null, 1, null);
-      Assert.IsTrue(numberPaths == 595);
-       string fn = "test_sample7.dsscat.txt";
-      numberPaths = DSS.ZCatalogFile(ref ifltab, fn, 1, null);
-      Assert.IsTrue(numberPaths == 595);
-    }
+
     [TestMethod]
     public void TestTimeSeries1()
     {

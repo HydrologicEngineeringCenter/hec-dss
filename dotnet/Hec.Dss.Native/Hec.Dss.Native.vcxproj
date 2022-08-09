@@ -178,7 +178,6 @@
     <ClInclude Include="Source\ZStructLocationWrapper.h" />
     <ClInclude Include="Source\ZStructPairedDataWrapper.h" />
     <ClInclude Include="Source\ZStructRecordAddressesWrapper.h" />
-    <ClInclude Include="Source\ZStructRecordSizeWrapper.h" />
     <ClInclude Include="Source\ZStructSpatialGridWrapper.h" />
     <ClInclude Include="Source\ZStructSpatialTinWrapper.h" />
     <ClInclude Include="Source\ZStructTextWrapper.h" />

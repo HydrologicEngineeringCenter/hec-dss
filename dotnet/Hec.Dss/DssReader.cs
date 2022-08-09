@@ -70,7 +70,7 @@ namespace Hec.Dss
       int status;
       this.filename = filename;
       status = DSS.ZOpen(ref ifltab, filename);
-      versionNumber = DSS.ZGetVersion(ref ifltab);
+      versionNumber = GetDSSFileVersion();
 
       switch (status)
       {
@@ -836,7 +836,7 @@ namespace Hec.Dss
     /// <returns>6 or 7 depending on the version</returns>
     public int GetDSSFileVersion()
     {
-      return DSS.ZGetVersion(ref ifltab);
+      return (int)ifltab[0]; // little endian only
     }
 
 
