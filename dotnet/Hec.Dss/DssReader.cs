@@ -827,7 +827,7 @@ namespace Hec.Dss
     /// <returns>The missing flag value</returns>
     public float CheckMissingFlag()
     {
-      return DSS.ZMissingFlag();
+      return -3.402823466e+38F;
     }
 
     /// <summary>

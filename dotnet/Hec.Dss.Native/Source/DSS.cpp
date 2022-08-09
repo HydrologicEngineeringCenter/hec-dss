@@ -57,22 +57,6 @@ namespace Hec {
 			}
 
 			/// <summary>
-			/// Will tell you if the given status is an error or not
-			///</summary>
-			int DSS::ZIsError(int status)
-			{
-				return zisError(status);
-			}
-
-			/// <summary>
-			/// Will tell you the error severity of the error
-			///</summary>
-			int DSS::ZErrorSeverity(int status)
-			{
-				return zerrorSeverity(status);
-			}
-
-			/// <summary>
 			/// returns either STATUS_RECORD_FOUND, STATUS_RECORD_NOT_FOUND or an error code.
 			///</summary>
 			int DSS::ZCheck(array<long long>^ ifltab, String ^ path)
@@ -83,68 +67,6 @@ namespace Hec {
 				int status = zcheck(itfltabPinned, ptrToDssFileName);
 				Marshal::FreeHGlobal(marshallToDssFileName);
 				return status;
-			}
-
-			/// <summary>
-			/// returns zero, or the last error code that occurred
-			///</summary>
-			int DSS::ZErrorCode(array<long long>^ ifltab)
-			{
-				pin_ptr<long long> itfltabPinned = &ifltab[0];
-				return zerrorCode(itfltabPinned);
-			}
-
-			/// <summary>
-			/// returns the severity of the most severe error
-			///</summary>
-			int DSS::ZFileError(array<long long>^ ifltab)
-			{
-				pin_ptr<long long> itfltabPinned = &ifltab[0];
-				return zfileError(itfltabPinned);
-			}
-
-			/// <summary>
-			/// returns the missing flag value
-			///</summary>
-			float DSS::ZMissingFlag()
-			{
-				return zmissingFlag();
-			}
-
-			/// <summary>
-			/// Sets the missing flag value with a float
-			///</summary>
-			void DSS::ZSetMissingFloat(float value)
-			{
-				pin_ptr<float> valuePinned = &value;
-				zsetMissingFloat(valuePinned);
-				return;
-			}
-
-			/// <summary>
-			/// Sets the missing flag value with a double
-			///</summary>
-			void DSS::ZSetMissingDouble(double value)
-			{
-				pin_ptr<double> valuePinned = &value;
-				zsetMissingDouble(valuePinned);
-				return;
-			}
-
-			/// <summary>
-			/// Checks to see if a value is missing
-			///</summary>
-			int DSS::ZIsMissingFloat(float value)
-			{
-				return zisMissingFloat(value);
-			}
-
-			/// <summary>
-			/// Checks to see if a value is missing
-			///</summary>
-			int DSS::ZIsMissingFloat(double value)
-			{
-				return zisMissingDouble(value);
 			}
 
 			/// <summary>

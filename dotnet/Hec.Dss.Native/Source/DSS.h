@@ -76,54 +76,9 @@ namespace Hec {
 				static void ZSetMessageLevel(int methodId, int levelID);
 
 				/// <summary>
-				/// Will tell you if the given status is an error or not
-				///</summary>
-				static int ZIsError(int status);
-
-				/// <summary>
-				/// Will tell you the error severity of the error
-				///</summary>
-				static int ZErrorSeverity(int status);
-
-				/// <summary>
 				/// returns either STATUS_RECORD_FOUND, STATUS_RECORD_NOT_FOUND or an error code.
 				///</summary>
 				static int ZCheck(array<long long>^ ifltab, String^ path);
-
-				/// <summary>
-				/// returns zero, or the last error code that occurred
-				///</summary>
-				static int ZErrorCode(array<long long>^ ifltab);
-
-				/// <summary>
-				/// returns the severity of the most severe error
-				///</summary>
-				static int ZFileError(array<long long>^ ifltab);
-
-				/// <summary>
-				/// returns the missing flag value
-				///</summary>
-				static float ZMissingFlag();
-
-				/// <summary>
-				/// Sets the missing flag value with a float
-				///</summary>
-				static void ZSetMissingFloat(float value);
-
-				/// <summary>
-				/// Sets the missing flag value with a double
-				///</summary>
-				static void ZSetMissingDouble(double value);
-
-				/// <summary>
-				/// Checks to see if a value is missing
-				///</summary>
-				static int ZIsMissingFloat(float value);
-
-				/// <summary>
-				/// Checks to see if a value is missing
-				///</summary>
-				static int ZIsMissingFloat(double value);
 
 				/// <summary>
 				/// Creates and returns a struct to pass data into DSS  Contains regular-interval time series data for float values.  Use ZStructFree when finished.
