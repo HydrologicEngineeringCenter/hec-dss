@@ -31,7 +31,6 @@ namespace Hec {
 			public ref class DSS abstract sealed
 			{
 			private:
-				static void Zdtype_(array<long long>^% ifltab, String^ pathname, int% numDataCompressed, int% boolExists, array<char>^% charRecordType, int% recordType, size_t pathLength, size_t charRecordTypeLength);
 			public:
 				static ZStructSpatialGridWrapper^ ZStructSpatialGridNew(String^ filename);
 
@@ -40,10 +39,6 @@ namespace Hec {
 				static int ZSpatialGridRetrieve(array<long long>^% ifltab, ZStructSpatialGridWrapper^% gs, bool retrieveData);
 
 				static int ZSpatialGridStore(array<long long>^% ifltab, ZStructSpatialGridWrapper^% gs);
-
-				//static int ZSpatialGridRetrieveVersion(array<long long> ^% ifltab, String ^ cpath, int % gridStructVersion);
-
-				static void PrintGridStruct(array<long long>^% ifltab, int function_id, ZStructSpatialGridWrapper^% gs);
 
 				/// <summary>
 				/// Open a DSS file with the full path of the file.  Will decide for you to open DSS6 or DSS7.  Returns the status.  Call Zclose when you are finished with the file, or deletion/rename.
@@ -182,13 +177,6 @@ namespace Hec {
 				static int ZTsRetrieve(array<long long>^% ifltab, ZStructTimeSeriesWrapper^% tss, int retrieveFlag, int boolRetrieveDoubles, int boolRetrieveQualityNotes);
 
 				static int ZTsRetrieveEmpty(array<long long>^% ifltab, ZStructTimeSeriesWrapper^% tss);
-
-				/// <summary>
-				///  Gets the time window for a data set
-				///</summary>  
-				static void ZTSends(array<long long>^% ifltab, String^ cpath, array<int>^ searchOption, array<int>^ startJulian, array<int>^ startMinutes, array<int>^ endJulian, array<int>^ endMinutes, array<int>^ exists, size_t len_cpath);
-
-				static ZStructArrayWrapper^ ZStructArrayNew(String^ pathName);
 
 				static ZStructTransferWrapper^ ZStructTransferNew(String^ pathName, int mode);
 
@@ -397,72 +385,17 @@ namespace Hec {
 
 				static int ZAliasList(array<long long>^% ifltab, String^ pathname, array<String^>^ pathnameList, int% pathnameListLength);
 
-				static int FortranOpen(int% unit, String^% filename, size_t lenFilename);
-
-				static int FortranClose(int% unit);
-
-				static int IsUnitConnected(int% unit);
-
-				static int ZCKMUL6(array<long long>^% ifltab);
-
-				static void ZPseudorts6(String^ CFROMPATH, String^% CTOPATH, int% INTL, int% IACTION, int% ISTATUS, size_t lenFrom, size_t lenTo);
-
-				//doesn't work
-				//static String ^ ZStatus(int % errorCode, int % severity);
-
-				static int ZPdStore6(array<long long>^% ifltab, ZStructPairedDataWrapper^% pds, int storageFlag);
-
-				static int ZPdRetrieve6(array<long long>^% ifltab, ZStructPairedDataWrapper^% pds, int retrieveFlag);
-
-				static int ZOpen6(array<long long>^% ifltab, String^ dssFilename);
-
-				static int ZOpen7(array<long long>^% ifltab, String^ dssFilename);
-
 				static int ZSqueeze(String^ dssFilename);
-
-				static int ZCopyFile(array<long long>^% ifltab, array<long long>^% ifltabTo, int statusWanted);
-
-				static int ZConvertVersion(String^ fileNameFrom, String^ fileNameTo);
-
-				static void ZFname(String^ dssFilenameIn, String^% dssFilenameOut, int% nname, int% exists, size_t lenDssFilenameIn, size_t sizeDssFilenameOut);
-
-				static int SortFiles(String^% unsortedIn, String^% sortedOut);
-
-				static void ZReadx(array<long long>^% ifltab, String^ pathname, array<int>^% internalHeader, int% internalHeaderArraySize, int% internalHeaderNumber,
-					array<int>^% header2, int% header2ArraySize, int% header2Number, array<int>^% userHeader, int% userHeaderArraySize, int% userHeaderNumber,
-					array<int>^% values, int% valuesSize, int% valuesNumber, int% readPlan, int% recordFound, size_t pathlen);
 
 				static bool IsTimeDefined(int julianDate, int timeSeconds);
 
-				static int ZTsGetSizes6(array<long long>^% ifltab, ZStructTimeSeriesWrapper^% tss, ZStructRecordSizeWrapper^% timeSeriesRecordSizes);
-
-				static int ZGetRecordSize6(array<long long>^% ifltab, ZStructRecordSizeWrapper^% recordSize);
-
-				static int ZGetRecordSize7(array<long long>^% ifltab, ZStructRecordSizeWrapper^% recordSize);
-
-				static long long GetCurrentTimeMillis();
-
-				static void GetCurrentDateTime(int% julian, int% secondsPastMidnight, int% millsPastSecond);
-
-				static void GetCurrentTimeString(String^% timeString, size_t lenTimeString);
-
-				static void GetCurrentDateString(String^% dateString, size_t sizeOfDateString);
-
 				static int GetDateAndTime(int timeMinOrSec, int timeGranularitySeconds, int julianBaseDate, String^% dateString, int sizeOfDateString, String^% hoursMins, int SizeOfHoursMins);
-
-				static void GetDateTimeString(int julian, String^% dateString, size_t sizeOfDateString, int dateStyle, int secondsPastMidnight, String^% timeString, size_t sizeofTimeString, int timeStyle);
-
-				//static int JulianToDate(int julianDate, int style, String^% dateString, size_t sizeOfDateString);
 
 				static int JulianToYearMonthDay(int julian, int% year, int% month, int% day);
 
 				static int YearMonthDayToDate(int year, int month, int day, int style, String^% dateString, size_t sizeOfDateString);
 
 				static int YearMonthDayToJulian(int year, int month, int day);
-
-				static void MinsToDateTime(int minsSince1900, String^% dateString, String^% timeString, size_t sizeOfDateString, size_t sizeOfTimeString);
-
-				static void MinutesToHourMin(int minutes, String^% hoursMins, size_t lenHoursMins);
 
 				static int TimeStringToSeconds(String^ timeString);
 

@@ -355,33 +355,6 @@ namespace Hec {
 			}
 
 
-			/// <summary>
-			///  Gets the time window for a data set
-			///</summary>  
-			void DSS::ZTSends(array<long long> ^% ifltab, String ^ cpath, array<int> ^ searchOption, array<int> ^ startJulian, array<int> ^ startMinutes, array<int> ^ endJulian, array<int> ^ endMinutes, array<int> ^ exists, size_t len_cpath)
-			{
-				pin_ptr<long long> ifltabPinned = &ifltab[0];
-				IntPtr marshallToCPath = Marshal::StringToHGlobalAnsi(cpath);
-				char * ptrToCPath = static_cast<char*>(marshallToCPath.ToPointer());
-				pin_ptr<int> searchOptionPinned = &searchOption[0];
-				pin_ptr<int> startJulianPinned = &startJulian[0];
-				pin_ptr<int> startMinutesPinned = &startMinutes[0];
-				pin_ptr<int> endJulianPinned = &endJulian[0];
-				pin_ptr<int> endMintesPinned = &endMinutes[0];
-				pin_ptr<int> existsPinned = &exists[0];
-				ztsends_(ifltabPinned, ptrToCPath, searchOptionPinned, startJulianPinned, startMinutesPinned, endJulianPinned, endMintesPinned, existsPinned, len_cpath);
-				Marshal::FreeHGlobal(marshallToCPath);
-				return;
-			}
-
-			ZStructArrayWrapper ^ DSS::ZStructArrayNew(String ^ pathName)
-			{
-				char * ptrToPathName = managedToUnmanagedString(pathName);
-				ZStructArrayWrapper ^ toReturn = gcnew ZStructArrayWrapper(zstructArrayNew(ptrToPathName));
-				free(ptrToPathName);//all of these were copied using the dss library call
-				return toReturn;
-			}
-
 			ZStructTransferWrapper ^ DSS::ZStructTransferNew(String ^ pathName, int mode)
 			{
 				char * ptrToPathName = managedToUnmanagedString(pathName);
@@ -1197,90 +1170,6 @@ namespace Hec {
 				return 0;
 			}
 
-			int DSS::FortranOpen(int % unit, String ^% filename, size_t lenFilename)
-			{
-				pin_ptr<int> unitPinned = &unit;
-				IntPtr marshallToCharStar = Marshal::StringToHGlobalAnsi(filename);
-				char * strPtr = static_cast<char*>(marshallToCharStar.ToPointer());
-				int toReturn = fortranopen_(unitPinned, strPtr, lenFilename);
-				Marshal::FreeHGlobal(marshallToCharStar);
-				return toReturn;
-			}
-
-			int DSS::FortranClose(int % unit)
-			{
-				pin_ptr<int> unitPinned = &unit;
-				return fortranclose_(unitPinned);
-			}
-
-			int DSS::IsUnitConnected(int % unit)
-			{
-				pin_ptr<int> unitPinned = &unit;
-				return isunitconnected_(unitPinned);
-			}
-
-			int DSS::ZCKMUL6(array<long long> ^% ifltab)
-			{
-				pin_ptr<long long> ifltabPinned = &ifltab[0];
-				return zckmul6_(ifltabPinned);
-			}
-
-			void DSS::ZPseudorts6(String ^ CFROMPATH, String ^% CTOPATH, int % INTL, int % IACTION, int % ISTATUS, size_t lenFrom, size_t lenTo)
-			{
-				pin_ptr<int> IACTIONPinned = &IACTION;
-				pin_ptr<int> INTLPinned = &INTL;
-				pin_ptr<int> ISTATUSPinned = &ISTATUS;
-				IntPtr marshallToCharStar1 = Marshal::StringToHGlobalAnsi(CFROMPATH);
-				IntPtr marshallToCharStar2 = Marshal::StringToHGlobalAnsi(CTOPATH);
-				char * ptrToFirst = static_cast<char*>(marshallToCharStar1.ToPointer());
-				char * ptrToSecond = static_cast<char*>(marshallToCharStar2.ToPointer());
-				zpseudorts6_(ptrToFirst, ptrToSecond, INTLPinned, IACTIONPinned, ISTATUSPinned, lenFrom, lenTo);
-				CTOPATH = gcnew String(ptrToSecond);
-				Marshal::FreeHGlobal(marshallToCharStar1);
-				Marshal::FreeHGlobal(marshallToCharStar2);
-			}
-
-			//doesn't work
-			/* String ^ DSS::ZStatus(int % errorCode, int % severity)
-			{
-			pin_ptr<int> errorCodePinned = &errorCode;
-			pin_ptr<int> severityPinned = &severity;
-			char * returned = zstatus(errorCodePinned, severityPinned);
-			return gcnew String(returned);
-			}*/
-
-			int DSS::ZPdStore6(array<long long> ^% ifltab, ZStructPairedDataWrapper ^% pds, int storageFlag)
-			{
-				pin_ptr<long long> ifltabPinned = &ifltab[0];
-				return zpdStore6(ifltabPinned, pds->theStruct, storageFlag);
-			}
-
-			int DSS::ZPdRetrieve6(array<long long> ^% ifltab, ZStructPairedDataWrapper ^% pds, int retrieveFlag)
-			{
-				pin_ptr<long long> ifltabPinned = &ifltab[0];
-				return zpdRetrieve6(ifltabPinned, pds->theStruct, retrieveFlag);
-			}
-
-			int DSS::ZOpen6(array<long long> ^% ifltab, String ^ dssFilename)
-			{
-				pin_ptr<long long> ifltabPinned = &ifltab[0];
-				IntPtr marshallToCharStar = Marshal::StringToHGlobalAnsi(dssFilename);
-				char * strPtr = static_cast<char*>(marshallToCharStar.ToPointer());
-				int toReturn = zopen6(ifltabPinned, strPtr);
-				Marshal::FreeHGlobal(marshallToCharStar);
-				return toReturn;
-			}
-
-			int DSS::ZOpen7(array<long long> ^% ifltab, String ^ dssFilename)
-			{
-				pin_ptr<long long> ifltabPinned = &ifltab[0];
-				IntPtr marshallToCharStar = Marshal::StringToHGlobalAnsi(dssFilename);
-				char * strPtr = static_cast<char*>(marshallToCharStar.ToPointer());
-				int toReturn = zopen7(ifltabPinned, strPtr);
-				Marshal::FreeHGlobal(marshallToCharStar);
-				return toReturn;
-			}
-
 			int DSS::ZSqueeze(String ^ dssFilename)
 			{
 				IntPtr marshallToCharStar = Marshal::StringToHGlobalAnsi(dssFilename);
@@ -1288,76 +1177,6 @@ namespace Hec {
 				int toReturn = zsqueeze(strPtr);
 				Marshal::FreeHGlobal(marshallToCharStar);
 				return toReturn;
-			}
-
-			int DSS::ZCopyFile(array<long long> ^% ifltab, array<long long> ^% ifltabTo, int statusWanted)
-			{
-				pin_ptr<long long> ifltabPinned = &ifltab[0];
-				pin_ptr<long long> ifltabToPinned = &ifltabTo[0];
-				return zcopyFile(ifltabPinned, ifltabToPinned, statusWanted);
-			}
-
-			int DSS::ZConvertVersion(String ^ fileNameFrom, String ^ fileNameTo)
-			{
-				IntPtr marshallToCharStar1 = Marshal::StringToHGlobalAnsi(fileNameFrom);
-				IntPtr marshallToCharStar2 = Marshal::StringToHGlobalAnsi(fileNameTo);
-				char * ptrToFirst = static_cast<char*>(marshallToCharStar1.ToPointer());
-				char * ptrToSecond = static_cast<char*>(marshallToCharStar2.ToPointer());
-				int toReturn = zconvertVersion(ptrToFirst, ptrToSecond);
-				Marshal::FreeHGlobal(marshallToCharStar1);
-				Marshal::FreeHGlobal(marshallToCharStar2);
-				return toReturn;
-			}
-
-			void DSS::ZFname(String ^ dssFilenameIn, String ^% dssFilenameOut, int % nname, int % exists, size_t lenDssFilenameIn, size_t sizeDssFilenameOut)
-			{
-				pin_ptr<int> nnamePinned = &nname;
-				pin_ptr<int> existsPinned = &exists;
-				IntPtr marshallToCharStar1 = Marshal::StringToHGlobalAnsi(dssFilenameIn);
-				IntPtr marshallToCharStar2 = Marshal::StringToHGlobalAnsi(dssFilenameOut);
-				char * ptrToFirst = static_cast<char*>(marshallToCharStar1.ToPointer());
-				char * ptrToSecond = static_cast<char*>(marshallToCharStar2.ToPointer());
-				zfname(ptrToFirst, ptrToSecond, nnamePinned, existsPinned, lenDssFilenameIn, sizeDssFilenameOut);
-				dssFilenameOut = gcnew String(ptrToSecond);
-				Marshal::FreeHGlobal(marshallToCharStar1);
-				Marshal::FreeHGlobal(marshallToCharStar2);
-			}
-
-			int DSS::SortFiles(String ^% unsortedIn, String ^% sortedOut)
-			{
-				IntPtr marshallToCharStar1 = Marshal::StringToHGlobalAnsi(unsortedIn);
-				IntPtr marshallToCharStar2 = Marshal::StringToHGlobalAnsi(sortedOut);
-				char * ptrToFirst = static_cast<char*>(marshallToCharStar1.ToPointer());
-				char * ptrToSecond = static_cast<char*>(marshallToCharStar2.ToPointer());
-				int toReturn = sortfiles(ptrToFirst, ptrToSecond);
-				Marshal::FreeHGlobal(marshallToCharStar1);
-				Marshal::FreeHGlobal(marshallToCharStar2);
-				return toReturn;
-			}
-
-			void DSS::ZReadx(array<long long>^% ifltab, String ^ pathname, array<int>^% internalHeader, int % internalHeaderArraySize, int % internalHeaderNumber, array<int>^% header2,
-				int % header2ArraySize, int % header2Number, array<int>^% userHeader, int % userHeaderArraySize, int % userHeaderNumber, array<int>^% values,
-				int % valuesSize, int % valuesNumber, int % readPlan, int % recordFound, size_t pathlen)
-			{
-				pin_ptr<long long> ifltabPinned = &ifltab[0];
-				pin_ptr<int> internalHeaderPinned = &internalHeader[0];
-				pin_ptr<int> internalHeaderArraySizePinned = &internalHeaderArraySize;
-				pin_ptr<int> internalHeaderNumberPinned = &internalHeaderNumber;
-				pin_ptr<int> header2Pinned = &header2[0];
-				pin_ptr<int> header2ArraySizePinned = &header2ArraySize;
-				pin_ptr<int> header2NumberPinned = &header2Number;
-				pin_ptr<int> userHeaderPinned = &userHeader[0];
-				pin_ptr<int> userHeaderArraySizePinned = &userHeaderArraySize;
-				pin_ptr<int> userHeaderNumberPinned = &userHeaderNumber;
-				pin_ptr<int> valuesPinned = &values[0];
-				pin_ptr<int> valueSizePinned = &valuesSize;
-				pin_ptr<int> valuesNumberPinned = &valuesNumber;
-				pin_ptr<int> readPlanPinned = &readPlan;
-				pin_ptr<int> recordFoundPinned = &recordFound;
-				IntPtr marshallToCharStar = Marshal::StringToHGlobalAnsi(pathname);
-				char * strPtr = static_cast<char*>(marshallToCharStar.ToPointer());
-				zreadx(ifltabPinned, strPtr, internalHeaderPinned, internalHeaderArraySizePinned, internalHeaderNumberPinned, header2Pinned, header2ArraySizePinned, header2NumberPinned, userHeaderPinned, userHeaderArraySizePinned, userHeaderNumberPinned, valuesPinned, valueSizePinned, valuesNumberPinned, readPlanPinned, recordFoundPinned);
-				Marshal::FreeHGlobal(marshallToCharStar);
 			}
 
 			ZStructSpatialGridWrapper ^ DSS::ZStructSpatialGridNew(String ^ filename)
@@ -1388,88 +1207,9 @@ namespace Hec {
 				return status; 
 			}
 
-			/*int DSS::ZSpatialGridRetrieveVersion(array<long long> ^% ifltab, String ^ cpath, int % gridStructVersion)
-			{
-				pin_ptr<long long> ifltabPinned = &ifltab[0];
-				IntPtr marshallToCharStar = Marshal::StringToHGlobalAnsi(cpath);
-				char * strPtr = static_cast<char*>(marshallToCharStar.ToPointer());
-				pin_ptr<int> gridStructVersionPinned = &gridStructVersion;
-				int toReturn = zspatialGridRetrieveVersion(ifltabPinned, strPtr, gridStructVersionPinned);
-				Marshal::FreeHGlobal(marshallToCharStar);
-				return toReturn;
-			}*/
-
-			void DSS::PrintGridStruct(array<long long> ^% ifltab, int function_id, ZStructSpatialGridWrapper ^% gs)
-			{
-				pin_ptr<long long> ifltabPinned = &ifltab[0];
-				printGridStruct(ifltabPinned, function_id, gs->theStruct);
-			}
-
-			void DSS::Zdtype_(array<long long>^% ifltab, String ^ pathname, int % numDataCompressed, int % boolExists, array<char>^% charRecordType, int % recordType, size_t pathLength, size_t charRecordTypeLength)
-			{
-				pin_ptr<long long> ifltabPinned = &ifltab[0];
-				IntPtr marshallToCharStar = Marshal::StringToHGlobalAnsi(pathname);
-				char * strPtr = static_cast<char*>(marshallToCharStar.ToPointer());
-				pin_ptr<int> numDataCompressedPinned = &numDataCompressed;
-				pin_ptr<int> boolExistsPinned = &boolExists;
-				pin_ptr<char> charRecordTypePinned = &charRecordType[0];
-				pin_ptr<int> recordTypePinned = &recordType;
-				zdtype_(ifltabPinned, strPtr, numDataCompressedPinned, boolExistsPinned, charRecordTypePinned, recordTypePinned, pathLength, charRecordTypeLength);
-				Marshal::FreeHGlobal(marshallToCharStar);
-			}
-
 			bool DSS::IsTimeDefined(int julianDate, int timeSeconds)
 			{
 				return isTimeDefined(julianDate, timeSeconds) == 1;
-			}
-
-			int DSS::ZTsGetSizes6(array<long long> ^% ifltab, ZStructTimeSeriesWrapper ^% tss, ZStructRecordSizeWrapper ^% timeSeriesRecordSizes)
-			{
-				pin_ptr<long long> ifltabPinned = &ifltab[0];
-				return ztsGetSizes6(ifltabPinned, tss->theStruct, timeSeriesRecordSizes->theStruct);
-			}
-
-			int DSS::ZGetRecordSize6(array<long long> ^% ifltab, ZStructRecordSizeWrapper ^% recordSize)
-			{
-				pin_ptr<long long> ifltabPinned = &ifltab[0];
-				return zgetRecordSize6(ifltabPinned, recordSize->theStruct);
-			}
-
-			int DSS::ZGetRecordSize7(array<long long> ^% ifltab, ZStructRecordSizeWrapper ^% recordSize)
-			{
-				pin_ptr<long long> ifltabPinned = &ifltab[0];
-				return zgetRecordSize7(ifltabPinned, recordSize->theStruct);
-			}
-
-			long long DSS::GetCurrentTimeMillis()
-			{
-				return getCurrentTimeMillis();
-			}
-
-			void DSS::GetCurrentDateTime(int % julian, int % secondsPastMidnight, int % millsPastSecond)
-			{
-				pin_ptr<int> julianPinned = &julian;
-				pin_ptr<int> secondsPastMidnightPinned = &secondsPastMidnight;
-				pin_ptr<int> millsPastSecondPinned = &millsPastSecond;
-				return getCurrentDateTime(julianPinned, secondsPastMidnightPinned, millsPastSecondPinned);
-			}
-
-			void DSS::GetCurrentTimeString(String ^% timeString, size_t lenTimeString)
-			{
-				IntPtr marshallToCharStar = Marshal::StringToHGlobalAnsi(timeString);
-				char * strPtr = static_cast<char*>(marshallToCharStar.ToPointer());
-				getCurrentTimeString(strPtr, lenTimeString);
-				timeString = gcnew String(strPtr);
-				Marshal::FreeHGlobal(marshallToCharStar);
-			}
-
-			void DSS::GetCurrentDateString(String ^% dateString, size_t sizeOfDateString)
-			{
-				IntPtr marshallToCharStar = Marshal::StringToHGlobalAnsi(dateString);
-				char * strPtr = static_cast<char*>(marshallToCharStar.ToPointer());
-				getCurrentTimeString(strPtr, sizeOfDateString);
-				dateString = gcnew String(strPtr);
-				Marshal::FreeHGlobal(marshallToCharStar);
 			}
 
 			int DSS::GetDateAndTime(int timeMinOrSec, int timeGranularitySeconds, int julianBaseDate, String ^% dateString, int sizeOfDateString, String ^% hoursMins, int sizeOfHoursMins)
@@ -1486,29 +1226,6 @@ namespace Hec {
 				return toReturn;
 			}
 
-			void DSS::GetDateTimeString(int julian, String ^% dateString, size_t sizeOfDateString, int dateStyle, int secondsPastMidnight, String ^% timeString, size_t sizeofTimeString, int timeStyle)
-			{
-				IntPtr marshallToCharStar1 = Marshal::StringToHGlobalAnsi(dateString);
-				IntPtr marshallToCharStar2 = Marshal::StringToHGlobalAnsi(timeString);
-				char * ptrToFirst = static_cast<char*>(marshallToCharStar1.ToPointer());
-				char * ptrToSecond = static_cast<char*>(marshallToCharStar2.ToPointer());
-				getDateTimeString(julian, ptrToFirst, sizeOfDateString, dateStyle, secondsPastMidnight, ptrToSecond, sizeofTimeString, timeStyle);
-				dateString = gcnew String(ptrToFirst);
-				timeString = gcnew String(ptrToSecond);
-				Marshal::FreeHGlobal(marshallToCharStar1);
-				Marshal::FreeHGlobal(marshallToCharStar2);
-			}
-
-			/*int DSS::JulianToDate(int julianDate, int style, String ^% dateString, size_t sizeOfDateString)
-			{
-				IntPtr marshallToCharStar = Marshal::StringToHGlobalAnsi(dateString);
-				char * strPtr = static_cast<char*>(marshallToCharStar.ToPointer());
-				int toReturn = julianToDate(julianDate, style, strPtr, sizeOfDateString);
-				dateString = gcnew String(strPtr);
-				Marshal::FreeHGlobal(marshallToCharStar);
-				return toReturn;
-			}
-*/
 			int DSS::JulianToYearMonthDay(int julian, int % year, int % month, int % day)
 			{
 				pin_ptr<int> yearPinned = &year;
@@ -1530,28 +1247,6 @@ namespace Hec {
 			int DSS::YearMonthDayToJulian(int year, int month, int day)
 			{
 				return yearMonthDayToJulian(year, month, day);
-			}
-
-			void DSS::MinsToDateTime(int minsSince1900, String ^% dateString, String ^% timeString, size_t sizeOfDateString, size_t sizeOfTimeString)
-			{
-				IntPtr marshallToCharStar1 = Marshal::StringToHGlobalAnsi(dateString);
-				IntPtr marshallToCharStar2 = Marshal::StringToHGlobalAnsi(timeString);
-				char * ptrToFirst = static_cast<char*>(marshallToCharStar1.ToPointer());
-				char * ptrToSecond = static_cast<char*>(marshallToCharStar2.ToPointer());
-				minsToDateTime(minsSince1900, ptrToFirst, ptrToSecond, sizeOfDateString, sizeOfTimeString);
-				dateString = gcnew String(ptrToFirst);
-				timeString = gcnew String(ptrToSecond);
-				Marshal::FreeHGlobal(marshallToCharStar1);
-				Marshal::FreeHGlobal(marshallToCharStar2);
-			}
-
-			void DSS::MinutesToHourMin(int minutes, String ^% hoursMins, size_t lenHoursMins)
-			{
-				IntPtr marshallToCharStar = Marshal::StringToHGlobalAnsi(hoursMins);
-				char * strPtr = static_cast<char*>(marshallToCharStar.ToPointer());
-				minutesToHourMin(minutes, strPtr, lenHoursMins);
-				hoursMins = gcnew String(strPtr);
-				Marshal::FreeHGlobal(marshallToCharStar);
 			}
 
 			int DSS::TimeStringToSeconds(String ^ timeString)
