@@ -813,6 +813,7 @@ namespace Hec.Dss
     /// <returns>True if the path exists, false otherwise.</returns>
     public bool ExactPathExists(DssPath path)
     {
+      // can this be replaced with a call to the catalog?
       int status = DSS.ZCheck(ifltab, path.FullPath);
       if (status != 0)
         return false;

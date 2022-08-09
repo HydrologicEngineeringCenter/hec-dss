@@ -52,17 +52,6 @@ namespace Hec {
 				static int ZClose(array<long long>^ ifltab);
 
 				/// <summary>
-				/// Open a DSS log file with the full path of the file. Returns the status.  Call ZCloseLog when you are finished with the file, or deletion/rename.
-				///</summary>
-				/// <returns>A file pointer of the dss file if opened. Failure returns null.</returns>
-				static int ZOpenLog(String^ DSSFileName);
-
-				/// <summary>
-				/// Closes a DSSlog file.  Returns status.  Call ZCloseLog when you are finished with the log file
-				///</summary>
-				static void ZCloseLog();
-
-				/// <summary>
 				/// Sets the message level for a method set.
 				///  Method ID	Value	Method Description
 				///  MESS_METHOD_GLOBAL_ID	0	All methods both in DSS version 6 and 7
@@ -99,7 +88,7 @@ namespace Hec {
 				/// <summary>
 				/// returns either STATUS_RECORD_FOUND, STATUS_RECORD_NOT_FOUND or an error code.
 				///</summary>
-				static int ZCheck(array<long long>^ ifltab, String^ DSSFileName);
+				static int ZCheck(array<long long>^ ifltab, String^ path);
 
 				/// <summary>
 				/// returns zero, or the last error code that occurred
@@ -179,12 +168,6 @@ namespace Hec {
 				static int ZTsRetrieveEmpty(array<long long>^% ifltab, ZStructTimeSeriesWrapper^% tss);
 
 				static ZStructTransferWrapper^ ZStructTransferNew(String^ pathName, int mode);
-
-				static ZStructTextWrapper^ ZStructTextNew(String^ pathName);
-
-				static ZStructTextWrapper^ ZStructTextStringNew(String^ pathName, String^ text);
-
-				static int ZLocationStructValid(ZStructLocationWrapper^% zsl);
 
 				static ZStructSpatialTinWrapper^ ZStructSpatialTinNew(String^ pathName);
 

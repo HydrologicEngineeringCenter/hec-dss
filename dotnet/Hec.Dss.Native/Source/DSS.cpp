@@ -28,27 +28,6 @@ namespace Hec {
 				return zclose(itfltabPinned);
 			}
 
-			/// <summary>
-			/// Open a DSS log file with the full path of the file. Returns the status.  Call ZCloseLog when you are finished with the file, or deletion/rename.
-			///</summary>
-			/// <returns>A file pointer of the dss file if opened. Failure returns null.</returns>
-			int DSS::ZOpenLog(String ^ DSSFileName)
-			{
-				IntPtr marshallToDssFileName = Marshal::StringToHGlobalAnsi(DSSFileName);
-				char * ptrToDssFileName = static_cast<char*>(marshallToDssFileName.ToPointer());
-				int status = zopenLog(ptrToDssFileName);
-				Marshal::FreeHGlobal(marshallToDssFileName);
-				return status;
-			}
-
-			/// <summary>
-			/// Closes a DSSlog file.  Returns status.  Call ZCloseLog when you are finished with the log file
-			///</summary>
-			void DSS::ZCloseLog()
-			{
-				zcloseLog();
-				return;
-			}
 
 			/// <summary>
 			/// Sets the message level for a method set.
@@ -96,10 +75,10 @@ namespace Hec {
 			/// <summary>
 			/// returns either STATUS_RECORD_FOUND, STATUS_RECORD_NOT_FOUND or an error code.
 			///</summary>
-			int DSS::ZCheck(array<long long>^ ifltab, String ^ DSSFileName)
+			int DSS::ZCheck(array<long long>^ ifltab, String ^ path)
 			{
 				pin_ptr<long long> itfltabPinned = &ifltab[0];
-				IntPtr marshallToDssFileName = Marshal::StringToHGlobalAnsi(DSSFileName);
+				IntPtr marshallToDssFileName = Marshal::StringToHGlobalAnsi(path);
 				char * ptrToDssFileName = static_cast<char*>(marshallToDssFileName.ToPointer());
 				int status = zcheck(itfltabPinned, ptrToDssFileName);
 				Marshal::FreeHGlobal(marshallToDssFileName);
@@ -363,24 +342,6 @@ namespace Hec {
 				return toReturn;
 			}
 
-			ZStructTextWrapper ^ DSS::ZStructTextNew(String ^ pathName)
-			{
-				char * ptrToPathName = managedToUnmanagedString(pathName);
-				ZStructTextWrapper ^ toReturn = gcnew ZStructTextWrapper(zstructTextNew(ptrToPathName));
-				free(ptrToPathName);//all of these were copied using the dss library call
-				return toReturn;
-			}
-
-			ZStructTextWrapper ^ DSS::ZStructTextStringNew(String ^ pathName, String ^ text)
-			{
-				char * ptrToPathName = managedToUnmanagedString(pathName);
-				char * ptrToText = managedToUnmanagedString(text);
-				ZStructTextWrapper ^ toReturn = gcnew ZStructTextWrapper(zstructTextStringNew(ptrToPathName, ptrToText));
-				free(ptrToPathName);//all of these were copied using the dss library call
-				toReturn->theStruct->allocated[zSTRUCT_TX_textString] = 1;//hacky way to get around the struct not copying values;
-				return toReturn;
-			}
-
 			ZStructLocationWrapper ^ DSS::ZLocationRetrieve(array<long long> ^% ifltab, String ^ pathName)
 			{
 				int ver = (int)ifltab[0];
@@ -415,11 +376,6 @@ namespace Hec {
 
 				return status;
 
-			}
-
-			int DSS::ZLocationStructValid(ZStructLocationWrapper ^% zsl)
-			{
-				return zlocationStructValid(zsl->theStruct);
 			}
 
 			ZStructSpatialTinWrapper ^ DSS::ZStructSpatialTinNew(String ^ pathName)
