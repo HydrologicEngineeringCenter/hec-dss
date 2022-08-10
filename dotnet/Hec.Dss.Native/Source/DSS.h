@@ -175,60 +175,6 @@ namespace Hec {
 
 				static int zSqueeze7(array<long long>^% ifltab, int boolOnlyIfNeeded, int boolInPlace);
 
-				static long long ZGetLastWriteTimeFile(array<long long>^% ifltab);
-
-				static void ZMaxPart(array<long long>^% ifltab, array<int>^% maxParts);
-
-				static void ZMaxPart7(array<long long>^% ifltab, array<int>^% maxParts);
-
-				static int ZTsGetEPartFromInterval(int intervalSeconds, String^% ePart, size_t sizeOfEpart);
-
-				static float ZMissingFlagFloat();
-
-				static double ZMissingFlagDouble();
-
-				static int ZIsMissingDouble(double value);
-
-				static int ZIsMissing(Object^ value, int lengthValue);
-
-				static void ZSetMissing(int value, int lengthValue);
-
-				static void ZSetMissingFloatArray(array<float>^ values, int numberValues);
-
-				static void ZSetMissingDoubleArray(array<double>^ values, int numberValues);
-
-				static void ZSetUndefined(array<int>^ data, int dataLength);
-
-				static void ZSetMessageGroupLevel(String^ functionGroup, int level);
-
-				static int ZGetMessageLevel(int group);
-
-				static void ZResetMessageLevel();
-
-				static void ZSetMessageLevelFile(array<long long>^% ifltab, int level);
-
-				static int ZMessageAvaliable(array<long long>^% ifltab);
-
-				static String^ ZGetMessage(array<long long>^% ifltab);
-
-				static String^ ZGetMessageAll(array<long long>^% ifltab);
-
-				static void ZClearMessage(array<long long>^% ifltab);
-
-				static void ZClearMessageAll(array<long long>^% ifltab);
-
-				static int ZErrorCheck();
-
-				static int ZCheckFile(array<long long>^% ifltab);
-
-				static int ZAliasRemove(array<long long>^% ifltab, String^ aliasPathname);
-
-				static int ZAliasRemoveAll(array<long long>^% ifltab, String^ aliasPathname);
-
-				static int ZAliasGetPrimary(array<long long>^% ifltab, String^ aliasPathname, String^% primaryPathname, size_t maxLenPrimaryPathname);
-
-				static int ZAliasList(array<long long>^% ifltab, String^ pathname, array<String^>^ pathnameList, int% pathnameListLength);
-
 				static int ZSqueeze(String^ dssFilename);
 
 				static bool IsTimeDefined(int julianDate, int timeSeconds);
