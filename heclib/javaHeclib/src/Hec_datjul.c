@@ -7,14 +7,16 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1datjul
 
     int *julian;
     char *date;
+    int isUndefined;
 
     date = (char *) (*env)->GetStringUTFChars (env, j_date, 0);
     julian = (*env)->GetIntArrayElements (env, j_julian, 0);
 
 	*julian = dateToJulian(date);
+    isUndefined = *julian == UNDEFINED_TIME;
 
     (*env)->ReleaseStringUTFChars (env, j_date, date);
     (*env)->ReleaseIntArrayElements (env, j_julian, julian, 0);
-	if (*julian == UNDEFINED_TIME) return -1;
-    return 0;
+    jint status = -isUndefined;
+    return status;
 }
