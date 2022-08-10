@@ -16,11 +16,6 @@ extern "C"
 #include "ZStructSpatialGridWrapper.h"
 #include "ZStruct.h"
 #include "ZStructCatalogWrapper.h"
-#include "ZStructArrayWrapper.h"
-#include "ZStructBasicWrapper.h"
-#include "ZStructRecordAddressesWrapper.h"
-#include "ZStructSpatialTinWrapper.h"
-#include "ZStructTextWrapper.h"
 #include "ZStructTransferWrapper.h"
 
 namespace Hec { 
