@@ -10,7 +10,7 @@ cd heclib\heclib_f
 nmake -f Makefile.win  clean all
 
 cd %~dp0
-msbuild dss.sln /p:Configuration=Release /p:Platform=Win32
+msbuild dss.sln /p:Configuration=Release /p:Platform=%DSS_PLATFORM_DIR%
 
 cd %~dp0
 
