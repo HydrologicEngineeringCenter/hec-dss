@@ -7,12 +7,12 @@ LINKER=xilib
 
 !IFDEF DEBUG
 D_LEVEL=Full 
-OUT_DIR=x64\Debug
+OUT_DIR=$(DSS_PLATFORM_DIR)\Debug
 DLIB=/dbglibs
 !MESSAGE building Debug
 !ELSE
 D_LEVEL=None
-OUT_DIR=x64\Release
+OUT_DIR=$(DSS_PLATFORM_DIR)\Release
 DLIB=
 !MESSAGE Building Release
 !ENDIF
@@ -26,6 +26,7 @@ FFLAGS=/nologo /debug:$(D_LEVEL) /MP /Od /fpp /I"src\headers" /reentrancy:thread
 all: $(TARGET)
 
 $(OUT_DIR)\heclib_f.lib: 
+	echo $(DSS_PLATFORM_DIR)
 	@ if NOT EXIST $(OUT_DIR) mkdir $(OUT_DIR)
 	dir/b/s *.f > source.txt
 	$(FPP) $(FFLAGS) @source.txt 

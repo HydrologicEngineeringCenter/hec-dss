@@ -7,12 +7,12 @@ FC=IFORT
 
 !IFDEF DEBUG
 D_LEVEL=Full 
-OUT_DIR=x64\Debug
+OUT_DIR=$(DSS_PLATFORM_DIR)\Debug
 DLIB=/dbglibs
 !MESSAGE building Debug
 !ELSE
 D_LEVEL=None
-OUT_DIR=x64\Release
+OUT_DIR=$(DSS_PLATFORM_DIR)\Release
 DLIB=
 !MESSAGE Building Release
 !ENDIF
