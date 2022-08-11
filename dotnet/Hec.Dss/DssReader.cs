@@ -726,10 +726,10 @@ namespace Hec.Dss
     {
       return GetTimeSeriesProfile(new DssPath(pathname));
     }
-    public TimeSeriesProfile GetTimeSeriesProfile(DssPath pathname)
+    public TimeSeriesProfile GetTimeSeriesProfile(DssPath pathname, DateTime startDateTime=default, DateTime endDateTime=default)
     {
       var rval = new TimeSeriesProfile();
-      ZStructTimeSeriesWrapper tss = DSS.ZStructTsNew(pathname.PathWithoutRange);
+      ZStructTimeSeriesWrapper tss = CreateTSWrapper(pathname,startDateTime, endDateTime);
 
       int retrieveDoublesFlag = 2; // get doubles
       int retrieveFlagTrim = -1;

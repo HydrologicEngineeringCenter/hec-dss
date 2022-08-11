@@ -106,15 +106,19 @@ namespace DSSUnitTests
     {
       string filename = "TestTimeSeriesProfile.dss";
       File.Delete(filename);
+      int numRows = 10000;
+      DateTime t1 = new DateTime(2022, 1, 1);
+      DateTime t2 = new DateTime(2022, 1, 2);
+
       using (var w = new DssWriter(filename)) 
       {
-        var p = CreateProfileData(10000,12);
-
+        var p = CreateHourlyProfileData(numRows, 12,t1);
         w.Write(p, true);
 
- 
-
         var p2 = w.GetTimeSeriesProfile(p.Path);
+        Assert.AreEqual(numRows, p2.Count);
+       var psubset = w.GetTimeSeriesProfile(p.Path,t1,t2);
+       Assert.AreEqual(25, psubset.Count);
 
         Assert.AreEqual(p.ColumnValues.Length, p2.ColumnValues.Length);
         for (int r = 0; r < p.Values.GetLength(0); r++)
@@ -130,7 +134,7 @@ namespace DSSUnitTests
 
     }
 
-    private static TimeSeriesProfile CreateProfileData(int numRows, int numColumns)
+    private static TimeSeriesProfile CreateHourlyProfileData(int numRows, int numColumns, DateTime startDate)
     {
       TimeSeriesProfile p = new TimeSeriesProfile();
       p.StartDateTime = DateTime.Now.Date;
@@ -142,7 +146,7 @@ namespace DSSUnitTests
       double[,] data = new double[_rows,_columns];
       double[] columnValues = new double[_columns];
       DateTime[] dates = new DateTime[_rows];
-      DateTime t = p.StartDateTime;
+      DateTime t = startDate;
       int counter = 1;
       for (int i = 0; i < data.GetLength(0); i++)
       {
