@@ -169,24 +169,14 @@
   <ItemGroup>
     <ClInclude Include="Source\managedToUnmanaged.h" />
     <ClInclude Include="Source\resource.h" />
-    <ClInclude Include="Source\pch.h" />
-    <ClInclude Include="Source\DssFile.h" />
-    <ClInclude Include="Source\HecDateTime.h" />
     <ClInclude Include="Source\DSS.h" />
     <ClInclude Include="Source\ZStruct.h" />
-    <ClInclude Include="Source\ZStructArrayWrapper.h" />
-    <ClInclude Include="Source\ZStructBasicWrapper.h" />
     <ClInclude Include="Source\ZStructCatalogWrapper.h" />
     <ClInclude Include="Source\ZStructLocationWrapper.h" />
     <ClInclude Include="Source\ZStructPairedDataWrapper.h" />
-    <ClInclude Include="Source\ZStructRecordAddressesWrapper.h" />
-    <ClInclude Include="Source\ZStructRecordSizeWrapper.h" />
     <ClInclude Include="Source\ZStructSpatialGridWrapper.h" />
-    <ClInclude Include="Source\ZStructSpatialTinWrapper.h" />
-    <ClInclude Include="Source\ZStructTextWrapper.h" />
     <ClInclude Include="Source\ZStructTimeSeriesWrapper.h" />
     <ClInclude Include="Source\ZStructTransferWrapper.h" />
-    <ClInclude Include="Source\ZTSTimeWindowWrapper.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Source\app.ico" />
@@ -195,17 +185,9 @@
     <ResourceCompile Include="Source\app.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\DssFile.cpp" />
-    <ClCompile Include="Source\HecDateTime.cpp" />
     <ClCompile Include="Source\AssemblyInfo.cpp" />
     <ClCompile Include="Source\DSS.cpp" />
     <ClCompile Include="Source\managedToUnmanaged.cpp" />
-    <ClCompile Include="Source\pch.cpp">
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">./C_interface/headers</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">./C_interface/headers</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">./C_interface/headers</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">./C_interface/headers</AdditionalIncludeDirectories>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\heclib\grid\grid.vcxproj">

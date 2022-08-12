@@ -9,35 +9,27 @@ namespace DSSUnitTests
     [TestClass]
     public class LimitsTest
     {
-    [Ignore]
-    [TestMethod]
-    public void LargePartF()
-    {// #define MAX_PART_SIZE 65,  want to increase to 150
-      string fn = "large_F_part.dss";
-      File.Delete(fn);
-
-      using (DssWriter w = new DssWriter(fn))
+      [TestMethod]
+      public void LargePartF()
       {
-        int size = 60;
-        do
-        {
-          var F = size.ToString().PadRight(size, 'a');
-          DssPath path = new DssPath("/feature/increase-part-f/FLOW//1day/" + F + "/");
+         string fn = "large_F_part.dss";
+         File.Delete(fn);
 
-          var d = CreateDoubles(10);
-          int status = w.Write(new TimeSeries(path, d, DateTime.Now.Date, "cfs", "INST-VAL"));
+         using (DssWriter w = new DssWriter(fn))
+         {
+            var F = 128.ToString().PadRight(128, 'a');
+            DssPath path = new DssPath("/feature/increase-part-f/FLOW//1day/" + F + "/");
 
-          if (status != 0)
-            break;
-          var s = w.GetTimeSeries(path);
-          if (s == null || s.Count != 10)
-            break;
-          Console.WriteLine(size + ", " + path);
-          size++;
-        } while (size < 1000);
+            var d = CreateDoubles(10);
+            int status = w.Write(new TimeSeries(path, d, DateTime.Now.Date, "cfs", "INST-VAL"));
 
+            if (status != 0)
+               throw new Exception("error writing with F part ='" + F + "'");
+            var s = w.GetTimeSeries(path);
+            if (s == null || s.Count != 10)
+               throw new Exception("error reading with F part ='" + F + "'");
+         }
       }
-    }
 
         /// <summary>
         /// 7.99 GB file with 5000 series and 10^7 points each.

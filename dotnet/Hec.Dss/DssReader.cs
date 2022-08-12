@@ -70,7 +70,7 @@ namespace Hec.Dss
       int status;
       this.filename = filename;
       status = DSS.ZOpen(ref ifltab, filename);
-      versionNumber = DSS.ZGetVersion(ref ifltab);
+      versionNumber = GetDSSFileVersion();
 
       switch (status)
       {
@@ -813,6 +813,7 @@ namespace Hec.Dss
     /// <returns>True if the path exists, false otherwise.</returns>
     public bool ExactPathExists(DssPath path)
     {
+      // can this be replaced with a call to the catalog?
       int status = DSS.ZCheck(ifltab, path.FullPath);
       if (status != 0)
         return false;
@@ -826,7 +827,7 @@ namespace Hec.Dss
     /// <returns>The missing flag value</returns>
     public float CheckMissingFlag()
     {
-      return DSS.ZMissingFlag();
+      return -3.402823466e+38F;
     }
 
     /// <summary>
@@ -835,7 +836,7 @@ namespace Hec.Dss
     /// <returns>6 or 7 depending on the version</returns>
     public int GetDSSFileVersion()
     {
-      return DSS.ZGetVersion(ref ifltab);
+      return (int)ifltab[0]; // little endian only
     }
 
 

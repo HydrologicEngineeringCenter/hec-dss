@@ -16,14 +16,7 @@ extern "C"
 #include "ZStructSpatialGridWrapper.h"
 #include "ZStruct.h"
 #include "ZStructCatalogWrapper.h"
-#include "ZStructRecordSizeWrapper.h"
-#include "ZStructArrayWrapper.h"
-#include "ZStructBasicWrapper.h"
-#include "ZStructRecordAddressesWrapper.h"
-#include "ZStructSpatialTinWrapper.h"
-#include "ZStructTextWrapper.h"
 #include "ZStructTransferWrapper.h"
-#include "ZTSTimeWindowWrapper.h"
 
 namespace Hec { 
 	namespace Dss{
@@ -31,7 +24,6 @@ namespace Hec {
 			public ref class DSS abstract sealed
 			{
 			private:
-				static void Zdtype_(array<long long>^% ifltab, String^ pathname, int% numDataCompressed, int% boolExists, array<char>^% charRecordType, int% recordType, size_t pathLength, size_t charRecordTypeLength);
 			public:
 				static ZStructSpatialGridWrapper^ ZStructSpatialGridNew(String^ filename);
 
@@ -40,10 +32,6 @@ namespace Hec {
 				static int ZSpatialGridRetrieve(array<long long>^% ifltab, ZStructSpatialGridWrapper^% gs, bool retrieveData);
 
 				static int ZSpatialGridStore(array<long long>^% ifltab, ZStructSpatialGridWrapper^% gs);
-
-				//static int ZSpatialGridRetrieveVersion(array<long long> ^% ifltab, String ^ cpath, int % gridStructVersion);
-
-				static void PrintGridStruct(array<long long>^% ifltab, int function_id, ZStructSpatialGridWrapper^% gs);
 
 				/// <summary>
 				/// Open a DSS file with the full path of the file.  Will decide for you to open DSS6 or DSS7.  Returns the status.  Call Zclose when you are finished with the file, or deletion/rename.
@@ -55,17 +43,6 @@ namespace Hec {
 				/// ifltab is the file pointer to close.  Closes a DSS file.  Returns status.  Call ZClose when you are finished with the file, or deletion/rename.
 				///</summary>
 				static int ZClose(array<long long>^ ifltab);
-
-				/// <summary>
-				/// Open a DSS log file with the full path of the file. Returns the status.  Call ZCloseLog when you are finished with the file, or deletion/rename.
-				///</summary>
-				/// <returns>A file pointer of the dss file if opened. Failure returns null.</returns>
-				static int ZOpenLog(String^ DSSFileName);
-
-				/// <summary>
-				/// Closes a DSSlog file.  Returns status.  Call ZCloseLog when you are finished with the log file
-				///</summary>
-				static void ZCloseLog();
 
 				/// <summary>
 				/// Sets the message level for a method set.
@@ -92,54 +69,9 @@ namespace Hec {
 				static void ZSetMessageLevel(int methodId, int levelID);
 
 				/// <summary>
-				/// Will tell you if the given status is an error or not
-				///</summary>
-				static int ZIsError(int status);
-
-				/// <summary>
-				/// Will tell you the error severity of the error
-				///</summary>
-				static int ZErrorSeverity(int status);
-
-				/// <summary>
 				/// returns either STATUS_RECORD_FOUND, STATUS_RECORD_NOT_FOUND or an error code.
 				///</summary>
-				static int ZCheck(array<long long>^ ifltab, String^ DSSFileName);
-
-				/// <summary>
-				/// returns zero, or the last error code that occurred
-				///</summary>
-				static int ZErrorCode(array<long long>^ ifltab);
-
-				/// <summary>
-				/// returns the severity of the most severe error
-				///</summary>
-				static int ZFileError(array<long long>^ ifltab);
-
-				/// <summary>
-				/// returns the missing flag value
-				///</summary>
-				static float ZMissingFlag();
-
-				/// <summary>
-				/// Sets the missing flag value with a float
-				///</summary>
-				static void ZSetMissingFloat(float value);
-
-				/// <summary>
-				/// Sets the missing flag value with a double
-				///</summary>
-				static void ZSetMissingDouble(double value);
-
-				/// <summary>
-				/// Checks to see if a value is missing
-				///</summary>
-				static int ZIsMissingFloat(float value);
-
-				/// <summary>
-				/// Checks to see if a value is missing
-				///</summary>
-				static int ZIsMissingFloat(double value);
+				static int ZCheck(array<long long>^ ifltab, String^ path);
 
 				/// <summary>
 				/// Creates and returns a struct to pass data into DSS  Contains regular-interval time series data for float values.  Use ZStructFree when finished.
@@ -183,24 +115,7 @@ namespace Hec {
 
 				static int ZTsRetrieveEmpty(array<long long>^% ifltab, ZStructTimeSeriesWrapper^% tss);
 
-				/// <summary>
-				///  Gets the time window for a data set
-				///</summary>  
-				static void ZTSends(array<long long>^% ifltab, String^ cpath, array<int>^ searchOption, array<int>^ startJulian, array<int>^ startMinutes, array<int>^ endJulian, array<int>^ endMinutes, array<int>^ exists, size_t len_cpath);
-
-				static ZStructArrayWrapper^ ZStructArrayNew(String^ pathName);
-
 				static ZStructTransferWrapper^ ZStructTransferNew(String^ pathName, int mode);
-
-				static ZStructTextWrapper^ ZStructTextNew(String^ pathName);
-
-				static ZStructTextWrapper^ ZStructTextStringNew(String^ pathName, String^ text);
-
-				static int ZLocationStructValid(ZStructLocationWrapper^% zsl);
-
-				static ZStructSpatialTinWrapper^ ZStructSpatialTinNew(String^ pathName);
-
-				static ZTSTimeWindowWrapper^ ZStructTsNewTimeWindow();
 
 				/// <summary>
 				/// zstructPdNewFloats is for storing paired data float values.  Pass in the array of float ordinates (independent variable), and the float values array (dependent variable), the number of ordinates and number of curves.  The floatValues array must contain numberOrdinates * numberCurves values.  Since C doesn’t know about doubly dimensioned arrays (very well), the floatValues array is often a single dimensioned array numberOrdinates * numberCurves values long.
@@ -243,216 +158,23 @@ namespace Hec {
 				static int ZCatalog(array<long long>^% ifltab, String^ pathWithWild, ZStructCatalogWrapper^% catStruct, int boolSorted);
 
 				/// <summary>
-				/// Fills in a catalog struct of all pathnames in the DSS file.  If you want the pathnames to be sorted, set boolSorted to 1, otherwise 0.   Returns the number of pathnames in the struct, otherwise a negative for an error.
-				///</summary>
-				static int ZCatalogFile(array<long long>^% ifltab, String^ pathWithWild, int boolSorted, String^ catalogFilename);
-
-				/// <summary>
-				/// Write the catalog to a file that you have opened.  This is the same as zcatalogFile, but you are responsible for opening and closing the file.  You pass in either a valid (opened) C handle or opened Fortran unit number.  This call is usually made when you want pathnames, but do not want to allocate much memory (and in that case, you should set boolSort to zero).
-				///</summary>
-				static int ZCatalogToFile(array<long long>^% ifltab, int catalogHandle, int fortranUnit, int boolSort);
-
-				static ZStructRecordSizeWrapper^ zStructRecordSizeNew(String^ filename);
-
-				/// <summary>
-				/// //zstructFree frees all memory that HEC-DSS has allocated in the struct passed in.  It will not free memory that the calling functions (outside of the HEC-DSS library) have allocated.  There should be a matching //zstructFree for each zstructNew.
-				///</summary>
-				static void ZStructFree(ZStruct^% zStruct);
-
-				/// <summary>
-				/// To duplicate a record within a file, use the function “zduplicateRecord” with the existing pathname and the new one.  You cannot change the D (date) or E (interval) parts of a time series record; that data must be converted for those parts to change.  If you try to rename those, the record will become unreadable. Returns STATUS_OKAY for a successful rename or an error code for an unsuccessful call.  Errors include the old record does not exist, the new record already exists, you do not have write access, among others.
-				///</summary>
-				static int ZDuplicateRecord(array<long long>^% ifltab, String^ existingPathname, String^ newPathname);
-
-				/// <summary>
-				/// To copy a record to another DSS file, use the function “zcopyRecord”.  You can change the pathname when you copy with the record, buy providing a new name, or you can just use the same name.  You cannot change the D (date) or E (interval) parts of a time series record; that data must be converted for those parts to change.  Returns STATUS_OKAY for a successful rename or an error code for an unsuccessful call.  Errors include the old record does not exist, the new record already exists, you do not have write access, among others.
-				///</summary>
-				static int ZCopyRecord(array<long long>^% ifltabFrom, array<long long>^% ifltabTo, String^ existingPathname, String^ newPathname);
-
-				/// <summary>
-				/// You can rename a single record by calling the function “zrename” and providing the old pathname and the new one.  You cannot rename the D (date) or E (interval) parts of a time series record; that data set must be converted for those parts to change.  If you try to rename those, the record will become unreadable.  Returns STATUS_OKAY for a successful rename or an error code for an unsuccessful call.  Errors include the old record does not exist, the new record already exists, you do not have write access, among others.
-				///</summary>
-				static int ZRename(array<long long>^% ifltab, String^ existingPathname, String^ newPathname);
-
-				/// <summary>
 				/// You can free(a single record by calling the function “zdelete” with the pathname of the record you want to delete.  If you accidently delete a record, it might be recovered by calling zundelete.  However, deleted space is returned to the recycle pool, so that function is not guaranteed to work, and there is less probability of an unfree(as more is written to the file.  “Squeezing” a file permanently removes space from undeleted records and is recommended after many deletes or renames, etc.   Returns STATUS_OKAY for successfully deleting the record, or an error code for an unsuccessful call.  Errors include the record does not exist, or you do not have write access, among others.
 				///</summary>
 				static int ZDelete(array<long long>^% ifltab, String^ pathname);
 
-				/// <summary>
-				/// Returns STATUS_OKAY for successfully undeleting the record, or an error code for an unsuccessful call.
-				///</summary>
-				static int ZUndelete(array<long long>^% ifltab, String^ pathname);
-
-				static int ZAliasAdd(array<long long>^% ifltab, String^ existingPathname, String^ newPathname);
-
-				static int ZAliasGetPrimary(array<long long>^% ifltab, String^ aliasPathName, String^ primaryPathName, size_t maxLenPrimaryPathname);
-
-				static int ZGetFileVersion(String^ dssFilename);
-
-				static int ZGetVersion(array<long long>^% ifltab);
-
-				static int ZOpenExtended(array<long long>^% ifltab, String^ dssFilename, int fileVersion, int access, int maxExpectedPathnames, int hashSize, int binSize);
-
 				static int ZSet(String^ parameter, String^ charVal, int integerValue);
 
-				static int ZSetFile(array<long long>^% ifltab, String^ parameter, String^ charVal, int integerValue);
-
-				static int ZQuery(String^ parameter, String^ charVal, size_t lenCharVal, array<int>^% integerValue);
-
-				static long long ZInquire(array<long long>^% ifltab, String^ request);
-
-				static int ZInquireChar(array<long long>^% ifltab, String^ request, String^% creturn, size_t creturnSize, array<int>^% number);
-
-				static int ZFileName(String^% fullDssFilename, size_t sizeofFilename, String^ dssFileName, array<int>^% permission);
-
 				static int ZDataType(array<long long>^% ifltab, String^ pathname);
-
-				static String^ ZTypeName(array<long long>^% ifltab, String^ pathname);
-
-				static int ZGetRecordSize(array<long long>^% ifltab, ZStructRecordSizeWrapper^ recordSize);
 
 				static int zSqueezeNeeded(array<long long>^% ifltab);
 
 				static int zSqueeze7(array<long long>^% ifltab, int boolOnlyIfNeeded, int boolInPlace);
 
-				//doesnt work
-				//static long long ZGetLastWriteTime(array<long long> ^% ifltab, String ^ pathname);
-
-				static long long ZGetLastWriteTimeFile(array<long long>^% ifltab);
-
-				static unsigned int zGetDataCRC(array<long long>^% ifltab, String^ pathname, unsigned int crcln);
-
-				static int ZWhatChangedSetStart(array<long long>^% ifltab, ZStructCatalogWrapper^ catStruct, String^ pathWithWildChars, int boolUseCRC);
-
-				static int ZWhatChanged(array<long long>^% ifltab, ZStructCatalogWrapper^ catStruct);
-
-				static int ZWhatChangedCompare(array<long long>^% ifltab, ZStructCatalogWrapper^% catStructBefore, ZStructCatalogWrapper^% catStructChanged, String^ pathWithWild, int boolUseCRC);
-
-				static int ZPathNameClean(String^% newPathname, size_t sizeOfNewPathName, String^ oldPathname);
-
-				static int ZPathNameCompare(String^ pathname1, array<long long>^% pathname2, size_t pathnameLength);
-
-				static int ZPathNameCompareCollection(String^ pathname1, String^ pathname2, size_t pathnameLength);
-
-				static int ZPathNameGetPart(String^ pathname, int partPosition, String^% part, size_t sizeOfPart);
-
-				static int ZPathNameSetPart(String^ pathname, size_t sizeOfPathname, String^ part, int partPosition);
-
-				static int ZPathNamePartLengths(String^ pathname, size_t pathnameLen, array<int>^% lengths, int dimOfLengths);
-
-				static int ZPathNamePartPositions(String^ pathname, size_t pathnameLen, array<int>^% positions, int dimOfPositions);
-
-				static int ZPathNameForm(String^ aPart, String^ bPart, String^ cPart, String^ dPart, String^ ePart, String^ fPart, String^% pathname, size_t sizeOfPathname);
-
-				static void ZMaxPart(array<long long>^% ifltab, array<int>^% maxParts);
-
-				static void ZMaxPart7(array<long long>^% ifltab, array<int>^% maxParts);
-
-				static int ZTsGetEPartFromInterval(int intervalSeconds, String^% ePart, size_t sizeOfEpart);
-
-				static float ZMissingFlagFloat();
-
-				static double ZMissingFlagDouble();
-
-				static int ZIsMissingDouble(double value);
-
-				static int ZIsMissing(Object^ value, int lengthValue);
-
-				static void ZSetMissing(int value, int lengthValue);
-
-				static void ZSetMissingFloatArray(array<float>^ values, int numberValues);
-
-				static void ZSetMissingDoubleArray(array<double>^ values, int numberValues);
-
-				static void ZSetUndefined(array<int>^ data, int dataLength);
-
-				static void ZSetMessageGroupLevel(String^ functionGroup, int level);
-
-				static int ZGetMessageLevel(int group);
-
-				static void ZResetMessageLevel();
-
-				static void ZSetMessageLevelFile(array<long long>^% ifltab, int level);
-
-				static int ZMessageAvaliable(array<long long>^% ifltab);
-
-				static String^ ZGetMessage(array<long long>^% ifltab);
-
-				static String^ ZGetMessageAll(array<long long>^% ifltab);
-
-				static void ZClearMessage(array<long long>^% ifltab);
-
-				static void ZClearMessageAll(array<long long>^% ifltab);
-
-				static int ZErrorCheck();
-
-				static int ZCheckFile(array<long long>^% ifltab);
-
-				static int ZAliasRemove(array<long long>^% ifltab, String^ aliasPathname);
-
-				static int ZAliasRemoveAll(array<long long>^% ifltab, String^ aliasPathname);
-
-				static int ZAliasGetPrimary(array<long long>^% ifltab, String^ aliasPathname, String^% primaryPathname, size_t maxLenPrimaryPathname);
-
-				static int ZAliasList(array<long long>^% ifltab, String^ pathname, array<String^>^ pathnameList, int% pathnameListLength);
-
-				static int FortranOpen(int% unit, String^% filename, size_t lenFilename);
-
-				static int FortranClose(int% unit);
-
-				static int IsUnitConnected(int% unit);
-
-				static int ZCKMUL6(array<long long>^% ifltab);
-
-				static void ZPseudorts6(String^ CFROMPATH, String^% CTOPATH, int% INTL, int% IACTION, int% ISTATUS, size_t lenFrom, size_t lenTo);
-
-				//doesn't work
-				//static String ^ ZStatus(int % errorCode, int % severity);
-
-				static int ZPdStore6(array<long long>^% ifltab, ZStructPairedDataWrapper^% pds, int storageFlag);
-
-				static int ZPdRetrieve6(array<long long>^% ifltab, ZStructPairedDataWrapper^% pds, int retrieveFlag);
-
-				static int ZOpen6(array<long long>^% ifltab, String^ dssFilename);
-
-				static int ZOpen7(array<long long>^% ifltab, String^ dssFilename);
-
 				static int ZSqueeze(String^ dssFilename);
-
-				static int ZCopyFile(array<long long>^% ifltab, array<long long>^% ifltabTo, int statusWanted);
-
-				static int ZConvertVersion(String^ fileNameFrom, String^ fileNameTo);
-
-				static void ZFname(String^ dssFilenameIn, String^% dssFilenameOut, int% nname, int% exists, size_t lenDssFilenameIn, size_t sizeDssFilenameOut);
-
-				static int SortFiles(String^% unsortedIn, String^% sortedOut);
-
-				static void ZReadx(array<long long>^% ifltab, String^ pathname, array<int>^% internalHeader, int% internalHeaderArraySize, int% internalHeaderNumber,
-					array<int>^% header2, int% header2ArraySize, int% header2Number, array<int>^% userHeader, int% userHeaderArraySize, int% userHeaderNumber,
-					array<int>^% values, int% valuesSize, int% valuesNumber, int% readPlan, int% recordFound, size_t pathlen);
 
 				static bool IsTimeDefined(int julianDate, int timeSeconds);
 
-				static int ZTsGetSizes6(array<long long>^% ifltab, ZStructTimeSeriesWrapper^% tss, ZStructRecordSizeWrapper^% timeSeriesRecordSizes);
-
-				static int ZGetRecordSize6(array<long long>^% ifltab, ZStructRecordSizeWrapper^% recordSize);
-
-				static int ZGetRecordSize7(array<long long>^% ifltab, ZStructRecordSizeWrapper^% recordSize);
-
-				static long long GetCurrentTimeMillis();
-
-				static void GetCurrentDateTime(int% julian, int% secondsPastMidnight, int% millsPastSecond);
-
-				static void GetCurrentTimeString(String^% timeString, size_t lenTimeString);
-
-				static void GetCurrentDateString(String^% dateString, size_t sizeOfDateString);
-
 				static int GetDateAndTime(int timeMinOrSec, int timeGranularitySeconds, int julianBaseDate, String^% dateString, int sizeOfDateString, String^% hoursMins, int SizeOfHoursMins);
-
-				static void GetDateTimeString(int julian, String^% dateString, size_t sizeOfDateString, int dateStyle, int secondsPastMidnight, String^% timeString, size_t sizeofTimeString, int timeStyle);
-
-				//static int JulianToDate(int julianDate, int style, String^% dateString, size_t sizeOfDateString);
 
 				static int JulianToYearMonthDay(int julian, int% year, int% month, int% day);
 
@@ -460,35 +182,12 @@ namespace Hec {
 
 				static int YearMonthDayToJulian(int year, int month, int day);
 
-				static void MinsToDateTime(int minsSince1900, String^% dateString, String^% timeString, size_t sizeOfDateString, size_t sizeOfTimeString);
-
-				static void MinutesToHourMin(int minutes, String^% hoursMins, size_t lenHoursMins);
-
-				static void SecondsToTimeString(int secondsPastMidnight, int millsPastSecond, int timeStyle, String^% timeString, size_t sizeofTimeString);
-
 				static int TimeStringToSeconds(String^ timeString);
-
-				static float TimeStringToSecondsMills(String^ timeString);
-
-				static int DayOfWeek(int julian);
-
-				static int IncrementTime(int intervalSeconds, int numberPeriods, int julianStart, int secondsStart, int% julianEnd, int% secondsEnd);
-
-				static int NumberPeriods(int intervalSeconds, int julianStart, int secondsStart, int julianEnd, int secondsEnd);
-
-				static int AddCentury(int year);
-
-				static int IsLeapYear(int year);
-
-				static int CleanTime(int% julianDate, int% timeMinSec, int timeGranularitySeconds);
 
 				static int DateToYearMonthDay(String^ dateString, int% year, int% month, int% day);
 
 				static int DateToJulian(String^ dateString);
 
-				static void PrintCurrentTime(int lineFeed);
-
-				static int CompareTimes(int julianFirst, int secondsFirst, int timeGranularitySecondsFirst, int julainBaseFirst, int julianSecond, int secondsSecond, int julianBaseSecond, int timeGranularitySecondsSecond);
 			};
 		}
 }}
