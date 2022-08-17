@@ -130,7 +130,9 @@ long long zinquire(long long *ifltab, const char *request)
 	else  if (!strcmp(requestlc, "fver")) {
 		charInt((void *)&fileHeader[zdssFileKeys.kversion], ctemp, 4, sizeof(ctemp), 0, 1, 0);
 		ctemp[4] = '\0';
-		longNumber = (zgetVersion(ifltab) * 10000) + (100 * ctemp[2]) + ctemp[3];
+		longNumber = 10000 * (ctemp[0] - '0') +
+		               100 * (ctemp[2] - (ctemp[2] < '[' ? '@' : '`')) +
+		                     (ctemp[3] - (ctemp[3] < '[' ? '@' : '`'));
 	}
 	else if (!strcmp(requestlc, "size")) {
 		//  Size in KB
