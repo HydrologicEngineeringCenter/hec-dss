@@ -133,6 +133,11 @@ long long zinquire(long long *ifltab, const char *request)
 		longNumber = 10000 * (ctemp[0] - '0') +
 		               100 * (ctemp[2] - (ctemp[2] < '[' ? '@' : '`')) +
 		                     (ctemp[3] - (ctemp[3] < '[' ? '@' : '`'));
+		if (bigEndian()) {
+			int iswap = (int)longNumber;
+			zswap(&iswap, 1);
+			longNumber = iswap;
+		}
 	}
 	else if (!strcmp(requestlc, "size")) {
 		//  Size in KB

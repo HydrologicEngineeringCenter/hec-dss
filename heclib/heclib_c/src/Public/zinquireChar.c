@@ -92,6 +92,9 @@ int zinquireChar(long long *ifltab, const char *request, char *creturn, size_t c
 		number[0] = 10000 * (ctemp[0] - '0') +
 		              100 * (ctemp[2] - (ctemp[2] < '[' ? '@' : '`')) +
 		                    (ctemp[3] - (ctemp[3] < '[' ? '@' : '`'));
+		if (bigEndian()) {
+			zswap(number, 1);
+		}
 	}
 	else if (!strcmp(requestlc, "name")) {
 		charLong((void *)ifltab[zdssKeys.kfullFilename], creturn, 0, (int)creturnSize, 0, 1);

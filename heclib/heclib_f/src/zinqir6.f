@@ -149,6 +149,10 @@ C     FVERS: FILE VERSION
         iminorv = iminorv - 96 + 26
       end if
       inumb = imajorv * 10000 + isubv * 100 + iminorv
+      if (ifltab(kswap).eq.1) then
+        call zswap6(inumb, i)
+        inumb = i
+      end if
 C
 C     TABLE:  Dynamic or Stable Hash Table
       ELSE IF (CFLAG.EQ.'TABL') THEN
