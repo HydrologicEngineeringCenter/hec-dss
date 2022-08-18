@@ -89,7 +89,9 @@ int zinquireChar(long long *ifltab, const char *request, char *creturn, size_t c
 		charInt((void *)&fileHeader[zdssFileKeys.kversion], ctemp, 4, sizeof(ctemp), 0, 1, 0);
 		ctemp[4] = '\0';
 		stringCopy(creturn, (size_t)creturnSize, ctemp, (size_t)5);
-		number[0] = (int)(zgetVersion(ifltab) * 10000) + (100 * ctemp[2]) + ctemp[3];
+		number[0] = 10000 * (ctemp[0] - '0') +
+		              100 * (ctemp[2] - (ctemp[2] < '[' ? '@' : '`')) +
+		                    (ctemp[3] - (ctemp[3] < '[' ? '@' : '`'));
 	}
 	else if (!strcmp(requestlc, "name")) {
 		charLong((void *)ifltab[zdssKeys.kfullFilename], creturn, 0, (int)creturnSize, 0, 1);
