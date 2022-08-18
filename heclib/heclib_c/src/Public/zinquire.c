@@ -13,6 +13,8 @@
 #include "hecdssInternal.h"
 #include "zprogress.h"
 
+void zswap6_(int*, int*);
+
 long long zinquire(long long *ifltab, const char *request)
 {
 	int len;
@@ -135,7 +137,7 @@ long long zinquire(long long *ifltab, const char *request)
 		                     (ctemp[3] - (ctemp[3] < '[' ? '@' : '`'));
 		if (bigEndian()) {
 			int iswap = (int)longNumber;
-			zswap(&iswap, 1);
+			zswap6_(&iswap, &iswap);
 			longNumber = iswap;
 		}
 	}

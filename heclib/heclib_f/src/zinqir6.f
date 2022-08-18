@@ -150,8 +150,7 @@ C     FVERS: FILE VERSION
       end if
       inumb = imajorv * 10000 + isubv * 100 + iminorv
       if (ifltab(kswap).eq.1) then
-        call zswap6(inumb, i)
-        inumb = i
+        call zswap6(inumb, inumb)
       end if
 C
 C     TABLE:  Dynamic or Stable Hash Table
