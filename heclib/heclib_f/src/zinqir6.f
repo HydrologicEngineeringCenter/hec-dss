@@ -135,7 +135,23 @@ C     FVERS: FILE VERSION
       CTEMP = ' '
       CALL HOLCHR (IFLTAB(KVERS), 1, NVERSC, CTEMP, 1)
       CALPHA = CTEMP
-      INUMB = IFLTAB(KVERNO)
+      imajorv = ichar(ctemp(1:1)) - ichar('0')
+      isubv = ichar(ctemp(3:3))
+      if (isubv.lt.91) then
+        isubv = isubv - 64
+      else
+        isubv = isubv - 96 + 26
+      end if
+      iminorv = ichar(ctemp(4:4))
+      if (iminorv.lt.91) then
+        iminorv = iminorv - 64
+      else
+        iminorv = iminorv - 96 + 26
+      end if
+      inumb = imajorv * 10000 + isubv * 100 + iminorv
+      if (ifltab(kswap).eq.1) then
+        call zswap6(inumb, inumb)
+      end if
 C
 C     TABLE:  Dynamic or Stable Hash Table
       ELSE IF (CFLAG.EQ.'TABL') THEN
