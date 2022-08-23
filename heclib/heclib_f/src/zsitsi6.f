@@ -112,7 +112,7 @@ C
      */,T5,'Ending date and time:   ',3X,2I8,2X,A,
      */,T5,'Pathname: ',A)
       WRITE (MUNIT,30) KLBUFF,NVALS,INFLAG
- 30   FORMAT(T5,'BUFF DIM:',I5,'  NUMBER OF DATA:',I6,',  INFLAG:',I4)
+ 30   FORMAT(T5,'BUFF DIM:',I6,'  NUMBER OF DATA:',I6,',  INFLAG:',I4)
       J = NVALS
       IF (J.GT.25) J = 25
       DO 40 I=1,J
