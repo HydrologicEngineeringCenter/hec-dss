@@ -295,7 +295,9 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
     int* times = (int*)malloc(numberValues * sizeof(int));
     int* t = NULL;
     char* unit = "ft";
+    char unit2[8];
     char* dataType = "INST-VAL";
+    char dataType2[8];
     char* compressed = NULL;
     char* headerBuf = NULL;
     int   len = 0;
@@ -335,6 +337,8 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
         "</vertical-datum-info>\n",
     };
 
+    strcpy(unit2, unit);
+    strcpy(dataType2, dataType);
     zquery("MLVL", alpha, sizeof(alpha) - 1, &messageLevel);
     zset("MLVL", "", 1);
     status = zopen6(ifltab, filename);
@@ -456,8 +460,8 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                                 flags,
                                 &readFlags,
                                 &readFlags,
-                                unit,
-                                dataType,
+                                unit2,
+                                dataType2,
                                 userHeader,
                                 &userHeaderSize,
                                 &userHeaderNumber,
@@ -467,8 +471,8 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                                 strlen(pathnames[REGULAR]),
                                 strlen(startDate[year - 2021]),
                                 strlen("0001"),
-                                strlen(unit),
-                                strlen(dataType));
+                                sizeof(unit2),
+                                sizeof(dataType2));
                             for (int i = 0; i < numvals; ++i) {
                                 times[i] = jan_01_2021_0000 + offsetMinutes + i * 1440;
                             }
@@ -493,16 +497,16 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                                 flags,
                                 &readFlags,
                                 &readFlags,
-                                unit,
-                                dataType,
+                                unit2,
+                                dataType2,
                                 userHeader,
                                 &userHeaderSize,
                                 &userHeaderNumber,
                                 &readFlag,
                                 &status,
                                 strlen(pathnames[IRREGULAR]),
-                                strlen(unit),
-                                strlen(dataType));
+                                sizeof(unit2),
+                                sizeof(dataType2));
                             for (int i = 0; i < numvals; ++i) {
                                 times[i] += basedate * 1440;
                             }
@@ -624,8 +628,8 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                             flags,
                             &readFlags,
                             &readFlags,
-                            unit,
-                            dataType,
+                            unit2,
+                            dataType2,
                             userHeader,
                             &userHeaderSize,
                             &userHeaderNumber,
@@ -635,8 +639,8 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                             strlen(pathnames[REGULAR]),
                             strlen("21Dec2021"),
                             strlen("0001"),
-                            strlen(unit),
-                            strlen(dataType));
+                            sizeof(unit2),
+                            sizeof(dataType2));
                         for (int i = 0; i < numvals; ++i) {
                             times[i] = dec_21_2021_0000 + offsetMinutes + i * 1440;
                         }
@@ -661,16 +665,16 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                             flags,
                             &readFlags,
                             &readFlags,
-                            unit,
-                            dataType,
+                            unit2,
+                            dataType2,
                             userHeader,
                             &userHeaderSize,
                             &userHeaderNumber,
                             &readFlag,
                             &status,
                             strlen(pathnames[IRREGULAR]),
-                            strlen(unit),
-                            strlen(dataType));
+                            sizeof(unit2),
+                            sizeof(dataType2));
                         for (int i = 0; i < numvals; ++i) {
                             times[i] += basedate * 1440;
                         }

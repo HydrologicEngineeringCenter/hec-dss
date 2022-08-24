@@ -1,4 +1,4 @@
-      SUBROUTINE zritsi6(IFLTAB, CPATHNAME, JULS, ISTIME, JULE, IETIME,
+      iUBROUTINE zritsi6(IFLTAB, CPATHNAME, JULS, ISTIME, JULE, IETIME,
      * LGETDOB, LFILDOB, ITIMES, SVALUES, DVALUES, KVALS, NVALS,
      * IBDATE, IQUAL, LQUAL, LQREAD, CUNITS, CTYPE, IUHEAD, KUHEAD,
      * NUHEAD, COORDS, ICDESC, LCOORDS, INFLAG, ISTAT)
@@ -561,7 +561,6 @@ C
                 ! convert the vertical datum offset to the units of the data !
                 !------------------------------------------------------------!
                 call getoffset(vertDatumOffset, unit, cunits)
-                write(munit, *)'Unit = '//unit//', Cunits = '//cunits
                 if (vertDatumOffset.eq.
      *            UNDEFINED_VERTICAL_DATUM_VALUE)then
                   if (mlevel.ge.1) then
