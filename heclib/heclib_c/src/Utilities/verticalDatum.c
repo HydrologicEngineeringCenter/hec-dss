@@ -1253,6 +1253,7 @@ char *normalizeVdiInUserHeader(int* userHeader, int* userHeaderNumber) {
                 ';');
         }
     }
+    free(vdiStr);
     if (status) {
         free(headerString);
         return "Memory reallocation error";

@@ -579,6 +579,7 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                         break;
                     }
                     printf("\t\t\tValues were retrieved with native datum of %s and current datum of %s\n", vdi.nativeDatum, currentVerticalDatum);
+                    free(currentVerticalDatum);
                     //--------------------------------------------//
                     // get the vertical datum info for the record //
                     //--------------------------------------------//
@@ -774,8 +775,11 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                 assert(errmsg == NULL);
                 free(vdiStr);
                 free(headerBuf);
-                currentVerticalDatum = currentVerticalDatum ? currentVerticalDatum : vdi.nativeDatum;
-                printf("\t\t\tValues were retrieved with native datum of %s and current datum of %s\n", vdi.nativeDatum, currentVerticalDatum);
+                printf(
+                    "\t\t\tValues were retrieved with native datum of %s and current datum of %s\n",
+                    vdi.nativeDatum,
+                    currentVerticalDatum ? currentVerticalDatum : vdi.nativeDatum);
+                free(currentVerticalDatum);
                 for (int i = 0; i < numvals; ++i) {
                     switch (workingVerticalDatum) {
                     case IVERTICAL_DATUM_UNSET:
@@ -803,6 +807,10 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
     }
     zclose(ifltab);
     zset("MLVL", "", messageLevel);
+    free(dvalues);
+    free(times);
+    free(userHeader);
+    free(flags);
 }
 void testStoreRetrieveTimeSeries() {
 // test storing and retriving time series data
