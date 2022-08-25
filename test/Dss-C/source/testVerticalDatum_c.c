@@ -295,9 +295,9 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
     int* times = (int*)malloc(numberValues * sizeof(int));
     int* t = NULL;
     char* unit = "ft";
-    char unit2[8];
+    char unit2[16];
     char* dataType = "INST-VAL";
-    char dataType2[8];
+    char dataType2[16];
     char* compressed = NULL;
     char* headerBuf = NULL;
     int   len = 0;
@@ -476,6 +476,7 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                                 strlen("0001"),                  //  -> size of time window start time string
                                 sizeof(unit2),                   //  -> size of unit string
                                 sizeof(dataType2));              //  -> size of data type string
+                            assert(status == STATUS_OKAY);
                             //-----------------------------------------------------------------//
                             // create the times array from:                                    //
                             //  - the beginning time of the interval containing the start time //
@@ -517,6 +518,7 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                                 strlen(pathnames[IRREGULAR]),  //  -> size of dataset name string
                                 sizeof(unit2),                 //  -> size of unit string
                                 sizeof(dataType2));            //  -> size of data type string
+                            assert(status == STATUS_OKAY);
                             //-----------------------------------------------------------------//
                             // add the base date (in minutes) to each value in the times array //
                             //-----------------------------------------------------------------//
@@ -524,7 +526,6 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                                 times[i] += basedate * 1440;
                             }
                         }
-                        assert(status == STATUS_OKAY);
                         headerBuf = userHeaderToString(userHeader, userHeaderNumber);
                         assert(headerBuf != NULL);
                         assert(strlen(headerBuf) > 0);
@@ -579,7 +580,9 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                         break;
                     }
                     printf("\t\t\tValues were retrieved with native datum of %s and current datum of %s\n", vdi.nativeDatum, currentVerticalDatum);
-                    free(currentVerticalDatum);
+                    if (currentVerticalDatum != vdi.nativeDatum) {
+                        free(currentVerticalDatum);
+                    }
                     //--------------------------------------------//
                     // get the vertical datum info for the record //
                     //--------------------------------------------//
