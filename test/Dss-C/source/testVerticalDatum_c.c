@@ -359,18 +359,18 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
             }
             for (int tsType = REGULAR; tsType <= IRREGULAR; ++tsType) {
                 printf("\t\tTesting %s time series\n", tsType == REGULAR ? "REGULAR" : "IRREGULAR");
-                //------------------------------------------------------------------//
-                // store two consecutive records with different vertical datum info //
-                //------------------------------------------------------------------//
+                //--------------------------------------------------//
+                // store two consecutive records with different VDI //
+                //--------------------------------------------------//
                 for (int i = 0; i < numberValues; ++i) {
-                    dvalues[i] = (double)(i % 365 + 1);
                     if (i == 0 || i == 365) {
+                        //---------------------------------------//
+                        // get new VDI at the start of each year //
+                        //---------------------------------------//
                         errmsg = stringToVerticalDatumInfo(&vdi, xml[i / 365]);
                         assert(errmsg == NULL);
                     }
-                    if (i > 364) {
-                        dvalues[i] += -vdi.offsetToNgvd29;
-                    }
+                    dvalues[i] = (double)(i % 365 + 1) - vdi.offsetToNgvd29;
                     times[i] = i == 0 ? jan_01_2021_0100 : times[i - 1] + 1440;
                 }
                 for (int year = 2021; year <= 2022; ++year) {
@@ -432,7 +432,10 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                     //-----------------------//
                     // store the time series //
                     //-----------------------//
-                    status = ztsStore(ifltab, tss, 0);
+                    status = ztsStore(
+                        ifltab,        // file table
+                        tss,           // time series struct
+                        0);            // storage flag (0=reg:replace all, irr:merge)
                     assert(status == 0);
                     zstructFree(tss);
                 }
@@ -451,28 +454,35 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                         memset(dvalues, 0, numberValues * sizeof(double));
                         if (tsType == REGULAR) {
                             zrrtsxd_(
-                                ifltab,
-                                pathnames[REGULAR],
-                                startDate[year - 2021],
-                                "0001",
-                                &numvals,
-                                dvalues,
-                                flags,
-                                &readFlags,
-                                &readFlags,
-                                unit2,
-                                dataType2,
-                                userHeader,
-                                &userHeaderSize,
-                                &userHeaderNumber,
-                                &offsetMinutes,
-                                &compressionType,
-                                &status,
-                                strlen(pathnames[REGULAR]),
-                                strlen(startDate[year - 2021]),
-                                strlen("0001"),
-                                sizeof(unit2),
-                                sizeof(dataType2));
+                                ifltab,                          // <-> file table
+                                pathnames[REGULAR],              //  -> dataset name
+                                startDate[year - 2021],          //  -> date of start of time window
+                                "0001",                          //  -> time of start of time window
+                                &numvals,                        // <-> max number of values to retrieve / number of values retrieved
+                                dvalues,                         // <-  values array
+                                flags,                           // <-  quality flags array
+                                &readFlags,                      //  -> whether to retrieve quality flags if they exist (0/1)
+                                &readFlags,                      // <-  whether quality flags were retrieved (0/1)
+                                unit2,                           // <-  data unit
+                                dataType2,                       // <-  data type
+                                userHeader,                      // <-  user header array
+                                &userHeaderSize,                 //  -> max number of user header elements to retrieve
+                                &userHeaderNumber,               // <-  number of user header elements retrieved
+                                &offsetMinutes,                  // <-  offset into interval of the time of each value
+                                &compressionType,                // <-  compression method used if values were compressed in file
+                                &status,                         // <-  status (0=success)
+                                strlen(pathnames[REGULAR]),      //  -> size of dataset name string
+                                strlen(startDate[year - 2021]),  //  -> size of time window start date string
+                                strlen("0001"),                  //  -> size of time window start time string
+                                sizeof(unit2),                   //  -> size of unit string
+                                sizeof(dataType2));              //  -> size of data type string
+                            //-----------------------------------------------------------------//
+                            // create the times array from:                                    //
+                            //  - the beginning time of the interval containing the start time //
+                            //  - the index into the array                                     //
+                            //  - the interval size in minutes                                 //
+                            //  - the offset                                                   //
+                            //-----------------------------------------------------------------//
                             for (int i = 0; i < numvals; ++i) {
                                 times[i] = jan_01_2021_0000 + offsetMinutes + i * 1440;
                             }
@@ -483,30 +493,33 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                             int endJul    = dateToJulian(endDate[year - 2021]);
                             int endTime   = 1440;
                             zritsxd_(
-                                ifltab,
-                                pathnames[IRREGULAR],
-                                &startJul,
-                                &startTime,
-                                &endJul,
-                                &endTime,
-                                times,
-                                dvalues,
-                                &numberValues,
-                                &numvals,
-                                &basedate,
-                                flags,
-                                &readFlags,
-                                &readFlags,
-                                unit2,
-                                dataType2,
-                                userHeader,
-                                &userHeaderSize,
-                                &userHeaderNumber,
-                                &readFlag,
-                                &status,
-                                strlen(pathnames[IRREGULAR]),
-                                sizeof(unit2),
-                                sizeof(dataType2));
+                                ifltab,                        // <-> file table
+                                pathnames[IRREGULAR],          //  -> dataset name
+                                &startJul,                     //  -> days since 31Dec1899 of start of time window
+                                &startTime,                    //  -> minutes into day of start of time window
+                                &endJul,                       //  -> days since 31Dec1899 of end of time window
+                                &endTime,                      //  -> minutes into day of end of time window
+                                times,                         // <-  times array as minutes offset from base date
+                                dvalues,                       // <-  values array
+                                &numberValues,                 //  -> max number of values to return
+                                &numvals,                      // <-  number of values returned
+                                &basedate,                     // <-  days since 31Dec1899 of time of first value
+                                flags,                         // <-  quality flags array
+                                &readFlags,                    //  -> whether to retrieve quality flags if they exist (0/1)
+                                &readFlags,                    // <-  whether quality flags were retrieved (0/1)
+                                unit2,                         // <-  data unit
+                                dataType2,                     // <-  data type
+                                userHeader,                    // <-  user header array
+                                &userHeaderSize,               //  -> max number of user header elements to retrieve
+                                &userHeaderNumber,             // <-  number of user header elements retrieved
+                                &readFlag,                     //  -> read method (0=time window, 1=tw+prev, 2=tw+next 3=tw+prev+next)
+                                &status,                       // <-  status (0=success)
+                                strlen(pathnames[IRREGULAR]),  //  -> size of dataset name string
+                                sizeof(unit2),                 //  -> size of unit string
+                                sizeof(dataType2));            //  -> size of data type string
+                            //-----------------------------------------------------------------//
+                            // add the base date (in minutes) to each value in the times array //
+                            //-----------------------------------------------------------------//
                             for (int i = 0; i < numvals; ++i) {
                                 times[i] += basedate * 1440;
                             }
@@ -533,11 +546,11 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                         // retrieve the time series //
                         //--------------------------//
                         status = ztsRetrieve(
-                            ifltab,
-                            tss,
-                            0,
-                            0,
-                            1);
+                            ifltab,           // file table
+                            tss,              // time series struct
+                            0,                // retrieve flag (0=adhere to time window and [for reg] create times array)
+                            0,                // retrieve doubles flag (0=as stored, 1=floats, 2=doubles)
+                            1);               // retrieve quality flag (0/1)
                         assert(status == STATUS_OKAY);
                         headerBuf = userHeaderToString(tss->userHeader, tss->userHeaderNumber);
                         assert(headerBuf != NULL);
@@ -546,9 +559,6 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                         t = tss->times;
                         numvals = tss->numberValues;
                     }
-                    //---------------------------------------------------------------//
-                    // verify the record was retrieved in the working vertical datum //
-                    //---------------------------------------------------------------//
                     char* currentVerticalDatum = extractFromDelimitedString(
                         &headerBuf,
                         VERTICAL_DATUM_USER_HEADER_PARAM,
@@ -588,9 +598,14 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                     assert(errmsg == NULL);
                     free(vdiStr);
                     free(headerBuf);
-                    //-----------------------------------------------//
-                    // verify the record has the correct data values //
-                    //-----------------------------------------------//
+                    //----------------------------------------------------//
+                    // verify the data values for the record              //
+                    //                                                    //
+                    // when there is no working vertical datum the values //
+                    // should be in the record's native vertical datum -  //
+                    // otherwise they should be in the working vertical   //
+                    // datum                                              //
+                    //----------------------------------------------------//
                     for (int i = 0; i < numvals; i+= 30) {
                         switch (workingVerticalDatum) {
                         case IVERTICAL_DATUM_UNSET:
@@ -609,9 +624,18 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                         zstructFree(tss);
                     }
                 }
-                //-----------------------------------------------//
-                // read a dataset that crosses record boundaries //
-                //-----------------------------------------------//
+                //-----------------------------------------------------//
+                // read a dataset that crosses record boundaries       //
+                //                                                     //
+                // when there is no working vertical datum the library //
+                // should write a warning message out to the message   //
+                // unit similar to the one shown below, but retrieve   //
+                // the values                                          //
+                //-----------------------------------------------------//
+                //
+                // *****DSS*** zrrtsi6:  WARNING  - ELEVATION VALUES ARE IN MULTIPLE NATIVE VERTICAL DATUMS
+                // USE WITH CAUTION!
+                //
                 printf("\t\tRetrieving time series that crosses record boundaries ");
                 printf("with %s\n", api == NEW_API ? "ztsRetrieve" : tsType == REGULAR ? "zrrtsxd" : "zritsxd");
                 if (api == OLD_API) {
@@ -619,28 +643,36 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                     memset(dvalues, 0, numberValues * sizeof(double));
                     if (tsType == REGULAR) {
                         zrrtsxd_(
-                            ifltab,
-                            pathnames[REGULAR],
-                            "21Dec2021",
-                            "0001",
-                            &numvals,
-                            dvalues,
-                            flags,
-                            &readFlags,
-                            &readFlags,
-                            unit2,
-                            dataType2,
-                            userHeader,
-                            &userHeaderSize,
-                            &userHeaderNumber,
-                            &offsetMinutes,
-                            &compressionType,
-                            &status,
-                            strlen(pathnames[REGULAR]),
-                            strlen("21Dec2021"),
-                            strlen("0001"),
-                            sizeof(unit2),
-                            sizeof(dataType2));
+                            ifltab,                      // <-> file table
+                            pathnames[REGULAR],          //  -> dataset name
+                            "21Dec2021",                 //  -> date of start of time window
+                            "0001",                      //  -> time of start of time window
+                            &numvals,                    // <-> max number of values to retrieve / number of values retrieved
+                            dvalues,                     // <-  values array
+                            flags,                       // <-  quality flags array
+                            &readFlags,                  //  -> whether to retrieve quality flags if they exist (0/1)
+                            &readFlags,                  // <-  whether quality flags were retrieved (0/1)
+                            unit2,                       // <-  data unit
+                            dataType2,                   // <-  data type
+                            userHeader,                  // <-  user header array
+                            &userHeaderSize,             //  -> max number of user header elements to retrieve
+                            &userHeaderNumber,           // <-  number of user header elements retrieved
+                            &offsetMinutes,              // <-  offset into interval of the time of each value
+                            &compressionType,            // <-  compression method used if values were compressed in file
+                            &status,                     // <-  status (0=success)
+                            strlen(pathnames[REGULAR]),  //  -> size of dataset name string
+                            strlen("21Dec2021"),         //  -> size of time window start date string
+                            strlen("0001"),              //  -> size of time window start time string
+                            sizeof(unit2),               //  -> size of unit string
+                            sizeof(dataType2));          //  -> size of data type string
+                        assert(status == STATUS_OKAY);
+                        //-----------------------------------------------------------------//
+                        // create the times array from:                                    //
+                        //  - the beginning time of the interval containing the start time //
+                        //  - the index into the array                                     //
+                        //  - the interval size in minutes                                 //
+                        //  - the offset                                                   //
+                        //-----------------------------------------------------------------//
                         for (int i = 0; i < numvals; ++i) {
                             times[i] = dec_21_2021_0000 + offsetMinutes + i * 1440;
                         }
@@ -651,35 +683,38 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                         int endJul = dateToJulian("10Jan2022");
                         int endTime = 1440;
                         zritsxd_(
-                            ifltab,
-                            pathnames[IRREGULAR],
-                            &startJul,
-                            &startTime,
-                            &endJul,
-                            &endTime,
-                            times,
-                            dvalues,
-                            &numberValues,
-                            &numvals,
-                            &basedate,
-                            flags,
-                            &readFlags,
-                            &readFlags,
-                            unit2,
-                            dataType2,
-                            userHeader,
-                            &userHeaderSize,
-                            &userHeaderNumber,
-                            &readFlag,
-                            &status,
-                            strlen(pathnames[IRREGULAR]),
-                            sizeof(unit2),
-                            sizeof(dataType2));
+                            ifltab,                        // <-> file table
+                            pathnames[IRREGULAR],          //  -> dataset name
+                            &startJul,                     //  -> days since 31Dec1899 of start of time window
+                            &startTime,                    //  -> minutes into day of start of time window
+                            &endJul,                       //  -> days since 31Dec1899 of end of time window
+                            &endTime,                      //  -> minutes into day of end of time window
+                            times,                         // <-  times array as minutes offset from base date
+                            dvalues,                       // <-  values array
+                            &numberValues,                 //  -> max number of values to return
+                            &numvals,                      // <-  number of values returned
+                            &basedate,                     // <-  days since 31Dec1899 of time of first value
+                            flags,                         // <-  quality flags
+                            &readFlags,                    //  -> whether to retrieve quality flags if they exist (0/1)
+                            &readFlags,                    // <-  whether quality flags were retrieved (0/1)
+                            unit2,                         // <-  data unit
+                            dataType2,                     // <-  data type
+                            userHeader,                    // <-  user header array
+                            &userHeaderSize,               //  -> max number of user header elements to retrieve
+                            &userHeaderNumber,             // <-  number of user header elements retrieved
+                            &readFlag,                     //  -> read method (0=time window, 1=tw+prev, 2=tw+next 3=tw+prev+next)
+                            &status,                       // <-  status (0=success)
+                            strlen(pathnames[IRREGULAR]),  //  -> size of dataset name string
+                            sizeof(unit2),                 //  -> size of unit string
+                            sizeof(dataType2));            //  -> size of data type string
+                        assert(status == STATUS_OKAY);
+                        //-----------------------------------------------------------------//
+                        // add the base date (in minutes) to each value in the times array //
+                        //-----------------------------------------------------------------//
                         for (int i = 0; i < numvals; ++i) {
                             times[i] += basedate * 1440;
                         }
                     }
-                    assert(status == STATUS_OKAY);
                     headerBuf = userHeaderToString(userHeader, userHeaderNumber);
                     assert(headerBuf != NULL);
                     assert(strlen(headerBuf) > 0);
@@ -688,18 +723,18 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                 }
                 else {
                     tss = zstructTsNewTimes(
-                        pathnames[REGULAR],
-                        "21Dec2021",
-                        "0001",
-                        "10Jan2022",
-                        "2400");
+                        pathnames[REGULAR],  // dataset name
+                        "21Dec2021",         // start date
+                        "0001",              // start time
+                        "10Jan2022",         // end date 
+                        "2400");             // end time
                     assert(tss != NULL);
                     status = ztsRetrieve(
-                        ifltab,
-                        tss,
-                        0,
-                        0,
-                        1);
+                        ifltab,              // file table
+                        tss,                 // time series struct
+                        0,                   // retrieve flag (0=adhere to time window and [for reg] create times array)
+                        0,                   // retrieve doubles flag (0=as stored, 1=floats, 2=doubles)
+                        1);                  // retrieve quality flag (0/1)
                     assert(status == STATUS_OKAY);
                     headerBuf = userHeaderToString(tss->userHeader, tss->userHeaderNumber);
                     assert(headerBuf != NULL);
@@ -708,6 +743,14 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                     t = tss->times;
                     numvals = tss->numberValues;
                 }
+                //----------------------------------------------------//
+                // verify the cross-boundary data values              //
+                //                                                    //
+                // when there is no working vertical datum the values //
+                // from each record will be in the native vertical    //
+                // datum for that record - otherwise they should all  //
+                // be in the working vertical datum                   //
+                //----------------------------------------------------//
                 char* currentVerticalDatum = extractFromDelimitedString(
                     &headerBuf,
                     VERTICAL_DATUM_USER_HEADER_PARAM,
