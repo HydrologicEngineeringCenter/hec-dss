@@ -7,6 +7,6 @@ using System.Threading.Tasks;
 namespace Hec.Dss
 {
 
-  public enum RecordType { RegularTimeSeries, IrregularTimeSeries, PairedData, Grid, Tin, LocationInfo, Text, Unknown };
+  public enum RecordType { RegularTimeSeries, IrregularTimeSeries, RegularTimeSeriesProfile, PairedData, Grid, Tin, LocationInfo, Text, Unknown };
  
 }
