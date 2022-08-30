@@ -482,10 +482,12 @@ C
             if (nativeDatum.ne.prevVerticalDatum
      *          .and. prevVerticalDatum.ne.'already warned'
      *          .and. mlevel.ge.1) then
-                  write (munit,'(/,a,a,/,a)')
-     *            ' *****DSS*** zrits6:  WARNING  - ELEVATION VALUES',
-     *            ' ARE IN MULTIPLE NATIVE VERTICAL DATUMS',
-     *            ' USE WITH CAUTION!'
+                  write (munit,'(/,a,/,a)')
+     *            ' *****DSS*** zrits6:  WARNING  - VERTICAL DATUM'//
+     *            ' CONFLICT',
+     *            ' Elevation values are in multiple native vertical'//
+     *            ' datums.',
+     *            ' Use with caution!'
                   prevVerticalDatum = 'already warned'
             end if
           end if

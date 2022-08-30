@@ -434,14 +434,15 @@ C
             if (prevVerticalDatum.eq.'never set') then
               prevVerticalDatum = nativeDatum
             end if
-            if (nativeDatum.ne.prevVerticalDatum
-     *          .and. prevVerticalDatum.ne.'already warned'
-     *          .and. mlevel.ge.1) then
-                  write (munit,'(/,a,a,/,a)')
-     *            ' *****DSS*** zrrtsi6:  WARNING  - ELEVATION VALUES',
-     *            ' ARE IN MULTIPLE NATIVE VERTICAL DATUMS',
-     *            ' USE WITH CAUTION!'
-                  prevVerticalDatum = 'already warned'
+            if (prevVerticalDatum.ne.nativeDatum      .and.
+     *          prevVerticalDatum.ne.'already warned' .and.
+     *          mlevel.ge.1) then
+                  write (munit,'(/,a,/,a)')
+     *            ' *****DSS*** zrits6:  WARNING  - VERTICAL DATUM'//
+     *            ' CONFLICT',
+     *            ' Elevation values are in multiple native vertical'//
+     *            ' datums.',
+     *            ' Use with caution!'
               end if
             end if
           else
