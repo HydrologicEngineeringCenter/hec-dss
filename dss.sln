@@ -112,6 +112,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dss-test-data", "dss-test-d
 EndProject
 Project("{6989167D-11E4-40FE-8C1A-2192A86A7E90}") = "javaShefDssLib", "nws_shef\javaShefDssLib.vfproj", "{CA614CEF-1ADF-4D64-A926-2F725EE07697}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "hecdss", "heclib\hecdss\hecdss.vcxproj", "{76A09091-883B-4686-98BB-CEF4605278A3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -200,6 +202,14 @@ Global
 		{CA614CEF-1ADF-4D64-A926-2F725EE07697}.Release|Win32.ActiveCfg = Release|x64
 		{CA614CEF-1ADF-4D64-A926-2F725EE07697}.Release|x64.ActiveCfg = Release|x64
 		{CA614CEF-1ADF-4D64-A926-2F725EE07697}.Release|x64.Build.0 = Release|x64
+		{76A09091-883B-4686-98BB-CEF4605278A3}.Debug|Win32.ActiveCfg = Debug|Win32
+		{76A09091-883B-4686-98BB-CEF4605278A3}.Debug|Win32.Build.0 = Debug|Win32
+		{76A09091-883B-4686-98BB-CEF4605278A3}.Debug|x64.ActiveCfg = Debug|x64
+		{76A09091-883B-4686-98BB-CEF4605278A3}.Debug|x64.Build.0 = Debug|x64
+		{76A09091-883B-4686-98BB-CEF4605278A3}.Release|Win32.ActiveCfg = Release|Win32
+		{76A09091-883B-4686-98BB-CEF4605278A3}.Release|Win32.Build.0 = Release|Win32
+		{76A09091-883B-4686-98BB-CEF4605278A3}.Release|x64.ActiveCfg = Release|x64
+		{76A09091-883B-4686-98BB-CEF4605278A3}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

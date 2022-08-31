@@ -1,0 +1,2 @@
+#define HECDSS_API __declspec(dllexport)
+#define HECDSS_API __declspec(dllimport)
