@@ -280,7 +280,7 @@ C
           call zreadx6 (ifltab, cpath_this(1:npath), idum, 0, idum, idum
      *      , 0, idum, iuhead_copy, size(iuhead_copy), nuhead_copy, idum
      *      , 0, idum, 0, lfound)
-          if (lfound.and.(nuhead_copy.gt.0)) then
+          if ((lfound.ne.0).and.(nuhead_copy.gt.0)) then
             call get_user_header_param(
      *        iuhead_copy,
      *        nuhead_copy,
@@ -330,6 +330,14 @@ C
         ! its size when passing to user header manipulation routintes and we !
         ! cant know the size of an assumed-size array                        !
         !--------------------------------------------------------------------!
+        if (nuhead.gt.size(iuhead_copy)) then
+          if (mlevel.ge.1) then
+            write (munit,'(/,a,/,a,i5,/,a,i5)')
+     *      ' *****DSS*** zsitsi6:  WARNING  - USER HEADER TRUNCATED',
+     *      ' Origninal size = ', nuhead,
+     *      ' Truncated size = ', size(iuhead_copy)
+          end if
+        end if
         nuhead_copy = nuhead
         iuhead_copy = 0
         iCopyLen = min(size(iuhead_copy), nuhead)
@@ -515,6 +523,18 @@ C
             end if
           end if
         end if
+      else
+        if (nuhead.gt.size(iuhead_copy)) then
+          if (mlevel.ge.1) then
+            write (munit,'(/,a,/,a,i5,/,a,i5)')
+     *      ' *****DSS*** zsrtsi6:  WARNING  - USER HEADER TRUNCATED',
+     *      ' Origninal size = ', nuhead,
+     *      ' Truncated size = ', size(iuhead_copy)
+          end if
+        end if
+        nuhead_copy = min(size(iuhead_copy), nuhead)
+        iuhead_copy = 0
+        iuhead_copy(:nuhead_copy) = iuhead(:nuhead_copy)
       end if
       cunits = cunits(:min(len_trim(cunits),8))
 C

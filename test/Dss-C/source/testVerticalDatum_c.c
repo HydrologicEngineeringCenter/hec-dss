@@ -477,7 +477,7 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                                     values,                         //  -> values to store
                                     &numberValues,                  //  -> number of values to store
                                     &startJul,                      //  -> base date for times
-                                    &quality,                       //  -> quality flags to store
+                                    quality,                       //  -> quality flags to store
                                     &storeFlags,                    //  -> whether to store quality flags (0/1)
                                     unit,                           //  -> data unit
                                     dataType,                       //  -> data type

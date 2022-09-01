@@ -101,17 +101,23 @@ C     Check that IFLTAB is valid (e.g., the DSS file is open)
       ! its size when passing to user header manipulation routintes and we !
       ! cant know the size of an assumed-size array                        !
       !--------------------------------------------------------------------!
-      nuhead_copy = nuhead
+      if (nuhead.gt.size(iuhead_copy)) then
+        if (mlevel.ge.1) then
+          write (munit,'(/,a,/,a,i5,/,a,i5)')
+     *    ' *****DSS*** zspdi6:  WARNING  - USER HEADER TRUNCATED',
+     *    ' Origninal size = ', nuhead,
+     *    ' Truncated size = ', size(iuhead_copy)
+        end if
+      end if
+      nuhead_copy = min(size(iuhead_copy), nuhead)
       iuhead_copy = 0
-      iCopyLen = min(size(iuhead_copy), nuhead)
-      iuhead_copy(:iCopyLen) = iuhead(:iCopyLen)
+      iuhead_copy(:nuhead_copy) = iuhead(:nuhead_copy)
       call normalizeVdiInUserHeader(iuhead_copy, nuhead_copy, errMsg)
-	  if (ifltab(kswap).ne.0) then
-	    do i = 1, iCopyLen
-	      call zswap6(iuhead_copy(i), itemp)
-	      iuhead_copy(i) = itemp
-	    end do
-	  end if
+	    if (ifltab(kswap).ne.0) then
+	      do i = 1, nuhead_copy
+	        call zswap6(iuhead_copy(i), iuhead_copy(i))
+	      end do
+	    end if
       call zufpn(ca, na, cb, nb, cc, nc, cd, nd, ce, ne, cf, nf,
      *           cpath, len_trim(cpath), istat)
       call upcase(cc)
@@ -139,7 +145,7 @@ C     Check that IFLTAB is valid (e.g., the DSS file is open)
      *            'available variable.',
      *            ' User header not read from disk.';
               end if
-              nuhead_copy = nuhead
+              nuhead_copy = min(size(iuhead_copy), nuhead)
             else
               call zgtrec6(IFLTAB, iuhead_copy, nuhead_copy,
      *          INFO(NPPWRD+KIAUHE), .TRUE.)
@@ -386,6 +392,14 @@ C     Check that IFLTAB is valid (e.g., the DSS file is open)
           end if
         end if
       end if
+	    if (ifltab(kswap).ne.0) then
+        !------------------------------------------!
+        ! swap the user header back the way it was !
+        !------------------------------------------!
+	      do i = 1, nuhead_copy
+	        call zswap6(iuhead_copy(i), iuhead_copy(i))
+	      end do
+	    end if
 C
 C
       IF (IPLAN.EQ.11) THEN
