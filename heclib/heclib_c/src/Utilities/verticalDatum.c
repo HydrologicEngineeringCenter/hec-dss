@@ -1085,6 +1085,10 @@ int	getEffectiveVerticalDatum(
                     iverticalDatum = IVERTICAL_DATUM_NGVD29;
                     strcpy(cverticalDatum, CVERTICAL_DATUM_NGVD29);
                 }
+                else if (!strcasecmp(verticalDatum, CVERTICAL_DATUM_UNSET)) {
+                    iverticalDatum = IVERTICAL_DATUM_UNSET;
+                    strcpy(cverticalDatum, CVERTICAL_DATUM_UNSET);
+                }
                 else if (!strcasecmp(verticalDatum, CVERTICAL_DATUM_OTHER)) {
                     iverticalDatum = IVERTICAL_DATUM_OTHER;
                     strcpy(cverticalDatum, CVERTICAL_DATUM_OTHER);
@@ -1139,6 +1143,10 @@ int	getEffectiveVerticalDatum(
                 else if (!strcasecmp(verticalDatum, CVERTICAL_DATUM_NGVD29)) {
                     iverticalDatum = IVERTICAL_DATUM_NGVD29;
                     strcpy(cverticalDatum, CVERTICAL_DATUM_NGVD29);
+                }
+                else if (!strcasecmp(verticalDatum, CVERTICAL_DATUM_UNSET)) {
+                    iverticalDatum = IVERTICAL_DATUM_UNSET;
+                    strcpy(cverticalDatum, CVERTICAL_DATUM_UNSET);
                 }
                 else if (!strcasecmp(verticalDatum, CVERTICAL_DATUM_OTHER)) {
                     iverticalDatum = IVERTICAL_DATUM_OTHER;

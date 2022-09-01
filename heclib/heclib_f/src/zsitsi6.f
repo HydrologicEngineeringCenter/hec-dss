@@ -57,13 +57,17 @@ C
       INTEGER IIHEAD(KIHEAD), IDUM(2)
 C
 C     Vertical datum varible dimensions
+      include 'dss_parameters.h'
       character*400 vdiStr, errMsg
       character*16 unit, unit2, cvdatum1, cvdatum2
-      character*16 nativeDatum
-      character*64 cc, unitSpec
+      character*16 nativeDatum, prevVerticalDatum
+      character*64 unitSpec
+      character(len=dss_maxpart) ca, cb, cc, cd, ce, cf
+      character(len=dss_maxpath) cpath_this, cpath_next
       double precision offsetNavd88, offsetNgvd29, vertDatumOffset
       logical l_Navd88Estimated, l_Ngvd29Estimated, l_modified
       integer vdiStrLen, nuhead_copy, iuhead_copy(100)
+      integer na, nb, nc, nd, ne, nf
 C
 C
       INCLUDE 'zdssmz.h'
@@ -95,6 +99,19 @@ C
       CALL zset6('QUAL', 'OFF', 0)
       CPATH = CPATHNAME
       CALL CHRLNB(CPATHNAME, NPATH)
+      prevVerticalDatum = 'never set'
+      ca = ' '
+      cb = ' '
+      cc = ' '
+      cd = ' '
+      ce = ' '
+      cf = ' '
+      na = dss_maxpart
+      nb = dss_maxpart
+      nc = dss_maxpart
+      nd = dss_maxpart
+      ne = dss_maxpart
+      nf = dss_maxpart
 C
 C
 C     Get beginning and ending dates from DATE array
@@ -245,48 +262,140 @@ C
       !-----------------------------------------------!
       ! convert to native vertical datum if necessary !
       !-----------------------------------------------!
-      !--------------------------------------------------------------------!
-      ! make a copy of the user header becuase we have to be able to know  !
-      ! its size when passing to user header manipulation routintes and we !
-      ! cant know the size of an assumed-size array                        !
-      !--------------------------------------------------------------------!
-      nuhead_copy = nuhead
-      iuhead_copy = 0
-      iCopyLen = min(size(iuhead_copy), nuhead)
-      iuhead_copy(:iCopyLen) = iuhead(:iCopyLen)
-	  if (ifltab(kswap).ne.0) then
-	    do i = i, icopyLen
-	      call zswap6(iuhead_copy(i), itemp)
-		  iuhead_copy(i) = itemp
-	    end do
-	  end if
-      call normalizeVdiInUserHeader(iuhead_copy, nuhead_copy, errMsg)
       cc = cpath(ibpart(3):iepart(3))
       call upcase(cc)
       if (index(cc,'ELEV').eq.1) then
         !-----------------------!
         ! elevation time series !
         !-----------------------!
-        if (nuhead.eq.0) then
-          !------------------------------------------------!
-          ! no user header provided, is there one on disk? !
-          !------------------------------------------------!
-          nuhead_copy = INFO(NPPWRD+KINUHE)
-          if (nuhead_copy.GT.0) then
-            if (nuhead_copy.GT.size(iuhead_copy)) then
-              if (mlevel.ge.1) then
-                write (munit,'(/,a,a,a,/,a)')
-     *            ' *****DSS*** zsitsi6:  User header size is ',
-     *            'reported to be larger than the size of the ',
-     *            'available variable.',
-     *            ' User header not read from disk.';
-              end if
+        !----------------------------------------------------------------!
+        ! loop through all the records for the time series, checking VDI !
+        ! (juls, jule are starting and ending julians and are set above) !
+        !----------------------------------------------------------------!
+        call zufpn (ca, na, cb, nb, cc, nc, cd, nd, ce, ne, cf, nf,
+     *    cpath, npath, iistat)
+        call juldat (juls, 104, cd, maxpart)
+        do
+          call zpath(ca, cb, cc, cd, ce, cf, cpath_this, npath)
+          call zreadx6 (ifltab, cpath_this(1:npath), idum, 0, idum, idum
+     *      , 0, idum, iuhead_copy, size(iuhead_copy), nuhead_copy, idum
+     *      , 0, idum, 0, lfound)
+          if (lfound.and.(nuhead_copy.gt.0)) then
+            call get_user_header_param(
+     *        iuhead_copy,
+     *        nuhead_copy,
+     *        VERTICAL_DATUM_INFO_PARAM,
+     *        vdiStr)
+            vdiStrLen = len_trim(vdiStr)
+            if (vdiStrLen.eq.0) then
+              nativeDatum = ' '
             else
-              call zgtrec6(IFLTAB, iuhead_copy, nuhead_copy,
-     *          INFO(NPPWRD+KIAUHE), .TRUE.)
-              call get_user_header_param(iuhead_copy, nuhead_copy,
-     *          VERTICAL_DATUM_INFO_PARAM, vdiStr)
+              call stringToVerticalDatumInfo(
+     *          vdiStr,
+     *          errMsg,
+     *          nativeDatum,
+     *          unit,
+     *          offsetNgvd29,
+     *          l_Ngvd29Estimated,
+     *          offsetNavd88,
+     *          l_Navd88Estimated)
             end if
+            if (prevVerticalDatum.eq.'never set') then
+              prevVerticalDatum = nativeDatum
+            end if
+            if (nativeDatum.ne.prevVerticalDatum) then
+              if (mlevel.ge.1) then
+                write (munit,'(/,a,/,a)')
+     *          ' *****DSS*** zsitsi6:  ERROR  - VERTICAL DATUM'//
+     *          ' CONFLICT',
+     *          ' Elevation values in file are in multiple native'//
+     *          ' vertical datums.',
+     *          ' No values stored.'
+              end if
+              istat = 13
+              return
+            end if
+          end if
+          call znextts6 (ifltab, cpath_this, cpath_next, .true., iistat)
+          call zufpn (ca, na, cb, nb, cc, nc, cd, nd, ce, ne, cf, nf,
+     *      cpath_next, npath, iistat)
+          call datjul(cd, ijul, iistat)
+          if (ijul.ge.jule) exit
+        end do
+        !-------------------------------------------------------------------!
+        ! compare any VDI found in the file with the VDI in the user header !
+        !-------------------------------------------------------------------!
+        !--------------------------------------------------------------------!
+        ! make a copy of the user header becuase we have to be able to know  !
+        ! its size when passing to user header manipulation routintes and we !
+        ! cant know the size of an assumed-size array                        !
+        !--------------------------------------------------------------------!
+        nuhead_copy = nuhead
+        iuhead_copy = 0
+        iCopyLen = min(size(iuhead_copy), nuhead)
+        iuhead_copy(:iCopyLen) = iuhead(:iCopyLen)
+	    if (ifltab(kswap).ne.0) then
+	      do i = i, icopyLen
+	        call zswap6(iuhead_copy(i), itemp)
+	  	  iuhead_copy(i) = itemp
+	      end do
+	    end if
+        call normalizeVdiInUserHeader(iuhead_copy, nuhead_copy, errMsg)
+        call get_user_header_param(iuhead_copy, nuhead_copy,
+     *    VERTICAL_DATUM_INFO_PARAM, vdiStr)
+        if (vdiStr.eq." ") then
+          !--------------------------------!
+          ! incoming values don't have VDI !
+          !--------------------------------!
+          if (prevVerticalDatum.ne.'never set') then
+            if (mlevel.ge.1) then
+              write (munit,'(/,a,/,a)')
+     *        ' *****DSS*** zsitsi6:  ERROR  - VERTICAL DATUM CONFLICT',
+     *        ' Elevation values being stored do not specify native'//
+     *        ' vertical datum but the values in the file are in '//
+     *        prevVerticalDatum(1:len_trim(prevVerticalDatum))//'.',
+     *        ' No values stored.'
+            end if
+            istat = 13
+            return
+          end if
+        else
+          !--------------------------!
+          ! incoming values have VDI !
+          !--------------------------!
+          call stringToVerticalDatumInfo(
+     *      vdiStr,
+     *      errMsg,
+     *      nativeDatum,
+     *      unit,
+     *      offsetNgvd29,
+     *      l_Ngvd29Estimated,
+     *      offsetNavd88,
+     *      l_Navd88Estimated)
+          if (errMsg.ne." ") then
+            if (mlevel.ge.1) then
+              write (munit,'(/,a,a,/,a,/,a)')
+     *          ' *****DSS*** zsitsi6:  ERROR  - ',
+     *          errMsg(1:len_trim(errMsg)),
+     *          ' Cannot convert to native datum.',
+     *          ' No values stored.'
+            end if
+            istat = 13
+            return
+          end if
+          if (prevVerticalDatum.ne.'never set'.and.
+     *        prevVerticalDatum.ne.nativeDatum) then
+            if (mlevel.ge.1) then
+              write (munit,'(/,a,/,a)')
+     *        ' *****DSS*** zsitsi6:  ERROR  - VERTICAL DATUM CONFLICT',
+     *        ' Elevation values being stored specify native vertical'//
+     *        ' datum of '//nativeDatum(1:len_trim(nativeDatum))//
+     *        ' but the values in the file are in '//
+     *        prevVerticalDatum(1:len_trim(prevVerticalDatum))//'.',
+     *        ' No values stored.'
+            end if
+            istat = 13
+            return
           end if
         end if
         !--------------------------------------!

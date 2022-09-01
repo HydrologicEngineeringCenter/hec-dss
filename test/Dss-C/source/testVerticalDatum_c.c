@@ -280,17 +280,22 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
     int NAVD88 = 1;
     char* errmsg;
     char* filename = "v6_mult_vert_datum_ts.dss";
-    char* pathnames[2] = { "//TESTTSLOC/ELEV//1DAY/MULTVERTICALDATUMS/", "//TESTTSLOC/ELEV//IR-YEAR/MULTVERTICALDATUMS/" };
-    int numberValues = 365 * 2; // 2021-2022
+    char* pathnames[2][2] = { {"//TESTTSLOC/ELEV//1DAY/MULTVERTICALDATUMS-OLD/", "//TESTTSLOC/ELEV//IR-YEAR/MULTVERTICALDATUMS-OLD/"},
+                              {"//TESTTSLOC/ELEV//1DAY/MULTVERTICALDATUMS-NEW/", "//TESTTSLOC/ELEV//IR-YEAR/MULTVERTICALDATUMS-NEW/"} };
+    int numberValues = 365;
     char* startDate[2] = { "01Jan2021", "01Jan2022" };
     char* endDate[2] = { "31Dec2021", "31Dec2022" };
     char* startTime = "01:00";
+    int startJul;
+    int startMinutes;
+    int endJul;
+    int endMinutes;
     int jan_01_2021 = 44195;
     int jan_01_2021_0000 = 63642240; // 01Jan2021 00:00
     int jan_01_2021_0100 = 63642300; // 01Jan2021 01:00
     int dec_21_2021_0000 = 64152000; // 21Dec2021 00:00
     int jan_01_2022_0001 = 64167841; // 01Jan2022 00:01
-    double* dvalues = (double *)malloc(numberValues * sizeof(double));
+    double* values = (double *)malloc(numberValues * sizeof(double));
     double* dv = NULL;
     int* times = (int*)malloc(numberValues * sizeof(int));
     int* t = NULL;
@@ -304,20 +309,26 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
     int messageLevel;
     char alpha[17];
     double expectedValue;
-    int numvals;
     int basedate;
-    int* flags;
+    int* quality;
+    quality = (int*)malloc(numberValues * sizeof(int));
+    int storeFlags = TRUE;
     int readFlags = TRUE;
-    flags = (int*)malloc(numberValues * sizeof(int));
     int userHeaderSize = 500;
     int* userHeader = (int*)malloc(userHeaderSize * sizeof(int));
+    int* userHeader2 = NULL;
     int userHeaderNumber;
+    int storeFlag = 0;
     int readFlag = 0;
     int offsetMinutes;
     int compressionType;
+    int compressionBase = FALSE;
+    float compressionBaseVal = 0.f;
+    int compressionHigh = FALSE;
+    int compressionPrec = 0;
 
     char* xml[] = {
-        // applied to first year record
+        // NAVD-88
         "<vertical-datum-info unit=\"ft\">\n"
         "  <native-datum>NGVD-29</native-datum>\n"
         "  <elevation>615.0</elevation>\n"
@@ -326,7 +337,7 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
         "    <value>0.5</value>\n"
         "  </offset>\n"
         "</vertical-datum-info>\n",
-        // applied to 2nd year record
+        // NGVD-29
         "<vertical-datum-info unit=\"ft\">\n"
         "  <native-datum>NAVD-88</native-datum>\n"
         "  <elevation>615.5</elevation>\n"
@@ -335,12 +346,17 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
         "    <value>-0.5</value>\n"
         "  </offset>\n"
         "</vertical-datum-info>\n",
+        // UNSET
+        ""
     };
 
+    int xmlCount = sizeof(xml) / sizeof(xml[0]);
+
+    remove(filename);
     strcpy(unit2, unit);
     strcpy(dataType2, dataType);
     zquery("MLVL", alpha, sizeof(alpha) - 1, &messageLevel);
-    zset("MLVL", "", 1);
+    zset("MLVL", "", 0);
     status = zopen6(ifltab, filename);
     assert(status == 0);
     for (int api = OLD_API; api <= NEW_API; ++api) {
@@ -362,82 +378,180 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                 //--------------------------------------------------//
                 // store two consecutive records with different VDI //
                 //--------------------------------------------------//
-                for (int i = 0; i < numberValues; ++i) {
-                    if (i == 0 || i == 365) {
-                        //---------------------------------------//
-                        // get new VDI at the start of each year //
-                        //---------------------------------------//
-                        errmsg = stringToVerticalDatumInfo(&vdi, xml[i / 365]);
-                        assert(errmsg == NULL);
-                    }
-                    dvalues[i] = (double)(i % 365 + 1) - vdi.offsetToNgvd29;
-                    times[i] = i == 0 ? jan_01_2021_0100 : times[i - 1] + 1440;
-                }
                 for (int year = 2021; year <= 2022; ++year) {
-                    //-------------------------------------//
-                    // create a TSS for the storing record //
-                    //-------------------------------------//
-                    int index = year == 2021 ? 0 : numberValues / 2;
-                    // don't care about API for storing, only retrieving
-                    if (tsType == REGULAR) {
-                        tss = zstructTsNewRegDoubles(
-                            pathnames[REGULAR],         // dataset name
-                            &dvalues[index],            // values
-                            numberValues / 2,           // number of values
-                            startDate[year - 2021],     // start date
-                            startTime,                  // start time
-                            unit,                       // data unit
-                            dataType);                  // data type
+                    int yearIndex = year - 2021;
+                    for (int xmlIndex = 0; xmlIndex < xmlCount; ++xmlIndex) {
+                        numberValues = 365; // 1 non-leap year of 1Day values
+                        //--------------------------------------//
+                        // get the VDI and make the data arrays //
+                        //--------------------------------------//
+                        errmsg = stringToVerticalDatumInfo(&vdi, xml[yearIndex]);
+                        for (int i = 0; i < numberValues; ++i) {
+                            values[i] = (double)(i + 1) - (errmsg == NULL ? vdi.offsetToNgvd29 : 0);
+                            times[i] = jan_01_2021_0100 + (365 * yearIndex + i) * 1440;
+                            quality[i] = 3;
+                        }
+                        //-------------------------------------------------//
+                        // assign native vertical datum info to the record //
+                        //-------------------------------------------------//
+                        if (strlen(xml[(yearIndex + xmlIndex) % xmlCount]) > 0) {
+                            errmsg = gzipAndEncode(&compressed, xml[(yearIndex + xmlIndex) % xmlCount]);
+                            assert(errmsg == NULL);
+                            len = VERTICAL_DATUM_INFO_USER_HEADER_PARAM_LEN + strlen(compressed) + 2;
+                            headerBuf = (char*)malloc(len + 1);
+                            memset(headerBuf, 0, len + 1);
+                            status = insertIntoDelimitedString(
+                                &headerBuf,
+                                len + 1,
+                                VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
+                                compressed,
+                                ":",
+                                FALSE,
+                                ';');
+                            assert(status == 0);
+                            free(compressed);
+                            userHeader2 = stringToUserHeader(headerBuf, &userHeaderNumber);
+                            free(headerBuf);
+                            headerBuf = NULL;
+                        }
+                        else {
+                            userHeader2 = malloc(sizeof(int));
+                            userHeader2[0] = 0;
+                            userHeaderNumber = 0;
+                        }
+                        //----------------------------------------------------------------//
+                        // set the default vertical datum to the native datum of the data //
+                        //----------------------------------------------------------------//
+                        verticalDatumInfo* pVdi = extractVerticalDatumInfoFromUserHeader(userHeader2, userHeaderNumber);
+                        zset("VDTM", pVdi ? pVdi->nativeDatum : "UNSET", 0);
+                        printf("\t\t\tStoring time series for %d with native vertical datum of %s ", year, pVdi ? pVdi->nativeDatum : "UNSET");
+                        printf("using %s.\n", api == OLD_API ? tsType == REGULAR ? "zsrtsxd" : "zsitsxd" : "ztsStore");
+                        printf("\t\t\t\tShould %s.\n", xmlIndex == 0 ? "succeed" : "fail");
+                        free(pVdi);
+                        if (api == OLD_API) {
+                            compressionType = 0;
+                            if (tsType == REGULAR) {
+                                zsrtsxd_(
+                                    ifltab,                         // <-> file table
+                                    pathnames[api][tsType],         //  -> dataset name
+                                    startDate[yearIndex],           //  -> date of first value
+                                    startTime,                      //  -> time of first value
+                                    &numberValues,                  //  -> number of values to store
+                                    values,                         //  -> values to store
+                                    quality,                        //  -> quality flags to store
+                                    &storeFlags,                    //  -> whether to store quality flags (/1)
+                                    unit,                           //  -> data unit
+                                    dataType,                       //  -> data type
+                                    userHeader2,                    //  -> user header array
+                                    &userHeaderNumber,              //  -> number of header array elements to store
+                                    &storeFlag,                     //  -> data storage method 0=replace all)
+                                    &compressionType,               //  -> data compression type to use (0=file default)
+                                    &compressionBaseVal,            //  -> data compression base value for delta method
+                                    &compressionBase,               //  -> whether to use base value for delta method data compression (0/1)
+                                    &compressionHigh,               //  -> whether to use 2 bytes per compressed value for delta method (0=let software decide)
+                                    &compressionPrec,               //  -> base 10 exponent of compressed values for delta method
+                                    &status,                        // <-  status (0=success)
+                                    strlen(pathnames[api][tsType]), //  -> fortran-required length of dataset name parameter
+                                    strlen(startDate[yearIndex]),   //  -> fortran-required length of date of first value parameter
+                                    strlen(startTime),              //  -> fortran-required length of time of first value parameter
+                                    strlen(unit),                   //  -> fortran-required length of data unit parameter
+                                    strlen(dataType));              //  -> fortran-required length of data type parameter
+                                if (xmlIndex == 0) {
+                                    assert(status == 0);
+                                    printf("\t\t\t\tSucceeded.\n");
+                                }
+                                else {
+                                    assert(status == 13);
+                                    printf("\t\t\t\tFailed.\n");
+                                }
+                            }
+                            else {
+                                startJul = dateToJulian(startDate[yearIndex]);
+                                for (int i = 0; i < numberValues; ++i) {
+                                    times[i] -= startJul * 1440;
+                                }
+                                zsitsxd_(
+                                    ifltab,                         // <-> file table
+                                    pathnames[api][tsType],         //  -> dataset name
+                                    times,                          //  -> times relative to base date
+                                    values,                         //  -> values to store
+                                    &numberValues,                  //  -> number of values to store
+                                    &startJul,                      //  -> base date for times
+                                    &quality,                       //  -> quality flags to store
+                                    &storeFlags,                    //  -> whether to store quality flags (0/1)
+                                    unit,                           //  -> data unit
+                                    dataType,                       //  -> data type
+                                    userHeader2,                    //  -> user header array
+                                    &userHeaderNumber,              //  -> number of user header array elements to store
+                                    &storeFlag,                     //  -> data storage method (0=merge)
+                                    &status,                        // <-  status (0=success)
+                                    strlen(pathnames[api][tsType]), //  -> fortran-required size of dataset name parameter     
+                                    strlen(unit),                   //  -> fortran-required size of data unit parameter
+                                    strlen(dataType));              //  -> fortran-required size of data type parameter
+                                if (xmlIndex == 0) {
+                                    assert(status == 0);
+                                    printf("\t\t\t\tSucceeded.\n");
+                                }
+                                else {
+                                    assert(status == 13);
+                                    printf("\t\t\t\tFailed.\n");
+                                }
+                            }
+                        }
+                        else {
+                            //-------------------------------------//
+                            // create a TSS for the storing record //
+                            //-------------------------------------//
+                            if (tsType == REGULAR) {
+                                tss = zstructTsNewRegDoubles(
+                                    pathnames[api][tsType],     // dataset name
+                                    values,                     // values
+                                    numberValues,               // number of values
+                                    startDate[yearIndex],       // start date
+                                    startTime,                  // start time
+                                    unit,                       // data unit
+                                    dataType);                  // data type
+                            }
+                            else {
+                                tss = zstructTsNewIrregDoubles(
+                                    pathnames[api][tsType],     // dataset name
+                                    values,                     // values
+                                    numberValues,               // number of values
+                                    times,                      // times
+                                    60,                         // time granularity in seconds
+                                    NULL,                       // base date (if other than 01Jan1900)
+                                    unit,                       // data unit
+                                    dataType);                  // data type
+                            }
+                            tss->quality = quality;
+                            tss->qualityElementSize = 1;
+                            tss->allocated[zSTRUCT_TS_quality] = FALSE; // will free memory separately
+                            //------------------------------------------//
+                            // assign vertical datum info to the record //
+                            //------------------------------------------//
+                            tss->userHeader = userHeader2;
+                            tss->userHeaderNumber = userHeaderNumber;
+                            tss->allocated[zSTRUCT_userHeader] = FALSE; // will free memory separately
+                            //-----------------------//
+                            // store the time series //
+                            //-----------------------//
+                            status = ztsStore(
+                                ifltab,        // file table
+                                tss,           // time series struct
+                                0);            // storage flag (0=reg:replace all, irr:merge)
+                            if (xmlIndex == 0) {
+                                assert(status == 0);
+                                printf("\t\t\t\tSucceeded.\n");
+                            }
+                            else {
+                                assert(status == 13);
+                                printf("\t\t\t\tFailed.\n");
+                            }
+                            zstructFree(tss);
+                        }
+                        free(userHeader2);
+                        userHeader2 = NULL;
                     }
-                    else {
-                        tss = zstructTsNewIrregDoubles(
-                            pathnames[IRREGULAR],       // dataset name
-                            &dvalues[index],            // values
-                            numberValues / 2,           // number of values
-                            &times[index],              // times
-                            60,                         // time granularity in seconds
-                            NULL,                       // base date (if other than 01Jan1900)
-                            unit,                       // data unit
-                            dataType);                  // data type
-                    }
-                    //------------------------------------------//
-                    // assign vertical datum info to the record //
-                    //------------------------------------------//
-                    errmsg = gzipAndEncode(&compressed, xml[year - 2021]);
-                    assert(errmsg == NULL);
-                    len = VERTICAL_DATUM_INFO_USER_HEADER_PARAM_LEN + strlen(compressed) + 2;
-                    headerBuf = (char*)malloc(len + 1);
-                    memset(headerBuf, 0, len + 1);
-                    status = insertIntoDelimitedString(
-                        &headerBuf,
-                        len + 1,
-                        VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
-                        compressed,
-                        ":",
-                        FALSE,
-                        ';');
-                    assert(status == 0);
-                    free(compressed);
-                    tss->userHeader = stringToUserHeader(headerBuf, &tss->userHeaderNumber);
-                    free(headerBuf);
-                    headerBuf = NULL;
-                    tss->allocated[zSTRUCT_userHeader] = TRUE;
-                    //----------------------------------------------------------------//
-                    // set the default vertical datum to the native datum of the data //
-                    //----------------------------------------------------------------//
-                    verticalDatumInfo* pVdi = extractVerticalDatumInfoFromUserHeader(tss->userHeader, tss->userHeaderNumber);
-                    zset("VDTM", pVdi->nativeDatum, 0);
-                    printf("\t\tStoring time series for %d with native vertical datum of %s\n", year, pVdi->nativeDatum);
-                    free(pVdi);
-                    //-----------------------//
-                    // store the time series //
-                    //-----------------------//
-                    status = ztsStore(
-                        ifltab,        // file table
-                        tss,           // time series struct
-                        0);            // storage flag (0=reg:replace all, irr:merge)
-                    assert(status == 0);
-                    zstructFree(tss);
                 }
                 //-----------------------------------------------//
                 // set the default vertical datum for retrieving //
@@ -447,20 +561,20 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                 // read the consecutive records just stored and verify //
                 //-----------------------------------------------------//
                 for (int year = 2021; year <= 2022; ++year) {
-                    printf("\t\tRetrieving time series for year %d ", year);
+                    int yearIndex = year - 2021;
+                    printf("\t\t\tRetrieving time series for year %d ", year);
                     printf("with %s\n", api == NEW_API ? "ztsRetrieve" : tsType == REGULAR ? "zrrtsxd" : "zritsxd");
                     if (api == OLD_API) {
-                        numvals = 365;
-                        memset(dvalues, 0, numberValues * sizeof(double));
+                        memset(values, 0, numberValues * sizeof(double));
                         if (tsType == REGULAR) {
                             zrrtsxd_(
                                 ifltab,                          // <-> file table
-                                pathnames[REGULAR],              //  -> dataset name
-                                startDate[year - 2021],          //  -> date of start of time window
+                                pathnames[api][tsType],          //  -> dataset name
+                                startDate[yearIndex],            //  -> date of start of time window
                                 "0001",                          //  -> time of start of time window
-                                &numvals,                        // <-> max number of values to retrieve / number of values retrieved
-                                dvalues,                         // <-  values array
-                                flags,                           // <-  quality flags array
+                                &numberValues,                   // <-> max number of values to retrieve / number of values retrieved
+                                values,                          // <-  values array
+                                quality,                         // <-  quality flags array
                                 &readFlags,                      //  -> whether to retrieve quality flags if they exist (0/1)
                                 &readFlags,                      // <-  whether quality flags were retrieved (0/1)
                                 unit2,                           // <-  data unit
@@ -471,11 +585,11 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                                 &offsetMinutes,                  // <-  offset into interval of the time of each value
                                 &compressionType,                // <-  compression method used if values were compressed in file
                                 &status,                         // <-  status (0=success)
-                                strlen(pathnames[REGULAR]),      //  -> size of dataset name string
-                                strlen(startDate[year - 2021]),  //  -> size of time window start date string
-                                strlen("0001"),                  //  -> size of time window start time string
-                                sizeof(unit2),                   //  -> size of unit string
-                                sizeof(dataType2));              //  -> size of data type string
+                                strlen(pathnames[api][tsType]),  //  -> fortran-required size of dataset name parameter
+                                strlen(startDate[yearIndex]),    //  -> fortran-required size of time window start date parameter
+                                strlen("0001"),                  //  -> fortran-required size of time window start time parameter
+                                sizeof(unit2),                   //  -> fortran-required size of unit parameter
+                                sizeof(dataType2));              //  -> fortran-required size of data type parameter
                             assert(status == STATUS_OKAY);
                             //-----------------------------------------------------------------//
                             // create the times array from:                                    //
@@ -484,52 +598,52 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                             //  - the interval size in minutes                                 //
                             //  - the offset                                                   //
                             //-----------------------------------------------------------------//
-                            for (int i = 0; i < numvals; ++i) {
+                            for (int i = 0; i < numberValues; ++i) {
                                 times[i] = jan_01_2021_0000 + offsetMinutes + i * 1440;
                             }
                         }
                         else {
-                            int startJul  = dateToJulian(startDate[year - 2021]);
-                            int startTime = 1;
-                            int endJul    = dateToJulian(endDate[year - 2021]);
-                            int endTime   = 1440;
+                            startJul     = dateToJulian(startDate[yearIndex]);
+                            startMinutes = 1;
+                            endJul       = dateToJulian(endDate[yearIndex]);
+                            endMinutes   = 1440;
                             zritsxd_(
-                                ifltab,                        // <-> file table
-                                pathnames[IRREGULAR],          //  -> dataset name
-                                &startJul,                     //  -> days since 31Dec1899 of start of time window
-                                &startTime,                    //  -> minutes into day of start of time window
-                                &endJul,                       //  -> days since 31Dec1899 of end of time window
-                                &endTime,                      //  -> minutes into day of end of time window
-                                times,                         // <-  times array as minutes offset from base date
-                                dvalues,                       // <-  values array
-                                &numberValues,                 //  -> max number of values to return
-                                &numvals,                      // <-  number of values returned
-                                &basedate,                     // <-  days since 31Dec1899 of time of first value
-                                flags,                         // <-  quality flags array
-                                &readFlags,                    //  -> whether to retrieve quality flags if they exist (0/1)
-                                &readFlags,                    // <-  whether quality flags were retrieved (0/1)
-                                unit2,                         // <-  data unit
-                                dataType2,                     // <-  data type
-                                userHeader,                    // <-  user header array
-                                &userHeaderSize,               //  -> max number of user header elements to retrieve
-                                &userHeaderNumber,             // <-  number of user header elements retrieved
-                                &readFlag,                     //  -> read method (0=time window, 1=tw+prev, 2=tw+next 3=tw+prev+next)
-                                &status,                       // <-  status (0=success)
-                                strlen(pathnames[IRREGULAR]),  //  -> size of dataset name string
-                                sizeof(unit2),                 //  -> size of unit string
-                                sizeof(dataType2));            //  -> size of data type string
+                                ifltab,                         // <-> file table
+                                pathnames[api][tsType],         //  -> dataset name
+                                &startJul,                      //  -> days since 31Dec1899 of start of time window
+                                &startMinutes,                  //  -> minutes into day of start of time window
+                                &endJul,                        //  -> days since 31Dec1899 of end of time window
+                                &endMinutes,                    //  -> minutes into day of end of time window
+                                times,                          // <-  times array as minutes offset from base date
+                                values,                         // <-  values array
+                                &numberValues,                  //  -> max number of values to return
+                                &numberValues,                  // <-  number of values returned
+                                &basedate,                      // <-  days since 31Dec1899 of time of first value
+                                quality,                        // <-  quality flags array
+                                &readFlags,                     //  -> whether to retrieve quality flags if they exist (0/1)
+                                &readFlags,                     // <-  whether quality flags were retrieved (0/1)
+                                unit2,                          // <-  data unit
+                                dataType2,                      // <-  data type
+                                userHeader,                     // <-  user header array
+                                &userHeaderSize,                //  -> max number of user header elements to retrieve
+                                &userHeaderNumber,              // <-  number of user header elements retrieved
+                                &readFlag,                      //  -> read method (0=time window, 1=tw+prev, 2=tw+next 3=tw+prev+next)
+                                &status,                        // <-  status (0=success)
+                                strlen(pathnames[api][tsType]), //  -> fortran-required size of dataset name parameter
+                                sizeof(unit2),                  //  -> fortran-required size of unit parameter
+                                sizeof(dataType2));             //  -> fortran-required size of data type parameter
                             assert(status == STATUS_OKAY);
                             //-----------------------------------------------------------------//
                             // add the base date (in minutes) to each value in the times array //
                             //-----------------------------------------------------------------//
-                            for (int i = 0; i < numvals; ++i) {
+                            for (int i = 0; i < numberValues; ++i) {
                                 times[i] += basedate * 1440;
                             }
                         }
                         headerBuf = userHeaderToString(userHeader, userHeaderNumber);
                         assert(headerBuf != NULL);
                         assert(strlen(headerBuf) > 0);
-                        dv = dvalues;
+                        dv = values;
                         t = times;
                     }
                     else {
@@ -537,10 +651,10 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                         // create a TSS for retrieving the record //
                         //----------------------------------------//
                         tss = zstructTsNewTimes(
-                            pathnames[REGULAR],
-                            startDate[year - 2021],
+                            pathnames[api][tsType],
+                            startDate[yearIndex],
                             "0001",
-                            endDate[year - 2021],
+                            endDate[yearIndex],
                             "2400");
                         assert(tss != NULL);
                         //--------------------------//
@@ -558,7 +672,6 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                         assert(strlen(headerBuf) > 0);
                         dv = tss->doubleValues;
                         t = tss->times;
-                        numvals = tss->numberValues;
                     }
                     char* currentVerticalDatum = extractFromDelimitedString(
                         &headerBuf,
@@ -579,7 +692,7 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                         assert(!strcmp(currentVerticalDatum, CVERTICAL_DATUM_NAVD88));
                         break;
                     }
-                    printf("\t\t\tValues were retrieved with native datum of %s and current datum of %s\n", vdi.nativeDatum, currentVerticalDatum);
+                    printf("\t\t\t\tValues were retrieved with native datum of %s and current datum of %s\n", vdi.nativeDatum, currentVerticalDatum);
                     if (currentVerticalDatum != vdi.nativeDatum) {
                         free(currentVerticalDatum);
                     }
@@ -610,7 +723,7 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                     // otherwise they should be in the working vertical   //
                     // datum                                              //
                     //----------------------------------------------------//
-                    for (int i = 0; i < numvals; i+= 30) {
+                    for (int i = 0; i < numberValues; i+= 30) {
                         switch (workingVerticalDatum) {
                         case IVERTICAL_DATUM_UNSET:
                             expectedValue = (i % 365) + 1 - vdi.offsetToNgvd29;
@@ -637,38 +750,38 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                 // the values                                          //
                 //-----------------------------------------------------//
                 //
-                // *****DSS*** zrrtsi6:  WARNING  - ELEVATION VALUES ARE IN MULTIPLE NATIVE VERTICAL DATUMS
-                // USE WITH CAUTION!
+                // *****DSS*** zrrtsi6:  WARNING  - Elevation values are in multiple native vertical datums
+                // Use with caution!
                 //
-                printf("\t\tRetrieving time series that crosses record boundaries ");
+                printf("\t\t\tRetrieving time series that crosses record boundaries ");
                 printf("with %s\n", api == NEW_API ? "ztsRetrieve" : tsType == REGULAR ? "zrrtsxd" : "zritsxd");
                 if (api == OLD_API) {
-                    numvals = 21;
-                    memset(dvalues, 0, numberValues * sizeof(double));
+                    numberValues = 21; // 21Dec -- 10Jan
+                    memset(values, 0, numberValues * sizeof(double));
                     if (tsType == REGULAR) {
                         zrrtsxd_(
-                            ifltab,                      // <-> file table
-                            pathnames[REGULAR],          //  -> dataset name
-                            "21Dec2021",                 //  -> date of start of time window
-                            "0001",                      //  -> time of start of time window
-                            &numvals,                    // <-> max number of values to retrieve / number of values retrieved
-                            dvalues,                     // <-  values array
-                            flags,                       // <-  quality flags array
-                            &readFlags,                  //  -> whether to retrieve quality flags if they exist (0/1)
-                            &readFlags,                  // <-  whether quality flags were retrieved (0/1)
-                            unit2,                       // <-  data unit
-                            dataType2,                   // <-  data type
-                            userHeader,                  // <-  user header array
-                            &userHeaderSize,             //  -> max number of user header elements to retrieve
-                            &userHeaderNumber,           // <-  number of user header elements retrieved
-                            &offsetMinutes,              // <-  offset into interval of the time of each value
-                            &compressionType,            // <-  compression method used if values were compressed in file
-                            &status,                     // <-  status (0=success)
-                            strlen(pathnames[REGULAR]),  //  -> size of dataset name string
-                            strlen("21Dec2021"),         //  -> size of time window start date string
-                            strlen("0001"),              //  -> size of time window start time string
-                            sizeof(unit2),               //  -> size of unit string
-                            sizeof(dataType2));          //  -> size of data type string
+                            ifltab,                         // <-> file table
+                            pathnames[api][tsType],         //  -> dataset name
+                            "21Dec2021",                    //  -> date of start of time window
+                            "0001",                         //  -> time of start of time window
+                            &numberValues,                  // <-> max number of values to retrieve / number of values retrieved
+                            values,                         // <-  values array
+                            quality,                        // <-  quality flags array
+                            &readFlags,                     //  -> whether to retrieve quality flags if they exist (0/1)
+                            &readFlags,                     // <-  whether quality flags were retrieved (0/1)
+                            unit2,                          // <-  data unit
+                            dataType2,                      // <-  data type
+                            userHeader,                     // <-  user header array
+                            &userHeaderSize,                //  -> max number of user header elements to retrieve
+                            &userHeaderNumber,              // <-  number of user header elements retrieved
+                            &offsetMinutes,                 // <-  offset into interval of the time of each value
+                            &compressionType,               // <-  compression method used if values were compressed in file
+                            &status,                        // <-  status (0=success)
+                            strlen(pathnames[api][tsType]), //  -> fortran-required size of dataset name parameter
+                            strlen("21Dec2021"),            //  -> fortran-required size of time window start date parameter
+                            strlen("0001"),                 //  -> fortran-required size of time window start time parameter
+                            sizeof(unit2),                  //  -> fortran-required size of unit parameter
+                            sizeof(dataType2));             //  -> fortran-required size of data type parameter
                         assert(status == STATUS_OKAY);
                         //-----------------------------------------------------------------//
                         // create the times array from:                                    //
@@ -677,61 +790,61 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                         //  - the interval size in minutes                                 //
                         //  - the offset                                                   //
                         //-----------------------------------------------------------------//
-                        for (int i = 0; i < numvals; ++i) {
+                        for (int i = 0; i < numberValues; ++i) {
                             times[i] = dec_21_2021_0000 + offsetMinutes + i * 1440;
                         }
                     }
                     else {
-                        int startJul = dateToJulian("21Dec2021");
-                        int startTime = 1;
-                        int endJul = dateToJulian("10Jan2022");
-                        int endTime = 1440;
+                        startJul     = dateToJulian("21Dec2021");
+                        startMinutes = 1;
+                        endJul       = dateToJulian("10Jan2022");
+                        endMinutes = 1440;
                         zritsxd_(
-                            ifltab,                        // <-> file table
-                            pathnames[IRREGULAR],          //  -> dataset name
-                            &startJul,                     //  -> days since 31Dec1899 of start of time window
-                            &startTime,                    //  -> minutes into day of start of time window
-                            &endJul,                       //  -> days since 31Dec1899 of end of time window
-                            &endTime,                      //  -> minutes into day of end of time window
-                            times,                         // <-  times array as minutes offset from base date
-                            dvalues,                       // <-  values array
-                            &numberValues,                 //  -> max number of values to return
-                            &numvals,                      // <-  number of values returned
-                            &basedate,                     // <-  days since 31Dec1899 of time of first value
-                            flags,                         // <-  quality flags
-                            &readFlags,                    //  -> whether to retrieve quality flags if they exist (0/1)
-                            &readFlags,                    // <-  whether quality flags were retrieved (0/1)
-                            unit2,                         // <-  data unit
-                            dataType2,                     // <-  data type
-                            userHeader,                    // <-  user header array
-                            &userHeaderSize,               //  -> max number of user header elements to retrieve
-                            &userHeaderNumber,             // <-  number of user header elements retrieved
-                            &readFlag,                     //  -> read method (0=time window, 1=tw+prev, 2=tw+next 3=tw+prev+next)
-                            &status,                       // <-  status (0=success)
-                            strlen(pathnames[IRREGULAR]),  //  -> size of dataset name string
-                            sizeof(unit2),                 //  -> size of unit string
-                            sizeof(dataType2));            //  -> size of data type string
+                            ifltab,                         // <-> file table
+                            pathnames[api][tsType],         //  -> dataset name
+                            &startJul,                      //  -> days since 31Dec1899 of start of time window
+                            &startMinutes,                  //  -> minutes into day of start of time window
+                            &endJul,                        //  -> days since 31Dec1899 of end of time window
+                            &endMinutes,                    //  -> minutes into day of end of time window
+                            times,                          // <-  times array as minutes offset from base date
+                            values,                         // <-  values array
+                            &numberValues,                  //  -> max number of values to return
+                            &numberValues,                  // <-  number of values returned
+                            &basedate,                      // <-  days since 31Dec1899 of time of first value
+                            quality,                        // <-  quality flags
+                            &readFlags,                     //  -> whether to retrieve quality flags if they exist (0/1)
+                            &readFlags,                     // <-  whether quality flags were retrieved (0/1)
+                            unit2,                          // <-  data unit
+                            dataType2,                      // <-  data type
+                            userHeader,                     // <-  user header array
+                            &userHeaderSize,                //  -> max number of user header elements to retrieve
+                            &userHeaderNumber,              // <-  number of user header elements retrieved
+                            &readFlag,                      //  -> read method (0=time window, 1=tw+prev, 2=tw+next 3=tw+prev+next)
+                            &status,                        // <-  status (0=success)
+                            strlen(pathnames[api][tsType]), //  -> fortran-required size of dataset name parameter
+                            sizeof(unit2),                  //  -> fortran-required size of unit parameter
+                            sizeof(dataType2));             //  -> fortran-required size of data type parameter
                         assert(status == STATUS_OKAY);
                         //-----------------------------------------------------------------//
                         // add the base date (in minutes) to each value in the times array //
                         //-----------------------------------------------------------------//
-                        for (int i = 0; i < numvals; ++i) {
+                        for (int i = 0; i < numberValues; ++i) {
                             times[i] += basedate * 1440;
                         }
                     }
                     headerBuf = userHeaderToString(userHeader, userHeaderNumber);
                     assert(headerBuf != NULL);
                     assert(strlen(headerBuf) > 0);
-                    dv = dvalues;
+                    dv = values;
                     t = times;
                 }
                 else {
                     tss = zstructTsNewTimes(
-                        pathnames[REGULAR],  // dataset name
-                        "21Dec2021",         // start date
-                        "0001",              // start time
-                        "10Jan2022",         // end date 
-                        "2400");             // end time
+                        pathnames[api][tsType],  // dataset name
+                        "21Dec2021",             // start date
+                        "0001",                  // start time
+                        "10Jan2022",             // end date 
+                        "2400");                 // end time
                     assert(tss != NULL);
                     status = ztsRetrieve(
                         ifltab,              // file table
@@ -745,7 +858,7 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                     assert(strlen(headerBuf) > 0);
                     dv = tss->doubleValues;
                     t = tss->times;
-                    numvals = tss->numberValues;
+                    numberValues = tss->numberValues;
                 }
                 //----------------------------------------------------//
                 // verify the cross-boundary data values              //
@@ -783,7 +896,7 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                     vdi.nativeDatum,
                     currentVerticalDatum ? currentVerticalDatum : vdi.nativeDatum);
                 free(currentVerticalDatum);
-                for (int i = 0; i < numvals; ++i) {
+                for (int i = 0; i < numberValues; ++i) {
                     switch (workingVerticalDatum) {
                     case IVERTICAL_DATUM_UNSET:
                         if (t[i] < jan_01_2022_0001) {
@@ -809,11 +922,12 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
         }
     }
     zclose(ifltab);
+    remove(filename);
     zset("MLVL", "", messageLevel);
-    free(dvalues);
+    free(values);
     free(times);
     free(userHeader);
-    free(flags);
+    free(quality);
 }
 void testStoreRetrieveTimeSeries() {
 // test storing and retriving time series data
@@ -825,6 +939,7 @@ void testStoreRetrieveTimeSeries() {
     char *filename[]      = {"v6_c.dss", "v7_c.dss"};
     char *pathnames[2][2] = {{"//TestTsLoc/Elev//1Hour/Doubles/",    "//TestTsLoc/Elev//1Hour/Floats/"},
                              {"//TestTsLoc/Elev//IR-MONTH/Doubles/", "//TestTsLoc/Elev//IR-MONTH/Floats/"}};
+    char nativeDatumInFile[16];
     double dvalues[3][6]  = {{1000,1001,1002,1003,1004,1005},                           // ft
                              {304.8,305.1048,305.4096,305.7144,306.0192,306.324},       // m
                              {1000,1001,1002,1003,1004,1005}};                          // cfs
@@ -865,18 +980,22 @@ void testStoreRetrieveTimeSeries() {
         "    <to-datum>NGVD-29</to-datum>\n"
         "    <value>1.07</value>\n"
         "  </offset>\n"
-        "</vertical-datum-info>\n"
+        "</vertical-datum-info>\n",
+
+        ""
     };
-    char *verticalDatums[] = {
+    char *currentVerticalDatums[] = {
         CVERTICAL_DATUM_NAVD88,
         CVERTICAL_DATUM_NGVD29,
-        "Pensacola"
+        "Pensacola",
+        CVERTICAL_DATUM_UNSET
     };
     int unitCount = sizeof(unit) / sizeof(unit[0]);
     int xml_count = sizeof(xml) / sizeof(xml[0]);
-    int verticalDatumCount = sizeof(verticalDatums) / sizeof(verticalDatums[0]);
+    int currentVerticalDatumCount = sizeof(currentVerticalDatums) / sizeof(currentVerticalDatums[0]);
     int count = 0;
     int expectSuccess = TRUE;
+    memset(nativeDatumInFile, 0, sizeof(nativeDatumInFile));
 
     //
     // loop variables
@@ -885,14 +1004,16 @@ void testStoreRetrieveTimeSeries() {
     //     0 = DSS 6
     //     1 = DSS 7
     //
-    // j = xml blocks
+    // j = xml blocks for native vertical datum
     //     0 = NGVD-29 native
     //     1 = OTHER native with local datum named "Pensacola"
+    //     2 = None
     //
-    // k = vertical datum
+    // k = current (aka default/session/working) vertical datum
     //     0 = NAVD-88
     //     1 = NGVD-29
     //     2 = OTHER (Pensacola)
+    //     3 = UNSET
     //     k2  (k + 1) % 3
     //     k3  (k + 2) % 3
     //
@@ -922,9 +1043,9 @@ void testStoreRetrieveTimeSeries() {
     for (int i = 0; i < 2; ++i) {
         remove(filename[i]);
         for (int j = 0; j < xml_count; ++j) {
-            for (int k = 0; k < verticalDatumCount; ++k) {
-                int k2 = (k+1) % verticalDatumCount;
-                int k3 = (k+2) % verticalDatumCount;
+            for (int k = 0; k < currentVerticalDatumCount; ++k) {
+                int k2 = (k+1) % currentVerticalDatumCount;
+                int k3 = (k+2) % currentVerticalDatumCount;
                 for (int l = 0; l < unitCount; ++ l) {
                     for (int m = 0; m < 3; ++m) {
                         for (int n = 0; n < 2; ++n) {
@@ -933,17 +1054,84 @@ void testStoreRetrieveTimeSeries() {
                                     ++count;
                                     len = 0;
                                     headerBuf = NULL;
+                                    nativeDatumInFile[0] = '\0';
+                                    if (i == 0) {
+                                        //-------//
+                                        // DSS 6 //
+                                        //-------//
+                                        status = zopen6(ifltab, filename[i]);
+                                        assert(status == STATUS_OKAY);
+                                        //--------------------------------------------//
+                                        // get native datum in file for this pathname //
+                                        //--------------------------------------------//
+                                        tss = zstructTsNewTimes(
+                                            pathnames[n][o],
+                                            startDate,
+                                            startTime,
+                                            endDate,
+                                            endTime);
+                                        assert(tss != NULL);
+                                        zset("VDTM", CVERTICAL_DATUM_UNSET, 0);
+                                        status = ztsRetrieve(
+                                            ifltab,
+                                            tss,
+                                            n == 0 ? -1 : 0, // trim regular time series
+                                            0,
+                                            1);
+                                        if (status == STATUS_OKAY) {
+                                            headerBuf = userHeaderToString(tss->userHeader, tss->userHeaderNumber);
+                                            if (headerBuf != NULL) {
+                                                char* compressedVdi = extractFromDelimitedString(
+                                                    &headerBuf,
+                                                    VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
+                                                    ":",
+                                                    TRUE,
+                                                    FALSE,
+                                                    ';');
+                                                if (compressedVdi) {
+                                                    errmsg = stringToVerticalDatumInfo(&vdi, compressedVdi);
+                                                    assert(errmsg == NULL);
+                                                    strcpy(nativeDatumInFile, vdi.nativeDatum);
+                                                    free(compressedVdi);
+                                                }
+                                                free(headerBuf);
+                                            }
+                                            headerBuf = NULL;
+                                        }
+                                        zstructFree(tss);
+                                    }
+                                    else {
+                                        //-------//
+                                        // DSS 7 //
+                                        //-------//
+                                        status = zopen7(ifltab, filename[i]);
+                                        assert(status == STATUS_OKAY);
+                                        //--------------------------------------------//
+                                        // get native datum in file for this pathname //
+                                        //--------------------------------------------//
+                                        zStructLocation* ls = zstructLocationNew(pathnames[n][o]);
+                                        zlocationRetrieve(ifltab, ls);
+                                        if (ls) {
+                                            if (ls->supplemental) {
+                                                char* compressedVdi = extractFromDelimitedString(
+                                                    &ls->supplemental,
+                                                    VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
+                                                    ":",
+                                                    TRUE,
+                                                    FALSE,
+                                                    ';');
+                                                if (compressedVdi) {
+                                                    stringToVerticalDatumInfo(&vdi, compressedVdi);
+                                                    strcpy(nativeDatumInFile, vdi.nativeDatum);
+                                                    free(compressedVdi);
+                                                }
+                                            }
+                                            zstructFree(ls);
+                                        }
+                                    }
                                     //------------------------//
                                     // create the time series //
                                     //------------------------//
-                                    // printf("%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n", i,j,k,l,m,n,o,p);
-                                    if (i == 0) {
-                                        status = zopen6(ifltab, filename[i]);
-                                    }
-                                    else {
-                                        status = zopen7(ifltab, filename[i]);
-                                    }
-                                    assert(status == STATUS_OKAY);
                                     if (n == 0) {
                                         if (o == 0) {
                                             tss = zstructTsNewRegDoubles(
@@ -991,32 +1179,34 @@ void testStoreRetrieveTimeSeries() {
                                         }
                                     }
                                     assert(tss != NULL);
+                                    int K = k;
                                     //--------------------------------//
                                     // set the default vertical datum //
                                     //--------------------------------//
-                                    int K = k;
-                                    zset("VDTM", verticalDatums[K], 0);
+                                    zset("VDTM", currentVerticalDatums[K], 0);
                                     if (p == 0) {
                                         //------------------------------------------------//
                                         // add the vertical datum info to the user header //
                                         //------------------------------------------------//
-                                        errmsg = gzipAndEncode(&compressed, xml[j]);
-                                        assert(errmsg == NULL);
-                                        len = VERTICAL_DATUM_INFO_USER_HEADER_PARAM_LEN + strlen(compressed) + 2;
-                                        headerBuf = (char *)malloc(len+1);
-                                        memset(headerBuf, 0, len+1);
-                                        status = insertIntoDelimitedString(
-                                            &headerBuf,
-                                            len+1,
-                                            VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
-                                            compressed,
-                                            ":",
-                                            FALSE,
-                                            ';');
-                                        assert(status == 0);
-                                        free(compressed);
-                                        tss->userHeader = stringToUserHeader(headerBuf, &tss->userHeaderNumber);
-                                        tss->allocated[zSTRUCT_userHeader] = TRUE;
+                                        if (strlen(xml[j]) > 0) {
+                                            errmsg = gzipAndEncode(&compressed, xml[j]);
+                                            assert(errmsg == NULL);
+                                            len = VERTICAL_DATUM_INFO_USER_HEADER_PARAM_LEN + strlen(compressed) + 2;
+                                            headerBuf = (char*)malloc(len + 1);
+                                            memset(headerBuf, 0, len + 1);
+                                            status = insertIntoDelimitedString(
+                                                &headerBuf,
+                                                len + 1,
+                                                VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
+                                                compressed,
+                                                ":",
+                                                FALSE,
+                                                ';');
+                                            assert(status == 0);
+                                            free(compressed);
+                                            tss->userHeader = stringToUserHeader(headerBuf, &tss->userHeaderNumber);
+                                            tss->allocated[zSTRUCT_userHeader] = TRUE;
+                                        }
                                     }
                                     if (m > 0) {
                                         //----------------------------------------------------------//
@@ -1027,19 +1217,19 @@ void testStoreRetrieveTimeSeries() {
                                             headerBuf ? &headerBuf : NULL,
                                             len,
                                             VERTICAL_DATUM_USER_HEADER_PARAM,
-                                            verticalDatums[K],
+                                            currentVerticalDatums[K],
                                             ":",
                                             FALSE,
                                             ';');
                                         if (status != 0) {
                                             if (headerBuf) {
                                                 int oldlen = len;
-                                                len += VERTICAL_DATUM_USER_HEADER_PARAM_LEN + strlen(verticalDatums[K]) + 3;
+                                                len += VERTICAL_DATUM_USER_HEADER_PARAM_LEN + strlen(currentVerticalDatums[K]) + 3;
                                                 headerBuf = (char *)realloc(headerBuf, len);
                                                 memset(headerBuf+oldlen, 0, len-oldlen);
                                             }
                                             else {
-                                                len = VERTICAL_DATUM_USER_HEADER_PARAM_LEN + strlen(verticalDatums[K]) + 3;
+                                                len = VERTICAL_DATUM_USER_HEADER_PARAM_LEN + strlen(currentVerticalDatums[K]) + 3;
                                                 headerBuf = (char *)malloc(len);
                                                 headerBuf[0] = '\0';
                                             }
@@ -1048,7 +1238,7 @@ void testStoreRetrieveTimeSeries() {
                                                 &headerBuf,
                                                 len,
                                                 VERTICAL_DATUM_USER_HEADER_PARAM,
-                                                verticalDatums[K],
+                                                currentVerticalDatums[K],
                                                 ":",
                                                 FALSE,
                                                 ';');
@@ -1063,7 +1253,7 @@ void testStoreRetrieveTimeSeries() {
                                         // override default and user header datums with unit spec //
                                         //--------------------------------------------------------//
                                         K = k3;
-                                        sprintf(unitSpec, "U=%s|V=%s", unit[l], verticalDatums[K]);
+                                        sprintf(unitSpec, "U=%s|V=%s", unit[l], currentVerticalDatums[K]);
                                         free(tss->units);
                                         tss->units = mallocAndCopy(unitSpec);
                                     }
@@ -1071,25 +1261,55 @@ void testStoreRetrieveTimeSeries() {
                                     // figure out whether expect ztsStore to succeeded //
                                     //-------------------------------------------------//
                                     stringToVerticalDatumInfo(&vdi, xml[j]);
-                                    if (i == 1 && j == 1 && k+l+n+m+o+p == 0) {
-                                        //-------------------------------------------------------------------------------//
-                                        // change of vertical datum information in DSS 7, need to update location record //
-                                        //-------------------------------------------------------------------------------//
+                                    if ((j == 2 || p == 1) && strlen(nativeDatumInFile) > 0) {
+                                        //----------------------------------------------------------------------//
+                                        // incoming values have no native vertical datum, but data in file does //
+                                        //----------------------------------------------------------------------//
                                         expectSuccess = FALSE;
                                     }
-                                    else if (i == 0 && p == 1 && headerBuf != NULL) {
-                                        //---------------------------------------------------------------------------------//
-                                        // current vertical datum in header, but no vertical datum info in header in DSS 6 //
-                                        //---------------------------------------------------------------------------------//
+                                    else if (strlen(nativeDatumInFile) > 0 && strcmp(nativeDatumInFile, vdi.nativeDatum)) {
+                                        //-----------------------------------------------------------------//
+                                        // incoming values have different native datum than values in file //
+                                        //-----------------------------------------------------------------//
                                         expectSuccess = FALSE;
                                     }
-                                    else if (!strcmp(vdi.nativeDatum, verticalDatums[K])) {
-                                        //-------------------------------------//
-                                        // same datum, no conversion necessary //
-                                        //-------------------------------------//
+                                    else if (i == 0 && j == 1 && p == 0) {
+                                        //---------------------------------------------//
+                                        // change of vertical datum information for v6 //
+                                        //                                             //
+                                        // delete time series record and re-try        //
+                                        //---------------------------------------------//
+                                        expectSuccess = FALSE;
+                                    }
+                                    else if (i == 1 && j == 1 && k + l + m + n + o + p == 0) {
+                                        //---------------------------------------------//
+                                        // change of vertical datum information for v7 //
+                                        //                                             //
+                                        // v7 update location record and re-try        //
+                                        //---------------------------------------------//
+                                        expectSuccess = FALSE;
+                                    }
+                                    else if (i == 0 && p == 1) {
+                                        //------------------------------------------------------//
+                                        // no VDI in header in DSS 6 (but VDI in file with p=0) //
+                                        //------------------------------------------------------//
+                                        expectSuccess = FALSE;
+                                    }
+                                    else if (!strcmp(vdi.nativeDatum, currentVerticalDatums[K])) {
+                                        //---------------------------------------------------------------------------//
+                                        // current datum is same as in native datum in file, no conversion necessary //
+                                        //---------------------------------------------------------------------------//
                                         expectSuccess = TRUE;
                                     }
-                                    else if (strcmp(verticalDatums[K], CVERTICAL_DATUM_NAVD88) && strcmp(verticalDatums[K], CVERTICAL_DATUM_NGVD29)) {
+                                    else if (K == 3 && p == 1 && strlen(vdi.nativeDatum) > 0) {
+                                        //---------------------------------------------------//
+                                        // VDI in file, but no incoming VDI or current datum //
+                                        //---------------------------------------------------//
+                                        expectSuccess = FALSE;
+                                    }
+                                    else if (strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_NAVD88) && 
+                                             strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_NGVD29) &&
+                                             strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_UNSET)) {
                                         //--------------------------//
                                         // requested datum is local //
                                         //--------------------------//
@@ -1106,7 +1326,7 @@ void testStoreRetrieveTimeSeries() {
                                             expectSuccess = TRUE;
                                         }
                                     }
-                                    else if (!strcmp(verticalDatums[K], CVERTICAL_DATUM_NAVD88) && vdi.offsetToNavd88 != UNDEFINED_VERTICAL_DATUM_VALUE) {
+                                    else if (!strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_NAVD88) && vdi.offsetToNavd88 != UNDEFINED_VERTICAL_DATUM_VALUE) {
                                         //-------------------------------------------------------------//
                                         // specified datum is NAVD-88 and we have an offset to NAVD-88 //
                                         //-------------------------------------------------------------//
@@ -1117,7 +1337,7 @@ void testStoreRetrieveTimeSeries() {
                                             expectSuccess = FALSE;
                                         }
                                     }
-                                    else if (!strcmp(verticalDatums[K], CVERTICAL_DATUM_NGVD29) && vdi.offsetToNgvd29 != UNDEFINED_VERTICAL_DATUM_VALUE) {
+                                    else if (!strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_NGVD29) && vdi.offsetToNgvd29 != UNDEFINED_VERTICAL_DATUM_VALUE) {
                                         //-------------------------------------------------------------//
                                         // specified datum is NGVD-29 and we have an offset to NGVD-29 //
                                         //-------------------------------------------------------------//
@@ -1153,6 +1373,7 @@ void testStoreRetrieveTimeSeries() {
                                     zclose(ifltab);
                                     zstructFree(tss);
                                     if (status == STATUS_OKAY) {
+                                        //strcpy(nativeDatumInFile, vdi.nativeDatum);
                                         //--------------------------------------------------------//
                                         // retrieve the time series in the default vertical datum //
                                         //-------------------------------------------------------//
@@ -1173,7 +1394,7 @@ void testStoreRetrieveTimeSeries() {
                                         //------------------------------------------------------------//
                                         // set the default vertical datum to the datum we stored with //
                                         //------------------------------------------------------------//
-                                        zset("VDTM", verticalDatums[K], 0);
+                                        zset("VDTM", currentVerticalDatums[K], 0);
                                         status = ztsRetrieve(
 											ifltab,
 											tss,

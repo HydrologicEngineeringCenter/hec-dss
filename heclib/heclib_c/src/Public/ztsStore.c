@@ -436,12 +436,23 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 				}
 				zstructFree(ls);
 			}
+			if (vdiLoc && !vdiTs) {
+				char errmsg[1024];
+				sprintf(
+					errmsg,
+					"\nIncoming data does not specify a native vertical datum.\n"
+					"Cannot store to a location that already has a native vertical datum.\n"
+					"Conversion to datum '%s' was not performed.\n"
+					"No data stored.",
+					vdiLoc->nativeDatum);
+				return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID,
+					zdssErrorCodes.VERTICAL_DATUM_ERROR, 0,
+					0, zdssErrorSeverity.WARNING, tss->pathname,
+					errmsg);
+			}
 			if (vdiTs && vdiLoc) {
 				zquery("VDOW", "", 0, &allowOverwriteLocationVerticalDatum);
-				if (allowOverwriteLocationVerticalDatum) {
-					vdi = vdiTs;
-				}
-				else {
+				if (!allowOverwriteLocationVerticalDatum) {
 					//-------------------------------------------------------------------//
 					// We have 2 sources of information, abort if they're not equivalent //
 					//-------------------------------------------------------------------//
@@ -522,15 +533,9 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 							0, zdssErrorSeverity.WARNING, tss->pathname,
 							errmsg);
 					}
-					vdi = vdiLoc;
 				}
 			}
-			else {
-				//--------------------------//
-				// use the only one we have //
-				//--------------------------//
-				vdi = vdiTs ? vdiTs : vdiLoc;
-			}
+			vdi = vdiTs;
 			if (vdi) {
 				double offset = 0.;
 				//----------------------------------//
@@ -553,6 +558,32 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 						break;
 					case IVERTICAL_DATUM_NGVD29 :
 						offset = vdi->offsetToNgvd29;
+						break;
+					case IVERTICAL_DATUM_UNSET :
+						if (vdiTs) {
+							//----------------------------------------------------//
+							// at this point there is an incoming VDI and either  //
+							// - no location VDI, or                              //
+							// - the location VDI is the same as the incoming VDI //
+							//----------------------------------------------------//
+							offset = 0;
+						}
+						else {
+							char errmsg[256];
+							sprintf(
+								errmsg,
+								"\nCannot convert values with no native vertical datum to %s.\n"
+								"Datum conversion could not be performed.\n"
+								"No data stored.",
+								vdi->nativeDatum);
+							if (vdiTs && (vdiTs != &_vdiTs)) {
+								free(vdiTs);
+							}
+							return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID,
+								zdssErrorCodes.VERTICAL_DATUM_ERROR, 0,
+								0, zdssErrorSeverity.WARNING, tss->pathname,
+								errmsg);
+						}
 						break;
 					default :
 						if(!strcmp(cvertical_datum, vdi->nativeDatum) || !strcmp(cvertical_datum, CVERTICAL_DATUM_OTHER)) {
