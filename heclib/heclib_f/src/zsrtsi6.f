@@ -319,12 +319,11 @@ C
      *      ' Truncated size = ', size(iuhead_copy)
           end if
         end if
-        nuhead_copy = nuhead
+        nuhead_copy = min(size(iuhead_copy), nuhead)
         iuhead_copy = 0
-        iCopyLen = min(size(iuhead_copy), nuhead)
-        iuhead_copy(:iCopyLen) = iuhead(:iCopyLen)
+        iuhead_copy(:nuhead_copy) = iuhead(:nuhead_copy)
 	  if (ifltab(kswap).ne.0) then
-	    do i = i, icopyLen
+	    do i = i, nuhead_copy
 	      call zswap6(iuhead_copy(i), iuhead_copy(i))
 	    end do
 	  end if
