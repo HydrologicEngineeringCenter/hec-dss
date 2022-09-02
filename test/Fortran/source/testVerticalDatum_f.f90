@@ -65,6 +65,44 @@ module modVerticalDatumInfo
             logical   (kind = 4), intent(out) :: offsetNavd88IsEstimate
         end subroutine stringToVerticalDatumInfo
 
+        subroutine extractVerticalDatumInfoFromUserHeader( &
+            nativeDatum,                                   &
+            unit,                                          &
+            offsetToNavd88,                                &
+            offsetToNavd88IsEstimate,                      &
+            offsetToNgvd29,                                &
+            offsetToNgvd29IsEstimate,                      &
+            userHeader,                                    &
+            userHeaderLen)
+            character (len=16),   intent(in) :: nativeDatum
+            character (len=16),   intent(in) :: unit
+            real      (kind=8),   intent(in) :: offsetToNavd88
+            integer   (kind = 4), intent(in) :: offsetToNavd88IsEstimate
+            real      (kind=8),   intent(in) :: offsetToNgvd29
+            integer   (kind = 4), intent(in) :: offsetToNgvd29IsEstimate
+            integer   (kind = 4), intent(in) :: userHeader(*)
+            integer   (kind = 4), intent(in) :: userHeaderLen
+        end subroutine extractVerticalDatumInfoFromUserHeader
+
+        subroutine getLocationVerticalDatumInfo( &
+            nativeDatum,                                   &
+            unit,                                          &
+            offsetToNavd88,                                &
+            offsetToNavd88IsEstimate,                      &
+            offsetToNgvd29,                                &
+            offsetToNgvd29IsEstimate,                      &
+            fileTable,                                     &
+            pathname)
+            character (len=16),   intent(in)     :: nativeDatum
+            character (len=16),   intent(in)     :: unit
+            real      (kind=8),   intent(in)     :: offsetToNavd88
+            integer   (kind = 4), intent(in)     :: offsetToNavd88IsEstimate
+            real      (kind=8),   intent(in)     :: offsetToNgvd29
+            integer   (kind = 4), intent(in)     :: offsetToNgvd29IsEstimate
+            integer   (kind = 8), intent(in out) :: fileTable(*)
+            character (len = *),  intent(in)     :: pathname
+        end subroutine getLocationVerticalDatumInfo
+
         logical function unitIsFeet(unit)
             character (len = *) :: unit
         end function unitIsFeet
@@ -83,6 +121,50 @@ module modVerticalDatumInfo
             vdi%offsetToNavd88IsEstimate = .false.
             vdi%offsetToNgvd29IsEstimate = .false.
         end subroutine initVerticalDatumInfo
+
+        subroutine extractVdiFromUserHeader( &
+            vdi,                             &
+            userHeader,                      &
+            userHeaderLen)
+            type(verticalDatumInfo)        :: vdi
+            integer (kind = 4), intent(in) :: userHeader(*)
+            integer (kind = 4), intent(in) :: userHeaderLen
+            integer (kind = 4)             :: offsetToNavd88IsEstimate
+            integer (kind = 4)             :: offsetToNgvd29IsEstimate
+            call extractVerticalDatumInfoFromUserHeader( &
+                vdi%nativeDatum,                         &
+                vdi%unit,                                &
+                vdi%offsetToNavd88,                      &
+                offsetToNavd88IsEstimate,                &
+                vdi%offsetToNgvd29,                      &
+                offsetToNgvd29IsEstimate,                &
+                userHeader,                              &
+                userHeaderLen)
+            vdi%offsetToNavd88IsEstimate = offsetToNavd88IsEstimate /= 0
+            vdi%offsetToNgvd29IsEstimate = offsetToNgvd29IsEstimate /= 0
+        end subroutine extractVdiFromUserHeader
+
+        subroutine getLocationVdi( &
+            vdi,                   &
+            fileTable,             &
+            pathname)
+            type(verticalDatumInfo)              :: vdi
+            integer   (kind = 8), intent(in out) :: fileTable(*)
+            character (len = *),  intent(in)     :: pathname
+            integer   (kind = 4)                 :: offsetToNavd88IsEstimate
+            integer   (kind = 4)                 :: offsetToNgvd29IsEstimate
+            call getlocationverticaldatuminfo( &
+                vdi%nativeDatum,               &
+                vdi%unit,                      &
+                vdi%offsetToNavd88,            &
+                offsetToNavd88IsEstimate,      &
+                vdi%offsetToNgvd29,            &
+                offsetToNgvd29IsEstimate,      &
+                fileTable,                     &
+                pathname)
+            vdi%offsetToNavd88IsEstimate = offsetToNavd88IsEstimate /= 0
+            vdi%offsetToNgvd29IsEstimate = offsetToNgvd29IsEstimate /= 0
+        end subroutine getLocationVdi
 
         integer function byteCountToIntCount(byteCount)
             integer :: byteCount
@@ -119,7 +201,7 @@ subroutine testUserHeaderOps
     implicit none
 
     character (len=100) :: cheader, cvalue
-    character (len=72)  :: cheaderShort 
+    character (len=72)  :: cheaderShort
     integer   (kind=4)  :: iheader(25), iheaderShort(18), nhead, status
 
     equivalence (cheader, iheader)
@@ -179,13 +261,13 @@ subroutine testStoreRetrieveTimeSeries()
     character (len=300)     :: errmsg, vdiStr
     character (len=80)      :: filename(2)
     character (len=80)      :: pathnames(2,2)
-    character (len=16)      :: unit(3), type, verticalDatums(3), cVerticalDatum
+    character (len=16)      :: unit(3), type, verticalDatums(4), cVerticalDatum
     character (len=32)      :: unitSpec
     character (len=16)      :: startDate(2), endDate(2)
     character (len=4)       :: startTime, endTime
     character (len=400)     :: userHeaderStr
     logical                 :: readQuality, qualityWasRead, expectSuccess
-    type(verticalDatumInfo) :: vdi(2)
+    type(verticalDatumInfo) :: vdi(3), vdiInFile
 
     equivalence (userHeader, userHeaderStr)
 
@@ -230,23 +312,28 @@ subroutine testStoreRetrieveTimeSeries()
 
     endTime = '2400'
 
-    verticalDatums = (/CVD_NAVD88, CVD_NGVD29, 'Pensacola       '/)
+    verticalDatums = (/CVD_NAVD88, CVD_NGVD29, 'Pensacola       ', CVD_UNSET/)
 
-    do j = 1, 2
+    do j = 1, 3
         call initVerticalDatumInfo(vdi(j))
-        if (j == 1) then
-            vdi(j)%nativeDatum = CVD_NGVD29
-            vdi(j)%unit = 'ft'
-            vdi(j)%offsetToNavd88 = 0.3855
-            vdi(j)%offsetToNavd88IsEstimate = .true.
-        else
-            vdi(j)%nativeDatum = 'Pensacola'
-            vdi(j)%unit = 'ft'
-            vdi(j)%offsetToNavd88 = 1.457
-            vdi(j)%offsetToNavd88IsEstimate = .true.
-            vdi(j)%offsetToNgvd29 = 1.07
-            vdi(j)%offsetToNgvd29IsEstimate = .false.
-        end if
+        select case (j)
+            case (1)
+                vdi(j)%nativeDatum = CVD_NGVD29
+                vdi(j)%unit = 'ft'
+                vdi(j)%offsetToNavd88 = 0.3855
+                vdi(j)%offsetToNavd88IsEstimate = .true.
+                vdi(j)%offsetToNgvd29 = 0
+                vdi(j)%offsetToNgvd29IsEstimate = .false.
+            case (2)
+                vdi(j)%nativeDatum = 'Pensacola'
+                vdi(j)%unit = 'ft'
+                vdi(j)%offsetToNavd88 = 1.457
+                vdi(j)%offsetToNavd88IsEstimate = .true.
+                vdi(j)%offsetToNgvd29 = 1.07
+                vdi(j)%offsetToNgvd29IsEstimate = .false.
+            case (3)
+                ! just leave in initialized state
+        end select
     end do
     !
     ! loop variables
@@ -258,11 +345,13 @@ subroutine testStoreRetrieveTimeSeries()
     ! j = vdi
     !     1 = NGVD-29 native
     !     2 = OTHER native with local datum named "Pensacola"
+    !     3 = None
     !
     ! k = vertical datum
     !     1 = NAVD-88
     !     2 = NGVD-29
     !     3 = OTHER (Pensacola)
+    !     4 = UNSET
     !     k2  mod(k, 3) + 1
     !     k3  mod(k+1, 3) + 1
     !
@@ -292,38 +381,38 @@ subroutine testStoreRetrieveTimeSeries()
     count = 0
     do i = 1, 2
         call deletefile(filename(i), status)
-        do j = 1, 2
-            call verticalDatumInfoToString(       &
-                vdiStr,                           &
-                errmsg,                           &
-                vdi(j)%nativeDatum,               &
-                vdi(j)%unit,                      &
-                vdi(j)%offsetToNgvd29,            &
-                vdi(j)%offsetToNgvd29IsEstimate,  &
-                vdi(j)%offsetToNavd88,            &
-                vdi(j)%offsetToNavd88IsEstimate,  &
-                .true.)
+        do j = 1, 3
+            if (vdi(j)%nativeDatum /= ' ') then
+                call verticalDatumInfoToString(       &
+                    vdiStr,                           &
+                    errmsg,                           &
+                    vdi(j)%nativeDatum,               &
+                    vdi(j)%unit,                      &
+                    vdi(j)%offsetToNgvd29,            &
+                    vdi(j)%offsetToNgvd29IsEstimate,  &
+                    vdi(j)%offsetToNavd88,            &
+                    vdi(j)%offsetToNavd88IsEstimate,  &
+                    .true.)
             call assert(errmsg == ' ')
-            call stringToVerticalDatumInfo(      &
-                vdiStr,                          &
-                errmsg,                          &
-                vdi(j)%nativeDatum,              &
-                vdi(j)%unit,                     &
-                vdi(j)%offsetToNgvd29,           &
-                vdi(j)%offsetToNgvd29IsEstimate, &
-                vdi(j)%offsetToNavd88,           &
-                vdi(j)%offsetToNavd88IsEstimate)
-            call assert(errmsg == ' ')
-            do k = 1, 3
-                k2 = mod(k, 3) + 1
-                k3 = mod(k+1, 3) + 1
+                call stringToVerticalDatumInfo(      &
+                    vdiStr,                          &
+                    errmsg,                          &
+                    vdi(j)%nativeDatum,              &
+                    vdi(j)%unit,                     &
+                    vdi(j)%offsetToNgvd29,           &
+                    vdi(j)%offsetToNgvd29IsEstimate, &
+                    vdi(j)%offsetToNavd88,           &
+                    vdi(j)%offsetToNavd88IsEstimate)
+                call assert(errmsg == ' ')
+            end if
+            do k = 1, 4
+                k2 = mod(k, 4) + 1
+                k3 = mod(k+1, 4) + 1
                 do l = 1, 3
                     do m = 1, 3
                         do n = 1, 2
                             do o = 1, 2
                                 do p = 1, 2
-                                    userHeaderStr = ' '
-                                    unitSpec = unit(l)
                                     count = count + 1
                                     ! write(*,*) i, j, k, l, m, n, o, p
                                     ifltab = 0
@@ -333,16 +422,141 @@ subroutine testStoreRetrieveTimeSeries()
                                         call zopen7(ifltab, filename(i), status)
                                     end if
                                     call assert(status == 0)
+                                    !----------------------------------------------------!
+                                    ! get the native datum in the file for this pathname !
+                                    !----------------------------------------------------!
+                                    if (i == 2) then
+                                        call getLocationVdi(vdiInFile, ifltab, pathnames(o,n))
+                                    else
+                                        call zset('VDTM', CVD_UNSET, 0)
+                                        numberValues = 6
+                                        if (n == 1) then
+                                            if (o == 1) then
+                                                !-------------!
+                                                ! RTS doubles !
+                                                !-------------!
+                                                dvals(1:numberValues) = dvalues(:,l)
+                                                call zrrtsxd(          &
+                                                    ifltab,            & ! IFLTAB
+                                                    pathnames(o,n),    & ! CPATH
+                                                    startDate,         & ! CDATE
+                                                    startTime,         & ! CTIME
+                                                    numberValues,      & ! NVALS
+                                                    dvals_out,         & ! DVALS
+                                                    quality,           & ! JQUAL
+                                                    readQuality,       & ! LQUAL
+                                                    qualityWasRead,    & ! LQREAD
+                                                    unitSpec,          & ! CUNITS
+                                                    type,              & ! CTYPE
+                                                    userHeader,        & ! IUHEAD
+                                                    size(userHeader),  & ! KUHEAD
+                                                    userHeaderLen,     & ! NUHEAD
+                                                    intervalOffset,    & ! IOFSET
+                                                    compressionMethod, & ! JCOMP
+                                                    status)              ! ISTAT
+                                            else
+                                                !------------!
+                                                ! RTS floats !
+                                                !------------!
+                                                fvals(1:numberValues) = fvalues(:,l)
+                                                call zrrtsx(           &
+                                                    ifltab,            & ! IFLTAB
+                                                    pathnames(o,n),    & ! CPATH
+                                                    startDate,         & ! CDATE
+                                                    startTime,         & ! CTIME
+                                                    numberValues,      & ! NVALS
+                                                    fvals_out,         & ! DVALS
+                                                    quality,           & ! JQUAL
+                                                    readQuality,       & ! LQUAL
+                                                    qualityWasRead,    & ! LQREAD
+                                                    unitSpec,          & ! CUNITS
+                                                    type,              & ! CTYPE
+                                                    userHeader,        & ! IUHEAD
+                                                    size(userHeader),  & ! KUHEAD
+                                                    userHeaderLen,     & ! NUHEAD
+                                                    intervalOffset,    & ! IOFSET
+                                                    compressionMethod, & ! JCOMP
+                                                    status)              ! ISTAT
+                                            end if
+                                        else
+                                            call datjul(startDate, startDay, status)
+                                            call assert(status == 0)
+                                            call datjul(endDate, endDay, status)
+                                            call assert(status == 0)
+                                            if (o == 1) then
+                                                !-------------!
+                                                ! ITS doubles !
+                                                !-------------!
+                                                dvals(1:numberValues) = dvalues(:,l)
+                                                call zritsxd(          &
+                                                    ifltab,            & ! IFLTAB  in/out
+                                                    pathnames(o,n),    & ! CPATH   in
+                                                    startDay,          & ! JULS    in
+                                                    ihm2m(startTime),  & ! ISTIME  in
+                                                    endDay,            & ! JULE    in
+                                                    ihm2m(endTime),    & ! IETIME  in
+                                                    timesRetrieved,    & ! ITIMES  out
+                                                    dvals_out,         & ! DVALUES out
+                                                    size(dvals_out),   & ! KVALS   in
+                                                    numberValues,      & ! NVALS   out
+                                                    baseDate,          & ! IBDATE  out
+                                                    quality,           & ! IQUAL   out
+                                                    readQuality,       & ! LQUAL   in
+                                                    qualityWasRead,    & ! LQREAD  out
+                                                    unitSpec,          & ! CUNITS  out
+                                                    type,              & ! CTYPE   out
+                                                    userHeader,        & ! IUHEAD  out
+                                                    size(userHeader),  & ! KUHEAD  in
+                                                    userHeaderLen,     & ! NUHEAD  out
+                                                    0,                 & ! INFLAG  in
+                                                    status)              ! ISTAT   out
+                                            else
+                                                !------------!
+                                                ! ITS floats !
+                                                !------------!
+                                                fvals(1:numberValues) = fvalues(:,l)
+                                                call zritsx(           &
+                                                    ifltab,            & ! IFLTAB
+                                                    pathnames(o,n),    & ! CPATH
+                                                    startDay,          & ! JULS
+                                                    ihm2m(startTime),  & ! ISTIME
+                                                    endDay,            & ! JULE
+                                                    ihm2m(endTime),    & ! IETIME
+                                                    timesRetrieved,    & ! ITIMES
+                                                    fvals_out,         & ! SVALUES
+                                                    size(fvals_out),   & ! KVALS
+                                                    numberValues,      & ! NVALS
+                                                    baseDate,          & ! IBDATE
+                                                    quality,           & ! IQUAL
+                                                    readQuality,       & ! LQUAL
+                                                    qualityWasRead,    & ! LQREAD
+                                                    unitSpec,          & ! CUNITS
+                                                    type,              & ! CTYPE
+                                                    userHeader,        & ! IUHEAD
+                                                    size(userHeader),  & ! KUHEAD
+                                                    userHeaderLen,     & ! NUHEAD
+                                                    0,                 & ! INFLAG
+                                                    status)              ! ISTAT
+                                            end if
+                                        end if
+                                        call extractVdiFromUserHeader(vdiInFile, userHeader,userHeaderLen)
+                                    end if
                                     !--------------------------------!
                                     ! set the default vertical datum !
                                     !--------------------------------!
+                                    userHeaderStr = ' '
+                                    userHeader = 0
+                                    userHeaderLen = 0
+                                    unitSpec = unit(l)
                                     kk = k
                                     call zset('VDTM', verticalDatums(kk), 0)
                                     if (p == 1) then
                                         !------------------------------------------------!
                                         ! add the vertical datum info to the user header !
                                         !------------------------------------------------!
-                                        userHeaderStr = VERTICAL_DATUM_INFO_PARAM//':'//vdiStr//';'
+                                        if (vdi(j)%nativeDatum /= ' ') then
+                                            userHeaderStr = VERTICAL_DATUM_INFO_PARAM//':'//vdiStr(:len_trim(vdiStr))//';'
+                                        end if
                                     end if
                                     if (m > 1) then
                                         !----------------------------------------------------------!
@@ -350,8 +564,7 @@ subroutine testStoreRetrieveTimeSeries()
                                         !----------------------------------------------------------!
                                         kk = k2
                                         len = len_trim(userHeaderStr) + 1
-                                        write(userHeaderStr(len:), '(3a)') &
-                                            VERTICAL_DATUM_PARAM,':',verticalDatums(kk)
+                                        userHeaderStr(len:) = VERTICAL_DATUM_PARAM//':'//verticalDatums(kk)
                                     end if
                                     if (m > 2) then
                                         !--------------------------------------------------------!
@@ -365,26 +578,52 @@ subroutine testStoreRetrieveTimeSeries()
                                     !-----------------------------------------------!
                                     ! figure out whether the zs?tsx? should succeed !
                                     !-----------------------------------------------!
-                                    if (i==2.and.j==2.and.k==1.and.l==1.and.m==1.and.n==1.and.o==1.and.p==1) then
-                                        !-------------------------------------------------------------------------------!
-                                        ! change of vertical datum information in DSS 7, need to update location record !
-                                        !-------------------------------------------------------------------------------!
+                                    if ((j==3.or.p==2).and.vdiInFile%nativeDatum.ne.' ') then
+                                        !----------------------------------------------------------------------!
+                                        ! incoming values have no native vertical datum, but data in file does !
+                                        !----------------------------------------------------------------------!
                                         expectSuccess = .false.
-                                    elseif (i==1.and.p==2.and.len_trim(userHeaderStr).gt.0) then
-                                        !---------------------------------------------------------------------------------!
-                                        ! current vertical datum in header, but no vertical datum info in header in DSS 6 !
-                                        !---------------------------------------------------------------------------------!
+                                    else if (vdiInFile%nativeDatum.ne.' '.and.vdiInFile%nativeDatum.ne.vdi(j)%nativeDatum) then
+                                        !-----------------------------------------------------------------!
+                                        ! incoming values have different native datum than values in file !
+                                        !-----------------------------------------------------------------!
                                         expectSuccess = .false.
-                                    elseif (vdi(j)%nativeDatum == verticalDatums(kk)) then
-                                        !-------------------------------------!
-                                        ! same datum, no conversion necessary !
-                                        !-------------------------------------!
+                                    else if (i==1.and.j==2.and.p==1) then
+                                        !---------------------------------------------!
+                                        ! change of vertical datum information for v6 !
+                                        !                                             !
+                                        ! delete time series record and re-try        !
+                                        !---------------------------------------------!
+                                        expectSuccess = .false.
+                                    else if (i==2.and.j==2.and.k==1.and.l==1.and.m==1.and.n==1.and.o==1.and.p==1) then
+                                        !---------------------------------------------!
+                                        ! change of vertical datum information for v7 !
+                                        !                                             !
+                                        ! v7 update location record and re-try        !
+                                        !---------------------------------------------!
+                                        expectSuccess = .false.
+                                    else if (i==1.and.p==2) then
+                                        !------------------------------------------------------!
+                                        ! no VDI in header in DSS 6 (but VDI in file with p=0) !
+                                        !------------------------------------------------------!
+                                        expectSuccess = .false.
+                                    else if (vdi(j)%nativeDatum.eq.verticalDatums(kk)) then
+                                        !---------------------------------------------------------------------------!
+                                        ! current datum is same as in native datum in file, no conversion necessary !
+                                        !---------------------------------------------------------------------------!
                                         expectSuccess = .true.
-                                    else if (verticalDatums(kk) /= CVD_NAVD88.and.verticalDatums(kk) /= CVD_NGVD29) then
-                                        !--------------------------!
-                                        ! requested datum is local !
-                                        !--------------------------!
-                                        if (vdi(j)%nativeDatum == CVD_NAVD88.or.vdi(j)%nativeDatum == CVD_NGVD29) then
+                                    else if (kk==4.and.p==2.and.vdi(j)%nativeDatum.ne.' ') then
+                                        !---------------------------------------------------!
+                                        ! VDI in file, but no incoming VDI or current datum !
+                                        !---------------------------------------------------!
+                                        expectSuccess = .false.
+                                    else if (verticalDatums(kk).ne.CVD_NAVD88.and. &
+                                            verticalDatums(kk).ne.CVD_NGVD29.and. &
+                                            verticalDatums(kk).ne.CVD_UNSET) then
+                                        !------------------------!
+                                        ! current datum is local !
+                                        !------------------------!
+                                        if (vdi(j)%nativeDatum.eq.CVD_NAVD88.or.vdi(j)%nativeDatum.eq.CVD_NGVD29) then
                                             !---------------------------!
                                             ! native datum is non-local !
                                             !---------------------------!
@@ -395,8 +634,8 @@ subroutine testStoreRetrieveTimeSeries()
                                             !-----------------------!
                                             expectSuccess = .true.
                                         end if
-                                    else if (verticalDatums(kk) == CVD_NAVD88 .and. &
-                                            vdi(j)%offsetToNavd88 /= UNDEFINED_VERTICAL_DATUM_VALUE) then
+                                    else if (verticalDatums(kk).eq.CVD_NAVD88.and.vdi(j)%offsetToNavd88.ne. &
+                                            UNDEFINED_VERTICAL_DATUM_VALUE) then
                                         !-------------------------------------------------------------!
                                         ! specified datum is NAVD-88 and we have an offset to NAVD-88 !
                                         !-------------------------------------------------------------!
@@ -405,8 +644,8 @@ subroutine testStoreRetrieveTimeSeries()
                                         else
                                             expectSuccess = .false.
                                         end if
-                                    else if (verticalDatums(kk) == CVD_NGVD29 .and. &
-                                            vdi(j)%offsetToNgvd29 /= UNDEFINED_VERTICAL_DATUM_VALUE) then
+                                    else if (verticalDatums(kk).eq.CVD_NGVD29.and.vdi(j)%offsetToNgvd29.ne. &
+                                            UNDEFINED_VERTICAL_DATUM_VALUE) then
                                         !-------------------------------------------------------------!
                                         ! specified datum is NGVD-29 and we have an offset to NGVD-29 !
                                         !-------------------------------------------------------------!
@@ -419,12 +658,12 @@ subroutine testStoreRetrieveTimeSeries()
                                         !-----------------!
                                         ! all other cases !
                                         !-----------------!
-                                        expectSuccess = .false.
+                                        expectSuccess = .true.
                                     end if
                                     if (expectSuccess) then
-                                        write(*,'(a,i3,a)') 'Time series test ',count,' expecting SUCCESS'
+                                        write(*,'(a,i4,a)') 'Time series test ',count,' expecting SUCCESS'
                                     else
-                                        write(*,'(a,i3,a)') 'Time seires test ',count,' expecting ERROR'
+                                        write(*,'(a,i4,a)') 'Time series test ',count,' expecting ERROR'
                                     end if
                                     !-------------------------------------------------------!
                                     ! store the time series in the specified vertical datum !
@@ -505,7 +744,6 @@ subroutine testStoreRetrieveTimeSeries()
                                             !------------!
                                             ! ITS floats !
                                             !------------!
-                                            ! write(0,*) 'Calling zsitx'
                                             fvals(1:numberValues) = fvalues(:,l)
                                             call zsitsx(                &
                                                 ifltab,                 & ! IFLTAB
@@ -525,13 +763,13 @@ subroutine testStoreRetrieveTimeSeries()
                                         end if
                                     end if
                                     call assert((status == 0) .eqv. expectSuccess)
-                                    if (i==2.and.j==2.and.k==1.and.l==1.and.m==1.and.n==1.and.o==1) then
+                                    if (i==2.and.j==2.and.k==1.and.l==1.and.m==1.and.n==1.and.o==1.and.p==1) then
                                         !-------------------------------------------------------------------------------!
                                         ! change of vertical datum information in DSS 7, need to update location record !
                                         !-------------------------------------------------------------------------------!
                                         call zset('VDOW', ' ', 1)
                                         count = count + 1
-                                        write(0,'(a,i3,a)') 'Time series test ',count,' expecting SUCCESS'
+                                        write(0,'(a,i4,a)') 'Time series test ',count,' expecting SUCCESS'
                                         if (n == 1) then
                                             if (o == 1) then
                                                 !-------------!
@@ -696,9 +934,9 @@ subroutine testStoreRetrieveTimeSeries()
                                                     ifltab,            & ! IFLTAB  in/out
                                                     pathnames(o,n),    & ! CPATH   in
                                                     startDay,          & ! JULS    in
-                                                    ihm2m(startTime),    & ! ISTIME  in
+                                                    ihm2m(startTime),  & ! ISTIME  in
                                                     endDay,            & ! JULE    in
-                                                    ihm2m(endTime),      & ! IETIME  in
+                                                    ihm2m(endTime),    & ! IETIME  in
                                                     timesRetrieved,    & ! ITIMES  out
                                                     dvals_out,         & ! DVALUES out
                                                     size(dvals_out),   & ! KVALS   in
@@ -723,9 +961,9 @@ subroutine testStoreRetrieveTimeSeries()
                                                     ifltab,            & ! IFLTAB
                                                     pathnames(o,n),    & ! CPATH
                                                     startDay,          & ! JULS
-                                                    ihm2m(startTime),    & ! ISTIME
+                                                    ihm2m(startTime),  & ! ISTIME
                                                     endDay,            & ! JULE
-                                                    ihm2m(endTime),      & ! IETIME
+                                                    ihm2m(endTime),    & ! IETIME
                                                     timesRetrieved,    & ! ITIMES
                                                     fvals_out,         & ! SVALUES
                                                     size(fvals_out),   & ! KVALS
@@ -746,7 +984,7 @@ subroutine testStoreRetrieveTimeSeries()
                                         call zclose(ifltab)
                                         call assert(status == 0)
                                         !------------------------------------------------------!
-                                        ! compare the retrieved time seires to what was stored !
+                                        ! compare the retrieved time series to what was stored !
                                         !------------------------------------------------------!
                                         call assert(numberValues == 6)
                                         if (o == 1) then
@@ -769,7 +1007,7 @@ subroutine testStoreRetrieveTimeSeries()
             end do
         end do
     end do
-    write(0,'(/,/,i3,a,/,/)') count,' time sereies tests passed'
+    write(0,'(/,/,i4,a,/,/)') count,' time sereies tests passed'
     return
 end subroutine testStoreRetrieveTimeSeries
 
@@ -972,7 +1210,7 @@ subroutine testStoreRetrievePairedData()
                                         ! change of vertical datum information in DSS 7, need to update location record !
                                         !-------------------------------------------------------------------------------!
                                         expectSuccess = .false.
-                                    elseif (i==1.and.p==2.and.len_trim(userHeaderStr).gt.0) then
+                                    else if (i==1.and.p==2.and.len_trim(userHeaderStr).gt.0) then
                                         !---------------------------------------------------------------------------------!
                                         ! current vertical datum in header, but no vertical datum info in header in DSS 6 !
                                         !---------------------------------------------------------------------------------!
@@ -982,12 +1220,12 @@ subroutine testStoreRetrievePairedData()
                                         ! same datum, no conversion necessary !
                                         !-------------------------------------!
                                         expectSuccess = .true.
-                                    elseif (i==1.and.p==2.and.index(userHeaderStr, vdiStr).gt.0) then
+                                    else if (i==1.and.p==2.and.index(userHeaderStr, vdiStr).gt.0) then
                                         !---------------------------------------------------------------------------------!
                                         ! current vertical datum in header, but no vertical datum info in header in DSS 6 !
                                         !---------------------------------------------------------------------------------!
                                         expectSuccess = .false.
-                                    elseif (verticalDatums(kk) /= CVD_NAVD88 .and. verticalDatums(kk) /= CVD_NGVD29) then
+                                    else if (verticalDatums(kk) /= CVD_NAVD88 .and. verticalDatums(kk) /= CVD_NGVD29) then
                                         !--------------------------!
                                         ! requested datum is local !
                                         !--------------------------!
@@ -1002,7 +1240,7 @@ subroutine testStoreRetrievePairedData()
                                             !-----------------------!
                                             expectSuccess = .true.
                                         end if
-                                    elseif (verticalDatums(kk) == CVD_NAVD88 .and.  &
+                                    else if (verticalDatums(kk) == CVD_NAVD88 .and.  &
                                             vdi(j)%offsetToNavd88 /= UNDEFINED_VERTICAL_DATUM_VALUE) then
                                         !-------------------------------------------------------------!
                                         ! specified datum is NAVD-88 and we have an offset to NAVD-88 !
@@ -1012,7 +1250,7 @@ subroutine testStoreRetrievePairedData()
                                         else
                                             expectSuccess = .false.
                                         end if
-                                    elseif (verticalDatums(kk) == CVD_NGVD29 .and.  &
+                                    else if (verticalDatums(kk) == CVD_NGVD29 .and.  &
                                             vdi(j)%offsetToNgvd29 /= UNDEFINED_VERTICAL_DATUM_VALUE) then
                                         !-------------------------------------------------------------!
                                         ! specified datum is NGVD-29 and we have an offset to NGVD-29 !

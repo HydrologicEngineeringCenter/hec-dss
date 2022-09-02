@@ -1047,6 +1047,95 @@ verticalDatumInfo *extractVerticalDatumInfoFromUserHeader(const int *userHeader,
 //
 // See verticalDatum.h for documentation
 //
+void extractverticaldatuminfofromuserheader_(
+        char      *nativeDatum,
+        char      *unit,
+        double    *offsetToNavd88,
+        int       *offsetToNavd88IsEstimate,
+        double    *offsetToNgvd29,
+        int       *offsetToNgvd29IsEstimate,
+        const int *userHeader,
+        const int *userHeaderSize,
+        slen_t     lenNativeDatum,
+        slen_t     lenUnit) {
+    C2F(" ", nativeDatum, lenNativeDatum);
+    C2F(" ", unit,        lenUnit);
+    *offsetToNgvd29           = UNDEFINED_VERTICAL_DATUM_VALUE;
+    *offsetToNgvd29IsEstimate = TRUE;
+    *offsetToNavd88           = UNDEFINED_VERTICAL_DATUM_VALUE;
+    *offsetToNavd88IsEstimate = TRUE;
+    verticalDatumInfo *tmpVdi = extractVerticalDatumInfoFromUserHeader(userHeader, *userHeaderSize);
+    if (tmpVdi) {
+        C2F(tmpVdi->nativeDatum, nativeDatum, lenNativeDatum);
+        C2F(tmpVdi->unit,        unit,        lenUnit);
+        *offsetToNgvd29           = tmpVdi->offsetToNgvd29;
+        *offsetToNgvd29IsEstimate = tmpVdi->offsetToNgvd29IsEstimate;
+        *offsetToNavd88           = tmpVdi->offsetToNavd88;
+        *offsetToNavd88IsEstimate = tmpVdi->offsetToNavd88IsEstimate;
+        free(tmpVdi);
+    }
+}
+//
+// See verticalDatum.h for documentation
+//
+void getlocationverticaldatuminfo_(
+        char      *nativeDatum,
+        char      *unit,
+        double    *offsetToNavd88,
+        int       *offsetToNavd88IsEstimate,
+        double    *offsetToNgvd29,
+        int       *offsetToNgvd29IsEstimate,
+        long long *fileTable,
+        char      *pathname,
+        slen_t     lenNativeDatum,
+        slen_t     lenUnit,
+        slen_t     lenPathname) {
+
+    char *pathname_c = (char *)_malloc(lenPathname+1);
+    verticalDatumInfo vdi;
+    memset(&vdi, 0, sizeof(vdi));
+
+    F2C(pathname, pathname_c, lenPathname, lenPathname+1);
+    zStructLocation* ls = zstructLocationNew(pathname_c);
+    free(pathname_c);
+    if (ls) {
+        zlocationRetrieve(fileTable, ls);
+        if (ls->supplemental) {
+            char* compressedVdi = extractFromDelimitedString(
+                &ls->supplemental,
+                VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
+                ":",
+                TRUE,
+                FALSE,
+                ';');
+            if (compressedVdi) {
+                stringToVerticalDatumInfo(&vdi, compressedVdi);
+                strcpy(nativeDatum, vdi.nativeDatum);
+                free(compressedVdi);
+            }
+        }
+        zstructFree(ls);
+    }
+    if (strlen(vdi.nativeDatum) > 0) {
+        C2F(vdi.nativeDatum, nativeDatum, lenNativeDatum);
+        C2F(vdi.unit,        unit,        lenUnit);
+        *offsetToNgvd29           = vdi.offsetToNgvd29;
+        *offsetToNgvd29IsEstimate = vdi.offsetToNgvd29IsEstimate;
+        *offsetToNavd88           = vdi.offsetToNavd88;
+        *offsetToNavd88IsEstimate = vdi.offsetToNavd88IsEstimate;
+    }
+    else {
+        C2F(" ", nativeDatum, lenNativeDatum);
+        C2F(" ", unit,        lenUnit);
+        *offsetToNgvd29           = UNDEFINED_VERTICAL_DATUM_VALUE;
+        *offsetToNgvd29IsEstimate = TRUE;
+        *offsetToNavd88           = UNDEFINED_VERTICAL_DATUM_VALUE;
+        *offsetToNavd88IsEstimate = TRUE;
+    }
+}
+//
+// See verticalDatum.h for documentation
+//
 int	getEffectiveVerticalDatum(
         char  *cverticalDatum,
         int    cverticalDatumSize,
