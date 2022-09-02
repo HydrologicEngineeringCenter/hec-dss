@@ -34,10 +34,10 @@ struct dss_file {
 };
 
 
-HECDSS_API int hec_dss_open(dss_file** pdss)
+HECDSS_API dss_file* hec_dss_open(const char* filename)
 {//	status = ztsRetrieve((long long*)ifltab, tss, retrieveFlag, retrieveDoublesFlag, 1);
     struct dss_file f1;
-    *pdss = &f1;
+    // opeen....
     return 0;
 }
 
