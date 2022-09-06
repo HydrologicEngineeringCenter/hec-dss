@@ -199,10 +199,15 @@ namespace Hec.Dss
     {
       RecordType rval = RecordType.Unknown;
 
-
-
-      if (recType >= 100 && recType < 110) // see zdataTypeDescriptions.h
-        rval = RecordType.RegularTimeSeries;
+      if (recType >= 100 && recType < 110)
+      { // see zdataTypeDescriptions.h
+        if (recType == 102 || recType == 107)
+          rval = RecordType.RegularTimeSeriesProfile;
+        else
+        {
+          rval = RecordType.RegularTimeSeries;
+        }
+      }
       else if (recType >= 110 && recType < 200)
         rval = RecordType.IrregularTimeSeries;
       else if (recType >= 200 && recType < 300)
