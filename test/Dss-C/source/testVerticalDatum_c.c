@@ -1385,7 +1385,7 @@ void testStoreRetrieveTimeSeries() {
                                                         expectSuccess = FALSE;
                                                     }
                                                 }
-                                                else if (stricmp(vdi.nativeDatum, CVERTICAL_DATUM_NAVD88)) {
+                                                else if (strcmp(vdi.nativeDatum, CVERTICAL_DATUM_NAVD88)) {
                                                     //----------------------------------//
                                                     // incoming native datum != NAVD-88 //
                                                     //----------------------------------//
@@ -1507,7 +1507,7 @@ void testStoreRetrieveTimeSeries() {
                                                         expectSuccess = FALSE;
                                                     }
                                                 }
-                                                else if (stricmp(vdi.nativeDatum, CVERTICAL_DATUM_NGVD29)) {
+                                                else if (strcmp(vdi.nativeDatum, CVERTICAL_DATUM_NGVD29)) {
                                                     //----------------------------------//
                                                     // incoming native datum != NGVD-29 //
                                                     //----------------------------------//
@@ -2368,7 +2368,7 @@ void testStoreRetrievePairedData() {
                                                         expectSuccess = FALSE;
                                                     }
                                                 }
-                                                else if (stricmp(vdi.nativeDatum, CVERTICAL_DATUM_NAVD88)) {
+                                                else if (strcmp(vdi.nativeDatum, CVERTICAL_DATUM_NAVD88)) {
                                                     //----------------------------------//
                                                     // incoming native datum != NAVD-88 //
                                                     //----------------------------------//
@@ -2490,7 +2490,7 @@ void testStoreRetrievePairedData() {
                                                         expectSuccess = FALSE;
                                                     }
                                                 }
-                                                else if (stricmp(vdi.nativeDatum, CVERTICAL_DATUM_NGVD29)) {
+                                                else if (strcmp(vdi.nativeDatum, CVERTICAL_DATUM_NGVD29)) {
                                                     //----------------------------------//
                                                     // incoming native datum != NGVD-29 //
                                                     //----------------------------------//

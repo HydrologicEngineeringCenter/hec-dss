@@ -601,7 +601,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 					char errmsg[256];
 					sprintf(
 						errmsg,
-						"\Value unit (%s) and/or offset unit (%s) is invalid for vertical datum conversion.\n"
+						"Value unit (%s) and/or offset unit (%s) is invalid for vertical datum conversion.\n"
 						"Conversion to datum '%s' could not be performed.\n"
 						"No data stored.",
 						pds->unitsIndependent, vdi->unit, cvertical_datum);

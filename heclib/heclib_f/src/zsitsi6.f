@@ -43,7 +43,7 @@ C
       REAL SVALUES(*)
       DOUBLE PRECISION DVALUES(*), COORDS(*)
       INTEGER NCDESC, NCOORDS, ICDESC(*)
-      LOGICAL LDOUBLE
+      LOGICAL LDOUBLE, lfound
 C
       INTEGER IBPART(6), IEPART(6), ILPART(6), NPATH, INTLPS
       CHARACTER CPATHNAME*(*), CUNITS*(*), CTYPE*(*)
@@ -325,7 +325,7 @@ C
      *      0,                   !IPLAN
      *      lfound)              !LFOUND
           if (lfound) l_exists = .true.
-          if ((lfound.ne.0).and.(nuhead_copy1.gt.0)) then
+          if (lfound.and.(nuhead_copy1.gt.0)) then
             call get_user_header_param(
      *        iuhead_copy1,
      *        nuhead_copy1,

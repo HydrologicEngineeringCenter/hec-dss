@@ -584,7 +584,8 @@ subroutine testStoreRetrieveTimeSeries()
                                         !----------------------------------------------------------!
                                         kk = k2
                                         len = len_trim(userHeaderStr) + 1
-                                        userHeaderStr(len:) = VERTICAL_DATUM_PARAM//':'//currentVerticalDatums(kk)(:len_trim(currentVerticalDatums(kk)))//';'
+                                        userHeaderStr(len:) = VERTICAL_DATUM_PARAM//':' // &
+                                            currentVerticalDatums(kk)(:len_trim(currentVerticalDatums(kk)))//';'
                                     end if
                                     if (m > 2) then
                                         !--------------------------------------------------------!
@@ -721,7 +722,8 @@ subroutine testStoreRetrieveTimeSeries()
                                                             ! incoming VDI has no offset to NAVD-88 !
                                                             !---------------------------------------!
                                                             expectSuccess = .false.
-                                                        else if (currentVerticalDatums(kk) /= CVD_NAVD88 .and. currentVerticalDatums(kk) /= CVD_NGVD29) then
+                                                        else if (currentVerticalDatums(kk) /= CVD_NAVD88 .and. &
+                                                            currentVerticalDatums(kk) /= CVD_NGVD29) then
                                                             !---------------------------------!
                                                             ! current datum == UNSET or LOCAL !
                                                             !---------------------------------!
@@ -831,7 +833,8 @@ subroutine testStoreRetrieveTimeSeries()
                                                             ! incoming VDI has no offset to NGVD-29 !
                                                             !---------------------------------------!
                                                             expectSuccess = .false.
-                                                        else if (currentVerticalDatums(kk) /= CVD_NAVD88 .and. currentVerticalDatums(kk) /= CVD_NGVD29) then
+                                                        else if (currentVerticalDatums(kk) /= CVD_NAVD88 .and. &
+                                                            currentVerticalDatums(kk) /= CVD_NGVD29) then
                                                             !---------------------------------!
                                                             ! current datum == UNSET or LOCAL !
                                                             !---------------------------------!
@@ -877,12 +880,14 @@ subroutine testStoreRetrieveTimeSeries()
                                                             !------------------------!
                                                             expectSuccess = .false.
                                                         end if
-                                                    else if (currentVerticalDatums(kk) == CVD_NAVD88.and.thisVdi%offsetToNavd88 /= UNDEFINED_VERTICAL_DATUM_VALUE) then
+                                                    else if (currentVerticalDatums(kk) == CVD_NAVD88.and.thisVdi%offsetToNavd88 /= &
+                                                        UNDEFINED_VERTICAL_DATUM_VALUE) then
                                                         !----------------------------------------------------------!
                                                         ! current datum is NAVD-88 and VDI has offset from NAVD-88 !
                                                         !----------------------------------------------------------!
                                                         expectSuccess = .true.
-                                                    else if (currentVerticalDatums(kk) == CVD_NGVD29.and.thisVdi%offsetToNgvd29 /= UNDEFINED_VERTICAL_DATUM_VALUE) then
+                                                    else if (currentVerticalDatums(kk) == CVD_NGVD29.and.thisVdi%offsetToNgvd29 /= &
+                                                        UNDEFINED_VERTICAL_DATUM_VALUE) then
                                                         !----------------------------------------------------------!
                                                         ! current datum is NGVD-29 and VDI has offset from NGVD-29 !
                                                         !----------------------------------------------------------!
@@ -911,7 +916,8 @@ subroutine testStoreRetrieveTimeSeries()
                                                         !-----------------------!
                                                         ! native datum == LOCAL !
                                                         !-----------------------!
-                                                        if (currentVerticalDatums(kk) == CVD_NAVD88.and.thisVdi%offsetToNavd88 /= UNDEFINED_VERTICAL_DATUM_VALUE) then
+                                                        if (currentVerticalDatums(kk) == CVD_NAVD88.and.thisVdi%offsetToNavd88 /= &
+                                                            UNDEFINED_VERTICAL_DATUM_VALUE) then
                                                             !----------------------------------------------------------!
                                                             ! current datum is NAVD-88 and VDI has offset from NAVD-88 !
                                                             !----------------------------------------------------------!
@@ -921,7 +927,8 @@ subroutine testStoreRetrieveTimeSeries()
                                                                 !------------------------!
                                                                 expectSuccess = .false.
                                                             end if
-                                                        else if (currentVerticalDatums(kk) == CVD_NGVD29.and.thisVdi%offsetToNgvd29 /= UNDEFINED_VERTICAL_DATUM_VALUE) then
+                                                        else if (currentVerticalDatums(kk) == CVD_NGVD29 .and.  &
+                                                            thisVdi%offsetToNgvd29 /= UNDEFINED_VERTICAL_DATUM_VALUE) then
                                                             !----------------------------------------------------------!
                                                             ! current datum is NGVD-29 and VDI has offset from NGVD-29 !
                                                             !----------------------------------------------------------!
@@ -1067,7 +1074,8 @@ subroutine testStoreRetrieveTimeSeries()
                                                 !--------------------------------!
                                                 ! incoming native datum == LOCAL !
                                                 !--------------------------------!
-                                                if (currentVerticalDatums(kk) == CVD_NAVD88.and.thisVdi%offsetToNavd88 /= UNDEFINED_VERTICAL_DATUM_VALUE) then
+                                                if (currentVerticalDatums(kk) == CVD_NAVD88.and.thisVdi%offsetToNavd88 /= &
+                                                    UNDEFINED_VERTICAL_DATUM_VALUE) then
                                                     !----------------------------------------------------------!
                                                     ! current datum is NAVD-88 and VDI has offset from NAVD-88 !
                                                     !----------------------------------------------------------!
@@ -1077,7 +1085,8 @@ subroutine testStoreRetrieveTimeSeries()
                                                         !------------------------!
                                                         expectSuccess = .false.
                                                     end if
-                                                else if (currentVerticalDatums(kk) == CVD_NGVD29.and.thisVdi%offsetToNgvd29 /= UNDEFINED_VERTICAL_DATUM_VALUE) then
+                                                else if (currentVerticalDatums(kk) == CVD_NGVD29.and.thisVdi%offsetToNgvd29 /= &
+                                                    UNDEFINED_VERTICAL_DATUM_VALUE) then
                                                     !----------------------------------------------------------!
                                                     ! current datum is NGVD-29 and VDI has offset from NGVD-29 !
                                                     !----------------------------------------------------------!
@@ -1213,7 +1222,8 @@ subroutine testStoreRetrieveTimeSeries()
                                             end if
                                         end if
                                         call assert((status == 0) .eqv. expectSuccess)
-                                        if (status /= 0 .and. i == 1 .and. nativeDatumInFile /= ' ' .and. nativeDatumInFile /= currentVerticalDatums(kk)) then
+                                        if (status /= 0 .and. i == 1 .and. nativeDatumInFile /= ' ' .and. nativeDatumInFile /= &
+                                            currentVerticalDatums(kk)) then
                                             !---------------------------------------------!
                                             ! change of vertical datum information for v6 !
                                             !                                             !
@@ -1224,7 +1234,7 @@ subroutine testStoreRetrieveTimeSeries()
                                             call datjul(endDate, endDay, status)
                                             call assert(status == 0)
                                             npath = len_trim(pathnames(o,n))
-                                            call zufpn(ca, na, cb, nb, cc, nc, cd, nd, ce, ne, cf, nf, pathnames(o,n), npath, status)
+                                            call zufpn(ca, na, cb, nb, cc, nc, cd, nd, ce, ne, cf, nf, pathnames(o,n), npath,status)
                                             call assert(status == 0)
                                             if (n == 1) then
                                                 !-----!
@@ -1535,8 +1545,7 @@ subroutine testStoreRetrievePairedData()
     character (len=80)      :: filename(2)
     character (len=80)      :: pathnames(2,2)
     character (len=16)      :: unit(3), type, currentVerticalDatums(4), cVerticalDatum, nativeDatumInFile
-    character (len=16)      :: c1unit, c2unit, c1type, c2type, clabel
-    character (len=32)      :: unitSpec
+    character (len=32)      :: unitSpec, c1unit, c2unit, c1type, c2type, clabel
     character (len=4)       :: startTime, endTime
     character (len=400)     :: userHeaderStr
     logical                 :: l_label, expectSuccess, dataInFile, lfound
@@ -1789,7 +1798,8 @@ subroutine testStoreRetrievePairedData()
                                             !----------------------------------------------------------!
                                             kk = k2
                                             len = len_trim(userHeaderStr) + 1
-                                            userHeaderStr(len:) = VERTICAL_DATUM_PARAM//':'//currentVerticalDatums(kk)(:len_trim(currentVerticalDatums(kk)))//';'
+                                            userHeaderStr(len:) = VERTICAL_DATUM_PARAM//':'// &
+                                                currentVerticalDatums(kk)(:len_trim(currentVerticalDatums(kk)))//';'
                                         end if
                                         if (m > 2) then
                                             !--------------------------------------------------------!
@@ -1930,7 +1940,8 @@ subroutine testStoreRetrievePairedData()
                                                             ! incoming VDI has no offset to NAVD-88 !
                                                             !---------------------------------------!
                                                             expectSuccess = .false.
-                                                        else if (currentVerticalDatums(kk) /= CVD_NAVD88 .and. currentVerticalDatums(kk) /= CVD_NGVD29) then
+                                                        else if (currentVerticalDatums(kk) /= CVD_NAVD88 .and. &
+                                                            currentVerticalDatums(kk) /= CVD_NGVD29) then
                                                             !---------------------------------!
                                                             ! current datum == UNSET or LOCAL !
                                                             !---------------------------------!
@@ -2040,7 +2051,8 @@ subroutine testStoreRetrievePairedData()
                                                             ! incoming VDI has no offset to NGVD-29 !
                                                             !---------------------------------------!
                                                             expectSuccess = .false.
-                                                        else if (currentVerticalDatums(kk) /= CVD_NAVD88 .and. currentVerticalDatums(kk) /= CVD_NGVD29) then
+                                                        else if (currentVerticalDatums(kk) /= CVD_NAVD88 .and. &
+                                                            currentVerticalDatums(kk) /= CVD_NGVD29) then
                                                             !---------------------------------!
                                                             ! current datum == UNSET or LOCAL !
                                                             !---------------------------------!
@@ -2086,12 +2098,14 @@ subroutine testStoreRetrievePairedData()
                                                             !------------------------!
                                                             expectSuccess = .false.
                                                         end if
-                                                    else if (currentVerticalDatums(kk) == CVD_NAVD88.and.thisVdi%offsetToNavd88 /= UNDEFINED_VERTICAL_DATUM_VALUE) then
+                                                    else if (currentVerticalDatums(kk) == CVD_NAVD88.and.thisVdi%offsetToNavd88 /= &
+                                                        UNDEFINED_VERTICAL_DATUM_VALUE) then
                                                         !----------------------------------------------------------!
                                                         ! current datum is NAVD-88 and VDI has offset from NAVD-88 !
                                                         !----------------------------------------------------------!
                                                         expectSuccess = .true.
-                                                    else if (currentVerticalDatums(kk) == CVD_NGVD29.and.thisVdi%offsetToNgvd29 /= UNDEFINED_VERTICAL_DATUM_VALUE) then
+                                                    else if (currentVerticalDatums(kk) == CVD_NGVD29.and.thisVdi%offsetToNgvd29 /= &
+                                                        UNDEFINED_VERTICAL_DATUM_VALUE) then
                                                         !----------------------------------------------------------!
                                                         ! current datum is NGVD-29 and VDI has offset from NGVD-29 !
                                                         !----------------------------------------------------------!
@@ -2120,7 +2134,8 @@ subroutine testStoreRetrievePairedData()
                                                         !-----------------------!
                                                         ! native datum == LOCAL !
                                                         !-----------------------!
-                                                        if (currentVerticalDatums(kk) == CVD_NAVD88.and.thisVdi%offsetToNavd88 /= UNDEFINED_VERTICAL_DATUM_VALUE) then
+                                                        if (currentVerticalDatums(kk) == CVD_NAVD88.and.thisVdi%offsetToNavd88 /= &
+                                                            UNDEFINED_VERTICAL_DATUM_VALUE) then
                                                             !----------------------------------------------------------!
                                                             ! current datum is NAVD-88 and VDI has offset from NAVD-88 !
                                                             !----------------------------------------------------------!
@@ -2130,7 +2145,8 @@ subroutine testStoreRetrievePairedData()
                                                                 !------------------------!
                                                                 expectSuccess = .false.
                                                             end if
-                                                        else if (currentVerticalDatums(kk) == CVD_NGVD29.and.thisVdi%offsetToNgvd29 /= UNDEFINED_VERTICAL_DATUM_VALUE) then
+                                                        else if (currentVerticalDatums(kk) == CVD_NGVD29 .and. &
+                                                            thisVdi%offsetToNgvd29 /= UNDEFINED_VERTICAL_DATUM_VALUE) then
                                                             !----------------------------------------------------------!
                                                             ! current datum is NGVD-29 and VDI has offset from NGVD-29 !
                                                             !----------------------------------------------------------!
@@ -2276,7 +2292,8 @@ subroutine testStoreRetrievePairedData()
                                                 !--------------------------------!
                                                 ! incoming native datum == LOCAL !
                                                 !--------------------------------!
-                                                if (currentVerticalDatums(kk) == CVD_NAVD88.and.thisVdi%offsetToNavd88 /= UNDEFINED_VERTICAL_DATUM_VALUE) then
+                                                if (currentVerticalDatums(kk) == CVD_NAVD88.and.thisVdi%offsetToNavd88 /= &
+                                                    UNDEFINED_VERTICAL_DATUM_VALUE) then
                                                     !----------------------------------------------------------!
                                                     ! current datum is NAVD-88 and VDI has offset from NAVD-88 !
                                                     !----------------------------------------------------------!
@@ -2286,7 +2303,8 @@ subroutine testStoreRetrievePairedData()
                                                         !------------------------!
                                                         expectSuccess = .false.
                                                     end if
-                                                else if (currentVerticalDatums(kk) == CVD_NGVD29.and.thisVdi%offsetToNgvd29 /= UNDEFINED_VERTICAL_DATUM_VALUE) then
+                                                else if (currentVerticalDatums(kk) == CVD_NGVD29.and.thisVdi%offsetToNgvd29 /= &
+                                                    UNDEFINED_VERTICAL_DATUM_VALUE) then
                                                     !----------------------------------------------------------!
                                                     ! current datum is NGVD-29 and VDI has offset from NGVD-29 !
                                                     !----------------------------------------------------------!
@@ -2317,7 +2335,8 @@ subroutine testStoreRetrievePairedData()
                                         write(*, *) '    native datum in file   = '//nativeDatumInFile
                                         write(*, *) '    incoming native datum  = '//thisVdi%nativeDatum
                                         write(*, *) '    incoming current datum = '//currentVerticalDatums(kk)
-                                        write(*, *) '    incoming unit          = '//c1unit(:len_trim(c1unit))//', '//c2unit(:len_trim(c2unit))
+                                        write(*, *) '    incoming unit          = '//c1unit(:len_trim(c1unit))//', ' &
+                                                                                   //c2unit(:len_trim(c2unit))
                                         userHeaderLen = byteCountToIntCount(len_trim(userHeaderStr))
 									    if (isBigEndian()) then
 										    do ii = 1, userHeaderLen
@@ -2372,13 +2391,15 @@ subroutine testStoreRetrievePairedData()
                                                 status)            ! ISTAT   <-  status (0=success) 
                                         end if
                                         call assert((status == 0) .eqv. expectSuccess)
-                                        if (status /= 0 .and. i == 1 .and. nativeDatumInFile /= ' ' .and. nativeDatumInFile /= currentVerticalDatums(kk)) then
+                                        if (status /= 0 .and. i == 1 .and. nativeDatumInFile /= ' ' .and. nativeDatumInFile /= &
+                                            currentVerticalDatums(kk)) then
                                             !---------------------------------------------!
                                             ! change of vertical datum information for v6 !
                                             !                                             !
                                             ! delete paired data record and re-try        !
                                             !---------------------------------------------!
-                                            call zdelet6 (ifltab, pathnames(o,n)(:len_trim(pathnames(o,n))), len_trim(pathnames(o,n)), lfound)
+                                            call zdelet6 (ifltab, pathnames(o,n)(:len_trim(pathnames(o,n))), &
+                                                len_trim(pathnames(o,n)), lfound)
                                             call assert(lfound)
                                             write(*, *) '==> DELETED '//pathnames(o,n)(:len_trim(pathnames(o,n)))
                                             call initVerticalDatumInfo(vdiInFile)

@@ -43,8 +43,8 @@ C     Vertical datum varible dimensions
       character*400 vdiStr, errMsg
       character*16 unit, unit2, fileUnit, cvdatum1, cvdatum2
       character*16 cvdatum_ind, cvdatum_dep
-      character*16 nativeDatum
-      character*64 unitSpec, fileNativeDatum
+      character*16 nativeDatum, fileNativeDatum
+      character*64 unitSpec
       double precision offsetNavd88, offsetNgvd29
       double precision fileOffsetNavd88, fileOffsetNgvd29
       double precision vertDatumOffset_ind, vertDatumOffset_dep
@@ -144,6 +144,7 @@ C     Check that IFLTAB is valid (e.g., the DSS file is open)
         offsetNavd88 = UNDEFINED_VERTICAL_DATUM_VALUE
         vertDatumOffset_ind = UNDEFINED_VERTICAL_DATUM_VALUE
         vertDatumOffset_dep = UNDEFINED_VERTICAL_DATUM_VALUE
+        unit = ' '
         iiihead = 0
         inihead = 0
         iichead = 0
@@ -288,6 +289,8 @@ C     Check that IFLTAB is valid (e.g., the DSS file is open)
                 return
               end if
             end if
+            nativeDatum = fileNativeDatum
+            unit = fileUnit
           else
             !--------------------------!
             ! incoming values have VDI !
@@ -337,7 +340,7 @@ C     Check that IFLTAB is valid (e.g., the DSS file is open)
      *          UNDEFINED_VERTICAL_DATUM_VALUE) then
                 if (mlevel.ge.1) then
                   write (munit,'(/,a,a,a,a,a,a,/,a)')
-     *            ' *****DSS*** zspdi6:  ERROR  - ',
+     *            ' *****DSS*** zspdi6:  ERROR    - ',
      *            'INVALID DATA UNIT (', c1unit(1:len_trim(c1unit)),
      *            ') OR OFFSET UNIT (', unit(1:len_trim(unit)),
      *            ') FOR VERTICAL DATUM CONVERSION',
@@ -380,7 +383,7 @@ C     Check that IFLTAB is valid (e.g., the DSS file is open)
      *          UNDEFINED_VERTICAL_DATUM_VALUE) then
                 if (mlevel.ge.1) then
                   write (munit,'(/,a,a,a,a,a,a,/,a)')
-     *            ' *****DSS*** zspdi6:  ERROR  - ',
+     *            ' *****DSS*** zspdi6:  ERROR   - ',
      *            'INVALID DATA UNIT (', c1unit(1:len_trim(c1unit)),
      *            ') OR OFFSET UNIT (', unit(1:len_trim(unit)),
      *            ') FOR VERTICAL DATUM CONVERSION',
@@ -418,7 +421,7 @@ C     Check that IFLTAB is valid (e.g., the DSS file is open)
      *          UNDEFINED_VERTICAL_DATUM_VALUE) then
                 if (mlevel.ge.1) then
                   write (munit,'(/,a,a,a,a,a,a,/,a)')
-     *            ' *****DSS*** zspdi6:  ERROR  - ',
+     *            ' *****DSS*** zspdi6:  ERROR   - ',
      *            'INVALID DATA UNIT (', c1unit(1:len_trim(c2unit)),
      *            ') OR OFFSET UNIT (', unit(1:len_trim(unit)),
      *            ') FOR VERTICAL DATUM CONVERSION',
@@ -483,7 +486,7 @@ C     Check that IFLTAB is valid (e.g., the DSS file is open)
                 end if
                 if (mlevel.ge.1) then
                   write (munit,'(/,a,a,a,a,a,a,/,a)')
-     *            ' *****DSS*** zspdi6:  ERROR  - ',
+     *            ' *****DSS*** zspdi6:  ERROR   - ',
      *            'INVALID DATA UNIT (', c1unit(1:len_trim(c2unit)),
      *            ') OR OFFSET UNIT (', unit(1:len_trim(unit)),
      *            ') FOR VERTICAL DATUM CONVERSION',
