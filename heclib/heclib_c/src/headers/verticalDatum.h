@@ -391,13 +391,19 @@ char *expandEmptyXmlTags(char **outputBuf, const char *inputBuf);
  */
 char *validateXmlStructure(const char *xml);
 /**
+ * initializes a verticalDatumInfo structure
+ *
+ * @param vdi       A ponter to a previously existing verticalDatumInfo sturcture
+ */
+char *initializeVerticalDatumInfo(verticalDatumInfo *vdi);
+/**
  * Parses a standard vertical datum infomration XML instance into data structure
  *
  * @param vdi       A ponter to a previously existing verticalDatumInfo sturcture
  * @param intputStr The XML instance to parse. This may be either a plain text XML instance or one
  *                  that has been gzipped and base64 encoded
  */
-char *stringToVerticalDatumInfo(verticalDatumInfo *vdi, const char *inputStr);
+char* stringToVerticalDatumInfo(verticalDatumInfo* vdi, const char* inputStr);
 /**
  * Creates a (compressed or uncompressed) string from vertical datum information
  *

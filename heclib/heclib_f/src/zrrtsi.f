@@ -443,9 +443,9 @@ C
      *            ' Elevation values are in multiple native vertical'//
      *            ' datums.',
      *            ' Use with caution!'
-              end if
             end if
-          else
+          end if
+        else
           !-----------------------------------------!
           ! a specific vertical datum was requested !
           !-----------------------------------------!

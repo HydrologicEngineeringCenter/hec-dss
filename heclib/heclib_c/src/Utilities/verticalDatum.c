@@ -69,7 +69,7 @@ int unitisfeet_(char *unit, slen_t lenUnit) {
     F2C(unit, cUnit, lenUnit, lenUnit+1);
     int isFeet = unitIsFeet(cUnit);
     free(cUnit);
-    return isFeet;
+    return isFeet ? 1 : 0;
 }
 //
 // See verticalDatum.h for documentation
@@ -90,7 +90,7 @@ int unitismeters_(char *unit, slen_t lenUnit) {
     F2C(unit, cUnit, lenUnit, lenUnit+1);
     int isMeters = unitIsMeters(cUnit);
     free(cUnit);
-    return isMeters;
+    return isMeters ? 1 : 0;
 }
 //
 // See verticalDatum.h for documentation
@@ -100,6 +100,10 @@ double getOffset(double offset, const char *offsetUnit, const char *_dataUnit) {
     int dataInMeters   = 0;
     int offsetInFeet   = 0;
     int offsetInMeters = 0;
+
+    if (offset == UNDEFINED_VERTICAL_DATUM_VALUE) {
+        return offset;
+    }
     // blank trim the data unit (shouldn't have to do this)
     char *dataUnit = (char *)_malloc(strlen(_dataUnit)+1);
     strcpy(dataUnit, _dataUnit);
@@ -761,8 +765,16 @@ char *validateXmlStructure(const char *xml) {
 //
 // See verticalDatum.h for documentation
 //
-char *stringToVerticalDatumInfo(verticalDatumInfo *vdi, const char *inputStr) {
-    char  *errmsg = NULL;
+char* initializeVerticalDatumInfo(verticalDatumInfo* vdi) {
+    memset(vdi, 0, sizeof(*vdi));
+    vdi->offsetToNgvd29 = UNDEFINED_VERTICAL_DATUM_VALUE;
+    vdi->offsetToNavd88 = UNDEFINED_VERTICAL_DATUM_VALUE;
+}
+//
+// See verticalDatum.h for documentation
+//
+char* stringToVerticalDatumInfo(verticalDatumInfo* vdi, const char* inputStr) {
+    char* errmsg = NULL;
     char  *xml1;
     char  *xml;
     char   offsetBuf[2][128];
@@ -770,12 +782,7 @@ char *stringToVerticalDatumInfo(verticalDatumInfo *vdi, const char *inputStr) {
     double dtmp;
     textBoundaryInfo tbi;
 
-    vdi->offsetToNgvd29 = UNDEFINED_VERTICAL_DATUM_VALUE;
-    vdi->offsetToNgvd29IsEstimate = FALSE;
-    vdi->offsetToNavd88 = UNDEFINED_VERTICAL_DATUM_VALUE;
-    vdi->offsetToNavd88IsEstimate = FALSE;
-    memset(vdi->nativeDatum, 0, sizeof(vdi->nativeDatum)); // null terminators will exist after strncpy()
-    memset(vdi->unit, 0, sizeof(vdi->unit));                 // null terminators will exist after strncpy()
+    initializeVerticalDatumInfo(vdi);
 
     memset(offsetBuf, 0, sizeof(offsetBuf));               // null terminators will exist after strncpy()
 

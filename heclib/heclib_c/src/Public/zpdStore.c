@@ -488,6 +488,25 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 					&pds->userHeader,        // this call removes any VDI specifed in these variables
 					&pds->userHeaderNumber,  // ...
 					&pds->unitsIndependent); // ...
+				//----------------------------//
+				// error out on invalid units //
+				//----------------------------//
+				if (getOffset(0, vdi->unit, pds->unitsIndependent) == UNDEFINED_VERTICAL_DATUM_VALUE) {
+					char errmsg[256];
+					sprintf(
+						errmsg,
+						"\nOrdinate unit (%s) and/or offset unit (%s) is invalid for vertical datum conversion.\n"
+						"Conversion to datum '%s' could not be performed.\n"
+						"No data stored.",
+						pds->unitsIndependent, vdi->unit, cvertical_datum);
+					if (vdiPd && vdiPd != &_vdiPd) {
+						free(vdiPd);
+					}
+					return zerrorProcessing(ifltab, DSS_FUNCTION_zpdStore_ID,
+						zdssErrorCodes.VERTICAL_DATUM_ERROR, 0,
+						0, zdssErrorSeverity.WARNING, pds->pathname,
+						errmsg);
+				}
 				//-------------------------------------------------------//
 				// now that we have a datum, determine the offset to use //
 				//-------------------------------------------------------//
@@ -499,7 +518,9 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 						offset = vdi->offsetToNgvd29;
 						break;
 					default :
-						if(!strcmp(cvertical_datum, vdi->nativeDatum) || !strcmp(cvertical_datum, CVERTICAL_DATUM_OTHER)) {
+						if(!strcmp(cvertical_datum, vdi->nativeDatum)       ||
+							!strcmp(cvertical_datum, CVERTICAL_DATUM_UNSET) ||
+							!strcmp(cvertical_datum, CVERTICAL_DATUM_OTHER)) {
 							offset = 0;
 						}
 						else {
@@ -573,6 +594,25 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 					&pds->userHeader,       // this call removes any VDI specifed in these variables
 					&pds->userHeaderNumber, // ...
 					&pds->unitsDependent);  // ...
+				//----------------------------//
+				// error out on invalid units //
+				//----------------------------//
+				if (getOffset(0, vdi->unit, pds->unitsDependent) == UNDEFINED_VERTICAL_DATUM_VALUE) {
+					char errmsg[256];
+					sprintf(
+						errmsg,
+						"\Value unit (%s) and/or offset unit (%s) is invalid for vertical datum conversion.\n"
+						"Conversion to datum '%s' could not be performed.\n"
+						"No data stored.",
+						pds->unitsIndependent, vdi->unit, cvertical_datum);
+					if (vdiPd && vdiPd != &_vdiPd) {
+						free(vdiPd);
+					}
+					return zerrorProcessing(ifltab, DSS_FUNCTION_zpdStore_ID,
+						zdssErrorCodes.VERTICAL_DATUM_ERROR, 0,
+						0, zdssErrorSeverity.WARNING, pds->pathname,
+						errmsg);
+				}
 				//-------------------------------------------------------//
 				// now that we have a datum, determine the offset to use //
 				//-------------------------------------------------------//
@@ -584,7 +624,9 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 						offset = vdi->offsetToNgvd29;
 						break;
 					default :
-						if(!strcmp(cvertical_datum, vdi->nativeDatum) || !strcmp(cvertical_datum, CVERTICAL_DATUM_OTHER)) {
+						if(!strcmp(cvertical_datum, vdi->nativeDatum)       ||
+							!strcmp(cvertical_datum, CVERTICAL_DATUM_UNSET) ||
+							!strcmp(cvertical_datum, CVERTICAL_DATUM_OTHER)) {
 							offset = 0;
 						}
 						else {

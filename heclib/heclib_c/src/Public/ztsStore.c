@@ -377,6 +377,7 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 		//-----------------------------------------------//
 		// convert to native vertical datum if necessary //
 		//-----------------------------------------------//
+		double offset = UNDEFINED_VERTICAL_DATUM_VALUE;
 		int allowOverwriteLocationVerticalDatum = FALSE;
 		float  *tmpFloatVals = NULL;
 		float  *origFloatVals = NULL;
@@ -385,6 +386,18 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 		char cPart[65];
 		zpathnameGetPart(tss->pathname, 3, cPart, sizeof(cPart));
 		if (!strncasecmp(cPart, "ELEV", 4) && (tss->floatValues || tss->doubleValues)) {
+			//----------------------------------//
+			// get the effective vertical datum //
+			//----------------------------------//
+			char cvertical_datum[CVERTICAL_DATUM_SIZE];
+			int  ivertical_datum = -1;
+			int  dataFound = FALSE;
+			ivertical_datum = getEffectiveVerticalDatum(
+				cvertical_datum,
+				sizeof(cvertical_datum),
+				&tss->userHeader,       // any specified datum in these parameters is removed
+				&tss->userHeaderNumber, // ...
+				&tss->units);           // ...
 			//------------------------------------------------------//
 			// see if we have one or more verticalDatumInfo objects //
 			//------------------------------------------------------//
@@ -438,17 +451,21 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 			}
 			if (vdiLoc && !vdiTs) {
 				char errmsg[1024];
-				sprintf(
-					errmsg,
-					"\nIncoming data does not specify a native vertical datum.\n"
-					"Cannot store to a location that already has a native vertical datum.\n"
-					"Conversion to datum '%s' was not performed.\n"
-					"No data stored.",
-					vdiLoc->nativeDatum);
-				return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID,
-					zdssErrorCodes.VERTICAL_DATUM_ERROR, 0,
-					0, zdssErrorSeverity.WARNING, tss->pathname,
-					errmsg);
+				if (!strcmp(cvertical_datum, vdiLoc->nativeDatum)) {
+					offset = getOffset(0., vdiLoc->unit, tss->units);
+					if (offset == UNDEFINED_VERTICAL_DATUM_VALUE) {
+						sprintf(
+							errmsg,
+							"\nIncoming data does not specify a native vertical datum and incoming data unit of '%s' differs from VDI unit of '%s'\n"
+							"Conversion to datum '%s' could not be performed.\n"
+							"No data stored.",
+							tss->units, vdiLoc->unit, cvertical_datum);
+						return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID,
+							zdssErrorCodes.VERTICAL_DATUM_ERROR, 0,
+							0, zdssErrorSeverity.WARNING, tss->pathname,
+							errmsg);
+					}
+				}
 			}
 			if (vdiTs && vdiLoc) {
 				zquery("VDOW", "", 0, &allowOverwriteLocationVerticalDatum);
@@ -535,99 +552,108 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 					}
 				}
 			}
-			vdi = vdiTs;
+			vdi = vdiTs ? vdiTs : vdiLoc;
 			if (vdi) {
-				double offset = 0.;
-				//----------------------------------//
-				// get the effective vertical datum //
-				//----------------------------------//
-				char cvertical_datum[CVERTICAL_DATUM_SIZE];
-				int  ivertical_datum = -1;
-				ivertical_datum = getEffectiveVerticalDatum(
-					cvertical_datum,
-					sizeof(cvertical_datum),
-					&tss->userHeader,       // any specified datum in these parameters is removed
-					&tss->userHeaderNumber, // ...
-					&tss->units);           // ...
-				//-------------------------------------------------------//
-				// now that we have a datum, determine the offset to use //
-				//-------------------------------------------------------//
-				switch(ivertical_datum) {
-					case IVERTICAL_DATUM_NAVD88 :
-						offset = vdi->offsetToNavd88;
-						break;
-					case IVERTICAL_DATUM_NGVD29 :
-						offset = vdi->offsetToNgvd29;
-						break;
-					case IVERTICAL_DATUM_UNSET :
-						if (vdiTs) {
-							//----------------------------------------------------//
-							// at this point there is an incoming VDI and either  //
-							// - no location VDI, or                              //
-							// - the location VDI is the same as the incoming VDI //
-							//----------------------------------------------------//
-							offset = 0;
-						}
-						else {
-							char errmsg[256];
-							sprintf(
-								errmsg,
-								"\nCannot convert values with no native vertical datum to %s.\n"
-								"Datum conversion could not be performed.\n"
-								"No data stored.",
-								vdi->nativeDatum);
-							if (vdiTs && (vdiTs != &_vdiTs)) {
-								free(vdiTs);
-							}
-							return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID,
-								zdssErrorCodes.VERTICAL_DATUM_ERROR, 0,
-								0, zdssErrorSeverity.WARNING, tss->pathname,
-								errmsg);
-						}
-						break;
-					default :
-						if(!strcmp(cvertical_datum, vdi->nativeDatum) || !strcmp(cvertical_datum, CVERTICAL_DATUM_OTHER)) {
-							offset = 0;
-						}
-						else {
-							offset = UNDEFINED_VERTICAL_DATUM_VALUE;
-						}
-						break;
+				char startDate[10];
+				char startTime[5];
+				char endDate[10];
+				char endTime[5];
+				julianToDate(tss->startJulianDate, 4, startDate, sizeof(startDate));
+				sprintf(startTime, "%2.2d%2.2d", tss->startTimeSeconds / 3600, tss->startTimeSeconds % 3600 / 60);
+				julianToDate(tss->endJulianDate, 4, endDate, sizeof(endDate));
+				sprintf(endTime, "%2.2d%2.2d", tss->endTimeSeconds / 3600, tss->endTimeSeconds % 3600 / 60);
+				zStructTimeSeries *tssRetr = zstructTsNewTimes(
+					tss->pathname,
+					startDate,
+					startTime,
+					endDate,
+					endTime);
+				assert(tssRetr != NULL);
+				zset("VDTM", CVERTICAL_DATUM_UNSET, 0);
+				int statusRetr = ztsRetrieve(
+					ifltab,
+					tssRetr,
+					0,
+					0,
+					1);
+				if (statusRetr == STATUS_RECORD_FOUND) {
+					dataFound = TRUE;
 				}
-				if (offset != 0.) {
-					if (offset == UNDEFINED_VERTICAL_DATUM_VALUE) {
-						char errmsg[256];
+				zstructFree(tssRetr);
+				zset("VDTM", cvertical_datum, 0);
+				if (dataFound && vdiLoc && strcmp(vdiLoc->nativeDatum, cvertical_datum)) {
+					if (strcmp(cvertical_datum, CVERTICAL_DATUM_UNSET) &&
+						!((!strcmp(cvertical_datum, CVERTICAL_DATUM_NAVD88) && vdiLoc->offsetToNavd88 != UNDEFINED_VERTICAL_DATUM_VALUE)  ||
+						  (!strcmp(cvertical_datum, CVERTICAL_DATUM_NGVD29) && vdiLoc->offsetToNgvd29 != UNDEFINED_VERTICAL_DATUM_VALUE))) {
+						char errmsg[1024];
 						sprintf(
 							errmsg,
 							"\nVertical datum offset is undefined for datum '%s'.\n"
-							"Datum conversion could not be performed.\n"
+							"Conversion to datum '%s' was not performed.\n"
 							"No data stored.",
-							cvertical_datum);
-						if (vdiTs && (vdiTs != &_vdiTs)) {
-							free(vdiTs);
-						}
+							cvertical_datum, vdi->nativeDatum, vdi->nativeDatum);
 						return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID,
 							zdssErrorCodes.VERTICAL_DATUM_ERROR, 0,
 							0, zdssErrorSeverity.WARNING, tss->pathname,
 							errmsg);
 					}
-					offset = getOffset(offset, vdi->unit, tss->units);
-					if (offset == UNDEFINED_VERTICAL_DATUM_VALUE) {
-						char errmsg[256];
-						sprintf(
-							errmsg,
-							"\nData unit (%s) and/or offset unit (%s) is invalid for vertical datum conversion.\n"
-							"Conversion to datum '%s' could not be performed.\n"
-							"No data stored.",
-							tss->units, vdi->unit, cvertical_datum);
-						if (vdiTs && (vdiTs != &_vdiTs)) {
-							free(vdiTs);
-						}
-						return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID,
-							zdssErrorCodes.VERTICAL_DATUM_ERROR, 0,
-							0, zdssErrorSeverity.WARNING, tss->pathname,
-							errmsg);
+				}
+				//-------------------------------------------------------//
+				// now that we have a datum, determine the offset to use //
+				//-------------------------------------------------------//
+				switch (ivertical_datum) {
+				case IVERTICAL_DATUM_NAVD88:
+					offset = vdi->offsetToNavd88;
+					break;
+				case IVERTICAL_DATUM_NGVD29:
+					offset = vdi->offsetToNgvd29;
+					break;
+				case IVERTICAL_DATUM_UNSET:
+					offset = 0;
+					break;
+				default:
+					if (!strcmp(cvertical_datum, vdi->nativeDatum) || !strcmp(cvertical_datum, CVERTICAL_DATUM_OTHER)) {
+						offset = 0;
 					}
+					else {
+						offset = UNDEFINED_VERTICAL_DATUM_VALUE;
+					}
+					break;
+				}
+				if (offset == UNDEFINED_VERTICAL_DATUM_VALUE) {
+					char errmsg[256];
+					sprintf(
+						errmsg,
+						"\nVertical datum offset is undefined for datum '%s'.\n"
+						"Datum conversion could not be performed.\n"
+						"No data stored.",
+						cvertical_datum);
+					if (vdiTs && (vdiTs != &_vdiTs)) {
+						free(vdiTs);
+					}
+					return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID,
+						zdssErrorCodes.VERTICAL_DATUM_ERROR, 0,
+						0, zdssErrorSeverity.WARNING, tss->pathname,
+						errmsg);
+				}
+				offset = getOffset(offset, vdi->unit, tss->units);
+				if (offset == UNDEFINED_VERTICAL_DATUM_VALUE) {
+					char errmsg[256];
+					sprintf(
+						errmsg,
+						"\nData unit (%s) and/or offset unit (%s) is invalid for vertical datum conversion.\n"
+						"Conversion to datum '%s' could not be performed.\n"
+						"No data stored.",
+						tss->units, vdi->unit, cvertical_datum);
+					if (vdiTs && (vdiTs != &_vdiTs)) {
+						free(vdiTs);
+					}
+					return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID,
+						zdssErrorCodes.VERTICAL_DATUM_ERROR, 0,
+						0, zdssErrorSeverity.WARNING, tss->pathname,
+						errmsg);
+				}
+				if (offset != 0.) {
 					//--------------------------------------------------------------------------//
 					// use the offset to put the values back to the native datum before storing //
 					//--------------------------------------------------------------------------//
