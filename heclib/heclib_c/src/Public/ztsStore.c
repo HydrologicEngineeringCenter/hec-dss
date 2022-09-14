@@ -591,7 +591,7 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 							"\nVertical datum offset is undefined for datum '%s'.\n"
 							"Conversion to datum '%s' was not performed.\n"
 							"No data stored.",
-							cvertical_datum, vdi->nativeDatum, vdi->nativeDatum);
+							cvertical_datum, vdi->nativeDatum);
 						return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID,
 							zdssErrorCodes.VERTICAL_DATUM_ERROR, 0,
 							0, zdssErrorSeverity.WARNING, tss->pathname,
