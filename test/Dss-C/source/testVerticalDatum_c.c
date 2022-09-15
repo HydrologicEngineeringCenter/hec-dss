@@ -568,6 +568,8 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                     printf("\t\t\tRetrieving time series for year %d ", year);
                     printf("with %s\n", api == NEW_API ? "ztsRetrieve" : tsType == REGULAR ? "zrrtsxd" : "zritsxd");
                     if (api == OLD_API) {
+                        int maxValues = 365;
+                        numberValues = numberValues;
                         memset(values, 0, numberValues * sizeof(double));
                         if (tsType == REGULAR) {
                             zrrtsxd_(
@@ -619,7 +621,7 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                                 &endMinutes,                    //  -> minutes into day of end of time window
                                 times,                          // <-  times array as minutes offset from base date
                                 values,                         // <-  values array
-                                &numberValues,                  //  -> max number of values to return
+                                &maxValues,                     //  -> max number of values to return
                                 &numberValues,                  // <-  number of values returned
                                 &basedate,                      // <-  days since 31Dec1899 of time of first value
                                 quality,                        // <-  quality flags array
@@ -759,7 +761,8 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                 printf("\t\t\tRetrieving time series that crosses record boundaries ");
                 printf("with %s\n", api == NEW_API ? "ztsRetrieve" : tsType == REGULAR ? "zrrtsxd" : "zritsxd");
                 if (api == OLD_API) {
-                    numberValues = 21; // 21Dec -- 10Jan
+                    int maxValues = 21; // 21Dec -- 10Jan
+                    numberValues = maxValues;
                     memset(values, 0, numberValues * sizeof(double));
                     if (tsType == REGULAR) {
                         zrrtsxd_(
@@ -811,7 +814,7 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                             &endMinutes,                    //  -> minutes into day of end of time window
                             times,                          // <-  times array as minutes offset from base date
                             values,                         // <-  values array
-                            &numberValues,                  //  -> max number of values to return
+                            &maxValues,                     //  -> max number of values to return
                             &numberValues,                  // <-  number of values returned
                             &basedate,                      // <-  days since 31Dec1899 of time of first value
                             quality,                        // <-  quality flags
@@ -1066,6 +1069,7 @@ void testStoreRetrieveTimeSeries() {
                             for (int o = 0; o < 2; ++o) {
                                 for (int p = 0; p < 2; ++p) {
                                     ++count;
+                                    // printf("%3d%3d%3d%3d%3d%3d%3d%3d%5d\n", i, j, k ,l, m, n, o, p, count);
                                     len = 0;
                                     headerBuf = NULL;
                                     nativeDatumInFile[0] = '\0';
@@ -1211,6 +1215,7 @@ void testStoreRetrieveTimeSeries() {
                                     }
                                     assert(tss != NULL);
                                     int K = k;
+                                    strcpy(unitSpec, unit[l]);
                                     //--------------------------------//
                                     // set the default vertical datum //
                                     //--------------------------------//
@@ -1877,7 +1882,7 @@ void testStoreRetrieveTimeSeries() {
                                         }
                                         break;
                                     }
-                                    if (i == 1 && j == 1 && k+l+m+n+o+p == 0) {
+                                    if (i == 1 && j > 0 && k+l+m+n+o+p == 0) {
                                         //---------------------------------------------//
                                         // change of vertical datum information for v7 //
                                         //                                             //

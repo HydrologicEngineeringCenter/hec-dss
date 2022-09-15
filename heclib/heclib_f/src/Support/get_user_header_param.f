@@ -43,7 +43,12 @@
       end if
       max_head_len = min(nuhead, size(iuhead_copy))
       iuhead_copy(:max_head_len) = iuhead(:max_head_len)
-
+      call bigEndian(i)
+      if (i.ne.0) then
+        do i = i, max_head_len
+          call zswap6(iuhead_copy(i), iuhead_copy(i))
+        end do
+      end if
       !--------------------------------------------------------!
       ! blank everything past the copy size or null terminator !
       !--------------------------------------------------------!

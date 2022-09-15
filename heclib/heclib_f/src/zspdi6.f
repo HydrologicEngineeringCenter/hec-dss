@@ -115,11 +115,6 @@ C     Check that IFLTAB is valid (e.g., the DSS file is open)
       nuhead_copy2 = min(size(iuhead_copy2), nuhead)
       iuhead_copy2 = 0
       iuhead_copy2(:nuhead_copy2) = iuhead(:nuhead_copy2)
-	if (ifltab(kswap).ne.0) then
-	  do i = 1, nuhead_copy2
-	    call zswap6(iuhead_copy2(i), iuhead_copy2(i))
-	  end do
-	end if
       call zufpn(ca, na, cb, nb, cc, nc, cd, nd, ce, ne, cf, nf,
      *           cpath, len_trim(cpath), istat)
       call upcase(cc)
@@ -538,14 +533,6 @@ C     Check that IFLTAB is valid (e.g., the DSS file is open)
           iuhead_copy2(:nuhead_copy2) = iuhead_copy1(:nuhead_copy1)
         end if
       end if
-	if (ifltab(kswap).ne.0) then
-        !------------------------------------------!
-        ! swap the user header back the way it was !
-        !------------------------------------------!
-	  do i = 1, nuhead_copy2
-	    call zswap6(iuhead_copy2(i), iuhead_copy2(i))
-	  end do
-	end if
 C
 C
       IF (IPLAN.EQ.11) THEN

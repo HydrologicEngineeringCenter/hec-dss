@@ -74,11 +74,11 @@ module modVerticalDatumInfo
             offsetToNgvd29IsEstimate,                      &
             userHeader,                                    &
             userHeaderLen)
-            character (len=16),   intent(in) :: nativeDatum
-            character (len=16),   intent(in) :: unit
-            real      (kind=8),   intent(in) :: offsetToNavd88
+            character (len = 16), intent(in) :: nativeDatum
+            character (len = 16), intent(in) :: unit
+            real      (kind = 8), intent(in) :: offsetToNavd88
             integer   (kind = 4), intent(in) :: offsetToNavd88IsEstimate
-            real      (kind=8),   intent(in) :: offsetToNgvd29
+            real      (kind = 8), intent(in) :: offsetToNgvd29
             integer   (kind = 4), intent(in) :: offsetToNgvd29IsEstimate
             integer   (kind = 4), intent(in) :: userHeader(*)
             integer   (kind = 4), intent(in) :: userHeaderLen
@@ -93,11 +93,11 @@ module modVerticalDatumInfo
             offsetToNgvd29IsEstimate,                      &
             fileTable,                                     &
             pathname)
-            character (len=16),   intent(in)     :: nativeDatum
-            character (len=16),   intent(in)     :: unit
-            real      (kind=8),   intent(in)     :: offsetToNavd88
+            character (len = 16), intent(in)     :: nativeDatum
+            character (len = 16), intent(in)     :: unit
+            real      (kind = 8), intent(in)     :: offsetToNavd88
             integer   (kind = 4), intent(in)     :: offsetToNavd88IsEstimate
-            real      (kind=8),   intent(in)     :: offsetToNgvd29
+            real      (kind = 8), intent(in)     :: offsetToNgvd29
             integer   (kind = 4), intent(in)     :: offsetToNgvd29IsEstimate
             integer   (kind = 8), intent(in out) :: fileTable(*)
             character (len = *),  intent(in)     :: pathname
@@ -186,6 +186,16 @@ module modVerticalDatumInfo
             isBigEndian = i.eq.1
         end function isBigEndian
 
+        subroutine swapIfBigEndian(intArray, arraySize)
+            integer (kind = 4), intent(in out) :: intArray(*)
+            integer (kind = 4), intent(in)     :: arraySize
+            integer (kind = 4)                 :: i
+            if (isBigEndian()) then
+                do i = 1, arraySize
+                    call zswap6(intArray(i), intArray(i))
+                end do
+            end if
+        end subroutine swapIfBigEndian
 end module modVerticalDatumInfo
 
 integer function test_vertical_datums_f()
@@ -198,16 +208,18 @@ integer function test_vertical_datums_f()
 end function test_vertical_datums_f
 
 subroutine testUserHeaderOps
+    use modVerticalDatumInfo
     implicit none
 
     character (len=100) :: cheader, cvalue
     character (len=72)  :: cheaderShort
-    integer   (kind=4)  :: iheader(25), iheaderShort(18), nhead, status
+    integer   (kind=4)  :: iheader(25), iheaderShort(18), nhead, status, i
 
     equivalence (cheader, iheader)
     equivalence (cheaderShort, iheaderShort)
 
     cheader = 'firstParam:firstValue;secondParam:secondValue;thirdParam:thirdValue;'
+    call swapIfBigEndian(iheader, size(iheader))
 
     call get_user_header_param(iheader, size(iheader), 'firstParam', cvalue)
     call assert(cvalue.eq.'firstValue')
@@ -232,16 +244,23 @@ subroutine testUserHeaderOps
     call assert(status.eq.0)
 
     cheader = 'firstParam:firstValue;secondParam:secondValue;thirdParam:thirdValue;'
+    call swapIfBigEndian(iheader, size(iheader))
     call remove_user_header_param(iheader, nhead, size(iheader), 'firstParam')
+    call swapIfBigEndian(iheader, size(iheader))
     call assert(cheader.eq.'secondParam:secondValue;thirdParam:thirdValue;')
     cheader = 'firstParam:firstValue;secondParam:secondValue;thirdParam:thirdValue;'
+    call swapIfBigEndian(iheader, size(iheader))
     call remove_user_header_param(iheader, nhead, size(iheader), 'secondParam')
+    call swapIfBigEndian(iheader, size(iheader))
     call assert(cheader.eq.'firstParam:firstValue;thirdParam:thirdValue;')
     cheader = 'firstParam:firstValue;secondParam:secondValue;thirdParam:thirdValue;'
+    call swapIfBigEndian(iheader, size(iheader))
     call remove_user_header_param(iheader, nhead, size(iheader), 'thirdParam')
+    call swapIfBigEndian(iheader, size(iheader))
     call assert(cheader.eq.'firstParam:firstValue;secondParam:secondValue;')
 
     cheaderShort = 'firstParam:firstValue;secondParam:secondValuethirdParam:thirdValue;'
+    call swapIfBigEndian(iheaderShort, size(iheaderShort))
     call set_user_header_param(iheaderShort, nhead, size(iheaderShort), 'fourthParam', '4thValue', status)
     call assert(status.ne.0)
 
@@ -556,47 +575,47 @@ subroutine testStoreRetrieveTimeSeries()
                                         call getLocationVdi(vdiInFile, ifltab, pathnames(o,n))
                                     end if
                                     nativeDatumInFile = vdiInFile%nativeDatum
-                                    !--------------------------------!
-                                    ! set the default vertical datum !
-                                    !--------------------------------!
-                                    userHeaderStr = ' '
-                                    userHeaderLen = 0
-                                    unitSpec = unit(l)
-                                    kk = k
-                                    call zset('VDTM', currentVerticalDatums(kk), 0)
-                                    if (p == 1) then
-                                        !------------------------------------------------!
-                                        ! add the vertical datum info to the user header !
-                                        !------------------------------------------------!
-                                        thisVdi = vdi(j)
-                                        if (vdi(j)%nativeDatum /= ' ') then
-                                            userHeaderStr = VERTICAL_DATUM_INFO_PARAM//':'//vdiStr(:len_trim(vdiStr))//';'
-                                        end if
-                                    else
-                                        !------------------------------------------------------!
-                                        ! don't add the vertical datum info to the user header !
-                                        !------------------------------------------------------!
-                                        thisVdi = blankVdi
-                                    end if
-                                    if (m > 1) then
-                                        !----------------------------------------------------------!
-                                        ! override the default vertical datum with the user header !
-                                        !----------------------------------------------------------!
-                                        kk = k2
-                                        len = len_trim(userHeaderStr) + 1
-                                        userHeaderStr(len:) = VERTICAL_DATUM_PARAM//':' // &
-                                            currentVerticalDatums(kk)(:len_trim(currentVerticalDatums(kk)))//';'
-                                    end if
-                                    if (m > 2) then
-                                        !--------------------------------------------------------!
-                                        ! override default and user header datums with unit spec !
-                                        !--------------------------------------------------------!
-                                        kk = k3
-                                        write(unitSpec,'(5a)')                     &
-                                            'U=',unit(l)(1:len_trim(unit(l))),'|', &
-                                            'V=',currentVerticalDatums(kk)
-                                    end if
                                     do
+                                        !--------------------------------!
+                                        ! set the default vertical datum !
+                                        !--------------------------------!
+                                        userHeaderStr = ' '
+                                        userHeaderLen = 0
+                                        unitSpec = unit(l)
+                                        kk = k
+                                        call zset('VDTM', currentVerticalDatums(kk), 0)
+                                        if (p == 1) then
+                                            !------------------------------------------------!
+                                            ! add the vertical datum info to the user header !
+                                            !------------------------------------------------!
+                                            thisVdi = vdi(j)
+                                            if (vdi(j)%nativeDatum /= ' ') then
+                                                userHeaderStr = VERTICAL_DATUM_INFO_PARAM//':'//vdiStr(:len_trim(vdiStr))//';'
+                                            end if
+                                        else
+                                            !------------------------------------------------------!
+                                            ! don't add the vertical datum info to the user header !
+                                            !------------------------------------------------------!
+                                            thisVdi = blankVdi
+                                        end if
+                                        if (m > 1) then
+                                            !----------------------------------------------------------!
+                                            ! override the default vertical datum with the user header !
+                                            !----------------------------------------------------------!
+                                            kk = k2
+                                            len = len_trim(userHeaderStr) + 1
+                                            userHeaderStr(len:) = VERTICAL_DATUM_PARAM//':' // &
+                                                currentVerticalDatums(kk)(:len_trim(currentVerticalDatums(kk)))//';'
+                                        end if
+                                        if (m > 2) then
+                                            !--------------------------------------------------------!
+                                            ! override default and user header datums with unit spec !
+                                            !--------------------------------------------------------!
+                                            kk = k3
+                                            write(unitSpec,'(5a)')                     &
+                                                'U=',unit(l)(1:len_trim(unit(l))),'|', &
+                                                'V=',currentVerticalDatums(kk)
+                                        end if
                                         !-----------------------------------------------!
                                         ! figure out whether the zs?tsx? should succeed !
                                         !-----------------------------------------------!
@@ -916,7 +935,7 @@ subroutine testStoreRetrieveTimeSeries()
                                                         !-----------------------!
                                                         ! native datum == LOCAL !
                                                         !-----------------------!
-                                                        if (currentVerticalDatums(kk) == CVD_NAVD88.and.thisVdi%offsetToNavd88 /= &
+                                                        if (currentVerticalDatums(kk) == CVD_NAVD88.and.thisVdi%offsetToNavd88 /=  &
                                                             UNDEFINED_VERTICAL_DATUM_VALUE) then
                                                             !----------------------------------------------------------!
                                                             ! current datum is NAVD-88 and VDI has offset from NAVD-88 !
@@ -1119,11 +1138,7 @@ subroutine testStoreRetrieveTimeSeries()
                                         ! store the time series in the specified vertical datum !
                                         !-------------------------------------------------------!
                                         userHeaderLen = byteCountToIntCount(len_trim(userHeaderStr))
-									    if (isBigEndian()) then
-										    do ii = 1, userHeaderLen
-											    userHeader(ii) = iswap(userHeader(ii))
-										    end do
-									    end if
+                                        call swapIfBigEndian(userHeader, userHeaderLen)
                                         numberValues = 6
                                         unitSpec2 = unitSpec
                                         if (n == 1) then
@@ -1409,7 +1424,7 @@ subroutine testStoreRetrieveTimeSeries()
                                                     quality,           & ! JQUAL   <-  quality flags array
                                                     readQuality,       & ! LQUAL    -> whether to retrieve quality flags if they exist (0/1)
                                                     qualityWasRead,    & ! LQREAD  <-  whether quality flags were retrieved (0/1)
-                                                    unitSpec,          & ! CUNITS  <-  data unit
+                                                    unitSpec2,         & ! CUNITS  <-  data unit
                                                     type,              & ! CTYPE   <-  data type
                                                     userHeader,        & ! IUHEAD  <-  user header array
                                                     size(userHeader),  & ! KUHEAD   -> max number of user header elements to retrieve
@@ -1432,7 +1447,7 @@ subroutine testStoreRetrieveTimeSeries()
                                                     quality,           & ! JQUAL   <-  quality flags array
                                                     readQuality,       & ! LQUAL    -> whether to retrieve quality flags if they exist (0/1)
                                                     qualityWasRead,    & ! LQREAD  <-  whether quality flags were retrieved (0/1)
-                                                    unitSpec,          & ! CUNITS  <-  data unit
+                                                    unitSpec2,         & ! CUNITS  <-  data unit
                                                     type,              & ! CTYPE   <-  data type
                                                     userHeader,        & ! IUHEAD  <-  user header array
                                                     size(userHeader),  & ! KUHEAD   -> max number of user header elements to retrieve
@@ -1466,7 +1481,7 @@ subroutine testStoreRetrieveTimeSeries()
                                                     quality,           & ! IQUAL   <-  quality flags
                                                     readQuality,       & ! LQUAL    -> whether to retrieve quality flags if they exist (0/1)
                                                     qualityWasRead,    & ! LQREAD  <-  whether quality flags were retrieved (0/1)
-                                                    unitSpec,          & ! CUNITS  <-  data unit
+                                                    unitSpec2,         & ! CUNITS  <-  data unit
                                                     type,              & ! CTYPE   <-  data type
                                                     userHeader,        & ! IUHEAD  <-  user header array
                                                     size(userHeader),  & ! KUHEAD   -> max number of user header elements to retrieve
@@ -1493,7 +1508,7 @@ subroutine testStoreRetrieveTimeSeries()
                                                     quality,           & ! IQUAL   <-  quality flags
                                                     readQuality,       & ! LQUAL    -> whether to retrieve quality flags if they exist (0/1)
                                                     qualityWasRead,    & ! LQREAD  <-  whether quality flags were retrieved (0/1)
-                                                    unitSpec,          & ! CUNITS  <-  data unit
+                                                    unitSpec2,         & ! CUNITS  <-  data unit
                                                     type,              & ! CTYPE   <-  data type
                                                     userHeader,        & ! IUHEAD  <-  user header array
                                                     size(userHeader),  & ! KUHEAD   -> max number of user header elements to retrieve
@@ -2134,7 +2149,7 @@ subroutine testStoreRetrievePairedData()
                                                         !-----------------------!
                                                         ! native datum == LOCAL !
                                                         !-----------------------!
-                                                        if (currentVerticalDatums(kk) == CVD_NAVD88.and.thisVdi%offsetToNavd88 /= &
+                                                        if (currentVerticalDatums(kk) == CVD_NAVD88.and.thisVdi%offsetToNavd88 /=  &
                                                             UNDEFINED_VERTICAL_DATUM_VALUE) then
                                                             !----------------------------------------------------------!
                                                             ! current datum is NAVD-88 and VDI has offset from NAVD-88 !
@@ -2338,11 +2353,11 @@ subroutine testStoreRetrievePairedData()
                                         write(*, *) '    incoming unit          = '//c1unit(:len_trim(c1unit))//', ' &
                                                                                    //c2unit(:len_trim(c2unit))
                                         userHeaderLen = byteCountToIntCount(len_trim(userHeaderStr))
-									    if (isBigEndian()) then
-										    do ii = 1, userHeaderLen
-											    userHeader(ii) = iswap(userHeader(ii))
-										    end do
-									    end if
+                                        if (isBigEndian()) then
+                                            do ii = 1, userHeaderLen
+                                                userHeader(ii) = iswap(userHeader(ii))
+                                            end do
+                                        end if
                                         if (o == 1) then
                                             !---------!
                                             ! doubles !
@@ -2529,7 +2544,7 @@ subroutine testStoreRetrievePairedData()
                                                 userHeaderLen,    & ! NUHEAD  <-  number of user header elements retrieved
                                                 status)             ! ISTAT   <-  status (0=success)
                                         end if
-										call zclose(ifltab)
+                                        call zclose(ifltab)
                                         call assert(status == 0)
                                         call assert(numberOrdinates == 6)
                                         call assert(numberCurves == 1)
@@ -2565,5 +2580,5 @@ subroutine assert(logical_test)
     logical :: logical_test
     if (.not.logical_test) then
         call abort
-	end if
+    end if
 end subroutine assert

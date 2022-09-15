@@ -412,13 +412,6 @@ C
           end if
         end if
       end if
-	call bigEndian(itemp)
-	if (itemp.eq.1 .and. nuhead.gt.0) then
-	  do i = 1, nuhead
-	    call zswap6(iuhead(i), itemp)
-	    iuhead(i) = itemp
-	  end do
-      end if
       RETURN
 C
  900  CONTINUE

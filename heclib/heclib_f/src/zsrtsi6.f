@@ -246,11 +246,6 @@ C
       nuhead_copy2 = min(size(iuhead_copy2), nuhead)
       iuhead_copy2 = 0
       iuhead_copy2(:nuhead_copy2) = iuhead(:nuhead_copy2)
-	if (ifltab(kswap).ne.0) then
-	  do i = i, nuhead_copy2
-	    call zswap6(iuhead_copy2(i), iuhead_copy2(i))
-	  end do
-	end if
       !-----------------------------------------------!
       ! convert to native vertical datum if necessary !
       !-----------------------------------------------!

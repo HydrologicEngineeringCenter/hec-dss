@@ -325,7 +325,6 @@ char *userHeaderToString(const int *userHeader, const int userHeaderNumber) {
     }
     return str;
 }
-
 //
 // See verticalDatum.h for documentation
 //
