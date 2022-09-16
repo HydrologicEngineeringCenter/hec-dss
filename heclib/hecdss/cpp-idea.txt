@@ -1,0 +1,26 @@
+using namespace std;
+// public definition
+typedef struct dss_file dss_file;
+
+struct dss_file {
+    long long ifltab[250];
+
+    dss_file(const string& name) {
+
+    }
+
+    unique_ptr<zStructTimeSeries> get_timeseries(path, range, etc);
+};
+
+
+HECDSS_API unique_ptr<dss_file> hec_dss_open(const std::string& filename )
+{//	status = ztsRetrieve((long long*)ifltab, tss, retrieveFlag, retrieveDoublesFlag, 1);
+    unique_ptr<dss_file> dss_f = ::make_unique<dss_file>(filename);
+    dss_f.reset(new dss_file);
+    return dss_f;
+}
+
+HECDSS_API unique_ptr<zStructTimeSeries> hec_dss_ztsRetrieve(dss_file* dss_f,path,rnage,etc)
+{
+    dss_file->get_timeseries(path, range, etc);
+}
