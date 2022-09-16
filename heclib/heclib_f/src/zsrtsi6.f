@@ -255,19 +255,23 @@ C
         !-----------------------!
         ! elevation time series !
         !-----------------------!
+        !-----------------------------------------!
+        ! get the first and last data value dates !
+        !-----------------------------------------!
+        call datjul (cdate, ijuls, iistat)
+        iistat = 1
+        call zgintl (iintvl, cpart(5), inodata, iistat)
+        iistat = inctim (iintvl, 0, nvals, ijuls, 0, ijule, ietime)
         !--------------------------------------------------------------!
         ! get the beginng date of the first record for the time series !
         !--------------------------------------------------------------!
-        iistat = 1
-        call zgintl (iintvl, cpart(5), inodata, iistat)
-        call datjul (cdate, ijuls, iistat)
-        iistat = jliymd (ijuls,iiyr,iimon,iiday)
         call zbegdt6 (ijuls, iintvl, iiyr, iimon, iiday, iiblock, 0)
+        ijuls = iymdjl(iiyr, iimon, iiday)
         !-------------------------------------------------------------!
         ! get the beginng date of the last record for the time series !
         !-------------------------------------------------------------!
-        iistat = inctim (iintvl, 0, nvals, ijuls, 0, ijule, ietime)
         call zbegdt6 (ijule, iintvl, iiyr, iimon, iiday, iiblock, 0)
+        ijule = iymdjl(iiyr, iimon, iiday)
         !----------------------------------------------------------------!
         ! loop through all the records for the time series, checking VDI !
         !----------------------------------------------------------------!
@@ -345,7 +349,8 @@ C
      *      npart(4), ce, npart(5), cf, npart(6), cpath_next, npath,
      *      iistat)
           call datjul(cd, ijul, iistat)
-          if (ijul.ge.ijule) exit
+          if (ijul.gt.ijule) exit
+          cpath_this = cpath_next
         end do
         !--------------------------------------!
         ! get the vertical datum of the values !

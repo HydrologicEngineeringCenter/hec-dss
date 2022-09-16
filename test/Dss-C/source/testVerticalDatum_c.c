@@ -284,7 +284,8 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
     char* filename = "v6_mult_vert_datum_ts.dss";
     char* pathnames[2][2] = { {"//TESTTSLOC/ELEV//1DAY/MULTVERTICALDATUMS-OLD/", "//TESTTSLOC/ELEV//IR-YEAR/MULTVERTICALDATUMS-OLD/"},
                               {"//TESTTSLOC/ELEV//1DAY/MULTVERTICALDATUMS-NEW/", "//TESTTSLOC/ELEV//IR-YEAR/MULTVERTICALDATUMS-NEW/"} };
-    int numberValues = 365;
+    int maxValueCount = 365;
+    int numberValues = maxValueCount;
     char* startDate[2] = { "01Jan2021", "01Jan2022" };
     char* endDate[2] = { "31Dec2021", "31Dec2022" };
     char* startTime = "01:00";
@@ -358,7 +359,7 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
     strcpy(unit2, unit);
     strcpy(dataType2, dataType);
     zquery("MLVL", alpha, sizeof(alpha) - 1, &messageLevel);
-    zset("MLVL", "", 0);
+    zset("MLVL", "", 1);
     status = zopen6(ifltab, filename);
     assert(status == 0);
     for (int api = OLD_API; api <= NEW_API; ++api) {
@@ -442,7 +443,7 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                                     &numberValues,                  //  -> number of values to store
                                     values,                         //  -> values to store
                                     quality,                        //  -> quality flags to store
-                                    &storeFlags,                    //  -> whether to store quality flags (/1)
+                                    &storeFlags,                    //  -> whether to store quality flags (0/1)
                                     unit,                           //  -> data unit
                                     dataType,                       //  -> data type
                                     userHeader2,                    //  -> user header array
@@ -567,8 +568,8 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                     int yearIndex = year - 2021;
                     printf("\t\t\tRetrieving time series for year %d ", year);
                     printf("with %s\n", api == NEW_API ? "ztsRetrieve" : tsType == REGULAR ? "zrrtsxd" : "zritsxd");
+                    maxValueCount = 365;
                     if (api == OLD_API) {
-                        int maxValues = 365;
                         numberValues = numberValues;
                         memset(values, 0, numberValues * sizeof(double));
                         if (tsType == REGULAR) {
@@ -621,7 +622,7 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                                 &endMinutes,                    //  -> minutes into day of end of time window
                                 times,                          // <-  times array as minutes offset from base date
                                 values,                         // <-  values array
-                                &maxValues,                     //  -> max number of values to return
+                                &maxValueCount,                 //  -> max number of values to return
                                 &numberValues,                  // <-  number of values returned
                                 &basedate,                      // <-  days since 31Dec1899 of time of first value
                                 quality,                        // <-  quality flags array
@@ -760,9 +761,9 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                 //
                 printf("\t\t\tRetrieving time series that crosses record boundaries ");
                 printf("with %s\n", api == NEW_API ? "ztsRetrieve" : tsType == REGULAR ? "zrrtsxd" : "zritsxd");
+                maxValueCount = 21; // 21Dec -- 10Jan
                 if (api == OLD_API) {
-                    int maxValues = 21; // 21Dec -- 10Jan
-                    numberValues = maxValues;
+                    numberValues = maxValueCount;
                     memset(values, 0, numberValues * sizeof(double));
                     if (tsType == REGULAR) {
                         zrrtsxd_(
@@ -814,7 +815,7 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                             &endMinutes,                    //  -> minutes into day of end of time window
                             times,                          // <-  times array as minutes offset from base date
                             values,                         // <-  values array
-                            &maxValues,                     //  -> max number of values to return
+                            &maxValueCount,                 //  -> max number of values to return
                             &numberValues,                  // <-  number of values returned
                             &basedate,                      // <-  days since 31Dec1899 of time of first value
                             quality,                        // <-  quality flags
@@ -898,7 +899,7 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                 free(vdiStr);
                 free(headerBuf);
                 printf(
-                    "\t\t\tValues were retrieved with native datum of %s and current datum of %s\n",
+                    "\t\t\t\tValues were retrieved with native datum of %s and current datum of %s\n",
                     vdi.nativeDatum,
                     currentVerticalDatum ? currentVerticalDatum : vdi.nativeDatum);
                 free(currentVerticalDatum);
@@ -922,8 +923,121 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                     assert(dv[i] == expectedValue);
                 }
                 if (api == NEW_API) {
+                    memcpy(values, tss->doubleValues, maxValueCount, sizeof(double));
+                    memcpy(times, tss->times , maxValueCount, sizeof(int));
                     zstructFree(tss);
                 }
+                //-------------------------------------------------//
+                // store a dataset that crosses record boundaries  //
+                //                                                 //
+                // this should always fail becuase the two records //
+                // have different native vertical datums and the   //
+                // following error message should be output        //
+                //-------------------------------------------------//
+                //
+                // *****DSS*** zsrtsi6:  ERROR - VERTICAL DATUM CONFLICT
+                //     Elevation values in file are in multiple native vertical datums.
+                //
+                //     No values stored.
+                //
+                printf("\t\t\tStoring time series that crosses record boundaries ");
+                printf("with %s\n", api == NEW_API ? "ztsStore" : tsType == REGULAR ? "zsrtsxd" : "zsitsxd");
+                printf("\t\t\t\tShould fail.\n");
+                if (api == OLD_API) {
+                    compressionType = 0;
+                    userHeaderNumber = 0;
+                    numberValues = maxValueCount;
+                    if (tsType == REGULAR) {
+                        zsrtsxd_(
+                            ifltab,                         // <-> file table
+                            pathnames[api][tsType],         //  -> dataset name
+                            "21Dec2021",                    //  -> date of first value
+                            startTime,                      //  -> time of first value
+                            &numberValues,                  //  -> number of values to store
+                            values,                         //  -> values to store
+                            quality,                        //  -> quality flags to store
+                            &storeFlags,                    //  -> whether to store quality flags (0/1)
+                            unit,                           //  -> data unit
+                            dataType,                       //  -> data type
+                            userHeader2,                    //  -> user header array
+                            &userHeaderNumber,              //  -> number of header array elements to store
+                            &storeFlag,                     //  -> data storage method 0=replace all)
+                            &compressionType,               //  -> data compression type to use (0=file default)
+                            &compressionBaseVal,            //  -> data compression base value for delta method
+                            &compressionBase,               //  -> whether to use base value for delta method data compression (0/1)
+                            &compressionHigh,               //  -> whether to use 2 bytes per compressed value for delta method (0=let software decide)
+                            &compressionPrec,               //  -> base 10 exponent of compressed values for delta method
+                            &status,                        // <-  status (0=success)
+                            strlen(pathnames[api][tsType]), //  -> fortran-required length of dataset name parameter
+                            strlen("21Dec2021"),            //  -> fortran-required length of date of first value parameter
+                            strlen(startTime),              //  -> fortran-required length of time of first value parameter
+                            strlen(unit),                   //  -> fortran-required length of data unit parameter
+                            strlen(dataType));              //  -> fortran-required length of data type parameter
+                    }
+                    else {
+                        startJul = dateToJulian("21Dec2021");
+                        for (int i = 0; i < numberValues; ++i) {
+                            times[i] -= startJul * 1440;
+                        }
+                        zsitsxd_(
+                            ifltab,                         // <-> file table
+                            pathnames[api][tsType],         //  -> dataset name
+                            times,                          //  -> times relative to base date
+                            values,                         //  -> values to store
+                            &numberValues,                  //  -> number of values to store
+                            &startJul,                      //  -> base date for times
+                            quality,                        //  -> quality flags to store
+                            &storeFlags,                    //  -> whether to store quality flags (0/1)
+                            unit,                           //  -> data unit
+                            dataType,                       //  -> data type
+                            userHeader2,                    //  -> user header array
+                            &userHeaderNumber,              //  -> number of user header array elements to store
+                            &storeFlag,                     //  -> data storage method (0=merge)
+                            &status,                        // <-  status (0=success)
+                            strlen(pathnames[api][tsType]), //  -> fortran-required size of dataset name parameter
+                            strlen(unit),                   //  -> fortran-required size of data unit parameter
+                            strlen(dataType));              //  -> fortran-required size of data type parameter
+                    }
+                }
+                else {
+                    //-------------------------------------//
+                    // create a TSS for the storing record //
+                    //-------------------------------------//
+                    if (tsType == REGULAR) {
+                        tss = zstructTsNewRegDoubles(
+                            pathnames[api][tsType],     // dataset name
+                            values,                     // values
+                            numberValues,               // number of values
+                            "21Dec2021",                // start date
+                            startTime,                  // start time
+                            unit,                       // data unit
+                            dataType);                  // data type
+                    }
+                    else {
+                        tss = zstructTsNewIrregDoubles(
+                            pathnames[api][tsType],     // dataset name
+                            values,                     // values
+                            numberValues,               // number of values
+                            times,                      // times
+                            60,                         // time granularity in seconds
+                            NULL,                       // base date (if other than 01Jan1900)
+                            unit,                       // data unit
+                            dataType);                  // data type
+                    }
+                    tss->quality = quality;
+                    tss->qualityElementSize = 1;
+                    tss->allocated[zSTRUCT_TS_quality] = FALSE; // will free memory separately
+                    //-----------------------//
+                    // store the time series //
+                    //-----------------------//
+                    status = ztsStore(
+                        ifltab,        // file table
+                        tss,           // time series struct
+                        0);            // storage flag (0=reg:replace all, irr:merge)
+                    zstructFree(tss);
+                }
+                printf("\t\t\t\t%s\n", status == 0 ? "Succeeded." : "Failed.");
+                assert(status == 13);
             }
         }
     }

@@ -289,11 +289,13 @@ C
         !-----------------------!
         !----------------------------------------------------------------!
         ! loop through all the records for the time series, checking VDI !
-        ! (juls, jule are starting and ending julians and are set above) !
         !----------------------------------------------------------------!
         call zufpn (ca, na, cb, nb, cc, nc, cd, nd, ce, ne, cf, nf,
      *    cpath, npath, iistat)
-        call juldat (juls, 104, cd, maxpart)
+        call zirbeg6(ifltab, juls, ce, iyr, imon, iday, iblock, minblk, 
+     *    incblk)
+        ijuls = iymdjl(iyr, imon, iday)
+        call juldat (ijuls, 104, cd, maxpart)
         do
           call zpath(ca, cb, cc, cd, ce, cf, cpath_this, npath)
           iiihead = 0
@@ -363,7 +365,8 @@ C
           call zufpn (ca, na, cb, nb, cc, nc, cd, nd, ce, ne, cf, nf,
      *      cpath_next, npath, iistat)
           call datjul(cd, ijul, iistat)
-          if (ijul.ge.jule) exit
+          if (ijul.gt.jule) exit
+          cpath_this = cpath_next
         end do
         !--------------------------------------!
         ! get the vertical datum of the values !
