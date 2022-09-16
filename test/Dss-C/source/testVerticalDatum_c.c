@@ -923,8 +923,8 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                     assert(dv[i] == expectedValue);
                 }
                 if (api == NEW_API) {
-                    memcpy(values, tss->doubleValues, maxValueCount, sizeof(double));
-                    memcpy(times, tss->times , maxValueCount, sizeof(int));
+                    memcpy(values, tss->doubleValues, maxValueCount * sizeof(double));
+                    memcpy(times, tss->times , maxValueCount * sizeof(int));
                     zstructFree(tss);
                 }
                 //-------------------------------------------------//
