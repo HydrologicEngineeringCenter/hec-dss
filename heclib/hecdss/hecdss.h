@@ -10,12 +10,6 @@
 #define HECDSS_API __declspec(dllimport)
 #endif
 
-// This class is exported from the dll
-class HECDSS_API Checdss {
-public:
-	Checdss(void);
-	// TODO: add your methods here.
-};
 
 extern HECDSS_API int nhecdss;
 
