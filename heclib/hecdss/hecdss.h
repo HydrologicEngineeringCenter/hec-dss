@@ -97,30 +97,6 @@ HECDSS_API int hec_dss_tsRetrieveInfo(dss_file* dss, const char* pathname, char*
 /// <returns></returns>
 HECDSS_API int hec_dss_dataType(dss_file* dss, const char* pathname);
 
+extern HECDSS_API int nhecdss;
 
-  
-/// <summary>
-/// use hec_dss_tsRetrieve to read time series data
-/// </summary>
-/// <param name="pdss">input: pointer to dss file</param>
-/// <param name="pathname">input: path to read from DSS file</param>
-/// <param name="startDate">input: start date</param>
-/// <param name="startTime">input: end time/param>
-/// <param name="endDate">input: end date</param>
-/// <param name="endTime">input: end time</param>
-/// <param name="timeArray">input/output: array to hold integer representation of date-times</param>
-/// <param name="valueArray">input/output: array to hold double representation of values</param>
-/// <param name="arraySize">input: length of timeArray and valueArray </param>
-/// <param name="numberValuesRead">output: number of values returned</param>
-/// <param name="julianBaseDate">base integer </param>
-/// <param name="units"></param>
-/// <param name="unitsLength"></param>
-/// <param name="type"></param>
-/// <param name="typeLength"></param>
-/// <returns></returns>
-HECDSS_API int hec_dss_tsRetrieve(dss_file* dss, const char* pathname,
-  const char* startDate, const char* startTime,
-  const char* endDate, const char* endTime,
-  int* timeArray, double* valueArray, const int arraySize,
-  int* numberValuesRead, int* julianBaseDate, int* timeGranularitySeconds,
-  char* units, const int unitsLength, char* type, const int typeLength);
+HECDSS_API int fnhecdss(void);

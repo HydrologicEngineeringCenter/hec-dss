@@ -145,4 +145,5 @@ test/Fortran/modverticaldatuminfo.mod
 /test/Fortran/source.txt
 *.mod
 /heclib/hecdss/x64/Debug
+/heclib/hecdss/x64/Debug
 hecdss-cppcheck-build-dir
