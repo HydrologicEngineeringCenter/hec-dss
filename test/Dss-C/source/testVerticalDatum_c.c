@@ -12,6 +12,8 @@ void testStoreRetrieveTimeSeries();
 void testV6TimeSeiresWithMultipleVerticalDatums();
 void testStoreRetrievePairedData();
 
+static int storageFailureMode[37];
+
 int test_vertical_datums_c() {
     testDelimitedStringOps();
     testGzipAndEncodingOps();
@@ -1049,6 +1051,394 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
     free(userHeader);
     free(quality);
 }
+
+int canStore(int fileContainsData, verticalDatumInfo *fileVdi, verticalDatumInfo* dataVdi, char *currentDatum, char *dataUnit) {
+    int expectSuccess = TRUE;
+    if (fileContainsData) {
+        //-----------------------//
+        // existing data in file //
+        //-----------------------//
+        if (!strcmp(fileVdi->nativeDatum, "")) {
+            //-------------------------------//
+            // native datum in file == UNSET //
+            //-------------------------------//
+            if (!strcmp(dataVdi->nativeDatum, "")) {
+                //--------------------------------//
+                // incoming native datum == UNSET //
+                //--------------------------------//
+                if (strcmp(currentDatum, CVERTICAL_DATUM_UNSET)) {
+                    //------------------------//
+                    // current datum != UNSET //
+                    //------------------------//
+                    expectSuccess = FALSE;  ++storageFailureMode[0];
+                }
+            }
+            else {
+                //--------------------------------//
+                // incoming native datum != UNSET //
+                //--------------------------------//
+                expectSuccess = FALSE;  ++storageFailureMode[1];
+            }
+        }
+        else if (!strcmp(fileVdi->nativeDatum, CVERTICAL_DATUM_NAVD88)) {
+            //---------------------------------//
+            // native datum in file == NAVD-88 //
+            //---------------------------------//
+            if (!unitIsFeet(dataUnit) && !unitIsMeters(dataUnit)) {
+                //------------------------//
+                // invalid incoming units //
+                //------------------------//
+                expectSuccess = FALSE;  ++storageFailureMode[2];
+            }
+            else if (!strcmp(dataVdi->nativeDatum, "")) {
+                //--------------------------------//
+                // incoming native datum == UNSET //
+                //--------------------------------//
+                if (!strcmp(currentDatum, CVERTICAL_DATUM_NGVD29)) {
+                    //--------------------------//
+                    // current datum == NGVD-29 //
+                    //--------------------------//
+                    if (fileVdi->offsetToNgvd29 == UNDEFINED_VERTICAL_DATUM_VALUE) {
+                        //------------------------//
+                        // no offset from NGVD-29 //
+                        //------------------------//
+                        expectSuccess = FALSE;  ++storageFailureMode[3];
+                    }
+                }
+                else if (strcmp(currentDatum, CVERTICAL_DATUM_UNSET) &&
+                         strcmp(currentDatum, CVERTICAL_DATUM_NAVD88)) {
+                    //------------------------//
+                    // current datum == LOCAL //
+                    //------------------------//
+                    expectSuccess = FALSE;  ++storageFailureMode[4];
+                }
+            }
+            else if (strcmp(dataVdi->nativeDatum, CVERTICAL_DATUM_NAVD88)) {
+                //----------------------------------//
+                // incoming native datum != NAVD-88 //
+                //----------------------------------//
+                expectSuccess = FALSE;  ++storageFailureMode[5];
+            }
+            else if (strcmp(currentDatum, CVERTICAL_DATUM_NAVD88) &&
+                strcmp(currentDatum, CVERTICAL_DATUM_NGVD29) &&
+                strcmp(currentDatum, CVERTICAL_DATUM_UNSET)) {
+                //------------------------//
+                // current datum == LOCAL //
+                //------------------------//
+                expectSuccess = FALSE;  ++storageFailureMode[6];
+            }
+        }
+        else if (!strcmp(fileVdi->nativeDatum, CVERTICAL_DATUM_NGVD29)) {
+            //---------------------------------//
+            // native datum in file == NGVD-29 //
+            //---------------------------------//
+            if (!unitIsFeet(dataUnit) && !unitIsMeters(dataUnit)) {
+                //------------------------//
+                // invalid incoming units //
+                //------------------------//
+                expectSuccess = FALSE;  ++storageFailureMode[7];
+            }
+            else if (!strcmp(dataVdi->nativeDatum, "")) {
+                //--------------------------------//
+                // incoming native datum == UNSET //
+                //--------------------------------//
+                if (!strcmp(currentDatum, CVERTICAL_DATUM_NAVD88)) {
+                    //--------------------------//
+                    // current datum == NAVD-88 //
+                    //--------------------------//
+                    if (fileVdi->offsetToNavd88 == UNDEFINED_VERTICAL_DATUM_VALUE) {
+                        //------------------------//
+                        // no offset from NAVD-88 //
+                        //------------------------//
+                        expectSuccess = FALSE;  ++storageFailureMode[8];
+                    }
+                }
+                else if (strcmp(currentDatum, CVERTICAL_DATUM_UNSET) &&
+                    strcmp(currentDatum, CVERTICAL_DATUM_NGVD29)) {
+                    //------------------------//
+                    // current datum == LOCAL //
+                    //------------------------//
+                    expectSuccess = FALSE;  ++storageFailureMode[9];
+                }
+            }
+            else if (strcmp(dataVdi->nativeDatum, CVERTICAL_DATUM_NGVD29)) {
+                //----------------------------------//
+                // incoming native datum != NGVD-29 //
+                //----------------------------------//
+                expectSuccess = FALSE;  ++storageFailureMode[10];
+            }
+            else if (strcmp(currentDatum, CVERTICAL_DATUM_NGVD29) &&
+                strcmp(currentDatum, CVERTICAL_DATUM_NAVD88) &&
+                strcmp(currentDatum, CVERTICAL_DATUM_UNSET)) {
+                //------------------------//
+                // current datum == LOCAL //
+                //------------------------//
+                expectSuccess = FALSE;  ++storageFailureMode[11];
+            }
+        }
+        else {
+            //-------------------------------//
+            // native datum in file == LOCAL //
+            //-------------------------------//
+            if (!strcmp(currentDatum, fileVdi->nativeDatum)) {
+                //------------------------//
+                // current datum == LOCAL //
+                //------------------------//
+                if (!strcmp(dataVdi->nativeDatum, "")) {
+                    //--------------------------------//
+                    // incoming native datum == UNSET //
+                    //--------------------------------//
+                    if (!unitIsFeet(dataUnit) && !unitIsMeters(dataUnit)) {
+                        //------------------------//
+                        // invalid incoming units //
+                        //------------------------//
+                        expectSuccess = FALSE;  ++storageFailureMode[12];
+                    }
+                }
+                else if (!strcmp(dataVdi->nativeDatum, fileVdi->nativeDatum)) {
+                    //-------------------------------------//
+                    // incoming native datum == this LOCAL //
+                    //-------------------------------------//
+                    if (!strcmp(currentDatum, CVERTICAL_DATUM_NAVD88)) {
+                        //--------------------------//
+                        // current datum is NAVD-88 //
+                        //--------------------------//
+                        if (dataVdi->offsetToNavd88 == UNDEFINED_VERTICAL_DATUM_VALUE) {
+                            //-----------------------------------------//
+                            // incoming VDI has no offset from NAVD-88 //
+                            //-----------------------------------------//
+                            expectSuccess = FALSE;  ++storageFailureMode[13];
+                        }
+                    }
+                    else if (!strcmp(currentDatum, CVERTICAL_DATUM_NGVD29)) {
+                        //--------------------------//
+                        // current datum is NGVD-29 //
+                        //--------------------------//
+                        if (dataVdi->offsetToNgvd29 == UNDEFINED_VERTICAL_DATUM_VALUE) {
+                            //-----------------------------------------//
+                            // incoming VDI has no offset from NGVD-29 //
+                            //-----------------------------------------//
+                            expectSuccess = FALSE;  ++storageFailureMode[14];
+                        }
+                    }
+                    else if (!unitIsFeet(dataUnit) && !unitIsMeters(dataUnit)) {
+                        //------------------------//
+                        // invalid incoming units //
+                        //------------------------//
+                        expectSuccess = FALSE;  ++storageFailureMode[15];
+                    }
+                }
+                else {
+                    //-----------------------------------------//
+                    // current datum == UNSET or another LOCAL //
+                    //-----------------------------------------//
+                    expectSuccess = FALSE;  ++storageFailureMode[16];
+                }
+            }
+            else {
+                //------------------------//
+                // current datum != LOCAL //
+                //------------------------//
+                if (!strcmp(dataVdi->nativeDatum, "")) {
+                    //-----------------------//
+                    // native datum == UNSET //
+                    //-----------------------//
+                    if (!unitIsFeet(dataUnit) && !unitIsMeters(dataUnit)) {
+                        //------------------------//
+                        // invalid incoming units //
+                        //------------------------//
+                        expectSuccess = FALSE;  ++storageFailureMode[17];
+                    }
+                }
+                else if (!strcmp(dataVdi->nativeDatum, fileVdi->nativeDatum)) {
+                    //-----------------------//
+                    // native datum == LOCAL //
+                    //-----------------------//
+                    if (!strcmp(currentDatum, CVERTICAL_DATUM_NAVD88)) {
+                        //--------------------------//
+                        // current datum is NAVD-88 //
+                        //--------------------------//
+                        if (dataVdi->offsetToNavd88 == UNDEFINED_VERTICAL_DATUM_VALUE) {
+                            //-----------------------------------------//
+                            // incoming VDI has no offset from NAVD-88 //
+                            //-----------------------------------------//
+                            expectSuccess = FALSE;  ++storageFailureMode[18];
+                        }
+                        else if (!unitIsFeet(dataUnit) && !unitIsMeters(dataUnit)) {
+                            //------------------------//
+                            // invalid incoming units //
+                            //------------------------//
+                            expectSuccess = FALSE;  ++storageFailureMode[19];
+                        }
+                    }
+                    else if (!strcmp(currentDatum, CVERTICAL_DATUM_NGVD29)) {
+                        //--------------------------//
+                        // current datum is NGVD-29 //
+                        //--------------------------//
+                        if (dataVdi->offsetToNgvd29 == UNDEFINED_VERTICAL_DATUM_VALUE) {
+                            //-----------------------------------------//
+                            // incoming VDI has no offset from NGVD-29 //
+                            //-----------------------------------------//
+                            expectSuccess = FALSE;  ++storageFailureMode[20];
+                        }
+                        else if (!unitIsFeet(dataUnit) && !unitIsMeters(dataUnit)) {
+                            //------------------------//
+                            // invalid incoming units //
+                            //------------------------//
+                            expectSuccess = FALSE;  ++storageFailureMode[21];
+                        }
+                    }
+                    else {
+                        //------------------------//
+                        // current datum == UNSET //
+                        //------------------------//
+                        if (!unitIsFeet(dataUnit) && !unitIsMeters(dataUnit)) {
+                            //------------------------//
+                            // invalid incoming units //
+                            //------------------------//
+                            expectSuccess = FALSE;  ++storageFailureMode[22];
+                        }
+                    }
+                }
+                else {
+                    //-----------------------//
+                    // native datum != LOCAL //
+                    //-----------------------//
+                    expectSuccess = FALSE;  ++storageFailureMode[23];
+                }
+            }
+        }
+    }
+    else {
+        //--------------------------//
+        // no existing data in file //
+        //--------------------------//
+        if (!strcmp(dataVdi->nativeDatum, "")) {
+            //--------------------------------//
+            // incoming native datum == UNSET //
+            //--------------------------------//
+            if (strcmp(currentDatum, CVERTICAL_DATUM_UNSET)) {
+                //------------------------//
+                // current datum != UNSET //
+                //------------------------//
+                expectSuccess = FALSE;  ++storageFailureMode[24];
+            }
+        }
+        else if (!strcmp(dataVdi->nativeDatum, CVERTICAL_DATUM_NAVD88)) {
+            //----------------------------------//
+            // incoming native datum == NAVD-88 //
+            //----------------------------------//
+            if (strcmp(currentDatum, CVERTICAL_DATUM_NAVD88) &&
+                strcmp(currentDatum, CVERTICAL_DATUM_NGVD29) &&
+                strcmp(currentDatum, CVERTICAL_DATUM_UNSET)) {
+                //------------------------//
+                // current datum is local //
+                //------------------------//
+                expectSuccess = FALSE;  ++storageFailureMode[25];
+            }
+            else if (dataVdi->offsetToNavd88 == UNDEFINED_VERTICAL_DATUM_VALUE) {
+                //---------------------------------------//
+                // incoming VDI has no offset to NAVD-88 //
+                //---------------------------------------//
+                expectSuccess = FALSE;  ++storageFailureMode[26];
+            }
+            else {
+                //------------------------------------//
+                // incoming VDI has offset to NAVD-88 //
+                //------------------------------------//
+                if (!unitIsFeet(dataUnit) && !unitIsMeters(dataUnit)) {
+                    //------------------------//
+                    // invalid incoming units //
+                    //------------------------//
+                    expectSuccess = FALSE;  ++storageFailureMode[27];
+                }
+            }
+        }
+        else if (!strcmp(dataVdi->nativeDatum, CVERTICAL_DATUM_NGVD29)) {
+            //----------------------------------//
+            // incoming native datum == NGVD-29 //
+            //----------------------------------//
+            if (strcmp(currentDatum, CVERTICAL_DATUM_NAVD88) &&
+                strcmp(currentDatum, CVERTICAL_DATUM_NGVD29) &&
+                strcmp(currentDatum, CVERTICAL_DATUM_UNSET)) {
+                //------------------------//
+                // current datum is local //
+                //------------------------//
+                expectSuccess = FALSE;  ++storageFailureMode[28];
+            }
+            else if (dataVdi->offsetToNgvd29 == UNDEFINED_VERTICAL_DATUM_VALUE) {
+                //---------------------------------------//
+                // incoming VDI has no offset to NGVD-29 //
+                //---------------------------------------//
+                expectSuccess = FALSE;  ++storageFailureMode[29];
+            }
+            else {
+                //------------------------------------//
+                // incoming VDI has offset to NGVD-29 //
+                //------------------------------------//
+                if (!unitIsFeet(dataUnit) && !unitIsMeters(dataUnit)) {
+                    //------------------------//
+                    // invalid incoming units //
+                    //------------------------//
+                    expectSuccess = FALSE;  ++storageFailureMode[30];
+                }
+            }
+        }
+        else {
+            //--------------------------------//
+            // incoming native datum == LOCAL //
+            //--------------------------------//
+            if (!strcmp(currentDatum, "")) {
+                //------------------------//
+                // current datum == UNSET //
+                //------------------------//
+                expectSuccess = FALSE;  ++storageFailureMode[31];
+            }
+            if (!strcmp(currentDatum, CVERTICAL_DATUM_NAVD88)) {
+                //--------------------------//
+                // current datum is NAVD-88 //
+                //--------------------------//
+                if (dataVdi->offsetToNavd88 == UNDEFINED_VERTICAL_DATUM_VALUE) {
+                    //-----------------------------------------//
+                    // incoming VDI has no offset from NAVD-88 //
+                    //-----------------------------------------//
+                    expectSuccess = FALSE;  ++storageFailureMode[32];
+                }
+                else if (!unitIsFeet(dataUnit) && !unitIsMeters(dataUnit)) {
+                    //------------------------//
+                    // invalid incoming units //
+                    //------------------------//
+                    expectSuccess = FALSE;  ++storageFailureMode[33];
+                }
+            }
+            else if (!strcmp(currentDatum, CVERTICAL_DATUM_NGVD29)) {
+                //--------------------------//
+                // current datum is NGVD-29 //
+                //--------------------------//
+                if (dataVdi->offsetToNgvd29 == UNDEFINED_VERTICAL_DATUM_VALUE) {
+                    //-----------------------------------------//
+                    // incoming VDI has no offset from NGVD-29 //
+                    //-----------------------------------------//
+                    expectSuccess = FALSE;  ++storageFailureMode[34];
+                }
+                else if (!unitIsFeet(dataUnit) && !unitIsMeters(dataUnit)) {
+                    //------------------------//
+                    // invalid incoming units //
+                    //------------------------//
+                    expectSuccess = FALSE;  ++storageFailureMode[35];
+                }
+            }
+            else {
+                //----------------------------------//
+                // current datum == different LOCAL //
+                //----------------------------------//
+                expectSuccess = FALSE;  ++storageFailureMode[36];
+            }
+        }
+    }
+    return expectSuccess;
+}
+
 void testStoreRetrieveTimeSeries() {
 // test storing and retriving time series data
     long long ifltab[250];
@@ -1127,6 +1517,8 @@ void testStoreRetrieveTimeSeries() {
     int count = 0;
     int expectSuccess = TRUE;
     memset(nativeDatumInFile, 0, sizeof(nativeDatumInFile));
+
+    memcpy(0, storageFailureMode, 0, sizeof(storageFailureMode));
 
     //
     // loop variables
@@ -1415,550 +1807,7 @@ void testStoreRetrieveTimeSeries() {
                                         //-------------------------------------------------//
                                         // figure out whether expect ztsStore to succeeded //
                                         //-------------------------------------------------//
-                                        expectSuccess = TRUE;
-                                        if (dataInFile) {
-                                            //-----------------------//
-                                            // existing data in file //
-                                            //-----------------------//
-                                            if (!strcmp(nativeDatumInFile, "")) {
-                                                //-------------------------------//
-                                                // native datum in file == UNSET //
-                                                //-------------------------------//
-                                                if (!strcmp(vdi.nativeDatum, "")) {
-                                                    //--------------------------------//
-                                                    // incoming native datum == UNSET //
-                                                    //--------------------------------//
-                                                    if (!strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_UNSET)) {
-                                                        //------------------------//
-                                                        // current datum == UNSET //
-                                                        //------------------------//
-                                                        expectSuccess = TRUE;
-                                                    }
-                                                    else {
-                                                        //------------------------//
-                                                        // current datum != UNSET //
-                                                        //------------------------//
-                                                        expectSuccess = FALSE;
-                                                    }
-                                                }
-                                                else {
-                                                    //--------------------------------//
-                                                    // incoming native datum != UNSET //
-                                                    //--------------------------------//
-                                                    expectSuccess = FALSE;
-                                                }
-                                            }
-                                            else if (!strcmp(nativeDatumInFile, CVERTICAL_DATUM_NAVD88)) {
-                                                //---------------------------------//
-                                                // native datum in file == NAVD-88 //
-                                                //---------------------------------//
-                                                if (!strcmp(vdi.nativeDatum, "")) {
-                                                    //--------------------------------//
-                                                    // incoming native datum == UNSET //
-                                                    //--------------------------------//
-                                                    if (!strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_UNSET)) {
-                                                        //--------------------------//
-                                                        // current datum == UNSET //
-                                                        //--------------------------//
-                                                        if (!unitIsFeet(unit[l]) && !unitIsMeters(unit[l])) {
-                                                            //------------------------//
-                                                            // invalid incoming units //
-                                                            //------------------------//
-                                                            expectSuccess = FALSE;
-                                                        }
-                                                    }
-                                                    else if (!strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_NAVD88)) {
-                                                        //--------------------------//
-                                                        // current datum == NAVD-88 //
-                                                        //--------------------------//
-                                                        if (!unitIsFeet(unit[l]) && !unitIsMeters(unit[l])) {
-                                                            //------------------------//
-                                                            // invalid incoming units //
-                                                            //------------------------//
-                                                            expectSuccess = FALSE;
-                                                        }
-                                                    }
-                                                    else if (!strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_NGVD29)) {
-                                                        //--------------------------//
-                                                        // current datum == NGVD-29 //
-                                                        //--------------------------//
-                                                        if (vdiInFile.offsetToNgvd29 == UNDEFINED_VERTICAL_DATUM_VALUE) {
-                                                            //------------------------//
-                                                            // no offset from NGVD-29 //
-                                                            //------------------------//
-                                                            expectSuccess = FALSE;
-                                                        }
-                                                        else {
-                                                            if (!unitIsFeet(unit[l]) && !unitIsMeters(unit[l])) {
-                                                                //------------------------//
-                                                                // invalid incoming units //
-                                                                //------------------------//
-                                                                expectSuccess = FALSE;
-                                                            }
-                                                        }
-                                                    }
-                                                    else {
-                                                        //--------------------------//
-                                                        // unexpected current datum //
-                                                        //--------------------------//
-                                                        expectSuccess = FALSE;
-                                                    }
-                                                }
-                                                else if (strcmp(vdi.nativeDatum, CVERTICAL_DATUM_NAVD88)) {
-                                                    //----------------------------------//
-                                                    // incoming native datum != NAVD-88 //
-                                                    //----------------------------------//
-                                                    expectSuccess = FALSE;
-                                                }
-                                                else {
-                                                    //----------------------------------//
-                                                    // incoming native datum == NAVD-88 //
-                                                    //----------------------------------//
-                                                    if (!strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_UNSET)) {
-                                                        //------------------------//
-                                                        // current datum == UNSET //
-                                                        //------------------------//
-                                                        if (!unitIsFeet(unit[l]) && !unitIsMeters(unit[l])) {
-                                                            //------------------------//
-                                                            // invalid incoming units //
-                                                            //------------------------//
-                                                            expectSuccess = FALSE;
-                                                        }
-                                                    }
-                                                    else if (!strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_NAVD88)) {
-                                                        //---------------------------//
-                                                        // current datum == NAVD-88  //
-                                                        //---------------------------//
-                                                        if (!unitIsFeet(unit[l]) && !unitIsMeters(unit[l])) {
-                                                            //------------------------//
-                                                            // invalid incoming units //
-                                                            //------------------------//
-                                                            expectSuccess = FALSE;
-                                                        }
-                                                    }
-                                                    else {
-                                                        //---------------------------//
-                                                        // current datum != NAVD-88  //
-                                                        //---------------------------//
-                                                        if (vdi.offsetToNavd88 == UNDEFINED_VERTICAL_DATUM_VALUE) {
-                                                            //---------------------------------------//
-                                                            // incoming VDI has no offset to NAVD-88 //
-                                                            //---------------------------------------//
-                                                            expectSuccess = FALSE;
-                                                        }
-                                                        else if (strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_NAVD88) &&
-                                                                 strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_NGVD29)) {
-                                                            //---------------------------------//
-                                                            // current datum == UNSET or LOCAL //
-                                                            //---------------------------------//
-                                                            expectSuccess = FALSE;
-                                                        }
-                                                        else {
-                                                            //------------------------------------//
-                                                            // incoming VDI has offset to NAVD-88 //
-                                                            //------------------------------------//
-                                                            if (!unitIsFeet(unit[l]) && !unitIsMeters(unit[l])) {
-                                                                //------------------------//
-                                                                // invalid incoming units //
-                                                                //------------------------//
-                                                                expectSuccess = FALSE;
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                            else if (!strcmp(nativeDatumInFile, CVERTICAL_DATUM_NGVD29)) {
-                                                //---------------------------------//
-                                                // native datum in file == NGVD-29 //
-                                                //---------------------------------//
-                                                if (!strcmp(vdi.nativeDatum, "")) {
-                                                    //--------------------------------//
-                                                    // incoming native datum == UNSET //
-                                                    //--------------------------------//
-                                                    if (!strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_UNSET)) {
-                                                        //--------------------------//
-                                                        // current datum == NGVD-29 //
-                                                        //--------------------------//
-                                                        if (!unitIsFeet(unit[l]) && !unitIsMeters(unit[l])) {
-                                                            //------------------------//
-                                                            // invalid incoming units //
-                                                            //------------------------//
-                                                            expectSuccess = FALSE;
-                                                        }
-                                                    }
-                                                    else if (!strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_NGVD29)) {
-                                                        //--------------------------//
-                                                        // current datum == NGVD-29 //
-                                                        //--------------------------//
-                                                        if (!unitIsFeet(unit[l]) && !unitIsMeters(unit[l])) {
-                                                            //------------------------//
-                                                            // invalid incoming units //
-                                                            //------------------------//
-                                                            expectSuccess = FALSE;
-                                                        }
-                                                    }
-                                                    else if (!strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_NAVD88)) {
-                                                        //--------------------------//
-                                                        // current datum == NAVD-88 //
-                                                        //--------------------------//
-                                                        if (vdiInFile.offsetToNavd88 == UNDEFINED_VERTICAL_DATUM_VALUE) {
-                                                            //---------------------------------------//
-                                                            // incoming VDI has no offset to NAVD-88 //
-                                                            //---------------------------------------//
-                                                            expectSuccess = FALSE;
-                                                        }
-                                                        else {
-                                                            //------------------------------------//
-                                                            // incoming VDI has offset to NAVD-88 //
-                                                            //------------------------------------//
-                                                            if (!unitIsFeet(unit[l]) && !unitIsMeters(unit[l])) {
-                                                                //------------------------//
-                                                                // invalid incoming units //
-                                                                //------------------------//
-                                                                expectSuccess = FALSE;
-                                                            }
-                                                        }
-                                                    }
-                                                    else {
-                                                        //--------------------------//
-                                                        // unexpected current datum //
-                                                        //--------------------------//
-                                                        expectSuccess = FALSE;
-                                                    }
-                                                }
-                                                else if (strcmp(vdi.nativeDatum, CVERTICAL_DATUM_NGVD29)) {
-                                                    //----------------------------------//
-                                                    // incoming native datum != NGVD-29 //
-                                                    //----------------------------------//
-                                                    expectSuccess = FALSE;
-                                                }
-                                                else {
-                                                    //----------------------------------//
-                                                    // incoming native datum == NGVD-29 //
-                                                    //----------------------------------//
-                                                    if (!strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_UNSET)) {
-                                                        //------------------------//
-                                                        // current datum == UNSET //
-                                                        //------------------------//
-                                                        if (!unitIsFeet(unit[l]) && !unitIsMeters(unit[l])) {
-                                                            //------------------------//
-                                                            // invalid incoming units //
-                                                            //------------------------//
-                                                            expectSuccess = FALSE;
-                                                        }
-                                                    }
-                                                    else if (!strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_NGVD29)) {
-                                                        //---------------------------//
-                                                        // current datum == NGVD-29  //
-                                                        //---------------------------//
-                                                        if (!unitIsFeet(unit[l]) && !unitIsMeters(unit[l])) {
-                                                            //------------------------//
-                                                            // invalid incoming units //
-                                                            //------------------------//
-                                                            expectSuccess = FALSE;
-                                                        }
-                                                    }
-                                                    else {
-                                                        //---------------------------//
-                                                        // current datum != NGVD-29  //
-                                                        //---------------------------//
-                                                        if (vdi.offsetToNgvd29 == UNDEFINED_VERTICAL_DATUM_VALUE) {
-                                                            //---------------------------------------//
-                                                            // incoming VDI has no offset to NGVD-29 //
-                                                            //---------------------------------------//
-                                                            expectSuccess = FALSE;
-                                                        }
-                                                        else if (strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_NAVD88) &&
-                                                                 strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_NGVD29)) {
-                                                            //---------------------------------//
-                                                            // current datum == UNSET or LOCAL //
-                                                            //---------------------------------//
-                                                            expectSuccess = FALSE;
-                                                        }
-                                                        else {
-                                                            //------------------------------------//
-                                                            // incoming VDI has offset to NGVD-29 //
-                                                            //------------------------------------//
-                                                            if (!unitIsFeet(unit[l]) && !unitIsMeters(unit[l])) {
-                                                                //------------------------//
-                                                                // invalid incoming units //
-                                                                //------------------------//
-                                                                expectSuccess = FALSE;
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                            else {
-                                                //-------------------------------//
-                                                // native datum in file == LOCAL //
-                                                //-------------------------------//
-                                                if (!strcmp(currentVerticalDatums[K], nativeDatumInFile)) {
-                                                    //------------------------//
-                                                    // current datum == LOCAL //
-                                                    //------------------------//
-                                                    if (!strcmp(vdi.nativeDatum, "")) {
-                                                        //--------------------------------//
-                                                        // incoming native datum == UNSET //
-                                                        //--------------------------------//
-                                                        if (!unitIsFeet(unit[l]) && !unitIsMeters(unit[l])) {
-                                                            //------------------------//
-                                                            // invalid incoming units //
-                                                            //------------------------//
-                                                            expectSuccess = FALSE;
-                                                        }
-                                                    }
-                                                    else if (!strcmp(vdi.nativeDatum, nativeDatumInFile)) {
-                                                        //-------------------------------------//
-                                                        // incoming native datum == this LOCAL //
-                                                        //-------------------------------------//
-                                                        if (!unitIsFeet(unit[l]) && !unitIsMeters(unit[l])) {
-                                                            //------------------------//
-                                                            // invalid incoming units //
-                                                            //------------------------//
-                                                            expectSuccess = FALSE;
-                                                        }
-                                                    }
-                                                    else if (!strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_NAVD88) && vdi.offsetToNavd88 != UNDEFINED_VERTICAL_DATUM_VALUE) {
-                                                        //----------------------------------------------------------//
-                                                        // current datum is NAVD-88 and VDI has offset from NAVD-88 //
-                                                        //----------------------------------------------------------//
-                                                        expectSuccess = TRUE;
-                                                    }
-                                                    else if (!strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_NGVD29) && vdi.offsetToNgvd29 != UNDEFINED_VERTICAL_DATUM_VALUE) {
-                                                        //----------------------------------------------------------//
-                                                        // current datum is NGVD-29 and VDI has offset from NGVD-29 //
-                                                        //----------------------------------------------------------//
-                                                        expectSuccess = TRUE;
-                                                    }
-                                                    else {
-                                                        //-----------------------------------------//
-                                                        // current datum == UNSET or another LOCAL //
-                                                        //-----------------------------------------//
-                                                        expectSuccess = FALSE;
-                                                    }
-                                                }
-                                                else {
-                                                    //------------------------//
-                                                    // current datum != LOCAL //
-                                                    //------------------------//
-                                                    if (!strcmp(vdi.nativeDatum, "")) {
-                                                        //-----------------------//
-                                                        // native datum == UNSET //
-                                                        //-----------------------//
-                                                        if (!unitIsFeet(unit[l]) && !unitIsMeters(unit[l])) {
-                                                            //------------------------//
-                                                            // invalid incoming units //
-                                                            //------------------------//
-                                                            expectSuccess = FALSE;
-                                                        }
-                                                    }
-                                                    else if (!strcmp(vdi.nativeDatum, nativeDatumInFile)) {
-                                                        //-----------------------//
-                                                        // native datum == LOCAL //
-                                                        //-----------------------//
-                                                        if (!strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_NAVD88) && vdi.offsetToNavd88 != UNDEFINED_VERTICAL_DATUM_VALUE) {
-                                                            //----------------------------------------------------------//
-                                                            // current datum is NAVD-88 and VDI has offset from NAVD-88 //
-                                                            //----------------------------------------------------------//
-                                                            if (!unitIsFeet(unit[l]) && !unitIsMeters(unit[l])) {
-                                                                //------------------------//
-                                                                // invalid incoming units //
-                                                                //------------------------//
-                                                                expectSuccess = FALSE;
-                                                            }
-                                                        }
-                                                        else if (!strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_NGVD29) && vdi.offsetToNgvd29 != UNDEFINED_VERTICAL_DATUM_VALUE) {
-                                                            //----------------------------------------------------------//
-                                                            // current datum is NGVD-29 and VDI has offset from NGVD-29 //
-                                                            //----------------------------------------------------------//
-                                                            if (!unitIsFeet(unit[l]) && !unitIsMeters(unit[l])) {
-                                                                //------------------------//
-                                                                // invalid incoming units //
-                                                                //------------------------//
-                                                                expectSuccess = FALSE;
-                                                            }
-                                                        }
-                                                        else {
-                                                            //------------------------//
-                                                            // current datum == UNSET //
-                                                            //------------------------//
-                                                            if (!unitIsFeet(unit[l]) && !unitIsMeters(unit[l])) {
-                                                                //------------------------//
-                                                                // invalid incoming units //
-                                                                //------------------------//
-                                                                expectSuccess = FALSE;
-                                                            }
-                                                        }
-                                                    }
-                                                    else {
-                                                        //-----------------------//
-                                                        // native datum != LOCAL //
-                                                        //-----------------------//
-                                                        expectSuccess = FALSE;
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        else {
-                                            //--------------------------//
-                                            // no existing data in file //
-                                            //--------------------------//
-                                            if (!strcmp(vdi.nativeDatum, "")) {
-                                                //--------------------------------//
-                                                // incoming native datum == UNSET //
-                                                //--------------------------------//
-                                                if (!strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_UNSET)) {
-                                                    //------------------------//
-                                                    // current datum == UNSET //
-                                                    //------------------------//
-                                                    expectSuccess = TRUE;
-                                                }
-                                                else if (!strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_NAVD88)) {
-                                                    //--------------------------//
-                                                    // current datum == NAVD-88 //
-                                                    //--------------------------//
-                                                    if (vdiInFile.offsetToNavd88 != UNDEFINED_VERTICAL_DATUM_VALUE) {
-                                                        //---------------------------------------------//
-                                                        // VDI in file has a valid offset from NAVD-88 //
-                                                        //---------------------------------------------//
-                                                        if (!unitIsFeet(unit[l]) && !unitIsMeters(unit[l])) {
-                                                            //------------------------//
-                                                            // invalid incoming units //
-                                                            //------------------------//
-                                                            expectSuccess = FALSE;
-                                                        }
-                                                    }
-                                                    else {
-                                                        //-------------------=--------------------------//
-                                                        // VDI in file has no valid offset from NAVD-88 //
-                                                        //--------------------=-------------------------//
-                                                        expectSuccess = FALSE;
-                                                    }
-                                                }
-                                                else if (!strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_NGVD29)) {
-                                                    //--------------------------//
-                                                    // current datum == NAVD-88 //
-                                                    //--------------------------//
-                                                    if (vdiInFile.offsetToNgvd29 != UNDEFINED_VERTICAL_DATUM_VALUE) {
-                                                        //---------------------------------------------//
-                                                        // VDI in file has a valid offset from NGVD-29 //
-                                                        //---------------------------------------------//
-                                                        if (!unitIsFeet(unit[l]) && !unitIsMeters(unit[l])) {
-                                                            //------------------------//
-                                                            // invalid incoming units //
-                                                            //------------------------//
-                                                            expectSuccess = FALSE;
-                                                        }
-                                                    }
-                                                    else {
-                                                        //-------------------=--------------------------//
-                                                        // VDI in file has no valid offset from NGVD-29 //
-                                                        //--------------------=-------------------------//
-                                                        expectSuccess = FALSE;
-                                                    }
-                                                }
-                                                else {
-                                                    //--------------------------//
-                                                    // unexpected current datum //
-                                                    //--------------------------//
-                                                    expectSuccess = FALSE;
-                                                }
-                                            }
-                                            else if (!strcmp(vdi.nativeDatum, CVERTICAL_DATUM_NAVD88)) {
-                                                //----------------------------------//
-                                                // incoming native datum == NAVD-88 //
-                                                //----------------------------------//
-                                                if (strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_NAVD88) &&
-                                                    strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_NGVD29) &&
-                                                    strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_UNSET)) {
-                                                    //------------------------//
-                                                    // current datum is local //
-                                                    //------------------------//
-                                                    expectSuccess = FALSE;
-                                                }
-                                                else if (vdi.offsetToNavd88 == UNDEFINED_VERTICAL_DATUM_VALUE) {
-                                                    //---------------------------------------//
-                                                    // incoming VDI has no offset to NAVD-88 //
-                                                    //---------------------------------------//
-                                                    expectSuccess = FALSE;
-                                                }
-                                                else {
-                                                    //------------------------------------//
-                                                    // incoming VDI has offset to NAVD-88 //
-                                                    //------------------------------------//
-                                                    if (!unitIsFeet(unit[l]) && !unitIsMeters(unit[l])) {
-                                                        //------------------------//
-                                                        // invalid incoming units //
-                                                        //------------------------//
-                                                        expectSuccess = FALSE;
-                                                    }
-                                                }
-                                            }
-                                            else if (!strcmp(vdi.nativeDatum, CVERTICAL_DATUM_NGVD29)) {
-                                                //----------------------------------//
-                                                // incoming native datum == NGVD-29 //
-                                                //----------------------------------//
-                                                if (strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_NAVD88) &&
-                                                    strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_NGVD29) &&
-                                                    strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_UNSET)) {
-                                                    //------------------------//
-                                                    // current datum is local //
-                                                    //------------------------//
-                                                    expectSuccess = FALSE;
-                                                }
-                                                else if (vdi.offsetToNgvd29 == UNDEFINED_VERTICAL_DATUM_VALUE) {
-                                                    //---------------------------------------//
-                                                    // incoming VDI has no offset to NGVD-29 //
-                                                    //---------------------------------------//
-                                                    expectSuccess = FALSE;
-                                                }
-                                                else {
-                                                    //------------------------------------//
-                                                    // incoming VDI has offset to NGVD-29 //
-                                                    //------------------------------------//
-                                                    if (!unitIsFeet(unit[l]) && !unitIsMeters(unit[l])) {
-                                                        //------------------------//
-                                                        // invalid incoming units //
-                                                        //------------------------//
-                                                        expectSuccess = FALSE;
-                                                    }
-                                                }
-                                            }
-                                            else {
-                                                //--------------------------------//
-                                                // incoming native datum == LOCAL //
-                                                //--------------------------------//
-                                                if (!strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_NAVD88) && vdi.offsetToNavd88 != UNDEFINED_VERTICAL_DATUM_VALUE) {
-                                                    //----------------------------------------------------------//
-                                                    // current datum is NAVD-88 and VDI has offset from NAVD-88 //
-                                                    //----------------------------------------------------------//
-                                                    if (!unitIsFeet(unit[l]) && !unitIsMeters(unit[l])) {
-                                                        //------------------------//
-                                                        // invalid incoming units //
-                                                        //------------------------//
-                                                        expectSuccess = FALSE;
-                                                    }
-                                                }
-                                                else if (!strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_NGVD29) && vdi.offsetToNgvd29 != UNDEFINED_VERTICAL_DATUM_VALUE) {
-                                                    //----------------------------------------------------------//
-                                                    // current datum is NGVD-29 and VDI has offset from NGVD-29 //
-                                                    //----------------------------------------------------------//
-                                                    if (!unitIsFeet(unit[l]) && !unitIsMeters(unit[l])) {
-                                                        //------------------------//
-                                                        // invalid incoming units //
-                                                        //------------------------//
-                                                        expectSuccess = FALSE;
-                                                    }
-                                                }
-                                                else {
-                                                    //------------------------//
-                                                    // current datum == UNSET //
-                                                    //------------------------//
-                                                    expectSuccess = FALSE;
-                                                }
-                                            }
-                                        }
+                                        expectSuccess = canStore(dataInFile, &vdiInFile, &vdi, currentVerticalDatums[K], unit[l]);
                                         //-------------------------------------------------------//
                                         // store the time series in the specified vertical datum //
                                         //-------------------------------------------------------//
@@ -2069,6 +1918,12 @@ void testStoreRetrieveTimeSeries() {
         }
     }
     printf("\n\n%3d Time series tests passed\n\n\n", count);
+    int total = 0;
+    for (int i = 0; i < sizeof(storageFailureMode) / sizeof(storageFailureMode[0]); ++i) {
+        total += storageFailureMode[i];
+        printf("Storage failure mode %5d : %4d ocurrences\n", i, storageFailureMode[i]);
+    }
+    printf("                     Total : %4d occurrences\n", total);
 }
 void testStoreRetrievePairedData() {
     // test storing and retrieving paired data
@@ -2149,6 +2004,8 @@ void testStoreRetrievePairedData() {
     int dataInFile = FALSE;
     int count = 0;
     int expectSuccess = FALSE;
+
+    memcpy(0, storageFailureMode, 0, sizeof(storageFailureMode));
     //
     // loop variables
     //
@@ -2398,550 +2255,7 @@ void testStoreRetrievePairedData() {
                                         //------------------------------------------------//
                                         // figure out whether the zpdStore should succeed //
                                         //------------------------------------------------//
-                                        expectSuccess = TRUE;
-                                        if (dataInFile) {
-                                            //-----------------------//
-                                            // existing data in file //
-                                            //-----------------------//
-                                            if (!strcmp(nativeDatumInFile, "")) {
-                                                //-------------------------------//
-                                                // native datum in file == UNSET //
-                                                //-------------------------------//
-                                                if (!strcmp(vdi.nativeDatum, "")) {
-                                                    //--------------------------------//
-                                                    // incoming native datum == UNSET //
-                                                    //--------------------------------//
-                                                    if (!strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_UNSET)) {
-                                                        //------------------------//
-                                                        // current datum == UNSET //
-                                                        //------------------------//
-                                                        expectSuccess = TRUE;
-                                                    }
-                                                    else {
-                                                        //------------------------//
-                                                        // current datum != UNSET //
-                                                        //------------------------//
-                                                        expectSuccess = FALSE;
-                                                    }
-                                                }
-                                                else {
-                                                    //--------------------------------//
-                                                    // incoming native datum != UNSET //
-                                                    //--------------------------------//
-                                                    expectSuccess = FALSE;
-                                                }
-                                            }
-                                            else if (!strcmp(nativeDatumInFile, CVERTICAL_DATUM_NAVD88)) {
-                                                //---------------------------------//
-                                                // native datum in file == NAVD-88 //
-                                                //---------------------------------//
-                                                if (!strcmp(vdi.nativeDatum, "")) {
-                                                    //--------------------------------//
-                                                    // incoming native datum == UNSET //
-                                                    //--------------------------------//
-                                                    if (!strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_UNSET)) {
-                                                        //--------------------------//
-                                                        // current datum == UNSET //
-                                                        //--------------------------//
-                                                        if (!unitIsFeet(unit[l]) && !unitIsMeters(unit[l])) {
-                                                            //------------------------//
-                                                            // invalid incoming units //
-                                                            //------------------------//
-                                                            expectSuccess = FALSE;
-                                                        }
-                                                    }
-                                                    else if (!strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_NAVD88)) {
-                                                        //--------------------------//
-                                                        // current datum == NAVD-88 //
-                                                        //--------------------------//
-                                                        if (!unitIsFeet(unit[l]) && !unitIsMeters(unit[l])) {
-                                                            //------------------------//
-                                                            // invalid incoming units //
-                                                            //------------------------//
-                                                            expectSuccess = FALSE;
-                                                        }
-                                                    }
-                                                    else if (!strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_NGVD29)) {
-                                                        //--------------------------//
-                                                        // current datum == NGVD-29 //
-                                                        //--------------------------//
-                                                        if (vdiInFile.offsetToNgvd29 == UNDEFINED_VERTICAL_DATUM_VALUE) {
-                                                            //------------------------//
-                                                            // no offset from NGVD-29 //
-                                                            //------------------------//
-                                                            expectSuccess = FALSE;
-                                                        }
-                                                        else {
-                                                            if (!unitIsFeet(unit[l]) && !unitIsMeters(unit[l])) {
-                                                                //------------------------//
-                                                                // invalid incoming units //
-                                                                //------------------------//
-                                                                expectSuccess = FALSE;
-                                                            }
-                                                        }
-                                                    }
-                                                    else {
-                                                        //--------------------------//
-                                                        // unexpected current datum //
-                                                        //--------------------------//
-                                                        expectSuccess = FALSE;
-                                                    }
-                                                }
-                                                else if (strcmp(vdi.nativeDatum, CVERTICAL_DATUM_NAVD88)) {
-                                                    //----------------------------------//
-                                                    // incoming native datum != NAVD-88 //
-                                                    //----------------------------------//
-                                                    expectSuccess = FALSE;
-                                                }
-                                                else {
-                                                    //----------------------------------//
-                                                    // incoming native datum == NAVD-88 //
-                                                    //----------------------------------//
-                                                    if (!strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_UNSET)) {
-                                                        //------------------------//
-                                                        // current datum == UNSET //
-                                                        //------------------------//
-                                                        if (!unitIsFeet(unit[l]) && !unitIsMeters(unit[l])) {
-                                                            //------------------------//
-                                                            // invalid incoming units //
-                                                            //------------------------//
-                                                            expectSuccess = FALSE;
-                                                        }
-                                                    }
-                                                    else if (!strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_NAVD88)) {
-                                                        //---------------------------//
-                                                        // current datum == NAVD-88  //
-                                                        //---------------------------//
-                                                        if (!unitIsFeet(unit[l]) && !unitIsMeters(unit[l])) {
-                                                            //------------------------//
-                                                            // invalid incoming units //
-                                                            //------------------------//
-                                                            expectSuccess = FALSE;
-                                                        }
-                                                    }
-                                                    else {
-                                                        //---------------------------//
-                                                        // current datum != NAVD-88  //
-                                                        //---------------------------//
-                                                        if (vdi.offsetToNavd88 == UNDEFINED_VERTICAL_DATUM_VALUE) {
-                                                            //---------------------------------------//
-                                                            // incoming VDI has no offset to NAVD-88 //
-                                                            //---------------------------------------//
-                                                            expectSuccess = FALSE;
-                                                        }
-                                                        else if (strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_NAVD88) &&
-                                                            strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_NGVD29)) {
-                                                            //---------------------------------//
-                                                            // current datum == UNSET or LOCAL //
-                                                            //---------------------------------//
-                                                            expectSuccess = FALSE;
-                                                        }
-                                                        else {
-                                                            //------------------------------------//
-                                                            // incoming VDI has offset to NAVD-88 //
-                                                            //------------------------------------//
-                                                            if (!unitIsFeet(unit[l]) && !unitIsMeters(unit[l])) {
-                                                                //------------------------//
-                                                                // invalid incoming units //
-                                                                //------------------------//
-                                                                expectSuccess = FALSE;
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                            else if (!strcmp(nativeDatumInFile, CVERTICAL_DATUM_NGVD29)) {
-                                                //---------------------------------//
-                                                // native datum in file == NGVD-29 //
-                                                //---------------------------------//
-                                                if (!strcmp(vdi.nativeDatum, "")) {
-                                                    //--------------------------------//
-                                                    // incoming native datum == UNSET //
-                                                    //--------------------------------//
-                                                    if (!strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_UNSET)) {
-                                                        //--------------------------//
-                                                        // current datum == NGVD-29 //
-                                                        //--------------------------//
-                                                        if (!unitIsFeet(unit[l]) && !unitIsMeters(unit[l])) {
-                                                            //------------------------//
-                                                            // invalid incoming units //
-                                                            //------------------------//
-                                                            expectSuccess = FALSE;
-                                                        }
-                                                    }
-                                                    else if (!strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_NGVD29)) {
-                                                        //--------------------------//
-                                                        // current datum == NGVD-29 //
-                                                        //--------------------------//
-                                                        if (!unitIsFeet(unit[l]) && !unitIsMeters(unit[l])) {
-                                                            //------------------------//
-                                                            // invalid incoming units //
-                                                            //------------------------//
-                                                            expectSuccess = FALSE;
-                                                        }
-                                                    }
-                                                    else if (!strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_NAVD88)) {
-                                                        //--------------------------//
-                                                        // current datum == NAVD-88 //
-                                                        //--------------------------//
-                                                        if (vdiInFile.offsetToNavd88 == UNDEFINED_VERTICAL_DATUM_VALUE) {
-                                                            //---------------------------------------//
-                                                            // incoming VDI has no offset to NAVD-88 //
-                                                            //---------------------------------------//
-                                                            expectSuccess = FALSE;
-                                                        }
-                                                        else {
-                                                            //------------------------------------//
-                                                            // incoming VDI has offset to NAVD-88 //
-                                                            //------------------------------------//
-                                                            if (!unitIsFeet(unit[l]) && !unitIsMeters(unit[l])) {
-                                                                //------------------------//
-                                                                // invalid incoming units //
-                                                                //------------------------//
-                                                                expectSuccess = FALSE;
-                                                            }
-                                                        }
-                                                    }
-                                                    else {
-                                                        //--------------------------//
-                                                        // unexpected current datum //
-                                                        //--------------------------//
-                                                        expectSuccess = FALSE;
-                                                    }
-                                                }
-                                                else if (strcmp(vdi.nativeDatum, CVERTICAL_DATUM_NGVD29)) {
-                                                    //----------------------------------//
-                                                    // incoming native datum != NGVD-29 //
-                                                    //----------------------------------//
-                                                    expectSuccess = FALSE;
-                                                }
-                                                else {
-                                                    //----------------------------------//
-                                                    // incoming native datum == NGVD-29 //
-                                                    //----------------------------------//
-                                                    if (!strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_UNSET)) {
-                                                        //------------------------//
-                                                        // current datum == UNSET //
-                                                        //------------------------//
-                                                        if (!unitIsFeet(unit[l]) && !unitIsMeters(unit[l])) {
-                                                            //------------------------//
-                                                            // invalid incoming units //
-                                                            //------------------------//
-                                                            expectSuccess = FALSE;
-                                                        }
-                                                    }
-                                                    else if (!strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_NGVD29)) {
-                                                        //---------------------------//
-                                                        // current datum == NGVD-29  //
-                                                        //---------------------------//
-                                                        if (!unitIsFeet(unit[l]) && !unitIsMeters(unit[l])) {
-                                                            //------------------------//
-                                                            // invalid incoming units //
-                                                            //------------------------//
-                                                            expectSuccess = FALSE;
-                                                        }
-                                                    }
-                                                    else {
-                                                        //---------------------------//
-                                                        // current datum != NGVD-29  //
-                                                        //---------------------------//
-                                                        if (vdi.offsetToNgvd29 == UNDEFINED_VERTICAL_DATUM_VALUE) {
-                                                            //---------------------------------------//
-                                                            // incoming VDI has no offset to NGVD-29 //
-                                                            //---------------------------------------//
-                                                            expectSuccess = FALSE;
-                                                        }
-                                                        else if (strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_NAVD88) &&
-                                                            strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_NGVD29)) {
-                                                            //---------------------------------//
-                                                            // current datum == UNSET or LOCAL //
-                                                            //---------------------------------//
-                                                            expectSuccess = FALSE;
-                                                        }
-                                                        else {
-                                                            //------------------------------------//
-                                                            // incoming VDI has offset to NGVD-29 //
-                                                            //------------------------------------//
-                                                            if (!unitIsFeet(unit[l]) && !unitIsMeters(unit[l])) {
-                                                                //------------------------//
-                                                                // invalid incoming units //
-                                                                //------------------------//
-                                                                expectSuccess = FALSE;
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                            else {
-                                                //-------------------------------//
-                                                // native datum in file == LOCAL //
-                                                //-------------------------------//
-                                                if (!strcmp(currentVerticalDatums[K], nativeDatumInFile)) {
-                                                    //------------------------//
-                                                    // current datum == LOCAL //
-                                                    //------------------------//
-                                                    if (!strcmp(vdi.nativeDatum, "")) {
-                                                        //--------------------------------//
-                                                        // incoming native datum == UNSET //
-                                                        //--------------------------------//
-                                                        if (!unitIsFeet(unit[l]) && !unitIsMeters(unit[l])) {
-                                                            //------------------------//
-                                                            // invalid incoming units //
-                                                            //------------------------//
-                                                            expectSuccess = FALSE;
-                                                        }
-                                                    }
-                                                    else if (!strcmp(vdi.nativeDatum, nativeDatumInFile)) {
-                                                        //-------------------------------------//
-                                                        // incoming native datum == this LOCAL //
-                                                        //-------------------------------------//
-                                                        if (!unitIsFeet(unit[l]) && !unitIsMeters(unit[l])) {
-                                                            //------------------------//
-                                                            // invalid incoming units //
-                                                            //------------------------//
-                                                            expectSuccess = FALSE;
-                                                        }
-                                                    }
-                                                    else if (!strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_NAVD88) && vdi.offsetToNavd88 != UNDEFINED_VERTICAL_DATUM_VALUE) {
-                                                        //----------------------------------------------------------//
-                                                        // current datum is NAVD-88 and VDI has offset from NAVD-88 //
-                                                        //----------------------------------------------------------//
-                                                        expectSuccess = TRUE;
-                                                    }
-                                                    else if (!strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_NGVD29) && vdi.offsetToNgvd29 != UNDEFINED_VERTICAL_DATUM_VALUE) {
-                                                        //----------------------------------------------------------//
-                                                        // current datum is NGVD-29 and VDI has offset from NGVD-29 //
-                                                        //----------------------------------------------------------//
-                                                        expectSuccess = TRUE;
-                                                    }
-                                                    else {
-                                                        //-----------------------------------------//
-                                                        // current datum == UNSET or another LOCAL //
-                                                        //-----------------------------------------//
-                                                        expectSuccess = FALSE;
-                                                    }
-                                                }
-                                                else {
-                                                    //------------------------//
-                                                    // current datum != LOCAL //
-                                                    //------------------------//
-                                                    if (!strcmp(vdi.nativeDatum, "")) {
-                                                        //-----------------------//
-                                                        // native datum == UNSET //
-                                                        //-----------------------//
-                                                        if (!unitIsFeet(unit[l]) && !unitIsMeters(unit[l])) {
-                                                            //------------------------//
-                                                            // invalid incoming units //
-                                                            //------------------------//
-                                                            expectSuccess = FALSE;
-                                                        }
-                                                    }
-                                                    else if (!strcmp(vdi.nativeDatum, nativeDatumInFile)) {
-                                                        //-----------------------//
-                                                        // native datum == LOCAL //
-                                                        //-----------------------//
-                                                        if (!strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_NAVD88) && vdi.offsetToNavd88 != UNDEFINED_VERTICAL_DATUM_VALUE) {
-                                                            //----------------------------------------------------------//
-                                                            // current datum is NAVD-88 and VDI has offset from NAVD-88 //
-                                                            //----------------------------------------------------------//
-                                                            if (!unitIsFeet(unit[l]) && !unitIsMeters(unit[l])) {
-                                                                //------------------------//
-                                                                // invalid incoming units //
-                                                                //------------------------//
-                                                                expectSuccess = FALSE;
-                                                            }
-                                                        }
-                                                        else if (!strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_NGVD29) && vdi.offsetToNgvd29 != UNDEFINED_VERTICAL_DATUM_VALUE) {
-                                                            //----------------------------------------------------------//
-                                                            // current datum is NGVD-29 and VDI has offset from NGVD-29 //
-                                                            //----------------------------------------------------------//
-                                                            if (!unitIsFeet(unit[l]) && !unitIsMeters(unit[l])) {
-                                                                //------------------------//
-                                                                // invalid incoming units //
-                                                                //------------------------//
-                                                                expectSuccess = FALSE;
-                                                            }
-                                                        }
-                                                        else {
-                                                            //------------------------//
-                                                            // current datum == UNSET //
-                                                            //------------------------//
-                                                            if (!unitIsFeet(unit[l]) && !unitIsMeters(unit[l])) {
-                                                                //------------------------//
-                                                                // invalid incoming units //
-                                                                //------------------------//
-                                                                expectSuccess = FALSE;
-                                                            }
-                                                        }
-                                                    }
-                                                    else {
-                                                        //-----------------------//
-                                                        // native datum != LOCAL //
-                                                        //-----------------------//
-                                                        expectSuccess = FALSE;
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        else {
-                                            //--------------------------//
-                                            // no existing data in file //
-                                            //--------------------------//
-                                            if (!strcmp(vdi.nativeDatum, "")) {
-                                                //--------------------------------//
-                                                // incoming native datum == UNSET //
-                                                //--------------------------------//
-                                                if (!strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_UNSET)) {
-                                                    //------------------------//
-                                                    // current datum == UNSET //
-                                                    //------------------------//
-                                                    expectSuccess = TRUE;
-                                                }
-                                                else if (!strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_NAVD88)) {
-                                                    //--------------------------//
-                                                    // current datum == NAVD-88 //
-                                                    //--------------------------//
-                                                    if (vdiInFile.offsetToNavd88 != UNDEFINED_VERTICAL_DATUM_VALUE) {
-                                                        //---------------------------------------------//
-                                                        // VDI in file has a valid offset from NAVD-88 //
-                                                        //---------------------------------------------//
-                                                        if (!unitIsFeet(unit[l]) && !unitIsMeters(unit[l])) {
-                                                            //------------------------//
-                                                            // invalid incoming units //
-                                                            //------------------------//
-                                                            expectSuccess = FALSE;
-                                                        }
-                                                    }
-                                                    else {
-                                                        //-------------------=--------------------------//
-                                                        // VDI in file has no valid offset from NAVD-88 //
-                                                        //--------------------=-------------------------//
-                                                        expectSuccess = FALSE;
-                                                    }
-                                                }
-                                                else if (!strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_NGVD29)) {
-                                                    //--------------------------//
-                                                    // current datum == NAVD-88 //
-                                                    //--------------------------//
-                                                    if (vdiInFile.offsetToNgvd29 != UNDEFINED_VERTICAL_DATUM_VALUE) {
-                                                        //---------------------------------------------//
-                                                        // VDI in file has a valid offset from NGVD-29 //
-                                                        //---------------------------------------------//
-                                                        if (!unitIsFeet(unit[l]) && !unitIsMeters(unit[l])) {
-                                                            //------------------------//
-                                                            // invalid incoming units //
-                                                            //------------------------//
-                                                            expectSuccess = FALSE;
-                                                        }
-                                                    }
-                                                    else {
-                                                        //-------------------=--------------------------//
-                                                        // VDI in file has no valid offset from NGVD-29 //
-                                                        //--------------------=-------------------------//
-                                                        expectSuccess = FALSE;
-                                                    }
-                                                }
-                                                else {
-                                                    //--------------------------//
-                                                    // unexpected current datum //
-                                                    //--------------------------//
-                                                    expectSuccess = FALSE;
-                                                }
-                                            }
-                                            else if (!strcmp(vdi.nativeDatum, CVERTICAL_DATUM_NAVD88)) {
-                                                //----------------------------------//
-                                                // incoming native datum == NAVD-88 //
-                                                //----------------------------------//
-                                                if (strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_NAVD88) &&
-                                                    strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_NGVD29) &&
-                                                    strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_UNSET)) {
-                                                    //------------------------//
-                                                    // current datum is local //
-                                                    //------------------------//
-                                                    expectSuccess = FALSE;
-                                                }
-                                                else if (vdi.offsetToNavd88 == UNDEFINED_VERTICAL_DATUM_VALUE) {
-                                                    //---------------------------------------//
-                                                    // incoming VDI has no offset to NAVD-88 //
-                                                    //---------------------------------------//
-                                                    expectSuccess = FALSE;
-                                                }
-                                                else {
-                                                    //------------------------------------//
-                                                    // incoming VDI has offset to NAVD-88 //
-                                                    //------------------------------------//
-                                                    if (!unitIsFeet(unit[l]) && !unitIsMeters(unit[l])) {
-                                                        //------------------------//
-                                                        // invalid incoming units //
-                                                        //------------------------//
-                                                        expectSuccess = FALSE;
-                                                    }
-                                                }
-                                            }
-                                            else if (!strcmp(vdi.nativeDatum, CVERTICAL_DATUM_NGVD29)) {
-                                                //----------------------------------//
-                                                // incoming native datum == NGVD-29 //
-                                                //----------------------------------//
-                                                if (strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_NAVD88) &&
-                                                    strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_NGVD29) &&
-                                                    strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_UNSET)) {
-                                                    //------------------------//
-                                                    // current datum is local //
-                                                    //------------------------//
-                                                    expectSuccess = FALSE;
-                                                }
-                                                else if (vdi.offsetToNgvd29 == UNDEFINED_VERTICAL_DATUM_VALUE) {
-                                                    //---------------------------------------//
-                                                    // incoming VDI has no offset to NGVD-29 //
-                                                    //---------------------------------------//
-                                                    expectSuccess = FALSE;
-                                                }
-                                                else {
-                                                    //------------------------------------//
-                                                    // incoming VDI has offset to NGVD-29 //
-                                                    //------------------------------------//
-                                                    if (!unitIsFeet(unit[l]) && !unitIsMeters(unit[l])) {
-                                                        //------------------------//
-                                                        // invalid incoming units //
-                                                        //------------------------//
-                                                        expectSuccess = FALSE;
-                                                    }
-                                                }
-                                            }
-                                            else {
-                                                //--------------------------------//
-                                                // incoming native datum == LOCAL //
-                                                //--------------------------------//
-                                                if (!strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_NAVD88) && vdi.offsetToNavd88 != UNDEFINED_VERTICAL_DATUM_VALUE) {
-                                                    //----------------------------------------------------------//
-                                                    // current datum is NAVD-88 and VDI has offset from NAVD-88 //
-                                                    //----------------------------------------------------------//
-                                                    if (!unitIsFeet(unit[l]) && !unitIsMeters(unit[l])) {
-                                                        //------------------------//
-                                                        // invalid incoming units //
-                                                        //------------------------//
-                                                        expectSuccess = FALSE;
-                                                    }
-                                                }
-                                                else if (!strcmp(currentVerticalDatums[K], CVERTICAL_DATUM_NGVD29) && vdi.offsetToNgvd29 != UNDEFINED_VERTICAL_DATUM_VALUE) {
-                                                    //----------------------------------------------------------//
-                                                    // current datum is NGVD-29 and VDI has offset from NGVD-29 //
-                                                    //----------------------------------------------------------//
-                                                    if (!unitIsFeet(unit[l]) && !unitIsMeters(unit[l])) {
-                                                        //------------------------//
-                                                        // invalid incoming units //
-                                                        //------------------------//
-                                                        expectSuccess = FALSE;
-                                                    }
-                                                }
-                                                else {
-                                                    //------------------------//
-                                                    // current datum == UNSET //
-                                                    //------------------------//
-                                                    expectSuccess = FALSE;
-                                                }
-                                            }
-                                        }
+                                        expectSuccess = canStore(dataInFile, &vdiInFile, &vdi, currentVerticalDatums[K], unit[l]);
                                         //--------------------------------------------------------//
                                         // store the paired data in the overridden vertical datum //
                                         //--------------------------------------------------------//
@@ -3046,4 +2360,10 @@ void testStoreRetrievePairedData() {
         }
     }
     printf("\n\n%3d Paired data tests passed\n\n\n", count);
+    int total = 0;
+    for (int i = 0; i < sizeof(storageFailureMode) / sizeof(storageFailureMode[0]); ++i) {
+        total += storageFailureMode[i];
+        printf("Storage failure mode %5d : %4d ocurrences\n", i, storageFailureMode[i]);
+    }
+    printf("                     Total : %4d occurrences\n", total);
 }

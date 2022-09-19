@@ -632,12 +632,7 @@ subroutine testStoreRetrieveTimeSeries()
                                                     !--------------------------------!
                                                     ! incoming native datum == UNSET !
                                                     !--------------------------------!
-                                                    if (currentVerticalDatums(kk) == CVD_UNSET) then
-                                                        !------------------------!
-                                                        ! current datum == UNSET !
-                                                        !------------------------!
-                                                        expectSuccess = .true.
-                                                    else
+                                                    if (currentVerticalDatums(kk) /= CVD_UNSET) then
                                                         !------------------------!
                                                         ! current datum /= UNSET !
                                                         !------------------------!
@@ -1846,12 +1841,7 @@ subroutine testStoreRetrievePairedData()
                                                     !--------------------------------!
                                                     ! incoming native datum == UNSET !
                                                     !--------------------------------!
-                                                    if (currentVerticalDatums(kk) == CVD_UNSET) then
-                                                        !------------------------!
-                                                        ! current datum == UNSET !
-                                                        !------------------------!
-                                                        expectSuccess = .true.
-                                                    else
+                                                    if (currentVerticalDatums(kk) /= CVD_UNSET) then
                                                         !------------------------!
                                                         ! current datum /= UNSET !
                                                         !------------------------!
