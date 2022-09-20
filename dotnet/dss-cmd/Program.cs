@@ -1,16 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
+using System.Buffers;
 using System.Runtime.InteropServices;
-
-
-// Notes:
-/*https://docs.microsoft.com/en-us/dotnet/framework/interop/copying-and-pinning
- * Pinning is automatically performed during marshalling for objects such as String
- * the interop marshaller passes an array as In parameters by default.
- * 
- * Strategy:  
- *     using string in signature for passing strings in (const char*)
- *     
- */
+using System.Text;
 
 [DllImport("hecdss.dll")]
 static extern IntPtr hec_dss_open(string fileName);
@@ -18,14 +9,17 @@ static extern IntPtr hec_dss_open(string fileName);
 [DllImport("hecdss.dll")]
 static extern int hec_dss_close(IntPtr dss_file);
 
-[DllImport("hecdss.dll")]//, CharSet = CharSet.Auto)]
+[DllImport("hecdss.dll", CharSet= CharSet.Ansi, ExactSpelling = true)]
 static extern int hec_dss_tsRetrieve(IntPtr pdss, string pathname, 
                                   string startDateTime,string endDateTime,
                                   int[] timeArray, double[] valueArray, int arraySize,
                                   ref int numberValuesRead, ref int julianBaseDate,
-                                  ref char[] units, ref char[] type);
+                                  byte[] units, byte[] type);
 
-//////////////////////////////////////////////////////////////
+
+dss_cmd.BasicPinvokeTests.Run();
+//return;
+
 
 string filename = "sample7.dss";
 var dss = hec_dss_open(filename);
@@ -36,11 +30,22 @@ int[] times = new int[buff_size];
 double[] value = new double[buff_size];
 int numberValuesRead = 0;
 int julianBaseDate = 0;
-char[] units = new char[30];
-char[] type = new char[30];
 
-hec_dss_tsRetrieve(dss, path, "", "", times, value, buff_size, ref numberValuesRead, ref julianBaseDate,
-   ref units, ref type);
+var units = ArrayPool<byte>.Shared.Rent(32);
+var type = ArrayPool<byte>.Shared.Rent(32);
+
+string startDateTime = "01Jan1877 01:00";
+string endDateTime = "31Jan1877 24:00";
+
+hec_dss_tsRetrieve(dss, path, startDateTime, endDateTime, times, value, buff_size, ref numberValuesRead, ref julianBaseDate,
+   units, type);
+
 Console.WriteLine("numberValuesRead: "+numberValuesRead);
+Console.WriteLine("units: " + Encoding.ASCII.GetString(units));
+Console.WriteLine("type: " + Encoding.ASCII.GetString(type));
+
+ArrayPool<byte>.Shared.Return(units);
+ArrayPool<byte>.Shared.Return(type);
+
 
 hec_dss_close(dss);
