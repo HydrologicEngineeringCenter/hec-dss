@@ -28,7 +28,25 @@ struct dss_file {
     long long ifltab[250];
 };
 
-HECDSS_API int hec_dss_test_modify_arg(int *value) {
+HECDSS_API int hec_dss_test_string_const(const char* s, int size) {
+
+    printf("string='%s'  length=%d\n", s,(int)strlen(s));
+    return 0;
+}
+
+HECDSS_API int hec_dss_test_string_buffer(char* outStr, int size) {
+    char* tmp = "abc";
+    strcpy(outStr, tmp);
+    return 0;
+}
+
+HECDSS_API int hec_dss_test_string_char(char* outStr, int size) {
+    char* tmp = "DEF\0";
+    
+    strcpy(outStr, tmp);
+    printf("outStr = '%s'\n", outStr);
+    return 0;
+}
 
 HECDSS_API dss_file* hec_dss_open(const char* filename)
 {
@@ -73,8 +91,12 @@ HECDSS_API int hec_dss_tsRetrieve(dss_file* pdss, const char *pathname,
 {
     zStructTimeSeries* tss;
     tss = zstructTsNew(pathname);
-    printf("\npathname='%s'", pathname);
+    printf("\nC pathname='%s'", pathname);
     
+    printf("\nC startDateTime = '%s' ", startDateTime);
+    printf("\nC endDateTime = '%s' ", endDateTime);
+    printf("\nC units input '%s'",units);
+    printf("\n");
    //tss->startJulianDate = *startJulian;
    //int tss->startTimeSeconds = *startTimeMinutes * 60;
    //int tss->startJulianDate = *endJulian;
@@ -84,8 +106,9 @@ HECDSS_API int hec_dss_tsRetrieve(dss_file* pdss, const char *pathname,
     int status = ztsRetrieve(pdss->ifltab, tss, 1, 1, 0);
     *numberValuesRead = tss->numberValues;
     *julianBaseDate = tss->julianBaseDate;
-//    strncpy(units,tss->units, 29);
- //   strncpy(type, tss->type, 29);
+    printf("\nunits in C: %s", tss->units);
+    strncpy(units,tss->units, 10);
+    strncpy(type, tss->type, 10);
     zstructFree(tss);
     return status;
 }
