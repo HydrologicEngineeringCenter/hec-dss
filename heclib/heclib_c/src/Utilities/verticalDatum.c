@@ -882,7 +882,7 @@ char* stringToVerticalDatumInfo(verticalDatumInfo* vdi, const char* inputStr) {
         if (offsetBuf[i][0] == '\0') {
             if (i == 0) {
                 free(xml);
-                return MISSING_OFFSET_BLOCK_IN_XML;
+                return NULL; //MISSING_OFFSET_BLOCK_IN_XML;
             }
             break; // only 1 offset block
         }

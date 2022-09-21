@@ -255,6 +255,10 @@ C
         !-----------------------!
         ! elevation time series !
         !-----------------------!
+        nativeDatum = ' '
+        unit = ' '
+        offsetToNgvd29 = UNDEFINED_VERTICAL_DATUM_VALUE
+        offsetToNavd88 = UNDEFINED_VERTICAL_DATUM_VALUE
         !-----------------------------------------!
         ! get the first and last data value dates !
         !-----------------------------------------!
@@ -392,11 +396,11 @@ C
               vertDatumOffset = 0
             else if (cvdatum1.eq.CVD_UNSET)  then
               vertDatumOffset = 0
-            else if (fileNativeDatum.eq.CVD_NAVD88.and.
+            else if (cvdatum1.eq.CVD_NAVD88.and.
      *               fileOffsetNavd88.ne.UNDEFINED_VERTICAL_DATUM_VALUE)
      *               then
               vertDatumOffset = fileOffsetNavd88
-            else if (fileNativeDatum.eq.CVD_NGVD29.and.
+            else if (cvdatum1.eq.CVD_NGVD29.and.
      *               fileOffsetNgvd29.ne.UNDEFINED_VERTICAL_DATUM_VALUE)
      *               then
               vertDatumOffset = fileOffsetNgvd29

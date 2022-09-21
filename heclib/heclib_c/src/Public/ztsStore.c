@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
 #include <string.h>
 
 #include "heclib7.h"
@@ -383,7 +384,11 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 		float  *origFloatVals = NULL;
 		double *tmpDoubleVals = NULL;
 		double *origDoubleVals = NULL;
-		char cPart[65];
+		char cPart[MAX_PART_SIZE];
+		char startDate[10];
+		char startTime[5];
+		char endDate[10];
+		char endTime[5];
 		zpathnameGetPart(tss->pathname, 3, cPart, sizeof(cPart));
 		if (!strncasecmp(cPart, "ELEV", 4) && (tss->floatValues || tss->doubleValues)) {
 			//----------------------------------//
@@ -398,6 +403,36 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 				&tss->userHeader,       // any specified datum in these parameters is removed
 				&tss->userHeaderNumber, // ...
 				&tss->units);           // ...
+			//----------------------------//
+			// see if data already exists //
+			//----------------------------//
+			{
+				int blockSize = 0;
+				int recordJul = 0;
+				int intervalSeconds = 0;
+				char recordPathname[(MAX_PART_SIZE - 1) * 6 + 8];
+				char ePart[MAX_PART_SIZE];
+				strcpy(recordPathname, tss->pathname);
+				zpathnameGetPart(recordPathname, 5, ePart, sizeof(ePart));
+				int isIrregular = ePart[0] == '~' || toupper(ePart[0]) == 'I';
+				if (isIrregular) {
+					recordJul = ztsIrregGetBlockStart(tss->startJulianDate, &blockSize);
+				}
+				else {
+					int operation = 1;
+					ztsGetStandardInterval(7, &intervalSeconds, ePart, sizeof(ePart), &operation);
+					recordJul = ztsRegGetBlockStart(tss->startJulianDate, intervalSeconds, &blockSize);
+				}
+				while (recordJul <= tss->endJulianDate) {
+					julianToDate(recordJul, 104, ePart, sizeof(ePart));
+					zpathnameSetPart(recordPathname, sizeof(recordPathname), ePart, 4);
+					if (zcheck(ifltab, recordPathname) == STATUS_RECORD_FOUND) {
+						dataFound = TRUE;
+						break;
+					}
+					recordJul = ztsIncrementBlock(recordJul, blockSize);
+				}
+			}
 			//------------------------------------------------------//
 			// see if we have one or more verticalDatumInfo objects //
 			//------------------------------------------------------//
@@ -449,7 +484,28 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 				}
 				zstructFree(ls);
 			}
-			if (vdiLoc && !vdiTs) {
+			if (!vdiLoc) {
+				if (dataFound && vdiTs) {
+					zquery("VDOW", "", 0, &allowOverwriteLocationVerticalDatum);
+					if (!allowOverwriteLocationVerticalDatum) {
+						char errmsg[1024];
+						sprintf(
+							errmsg,
+							"\nIncoming native vertical datum of '%s' conflicts with location's native datum of 'UNSET'.\n"
+							"Call 'zset(\"VDOW\", \"\", 1)' to allow overwriting the location's vertical datum information.\n"
+							"No data stored.",
+							vdiTs->nativeDatum);
+						if (vdiTs != &_vdiTs) {
+							free(vdiTs);
+						}
+						return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID,
+							zdssErrorCodes.VERTICAL_DATUM_ERROR, 0,
+							0, zdssErrorSeverity.WARNING, tss->pathname,
+							errmsg);
+					}
+				}
+			}
+			else if (vdiLoc && !vdiTs) {
 				char errmsg[1024];
 				if (!strcmp(cvertical_datum, vdiLoc->nativeDatum)) {
 					offset = getOffset(0., vdiLoc->unit, tss->units);
@@ -553,34 +609,22 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 				}
 			}
 			vdi = vdiTs ? vdiTs : vdiLoc;
-			if (vdi) {
-				char startDate[10];
-				char startTime[5];
-				char endDate[10];
-				char endTime[5];
-				julianToDate(tss->startJulianDate, 4, startDate, sizeof(startDate));
-				sprintf(startTime, "%2.2d%2.2d", tss->startTimeSeconds / 3600, tss->startTimeSeconds % 3600 / 60);
-				julianToDate(tss->endJulianDate, 4, endDate, sizeof(endDate));
-				sprintf(endTime, "%2.2d%2.2d", tss->endTimeSeconds / 3600, tss->endTimeSeconds % 3600 / 60);
-				zStructTimeSeries *tssRetr = zstructTsNewTimes(
-					tss->pathname,
-					startDate,
-					startTime,
-					endDate,
-					endTime);
-				assert(tssRetr != NULL);
-				zset("VDTM", CVERTICAL_DATUM_UNSET, 0);
-				int statusRetr = ztsRetrieve(
-					ifltab,
-					tssRetr,
-					0,
-					0,
-					1);
-				if (statusRetr == STATUS_RECORD_FOUND) {
-					dataFound = TRUE;
+			if (!vdi) {
+				if (ivertical_datum != IVERTICAL_DATUM_UNSET) {
+					char errmsg[1024];
+					sprintf(
+						errmsg,
+						"\nNo vertical datum information is present in incoming data or in file.\n"
+						"Cannot convert values from specified current datum '%s'.\n"
+						"No data stored.",
+						cvertical_datum, vdi->nativeDatum);
+					return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID,
+						zdssErrorCodes.VERTICAL_DATUM_ERROR, 0,
+						0, zdssErrorSeverity.WARNING, tss->pathname,
+						errmsg);
 				}
-				zstructFree(tssRetr);
-				zset("VDTM", cvertical_datum, 0);
+			}
+			else {
 				if (dataFound && vdiLoc && strcmp(vdiLoc->nativeDatum, cvertical_datum)) {
 					if (strcmp(cvertical_datum, CVERTICAL_DATUM_UNSET) &&
 						!((!strcmp(cvertical_datum, CVERTICAL_DATUM_NAVD88) && vdiLoc->offsetToNavd88 != UNDEFINED_VERTICAL_DATUM_VALUE)  ||

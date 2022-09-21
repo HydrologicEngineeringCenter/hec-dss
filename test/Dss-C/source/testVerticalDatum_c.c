@@ -12,7 +12,7 @@ void testStoreRetrieveTimeSeries();
 void testV6TimeSeiresWithMultipleVerticalDatums();
 void testStoreRetrievePairedData();
 
-static int storageFailureMode[37];
+static int storageFailureMode[39];
 
 int test_vertical_datums_c() {
     testDelimitedStringOps();
@@ -1052,9 +1052,12 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
     free(quality);
 }
 
-int canStore(int fileContainsData, verticalDatumInfo *fileVdi, verticalDatumInfo* dataVdi, char *currentDatum, char *dataUnit) {
+int canStore(int dssVersion, int fileContainsData, verticalDatumInfo *fileVdi, verticalDatumInfo* dataVdi, char *currentDatum, char *dataUnit) {
     int expectSuccess = TRUE;
-    if (fileContainsData) {
+    if ((strcmp(fileVdi->nativeDatum, "") || strcmp(dataVdi->nativeDatum, "")) && !unitIsFeet(dataUnit) && !unitIsMeters(dataUnit)) {
+        expectSuccess = FALSE; ++storageFailureMode[0];
+    }
+    else if (fileContainsData) {
         //-----------------------//
         // existing data in file //
         //-----------------------//
@@ -1070,27 +1073,21 @@ int canStore(int fileContainsData, verticalDatumInfo *fileVdi, verticalDatumInfo
                     //------------------------//
                     // current datum != UNSET //
                     //------------------------//
-                    expectSuccess = FALSE;  ++storageFailureMode[0];
+                    expectSuccess = FALSE;  ++storageFailureMode[1];
                 }
             }
             else {
                 //--------------------------------//
                 // incoming native datum != UNSET //
                 //--------------------------------//
-                expectSuccess = FALSE;  ++storageFailureMode[1];
+                expectSuccess = FALSE;  ++storageFailureMode[2];
             }
         }
         else if (!strcmp(fileVdi->nativeDatum, CVERTICAL_DATUM_NAVD88)) {
             //---------------------------------//
             // native datum in file == NAVD-88 //
             //---------------------------------//
-            if (!unitIsFeet(dataUnit) && !unitIsMeters(dataUnit)) {
-                //------------------------//
-                // invalid incoming units //
-                //------------------------//
-                expectSuccess = FALSE;  ++storageFailureMode[2];
-            }
-            else if (!strcmp(dataVdi->nativeDatum, "")) {
+            if (!strcmp(dataVdi->nativeDatum, "")) {
                 //--------------------------------//
                 // incoming native datum == UNSET //
                 //--------------------------------//
@@ -1119,26 +1116,36 @@ int canStore(int fileContainsData, verticalDatumInfo *fileVdi, verticalDatumInfo
                 //----------------------------------//
                 expectSuccess = FALSE;  ++storageFailureMode[5];
             }
-            else if (strcmp(currentDatum, CVERTICAL_DATUM_NAVD88) &&
-                strcmp(currentDatum, CVERTICAL_DATUM_NGVD29) &&
-                strcmp(currentDatum, CVERTICAL_DATUM_UNSET)) {
-                //------------------------//
-                // current datum == LOCAL //
-                //------------------------//
-                expectSuccess = FALSE;  ++storageFailureMode[6];
+            else {
+                //----------------------------------//
+                // incoming native datum == NAVD-88 //
+                //----------------------------------//
+                if (!strcmp(currentDatum, CVERTICAL_DATUM_NGVD29)) {
+                    //--------------------------//
+                    // current datum == NGVD-29 //
+                    //--------------------------//
+                    if (dataVdi->offsetToNgvd29 == UNDEFINED_VERTICAL_DATUM_VALUE) {
+                        //----------------------//
+                        // no offset to NGVD-29 //
+                        //----------------------//
+                        expectSuccess = FALSE;  ++storageFailureMode[6];
+                    }
+                }
+                else if (strcmp(currentDatum, CVERTICAL_DATUM_NAVD88) &&
+                    strcmp(currentDatum, CVERTICAL_DATUM_NGVD29) &&
+                    strcmp(currentDatum, CVERTICAL_DATUM_UNSET)) {
+                    //------------------------//
+                    // current datum == LOCAL //
+                    //------------------------//
+                    expectSuccess = FALSE;  ++storageFailureMode[7];
+                }
             }
         }
         else if (!strcmp(fileVdi->nativeDatum, CVERTICAL_DATUM_NGVD29)) {
             //---------------------------------//
             // native datum in file == NGVD-29 //
             //---------------------------------//
-            if (!unitIsFeet(dataUnit) && !unitIsMeters(dataUnit)) {
-                //------------------------//
-                // invalid incoming units //
-                //------------------------//
-                expectSuccess = FALSE;  ++storageFailureMode[7];
-            }
-            else if (!strcmp(dataVdi->nativeDatum, "")) {
+            if (!strcmp(dataVdi->nativeDatum, "")) {
                 //--------------------------------//
                 // incoming native datum == UNSET //
                 //--------------------------------//
@@ -1167,13 +1174,29 @@ int canStore(int fileContainsData, verticalDatumInfo *fileVdi, verticalDatumInfo
                 //----------------------------------//
                 expectSuccess = FALSE;  ++storageFailureMode[10];
             }
-            else if (strcmp(currentDatum, CVERTICAL_DATUM_NGVD29) &&
-                strcmp(currentDatum, CVERTICAL_DATUM_NAVD88) &&
-                strcmp(currentDatum, CVERTICAL_DATUM_UNSET)) {
-                //------------------------//
-                // current datum == LOCAL //
-                //------------------------//
-                expectSuccess = FALSE;  ++storageFailureMode[11];
+            else {
+                //----------------------------------//
+                // incoming native datum == NGVD-29 //
+                //----------------------------------//
+                if (!strcmp(currentDatum, CVERTICAL_DATUM_NAVD88)) {
+                    //--------------------------//
+                    // current datum == NAVD-88 //
+                    //--------------------------//
+                    if (dataVdi->offsetToNavd88 == UNDEFINED_VERTICAL_DATUM_VALUE) {
+                        //----------------------//
+                        // no offset to NAVD-88 //
+                        //----------------------//
+                        expectSuccess = FALSE;  ++storageFailureMode[11];
+                    }
+                }
+                else if (strcmp(currentDatum, CVERTICAL_DATUM_NGVD29) &&
+                    strcmp(currentDatum, CVERTICAL_DATUM_NAVD88) &&
+                    strcmp(currentDatum, CVERTICAL_DATUM_UNSET)) {
+                    //------------------------//
+                    // current datum == LOCAL //
+                    //------------------------//
+                    expectSuccess = FALSE;  ++storageFailureMode[12];
+                }
             }
         }
         else {
@@ -1184,18 +1207,7 @@ int canStore(int fileContainsData, verticalDatumInfo *fileVdi, verticalDatumInfo
                 //------------------------//
                 // current datum == LOCAL //
                 //------------------------//
-                if (!strcmp(dataVdi->nativeDatum, "")) {
-                    //--------------------------------//
-                    // incoming native datum == UNSET //
-                    //--------------------------------//
-                    if (!unitIsFeet(dataUnit) && !unitIsMeters(dataUnit)) {
-                        //------------------------//
-                        // invalid incoming units //
-                        //------------------------//
-                        expectSuccess = FALSE;  ++storageFailureMode[12];
-                    }
-                }
-                else if (!strcmp(dataVdi->nativeDatum, fileVdi->nativeDatum)) {
+                if (!strcmp(dataVdi->nativeDatum, fileVdi->nativeDatum)) {
                     //-------------------------------------//
                     // incoming native datum == this LOCAL //
                     //-------------------------------------//
@@ -1221,36 +1233,19 @@ int canStore(int fileContainsData, verticalDatumInfo *fileVdi, verticalDatumInfo
                             expectSuccess = FALSE;  ++storageFailureMode[14];
                         }
                     }
-                    else if (!unitIsFeet(dataUnit) && !unitIsMeters(dataUnit)) {
-                        //------------------------//
-                        // invalid incoming units //
-                        //------------------------//
-                        expectSuccess = FALSE;  ++storageFailureMode[15];
-                    }
                 }
-                else {
-                    //-----------------------------------------//
-                    // current datum == UNSET or another LOCAL //
-                    //-----------------------------------------//
-                    expectSuccess = FALSE;  ++storageFailureMode[16];
+                else if (strcmp(currentDatum, "") && strcmp(currentDatum, "UNSET") && strcmp(currentDatum, fileVdi->nativeDatum)) {
+                    //--------------------------------//
+                    // current datum == another LOCAL //
+                    //--------------------------------//
+                    expectSuccess = FALSE;  ++storageFailureMode[15];
                 }
             }
             else {
                 //------------------------//
                 // current datum != LOCAL //
                 //------------------------//
-                if (!strcmp(dataVdi->nativeDatum, "")) {
-                    //-----------------------//
-                    // native datum == UNSET //
-                    //-----------------------//
-                    if (!unitIsFeet(dataUnit) && !unitIsMeters(dataUnit)) {
-                        //------------------------//
-                        // invalid incoming units //
-                        //------------------------//
-                        expectSuccess = FALSE;  ++storageFailureMode[17];
-                    }
-                }
-                else if (!strcmp(dataVdi->nativeDatum, fileVdi->nativeDatum)) {
+                if (!strcmp(dataVdi->nativeDatum, fileVdi->nativeDatum)) {
                     //-----------------------//
                     // native datum == LOCAL //
                     //-----------------------//
@@ -1262,13 +1257,7 @@ int canStore(int fileContainsData, verticalDatumInfo *fileVdi, verticalDatumInfo
                             //-----------------------------------------//
                             // incoming VDI has no offset from NAVD-88 //
                             //-----------------------------------------//
-                            expectSuccess = FALSE;  ++storageFailureMode[18];
-                        }
-                        else if (!unitIsFeet(dataUnit) && !unitIsMeters(dataUnit)) {
-                            //------------------------//
-                            // invalid incoming units //
-                            //------------------------//
-                            expectSuccess = FALSE;  ++storageFailureMode[19];
+                            expectSuccess = FALSE;  ++storageFailureMode[16];
                         }
                     }
                     else if (!strcmp(currentDatum, CVERTICAL_DATUM_NGVD29)) {
@@ -1279,32 +1268,15 @@ int canStore(int fileContainsData, verticalDatumInfo *fileVdi, verticalDatumInfo
                             //-----------------------------------------//
                             // incoming VDI has no offset from NGVD-29 //
                             //-----------------------------------------//
-                            expectSuccess = FALSE;  ++storageFailureMode[20];
-                        }
-                        else if (!unitIsFeet(dataUnit) && !unitIsMeters(dataUnit)) {
-                            //------------------------//
-                            // invalid incoming units //
-                            //------------------------//
-                            expectSuccess = FALSE;  ++storageFailureMode[21];
-                        }
-                    }
-                    else {
-                        //------------------------//
-                        // current datum == UNSET //
-                        //------------------------//
-                        if (!unitIsFeet(dataUnit) && !unitIsMeters(dataUnit)) {
-                            //------------------------//
-                            // invalid incoming units //
-                            //------------------------//
-                            expectSuccess = FALSE;  ++storageFailureMode[22];
+                            expectSuccess = FALSE;  ++storageFailureMode[17];
                         }
                     }
                 }
-                else {
-                    //-----------------------//
-                    // native datum != LOCAL //
-                    //-----------------------//
-                    expectSuccess = FALSE;  ++storageFailureMode[23];
+                else if (strcmp(dataVdi->nativeDatum, "")) {
+                    //-----------------------------------//
+                    // native datum != UNSET && != LOCAL //
+                    //-----------------------------------//
+                    expectSuccess = FALSE;  ++storageFailureMode[18];
                 }
             }
         }
@@ -1317,48 +1289,115 @@ int canStore(int fileContainsData, verticalDatumInfo *fileVdi, verticalDatumInfo
             //--------------------------------//
             // incoming native datum == UNSET //
             //--------------------------------//
-            if (strcmp(currentDatum, CVERTICAL_DATUM_UNSET)) {
-                //------------------------//
-                // current datum != UNSET //
-                //------------------------//
-                expectSuccess = FALSE;  ++storageFailureMode[24];
+            if (!strcmp(fileVdi->nativeDatum, "")) {
+                //-------------------------------//
+                // native datum in file == UNSET //
+                //-------------------------------//
+                if (strcmp(currentDatum, CVERTICAL_DATUM_UNSET)) {
+                    //------------------------//
+                    // current datum != UNSET //
+                    //------------------------//
+                    expectSuccess = FALSE;  ++storageFailureMode[19];
+                }
+            }
+            else if (!strcmp(fileVdi->nativeDatum, CVERTICAL_DATUM_NAVD88)) {
+                //---------------------------------//
+                // native datum in file == NAVD-88 //
+                //---------------------------------//
+                if (!strcmp(currentDatum, CVERTICAL_DATUM_NGVD29)) {
+                    //--------------------------//
+                    // current datum == NGVD-29 //
+                    //--------------------------//
+                    if (fileVdi->offsetToNgvd29 == UNDEFINED_VERTICAL_DATUM_VALUE) {
+                        //-------------------------------------//
+                        // file VDI has no offset from NGVD-29 //
+                        //-------------------------------------//
+                        expectSuccess = FALSE;  ++storageFailureMode[20];
+                    }
+                }
+                else if (strcmp(currentDatum, "") 
+                    && strcmp(currentDatum, CVERTICAL_DATUM_UNSET) 
+                    && strcmp(currentDatum, CVERTICAL_DATUM_NAVD88)) {
+                    //------------------------//
+                    // current datum == LOCAL //
+                    //------------------------//
+                    expectSuccess = FALSE;  ++storageFailureMode[21];
+                }
+            }
+            else if (!strcmp(fileVdi->nativeDatum, CVERTICAL_DATUM_NGVD29)) {
+                //---------------------------------//
+                // native datum in file == NGVD-29 //
+                //---------------------------------//
+                if (!strcmp(currentDatum, CVERTICAL_DATUM_NAVD88)) {
+                    //--------------------------//
+                    // current datum == NAVD-88 //
+                    //--------------------------//
+                    if (fileVdi->offsetToNavd88 == UNDEFINED_VERTICAL_DATUM_VALUE) {
+                        //-------------------------------------//
+                        // file VDI has no offset from NAVD-88 //
+                        //-------------------------------------//
+                        expectSuccess = FALSE;  ++storageFailureMode[22];
+                    }
+                }
+                else if (strcmp(currentDatum, "")
+                    && strcmp(currentDatum, CVERTICAL_DATUM_UNSET)
+                    && strcmp(currentDatum, CVERTICAL_DATUM_NGVD29)) {
+                    //------------------------//
+                    // current datum == LOCAL //
+                    //------------------------//
+                    expectSuccess = FALSE;  ++storageFailureMode[23];
+                }
+            }
+            else {
+                //-------------------------------//
+                // native datum in file == LOCAL //
+                //-------------------------------//
+                if (!strcmp(currentDatum, CVERTICAL_DATUM_NAVD88)) {
+                    //--------------------------//
+                    // current datum == NAVD-88 //
+                    //--------------------------//
+                    if (fileVdi->offsetToNavd88 == UNDEFINED_VERTICAL_DATUM_VALUE) {
+                        //-------------------------------------//
+                        // file VDI has no offset from NAVD-88 //
+                        //-------------------------------------//
+                        expectSuccess = FALSE;  ++storageFailureMode[24];
+                    }
+                }
+                else if (!strcmp(currentDatum, CVERTICAL_DATUM_NGVD29)) {
+                    //--------------------------//
+                    // current datum == NGVD-29 //
+                    //--------------------------//
+                    if (fileVdi->offsetToNgvd29 == UNDEFINED_VERTICAL_DATUM_VALUE) {
+                        //-------------------------------------//
+                        // file VDI has no offset from NGVD-29 //
+                        //-------------------------------------//
+                        expectSuccess = FALSE;  ++storageFailureMode[25];
+                    }
+                }
             }
         }
         else if (!strcmp(dataVdi->nativeDatum, CVERTICAL_DATUM_NAVD88)) {
             //----------------------------------//
             // incoming native datum == NAVD-88 //
             //----------------------------------//
-            if (strcmp(currentDatum, CVERTICAL_DATUM_NAVD88) &&
-                strcmp(currentDatum, CVERTICAL_DATUM_NGVD29) &&
-                strcmp(currentDatum, CVERTICAL_DATUM_UNSET)) {
-                //------------------------//
-                // current datum is local //
-                //------------------------//
-                expectSuccess = FALSE;  ++storageFailureMode[25];
-            }
-            else if (dataVdi->offsetToNavd88 == UNDEFINED_VERTICAL_DATUM_VALUE) {
-                //---------------------------------------//
-                // incoming VDI has no offset to NAVD-88 //
-                //---------------------------------------//
+            if (strcmp(fileVdi->nativeDatum, "") && strcmp(fileVdi->nativeDatum, CVERTICAL_DATUM_NAVD88)) {
+                //-----------------------------------------------//
+                // incoming native datum != UNSET and != NAVD-88 //
+                //-----------------------------------------------//
                 expectSuccess = FALSE;  ++storageFailureMode[26];
             }
-            else {
-                //------------------------------------//
-                // incoming VDI has offset to NAVD-88 //
-                //------------------------------------//
-                if (!unitIsFeet(dataUnit) && !unitIsMeters(dataUnit)) {
-                    //------------------------//
-                    // invalid incoming units //
-                    //------------------------//
+            else if (!strcmp(currentDatum, CVERTICAL_DATUM_NGVD29)) {
+                //--------------------------//
+                // current datum == NGVD-29 //
+                //--------------------------//
+                if (dataVdi->offsetToNgvd29 == UNDEFINED_VERTICAL_DATUM_VALUE) {
+                    //---------------------------------------//
+                    // incoming VDI has no offset to NGVD-29 //
+                    //---------------------------------------//
                     expectSuccess = FALSE;  ++storageFailureMode[27];
                 }
             }
-        }
-        else if (!strcmp(dataVdi->nativeDatum, CVERTICAL_DATUM_NGVD29)) {
-            //----------------------------------//
-            // incoming native datum == NGVD-29 //
-            //----------------------------------//
-            if (strcmp(currentDatum, CVERTICAL_DATUM_NAVD88) &&
+            else if (strcmp(currentDatum, CVERTICAL_DATUM_NAVD88) &&
                 strcmp(currentDatum, CVERTICAL_DATUM_NGVD29) &&
                 strcmp(currentDatum, CVERTICAL_DATUM_UNSET)) {
                 //------------------------//
@@ -1366,33 +1405,58 @@ int canStore(int fileContainsData, verticalDatumInfo *fileVdi, verticalDatumInfo
                 //------------------------//
                 expectSuccess = FALSE;  ++storageFailureMode[28];
             }
+            else if (dataVdi->offsetToNavd88 == UNDEFINED_VERTICAL_DATUM_VALUE) {
+                //---------------------------------------//
+                // incoming VDI has no offset to NAVD-88 //
+                //---------------------------------------//
+                expectSuccess = FALSE;  ++storageFailureMode[29];
+            }
+        }
+        else if (!strcmp(dataVdi->nativeDatum, CVERTICAL_DATUM_NGVD29)) {
+            //----------------------------------//
+            // incoming native datum == NGVD-29 //
+            //----------------------------------//
+            if (strcmp(fileVdi->nativeDatum, "") && strcmp(fileVdi->nativeDatum, CVERTICAL_DATUM_NGVD29)) {
+                //-----------------------------------------------//
+                // incoming native datum != UNSET and != NGVD-29 //
+                //-----------------------------------------------//
+                expectSuccess = FALSE;  ++storageFailureMode[30];
+            }
+            else if (!strcmp(currentDatum, CVERTICAL_DATUM_NAVD88)) {
+                //--------------------------//
+                // current datum is NAVD-88 //
+                //--------------------------//
+                if (dataVdi->offsetToNavd88 == UNDEFINED_VERTICAL_DATUM_VALUE) {
+                    //---------------------------------------//
+                    // incoming VDI has no offset to NAVD-88 //
+                    //---------------------------------------//
+                    expectSuccess = FALSE;  ++storageFailureMode[31];
+                }
+            }
+            else if (strcmp(currentDatum, CVERTICAL_DATUM_NAVD88) &&
+                strcmp(currentDatum, CVERTICAL_DATUM_NGVD29) &&
+                strcmp(currentDatum, CVERTICAL_DATUM_UNSET)) {
+                //------------------------//
+                // current datum is local //
+                //------------------------//
+                expectSuccess = FALSE;  ++storageFailureMode[32];
+            }
             else if (dataVdi->offsetToNgvd29 == UNDEFINED_VERTICAL_DATUM_VALUE) {
                 //---------------------------------------//
                 // incoming VDI has no offset to NGVD-29 //
                 //---------------------------------------//
-                expectSuccess = FALSE;  ++storageFailureMode[29];
-            }
-            else {
-                //------------------------------------//
-                // incoming VDI has offset to NGVD-29 //
-                //------------------------------------//
-                if (!unitIsFeet(dataUnit) && !unitIsMeters(dataUnit)) {
-                    //------------------------//
-                    // invalid incoming units //
-                    //------------------------//
-                    expectSuccess = FALSE;  ++storageFailureMode[30];
-                }
+                expectSuccess = FALSE;  ++storageFailureMode[33];
             }
         }
         else {
             //--------------------------------//
             // incoming native datum == LOCAL //
             //--------------------------------//
-            if (!strcmp(currentDatum, "")) {
-                //------------------------//
-                // current datum == UNSET //
-                //------------------------//
-                expectSuccess = FALSE;  ++storageFailureMode[31];
+            if (strcmp(fileVdi->nativeDatum, "") && strcmp(fileVdi->nativeDatum, dataVdi->nativeDatum)) {
+                //--------------------------------------------------------//
+                // file native datum != UNSET && != incoming native datum //
+                //--------------------------------------------------------//
+                expectSuccess = FALSE;  ++storageFailureMode[34];
             }
             if (!strcmp(currentDatum, CVERTICAL_DATUM_NAVD88)) {
                 //--------------------------//
@@ -1402,13 +1466,7 @@ int canStore(int fileContainsData, verticalDatumInfo *fileVdi, verticalDatumInfo
                     //-----------------------------------------//
                     // incoming VDI has no offset from NAVD-88 //
                     //-----------------------------------------//
-                    expectSuccess = FALSE;  ++storageFailureMode[32];
-                }
-                else if (!unitIsFeet(dataUnit) && !unitIsMeters(dataUnit)) {
-                    //------------------------//
-                    // invalid incoming units //
-                    //------------------------//
-                    expectSuccess = FALSE;  ++storageFailureMode[33];
+                    expectSuccess = FALSE;  ++storageFailureMode[35];
                 }
             }
             else if (!strcmp(currentDatum, CVERTICAL_DATUM_NGVD29)) {
@@ -1419,24 +1477,60 @@ int canStore(int fileContainsData, verticalDatumInfo *fileVdi, verticalDatumInfo
                     //-----------------------------------------//
                     // incoming VDI has no offset from NGVD-29 //
                     //-----------------------------------------//
-                    expectSuccess = FALSE;  ++storageFailureMode[34];
-                }
-                else if (!unitIsFeet(dataUnit) && !unitIsMeters(dataUnit)) {
-                    //------------------------//
-                    // invalid incoming units //
-                    //------------------------//
-                    expectSuccess = FALSE;  ++storageFailureMode[35];
+                    expectSuccess = FALSE;  ++storageFailureMode[36];
                 }
             }
-            else {
+            else if (strcmp(currentDatum, "") && strcmp(currentDatum, CVERTICAL_DATUM_UNSET) && strcmp(currentDatum, dataVdi->nativeDatum)) {
                 //----------------------------------//
                 // current datum == different LOCAL //
                 //----------------------------------//
-                expectSuccess = FALSE;  ++storageFailureMode[36];
+                expectSuccess = FALSE;  ++storageFailureMode[37];
             }
         }
     }
+    if (expectSuccess && dssVersion == 7 && !strcmp(dataVdi->nativeDatum, fileVdi->nativeDatum)) {
+        if (strcmp(dataVdi->unit, fileVdi->unit)
+            || dataVdi->offsetToNavd88 != fileVdi->offsetToNavd88
+            || dataVdi->offsetToNgvd29 != fileVdi->offsetToNgvd29) {
+            //------------------------------- //
+            // DSS 7 and data VDI != file VDI //
+            //------------------------------- //
+            expectSuccess = FALSE; ++storageFailureMode[38];
+        }
+    }
     return expectSuccess;
+}
+
+void deleteTimeSeriesRecords(
+        const long long *ifltab, 
+        const char* pathname, 
+        const int startJul, 
+        const int endJul, 
+        const int blockSize,
+        const int deleteLocationRecordAlso) {
+    char recordPathname[(MAX_PART_SIZE - 1) * 6 + 8];
+    char ePart[MAX_PART_SIZE];
+    int recordJul = 0;
+    int intervalSeconds = 0;
+    strcpy(recordPathname, pathname);
+    int isIrregular = ePart[0] == '~' || toupper(ePart[0]) == 'I';
+    if (isIrregular) {
+        recordJul = ztsIrregGetBlockStart(startJul, &blockSize);
+    }
+    else {
+        int operation = 1;
+        ztsGetStandardInterval(7, &intervalSeconds, ePart, sizeof(ePart), &operation);
+        recordJul = ztsRegGetBlockStart(startJul, intervalSeconds, &blockSize);
+    }
+    while (recordJul <= endJul) {
+        julianToDate(recordJul, 104, ePart, sizeof(ePart));
+        zpathnameSetPart(recordPathname, sizeof(recordPathname), ePart, 4);
+        zdelete(ifltab, recordPathname);
+        recordJul = ztsIncrementBlock(recordJul, blockSize);
+    }
+    if (deleteLocationRecordAlso) {
+        zdelete(ifltab, zlocationPath(pathname));
+    }
 }
 
 void testStoreRetrieveTimeSeries() {
@@ -1446,6 +1540,7 @@ void testStoreRetrieveTimeSeries() {
     zStructTimeSeries *tss = NULL;
     verticalDatumInfo vdi;
     verticalDatumInfo vdiInFile;
+    verticalDatumInfo blankVdi;
     char *errmsg;
     char *filename[]      = {"v6_c.dss", "v7_c.dss"};
     char *pathnames[2][2] = {{"//TestTsLoc/Elev//1Hour/Doubles/",    "//TestTsLoc/Elev//1Hour/Floats/"},
@@ -1480,12 +1575,22 @@ void testStoreRetrieveTimeSeries() {
         "</vertical-datum-info>\n",
 
         "<vertical-datum-info unit=\"ft\">\n"
+        "  <native-datum>NGVD-29</native-datum>\n"
+        "  <elevation>615.2</elevation>\n"
+        "</vertical-datum-info>\n",
+
+        "<vertical-datum-info unit=\"ft\">\n"
         "  <native-datum>NAVD-88</native-datum>\n"
         "  <elevation>615.5885</elevation>\n"
         "  <offset estimate=\"true\">\n"
         "    <to-datum>NGVD-29</to-datum>\n"
         "    <value>-0.3855</value>\n"
         "  </offset>\n"
+        "</vertical-datum-info>\n",
+
+        "<vertical-datum-info unit=\"ft\">\n"
+        "  <native-datum>NAVD-88</native-datum>\n"
+        "  <elevation>615.5885</elevation>\n"
         "</vertical-datum-info>\n",
 
         "<vertical-datum-info unit=\"ft\">\n"
@@ -1500,6 +1605,12 @@ void testStoreRetrieveTimeSeries() {
         "    <to-datum>NGVD-29</to-datum>\n"
         "    <value>1.07</value>\n"
         "  </offset>\n"
+        "</vertical-datum-info>\n",
+
+        "<vertical-datum-info unit=\"ft\">\n"
+        "  <native-datum>OTHER</native-datum>\n"
+        "  <local-datum-name>Pensacola</local-datum-name>\n"
+        "  <elevation>757</elevation>\n"
         "</vertical-datum-info>\n",
 
         ""
@@ -1517,8 +1628,8 @@ void testStoreRetrieveTimeSeries() {
     int count = 0;
     int expectSuccess = TRUE;
     memset(nativeDatumInFile, 0, sizeof(nativeDatumInFile));
-
     memcpy(0, storageFailureMode, 0, sizeof(storageFailureMode));
+    initializeVerticalDatumInfo(&blankVdi);
 
     //
     // loop variables
@@ -1528,9 +1639,13 @@ void testStoreRetrieveTimeSeries() {
     //     1 = DSS 7
     //
     // j = xml blocks for native vertical datum
-    //     0 = NGVD-29 native
-    //     1 = OTHER native with local datum named "Pensacola"
-    //     2 = None
+    //     0 = NGVD-29 native with offset to NAVD-88
+    //     1 = NGVD-29 native without offset to NAVD-88
+    //     2 = NAVD-88 native with offset to NGVD-29
+    //     3 = NAVD-88 native without offset to NGVD-29
+    //     4 = OTHER native with local datum named "Pensacola" with offsets to NAVD-88 and NGVD-29
+    //     5 = OTHER native with local datum named "Pensacola" without offsets to NAVD-88 and NGVD-29
+    //     6 = None
     //
     // k = current (aka default/session/working) vertical datum
     //     0 = NAVD-88
@@ -1562,366 +1677,589 @@ void testStoreRetrieveTimeSeries() {
     //     0 = specify
     //     1 = don't specify (use previously stored)
     //
+    // q = ensure empty record
+    //     0 = leave any existing data in file
+    //     1 = delete existing record
+    //
+    // r = delete location VDI in DSS 7 if q == 1
+    //     0 = leave existing location VDI
+    //     1 = delete location VDI
     zset("MLVL", "", 1);
     for (int i = 0; i < 2; ++i) {
         remove(filename[i]);
-        for (int j = 0; j < xml_count; ++j) {
-            for (int k = 0; k < currentVerticalDatumCount; ++k) {
-                int k2 = (k+1) % currentVerticalDatumCount;
-                int k3 = (k+2) % currentVerticalDatumCount;
-                for (int l = 0; l < unitCount; ++ l) {
-                    for (int m = 0; m < 3; ++m) {
-                        for (int n = 0; n < 2; ++n) {
-                            for (int o = 0; o < 2; ++o) {
-                                for (int p = 0; p < 2; ++p) {
-                                    ++count;
-                                    // printf("%3d%3d%3d%3d%3d%3d%3d%3d%5d\n", i, j, k ,l, m, n, o, p, count);
-                                    len = 0;
-                                    headerBuf = NULL;
-                                    nativeDatumInFile[0] = '\0';
-                                    initializeVerticalDatumInfo(&vdiInFile);
-                                    if (i == 0) {
-                                        //-------//
-                                        // DSS 6 //
-                                        //-------//
-                                        status = zopen6(ifltab, filename[i]);
-                                        assert(status == STATUS_OKAY);
-                                        //----------------------------------------------------------------------------//
-                                        // get whether data exists in file and native datum in file for this pathname //
-                                        //----------------------------------------------------------------------------//
-                                        tss = zstructTsNewTimes(
-                                            pathnames[n][o],
-                                            startDate,
-                                            startTime,
-                                            endDate,
-                                            endTime);
-                                        assert(tss != NULL);
-                                        zset("VDTM", CVERTICAL_DATUM_UNSET, 0);
-                                        status = ztsRetrieve(
-                                            ifltab,
-                                            tss,
-                                            n == 0 ? -1 : 0, // trim regular time series
-                                            0,
-                                            1);
-                                        dataInFile = status == STATUS_OKAY && tss->numberValues > 0;
-                                        if (status == STATUS_OKAY) {
-                                            headerBuf = userHeaderToString(tss->userHeader, tss->userHeaderNumber);
-                                            if (headerBuf != NULL) {
-                                                char* compressedVdi = extractFromDelimitedString(
-                                                    &headerBuf,
-                                                    VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
-                                                    ":",
-                                                    TRUE,
-                                                    FALSE,
-                                                    ';');
-                                                if (compressedVdi) {
-                                                    errmsg = stringToVerticalDatumInfo(&vdiInFile, compressedVdi);
-                                                    assert(errmsg == NULL);
-                                                    strcpy(nativeDatumInFile, vdiInFile.nativeDatum);
-                                                    free(compressedVdi);
-                                                }
-                                                free(headerBuf);
-                                            }
-                                            headerBuf = NULL;
-                                        }
-                                        zstructFree(tss);
-                                    }
-                                    else {
-                                        //-------//
-                                        // DSS 7 //
-                                        //-------//
-                                        status = zopen7(ifltab, filename[i]);
-                                        assert(status == STATUS_OKAY);
-                                        //----------------------------------------------------------------------------//
-                                        // get whether data exists in file and native datum in file for this pathname //
-                                        //----------------------------------------------------------------------------//
-                                        tss = zstructTsNewTimes(
-                                            pathnames[n][o],
-                                            startDate,
-                                            startTime,
-                                            endDate,
-                                            endTime);
-                                        assert(tss != NULL);
-                                        zset("VDTM", CVERTICAL_DATUM_UNSET, 0);
-                                        status = ztsRetrieve(
-                                            ifltab,
-                                            tss,
-                                            n == 0 ? -1 : 0, // trim regular time series
-                                            0,
-                                            1);
-                                        dataInFile = status == STATUS_OKAY && tss->numberValues > 0;
-                                        zStructLocation* ls = zstructLocationNew(pathnames[n][o]);
-                                        zlocationRetrieve(ifltab, ls);
-                                        if (ls) {
-                                            if (ls->supplemental) {
-                                                char* compressedVdi = extractFromDelimitedString(
-                                                    &ls->supplemental,
-                                                    VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
-                                                    ":",
-                                                    TRUE,
-                                                    FALSE,
-                                                    ';');
-                                                if (compressedVdi) {
-                                                    stringToVerticalDatumInfo(&vdiInFile, compressedVdi);
-                                                    strcpy(nativeDatumInFile, vdiInFile.nativeDatum);
-                                                    free(compressedVdi);
-                                                }
-                                            }
-                                            zstructFree(ls);
-                                        }
-                                    }
-                                    //------------------------//
-                                    // create the time series //
-                                    //------------------------//
-                                    if (n == 0) {
-                                        if (o == 0) {
-                                            tss = zstructTsNewRegDoubles(
-                                                pathnames[n][o],
-                                                dvalues[l],
-                                                numberValues,
-                                                startDate,
-                                                startTime,
-                                                unit[l],
-                                                type);
-                                        }
-                                        else {
-                                            tss = zstructTsNewRegFloats(
-                                                pathnames[n][o],
-                                                fvalues[l],
-                                                numberValues,
-                                                startDate,
-                                                startTime,
-                                                unit[l],
-                                                type);
-                                        }
-                                    }
-                                    else {
-                                        if (o == 0) {
-                                            tss = zstructTsNewIrregDoubles(
-                                                pathnames[n][o],
-                                                dvalues[l],
-                                                numberValues,
-                                                itimes,
-                                                60,
-                                                NULL,
-                                                unit[l],
-                                                type);
-                                        }
-                                        else {
-                                            tss = zstructTsNewIrregFloats(
-                                                pathnames[n][o],
-                                                fvalues[l],
-                                                numberValues,
-                                                itimes,
-                                                60,
-                                                NULL,
-                                                unit[l],
-                                                type);
-                                        }
-                                    }
-                                    assert(tss != NULL);
-                                    int K = k;
-                                    strcpy(unitSpec, unit[l]);
-                                    //--------------------------------//
-                                    // set the default vertical datum //
-                                    //--------------------------------//
-                                    zset("VDTM", currentVerticalDatums[K], 0);
-                                    if (p == 0) {
-                                        //------------------------------------------------//
-                                        // add the vertical datum info to the user header //
-                                        //------------------------------------------------//
-                                        if (strlen(xml[j]) > 0) {
-                                            stringToVerticalDatumInfo(&vdi, xml[j]);
-                                            errmsg = gzipAndEncode(&compressed, xml[j]);
-                                            assert(errmsg == NULL);
-                                            len = VERTICAL_DATUM_INFO_USER_HEADER_PARAM_LEN + strlen(compressed) + 2;
-                                            headerBuf = (char*)malloc(len + 1);
-                                            memset(headerBuf, 0, len + 1);
-                                            status = insertIntoDelimitedString(
-                                                &headerBuf,
-                                                len + 1,
-                                                VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
-                                                compressed,
-                                                ":",
-                                                FALSE,
-                                                ';');
-                                            assert(status == 0);
-                                            free(compressed);
-                                            tss->userHeader = stringToUserHeader(headerBuf, &tss->userHeaderNumber);
-                                            tss->allocated[zSTRUCT_userHeader] = TRUE;
-                                        }
-                                    }
-                                    else {
-                                        initializeVerticalDatumInfo(&vdi);
-                                    }
-                                    if (m > 0) {
-                                        //----------------------------------------------------------//
-                                        // override the default vertical datum with the user header //
-                                        //----------------------------------------------------------//
-                                        K = k2;
-                                        status = insertIntoDelimitedString(
-                                            headerBuf ? &headerBuf : NULL,
-                                            len,
-                                            VERTICAL_DATUM_USER_HEADER_PARAM,
-                                            currentVerticalDatums[K],
-                                            ":",
-                                            FALSE,
-                                            ';');
-                                        if (status != 0) {
-                                            if (headerBuf) {
-                                                int oldlen = len;
-                                                len += VERTICAL_DATUM_USER_HEADER_PARAM_LEN + strlen(currentVerticalDatums[K]) + 3;
-                                                headerBuf = (char *)realloc(headerBuf, len);
-                                                memset(headerBuf+oldlen, 0, len-oldlen);
-                                            }
-                                            else {
-                                                len = VERTICAL_DATUM_USER_HEADER_PARAM_LEN + strlen(currentVerticalDatums[K]) + 3;
-                                                headerBuf = (char *)malloc(len);
-                                                headerBuf[0] = '\0';
-                                            }
-                                            assert(headerBuf != NULL);
-                                            status = insertIntoDelimitedString(
-                                                &headerBuf,
-                                                len,
-                                                VERTICAL_DATUM_USER_HEADER_PARAM,
-                                                currentVerticalDatums[K],
-                                                ":",
-                                                FALSE,
-                                                ';');
-                                            assert(status == 0);
-                                        }
-                                        if (tss->userHeader) free(tss->userHeader);
-                                        tss->userHeader = stringToUserHeader(headerBuf, &tss->userHeaderNumber);
-                                        tss->allocated[zSTRUCT_userHeader] = TRUE;
-                                    }
-                                    if (m > 1) {
-                                        //--------------------------------------------------------//
-                                        // override default and user header datums with unit spec //
-                                        //--------------------------------------------------------//
-                                        K = k3;
-                                        sprintf(unitSpec, "U=%s|V=%s", unit[l], currentVerticalDatums[K]);
-                                        free(tss->units);
-                                        tss->units = mallocAndCopy(unitSpec);
-                                    }
-                                    while (TRUE) {
-                                        //-------------------------------------------------//
-                                        // figure out whether expect ztsStore to succeeded //
-                                        //-------------------------------------------------//
-                                        expectSuccess = canStore(dataInFile, &vdiInFile, &vdi, currentVerticalDatums[K], unit[l]);
-                                        //-------------------------------------------------------//
-                                        // store the time series in the specified vertical datum //
-                                        //-------------------------------------------------------//
-                                        printf("Time series test %3d: expecting %s\n", count, expectSuccess ? "SUCESS" : "ERROR");
-                                        printf("    pathname               = %s\n", pathnames[n][o]);
-                                        printf("    data in file           = %s\n", dataInFile ? "T" : "F");
-                                        printf("    native datum in file   = %s\n", nativeDatumInFile);
-                                        printf("    incoming native datum  = %s\n", vdi.nativeDatum);
-                                        printf("    incoming current datum = %s\n", currentVerticalDatums[K]);
-                                        printf("    incoming unit          = %s\n", unitSpec);
-                                        status = ztsStore(ifltab, tss, 0);
-                                        assert((status == STATUS_OKAY) == expectSuccess);
-                                        if (status != STATUS_OKAY && i == 0 && strlen(nativeDatumInFile) > 0 && strcmp(nativeDatumInFile, currentVerticalDatums[K])) {
-                                            //---------------------------------------------//
-                                            // change of vertical datum information for v6 //
-                                            //                                             //
-                                            // delete time series record and re-try        //
-                                            //---------------------------------------------//
-                                            char recordPathname[(MAX_PART_SIZE - 1) * 6 + 8];
-                                            char ePart[MAX_PART_SIZE];
-                                            strcpy(recordPathname, tss->pathname);
-                                            int recordJul = tss->timeWindow->startBlockJulian;
-                                            while (recordJul <= tss->timeWindow->endBlockJulian) {
-                                                julianToDate(recordJul, 104, ePart, sizeof(ePart));
-                                                zpathnameSetPart(recordPathname, sizeof(recordPathname), ePart, 4);
-                                                status = zdelete(ifltab, recordPathname);
-                                                assert(status == STATUS_RECORD_FOUND);
-                                                printf("==> DELETED %s\n", recordPathname);
-                                                recordJul = ztsIncrementBlock(recordJul, tss->timeWindow->blockSize);
-                                            }
-                                            nativeDatumInFile[0] = '\0';
-                                            dataInFile = FALSE;
-                                            ++count;
-                                            continue;
-                                        }
-                                        break;
-                                    }
-                                    if (i == 1 && j > 0 && k+l+m+n+o+p == 0) {
-                                        //---------------------------------------------//
-                                        // change of vertical datum information for v7 //
-                                        //                                             //
-                                        // update location record and re-try           //
-                                        //---------------------------------------------//
-                                        zset("VDOW", "", TRUE);
-                                        printf("Test %d: expecting SUCESS\n", ++count);
-                                        status = ztsStore(ifltab, tss, 0);
-                                        assert(status == STATUS_OKAY);
-                                        zset("VDOW", "", FALSE);
-                                    }
-                                    zclose(ifltab);
-                                    zstructFree(tss);
-                                    if (status == STATUS_OKAY) {
-                                        //strcpy(nativeDatumInFile, vdi.nativeDatum);
-                                        //--------------------------------------------------------//
-                                        // retrieve the time series in the default vertical datum //
-                                        //-------------------------------------------------------//
-                                        if (i == 0) {
-                                            status = zopen6(ifltab, filename[i]);
-                                        }
-                                        else {
-                                            status = zopen7(ifltab, filename[i]);
-                                        }
-                                        assert(status == STATUS_OKAY);
-                                        tss = zstructTsNewTimes(
-                                            pathnames[n][o],
-                                            startDate,
-                                            startTime,
-                                            endDate,
-                                            endTime);
-                                        assert(tss != NULL);
-                                        //------------------------------------------------------------//
-                                        // set the default vertical datum to the datum we stored with //
-                                        //------------------------------------------------------------//
-                                        zset("VDTM", currentVerticalDatums[K], 0);
-                                        status = ztsRetrieve(
-											ifltab,
-											tss,
-											n == 0 ? -1 : 0, // trim regular time series
-											0,
-											1);
-                                        assert(status == STATUS_OKAY);
-                                        //------------------------------------------------------//
-                                        // compare the retrieved time seires to what was stored //
-                                        //------------------------------------------------------//
-                                        assert(tss->numberValues == numberValues);
-                                        if (o == 0) {
-                                            assert(tss->doubleValues != NULL);
-                                            for (int ii = 0; ii < tss->numberValues; ++ii) {
-                                                assert(tss->doubleValues[ii] == dvalues[l][ii]);
-                                            }
-                                        }
-                                        else {
-                                            assert(tss->floatValues != NULL);
-                                            for (int ii = 0; ii < tss->numberValues; ++ii) {
-                                                assert(tss->floatValues[ii] == fvalues[l][ii]);
-                                            }
-                                        }
-                                        zclose(ifltab);
-                                        zstructFree(tss);
-                                    }
-                                    if (headerBuf) free(headerBuf);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
+    //    for (int j = 0; j < xml_count; ++j) {
+    //        for (int k = 0; k < currentVerticalDatumCount; ++k) {
+    //            int k2 = (k+1) % currentVerticalDatumCount;
+    //            int k3 = (k+2) % currentVerticalDatumCount;
+    //            for (int l = 0; l < unitCount; ++ l) {
+    //                for (int m = 0; m < 3; ++m) {
+    //                    for (int n = 0; n < 2; ++n) {
+    //                        for (int o = 0; o < 2; ++o) {
+    //                            for (int p = 0; p < 2; ++p) {
+    //                                for (int q = 0; q < 2; ++q) {
+    //                                    ++count;
+    //                                    len = 0;
+    //                                    headerBuf = NULL;
+    //                                    nativeDatumInFile[0] = '\0';
+    //                                    initializeVerticalDatumInfo(&vdiInFile);
+    //                                    if (i == 0) {
+    //                                        //-------//
+    //                                        // DSS 6 //
+    //                                        //-------//
+    //                                        status = zopen6(ifltab, filename[i]);
+    //                                        assert(status == STATUS_OKAY);
+    //                                        //----------------------------------------------------------------------------//
+    //                                        // get whether data exists in file and native datum in file for this pathname //
+    //                                        //----------------------------------------------------------------------------//
+    //                                        tss = zstructTsNewTimes(
+    //                                            pathnames[n][o],
+    //                                            startDate,
+    //                                            startTime,
+    //                                            endDate,
+    //                                            endTime);
+    //                                        assert(tss != NULL);
+    //                                        zset("VDTM", CVERTICAL_DATUM_UNSET, 0);
+    //                                        status = ztsRetrieve(
+    //                                            ifltab,
+    //                                            tss,
+    //                                            n == 0 ? -1 : 0, // trim regular time series
+    //                                            0,
+    //                                            1);
+    //                                        dataInFile = status == STATUS_OKAY && tss->numberValues > 0;
+    //                                        if (status == STATUS_OKAY) {
+    //                                            headerBuf = userHeaderToString(tss->userHeader, tss->userHeaderNumber);
+    //                                            if (headerBuf != NULL) {
+    //                                                char* compressedVdi = extractFromDelimitedString(
+    //                                                    &headerBuf,
+    //                                                    VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
+    //                                                    ":",
+    //                                                    TRUE,
+    //                                                    FALSE,
+    //                                                    ';');
+    //                                                if (compressedVdi) {
+    //                                                    errmsg = stringToVerticalDatumInfo(&vdiInFile, compressedVdi);
+    //                                                    assert(errmsg == NULL);
+    //                                                    strcpy(nativeDatumInFile, vdiInFile.nativeDatum);
+    //                                                    free(compressedVdi);
+    //                                                }
+    //                                                free(headerBuf);
+    //                                            }
+    //                                            headerBuf = NULL;
+    //                                        }
+    //                                        zstructFree(tss);
+    //                                    }
+    //                                    else {
+    //                                        //-------//
+    //                                        // DSS 7 //
+    //                                        //-------//
+    //                                        status = zopen7(ifltab, filename[i]);
+    //                                        assert(status == STATUS_OKAY);
+    //                                        //----------------------------------------------------------------------------//
+    //                                        // get whether data exists in file and native datum in file for this pathname //
+    //                                        //----------------------------------------------------------------------------//
+    //                                        tss = zstructTsNewTimes(
+    //                                            pathnames[n][o],
+    //                                            startDate,
+    //                                            startTime,
+    //                                            endDate,
+    //                                            endTime);
+    //                                        assert(tss != NULL);
+    //                                        zset("VDTM", CVERTICAL_DATUM_UNSET, 0);
+    //                                        status = ztsRetrieve(
+    //                                            ifltab,
+    //                                            tss,
+    //                                            n == 0 ? -1 : 0, // trim regular time series
+    //                                            0,
+    //                                            1);
+    //                                        dataInFile = status == STATUS_OKAY && tss->numberValues > 0;
+    //                                        zStructLocation* ls = zstructLocationNew(pathnames[n][o]);
+    //                                        zlocationRetrieve(ifltab, ls);
+    //                                        if (ls) {
+    //                                            if (ls->supplemental) {
+    //                                                char* compressedVdi = extractFromDelimitedString(
+    //                                                    &ls->supplemental,
+    //                                                    VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
+    //                                                    ":",
+    //                                                    TRUE,
+    //                                                    FALSE,
+    //                                                    ';');
+    //                                                if (compressedVdi) {
+    //                                                    stringToVerticalDatumInfo(&vdiInFile, compressedVdi);
+    //                                                    strcpy(nativeDatumInFile, vdiInFile.nativeDatum);
+    //                                                    free(compressedVdi);
+    //                                                }
+    //                                            }
+    //                                            zstructFree(ls);
+    //                                        }
+    //                                    }
+    //                                    //------------------------//
+    //                                    // create the time series //
+    //                                    //------------------------//
+    //                                    if (n == 0) {
+    //                                        if (o == 0) {
+    //                                            tss = zstructTsNewRegDoubles(
+    //                                                pathnames[n][o],
+    //                                                dvalues[l],
+    //                                                numberValues,
+    //                                                startDate,
+    //                                                startTime,
+    //                                                unit[l],
+    //                                                type);
+    //                                        }
+    //                                        else {
+    //                                            tss = zstructTsNewRegFloats(
+    //                                                pathnames[n][o],
+    //                                                fvalues[l],
+    //                                                numberValues,
+    //                                                startDate,
+    //                                                startTime,
+    //                                                unit[l],
+    //                                                type);
+    //                                        }
+    //                                    }
+    //                                    else {
+    //                                        if (o == 0) {
+    //                                            tss = zstructTsNewIrregDoubles(
+    //                                                pathnames[n][o],
+    //                                                dvalues[l],
+    //                                                numberValues,
+    //                                                itimes,
+    //                                                60,
+    //                                                NULL,
+    //                                                unit[l],
+    //                                                type);
+    //                                        }
+    //                                        else {
+    //                                            tss = zstructTsNewIrregFloats(
+    //                                                pathnames[n][o],
+    //                                                fvalues[l],
+    //                                                numberValues,
+    //                                                itimes,
+    //                                                60,
+    //                                                NULL,
+    //                                                unit[l],
+    //                                                type);
+    //                                        }
+    //                                    }
+    //                                    assert(tss != NULL);
+    //                                    int K = k;
+    //                                    strcpy(unitSpec, unit[l]);
+    //                                    //--------------------------------//
+    //                                    // set the default vertical datum //
+    //                                    //--------------------------------//
+    //                                    zset("VDTM", currentVerticalDatums[K], 0);
+    //                                    if (p == 0) {
+    //                                        //------------------------------------------------//
+    //                                        // add the vertical datum info to the user header //
+    //                                        //------------------------------------------------//
+    //                                        if (strlen(xml[j]) > 0) {
+    //                                            stringToVerticalDatumInfo(&vdi, xml[j]);
+    //                                            errmsg = gzipAndEncode(&compressed, xml[j]);
+    //                                            assert(errmsg == NULL);
+    //                                            len = VERTICAL_DATUM_INFO_USER_HEADER_PARAM_LEN + strlen(compressed) + 2;
+    //                                            headerBuf = (char*)malloc(len + 1);
+    //                                            memset(headerBuf, 0, len + 1);
+    //                                            status = insertIntoDelimitedString(
+    //                                                &headerBuf,
+    //                                                len + 1,
+    //                                                VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
+    //                                                compressed,
+    //                                                ":",
+    //                                                FALSE,
+    //                                                ';');
+    //                                            assert(status == 0);
+    //                                            free(compressed);
+    //                                            tss->userHeader = stringToUserHeader(headerBuf, &tss->userHeaderNumber);
+    //                                            tss->allocated[zSTRUCT_userHeader] = TRUE;
+    //                                        }
+    //                                    }
+    //                                    else {
+    //                                        initializeVerticalDatumInfo(&vdi);
+    //                                    }
+    //                                    if (m > 0) {
+    //                                        //----------------------------------------------------------//
+    //                                        // override the default vertical datum with the user header //
+    //                                        //----------------------------------------------------------//
+    //                                        K = k2;
+    //                                        status = insertIntoDelimitedString(
+    //                                            headerBuf ? &headerBuf : NULL,
+    //                                            len,
+    //                                            VERTICAL_DATUM_USER_HEADER_PARAM,
+    //                                            currentVerticalDatums[K],
+    //                                            ":",
+    //                                            FALSE,
+    //                                            ';');
+    //                                        if (status != 0) {
+    //                                            if (headerBuf) {
+    //                                                int oldlen = len;
+    //                                                len += VERTICAL_DATUM_USER_HEADER_PARAM_LEN + strlen(currentVerticalDatums[K]) + 3;
+    //                                                headerBuf = (char*)realloc(headerBuf, len);
+    //                                                memset(headerBuf + oldlen, 0, len - oldlen);
+    //                                            }
+    //                                            else {
+    //                                                len = VERTICAL_DATUM_USER_HEADER_PARAM_LEN + strlen(currentVerticalDatums[K]) + 3;
+    //                                                headerBuf = (char*)malloc(len);
+    //                                                headerBuf[0] = '\0';
+    //                                            }
+    //                                            assert(headerBuf != NULL);
+    //                                            status = insertIntoDelimitedString(
+    //                                                &headerBuf,
+    //                                                len,
+    //                                                VERTICAL_DATUM_USER_HEADER_PARAM,
+    //                                                currentVerticalDatums[K],
+    //                                                ":",
+    //                                                FALSE,
+    //                                                ';');
+    //                                            assert(status == 0);
+    //                                        }
+    //                                        if (tss->userHeader) free(tss->userHeader);
+    //                                        tss->userHeader = stringToUserHeader(headerBuf, &tss->userHeaderNumber);
+    //                                        tss->allocated[zSTRUCT_userHeader] = TRUE;
+    //                                    }
+    //                                    if (m > 1) {
+    //                                        //--------------------------------------------------------//
+    //                                        // override default and user header datums with unit spec //
+    //                                        //--------------------------------------------------------//
+    //                                        K = k3;
+    //                                        sprintf(unitSpec, "U=%s|V=%s", unit[l], currentVerticalDatums[K]);
+    //                                        free(tss->units);
+    //                                        tss->units = mallocAndCopy(unitSpec);
+    //                                    }
+    //                                    if (q == 1) {
+    //                                        //----------------------------//
+    //                                        // delete any records in file //
+    //                                        //----------------------------//
+    //                                        ztsProcessTimes(ifltab, tss, TRUE);
+    //                                        deleteTimeSeriesRecords(
+    //                                            ifltab,
+    //                                            tss->pathname,
+    //                                            tss->timeWindow->startBlockJulian,
+    //                                            tss->timeWindow->endBlockJulian,
+    //                                            tss->timeWindow->blockSize,
+    //                                            FALSE);
+    //                                        dataInFile = FALSE;
+    //                                        if (i == 0) {
+    //                                            //--------------------------------------------------//
+    //                                            // deleting records also deletes file VDI for DSS 6 //
+    //                                            //--------------------------------------------------//
+    //                                            initializeVerticalDatumInfo(&vdiInFile);
+    //                                            nativeDatumInFile[0] = '\0';
+    //                                        }
+    //                                    }
+    //                                    while (TRUE) {
+    //                                        //-------------------------------------------------//
+    //                                        // figure out whether expect ztsStore to succeeded //
+    //                                        //-------------------------------------------------//
+    //                                        expectSuccess = canStore(i == 0 ? 6 : 7, dataInFile, &vdiInFile, &vdi, currentVerticalDatums[K], unit[l]);
+    //                                        //-------------------------------------------------------//
+    //                                        // store the time series in the specified vertical datum //
+    //                                        //-------------------------------------------------------//
+    //                                        printf("Time series test %5d: expecting %s\n", count, expectSuccess ? "SUCCESS" : "ERROR");
+    //                                        printf("    pathname               = %s\n", pathnames[n][o]);
+    //                                        printf("    data in file           = %s\n", dataInFile ? "T" : "F");
+    //                                        printf("    native datum in file   = %s\n", nativeDatumInFile);
+    //                                        printf("    incoming native datum  = %s\n", vdi.nativeDatum);
+    //                                        printf("    incoming current datum = %s\n", currentVerticalDatums[K]);
+    //                                        printf("    incoming unit          = %s\n", unitSpec);
+    //                                        status = ztsStore(ifltab, tss, 0);
+    //                                        assert((status == STATUS_OKAY) == expectSuccess);
+    //                                        if (status != STATUS_OKAY && i == 0 && strlen(nativeDatumInFile) > 0 && strcmp(nativeDatumInFile, currentVerticalDatums[K])) {
+    //                                            //---------------------------------------------//
+    //                                            // change of vertical datum information for v6 //
+    //                                            //                                             //
+    //                                            // delete time series records and re-try       //
+    //                                            //---------------------------------------------//
+    //                                            deleteTimeSeriesRecords(
+    //                                                ifltab,
+    //                                                tss->pathname,
+    //                                                tss->timeWindow->startBlockJulian,
+    //                                                tss->timeWindow->endBlockJulian,
+    //                                                tss->timeWindow->blockSize,
+    //                                                FALSE);
+    //                                            nativeDatumInFile[0] = '\0';
+    //                                            dataInFile = FALSE;
+    //                                            ++count;
+    //                                            continue;
+    //                                        }
+    //                                        break;
+    //                                    }
+    //                                    if (status != STATUS_OKAY && i == 1 && j > 0 && k + l + m + n + o + p == 0) {
+    //                                        //---------------------------------------------//
+    //                                        // change of vertical datum information for v7 //
+    //                                        //                                             //
+    //                                        // update location record and re-try           //
+    //                                        //---------------------------------------------//
+    //                                        zset("VDOW", "", TRUE);
+    //                                        expectSuccess = canStore(7, dataInFile, &blankVdi, &vdi, currentVerticalDatums[K], unit[l]);
+    //                                        printf("Time series test %5d: expecting %s\n", count, expectSuccess ? "SUCESS" : "ERROR");
+    //                                        status = ztsStore(ifltab, tss, 0);
+    //                                        assert((status == STATUS_OKAY) == expectSuccess);
+    //                                        zset("VDOW", "", FALSE);
+    //                                    }
+    //                                    zclose(ifltab);
+    //                                    zstructFree(tss);
+    //                                    if (status == STATUS_OKAY) {
+    //                                        //strcpy(nativeDatumInFile, vdi.nativeDatum);
+    //                                        //--------------------------------------------------------//
+    //                                        // retrieve the time series in the default vertical datum //
+    //                                        //-------------------------------------------------------//
+    //                                        if (i == 0) {
+    //                                            status = zopen6(ifltab, filename[i]);
+    //                                        }
+    //                                        else {
+    //                                            status = zopen7(ifltab, filename[i]);
+    //                                        }
+    //                                        assert(status == STATUS_OKAY);
+    //                                        tss = zstructTsNewTimes(
+    //                                            pathnames[n][o],
+    //                                            startDate,
+    //                                            startTime,
+    //                                            endDate,
+    //                                            endTime);
+    //                                        assert(tss != NULL);
+    //                                        //------------------------------------------------------------//
+    //                                        // set the default vertical datum to the datum we stored with //
+    //                                        //------------------------------------------------------------//
+    //                                        zset("VDTM", currentVerticalDatums[K], 0);
+    //                                        status = ztsRetrieve(
+    //                                            ifltab,
+    //                                            tss,
+    //                                            n == 0 ? -1 : 0, // trim regular time series
+    //                                            0,
+    //                                            1);
+    //                                        assert(status == STATUS_OKAY);
+    //                                        //------------------------------------------------------//
+    //                                        // compare the retrieved time seires to what was stored //
+    //                                        //------------------------------------------------------//
+    //                                        assert(tss->numberValues == numberValues);
+    //                                        if (o == 0) {
+    //                                            assert(tss->doubleValues != NULL);
+    //                                            for (int ii = 0; ii < tss->numberValues; ++ii) {
+    //                                                assert(tss->doubleValues[ii] == dvalues[l][ii]);
+    //                                            }
+    //                                        }
+    //                                        else {
+    //                                            assert(tss->floatValues != NULL);
+    //                                            for (int ii = 0; ii < tss->numberValues; ++ii) {
+    //                                                assert(tss->floatValues[ii] == fvalues[l][ii]);
+    //                                            }
+    //                                        }
+    //                                        zclose(ifltab);
+    //                                        zstructFree(tss);
+    //                                    }
+    //                                    if (headerBuf) free(headerBuf);
+    //                                }
+    //                            }
+    //                        }
+    //                    }
+    //                }
+    //            }
+    //        }
+    //    }
     }
-    printf("\n\n%3d Time series tests passed\n\n\n", count);
+    //------------------------------------------//
+    // specific test for storage failure mode 3 //
+    //------------------------------------------//
+    // file contains data                       //
+    // native datum in file == NAVD-88          //
+    // incoming native datum == UNSET           //
+    // current datum == NGVD-29                 //
+    // no offset from NGVD-29                   //
+    //------------------------------------------//
+    for (int i = 0; i < 2; ++i) {
+        memset(ifltab, 0, sizeof(ifltab));
+        if (i == 0) {
+            status = zopen6(ifltab, filename[i]);
+        }
+        else {
+            status = zopen7(ifltab, filename[i]);
+        }
+        assert(status == STATUS_OKAY);
+        //-----------------------------//
+        // clear out any previous data //
+        //-----------------------------//
+        tss = zstructTsNewRegDoubles(
+            pathnames[0][0],
+            dvalues[0],
+            numberValues,
+            startDate,
+            startTime,
+            unit[0],
+            type);
+        ztsProcessTimes(ifltab, tss, TRUE);
+        deleteTimeSeriesRecords(
+            ifltab,
+            tss->pathname,
+            tss->timeWindow->startBlockJulian,
+            tss->timeWindow->endBlockJulian,
+            tss->timeWindow->blockSize,
+            i == 1);
+        //---------------------------//
+        // store the "existing" data //
+        //---------------------------//
+        stringToVerticalDatumInfo(&vdiInFile, xml[3]); // NAVD-88, no offset to NGVD-29
+        errmsg = gzipAndEncode(&compressed, xml[3]);
+        assert(errmsg == NULL);
+        len = VERTICAL_DATUM_INFO_USER_HEADER_PARAM_LEN + strlen(compressed) + 2;
+        headerBuf = (char*)malloc(len + 1);
+        memset(headerBuf, 0, len + 1);
+        status = insertIntoDelimitedString(
+            &headerBuf,
+            len + 1,
+            VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
+            compressed,
+            ":",
+            FALSE,
+            ';');
+        assert(status == 0);
+        free(compressed);
+        tss->userHeader = stringToUserHeader(headerBuf, &tss->userHeaderNumber);
+        tss->allocated[zSTRUCT_userHeader] = TRUE;
+        zset("VDTM", CVERTICAL_DATUM_UNSET, 0);
+        status = ztsStore(ifltab, tss, 0);
+        assert(status == STATUS_OKAY);
+        zstructFree(tss);
+        free(headerBuf);
+        //---------------------------//
+        // store the "incoming" data //
+        //---------------------------//
+        tss = zstructTsNewRegDoubles(
+            pathnames[0][0],
+            dvalues[0],
+            numberValues,
+            startDate,
+            startTime,
+            unit[0],
+            type);
+        zset("VDTM", CVERTICAL_DATUM_NGVD29, 0);
+        initializeVerticalDatumInfo(&vdi);
+        expectSuccess = canStore(i == 0 ? 6 : 7, TRUE, &vdiInFile, &vdi, CVERTICAL_DATUM_NGVD29, tss->units);
+        printf("Time series test %5d: expecting %s\n", ++count, expectSuccess ? "SUCCESS" : "ERROR");
+        printf("    pathname               = %s\n", pathnames[0][0]);
+        printf("    data in file           = T\n");
+        printf("    native datum in file   = %s\n", vdiInFile.nativeDatum);
+        printf("    incoming native datum  = %s\n", vdi.nativeDatum);
+        printf("    incoming current datum = %s\n", CVERTICAL_DATUM_NGVD29);
+        printf("    incoming unit          = %s\n", tss->units);
+        status = ztsStore(ifltab, tss, 0);
+        assert((status == STATUS_OKAY) == expectSuccess);
+        zstructFree(tss);
+        zclose(ifltab);
+    }
+    //------------------------------------------//
+    // specific test for storage failure mode 4 //
+    //------------------------------------------//
+    // file contains data                       //
+    // native datum in file == NAVD-88          //
+    // incoming native datum == UNSET           //
+    // current datum == LOCAL                   //
+    //------------------------------------------//
+    for (int i = 0; i < 2; ++i) {
+        memset(ifltab, 0, sizeof(ifltab));
+        if (i == 0) {
+            status = zopen6(ifltab, filename[i]);
+        }
+        else {
+            status = zopen7(ifltab, filename[i]);
+        }
+        assert(status == STATUS_OKAY);
+        //---------------------------------------//
+        // same "existing" data as previous test //
+        //---------------------------------------//
+        //---------------------------//
+        // store the "incoming" data //
+        //---------------------------//
+        tss = zstructTsNewRegDoubles(
+            pathnames[0][0],
+            dvalues[0],
+            numberValues,
+            startDate,
+            startTime,
+            unit[0],
+            type);
+        zset("VDTM", CVERTICAL_DATUM_OTHER, 0);
+        initializeVerticalDatumInfo(&vdi);
+        expectSuccess = canStore(i == 0 ? 6 : 7, TRUE, &vdiInFile, &vdi, CVERTICAL_DATUM_OTHER, tss->units);
+        printf("Time series test %5d: expecting %s\n", ++count, expectSuccess ? "SUCCESS" : "ERROR");
+        printf("    pathname               = %s\n", pathnames[0][0]);
+        printf("    data in file           = T\n");
+        printf("    native datum in file   = %s\n", vdiInFile.nativeDatum);
+        printf("    incoming native datum  = %s\n", vdi.nativeDatum);
+        printf("    incoming current datum = %s\n", CVERTICAL_DATUM_OTHER);
+        printf("    incoming unit          = %s\n", tss->units);
+        status = ztsStore(ifltab, tss, 0);
+        assert((status == STATUS_OKAY) == expectSuccess);
+        zstructFree(tss);
+        zclose(ifltab);
+    }
+    //------------------------------------------//
+    // specific test for storage failure mode 5 //
+    //------------------------------------------//
+    // file contains data                       //
+    // native datum in file == NAVD-88          //
+    // incoming native datum != NAVD-88         //
+    //------------------------------------------//
+    for (int i = 0; i < 2; ++i) {
+        memset(ifltab, 0, sizeof(ifltab));
+        if (i == 0) {
+            status = zopen6(ifltab, filename[i]);
+        }
+        else {
+            status = zopen7(ifltab, filename[i]);
+        }
+        assert(status == STATUS_OKAY);
+        //---------------------------------------//
+        // same "existing" data as previous test //
+        //---------------------------------------//
+        //---------------------------//
+        // store the "incoming" data //
+        //---------------------------//
+        tss = zstructTsNewRegDoubles(
+            pathnames[0][0],
+            dvalues[0],
+            numberValues,
+            startDate,
+            startTime,
+            unit[0],
+            type);
+        stringToVerticalDatumInfo(&vdi, xml[0]); // NGVD-29
+        errmsg = gzipAndEncode(&compressed, xml[0]);
+        assert(errmsg == NULL);
+        len = VERTICAL_DATUM_INFO_USER_HEADER_PARAM_LEN + strlen(compressed) + 2;
+        headerBuf = (char*)malloc(len + 1);
+        memset(headerBuf, 0, len + 1);
+        status = insertIntoDelimitedString(
+            &headerBuf,
+            len + 1,
+            VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
+            compressed,
+            ":",
+            FALSE,
+            ';');
+        assert(status == 0);
+        free(compressed);
+        tss->userHeader = stringToUserHeader(headerBuf, &tss->userHeaderNumber);
+        tss->allocated[zSTRUCT_userHeader] = TRUE;
+        zset("VDTM", CVERTICAL_DATUM_NGVD29, 0);
+        expectSuccess = canStore(i == 0 ? 6 : 7, TRUE, &vdiInFile, &vdi, CVERTICAL_DATUM_OTHER, tss->units);
+        printf("Time series test %5d: expecting %s\n", ++count, expectSuccess ? "SUCCESS" : "ERROR");
+        printf("    pathname               = %s\n", pathnames[0][0]);
+        printf("    data in file           = T\n");
+        printf("    native datum in file   = %s\n", vdiInFile.nativeDatum);
+        printf("    incoming native datum  = %s\n", vdi.nativeDatum);
+        printf("    incoming current datum = %s\n", CVERTICAL_DATUM_OTHER);
+        printf("    incoming unit          = %s\n", tss->units);
+        status = ztsStore(ifltab, tss, 0);
+        assert((status == STATUS_OKAY) == expectSuccess);
+        zstructFree(tss);
+        zclose(ifltab);
+    }
+
+    printf("\n\n%5d Time series tests passed\n\n\n", count);
     int total = 0;
     for (int i = 0; i < sizeof(storageFailureMode) / sizeof(storageFailureMode[0]); ++i) {
         total += storageFailureMode[i];
-        printf("Storage failure mode %5d : %4d ocurrences\n", i, storageFailureMode[i]);
+        printf("Storage failure mode %5d : %5d ocurrences\n", i, storageFailureMode[i]);
     }
     printf("                     Total : %4d occurrences\n", total);
 }
@@ -2255,7 +2593,7 @@ void testStoreRetrievePairedData() {
                                         //------------------------------------------------//
                                         // figure out whether the zpdStore should succeed //
                                         //------------------------------------------------//
-                                        expectSuccess = canStore(dataInFile, &vdiInFile, &vdi, currentVerticalDatums[K], unit[l]);
+                                        expectSuccess = canStore(i == 0 ? 6 : 7, dataInFile, &vdiInFile, &vdi, currentVerticalDatums[K], unit[l]);
                                         //--------------------------------------------------------//
                                         // store the paired data in the overridden vertical datum //
                                         //--------------------------------------------------------//
@@ -2359,7 +2697,7 @@ void testStoreRetrievePairedData() {
             }
         }
     }
-    printf("\n\n%3d Paired data tests passed\n\n\n", count);
+    printf("\n\n%4d Paired data tests passed\n\n\n", count);
     int total = 0;
     for (int i = 0; i < sizeof(storageFailureMode) / sizeof(storageFailureMode[0]); ++i) {
         total += storageFailureMode[i];
