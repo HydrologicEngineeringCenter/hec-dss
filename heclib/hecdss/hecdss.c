@@ -43,42 +43,64 @@ HECDSS_API int hec_dss_close(dss_file *dss)
     return status;
 }
 
+// get length of time series
+HECDSS_API int hec_dss_tsGetSizes(dss_file* pdss, const char* pathname,
+    const char* startDate, const char* startTime,
+    const char* endDate, const char* endTime ) {
+
+    zStructRecordSize* recordSize = zstructRecordSizeNew(pathname);
+    zStructTimeSeries* tss = zstructTsNew(pathname);
+
+    tss->startJulianDate = dateToJulian(startDate);
+    tss->startTimeSeconds = timeStringToSeconds(startTime);
+    tss->endJulianDate = dateToJulian(endDate);
+    tss->endTimeSeconds = timeStringToSeconds(endTime);
+
+    ztsGetSizes(pdss->ifltab, tss, recordSize);
+    int rval = recordSize->numberValues;
+
+    if( tss)
+      zstructFree(tss);
+    if( recordSize)
+      zstructFree(recordSize);
+
+    return rval;
+
+}
+
 HECDSS_API int hec_dss_tsRetrieve(dss_file* pdss, const char *pathname, 
-                                  const char *startDateTime, const char* endDateTime,
+                                  const char *startDate, const char *startTime, 
+                                  const char* endDate,   const char *endTime,
                                   int *timeArray, double *valueArray, const int arraySize,
                                   int *numberValuesRead, int* julianBaseDate,
-                                  char* units, char* type)
+                                  char* units,const int unitsLength, char* type,const int typeLength)
 {
-    zStructTimeSeries* tss;
-    tss = zstructTsNew(pathname);
-    printf("\nC pathname='%s'", pathname);
+    *numberValuesRead = 0; 
+    zStructTimeSeries* tss = zstructTsNew(pathname);
+
+    tss->startJulianDate = dateToJulian(startDate);
+    tss->startTimeSeconds = timeStringToSeconds(startTime);
+    tss->endJulianDate = dateToJulian(endDate);
+    tss->endTimeSeconds = timeStringToSeconds(endTime);
     
-    printf("\nC startDateTime = '%s' ", startDateTime);
-    printf("\nC endDateTime = '%s' ", endDateTime);
-    printf("\nC units input '%s'",units);
-    printf("\n");
-   //tss->startJulianDate = *startJulian;
-   //int tss->startTimeSeconds = *startTimeMinutes * 60;
-   //int tss->startJulianDate = *endJulian;
-   //int tss->startTimeSeconds = *endTimeMinutes * 60;
-   //int tss->numberValues = *maxNumberValuestatus;
-    
-    int status = ztsRetrieve(pdss->ifltab, tss, 1, 1, 0);
-    *numberValuesRead = tss->numberValues;
-    *julianBaseDate = tss->julianBaseDate;
-    printf("\nunits in C: %s", tss->units);
-    strncpy(units,tss->units, 10);
-    strncpy(type, tss->type, 10);
+    int retrieveDoublesFlag = 2; // get doubles
+    int boolRetrieveAnyQualityNotes = 1;
+    int retrieveUsingTimeWindowFlag = 0; // Adhere to time window provided and generate the time array
+
+    int status = ztsRetrieve(pdss->ifltab, tss, retrieveUsingTimeWindowFlag,retrieveDoublesFlag, boolRetrieveAnyQualityNotes);
+    if (status == 0) {
+        *numberValuesRead = tss->numberValues;
+        *julianBaseDate = tss->julianBaseDate;
+        stringCopy(units, unitsLength, tss->units, strlen(tss->units));
+        stringCopy(type, typeLength, tss->type, strlen(tss->type));
+        for (int i = 0; i < tss->numberValues; i++) {
+            timeArray[i] = tss->times[i];
+            valueArray[i] = tss->doubleValues[i];
+            // to Do quality....
+            // tss->quality
+        }
+    }
+
     zstructFree(tss);
     return status;
 }
-/*
-void zrits7_(long long* ifltab, const char* path,
-    int* startJulian, int* startTimeMinutes,
-    int* endJulian, int* endTimeMinutes,
-    int* timeArray, float* values,
-    int* maxNumberValues, int* numberValuesRead,
-    int* julianBaseDate,
-    char* units, char* type, int* status,
-    size_t pathLen, size_t unitsLen, size_t typeLen)
-    */

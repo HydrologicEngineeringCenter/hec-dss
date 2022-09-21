@@ -10,6 +10,12 @@
 #define HECDSS_API __declspec(dllimport)
 #endif
 
+/*
+
+01JAN1900 17:05:02
+01JAN1900 17:05
+
+*/
 
 extern HECDSS_API int nhecdss;
 
