@@ -65,7 +65,7 @@ namespace dss_cmd
          hec_dss_test_string_const(s, s.Length);
 
          StringBuilder sb = new StringBuilder(128);
-         hec_dss_test_string_buffer(sb, sb.Length);
+         hec_dss_test_string_buffer(sb, sb.Capacity);
          Console.WriteLine("outStr = " + sb.ToString());
          
          
