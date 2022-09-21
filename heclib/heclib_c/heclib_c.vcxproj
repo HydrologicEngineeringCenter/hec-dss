@@ -89,7 +89,6 @@
     <ClCompile Include="src\DssInterface\zquery7_.c" />
     <ClCompile Include="src\DssInterface\zritsi7_.c" />
     <ClCompile Include="src\DssInterface\zrpdi7_.c" />
-    <ClCompile Include="src\DssInterface\zrtxts7_.c" />
     <ClCompile Include="src\DssInterface\zsits7_.c" />
     <ClCompile Include="src\DssInterface\zspdi7_.c" />
     <ClCompile Include="src\DssInterface\ztextRetrieveArray_.c" />

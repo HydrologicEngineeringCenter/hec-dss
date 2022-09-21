@@ -483,9 +483,6 @@
     <ClCompile Include="src\DssInterface\zrpdi7_.c">
       <Filter>src\DssInterface</Filter>
     </ClCompile>
-    <ClCompile Include="src\DssInterface\zrtxts7_.c">
-      <Filter>src\DssInterface</Filter>
-    </ClCompile>
     <ClCompile Include="src\DssInterface\zsits7_.c">
       <Filter>src\DssInterface</Filter>
     </ClCompile>
