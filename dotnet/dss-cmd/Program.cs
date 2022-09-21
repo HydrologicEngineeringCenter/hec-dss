@@ -10,14 +10,15 @@ static extern IntPtr hec_dss_open(string fileName);
 static extern int hec_dss_close(IntPtr dss_file);
 
 [DllImport("hecdss.dll", CharSet= CharSet.Ansi, ExactSpelling = true)]
-static extern int hec_dss_tsRetrieve(IntPtr pdss, string pathname, 
-                                  string startDateTime,string endDateTime,
+static extern int hec_dss_tsRetrieve(IntPtr pdss, string pathname,
+                                  string startDate, string startTime,
+                                  string endDate,   string endTime,
                                   int[] timeArray, double[] valueArray, int arraySize,
                                   ref int numberValuesRead, ref int julianBaseDate,
-                                  byte[] units, byte[] type);
+                                  byte[] units,int unitsLength, byte[] type, int typeLength);
 
 
-dss_cmd.BasicPinvokeTests.Run();
+//dss_cmd.BasicPinvokeTests.Run();
 //return;
 
 
@@ -37,8 +38,10 @@ var type = ArrayPool<byte>.Shared.Rent(32);
 string startDateTime = "01Jan1877 01:00";
 string endDateTime = "31Jan1877 24:00";
 
-hec_dss_tsRetrieve(dss, path, startDateTime, endDateTime, times, value, buff_size, ref numberValuesRead, ref julianBaseDate,
-   units, type);
+int status = hec_dss_tsRetrieve(dss, path, startDateTime.Split(' ')[0], startDateTime.Split(' ')[1],
+   endDateTime.Split(' ')[0], startDateTime.Split(' ')[1], times, value, buff_size, 
+   ref numberValuesRead, ref julianBaseDate,
+   units,units.Length, type, type.Length);
 
 Console.WriteLine("numberValuesRead: "+numberValuesRead);
 Console.WriteLine("units: " + Encoding.ASCII.GetString(units));
