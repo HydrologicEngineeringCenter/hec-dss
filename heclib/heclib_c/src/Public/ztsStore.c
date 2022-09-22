@@ -407,7 +407,10 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 			// see if data already exists //
 			//----------------------------//
 			{
-				int blockSize = 0;
+				if (!tss->processedAlready) {
+					ztsProcessTimes(ifltab, tss, TRUE);
+				}
+				int blockSize = tss->timeWindow->blockSize;
 				int recordJul = 0;
 				int intervalSeconds = 0;
 				char recordPathname[(MAX_PART_SIZE - 1) * 6 + 8];
