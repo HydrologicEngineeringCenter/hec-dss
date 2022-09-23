@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 public class DssNative
 {
-  [DllImport("hecdss")]
-  public static extern int hec_dss_CONSTANT_MAX_PATH_SIZE();
+   [DllImport("hecdss")]
+   public static extern IntPtr hec_dss_open(string fileName);
 
-  [DllImport("hecdss")]
+   [DllImport("hecdss")]
    public static extern int hec_dss_open(string fileName, out IntPtr dss);
 
    [DllImport("hecdss")]
@@ -37,7 +37,7 @@ public class DssNative
                                      string startDate, string startTime,
                                      string endDate, string endTime,
                                      int[] timeArray, double[] valueArray, int arraySize,
-                                     ref int numberValuesRead, ref int julianBaseDate, ref int timeGranularitySeconds,
+                                     ref int numberValuesRead, ref int julianBaseDate,
                                      byte[] units, int unitsLength, byte[] type, int typeLength);
 
 
