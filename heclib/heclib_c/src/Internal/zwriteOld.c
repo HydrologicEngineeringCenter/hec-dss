@@ -208,7 +208,7 @@ int zwriteOld(long long *ifltab, zStructTransfer* ztransfer,
 	if( type != ztransfer->dataType) {
 		return zerrorProcessing(ifltab, DSS_FUNCTION_zwriteOld_ID,
 			zdssErrorCodes.DIFFERENT_RECORD_TYPE, type, (long long)ztransfer->dataType,
-			zdssErrorSeverity.WARNING, ztransfer->pathname, "");
+			zdssErrorSeverity.WRITE_ERROR, ztransfer->pathname, "");
 	}
 
 	//  Be sure we don't try to store negative lengths
