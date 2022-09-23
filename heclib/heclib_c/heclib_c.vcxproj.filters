@@ -873,7 +873,7 @@
     <ClCompile Include="src\Internal\zwriteNew.c">
       <Filter>src\Internal</Filter>
     </ClCompile>
-    <ClCompile Include="src\Internal\zwriteOld.c">
+    <ClCompile Include="src\Internal\zwriteExisting.c">
       <Filter>src\Internal</Filter>
     </ClCompile>
     <ClCompile Include="src\Public\zaliasAdd.c">
