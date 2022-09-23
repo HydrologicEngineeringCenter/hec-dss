@@ -46,7 +46,10 @@ HECDSS_API int hec_dss_close(dss_file *dss)
 // get length of time series
 HECDSS_API int hec_dss_tsGetSizes(dss_file* pdss, const char* pathname,
     const char* startDate, const char* startTime,
-    const char* endDate, const char* endTime ) {
+    const char* endDate, const char* endTime,
+    int* numberValues) {
+    
+    int rval = 0;
 
     zStructRecordSize* recordSize = zstructRecordSizeNew(pathname);
     zStructTimeSeries* tss = zstructTsNew(pathname);
@@ -56,8 +59,10 @@ HECDSS_API int hec_dss_tsGetSizes(dss_file* pdss, const char* pathname,
     tss->endJulianDate = dateToJulian(endDate);
     tss->endTimeSeconds = timeStringToSeconds(endTime);
 
-    ztsGetSizes(pdss->ifltab, tss, recordSize);
-    int rval = recordSize->numberValues;
+    int status = ztsGetSizes(pdss->ifltab, tss, recordSize);
+    if( status ==0 )
+    *numberValues = recordSize->numberValues;
+    
 
     if( tss)
       zstructFree(tss);
