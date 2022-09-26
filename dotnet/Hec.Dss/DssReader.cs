@@ -20,8 +20,6 @@ namespace Hec.Dss
 
     protected int versionNumber;
 
-    static List<DssReader> ActiveReaders;
-
     DssPathCollection _catalog = null;
 
     bool _collectionHasMetaData = false;
@@ -57,11 +55,6 @@ namespace Hec.Dss
 
     private void GetDssFile(string filename, MethodID messageMethod, LevelID messageLevel)
     {
-      if (ActiveReaders == null)
-      {
-        ActiveReaders = new List<DssReader>();
-      }
-      ActiveReaders.Add(this);
       if (messageMethod != MethodID.MESS_METHOD_GENERAL_ID || messageLevel != LevelID.MESS_LEVEL_GENERAL)
       {
         DssGlobals.SetMessageLevel(messageMethod,messageLevel);
@@ -888,7 +881,6 @@ namespace Hec.Dss
 
     public void Dispose()
     {
-      ActiveReaders.Remove(this);
       DSS.ZClose(ifltab);
       _iflTabGC.Free();
     }
