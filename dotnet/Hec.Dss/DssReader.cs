@@ -952,8 +952,11 @@ namespace Hec.Dss
 
     public void Dispose()
     {
-      //DSS.ZClose(ifltab);
-      //_iflTabGC.Free();
+      DSS.ZClose(ifltab);
+      _iflTabGC.Free();
+      _iflTabGC.Free();
+      _iflTabGC.Free();
+      _iflTabGC.Free();
     }
 
     public enum LevelID
