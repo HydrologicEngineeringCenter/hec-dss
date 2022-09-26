@@ -38,31 +38,34 @@ namespace Hec.Dss
     }
 
     private GCHandle _iflTabGC;
+    private IntPtr dss;
     /// <summary>
     /// Constructor for DSSREADER object
     /// </summary>
     /// <param name="filename">Location of DSS file</param>
     public DssReader(string filename, MethodID messageMethod = MethodID.MESS_METHOD_GENERAL_ID, LevelID messageLevel = LevelID.MESS_LEVEL_GENERAL)
     {
-      GetDssFile(filename, messageMethod, messageLevel);
+      OpenDssFile(filename, messageMethod, messageLevel);
     }
 
     public DssReader(string filename, int version, MethodID messageMethod = MethodID.MESS_METHOD_GENERAL_ID, LevelID messageLevel = LevelID.MESS_LEVEL_GENERAL)
     {
       DssGlobals.SetDefaultVersion(version);
-      GetDssFile(filename, messageMethod, messageLevel);
+      OpenDssFile(filename, messageMethod, messageLevel);
     }
 
-    private void GetDssFile(string filename, MethodID messageMethod, LevelID messageLevel)
+    private void OpenDssFile(string filename, MethodID messageMethod, LevelID messageLevel)
     {
       if (messageMethod != MethodID.MESS_METHOD_GENERAL_ID || messageLevel != LevelID.MESS_LEVEL_GENERAL)
       {
         DssGlobals.SetMessageLevel(messageMethod,messageLevel);
       }
-      _iflTabGC = GCHandle.Alloc(ifltab, GCHandleType.Pinned);
-      int status;
+       dss = DssNative.hec_dss_open(filename);
+
+      //_iflTabGC = GCHandle.Alloc(ifltab, GCHandleType.Pinned);
+      int status = 0; 
       this.filename = filename;
-      status = DSS.ZOpen(ref ifltab, filename);
+      //status = DSS.ZOpen(ref ifltab, filename);
       versionNumber = GetDSSFileVersion();
 
       switch (status)

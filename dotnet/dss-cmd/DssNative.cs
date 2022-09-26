@@ -13,6 +13,13 @@ public class DssNative
    [DllImport("hecdss")]
    public static extern int hec_dss_close(IntPtr dss);
 
+   [DllImport("hecdss")]
+   public static extern IntPtr hec_dss_deprecated_ifltab(IntPtr dss);
+
+   [DllImport("hecdss")]
+   public static extern void hec_dss_deprecated_ifltab_print(IntPtr ifltab);
+
+
    [DllImport("hecdss", CharSet = CharSet.Ansi, ExactSpelling = true)]
    public static extern int hec_dss_tsRetrieve(IntPtr dss, string pathname,
                                      string startDate, string startTime,
