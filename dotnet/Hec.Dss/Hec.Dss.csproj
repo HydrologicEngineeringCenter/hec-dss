@@ -7,6 +7,9 @@
     <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch> 
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="..\dss-cmd\DssNative.cs" Link="DssNative.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
