@@ -1,27 +1,9 @@
 #include <string.h>
 #include "hecdss.h"
 #include "heclib.h"
-// public definition
+
+// public declaration
 typedef struct dss_file dss_file;
-
-#include "zdssKeys.h"
-
-/*
- hecdss.c contains code for a shared object/dll, providing an API to work with DSS files.
-
- Only DSS version 7 files are supported.  DSS version 6 files can be converted using HEC-DSSVue
- https://www.hec.usace.army.mil/software/hec-dssvue/
-
-
- This API is designed with perspective that the calling/client code is in charge of managing memory.
- The only exception is hec_dss_open(const char* filename, dss_file** dss).   hec_dss_open allocates 
- one internal structure that must be freed by calling hec_dss_close;
-
- For reading data: The client passes in pre-allocated arrays, with the size, then the API copies data 
- into those arrays
- 
-
-*/
 
 // private definition 
 struct dss_file {
@@ -83,13 +65,23 @@ HECDSS_API int hec_dss_close(dss_file *dss)
     return status;
 }
 
+HECDSS_API long long* hec_dss_deprecated_ifltab(dss_file* dss) {
+    return &dss->ifltab[0];
+}
+
+HECDSS_API void hec_dss_deprecated_ifltab_print(long long* ifltab) {
+    for (size_t i = 0; i < 10; i++)
+    {
+        printf("\nhec_dss_deprecated_ifltab_info ifltab[%d] = %ld",(int)i, (int)ifltab[i]);
+    }
+    
+}
 // get length of time series
 HECDSS_API int hec_dss_tsGetSizes(dss_file* pdss, const char* pathname,
     const char* startDate, const char* startTime,
     const char* endDate, const char* endTime,
     int* numberValues) {
     
-    int rval = 0;
 
     zStructRecordSize* recordSize = zstructRecordSizeNew(pathname);
     zStructTimeSeries* tss = zstructTsNew(pathname);
@@ -101,7 +93,7 @@ HECDSS_API int hec_dss_tsGetSizes(dss_file* pdss, const char* pathname,
 
     int status = ztsGetSizes(pdss->ifltab, tss, recordSize);
     if( status ==0 )
-    *numberValues = recordSize->numberValues;
+    *numberValues = recordSize->logicalNumberValues;
     
 
     if( tss)
@@ -109,7 +101,7 @@ HECDSS_API int hec_dss_tsGetSizes(dss_file* pdss, const char* pathname,
     if( recordSize)
       zstructFree(recordSize);
 
-    return rval;
+    return status;
 
 }
 

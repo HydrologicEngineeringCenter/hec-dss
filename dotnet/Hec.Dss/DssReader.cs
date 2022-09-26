@@ -40,6 +40,7 @@ namespace Hec.Dss
     {
     }
 
+    private GCHandle _iflTabGC;
     private IntPtr dss;
     /// <summary>
     /// Constructor for DSSREADER object
@@ -62,9 +63,13 @@ namespace Hec.Dss
       {
         DssGlobals.SetMessageLevel(messageMethod,messageLevel);
       }
-      int status = DssNative.hec_dss_open(filename,out dss);
+       dss = DssNative.hec_dss_open(filename);
 
+      //_iflTabGC = GCHandle.Alloc(ifltab, GCHandleType.Pinned);
+      int status = 0; 
       this.filename = filename;
+      //status = DSS.ZOpen(ref ifltab, filename);
+      versionNumber = GetDSSFileVersion();
 
       switch (status)
       {

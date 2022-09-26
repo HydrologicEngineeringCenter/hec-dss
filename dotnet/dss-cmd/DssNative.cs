@@ -17,19 +17,10 @@ public class DssNative
    public static extern int hec_dss_close(IntPtr dss);
 
    [DllImport("hecdss")]
-   internal static extern int hec_dss_version(IntPtr dss);
-
-   [DllImport("hecdss")]
-   public static extern int hec_dss_record_count(IntPtr dss);
-
-   [DllImport("hecdss")]
    public static extern IntPtr hec_dss_deprecated_ifltab(IntPtr dss);
 
    [DllImport("hecdss")]
    public static extern void hec_dss_deprecated_ifltab_print(IntPtr ifltab);
-
-  [DllImport("hecdss")]
-  public static extern int hec_dss_dataType(IntPtr dss, string pathname);
 
 
    [DllImport("hecdss", CharSet = CharSet.Ansi, ExactSpelling = true)]
