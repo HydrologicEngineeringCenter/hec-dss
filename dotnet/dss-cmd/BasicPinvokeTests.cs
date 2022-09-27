@@ -47,6 +47,9 @@ namespace dss_cmd
       {
 
          [DllImport("hecdss", ExactSpelling = true)]
+         static extern int hec_dss_test_modify_arg(ref int value);
+
+         [DllImport("hecdss", ExactSpelling = true)]
          static extern int hec_dss_test_string_const(string str, int size);
 
          [DllImport("hecdss", ExactSpelling = true)]
@@ -59,7 +62,9 @@ namespace dss_cmd
          
          Console.WriteLine(GetWindowsDirectory());
 
-
+         int x = 0;
+         hec_dss_test_modify_arg(ref x);
+         Console.WriteLine("x = "+x);
 
          string s = "hello";
          hec_dss_test_string_const(s, s.Length);

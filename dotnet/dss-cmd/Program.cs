@@ -8,14 +8,15 @@ using System.Text;
 //dss_cmd.BasicPinvokeTests.Run();
 //return;
 
-
+IntPtr dss=(IntPtr)0;
 string filename = "sample7.dss";
-var dss = DssNative.hec_dss_open(filename);
+var status = DssNative.hec_dss_open(filename,out dss);
 
 var ifltab = DssNative.hec_dss_deprecated_ifltab(dss);
 
 DssNative.hec_dss_deprecated_ifltab_print(ifltab);
 
+Console.WriteLine("version: " + DssNative.hec_dss_version(dss));
 
 string path = "/GREEN RIVER/GLENFIR/FLOW/01Apr1992/1Hour/OBS/";
 int numberValuesRead = 0;
@@ -39,7 +40,7 @@ Console.WriteLine(numberValues);
 int[] times = new int[numberValues];
 double[] value = new double[numberValues];
 
-int status = DssNative.hec_dss_tsRetrieve(dss, path, startDate, startTime, endDate, endTime, times, value, numberValues, 
+status = DssNative.hec_dss_tsRetrieve(dss, path, startDate, startTime, endDate, endTime, times, value, numberValues, 
    ref numberValuesRead, ref julianBaseDate,
    units,units.Length, type, type.Length);
 

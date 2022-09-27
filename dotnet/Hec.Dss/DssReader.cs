@@ -63,12 +63,9 @@ namespace Hec.Dss
       {
         DssGlobals.SetMessageLevel(messageMethod,messageLevel);
       }
-       dss = DssNative.hec_dss_open(filename);
+      int status = DssNative.hec_dss_open(filename,out dss);
 
-      //_iflTabGC = GCHandle.Alloc(ifltab, GCHandleType.Pinned);
-      int status = 0; 
       this.filename = filename;
-      //status = DSS.ZOpen(ref ifltab, filename);
       versionNumber = GetDSSFileVersion();
 
       switch (status)
@@ -623,11 +620,11 @@ namespace Hec.Dss
         }
       }
       else
-        listTss.Add(CreateTSWrapper(dssPath, startDateTime, endDateTime));
+        listTss.Add(CreateTSWrapper(CreateTSWrapperdssPath, startDateTime, endDateTime));
       return listTss;
     }
 
-    private static ZStructTimeSeriesWrapper CreateTSWrapper(DssPath path, DateTime startDateTime = default(DateTime), DateTime endDateTime = default(DateTime))
+    private static ZStructTimeSeriesWrapper (DssPath path, DateTime startDateTime = default(DateTime), DateTime endDateTime = default(DateTime))
     {
       //TODO: Find out how DSS deals with null start and valid end, OR valid start null end.
       //If it handles it like we expect then this method needs to change to accomdate that
