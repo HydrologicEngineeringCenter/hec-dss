@@ -8,10 +8,14 @@ using System.Threading.Tasks;
 public class DssNative
 {
    [DllImport("hecdss")]
-   public static extern IntPtr hec_dss_open(string fileName);
+   public static extern int hec_dss_open(string fileName, out IntPtr dss);
 
    [DllImport("hecdss")]
    public static extern int hec_dss_close(IntPtr dss);
+
+   [DllImport("hecdss")]
+   public static extern int hec_dss_version(IntPtr dss);
+   
 
    [DllImport("hecdss")]
    public static extern IntPtr hec_dss_deprecated_ifltab(IntPtr dss);
