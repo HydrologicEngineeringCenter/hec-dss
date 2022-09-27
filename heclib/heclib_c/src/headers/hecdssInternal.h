@@ -37,7 +37,7 @@
 
 
 #define DSS_VERSION "7-IP"
-#define DSS_VERSION_DATE "23 August 2022"
+#define DSS_VERSION_DATE "23 September 2022"
 
 
 const char *ztypeName(int recordType, int boolAbbreviation);
@@ -170,7 +170,7 @@ int zwriteInternal(long long *ifltab, zStructTransfer* ztransfer, int checked,
 				   long long bufferControl[4], int *buffer, int boolUseBuffer);
 int zwriteNew(long long *ifltab, zStructTransfer* ztransfer,
 			  long long bufferControl[4], int *buffer, int bufferAction, int *wroteAtEOF);
-int zwriteOld(long long *ifltab, zStructTransfer* ztransfer,
+int zwriteExisting(long long *ifltab, zStructTransfer* ztransfer,
 			  long long bufferControl[4], int *buffer, int bufferAction, int *wroteAtEOF);
 
 //  Time series

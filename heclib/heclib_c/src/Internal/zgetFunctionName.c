@@ -87,8 +87,8 @@ char* zgetFunctionName(int functionID)
 			return DSS_FUNCTION_zwriteInternal;
 		case DSS_FUNCTION_zwriteNew_ID:
 			return DSS_FUNCTION_zwriteNew;
-		case DSS_FUNCTION_zwriteOld_ID:
-			return DSS_FUNCTION_zwriteOld;
+		case DSS_FUNCTION_zwriteExisting_ID:
+			return DSS_FUNCTION_zwriteExisting;
 		case DSS_FUNCTION_zbinNew_ID:
 			return DSS_FUNCTION_zbinNew;
 		case DSS_FUNCTION_zbinUpdate_ID:

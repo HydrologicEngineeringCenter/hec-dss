@@ -218,7 +218,7 @@
     <ClCompile Include="src\Internal\zwriteEOFandFlush.c" />
     <ClCompile Include="src\Internal\zwriteInternal.c" />
     <ClCompile Include="src\Internal\zwriteNew.c" />
-    <ClCompile Include="src\Internal\zwriteOld.c" />
+    <ClCompile Include="src\Internal\zwriteExisting.c" />
     <ClCompile Include="src\Public\zaliasAdd.c" />
     <ClCompile Include="src\Public\zaliasGetPrimary.c" />
     <ClCompile Include="src\Public\zaliasList.c" />
