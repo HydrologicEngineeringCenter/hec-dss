@@ -10,6 +10,11 @@ struct dss_file {
     long long ifltab[250];
 };
 
+HECDSS_API int hec_dss_test_modify_arg(int *value) {
+
+    *value = 123;
+    return 0;
+}
 HECDSS_API int hec_dss_test_string_const(const char* s, int size) {
 
     printf("string='%s'  length=%d\n", s,(int)strlen(s));
@@ -30,14 +35,15 @@ HECDSS_API int hec_dss_test_string_char(char* outStr, int size) {
     return 0;
 }
 
-HECDSS_API dss_file* hec_dss_open(const char* filename)
+HECDSS_API int hec_dss_open(const char* filename, dss_file** dss)
 {
-    dss_file *f = (dss_file*)malloc(sizeof(dss_file));
+    dss_file* f = (dss_file*)malloc(sizeof(dss_file));
     if (f == 0)
-        return 0;
+        return -1;
 
     int status = zopen(f->ifltab,filename);
-    return f;
+    *dss = f;
+    return status;
 }
 HECDSS_API int hec_dss_close(dss_file *dss)
 {
@@ -47,6 +53,12 @@ HECDSS_API int hec_dss_close(dss_file *dss)
 
 HECDSS_API long long* hec_dss_deprecated_ifltab(dss_file* dss) {
     return &dss->ifltab[0];
+}
+
+HECDSS_API int hec_dss_version(dss_file* dss) {
+    if (!dss)
+        return 0;
+    return zgetVersion(dss->ifltab);
 }
 
 HECDSS_API void hec_dss_deprecated_ifltab_print(long long* ifltab) {
