@@ -47,6 +47,9 @@ int stringCat (char *destination, size_t sizeOfDestination, const char* source, 
 		} 
 	}
 	return strncat_s(destination, sizeOfDestination, source, lenSource);
+#elif __APPLE__
+    strlcat(destination, source, sizeOfDestination);
+    return 0;
 #else
 		if( remainingSpace >0)
 		{   
