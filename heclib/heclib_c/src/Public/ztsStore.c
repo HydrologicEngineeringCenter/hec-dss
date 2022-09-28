@@ -419,7 +419,7 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 				zpathnameGetPart(recordPathname, 5, ePart, sizeof(ePart));
 				int isIrregular = ePart[0] == '~' || toupper(ePart[0]) == 'I';
 				if (isIrregular) {
-					recordJul = ztsIrregGetBlockStart(tss->startJulianDate, &blockSize);
+					recordJul = ztsIrregGetBlockStart(tss->startJulianDate, blockSize);
 				}
 				else {
 					int operation = 1;

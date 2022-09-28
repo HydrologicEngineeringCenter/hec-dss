@@ -152,6 +152,20 @@ void getoffset_(
     free(cOffsetUnit);
     free(cDataUnit);
 }
+int validelevunits_(
+    const char* offsetUnit,
+    const char* dataUnit,
+    slen_t lenOffsetUnit,
+    slen_t lenDataUnit) {
+    char* cOffsetUnit = (char*)_malloc(lenOffsetUnit + 1);
+    char* cDataUnit = (char*)_malloc(lenDataUnit + 1);
+    F2C(offsetUnit, cOffsetUnit, lenOffsetUnit, lenOffsetUnit + 1);
+    F2C(dataUnit, cDataUnit, lenDataUnit, lenDataUnit + 1);
+    double offset = getOffset(0, cOffsetUnit, cDataUnit);
+    free(cOffsetUnit);
+    free(cDataUnit);
+    return offset == UNDEFINED_VERTICAL_DATUM_VALUE ? 0 : 1;
+}
 
 #if !defined(__APPLE__) && !defined(__sun__)
     const char *strcasestr(const char *haystack, const char *needle) {

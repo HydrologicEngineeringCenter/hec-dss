@@ -67,7 +67,7 @@ C     Vertical datum varible dimensions
       double precision offsetNavd88, offsetNgvd29, vertDatumOffset
       double precision fileOffsetNavd88, fileOffsetNgvd29
       logical l_Navd88Estimated, l_Ngvd29Estimated, l_modified, l_exists
-      integer vdiStrLen, nuhead_copy1, iuhead_copy1(100)
+      integer validElevUnits, vdiStrLen, nuhead_copy1, iuhead_copy1(100)
       integer nuhead_copy2, iuhead_copy2(100)
       integer na, nb, nc, nd, ne, nf
 C
@@ -411,14 +411,44 @@ C
               vertDatumOffset = 0
             else if (cvdatum1.eq.CVD_UNSET)  then
               vertDatumOffset = 0
-            else if (cvdatum1.eq.CVD_NAVD88.and.
-     *               fileOffsetNavd88.ne.UNDEFINED_VERTICAL_DATUM_VALUE)
-     *               then
-              vertDatumOffset = fileOffsetNavd88
-            else if (cvdatum1.eq.CVD_NGVD29.and.
-     *               fileOffsetNgvd29.ne.UNDEFINED_VERTICAL_DATUM_VALUE)
-     *               then
-              vertDatumOffset = fileOffsetNgvd29
+            else if (cvdatum1.eq.CVD_NAVD88) then
+              if(fileOffsetNavd88.eq.UNDEFINED_VERTICAL_DATUM_VALUE)then
+                if (mlevel.ge.1) then
+                  write (munit,'(/,a,a,/,a,a,a,/,a)')
+     *              ' *****DSS*** zsitsi6:  ERROR  - NO VERTICAL DATUM',
+     *              ' OFFSET INFORMATION.',' Cannot convert from ',
+     *              cvdatum1(1:len_trim(cvdatum1)),' to native datum.',
+     *              ' No values stored.'
+                end if    
+                istat = 13
+                return
+              else
+                vertDatumOffset = fileOffsetNavd88
+              end if  
+            else if (cvdatum1.eq.CVD_NGVD29) then
+              if(fileOffsetNgvd29.eq.UNDEFINED_VERTICAL_DATUM_VALUE)then
+                if (mlevel.ge.1) then
+                  write (munit,'(/,a,a,/,a,a,a,/,a)')
+     *              ' *****DSS*** zsitsi6:  ERROR  - NO VERTICAL DATUM',
+     *              ' OFFSET INFORMATION.',' Cannot convert from ',
+     *              cvdatum1(1:len_trim(cvdatum1)),' to native datum.',
+     *              ' No values stored.'
+                end if    
+                istat = 13
+                return
+              else
+                vertDatumOffset = fileOffsetNgvd29
+              end if
+            else if (cvdatum1.ne.CVD_UNSET.and.cvdatum1.ne.' ') then
+              if (mlevel.ge.1) then
+                write (munit,'(/,a,a,/,a,a,a,/,a)')
+     *            ' *****DSS*** zsitsi6:  ERROR  - NO VERTICAL DATUM',
+     *            ' OFFSET INFORMATION.',' Cannot convert from ',
+     *            cvdatum1(1:len_trim(cvdatum1)),' to native datum.',
+     *            ' No values stored.'
+              end if    
+              istat = 13
+              return
             else
               if (mlevel.ge.1) then
                 write (munit,'(/,a,/,a)')
@@ -491,28 +521,22 @@ C
             end if
             istat = 13
             return
-          else
-            vertDatumOffset = 0
-            call getOffset(
-     *            vertDatumOffset,
-     *            unit(1:len_trim(unit)),
-     *            cunits(1:len_trim(cunits)))
-            if (vertDatumOffset.eq.
-     *        UNDEFINED_VERTICAL_DATUM_VALUE) then
-              if (mlevel.ge.1) then
-                write (munit,'(/,a,a,a,a,a,a,a,a,/,a)')
-     *          ' *****DSS*** zsitsi6:  ERROR  - INVALID DATA UNIT',
-     *          ' (',cunits(1:len_trim(cunits)),') OR OFFSET UNIT',
-     *          ' (',unit(1:len_trim(unit)),') FOR VERTICAL DATUM',
-     *          ' CONVERSION',
-     *          ' No values stored.'
-              end if
-              istat = 13
-              return
-            end if
-            vertDatumOffset = UNDEFINED_VERTICAL_DATUM_VALUE
           end if
         end if
+        if (nativeDatum.ne.' ') then
+          if (validElevUnits(unit, cunits).eq.0) then
+            if (mlevel.ge.1) then
+              write (munit,'(/,a,a,a,a,a,a,a,a,/,a)')
+     *        ' *****DSS*** zsitsi6:  ERROR  - INVALID DATA UNIT',
+     *        ' (',cunits(1:len_trim(cunits)),') OR OFFSET UNIT',
+     *        ' (',unit(1:len_trim(unit)),') FOR VERTICAL DATUM',
+     *        ' CONVERSION',
+     *        ' No values stored.'
+            end if
+            istat = 13
+            return
+          end if
+        end if  
         if (cvdatum1.ne.CVD_UNSET) then
           !--------------------------------------------!
           ! we possibly need to convert the elevations !
@@ -549,6 +573,18 @@ C
                 istat = 13
                 return
               end if
+            end if
+            if (vertDatumOffset.eq.
+     *        UNDEFINED_VERTICAL_DATUM_VALUE)then
+              if (mlevel.ge.1) then
+                write (munit,'(/,a,a,a,a,a,/,a)')
+     *          ' *****DSS*** zsitsi6:  ERROR  - NO VERTICAL DATUM',
+     *          ' OFFSET for ',nativeDatum(1:len_trim(nativeDatum)),
+     *          ' to ',cvdatum1(1:len_trim(cvdatum1)),
+     *          ' No values stored.'
+              end if
+              istat = 13
+              return
             end if
             call getOffset(
      *            vertDatumOffset,
