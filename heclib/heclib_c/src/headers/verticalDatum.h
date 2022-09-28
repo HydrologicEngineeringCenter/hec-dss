@@ -222,7 +222,7 @@ int unitIsMeters(const char *unit);
  * @param offsetUnit The unit of offset
  * @param dataUnit   The unit of the elevations being modified
  * 
- * @return The offset appropriate for adjusting the offsets with. Returns UNDEFINED_VERTICAL_DATUM_VALUE
+ * @return The offset appropriate for adjusting the data values with. Returns UNDEFINED_VERTICAL_DATUM_VALUE
  *         if either of the units cannot be identified as feet or meters
  */
 double getOffset(double offset, const char *offsetUnit, const char *dataUnit);
@@ -395,7 +395,7 @@ char *validateXmlStructure(const char *xml);
  *
  * @param vdi       A ponter to a previously existing verticalDatumInfo sturcture
  */
-char *initializeVerticalDatumInfo(verticalDatumInfo *vdi);
+void initializeVerticalDatumInfo(verticalDatumInfo *vdi);
 /**
  * Parses a standard vertical datum infomration XML instance into data structure
  *
@@ -575,6 +575,25 @@ void normalizevdiinuserheader_(
     int   *userHeaderNumber, 
     char  *errorMesage, 
     slen_t lenErrorMessage);
+
+/**
+ * Processes VDIs for storing to DSS
+ * @param offsetToUse      Receives the offset to use on the data values before storing 
+ * @param _fileVdi         VDI on disk for records to be stored
+ * @param _dataVdi         VDI of incoming data
+ * @param _currentDatum    Current datum of the incoming data values
+ * @param fileContainsData Whether the records to be stored have existing data (0/1)
+ * @param dataUnit         Unit of the incoming data values
+ * @return
+ */
+char* processStorageVdis(
+    double* offsetToUse,
+    verticalDatumInfo* _fileVdi,
+    verticalDatumInfo* _dataVdi,
+    char* _currentDatum,
+    int fileContainsData,
+    char* dataUnit);
+
 #ifdef __cplusplus
 } // extern "C"
 #endif
