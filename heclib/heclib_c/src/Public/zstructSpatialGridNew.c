@@ -47,6 +47,7 @@ zStructSpatialGrid* zstructSpatialGridNew(const char* pathname) {
 	if (pathname) {
 		gridStruct->pathname = mallocAndCopyPath(pathname);
 	}
+	gridStruct->structType = DATA_TYPE_UGT;
 	gridStruct->_structVersion = VERSION_100;
 	return gridStruct;
 }
