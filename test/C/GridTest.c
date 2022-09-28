@@ -81,9 +81,9 @@ int writeGrid(long long *ifltab, char *path, int rows, int cols, int cm, int ran
 
 	//   Gen data
 	gridStructStore->_type = 420;
-	gridStructStore->_dataSource = "INTERNAL";
+	gridStructStore->_dataSource = mallocAndCopy("INTERNAL");
 	gridStructStore->_version = 1;
-	gridStructStore->_dataUnits = "mm";
+	gridStructStore->_dataUnits = mallocAndCopy("mm");
 	gridStructStore->_dataType = PER_AVER;
 	gridStructStore->_lowerLeftCellX = 0;
 	gridStructStore->_lowerLeftCellY = 0;
@@ -96,20 +96,25 @@ int writeGrid(long long *ifltab, char *path, int rows, int cols, int cm, int ran
 	gridStructStore->_numberEqualOrExceedingRangeLimit = &(histo[0]);
 	gridStructStore->_numberOfRanges = range;
 	gridStructStore->_srsDefinitionType = 1;
-	gridStructStore->_srsName = "SRC_NAME";
-	gridStructStore->_srsDefinition = "TEST";
+	gridStructStore->_srsName = mallocAndCopy("SRC_NAME");
+	gridStructStore->_srsDefinition = mallocAndCopy("TEST");
 	gridStructStore->_xCoordOfGridCellZero = 10.2;
 	gridStructStore->_yCoordOfGridCellZero = 20.3;
 	gridStructStore->_nullValue = 99999.999;
-	gridStructStore->_timeZoneID = "PST";
+	gridStructStore->_timeZoneID = mallocAndCopy("PST");
 	gridStructStore->_timeZoneRawOffset = 8;
 	gridStructStore->_isInterval = 1;
 	gridStructStore->_isTimeStamped = 0;
 
-	float max = (rows * cols)*1.2, min = 0.001, mean = (rows * cols * 1.2) / 2.0;
-	gridStructStore->_maxDataValue = &max;
-	gridStructStore->_minDataValue = &min;
-	gridStructStore->_meanDataValue = &mean;
+    float* max = malloc(sizeof(float));
+	*max = (rows * cols)*1.2;
+	float* min = malloc(sizeof(float));
+	 *min = 0.001;
+	 float* mean = malloc(sizeof(float));
+	 *mean = (rows * cols * 1.2) / 2.0;
+	gridStructStore->_maxDataValue =  max;
+	gridStructStore->_minDataValue = min;
+	gridStructStore->_meanDataValue = mean;
 
 	// Data
 	data = (float*)calloc(gridStructStore->_numberOfCellsX * gridStructStore->_numberOfCellsY, sizeof(float));
@@ -126,7 +131,7 @@ int writeGrid(long long *ifltab, char *path, int rows, int cols, int cm, int ran
 		}
 
 		//printGridStruct(ifltab, 0, gridStructStore);
-		free(data);
+		//free(data);
 		zstructFree(gridStructStore);
 
 	}
@@ -194,8 +199,8 @@ int main(int argc, char *argv[]) {
 		return -1;
 
 	}
-	if( readGrid(ifltab7, path))
-	return -1;
+	//if( readGrid(ifltab7, path))
+	//return -1;
 	if( zclose(ifltab7))
 	return -1;
    return 0;
