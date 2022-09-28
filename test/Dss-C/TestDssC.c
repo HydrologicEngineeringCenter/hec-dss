@@ -11,7 +11,7 @@ int runTheTests();
 int gridMemoryTest() {
 
 	long long ifltab[250];
-	int status = zopen(ifltab, "C:/tmp/IC_Transpose/data/2017-06-28_event.dss");
+	int status = zopen(ifltab, "2017-06-28_event.dss");
 	if (status != 0) {
 		printf("Error during open.  status= %d\n", status);
 		return status;

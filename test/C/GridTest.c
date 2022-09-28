@@ -131,7 +131,6 @@ int writeGrid(long long *ifltab, char *path, int rows, int cols, int cm, int ran
 		}
 
 		//printGridStruct(ifltab, 0, gridStructStore);
-		//free(data);
 		zstructFree(gridStructStore);
 
 	}
@@ -199,8 +198,8 @@ int main(int argc, char *argv[]) {
 		return -1;
 
 	}
-	//if( readGrid(ifltab7, path))
-	//return -1;
+	if( readGrid(ifltab7, path))
+	  return -1;
 	if( zclose(ifltab7))
 	return -1;
    return 0;
