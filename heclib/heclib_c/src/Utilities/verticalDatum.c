@@ -1156,7 +1156,7 @@ void getlocationverticaldatuminfo_(
 //
 // See verticalDatum.h for documentation
 //
-int	getEffectiveVerticalDatum(
+int	getCurrentVerticalDatum(
         char  *cverticalDatum,
         int    cverticalDatumSize,
         int  **userHeader,
@@ -1471,10 +1471,10 @@ void processstoragevdis_(
     char* _dataVdiStr = (char*)malloc(lenDataVdiStr + 1);
     char* _currentDatum = (char*)malloc(lenCurrentDatum + 1);
     char* _dataUnit = (char*)malloc(lenDataUnit + 1);
-    F2C(fileVdiStr, _fileVdiStr, lenFileVdiStr, sizeof(_fileVdiStr));
-    F2C(dataVdiStr, _dataVdiStr, lenDataVdiStr, sizeof(_dataVdiStr));
-    F2C(currentDatum, _currentDatum, lenCurrentDatum, sizeof(_currentDatum));
-    F2C(dataUnit, _dataUnit, lenDataUnit, sizeof(_dataUnit));
+    F2C(fileVdiStr, _fileVdiStr, lenFileVdiStr, lenFileVdiStr + 1);
+    F2C(dataVdiStr, _dataVdiStr, lenDataVdiStr, lenDataVdiStr + 1);
+    F2C(currentDatum, _currentDatum, lenCurrentDatum, lenCurrentDatum + 1);
+    F2C(dataUnit, _dataUnit, lenDataUnit, lenDataUnit + 1);
 
     verticalDatumInfo fileVdi;
     stringToVerticalDatumInfo(&fileVdi, _fileVdiStr);
@@ -1501,6 +1501,7 @@ char* processStorageVdis(
     int fileContainsData, 
     char* dataUnit) {
 
+    int vdiOverride = FALSE;
     *offsetToUse = UNDEFINED_VERTICAL_DATUM_VALUE;
     verticalDatumInfo fileVdi;
     initializeVerticalDatumInfo(&fileVdi);
@@ -1542,38 +1543,43 @@ char* processStorageVdis(
             || !strcmp(fileNativeDatum, dataNativeDatum));
     }
     if (!compatibleNativeDatum) {
-        sprintf(
-            errorMessage,
-            "VERTICAL DATUM ERROR\n"
-            "Data native datum of %s conflicts with file native datum of %s.\n\n"
-            "No data stored.",
-            dataNativeDatum,
-            fileNativeDatum);
-        return strdup(errorMessage);
+        char charVal[8];
+        zquery("VDOW", charVal, sizeof(charVal), &vdiOverride);
+        if (!vdiOverride) {
+            sprintf(
+                errorMessage,
+                " VERTICAL DATUM ERROR\n"
+                " Data native datum of %s conflicts with file native datum of %s.\n"
+                " No data stored.",
+                dataNativeDatum,
+                fileNativeDatum);
+            return strdup(errorMessage);
+        }
     }
     //-------------------------------------//
     // test whether we have eqivalent VDIs //
     //-------------------------------------//
-    if (!strcmp(dataNativeDatum, fileNativeDatum)
-        && strcmp(dataNativeDatum, CVERTICAL_DATUM_UNSET)) {
+    if ((!strcmp(dataNativeDatum, fileNativeDatum)
+        && strcmp(dataNativeDatum, CVERTICAL_DATUM_UNSET))
+        && !vdiOverride) {
         //---------------//
         // compare units //
         //---------------//
         if (!unitIsFeet(dataVdi.unit) && !unitIsMeters(dataVdi.unit)) {
             sprintf(
                 errorMessage,
-                "VERTICAL DATUM ERROR\n"
-                "Data VDI unit of %s is not recognized as feet or meters.\n\n"
-                "No data stored.",
+                " VERTICAL DATUM ERROR\n"
+                " Data VDI unit of %s is not recognized as feet or meters.\n"
+                " No data stored.",
                 dataVdi.unit);
             return strdup(errorMessage);
         }
         if (!unitIsFeet(fileVdi.unit) && !unitIsMeters(fileVdi.unit)) {
             sprintf(
                 errorMessage,
-                "VERTICAL DATUM ERROR\n"
-                "File VDI unit of %s is not recognized as feet or meters.\n\n"
-                "No data stored.",
+                " VERTICAL DATUM ERROR\n"
+                " File VDI unit of %s is not recognized as feet or meters.\n"
+                " No data stored.",
                 fileVdi.unit);
             return strdup(errorMessage);
         }
@@ -1584,9 +1590,9 @@ char* processStorageVdis(
         if (isUndefinedVertDatumValue(dataVdi.offsetToNavd88) != isUndefinedVertDatumValue(fileVdi.offsetToNavd88)) {
             sprintf(
                 errorMessage,
-                "VERTICAL DATUM ERROR\n"
-                "Data VDI offset to NAVD-88 of %s%s%s conflicts with file VDI offset of %s%s%s.\n\n"
-                "No data stored.",
+                " VERTICAL DATUM ERROR\n"
+                " Data VDI offset to NAVD-88 of %s%s%s conflicts with file VDI offset of %s%s%s.\n"
+                " No data stored.",
                 isUndefinedVertDatumValue(dataVdi.offsetToNavd88) ? "UNDEFINED" : doubleToChar(dataVdi.offsetToNavd88, buf),
                 isUndefinedVertDatumValue(dataVdi.offsetToNavd88) ? "" : " ",
                 isUndefinedVertDatumValue(dataVdi.offsetToNavd88) ? "" : dataVdi.unit,
@@ -1599,9 +1605,9 @@ char* processStorageVdis(
             if (!areEqual(getOffset(dataVdi.offsetToNavd88, dataVdi.unit, fileVdi.unit), fileVdi.offsetToNavd88, FLT_EPSILON)) {
                 sprintf(
                     errorMessage,
-                    "VERTICAL DATUM ERROR\n"
-                    "Data VDI offset to NAVD-88 of %f %s conflicts with file VDI offset of %f %s.\n\n"
-                    "No data stored.",
+                    " VERTICAL DATUM ERROR\n"
+                    " Data VDI offset to NAVD-88 of %f %s conflicts with file VDI offset of %f %s.\n"
+                    " No data stored.",
                     dataVdi.offsetToNavd88,
                     dataVdi.unit,
                     fileVdi.offsetToNavd88,
@@ -1611,9 +1617,9 @@ char* processStorageVdis(
             if (dataVdi.offsetToNavd88IsEstimate != fileVdi.offsetToNavd88IsEstimate) {
                 sprintf(
                     errorMessage,
-                    "VERTICAL DATUM ERROR\n"
-                    "Data VDI offset to NAVD-88 is estimated of %s conflicts with file VDI offset is estimated of %s.\n\n"
-                    "No data stored.",
+                    " VERTICAL DATUM ERROR\n"
+                    " Data VDI offset to NAVD-88 is estimated of %s conflicts with file VDI offset is estimated of %s.\n"
+                    " No data stored.",
                     dataVdi.offsetToNavd88IsEstimate ? "TRUE" : "FALSE",
                     fileVdi.offsetToNavd88IsEstimate ? "TRUE" : "FALSE");
                 return strdup(errorMessage);
@@ -1625,9 +1631,9 @@ char* processStorageVdis(
         if (isUndefinedVertDatumValue(dataVdi.offsetToNgvd29) != isUndefinedVertDatumValue(fileVdi.offsetToNgvd29)) {
             sprintf(
                 errorMessage,
-                "VERTICAL DATUM ERROR\n"
-                "Data VDI offset to NGVD-29 of %s%s%s conflicts with file VDI offset of %s%s%s.\n\n"
-                "No data stored.",
+                " VERTICAL DATUM ERROR\n"
+                " Data VDI offset to NGVD-29 of %s%s%s conflicts with file VDI offset of %s%s%s.\n"
+                " No data stored.",
                 isUndefinedVertDatumValue(dataVdi.offsetToNgvd29) ? "UNDEFINED" : doubleToChar(dataVdi.offsetToNgvd29, buf),
                 isUndefinedVertDatumValue(dataVdi.offsetToNgvd29) ? "" : " ",
                 isUndefinedVertDatumValue(dataVdi.offsetToNgvd29) ? "" : dataVdi.unit,
@@ -1640,9 +1646,9 @@ char* processStorageVdis(
             if (!areEqual(getOffset(dataVdi.offsetToNgvd29, dataVdi.unit, fileVdi.unit), fileVdi.offsetToNgvd29, FLT_EPSILON)) {
                 sprintf(
                     errorMessage,
-                    "VERTICAL DATUM ERROR\n"
-                    "Data VDI offset to NGVD-29 of %f %s conflicts with file VDI offset of %f %s.\n\n"
-                    "No data stored.",
+                    " VERTICAL DATUM ERROR\n"
+                    " Data VDI offset to NGVD-29 of %f %s conflicts with file VDI offset of %f %s.\n"
+                    " No data stored.",
                     dataVdi.offsetToNgvd29,
                     dataVdi.unit,
                     fileVdi.offsetToNgvd29,
@@ -1652,9 +1658,9 @@ char* processStorageVdis(
             if (dataVdi.offsetToNgvd29IsEstimate != fileVdi.offsetToNgvd29IsEstimate) {
                 sprintf(
                     errorMessage,
-                    "VERTICAL DATUM ERROR\n"
-                    "Data VDI offset to NGVD-29 is estimated of %s conflicts with file VDI offset is estimated of %s.\n\n"
-                    "No data stored.",
+                    " VERTICAL DATUM ERROR\n"
+                    " Data VDI offset to NGVD-29 is estimated of %s conflicts with file VDI offset is estimated of %s.\n"
+                    " No data stored.",
                     dataVdi.offsetToNgvd29IsEstimate ? "TRUE" : "FALSE",
                     fileVdi.offsetToNgvd29IsEstimate ? "TRUE" : "FALSE");
                 return strdup(errorMessage);
@@ -1703,9 +1709,9 @@ char* processStorageVdis(
     if (!compatibleCurrentDatum) {
         sprintf(
             errorMessage,
-            "VERTICAL DATUM ERROR\n"
-            "Current datum of %s conflicts with %s native datum of %s.\n\n"
-            "No data stored.",
+            " VERTICAL DATUM ERROR\n"
+            " Current datum of %s conflicts with %s native datum of %s.\n"
+            " No data stored.",
             currentDatum,
             strcmp(dataNativeDatum, CVERTICAL_DATUM_UNSET) ? "data" : "file",
             strcmp(dataNativeDatum, CVERTICAL_DATUM_UNSET) ? dataNativeDatum : fileNativeDatum);
@@ -1714,7 +1720,7 @@ char* processStorageVdis(
     //--------------------------------------------//
     // test whether we have a valid offset to use //
     //--------------------------------------------//
-    verticalDatumInfo* targetVdi = strcmp(dataNativeDatum, CVERTICAL_DATUM_UNSET) ? &dataVdi : &fileVdi;
+    verticalDatumInfo* targetVdi = strcmp(dataNativeDatum, CVERTICAL_DATUM_UNSET) || vdiOverride ? &dataVdi : &fileVdi;
     if (!strcmp(currentDatum, CVERTICAL_DATUM_UNSET)         // current datum == UNSET 
         || !strcmp(currentDatum, targetVdi->nativeDatum)) {  // || current datum == native datum
         *offsetToUse = 0;
@@ -1728,9 +1734,9 @@ char* processStorageVdis(
     if (*offsetToUse == UNDEFINED_VERTICAL_DATUM_VALUE) {
         sprintf(
             errorMessage,
-            "VERTICAL DATUM ERROR\n"
-            "No offset information. Cannot convert data from %s to %s\n\n"
-            "No data stored.",
+            " VERTICAL DATUM ERROR\n"
+            " No offset information. Cannot convert data from %s to %s\n"
+            " No data stored.",
             currentDatum,
             targetVdi->nativeDatum);
         return strdup(errorMessage);
@@ -1742,9 +1748,9 @@ char* processStorageVdis(
         && (!unitIsFeet(dataUnit) && !unitIsMeters(dataUnit))) {
         sprintf(
             errorMessage,
-            "VERTICAL DATUM ERROR\n"
-            "Data unit of %s is not recognized as feet or meters.\n\n"
-            "No data stored.",
+            " VERTICAL DATUM ERROR\n"
+            " Data unit of %s is not recognized as feet or meters.\n"
+            " No data stored.",
             dataUnit);
         return strdup(errorMessage);
     }

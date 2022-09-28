@@ -444,7 +444,7 @@ verticalDatumInfo *extractVerticalDatumInfoFromUserHeader(const int *userHeader,
  * contain only the value of the "U" key.
  * 
  */
-int	getEffectiveVerticalDatum(
+int	getCurrentVerticalDatum(
     char  *cverticalDatum,
     int    cverticalDatumSize,
     int  **userHeader,

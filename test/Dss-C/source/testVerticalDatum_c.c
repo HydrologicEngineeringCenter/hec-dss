@@ -1052,7 +1052,6 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
 }
 
 int canStore(
-    int dssVersion, 
     int fileContainsData, 
     verticalDatumInfo* fileVdi, 
     verticalDatumInfo* dataVdi, 
@@ -1530,46 +1529,45 @@ void testStoreRetrieveTimeSeries() {
                                                 nativeDatumInFile[0] = '\0';
                                             }
                                         }
-                                        while (TRUE) {
-                                            //-------------------------------------------------//
-                                            // figure out whether expect ztsStore to succeeded //
-                                            //-------------------------------------------------//
-                                            expectSuccess = canStore(i == 0 ? 6 : 7, dataInFile, &vdiInFile, &vdi, currentVerticalDatums[K], unit[l]);
-                                            //-------------------------------------------------------//
-                                            // store the time series in the specified vertical datum //
-                                            //-------------------------------------------------------//
-                                            printTestInfo(count, expectSuccess, pathnames[n][o], dataInFile, &vdiInFile, &vdi, currentVerticalDatums[K], unitSpec);
-                                            status = ztsStore(ifltab, tss, 0);
-                                            assert((status == STATUS_OKAY) == expectSuccess);
-                                            if (status != STATUS_OKAY && i == 0 && strlen(nativeDatumInFile) > 0 && strcmp(nativeDatumInFile, currentVerticalDatums[K])) {
-                                                //---------------------------------------------//
-                                                // change of vertical datum information for v6 //
-                                                //                                             //
-                                                // delete time series records and re-try       //
-                                                //---------------------------------------------//
-                                                deleteTimeSeriesRecords(
-                                                    ifltab,
-                                                    tss->pathname,
-                                                    tss->timeWindow->startBlockJulian,
-                                                    tss->timeWindow->endBlockJulian,
-                                                    tss->timeWindow->blockSize,
-                                                    FALSE);
-                                                nativeDatumInFile[0] = '\0';
-                                                dataInFile = FALSE;
-                                                ++count;
-                                                continue;
+                                        //-------------------------------------------------//
+                                        // figure out whether expect ztsStore to succeeded //
+                                        //-------------------------------------------------//
+                                        expectSuccess = canStore(dataInFile, &vdiInFile, &vdi, currentVerticalDatums[K], unit[l]);
+                                        //-------------------------------------------------------//
+                                        // store the time series in the specified vertical datum //
+                                        //-------------------------------------------------------//
+                                        printTestInfo(count, expectSuccess, pathnames[n][o], dataInFile, &vdiInFile, &vdi, currentVerticalDatums[K], unitSpec);
+                                        status = ztsStore(ifltab, tss, 0);
+                                        assert((status == STATUS_OKAY) == expectSuccess);
+                                        if (status != STATUS_OKAY && i == 0) {
+                                            double offset;
+                                            char* errmsg = processStorageVdis(&offset, &vdiInFile, &vdi, currentVerticalDatums[K], dataInFile, unit[l]);
+                                            if (errmsg) {
+                                                if (strstr(errmsg, "Data native datum") && strstr(errmsg, "conflicts with file native datum")) {
+                                                    //---------------------------------------------//
+                                                    // change of vertical datum information for v6 //
+                                                    //                                             //
+                                                    // set VDOW to override file VDI with data VDI //
+                                                    //---------------------------------------------//
+                                                    zset("VDOW", "", TRUE);
+                                                    expectSuccess = canStore(dataInFile, &vdiInFile, &vdi, currentVerticalDatums[K], unit[l]);
+                                                    printTestInfo(++count, expectSuccess, pathnames[n][o], dataInFile, &vdiInFile, &vdi, currentVerticalDatums[K], unitSpec);
+                                                    status = ztsStore(ifltab, tss, 0);
+                                                    assert((status == STATUS_OKAY) == expectSuccess);
+                                                    zset("VDOW", "", FALSE);
+                                                }
+                                                free(errmsg);
                                             }
-                                            break;
                                         }
                                         if (status != STATUS_OKAY && i == 1 && j > 0 && k + l + m + n + o + p == 0) {
                                             //---------------------------------------------//
                                             // change of vertical datum information for v7 //
                                             //                                             //
-                                            // update location record and re-try           //
+                                            // set VDOW to override file VDI with data VDI //
                                             //---------------------------------------------//
                                             zset("VDOW", "", TRUE);
-                                            expectSuccess = canStore(7, dataInFile, &blankVdi, &vdi, currentVerticalDatums[K], unit[l]);
-                                            printf("Time series test %5d: expecting %s\n", count, expectSuccess ? "SUCESS" : "ERROR");
+                                            expectSuccess = canStore(dataInFile, &vdiInFile, &vdi, currentVerticalDatums[K], unit[l]);
+                                            printTestInfo(++count, expectSuccess, pathnames[n][o], dataInFile, &vdiInFile, &vdi, currentVerticalDatums[K], unitSpec);
                                             status = ztsStore(ifltab, tss, 0);
                                             assert((status == STATUS_OKAY) == expectSuccess);
                                             zset("VDOW", "", FALSE);
@@ -1969,7 +1967,7 @@ void testStoreRetrievePairedData() {
                                         //------------------------------------------------//
                                         // figure out whether the zpdStore should succeed //
                                         //------------------------------------------------//
-                                        expectSuccess = canStore(i == 0 ? 6 : 7, dataInFile, &vdiInFile, &vdi, currentVerticalDatums[K], unit[l]);
+                                        expectSuccess = canStore(dataInFile, &vdiInFile, &vdi, currentVerticalDatums[K], unit[l]);
                                         //--------------------------------------------------------//
                                         // store the paired data in the overridden vertical datum //
                                         //--------------------------------------------------------//

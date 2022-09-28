@@ -482,7 +482,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 				memcpy(headerCopy, pds->userHeader, headerCopyNumber * 4);
 			}
 			if (indElev) {
-				ivertical_datum = getEffectiveVerticalDatum(
+				ivertical_datum = getCurrentVerticalDatum(
 					cvertical_datum,
 					sizeof(cvertical_datum),
 					&pds->userHeader,        // this call removes any VDI specifed in these variables
@@ -588,7 +588,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 				}
 			}
 			if (depElev) {
-				ivertical_datum = getEffectiveVerticalDatum(
+				ivertical_datum = getCurrentVerticalDatum(
 					cvertical_datum,
 					sizeof(cvertical_datum),
 					&pds->userHeader,       // this call removes any VDI specifed in these variables
@@ -632,7 +632,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 						else {
 							if (indElev) {
 								// possibly already removed the VDI from the user header, so try the copy
-								ivertical_datum = getEffectiveVerticalDatum(
+								ivertical_datum = getCurrentVerticalDatum(
 									cvertical_datum,
 									sizeof(cvertical_datum),
 									&headerCopy,
