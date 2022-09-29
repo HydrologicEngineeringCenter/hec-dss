@@ -24,9 +24,8 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1zcatalog(
 {
 	zStructCatalog *catStruct;
 	int status;
-	int getCollectionFlag;
+	int getCollectionFlag=0;
 	int *ifltab;
-	char creturn[20];
 	int number;
 	int maxNumber;
 	int i;
@@ -106,28 +105,6 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1zcatalog(
 	
 	if (zisError(status)) {
 		return status;
-	}
-	zinquireChar((long long*)ifltab, "prog", creturn, sizeof(creturn), &number);
-	creturn[6] = '\0';
-	lowerCase(creturn);
-	if (!strncmp(creturn, "hechms", 6)) {
-		for (i = 0; i<catStruct->numberPathnames; i++) {
-			/////////////////////////////////////////////////
-			//  For compatibility purposes only...
-			//  Make pathname uppercase and change "Minute" to "MIN"
-			upperCase(catStruct->pathnameList[i]);
-			pos = strstr(catStruct->pathnameList[i], "MINUTE/");
-			if (pos) {
-				path = catStruct->pathnameList[i];
-				len = (int)strlen(path);
-				pos += 3;
-				jpos = pos - path;
-				path[jpos] = '\0';
-				pos += 3;
-				//strcat_s(path, len, pos);
-				stringCat(path, len, pos, _TRUNCATE);
-			}
-		}
 	}
 	
 	C_CatalogToJava(env, obj, j_dssCatalog , catStruct);		
