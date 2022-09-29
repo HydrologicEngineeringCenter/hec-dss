@@ -170,7 +170,7 @@ int zwriteInternal(long long *ifltab, zStructTransfer* ztransfer, int checked,
 				   long long bufferControl[4], int *buffer, int boolUseBuffer);
 int zwriteNew(long long *ifltab, zStructTransfer* ztransfer,
 			  long long bufferControl[4], int *buffer, int bufferAction, int *wroteAtEOF);
-int zwriteOld(long long *ifltab, zStructTransfer* ztransfer,
+int zwriteExisting(long long *ifltab, zStructTransfer* ztransfer,
 			  long long bufferControl[4], int *buffer, int bufferAction, int *wroteAtEOF);
 
 //  Time series
