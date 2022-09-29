@@ -1051,22 +1051,6 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
     free(quality);
 }
 
-int canStore(
-    int fileContainsData, 
-    verticalDatumInfo* fileVdi, 
-    verticalDatumInfo* dataVdi, 
-    char* _currentDatum, 
-    char* dataUnit) {
-
-    double offsetToUse = 0;
-    char* errorMessage = processStorageVdis(&offsetToUse, fileVdi, dataVdi, _currentDatum, fileContainsData, dataUnit);
-    if (errorMessage) {
-        free(errorMessage);
-        return FALSE;
-    }
-    return TRUE;
-}
-
 void deleteTimeSeriesRecords(
         long long *ifltab, 
         const char* pathname, 
@@ -1517,15 +1501,15 @@ void testStoreRetrieveTimeSeries() {
                                             if (tss->userHeader) free(tss->userHeader);
                                             tss->userHeader = stringToUserHeader(headerBuf, &tss->userHeaderNumber);
                                             tss->allocated[zSTRUCT_userHeader] = TRUE;
-                                        }
-                                        if (m > 1) {
-                                            //--------------------------------------------------------//
-                                            // override default and user header datums with unit spec //
-                                            //--------------------------------------------------------//
-                                            K = k3;
-                                            sprintf(unitSpec, "U=%s|V=%s", unit[l], currentVerticalDatums[K]);
-                                            free(tss->units);
-                                            tss->units = mallocAndCopy(unitSpec);
+                                            if (m > 1) {
+                                                //--------------------------------------------------------//
+                                                // override default and user header datums with unit spec //
+                                                //--------------------------------------------------------//
+                                                K = k3;
+                                                sprintf(unitSpec, "U=%s|V=%s", unit[l], currentVerticalDatums[K]);
+                                                free(tss->units);
+                                                tss->units = mallocAndCopy(unitSpec);
+                                            }
                                         }
                                         if (q == 1) {
                                             //----------------------------//
@@ -1560,7 +1544,7 @@ void testStoreRetrieveTimeSeries() {
                                         status = ztsStore(ifltab, tss, 0);
                                         assert((status == STATUS_OKAY) == expectSuccess);
                                         if (status != STATUS_OKAY) {
-                                            if (strstr(errmsg, "Data native datum") && strstr(errmsg, "conflicts with file native datum")) {
+                                            if (errmsg != NULL && strstr(errmsg, "Data native datum") && strstr(errmsg, "conflicts with file native datum")) {
                                                 //--------------------------------------//
                                                 // change of vertical datum information //
                                                 //                                      //
