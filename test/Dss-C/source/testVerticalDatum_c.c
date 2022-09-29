@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <string.h>
+#include <ctype.h>
 #include <heclib.h>
 #include <verticalDatum.h>
 
@@ -23,7 +24,6 @@ int test_vertical_datums_c() {
     testStoreRetrievePairedData();
     return 0;
 }
-int storageFailureMode[5];
 void testDelimitedStringOps() {
     // test extract_from_delimited_string() and insertIntoDelimitedString()
     int text_size = 512;
@@ -1068,7 +1068,7 @@ int canStore(
 }
 
 void deleteTimeSeriesRecords(
-        const long long *ifltab, 
+        long long *ifltab, 
         const char* pathname, 
         const int startJul, 
         const int endJul, 
@@ -1086,8 +1086,9 @@ void deleteTimeSeriesRecords(
     }
     else {
         int operation = 1;
+        int blksize = blockSize;
         ztsGetStandardInterval(7, &intervalSeconds, ePart, sizeof(ePart), &operation);
-        recordJul = ztsRegGetBlockStart(startJul, intervalSeconds, &blockSize);
+        recordJul = ztsRegGetBlockStart(startJul, intervalSeconds, &blksize);
     }
     while (recordJul <= endJul) {
         julianToDate(recordJul, 104, ePart, sizeof(ePart));
@@ -1233,7 +1234,6 @@ void testStoreRetrieveTimeSeries() {
     int count = 0;
     int expectSuccess = TRUE;
     memset(nativeDatumInFile, 0, sizeof(nativeDatumInFile));
-    memcpy(0, storageFailureMode, 0, sizeof(storageFailureMode));
     initializeVerticalDatumInfo(&blankVdi);
 
     //
@@ -1747,7 +1747,6 @@ void testStoreRetrievePairedData() {
     int count = 0;
     int expectSuccess = FALSE;
 
-    memcpy(0, storageFailureMode, 0, sizeof(storageFailureMode));
     //
     // loop variables
     //

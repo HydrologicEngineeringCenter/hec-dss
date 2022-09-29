@@ -146,7 +146,7 @@ C
       ISTAT = 0
       LPROT2 = LPROTC
       IQUAL = 0
-      fileNativeDatum = 'unset'
+
 C
 C
 C
