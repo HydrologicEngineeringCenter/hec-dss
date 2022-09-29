@@ -401,6 +401,9 @@ C
           istat = 13
           return
         end if
+        !---------------------------------------!
+        ! modify the incoming data as necessary !
+        !---------------------------------------!
         if (vertDatumOffset.ne.0) then
           if (ldouble) then
             do ii = 1, nvals

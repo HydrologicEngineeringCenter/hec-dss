@@ -1100,24 +1100,42 @@ void deleteTimeSeriesRecords(
     }
 }
 
-void printTestInfo(
+void printTsTestInfo(
     const int count,
     const int expectSuccess,
     const char* pathname,
     const int dataInFile,
-    const verticalDatumInfo* vdiInFile,
-    const verticalDatumInfo* vdi,
+    const verticalDatumInfo* fileVdi,
+    const verticalDatumInfo* dataVdi,
     const char* currentVerticalDatum,
     const char* unit) {
     printf("Time series test %5d: expecting %s\n", count, expectSuccess ? "SUCCESS" : "ERROR");
     printf("    pathname               = %s\n", pathname);
     printf("    data in file           = %s\n", dataInFile ? "T" : "F");
-    printf("    native datum in file   = %s\n", vdiInFile->nativeDatum);
-    printf("    incoming native datum  = %s\n", vdi->nativeDatum);
+    printf("    native datum in file   = %s\n", fileVdi->nativeDatum);
+    printf("    incoming native datum  = %s\n", dataVdi->nativeDatum);
     printf("    incoming current datum = %s\n", currentVerticalDatum);
     printf("    incoming unit          = %s\n", unit);
 }
 
+void printPdTestInfo(
+    const int count,
+    const int expectSuccess,
+    const char* pathname,
+    const int dataInFile,
+    const verticalDatumInfo* fileVdi,
+    const verticalDatumInfo* dataVdi,
+    const char* currentVerticalDatum,
+    const char* indUnit,
+    const char* depUnit) {
+    printf("Paired data test %5d: expecting %s\n", count, expectSuccess ? "SUCCESS" : "ERROR");
+    printf("    pathname               = %s\n", pathname);
+    printf("    data in file           = %s\n", dataInFile ? "T" : "F");
+    printf("    native datum in file   = %s\n", fileVdi->nativeDatum);
+    printf("    incoming native datum  = %s\n", dataVdi->nativeDatum);
+    printf("    incoming current datum = %s\n", currentVerticalDatum);
+    printf("    incoming units         = %s, %s\n", indUnit, depUnit);
+}
 
 void testStoreRetrieveTimeSeries() {
 // test storing and retriving time series data
@@ -1128,6 +1146,7 @@ void testStoreRetrieveTimeSeries() {
     verticalDatumInfo vdiInFile;
     verticalDatumInfo blankVdi;
     char *errmsg;
+    double offset;
     char *filename[]      = {"v6_c.dss", "v7_c.dss"};
     char *pathnames[2][2] = {{"//TestTsLoc/Elev//1Hour/Doubles/",    "//TestTsLoc/Elev//1Hour/Floats/"},
                              {"//TestTsLoc/Elev//IR-MONTH/Doubles/", "//TestTsLoc/Elev//IR-MONTH/Floats/"}};
@@ -1532,53 +1551,47 @@ void testStoreRetrieveTimeSeries() {
                                         //-------------------------------------------------//
                                         // figure out whether expect ztsStore to succeeded //
                                         //-------------------------------------------------//
-                                        expectSuccess = canStore(dataInFile, &vdiInFile, &vdi, currentVerticalDatums[K], unit[l]);
+                                        errmsg = processStorageVdis(&offset, &vdiInFile, &vdi, currentVerticalDatums[K], dataInFile, unit[l]);
+                                        expectSuccess = errmsg == NULL;
                                         //-------------------------------------------------------//
                                         // store the time series in the specified vertical datum //
                                         //-------------------------------------------------------//
-                                        printTestInfo(count, expectSuccess, pathnames[n][o], dataInFile, &vdiInFile, &vdi, currentVerticalDatums[K], unitSpec);
+                                        printTsTestInfo(count, expectSuccess, pathnames[n][o], dataInFile, &vdiInFile, &vdi, currentVerticalDatums[K], unitSpec);
                                         status = ztsStore(ifltab, tss, 0);
                                         assert((status == STATUS_OKAY) == expectSuccess);
-                                        if (status != STATUS_OKAY && i == 0) {
-                                            double offset;
-                                            char* errmsg = processStorageVdis(&offset, &vdiInFile, &vdi, currentVerticalDatums[K], dataInFile, unit[l]);
-                                            if (errmsg) {
-                                                if (strstr(errmsg, "Data native datum") && strstr(errmsg, "conflicts with file native datum")) {
-                                                    //---------------------------------------------//
-                                                    // change of vertical datum information for v6 //
-                                                    //                                             //
-                                                    // set VDOW to override file VDI with data VDI //
-                                                    //---------------------------------------------//
-                                                    zset("VDOW", "", TRUE);
-                                                    expectSuccess = canStore(dataInFile, &vdiInFile, &vdi, currentVerticalDatums[K], unit[l]);
-                                                    printTestInfo(++count, expectSuccess, pathnames[n][o], dataInFile, &vdiInFile, &vdi, currentVerticalDatums[K], unitSpec);
-                                                    status = ztsStore(ifltab, tss, 0);
-                                                    assert((status == STATUS_OKAY) == expectSuccess);
-                                                    zset("VDOW", "", FALSE);
-                                                }
+                                        if (status != STATUS_OKAY) {
+                                            if (strstr(errmsg, "Data native datum") && strstr(errmsg, "conflicts with file native datum")) {
+                                                //--------------------------------------//
+                                                // change of vertical datum information //
+                                                //                                      //
+                                                // set VDOW to override file VDI        //
+                                                // with data VDI and re-try             //
+                                                //--------------------------------------//
+                                                zset("VDOW", "", TRUE);
                                                 free(errmsg);
+                                                if (m > 1) {
+                                                    //-----------------------------------------------//
+                                                    // unit spec has already been removed from units //
+                                                    //-----------------------------------------------//
+                                                    free(tss->units);
+                                                    tss->units = mallocAndCopy(unitSpec);
+                                                }
+                                                errmsg = processStorageVdis(&offset, &vdiInFile, &vdi, currentVerticalDatums[K], dataInFile, unit[l]);
+                                                expectSuccess = errmsg == NULL;
+                                                printTsTestInfo(++count, expectSuccess, pathnames[n][o], dataInFile, &vdiInFile, &vdi, currentVerticalDatums[K], unitSpec);
+                                                status = ztsStore(ifltab, tss, 0);
+                                                assert((status == STATUS_OKAY) == expectSuccess);
+                                                assert (errmsg == NULL || !(strstr(errmsg, "Data native datum") && strstr(errmsg, "conflicts with file native datum")));
+                                                zset("VDOW", "", FALSE);
                                             }
                                         }
-                                        if (status != STATUS_OKAY && i == 1 && j > 0 && k + l + m + n + o + p == 0) {
-                                            //---------------------------------------------//
-                                            // change of vertical datum information for v7 //
-                                            //                                             //
-                                            // set VDOW to override file VDI with data VDI //
-                                            //---------------------------------------------//
-                                            zset("VDOW", "", TRUE);
-                                            expectSuccess = canStore(dataInFile, &vdiInFile, &vdi, currentVerticalDatums[K], unit[l]);
-                                            printTestInfo(++count, expectSuccess, pathnames[n][o], dataInFile, &vdiInFile, &vdi, currentVerticalDatums[K], unitSpec);
-                                            status = ztsStore(ifltab, tss, 0);
-                                            assert((status == STATUS_OKAY) == expectSuccess);
-                                            zset("VDOW", "", FALSE);
-                                        }
+                                        free(errmsg);
                                         zclose(ifltab);
                                         zstructFree(tss);
                                         if (status == STATUS_OKAY) {
-                                            //strcpy(nativeDatumInFile, vdi.nativeDatum);
                                             //--------------------------------------------------------//
                                             // retrieve the time series in the default vertical datum //
-                                            //-------------------------------------------------------//
+                                            //--------------------------------------------------------//
                                             if (i == 0) {
                                                 status = zopen6(ifltab, filename[i]);
                                             }
@@ -1645,6 +1658,7 @@ void testStoreRetrievePairedData() {
     verticalDatumInfo vdiInFile;
     int    status;
     char  *errmsg;
+    double offset;
     char  *filename[2]      = {"v6_c.dss", "v7_c.dss"};
     char  *pathnames[2][2]  = {{"//TestPdLoc/Stage-Elev///Doubles/", "//TestPdLoc/Stage-Elev///Floats/"},
                                {"//TestPdLoc/Elev-Stage///Doubles/", "//TestPdLoc/Elev-Stage///Floats/"}};
@@ -1680,12 +1694,22 @@ void testStoreRetrievePairedData() {
         "</vertical-datum-info>\n",
 
         "<vertical-datum-info unit=\"ft\">\n"
+        "  <native-datum>NGVD-29</native-datum>\n"
+        "  <elevation>615.2</elevation>\n"
+        "</vertical-datum-info>\n",
+
+        "<vertical-datum-info unit=\"ft\">\n"
         "  <native-datum>NAVD-88</native-datum>\n"
         "  <elevation>615.5885</elevation>\n"
         "  <offset estimate=\"true\">\n"
         "    <to-datum>NGVD-29</to-datum>\n"
         "    <value>-0.3855</value>\n"
         "  </offset>\n"
+        "</vertical-datum-info>\n",
+
+        "<vertical-datum-info unit=\"ft\">\n"
+        "  <native-datum>NAVD-88</native-datum>\n"
+        "  <elevation>615.5885</elevation>\n"
         "</vertical-datum-info>\n",
 
         "<vertical-datum-info unit=\"ft\">\n"
@@ -1700,6 +1724,12 @@ void testStoreRetrievePairedData() {
         "    <to-datum>NGVD-29</to-datum>\n"
         "    <value>1.07</value>\n"
         "  </offset>\n"
+        "</vertical-datum-info>\n",
+
+        "<vertical-datum-info unit=\"ft\">\n"
+        "  <native-datum>OTHER</native-datum>\n"
+        "  <local-datum-name>Pensacola</local-datum-name>\n"
+        "  <elevation>757</elevation>\n"
         "</vertical-datum-info>\n",
 
         ""
@@ -1761,6 +1791,10 @@ void testStoreRetrievePairedData() {
     //     0 = specify
     //     1 = don't specify (use previously stored)
     //
+    // q = ensure empty record
+    //     0 = leave any existing data in file
+    //     1 = delete existing record
+    //
     zset("MLVL", "", 1);
     for (int i = 0; i < 2; ++i) {
         remove(filename[i]);
@@ -1773,142 +1807,145 @@ void testStoreRetrievePairedData() {
                         for (int n = 0; n < 2; ++n) {
                             for (int o = 0; o < 2; ++o) {
                                 for (int p = 0; p < 2; ++p) {
-                                    ++count;
-                                    len = 0;
-                                    headerBuf = NULL;
-                                    initializeVerticalDatumInfo(&vdiInFile);
-                                    //------------------------//
-                                    // create the paired data //
-                                    //------------------------//
-                                    // printf("%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n", i,j,k,l,m,n,o,p);
-                                    if (i == 0) {
-                                        //-------//
-                                        // DSS 6 //
-                                        //-------//
-                                        status = zopen6(ifltab, filename[i]);
-                                        assert(status == STATUS_OKAY);
-                                        //----------------------------------------------------------------------------//
-                                        // get whether data exists in file and native datum in file for this pathname //
-                                        //----------------------------------------------------------------------------//
-                                        pds = zstructPdNew(pathnames[n][o]);
+                                    for (int q = 0; q < 2; ++q) {
+                                        ++count;
+                                        len = 0;
+                                        headerBuf = NULL;
+                                        nativeDatumInFile[0] = '\0';
+                                        initializeVerticalDatumInfo(&vdiInFile);
+                                        //------------------------//
+                                        // create the paired data //
+                                        //------------------------//
+                                        if (i == 0) {
+                                            //-------//
+                                            // DSS 6 //
+                                            //-------//
+                                            status = zopen6(ifltab, filename[i]);
+                                            assert(status == STATUS_OKAY);
+                                            //----------------------------------------------------------------------------//
+                                            // get whether data exists in file and native datum in file for this pathname //
+                                            //----------------------------------------------------------------------------//
+                                            pds = zstructPdNew(pathnames[n][o]);
+                                            assert(pds != NULL);
+                                            zset("VDTM", CVERTICAL_DATUM_UNSET, 0);
+                                            status = zpdRetrieve(ifltab, pds, 0);
+                                            dataInFile = status == STATUS_OKAY && pds->numberOrdinates > 0;
+                                            if (status == STATUS_OKAY) {
+                                                headerBuf = userHeaderToString(pds->userHeader, pds->userHeaderNumber);
+                                                if (headerBuf != NULL) {
+                                                    char* compressedVdi = extractFromDelimitedString(
+                                                        &headerBuf,
+                                                        VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
+                                                        ":",
+                                                        TRUE,
+                                                        FALSE,
+                                                        ';');
+                                                    if (compressedVdi) {
+                                                        errmsg = stringToVerticalDatumInfo(&vdiInFile, compressedVdi);
+                                                        assert(errmsg == NULL);
+                                                        free(compressedVdi);
+                                                    }
+                                                    free(headerBuf);
+                                                }
+                                                headerBuf = NULL;
+                                            }
+                                            zstructFree(pds);
+                                        }
+                                        else {
+                                            //-------//
+                                            // DSS 7 //
+                                            //-------//
+                                            status = zopen7(ifltab, filename[i]);
+                                            assert(status == STATUS_OKAY);
+                                            //----------------------------------------------------------------------------//
+                                            // get whether data exists in file and native datum in file for this pathname //
+                                            //----------------------------------------------------------------------------//
+                                            pds = zstructPdNew(pathnames[n][o]);
+                                            assert(pds != NULL);
+                                            zset("VDTM", CVERTICAL_DATUM_UNSET, 0);
+                                            status = zpdRetrieve(ifltab, pds, 0);
+                                            dataInFile = status == STATUS_OKAY && pds->numberOrdinates > 0;
+                                            zStructLocation* ls = zstructLocationNew(pathnames[n][o]);
+                                            zlocationRetrieve(ifltab, ls);
+                                            if (ls) {
+                                                if (ls->supplemental) {
+                                                    char* compressedVdi = extractFromDelimitedString(
+                                                        &ls->supplemental,
+                                                        VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
+                                                        ":",
+                                                        TRUE,
+                                                        FALSE,
+                                                        ';');
+                                                    if (compressedVdi) {
+                                                        stringToVerticalDatumInfo(&vdiInFile, compressedVdi);
+                                                        free(compressedVdi);
+                                                    }
+                                                }
+                                                zstructFree(ls);
+                                            }
+                                        }
+                                        strcpy(nativeDatumInFile, vdiInFile.nativeDatum);
+                                        //------------------------//
+                                        // create the paired data //
+                                        //------------------------//
+                                        if (o == 0) {
+                                            pds = zstructPdNewDoubles(
+                                                pathnames[n][o],
+                                                dordinates[l],
+                                                dvalues[l],
+                                                numberOrdinates,
+                                                numberCurves,
+                                                unit[l],
+                                                type,
+                                                unit[l],
+                                                type);
+                                        }
+                                        else {
+                                            pds = zstructPdNewFloats(
+                                                pathnames[n][o],
+                                                fordinates[l],
+                                                fvalues[l],
+                                                numberOrdinates,
+                                                numberCurves,
+                                                unit[l],
+                                                type,
+                                                unit[l],
+                                                type);
+                                        }
                                         assert(pds != NULL);
-                                        zset("VDTM", CVERTICAL_DATUM_UNSET, 0);
-                                        status = zpdRetrieve(ifltab, pds, 0);
-                                        dataInFile = status == STATUS_OKAY && pds->numberOrdinates > 0;
-                                        if (status == STATUS_OKAY) {
-                                            headerBuf = userHeaderToString(pds->userHeader, pds->userHeaderNumber);
-                                            if (headerBuf != NULL) {
-                                                char* compressedVdi = extractFromDelimitedString(
+                                        int K = k;
+                                        //--------------------------------//
+                                        // set the default vertical datum //
+                                        //--------------------------------//
+                                        zset("VDTM", currentVerticalDatums[K], 0);
+                                        if (p == 0) {
+                                            //------------------------------------------------//
+                                            // add the vertical datum info to the user header //
+                                            //------------------------------------------------//
+                                            if (strlen(xml[j]) > 0) {
+                                                stringToVerticalDatumInfo(&vdi, xml[j]);
+                                                errmsg = gzipAndEncode(&compressed, xml[j]);
+                                                assert(errmsg == NULL);
+                                                len = VERTICAL_DATUM_INFO_USER_HEADER_PARAM_LEN + strlen(compressed) + 2;
+                                                headerBuf = (char*)malloc(len + 1);
+                                                memset(headerBuf, 0, len + 1);
+                                                status = insertIntoDelimitedString(
                                                     &headerBuf,
+                                                    len + 1,
                                                     VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
+                                                    compressed,
                                                     ":",
-                                                    TRUE,
                                                     FALSE,
                                                     ';');
-                                                if (compressedVdi) {
-                                                    errmsg = stringToVerticalDatumInfo(&vdiInFile, compressedVdi);
-                                                    assert(errmsg == NULL);
-                                                    free(compressedVdi);
-                                                }
-                                                free(headerBuf);
+                                                assert(status == 0);
+                                                free(compressed);
+                                                pds->userHeader = stringToUserHeader(headerBuf, &pds->userHeaderNumber);
+                                                pds->allocated[zSTRUCT_userHeader] = 1;
                                             }
-                                            headerBuf = NULL;
                                         }
-                                        zstructFree(pds);
-                                    }
-                                    else {
-                                        //-------//
-                                        // DSS 7 //
-                                        //-------//
-                                        status = zopen7(ifltab, filename[i]);
-                                        assert(status == STATUS_OKAY);
-                                        //----------------------------------------------------------------------------//
-                                        // get whether data exists in file and native datum in file for this pathname //
-                                        //----------------------------------------------------------------------------//
-                                        pds = zstructPdNew(pathnames[n][o]);
-                                        assert(pds != NULL);
-                                        zset("VDTM", CVERTICAL_DATUM_UNSET, 0);
-                                        status = zpdRetrieve(ifltab, pds, 0);
-                                        dataInFile = status == STATUS_OKAY && pds->numberOrdinates > 0;
-                                        zStructLocation* ls = zstructLocationNew(pathnames[n][o]);
-                                        zlocationRetrieve(ifltab, ls);
-                                        if (ls) {
-                                            if (ls->supplemental) {
-                                                char* compressedVdi = extractFromDelimitedString(
-                                                    &ls->supplemental,
-                                                    VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
-                                                    ":",
-                                                    TRUE,
-                                                    FALSE,
-                                                    ';');
-                                                if (compressedVdi) {
-                                                    stringToVerticalDatumInfo(&vdiInFile, compressedVdi);
-                                                    free(compressedVdi);
-                                                }
-                                            }
-                                            zstructFree(ls);
+                                        else {
+                                            initializeVerticalDatumInfo(&vdi);
                                         }
-                                    }
-                                    strcpy(nativeDatumInFile, vdiInFile.nativeDatum);
-                                    if (o == 0) {
-                                        pds = zstructPdNewDoubles(
-                                            pathnames[n][o],
-                                            dordinates[l],
-                                            dvalues[l],
-                                            numberOrdinates,
-                                            numberCurves,
-                                            unit[l],
-                                            type,
-                                            unit[l],
-                                            type);
-                                    }
-                                    else {
-                                        pds = zstructPdNewFloats(
-                                            pathnames[n][o],
-                                            fordinates[l],
-                                            fvalues[l],
-                                            numberOrdinates,
-                                            numberCurves,
-                                            unit[l],
-                                            type,
-                                            unit[l],
-                                            type);
-                                    }
-                                    assert(pds != NULL);
-                                    //--------------------------------//
-                                    // set the default vertical datum //
-                                    //--------------------------------//
-                                    int K = k;
-                                    zset("VDTM", currentVerticalDatums[K], 0);
-                                    if (p == 0) {
-                                        //------------------------------------------------//
-                                        // add the vertical datum info to the user header //
-                                        //------------------------------------------------//
-                                        if (strlen(xml[j]) > 0) {
-                                            stringToVerticalDatumInfo(&vdi, xml[j]);
-                                            errmsg = gzipAndEncode(&compressed, xml[j]);
-                                            assert(errmsg == NULL);
-                                            len = VERTICAL_DATUM_INFO_USER_HEADER_PARAM_LEN + strlen(compressed) + 2;
-                                            headerBuf = (char*)malloc(len + 1);
-                                            memset(headerBuf, 0, len + 1);
-                                            status = insertIntoDelimitedString(
-                                                &headerBuf,
-                                                len + 1,
-                                                VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
-                                                compressed,
-                                                ":",
-                                                FALSE,
-                                                ';');
-                                            assert(status == 0);
-                                            free(compressed);
-                                            pds->userHeader = stringToUserHeader(headerBuf, &pds->userHeaderNumber);
-                                            pds->allocated[zSTRUCT_userHeader] = 1;
-                                        }
-                                    }
-                                    else {
-                                        initializeVerticalDatumInfo(&vdi);
-                                    }
-                                    while (TRUE) {
                                         if (m > 0) {
                                             //----------------------------------------------------------//
                                             // override the default vertical datum with the user header //
@@ -1947,7 +1984,7 @@ void testStoreRetrievePairedData() {
                                             }
                                             if (pds->userHeader) free(pds->userHeader);
                                             pds->userHeader = stringToUserHeader(headerBuf, &pds->userHeaderNumber);
-                                            pds->allocated[zSTRUCT_userHeader] = 1;
+                                            pds->allocated[zSTRUCT_userHeader] = TRUE;
                                             if (m > 1) {
                                                 //--------------------------------------------------------//
                                                 // override default and user header datums with unit spec //
@@ -1964,105 +2001,119 @@ void testStoreRetrievePairedData() {
                                                 }
                                             }
                                         }
+                                        if (q == 1) {
+                                            //---------------------------//
+                                            // delete any record in file //
+                                            //---------------------------//
+                                            zdelete(ifltab, pathnames[n][o]);
+                                            dataInFile = FALSE;
+                                            if (i == 0) {
+                                                //--------------------------------------------------//
+                                                // deleting records also deletes file VDI for DSS 6 //
+                                                //--------------------------------------------------//
+                                                initializeVerticalDatumInfo(&vdiInFile);
+                                                nativeDatumInFile[0] = '\0';
+                                            }
+                                        }
                                         //------------------------------------------------//
                                         // figure out whether the zpdStore should succeed //
                                         //------------------------------------------------//
-                                        expectSuccess = canStore(dataInFile, &vdiInFile, &vdi, currentVerticalDatums[K], unit[l]);
+                                        errmsg = processStorageVdis(&offset, &vdiInFile, &vdi, currentVerticalDatums[K], dataInFile, unit[l]);
+                                        expectSuccess = errmsg == NULL;
                                         //--------------------------------------------------------//
                                         // store the paired data in the overridden vertical datum //
                                         //--------------------------------------------------------//
-                                        printf("Paired data test %3d: expecting %s\n", count, expectSuccess ? "SUCESS" : "ERROR");
-                                        printf("    pathname               = %s\n", pathnames[n][o]);
-                                        printf("    data in file           = %s\n", dataInFile ? "T" : "F");
-                                        printf("    native datum in file   = %s\n", nativeDatumInFile);
-                                        printf("    incoming native datum  = %s\n", vdi.nativeDatum);
-                                        printf("    incoming current datum = %s\n", currentVerticalDatums[K]);
-                                        printf("    incoming units         = %s, %s\n", pds->unitsIndependent, pds->unitsDependent);
+                                        printPdTestInfo(count, expectSuccess, pathnames[n][o], dataInFile, &vdiInFile, &vdi, currentVerticalDatums[K], pds->unitsIndependent, pds->unitsDependent);
                                         status = zpdStore(ifltab, pds, 0);
                                         assert((status == STATUS_OKAY) == expectSuccess);
-                                        if (status != STATUS_OKAY && i == 0 && strlen(nativeDatumInFile) > 0 && strcmp(nativeDatumInFile, currentVerticalDatums[K])) {
-                                            //---------------------------------------------//
-                                            // change of vertical datum information for v6 //
-                                            //                                             //
-                                            // delete paired data record and re-try        //
-                                            //---------------------------------------------//
-                                            status = zdelete(ifltab, pds->pathname);
-                                            assert(status == STATUS_RECORD_FOUND);
-                                            printf("==> DELETED %s\n", pds->pathname);
-                                            initializeVerticalDatumInfo(&vdiInFile);
-                                            nativeDatumInFile[0] = '\0';
-                                            dataInFile = FALSE;
-                                            ++count;
-                                            continue;
-                                        }
-                                        break;
-                                    }
-                                    if (i == 1 && j == 1 && k+l+n+m+o+p == 0) {
-                                        //---------------------------------------------//
-                                        // change of vertical datum information for v7 //
-                                        //                                             //
-                                        // update location record and re-try           //
-                                        //---------------------------------------------//
-                                        zset("VDOW", "", TRUE);
-                                        printf("Test %d: expecting SUCESS\n", ++count);
-                                        status = zpdStore(ifltab, pds, 0);
-                                        assert(status == STATUS_OKAY);
-                                        zset("VDOW", "", FALSE);
-                                    }
-                                    zclose(ifltab);
-                                    zstructFree(pds);
-                                    if (status == STATUS_OKAY) {
-                                        //------------------------------------------------------------//
-                                        // set the default vertical datum to the datum we stored with //
-                                        //------------------------------------------------------------//
-                                        zset("VDTM", currentVerticalDatums[K], 0);
-                                        //--------------------------------------------------------//
-                                        // retrieve the paired data in the default vertical datum //
-                                        //--------------------------------------------------------//
-                                        if (i == 0) {
-                                            status = zopen6(ifltab, filename[i]);
-                                        }
-                                        else {
-                                            status = zopen7(ifltab, filename[i]);
-                                        }
-                                        assert(status == STATUS_OKAY);
-                                        pds = zstructPdNew(pathnames[n][o]);
-                                        assert(pds != NULL);
-                                        status = zpdRetrieve(ifltab, pds, 0);
-                                        assert(status == STATUS_OKAY);
-                                        //------------------------------------------------------//
-                                        // compare the retrieved paired data to what was stored //
-                                        //------------------------------------------------------//
-                                        assert(pds->numberOrdinates == numberOrdinates);
-                                        assert(pds->numberCurves == numberCurves);
-                                        if (o == 0) {
-                                            assert(pds->doubleOrdinates != NULL);
-                                            assert(pds->doubleValues != NULL);
-                                        }
-                                        else {
-                                            assert(pds->floatOrdinates != NULL);
-                                            assert(pds->floatValues != NULL);
-                                        }
-                                        if (o == 0) {
-                                            for (int ii = 0; ii < pds->numberOrdinates; ++ii) {
-                                                assert(pds->doubleOrdinates[ii] == dordinates[l][ii]);
-                                            }
-                                            for (int ii = 0; ii < pds->numberCurves * pds->numberOrdinates; ++ii) {
-                                                assert(pds->doubleValues[ii] == dvalues[l][ii]);
+                                        if (status != STATUS_OKAY) {
+                                            if (strstr(errmsg, "Data native datum") && strstr(errmsg, "conflicts with file native datum")) {
+                                                //--------------------------------------//
+                                                // change of vertical datum information //
+                                                //                                      //
+                                                // set VDOW to override file VDI        //
+                                                // with data VDI and re-try             //
+                                                //--------------------------------------//
+                                                zset("VDOW", "", TRUE);
+                                                free(errmsg);
+                                                if (m > 1) {
+                                                    //-----------------------------------------------//
+                                                    // unit spec has already been removed from units //
+                                                    //-----------------------------------------------//
+                                                    if (n == 0) {
+                                                        free(pds->unitsDependent);
+                                                        pds->unitsDependent = mallocAndCopy(unitSpec);
+                                                    }
+                                                    else {
+                                                        free(pds->unitsIndependent);
+                                                        pds->unitsIndependent = mallocAndCopy(unitSpec);
+                                                    }
+                                                }
+                                                errmsg = processStorageVdis(&offset, &vdiInFile, &vdi, currentVerticalDatums[K], dataInFile, unit[l]);
+                                                expectSuccess = errmsg == NULL;
+                                                printPdTestInfo(++count, expectSuccess, pathnames[n][o], dataInFile, &vdiInFile, &vdi, currentVerticalDatums[K], pds->unitsIndependent, pds->unitsDependent);
+                                                status = zpdStore(ifltab, pds, 0);
+                                                assert((status == STATUS_OKAY) == expectSuccess);
+                                                assert(errmsg == NULL || !(strstr(errmsg, "Data native datum") && strstr(errmsg, "conflicts with file native datum")));
+                                                zset("VDOW", "", FALSE);
                                             }
                                         }
-                                        else {
-                                            for (int ii = 0; ii < pds->numberOrdinates; ++ii) {
-                                                assert(pds->floatOrdinates[ii] == fordinates[l][ii]);
-                                            }
-                                            for (int ii = 0; ii < pds->numberCurves * pds->numberOrdinates; ++ii) {
-                                                assert(pds->floatValues[ii] == fvalues[l][ii]);
-                                            }
-                                        }
+                                        free(errmsg);
                                         zclose(ifltab);
                                         zstructFree(pds);
+                                        if (status == STATUS_OKAY) {
+                                            //------------------------------------------------------------//
+                                            // set the default vertical datum to the datum we stored with //
+                                            //------------------------------------------------------------//
+                                            zset("VDTM", currentVerticalDatums[K], 0);
+                                            //--------------------------------------------------------//
+                                            // retrieve the paired data in the default vertical datum //
+                                            //--------------------------------------------------------//
+                                            if (i == 0) {
+                                                status = zopen6(ifltab, filename[i]);
+                                            }
+                                            else {
+                                                status = zopen7(ifltab, filename[i]);
+                                            }
+                                            assert(status == STATUS_OKAY);
+                                            pds = zstructPdNew(pathnames[n][o]);
+                                            assert(pds != NULL);
+                                            status = zpdRetrieve(ifltab, pds, 0);
+                                            assert(status == STATUS_OKAY);
+                                            //------------------------------------------------------//
+                                            // compare the retrieved paired data to what was stored //
+                                            //------------------------------------------------------//
+                                            assert(pds->numberOrdinates == numberOrdinates);
+                                            assert(pds->numberCurves == numberCurves);
+                                            if (o == 0) {
+                                                assert(pds->doubleOrdinates != NULL);
+                                                assert(pds->doubleValues != NULL);
+                                            }
+                                            else {
+                                                assert(pds->floatOrdinates != NULL);
+                                                assert(pds->floatValues != NULL);
+                                            }
+                                            if (o == 0) {
+                                                for (int ii = 0; ii < pds->numberOrdinates; ++ii) {
+                                                    assert(pds->doubleOrdinates[ii] == dordinates[l][ii]);
+                                                }
+                                                for (int ii = 0; ii < pds->numberCurves * pds->numberOrdinates; ++ii) {
+                                                    assert(pds->doubleValues[ii] == dvalues[l][ii]);
+                                                }
+                                            }
+                                            else {
+                                                for (int ii = 0; ii < pds->numberOrdinates; ++ii) {
+                                                    assert(pds->floatOrdinates[ii] == fordinates[l][ii]);
+                                                }
+                                                for (int ii = 0; ii < pds->numberCurves * pds->numberOrdinates; ++ii) {
+                                                    assert(pds->floatValues[ii] == fvalues[l][ii]);
+                                                }
+                                            }
+                                            zclose(ifltab);
+                                            zstructFree(pds);
+                                        }
+                                        if (headerBuf) free(headerBuf);
                                     }
-                                    if (headerBuf) free(headerBuf);
                                 }
                             }
                         }
@@ -2071,11 +2122,5 @@ void testStoreRetrievePairedData() {
             }
         }
     }
-    printf("\n\n%4d Paired data tests passed\n\n\n", count);
-    int total = 0;
-    for (int i = 0; i < sizeof(storageFailureMode) / sizeof(storageFailureMode[0]); ++i) {
-        total += storageFailureMode[i];
-        printf("Storage failure mode %5d : %4d ocurrences\n", i, storageFailureMode[i]);
-    }
-    printf("                     Total : %4d occurrences\n", total);
+    printf("\n\n%5d Paired data tests passed\n\n\n", count);
 }

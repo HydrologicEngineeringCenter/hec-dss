@@ -40,18 +40,12 @@ C     Pathname variable dimensions
       integer na, nb, nc, nd, ne, nf, npath
 C
 C     Vertical datum varible dimensions
-      character*400 vdiStr, errMsg
-      character*16 unit, unit2, fileUnit, cvdatum1, cvdatum2
+      character*400 fileVdiStr, dataVdiStr, errMsg
+      character*16 unit, cvdatum1, cvdatum2
       character*16 cvdatum_ind, cvdatum_dep
-      character*16 nativeDatum, fileNativeDatum
-      character*64 unitSpec
-      double precision offsetNavd88, offsetNgvd29
-      double precision fileOffsetNavd88, fileOffsetNgvd29
       double precision vertDatumOffset_ind, vertDatumOffset_dep
-      double precision tempVertDatumOffset
-      logical l_Navd88Estimated, l_Ngvd29Estimated, l_modified, l_vdtm
-      logical l_indElev, l_depElev, l_ordsModified, l_valsModified
-      integer nuhead_copy1, iuhead_copy1(100), vdiStrLen
+      logical*4 l_indElev, l_depElev, l_ordsModified, l_valsModified
+      integer nuhead_copy1, iuhead_copy1(100)
       integer nuhead_copy2, iuhead_copy2(100)
 C
       INCLUDE 'zdssmz.h'
@@ -92,13 +86,6 @@ C
 C     Check that IFLTAB is valid (e.g., the DSS file is open)
       IF (IFLTAB(1).NE.6) CALL zerror6(IFLTAB, 5, 'ZSPDI6',
      * 0, IFLTAB, ' ', 0, ' ',0)
-      !--------------------------------------------------------------!
-      ! convert the values to the native vertical datum if necessary !
-      !--------------------------------------------------------------!
-      l_indElev = .false.
-      l_depElev = .false.
-      l_ordsModified = .false.
-      l_valsModified = .false.
       !--------------------------------------------------------------------!
       ! make a copy of the user header becuase we have to be able to know  !
       ! its size when passing to user header manipulation routintes and we !
@@ -115,6 +102,13 @@ C     Check that IFLTAB is valid (e.g., the DSS file is open)
       nuhead_copy2 = min(size(iuhead_copy2), nuhead)
       iuhead_copy2 = 0
       iuhead_copy2(:nuhead_copy2) = iuhead(:nuhead_copy2)
+      !--------------------------------------------------------------!
+      ! convert the values to the native vertical datum if necessary !
+      !--------------------------------------------------------------!
+      l_indElev = .false.
+      l_depElev = .false.
+      l_ordsModified = .false.
+      l_valsModified = .false.
       call zufpn(ca, na, cb, nb, cc, nc, cd, nd, ce, ne, cf, nf,
      *           cpath, len_trim(cpath), istat)
       call upcase(cc)
@@ -129,17 +123,11 @@ C     Check that IFLTAB is valid (e.g., the DSS file is open)
         ! elevation in ordinates or values !
         !----------------------------------!
         !----------------------------------------------!
-        ! get any VDI on in the file for this pathname !
+        ! get the VDI on in the file for this pathname !
         !----------------------------------------------!
-        fileNativeDatum = CVD_UNSET
-        fileOffsetNavd88 = UNDEFINED_VERTICAL_DATUM_VALUE
-        fileOffsetNgvd29 = UNDEFINED_VERTICAL_DATUM_VALUE
-        nativeDatum = CVD_UNSET
-        offsetNgvd29 = UNDEFINED_VERTICAL_DATUM_VALUE
-        offsetNavd88 = UNDEFINED_VERTICAL_DATUM_VALUE
-        vertDatumOffset_ind = UNDEFINED_VERTICAL_DATUM_VALUE
-        vertDatumOffset_dep = UNDEFINED_VERTICAL_DATUM_VALUE
-        unit = ' '
+        fileVdiStr = ' '
+        dataVdiStr = ' '
+        cvdatum1 = ' '
         iiihead = 0
         inihead = 0
         iichead = 0
@@ -168,359 +156,150 @@ C     Check that IFLTAB is valid (e.g., the DSS file is open)
      *      iuhead_copy1,
      *      nuhead_copy1,
      *      VERTICAL_DATUM_INFO_PARAM,
-     *      vdiStr)
-          vdiStrLen = len_trim(vdiStr)
-          if (vdiStrLen.gt.0) then
-            call stringToVerticalDatumInfo(
-     *        vdiStr,
-     *        errMsg,
-     *        fileNativeDatum,
-     *        fileUnit,
-     *        fileOffsetNgvd29,
-     *        l_Ngvd29Estimated,
-     *        fileOffsetNavd88,
-     *        l_Navd88Estimated)
-          end if
+     *      fileVdiStr)
         end if
-        !--------------------------------------!
-        ! get the vertical datum of the values !
-        !--------------------------------------!
-        l_vdtm = .false.
-        ! first get the default vertical datum
-        call zinqir(ifltab, 'VDTM', cvdatum1, ivdatum1)
-        ! override the default with any datum in the user header
-        call get_user_header_param(iuhead_copy2, nuhead_copy2,
-     *    VERTICAL_DATUM_PARAM, cvdatum2)
+        !------------------------------!
+        ! get the VDI of incoming data !
+        !------------------------------!
+        call normalizeVdiInUserHeader(iuhead_copy2,nuhead_copy2,errMsg)
+        call get_user_header_param(
+     *    iuhead_copy2,
+     *    nuhead_copy2,
+     *    VERTICAL_DATUM_INFO_PARAM,
+     *    dataVdiStr)
+        !-------------------------------------------------!
+        ! get the current vertical datum of incoming data !
+        !-------------------------------------------------!
+        ! ==> first, get any default vertical datum
+        call zinqir6(IFLTAB, 'VDTM', cvdatum1, ivdatum1)
+        ! ==> next, override the default with any datum in the user header
+        call get_user_header_param(
+     *    iuhead_copy2,
+     *    nuhead_copy2,
+     *    VERTICAL_DATUM_PARAM,
+     *    cvdatum2)
         if (cvdatum2.ne." ") then
           cvdatum1 = cvdatum2
-          !---------------------------------------------------------------------------!
-          ! remove current vertical datum from user header so it is not saved to disk !
-          !---------------------------------------------------------------------------!
-          call remove_user_header_param(iuhead_copy2,
-     *    nuhead_copy2, size(iuhead_copy2), VERTICAL_DATUM_PARAM)
+          ! remove current vertical datum from user header so it is not saved to disk
+          call remove_user_header_param(
+     *      iuhead_copy2,
+     *      nuhead_copy2,
+     *      size(iuhead_copy2),
+     *      VERTICAL_DATUM_PARAM)
         end if
-        if (cvdatum1.ne." ") then
-          cvdatum_ind = cvdatum1
-          cvdatum_dep = cvdatum1
-          ! override both with the unit spec
-          if (l_indElev) then
-            call crack_unit_spec(c1unit, unit2, cvdatum2)
-            if (cvdatum2.ne." ") then
-              c1unit = unit2(1:len_trim(unit2))
-              cvdatum_ind = cvdatum2
-            end if
-            if (cvdatum_ind.ne.CVD_UNSET) l_vdtm = .true.
+        ! ==> finally, override both with the unit spec
+        cvdatum_ind = cvdatum1
+        cvdatum_dep = cvdatum1
+        ! override both with the unit spec
+        if (l_indElev) then
+          call crack_unit_spec(c1unit, unit, cvdatum2)
+          if (cvdatum2.ne." ") then
+            c1unit = unit(1:len_trim(unit))
+            cvdatum_ind = cvdatum2
           end if
-          if (l_depElev) then
-            call crack_unit_spec(c2unit, unit2, cvdatum2)
-            if (cvdatum2.ne." ") then
-              c2unit = unit2(1:len_trim(unit2))
-              cvdatum_dep = cvdatum2
-            end if
-            if (cvdatum_dep.ne.CVD_UNSET) l_vdtm = .true.
+        end if
+        if (l_depElev) then
+          call crack_unit_spec(c2unit, unit, cvdatum2)
+          if (cvdatum2.ne." ") then
+            c2unit = unit(1:len_trim(unit))
+            cvdatum_dep = cvdatum2
           end if
-          call normalizeVdiInUserHeader(
-     *           iuhead_copy2,
-     *           nuhead_copy2,
-     *           errMsg)
-          call get_user_header_param(
-     *           iuhead_copy2,
-     *           nuhead_copy2,
-     *           VERTICAL_DATUM_INFO_PARAM,
-     *           vdiStr)
-          if (vdiStr.eq." ") then
-            !--------------------------------!
-            ! incoming values don't have VDI !
-            !--------------------------------!
-            if (l_indElev) then
-              if (cvdatum_ind.eq.CVD_UNSET.or.
-     *            cvdatum_ind.eq.fileNativeDatum) then
-                vertDatumOffset_ind = 0
-              else if (
-     *          cvdatum_ind.eq.CVD_NAVD88.and.
-     *          fileOffsetNavd88.ne.UNDEFINED_VERTICAL_DATUM_VALUE) then
-                vertDatumOffset_ind = fileOffsetNavd88
-              else if (
-     *          cvdatum_ind.eq.CVD_NGVD29.and.
-     *          fileOffsetNgvd29.ne.UNDEFINED_VERTICAL_DATUM_VALUE) then
-                vertDatumOffset_ind = fileOffsetNgvd29
+        end if
+        !----------------------------------------------------------------!
+        ! process the VDIs and get the offsets to use (or error message) !
+        !----------------------------------------------------------------!
+        if (l_indElev) then
+          ! ==> for independent parameter  
+          call processStorageVdis(
+     *      vertDatumOffset_ind,
+     *      errMsg,
+     *      fileVdiStr,
+     *      dataVdiStr,
+     *      cvdatum_ind,
+     *      lfound,
+     *      c1unit)
+          if (errMsg.ne.' ') then
+            if (mlevel.ge.1) then
+              write (munit,'(/,a,a)')
+     *        ' *****DSS*** zspdi6: ',
+     *        errMsg(:len_trim(errMsg))
+            end if
+            istat = 13
+            return
+          end if
+        end if
+        if (l_depElev) then
+          ! ==> for dependent parameter  
+          call processStorageVdis(
+     *      vertDatumOffset_dep,
+     *      errMsg,
+     *      fileVdiStr,
+     *      dataVdiStr,
+     *      cvdatum_dep,
+     *      lfound,
+     *      c2unit)
+          if (errMsg.ne.' ') then
+            if (mlevel.ge.1) then
+              write (munit,'(/,a,a)')
+     *        ' *****DSS*** zspdi6: ',
+     *        errMsg(:len_trim(errMsg))
+            end if
+            istat = 13
+            return
+          end if
+        end if    
+        !---------------------------------------!
+        ! modify the incoming data as necessary !
+        !---------------------------------------!
+        if (l_indElev) then
+          if (vertDatumOffset_ind.ne.0) then
+            if (iplan.ne.11) then
+              !----------------!
+              ! ordinates only !
+              !----------------!
+              l_ordsModified = .true.
+              if (ldouble) then
+                do i = 1, nord
+                  dvalues(i) = dvalues(i) - vertDatumOffset_ind
+                end do
               else
-                if (mlevel.ge.1) then
-                  write (munit,'(/,a,/,a)')
-     *            ' *****DSS*** zspdi6:  ERROR  - VERTICAL DATUM'     //
-     *            ' CONFLICT',' Elevation values being stored do not' //
-     *            ' specify native vertical datum but the values in'  //
-     *            ' the file are in '                                 //
-     *            fileNativeDatum(1:len_trim(fileNativeDatum))//'.',
-     *            ' No values stored.'
-                end if
-                istat = 13
-                return
+                do i = 1, nord
+                  svalues(i) = svalues(i) - vertDatumOffset_ind
+                end do
               end if
             end if
-            if (l_depElev) then
-              if (cvdatum_dep.eq.CVD_UNSET.or.
-     *            cvdatum_dep.eq.fileNativeDatum) then
-                vertDatumOffset_dep = 0
-              else if (
-     *          cvdatum_dep.eq.CVD_NAVD88.and.
-     *          fileOffsetNavd88.ne.UNDEFINED_VERTICAL_DATUM_VALUE) then
-                vertDatumOffset_dep = fileOffsetNavd88
-              else if (
-     *          cvdatum_dep.eq.CVD_NGVD29.and.
-     *          fileOffsetNgvd29.ne.UNDEFINED_VERTICAL_DATUM_VALUE) then
-                vertDatumOffset_dep = fileOffsetNgvd29
+          end if
+        end if
+        if (l_depElev) then
+          if (vertDatumOffset_dep.ne.0) then
+            if (iplan.eq.11) then
+              !---------------------------------------------!
+              ! data has values for one curve, no ordinates !
+              !---------------------------------------------!
+              l_valsModified = .true.
+              if (ldouble) then
+                do i = 1, nord
+                  dvalues(i) = dvalues(i) - vertDatumOffset_dep
+                end do
               else
-                if (mlevel.ge.1) then
-                  write (munit,'(/,a,/,a)')
-     *            ' *****DSS*** zspdi6:  ERROR  - VERTICAL DATUM'     //
-     *            ' CONFLICT',' Elevation values being stored do not' //
-     *            ' specify native vertical datum but the values in'  //
-     *            ' the file are in '                                 //
-     *            fileNativeDatum(1:len_trim(fileNativeDatum))//'.',
-     *            ' No values stored.'
-                end if
-                istat = 13
-                return
+                do i = 1, nord
+                  svalues(i) = svalues(i) - vertDatumOffset_dep
+                end do
               end if
-            end if
-            nativeDatum = fileNativeDatum
-            unit = fileUnit
-          else
-            !--------------------------!
-            ! incoming values have VDI !
-            !--------------------------!
-            call stringToVerticalDatumInfo(
-     *        vdiStr,
-     *        errMsg,
-     *        nativeDatum,
-     *        unit,
-     *        offsetNgvd29,
-     *        l_Ngvd29Estimated,
-     *        offsetNavd88,
-     *        l_Navd88Estimated)
-            if (errMsg.ne." ") then
-              if (mlevel.ge.1) then
-                write (munit,'(/,a,a,/,a,/,a)')
-     *            ' *****DSS*** zspdi6:  ERROR  - ',
-     *            errMsg(1:len_trim(errMsg)),
-     *            ' Cannot convert to native datum.',
-     *            ' No values stored.'
-              end if
-              istat = 13
-              return
-            end if
-            if (lfound.and.nativeDatum.ne.fileNativeDatum) then
-              if (mlevel.ge.1) then
-                write (munit,'(/,a,/,a)')
-     *          ' *****DSS*** zspdi6:  ERROR  - VERTICAL DATUM'      //
-     *          ' CONFLICT',' Elevation values being stored specify' //
-     *          ' native vertical datum of '                         //
-     *          nativeDatum(1:len_trim(nativeDatum))                 //
-     *          ' but the values in the file are in '                //
-     *          fileNativeDatum(1:len_trim(fileNativeDatum))//'.',
-     *          ' No values stored.'
-              end if
-              istat = 13
-              return
-            end if
-          end if
-          if (l_indElev) then
-            if (cvdatum_ind.ne.CVD_UNSET.or.
-     *          nativeDatum.ne.CVD_UNSET.or.
-     *          fileNativeDatum.ne.CVD_UNSET) then
-              tempVertDatumOffset = 0
-              call getoffset(tempVertDatumOffset, unit, c1unit)
-              if (tempVertDatumOffset.eq.
-     *          UNDEFINED_VERTICAL_DATUM_VALUE) then
-                if (mlevel.ge.1) then
-                  write (munit,'(/,a,a,a,a,a,a,/,a)')
-     *            ' *****DSS*** zspdi6:  ERROR    - ',
-     *            'INVALID DATA UNIT (', c1unit(1:len_trim(c1unit)),
-     *            ') OR OFFSET UNIT (', unit(1:len_trim(unit)),
-     *            ') FOR VERTICAL DATUM CONVERSION',
-     *            ' No values stored.'
-                end if
-                istat = 13
-                return
-              end if
-            end if
-            if (cvdatum_ind.ne.CVD_UNSET) then
-              !--------------------------------------------!
-              ! we possibly need to convert the elevations !
-              !--------------------------------------------!
-              if (vertDatumOffset_ind.eq.UNDEFINED_VERTICAL_DATUM_VALUE)
-     *        then
-                if (cvdatum_ind.eq.CVD_NAVD88) then
-                  vertDatumOffset_ind = offsetNavd88
-                elseif (cvdatum_ind.eq.CVD_NGVD29) then
-                  vertDatumOffset_ind = offsetNgvd29
-                else
-                  if (nativeDatum.eq.cvdatum_ind.or.
-     *                nativeDatum.eq.CVD_OTHER) then
-                    vertDatumOffset_ind = 0.
-                  else
-                    if (mlevel.ge.1) then
-                      write (munit,'(/,a,a,a,a,a,/,a)')
-     *                ' *****DSS*** zspdi6:  ERROR  - NO VERTICAL',
-     *                ' DATUM OFFSET for ',
-     *                nativeDatum(1:len_trim(nativeDatum)),
-     *                ' to ',cvdatum_ind(1:len_trim(cvdatum_ind)),
-     *                ' No values stored.'
-                    end if
-                    istat = 13
-                    return
-                  end if
-                end if
-              end if
-              call getoffset(vertDatumOffset_ind, unit, c1unit)
-              if (vertDatumOffset_ind.eq.
-     *          UNDEFINED_VERTICAL_DATUM_VALUE) then
-                if (mlevel.ge.1) then
-                  write (munit,'(/,a,a,a,a,a,a,/,a)')
-     *            ' *****DSS*** zspdi6:  ERROR   - ',
-     *            'INVALID DATA UNIT (', c1unit(1:len_trim(c1unit)),
-     *            ') OR OFFSET UNIT (', unit(1:len_trim(unit)),
-     *            ') FOR VERTICAL DATUM CONVERSION',
-     *            ' No values stored.'
-                end if
-                istat = 13
-                return
-              end if
-              if (vertDatumOffset_ind.ne.0) then
-                if (iplan.ne.11) then
-                  !----------------!
-                  ! ordinates only !
-                  !----------------!
-                  l_ordsModified = .true.
-                  if (ldouble) then
-                    do i = 1, nord
-                      dvalues(i) = dvalues(i) - vertDatumOffset_ind
-                    end do
-                  else
-                    do i = 1, nord
-                      svalues(i) = svalues(i) - vertDatumOffset_ind
-                    end do
-                  end if
-                end if
-              end if
-            end if
-          end if
-          if (l_depElev) then
-            if (.not.(cvdatum_dep.eq.CVD_UNSET.and.
-     *                nativeDatum.eq.CVD_UNSET.and.
-     *                fileNativeDatum.eq.CVD_UNSET)) then
-              tempVertDatumOffset = 0
-              call getoffset(tempVertDatumOffset, unit, c2unit)
-              if (tempVertDatumOffset.eq.
-     *          UNDEFINED_VERTICAL_DATUM_VALUE) then
-                if (mlevel.ge.1) then
-                  write (munit,'(/,a,a,a,a,a,a,/,a)')
-     *            ' *****DSS*** zspdi6:  ERROR   - ',
-     *            'INVALID DATA UNIT (', c1unit(1:len_trim(c2unit)),
-     *            ') OR OFFSET UNIT (', unit(1:len_trim(unit)),
-     *            ') FOR VERTICAL DATUM CONVERSION',
-     *            ' No values stored.'
-                end if
-                istat = 13
-                return
-              end if
-            end if
-            if (cvdatum_dep.ne.CVD_UNSET) then
-              !--------------------------------------------!
-              ! we possibly need to convert the elevations !
-              !--------------------------------------------!
-              if (vertDatumOffset_dep.eq.UNDEFINED_VERTICAL_DATUM_VALUE)
-     *        then
-                if (cvdatum_dep.eq.CVD_NAVD88) then
-                  vertDatumOffset_dep = offsetNavd88
-                elseif (cvdatum_dep.eq.CVD_NGVD29) then
-                  vertDatumOffset_dep = offsetNgvd29
-                else
-                  if (nativeDatum.eq.cvdatum_dep.or.
-     *                nativeDatum.eq.CVD_OTHER) then
-                    vertDatumOffset_dep = 0.
-                  else
-                    if (l_ordsModified) then
-                      if (ldouble) then
-                        do i = 1, nord
-                          dvalues(i) = dvalues(i) + vertDatumOffset_ind
-                        end do
-                      else
-                        do i = 1, nord
-                          svalues(i) = svalues(i) + vertDatumOffset_ind
-                        end do
-                      end if
-                    end if
-                    if (mlevel.ge.1) then
-                      write (munit,'(/,a,a,a,a,a,/,a)')
-     *                ' *****DSS*** zspdi6:  ERROR  - NO VERTICAL',
-     *                ' DATUM OFFSET for ',
-     *                nativeDatum(1:len_trim(nativeDatum)),
-     *                ' to ',cvdatum_dep(1:len_trim(cvdatum_dep)),
-     *                ' No values stored.'
-                    end if
-                    istat = 13
-                    return
-                  end if
-                end if
-              end if
-              call getoffset(vertDatumOffset_dep, unit, c2unit)
-              if (vertDatumOffset_dep.eq.
-     *          UNDEFINED_VERTICAL_DATUM_VALUE) then
-                if (l_ordsModified) then
-                  if (ldouble) then
-                    do i = 1, nord
-                      dvalues(i) = dvalues(i) + vertDatumOffset_ind
-                    end do
-                  else
-                    do i = 1, nord
-                      svalues(i) = svalues(i) + vertDatumOffset_ind
-                    end do
-                  end if
-                end if
-                if (mlevel.ge.1) then
-                  write (munit,'(/,a,a,a,a,a,a,/,a)')
-     *            ' *****DSS*** zspdi6:  ERROR   - ',
-     *            'INVALID DATA UNIT (', c1unit(1:len_trim(c2unit)),
-     *            ') OR OFFSET UNIT (', unit(1:len_trim(unit)),
-     *            ') FOR VERTICAL DATUM CONVERSION',
-     *            ' No values stored.'
-                end if
-                istat = 13
-                return
-              end if
-              if (vertDatumOffset_dep.ne.0) then
-                if (iplan.eq.11) then
-                  !---------------------------------------------!
-                  ! data has values for one curve, no ordinates !
-                  !---------------------------------------------!
-                  l_valsModified = .true.
-                  if (ldouble) then
-                    do i = 1, nord
-                      dvalues(i) = dvalues(i) - vertDatumOffset_dep
-                    end do
-                  else
-                    do i = 1, nord
-                      svalues(i) = svalues(i) - vertDatumOffset_dep
-                    end do
-                  end if
-                elseif (iplan.ne.10) then
-                  !-------------------------------------------!
-                  ! data has ordinates and one or more curves !
-                  !-------------------------------------------!
-                  l_ordsModified = .true.
-                  l_valsModified = .true.
-                  if (ldouble) then
-                    do i = nord+1, (ncurve+1)*nord
-                      dvalues(i) = dvalues(i) - vertDatumOffset_dep
-                    end do
-                  else
-                    do i = nord+1, (ncurve+1)*nord
-                      svalues(i) = svalues(i) - vertDatumOffset_dep
-                    end do
-                  end if
-                end if
+            elseif (iplan.ne.10) then
+              !-------------------------------------------!
+              ! data has ordinates and one or more curves !
+              !-------------------------------------------!
+              l_ordsModified = .true.
+              l_valsModified = .true.
+              if (ldouble) then
+                do i = nord+1, (ncurve+1)*nord
+                  dvalues(i) = dvalues(i) - vertDatumOffset_dep
+                end do
+              else
+                do i = nord+1, (ncurve+1)*nord
+                  svalues(i) = svalues(i) - vertDatumOffset_dep
+                end do
               end if
             end if
           end if
