@@ -648,14 +648,14 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1zgridRetrieve(
 		fid = (*env)->GetFieldID(env, cls, "_data", "[F");
 		if (fid) {
 			int gridSize = gridStruct->_numberOfCellsX * gridStruct->_numberOfCellsY;
-			flArray = (float*)calloc(gridSize, 4);
+			
 			if (gridSize) {
-				convertDataArray((void*)gridStruct->_data, (void*)flArray, gridSize, 1, 1);
 				jflArray = (*env)->NewFloatArray(env, (jint)gridSize);
 				(*env)->SetFloatArrayRegion(env, jflArray, 0, (jint)gridSize, gridStruct->_data);
 				(*env)->SetObjectField(env, j_gridContainer, fid, jflArray);
 				(*env)->DeleteLocalRef(env, jflArray);
 			}
+			
 		}
 		else {
 			status = zerrorProcessing((long long*)ifltab, MESS_METHOD_JNI_ID, zdssErrorCodes.INVALID_NUMBER,
