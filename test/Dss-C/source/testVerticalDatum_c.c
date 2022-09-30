@@ -1988,7 +1988,9 @@ void testStoreRetrievePairedData() {
                                             //---------------------------//
                                             // delete any record in file //
                                             //---------------------------//
-                                            zdelete(ifltab, pathnames[n][o]);
+                                            if (dataInFile) {
+                                                assert(zdelete(ifltab, pathnames[n][o]) == STATUS_RECORD_FOUND);
+                                            }
                                             dataInFile = FALSE;
                                             if (i == 0) {
                                                 //--------------------------------------------------//
@@ -2039,6 +2041,8 @@ void testStoreRetrievePairedData() {
                                                 assert((status == STATUS_OKAY) == expectSuccess);
                                                 assert(errmsg == NULL || !(strstr(errmsg, "Data native datum") && strstr(errmsg, "conflicts with file native datum")));
                                                 zset("VDOW", "", FALSE);
+                                                if (status == STATUS_OKAY) {
+                                                }
                                             }
                                         }
                                         free(errmsg);

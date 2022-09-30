@@ -213,7 +213,7 @@ module modVerticalDatumInfo
                     vdi%offsetToNgvd29IsEstimate, &
                     vdi%offsetToNavd88,           &
                     vdi%offsetToNavd88IsEstimate, &
-                    .true.)
+                    .true.)    
             end if
         end function vdiToString
 end module modVerticalDatumInfo
@@ -289,17 +289,17 @@ subroutine testUserHeaderOps
 character function zlocationPath(pathname)
 
     implicit none
-
+    
     character (len=*), intent(in) :: pathname
-
+    
     character (len=128) ca, cb, cc, cd, ce, cf
     integer (kind=4) na, nb, nc, nd, ne, nf, npath, status
 
     call zufpn(ca, na, cb, nb, cc, nc, cd, nd, ce, ne, cf, nf, pathname, len_trim(pathname), status)
     call zfpn(ca, na, cb, nb, 'Location Info', 13, '', 0, , '', 0, '', 0, zlocationPath, npath)
-
+    
 end function zlocationPath
-
+    
 subroutine deleteTimeSeriesRecords( &
     ifltab,                         &
     pathname,                       &
@@ -308,20 +308,20 @@ subroutine deleteTimeSeriesRecords( &
     deleteLocationRecordAlso)
 
     implicit none
-
+    
     real (kind=8),       intent(in out) :: ifltab(*)
     character (len=391), intent(in)     :: pathname
     integer (kind=4),    intent(in)     :: startJul, endJul
     logical (kind=4),    intent(in)     :: deleteLocationRecordAlso
-
+    
     character (len=391) recordPathname
     character (len=128) ca, cb, cc, cd, ce, cf
     integer (kind=4) na, nb, nc, nd, ne, nf, npath, status
     integer (kind=4) yr, mo, da, blksiz, minblk, incblk, intvl, valueCount
     integer (kind=4) recordJul, intervalSeconds, iymdjl, zdssversion
-
+    
     recordJul = 0
-
+    recordPathname = ' '
     call zufpn(ca, na, cb, nb, cc, nc, cd, nd, ce, ne, cf, nf, pathname, len_trim(pathname), status)
     if (ce(1:1)=='~'.or.ce(1:1)=='I') then
         !-----------------------!
@@ -360,13 +360,13 @@ subroutine printTsTestInfo( &
 
     use modVerticalDatumInfo
     implicit none
-
+    
     integer (kind=4),         intent(in) :: count
     logical (kind=4),         intent(in) :: expectSuccess, dataInFile
-    character (len=391),      intent(in) :: pathname
+    character (len=*),        intent(in) :: pathname
     type (verticalDatumInfo), intent(in) :: fileVdi, dataVdi
-    character (len=16),       intent(in) :: currentVerticalDatum, unit
-
+    character (len=*),        intent(in) :: currentVerticalDatum, unit
+    
     if (expectSuccess) then
         write(*,'(a,i5,a)') 'Time series test ',count,' expecting SUCCESS'
     else
@@ -393,33 +393,33 @@ subroutine printPdTestInfo( &
 
     use modVerticalDatumInfo
     implicit none
-
+    
     integer (kind=4),         intent(in) :: count
     logical (kind=4),         intent(in) :: expectSuccess, dataInFile
-    character (len=391),      intent(in) :: pathname
+    character (len=*),        intent(in) :: pathname
     type (verticalDatumInfo), intent(in) :: fileVdi, dataVdi
-    character (len=16),       intent(in) :: currentVerticalDatum, indUnit, depUnit
-
+    character (len=*),        intent(in) :: currentVerticalDatum, indUnit, depUnit
+    
     if (expectSuccess) then
-        write(*,'(a,i5,a)') 'Time series test ',count,' expecting SUCCESS'
+        write(*,'(a,i5,a)') 'Paired data test ',count,' expecting SUCCESS'
     else
-        write(*,'(a,i5,a)') 'Time series test ',count,' expecting ERROR'
+        write(*,'(a,i5,a)') 'Paired data test ',count,' expecting ERROR'
     end if
     write(*, *) '    pathname               = '//pathname(:len_trim(pathname))
     write(*, *) '    data in file           =',dataInFile
     write(*, *) '    native datum in file   = '//fileVdi%nativeDatum
     write(*, *) '    incoming native datum  = '//dataVdi%nativeDatum
     write(*, *) '    incoming current datum = '//currentVerticalDatum
-    write(*, *) '    incoming units         = '//indUnit//', '//depUnit
+    write(*, *) '    incoming units         = '//indUnit(:len_trim(indUnit))//', '//depUnit(:len_trim(depUnit))
 end subroutine printPdTestInfo
-
+    
 subroutine testStoreRetrieveTimeSeries()
     use modVerticalDatumInfo
     implicit none
 
     integer (kind=8)        :: ifltab(250)
     integer (kind=4)        :: status, numberValues, i, j, k, k2, k3, kk, l, m, n, o, p, q, ii, len, iVerticalDatum
-    integer (kind=4)        :: quality(24), itimes(6,2),userHeader(100), userHeaderLen, count
+    integer (kind=4)        :: quality(24), itimes(6,2),userHeader(100), userHeaderLen, count, vdiCount
     integer (kind=4)        :: intervalOffset, compressionMethod, timesRetrieved(24), baseDate
     integer (kind=4)        :: startDay, endDay, recDay, iyr, imon, iday, ihm2m, na, nb, nc, nd, ne, nf, npath
     integer (kind=4)        :: intvl, iblock, minblk, incblk, numvals, iymdjl
@@ -481,10 +481,12 @@ subroutine testStoreRetrieveTimeSeries()
     endTime = '2400'
 
     currentVerticalDatums = (/CVD_NAVD88, CVD_NGVD29, 'Pensacola       ', CVD_UNSET/)
+    
+    vdiCount = size(vdi)
 
     call initVerticalDatumInfo(blankVdi)
 
-    do j = 1, 4
+    do j = 1, vdiCount
         call initVerticalDatumInfo(vdi(j))
         select case (j)
             case (1)
@@ -533,10 +535,13 @@ subroutine testStoreRetrieveTimeSeries()
     !     2 = DSS 7
     !
     ! j = vdi
-    !     1 = NGVD-29 native
-    !     2 = NAVD-88 native
-    !     3 = OTHER native with local datum named "Pensacola"
-    !     4 = None
+    !     1 = NGVD-29 native with offset to NAVD-88
+    !     2 = NGVD-29 native without offset to NAVD-88
+    !     3 = NAVD-88 native with offset to NGVD-29
+    !     4 = NAVD-88 native without offset to NGVD-29
+    !     5 = OTHER native with local datum named "Pensacola" with offsets to NAVD-88 and NGVD-29
+    !     6 = OTHER native with local datum named "Pensacola" without offsets to NAVD-88 and NGVD-29
+    !     7 = None
     !
     ! k = vertical datum
     !     1 = NAVD-88
@@ -576,7 +581,7 @@ subroutine testStoreRetrieveTimeSeries()
     count = 0
     do i = 1, 2
         call deletefile(filename(i), status)
-        do j = 1, 7
+        do j = 1, vdiCount
             do k = 1, 4
                 k2 = mod(k, 4) + 1
                 k3 = mod(k+1, 4) + 1
@@ -826,8 +831,8 @@ subroutine testStoreRetrieveTimeSeries()
                                                     .true.,                 & ! LQUAL     -> whether to store quality flags (/1)
                                                     unitSpec2,              & ! CUNITS   <-> data unit (may be modified to remove current datum)
                                                     type,                   & ! CTYPE     -> data type
-                                                    userHeader,             & ! IUHEAD   <-> user header array (may be modified to remove current datum)
-                                                    userHeaderLen,          & ! NUHEAD   <-> number of header array elements to store (may be modified to remove current datum)
+                                                    userHeader,             & ! IUHEAD    -> user header array
+                                                    userHeaderLen,          & ! NUHEAD    -> number of header array elements to store
                                                     0,                      & ! IPLAN     -> data storage method 0=replace all)
                                                     0,                      & ! ICOMP     -> data compression type to use (0=file default)
                                                     0.,                     & ! BASEV     -> data compression base value for delta method
@@ -851,8 +856,8 @@ subroutine testStoreRetrieveTimeSeries()
                                                     .true.,                 & ! LQUAL     -> whether to store quality flags (/1)
                                                     unitSpec2,              & ! CUNITS   <-> data unit (may be modified to remove current datum)
                                                     type,                   & ! CTYPE     -> data type
-                                                    userHeader,             & ! IUHEAD   <-> user header array (may be modified to remove current datum)
-                                                    userHeaderLen,          & ! NUHEAD   <-> number of header array elements to store (may be modified to remove current datum)
+                                                    userHeader,             & ! IUHEAD    -> user header array
+                                                    userHeaderLen,          & ! NUHEAD    -> number of header array elements to store
                                                     0,                      & ! IPLAN     -> data storage method 0=replace all)
                                                     0,                      & ! ICOMP     -> data compression type to use (0=file default)
                                                     0.,                     & ! BASEV     -> data compression base value for delta method
@@ -878,8 +883,8 @@ subroutine testStoreRetrieveTimeSeries()
                                                     .true.,                 & ! LSQUAL   -> whether to store quality flags (0/1)
                                                     unitSpec2,              & ! CUNITS   <-> data unit (may be modified to remove current datum)
                                                     type,                   & ! CTYPE     -> data type
-                                                    userHeader,             & ! IHEADU   <-> user header array (may be modified to remove current datum)
-                                                    userHeaderLen,          & ! NHEADU   <-> number of header array elements to store (may be modified to remove current datum)
+                                                    userHeader,             & ! IHEADU    -> user header array
+                                                    userHeaderLen,          & ! NHEADU    -> number of header array elements to store
                                                     1,                      & ! INFLAG   -> data storage method (0=merge)
                                                     status)                   ! ISTAT   <-  status (0=success)
                                             else
@@ -898,8 +903,8 @@ subroutine testStoreRetrieveTimeSeries()
                                                     .true.,                 & ! LSQUAL   -> whether to store quality flags (0/1)
                                                     unitSpec2,              & ! CUNITS   <-> data unit (may be modified to remove current datum)
                                                     type,                   & ! CTYPE     -> data type
-                                                    userHeader,             & ! IHEADU   <-> user header array (may be modified to remove current datum)
-                                                    userHeaderLen,          & ! NHEADU   <-> number of header array elements to store (may be modified to remove current datum)
+                                                    userHeader,             & ! IHEADU    -> user header array
+                                                    userHeaderLen,          & ! NHEADU    -> number of header array elements to store
                                                     1,                      & ! INFLAG   -> data storage method (0=merge)
                                                     status)                   ! ISTAT   <-  status (0=success)
                                             end if
@@ -942,8 +947,8 @@ subroutine testStoreRetrieveTimeSeries()
                                                             .true.,                 & ! LQUAL     -> whether to store quality flags (/1)
                                                             unitSpec2,              & ! CUNITS   <-> data unit (may be modified to remove current datum)
                                                             type,                   & ! CTYPE     -> data type
-                                                            userHeader,             & ! IUHEAD   <-> user header array (may be modified to remove current datum)
-                                                            userHeaderLen,          & ! NUHEAD   <-> number of header array elements to store (may be modified to remove current datum)
+                                                            userHeader,             & ! IUHEAD    -> user header array
+                                                            userHeaderLen,          & ! NUHEAD    -> number of header array elements to store
                                                             0,                      & ! IPLAN     -> data storage method 0=replace all)
                                                             0,                      & ! ICOMP     -> data compression type to use (0=file default)
                                                             0.,                     & ! BASEV     -> data compression base value for delta method
@@ -967,8 +972,8 @@ subroutine testStoreRetrieveTimeSeries()
                                                             .true.,                 & ! LQUAL     -> whether to store quality flags (/1)
                                                             unitSpec2,              & ! CUNITS   <-> data unit (may be modified to remove current datum)
                                                             type,                   & ! CTYPE     -> data type
-                                                            userHeader,             & ! IUHEAD   <-> user header array (may be modified to remove current datum)
-                                                            userHeaderLen,          & ! NUHEAD   <-> number of header array elements to store (may be modified to remove current datum)
+                                                            userHeader,             & ! IUHEAD    -> user header array
+                                                            userHeaderLen,          & ! NUHEAD    -> number of header array elements to store
                                                             0,                      & ! IPLAN     -> data storage method 0=replace all)
                                                             0,                      & ! ICOMP     -> data compression type to use (0=file default)
                                                             0.,                     & ! BASEV     -> data compression base value for delta method
@@ -994,8 +999,8 @@ subroutine testStoreRetrieveTimeSeries()
                                                             .true.,                 & ! LSQUAL   -> whether to store quality flags (0/1)
                                                             unitSpec2,              & ! CUNITS   <-> data unit (may be modified to remove current datum)
                                                             type,                   & ! CTYPE     -> data type
-                                                            userHeader,             & ! IHEADU   <-> user header array (may be modified to remove current datum)
-                                                            userHeaderLen,          & ! NHEADU   <-> number of header array elements to store (may be modified to remove current datum)
+                                                            userHeader,             & ! IHEADU    -> user header array
+                                                            userHeaderLen,          & ! NHEADU    -> number of header array elements to store
                                                             1,                      & ! INFLAG   -> data storage method (0=merge)
                                                             status)                   ! ISTAT   <-  status (0=success)
                                                     else
@@ -1014,8 +1019,8 @@ subroutine testStoreRetrieveTimeSeries()
                                                             .true.,                 & ! LSQUAL   -> whether to store quality flags (0/1)
                                                             unitSpec2,              & ! CUNITS   <-> data unit (may be modified to remove current datum)
                                                             type,                   & ! CTYPE     -> data type
-                                                            userHeader,             & ! IHEADU   <-> user header array (may be modified to remove current datum)
-                                                            userHeaderLen,          & ! NHEADU   <-> number of header array elements to store (may be modified to remove current datum)
+                                                            userHeader,             & ! IHEADU    -> user header array
+                                                            userHeaderLen,          & ! NHEADU    -> number of header array elements to store
                                                             1,                      & ! INFLAG   -> data storage method (0=merge)
                                                             status)                   ! ISTAT   <-  status (0=success)
                                                     end if
@@ -1186,10 +1191,10 @@ subroutine testStoreRetrievePairedData()
 
     integer (kind=8)        :: ifltab(250)
     integer (kind=4)        :: status, numberOrdinates, numberCurves, ihoriz, nords, ncurves, nvals, count, iVerticalDatum
-    integer (kind=4)        :: userHeader(100), userHeaderLen, i, j, k, k2, k3, kk, l, m, n, o, p, ii, len
-    real (kind=8)           :: dordinates(6,3), dvalues(6,3), dvals(12), dvals_out(12)
+    integer (kind=4)        :: userHeader(100), userHeaderLen, i, j, k, k2, k3, kk, l, m, n, o, p, q, ii, len, vdiCount
+    real (kind=8)           :: dordinates(6,3), dvalues(6,3), dvals(12), dvals_out(12), offset
     real (kind=4)           :: fordinates(6,3), fvalues(6,3), fvals(12), fvals_out(12)
-    character (len=300)     :: errmsg, vdiStr
+    character (len=300)     :: errmsg, fileVdiStr, dataVdiStr
     character (len=80)      :: filename(2)
     character (len=80)      :: pathnames(2,2)
     character (len=16)      :: unit(3), type, currentVerticalDatums(4), cVerticalDatum, nativeDatumInFile
@@ -1197,7 +1202,7 @@ subroutine testStoreRetrievePairedData()
     character (len=4)       :: startTime, endTime
     character (len=400)     :: userHeaderStr
     logical                 :: l_label, expectSuccess, dataInFile, lfound
-    type(verticalDatumInfo) :: vdi(4), vdiInFile, blankVdi, thisVdi
+    type(verticalDatumInfo) :: vdi(7), vdiInFile, blankVdi, thisVdi
 
 
     equivalence (userHeader, userHeaderStr)
@@ -1223,11 +1228,11 @@ subroutine testStoreRetrievePairedData()
 
     filename = (/'v6_f.dss', 'v7_f.dss'/)
 
-    pathnames = reshape((/                   &
-        '//TestPdLoc/Stage-Elev//Doubles/ ', &
-        '//TestPdLoc/Stage-Elev//Floats/  ', &
-        '//TestPdLoc/Elev-Stage//Doubles/ ', &
-        '//TestPdLoc/Elev-Stage//Floats/  '  &
+    pathnames = reshape((/                    &
+        '//TestPdLoc/Stage-Elev///Doubles/ ', &
+        '//TestPdLoc/Stage-Elev///Floats/  ', &
+        '//TestPdLoc/Elev-Stage///Doubles/ ', &
+        '//TestPdLoc/Elev-Stage///Floats/  '  &
         /), shape(pathnames))
 
 
@@ -1237,9 +1242,11 @@ subroutine testStoreRetrievePairedData()
 
     currentVerticalDatums = (/CVD_NAVD88, CVD_NGVD29, 'Pensacola       ', CVD_UNSET/)
 
+    vdiCount = size(vdi)
+
     call initVerticalDatumInfo(blankVdi)
 
-    do j = 1, 4
+    do j = 1, vdiCount
         call initVerticalDatumInfo(vdi(j))
         select case (j)
             case (1)
@@ -1250,20 +1257,33 @@ subroutine testStoreRetrievePairedData()
                 vdi(j)%offsetToNgvd29 = 0
                 vdi(j)%offsetToNgvd29IsEstimate = .false.
             case (2)
+                vdi(j)%nativeDatum = CVD_NGVD29
+                vdi(j)%unit = 'ft'
+                vdi(j)%offsetToNgvd29 = 0
+                vdi(j)%offsetToNgvd29IsEstimate = .false.
+            case (3)
                 vdi(j)%nativeDatum = CVD_NAVD88
                 vdi(j)%unit = 'ft'
                 vdi(j)%offsetToNavd88 = 0
                 vdi(j)%offsetToNavd88IsEstimate = .false.
                 vdi(j)%offsetToNgvd29 = -0.3855
                 vdi(j)%offsetToNgvd29IsEstimate = .true.
-            case (3)
+            case (4)
+                vdi(j)%nativeDatum = CVD_NAVD88
+                vdi(j)%unit = 'ft'
+                vdi(j)%offsetToNavd88 = 0
+                vdi(j)%offsetToNavd88IsEstimate = .false.
+            case (5)
                 vdi(j)%nativeDatum = 'Pensacola'
                 vdi(j)%unit = 'ft'
                 vdi(j)%offsetToNavd88 = 1.457
                 vdi(j)%offsetToNavd88IsEstimate = .true.
                 vdi(j)%offsetToNgvd29 = 1.07
                 vdi(j)%offsetToNgvd29IsEstimate = .false.
-            case (4)
+            case (6)
+                vdi(j)%nativeDatum = 'Pensacola'
+                vdi(j)%unit = 'ft'
+            case (7)
                 ! just leave in initialized state
         end select
     end do
@@ -1275,10 +1295,13 @@ subroutine testStoreRetrievePairedData()
     !     2 = DSS 7
     !
     ! j = vdi
-    !     1 = NGVD-29 native
-    !     2 = NAVD-88 native
-    !     3 = OTHER native with local datum named "Pensacola"
-    !     4 = None
+    !     1 = NGVD-29 native with offset to NAVD-88
+    !     2 = NGVD-29 native without offset to NAVD-88
+    !     3 = NAVD-88 native with offset to NGVD-29
+    !     4 = NAVD-88 native without offset to NGVD-29
+    !     5 = OTHER native with local datum named "Pensacola" with offsets to NAVD-88 and NGVD-29
+    !     6 = OTHER native with local datum named "Pensacola" without offsets to NAVD-88 and NGVD-29
+    !     7 = None
     !
     ! k = vertical datum
     !     1 = NAVD-88
@@ -1310,808 +1333,26 @@ subroutine testStoreRetrievePairedData()
     !     1 = specify
     !     2 = don't specify (use previously stored)
     !
+    ! q = ensure empty record
+    !     1 = leave any existing data in file
+    !     2 = delete existing record
+    !
     call zset('MLVL', '', 1)
     count = 0
     do i = 1, 2
         call deletefile(filename(i), status)
-        do j = 1, 4
-            if (vdi(j)%nativeDatum == ' ') then
-                vdiStr = ' '
-            else
-                call verticalDatumInfoToString(       &
-                    vdiStr,                           &
-                    errmsg,                           &
-                    vdi(j)%nativeDatum,               &
-                    vdi(j)%unit,                      &
-                    vdi(j)%offsetToNgvd29,            &
-                    vdi(j)%offsetToNgvd29IsEstimate,  &
-                    vdi(j)%offsetToNavd88,            &
-                    vdi(j)%offsetToNavd88IsEstimate,  &
-                    .true.)
-            end if
+        do j = 1, vdiCount
             do k = 1, 4
-                k2 = mod(k, 3) + 1
-                k3 = mod(k+1, 3) + 1
+                k2 = mod(k, 4) + 1
+                k3 = mod(k+1, 4) + 1
                 do l = 1, 3
+                    unitSpec = unit(l)
                     do m = 1, 3
                         do n = 1, 2
                             do o = 1, 2
                                 do p = 1, 2
-                                    unitSpec = unit(l)
-                                    count = count + 1
-                                    ! write(0,*) i, j, k, l, m, n, o, p
-                                    ifltab = 0
-                                    if (i == 1) then
-                                        call zopen6(ifltab, filename(i), status)
-                                    else
-                                        call zopen7(ifltab, filename(i), status)
-                                    end if
-                                    call assert(status == 0)
-                                    !------------------------------------------------------------------------------------!
-                                    ! get whether data exists in file and the native datum in the file for this pathname !
-                                    !------------------------------------------------------------------------------------!
-                                    call zset('VDTM', CVD_UNSET, 0)
-                                    nords = 0
-                                    ncurves = 0
-                                    nvals = 0
-                                    if (o == 1) then
-                                        !---------!
-                                        ! doubles !
-                                        !---------!
-                                        call zrpdd(           &
-                                            ifltab,           & ! IFLTAB  <-> file table
-                                            pathnames(o,n),   & ! CPATH    -> record name
-                                            nords,            & ! NORD    <-  number of ordinates
-                                            ncurves,          & ! NCURVE  <-  number of curves
-                                            ihoriz,           & ! IHORIZ  <-  which var plots on horizontals axis (1=ordinates, 2=values)
-                                            c1unit,           & ! C1UNIT  <-  unit of ordinates
-                                            c1type,           & ! C1TYPE  <-  data type of ordinates
-                                            c2unit,           & ! C2UNIT  <-  unit of curve values
-                                            c2type,           & ! C2TYPE  <-  data type of curve values
-                                            dvals_out,        & ! DVALUES <-  1D array of ordinates, 1st curve values, 2cn curve values, ...
-                                            size(dvals),      & ! KVALS    -> size of dvals_out must be at least (ncurve+1) * nords
-                                            nvals,            & ! NVALS   <-  number of ordinates + curve values retrieved
-                                            clabel,           & ! CLABEL  <-  array of labels for each curve
-                                            0,                & ! KLABEL   -> max number of labels to retrieve
-                                            l_label,          & ! LABEL   <-  whether labels were retrieved
-                                            userHeader,       & ! IUHEAD  <-  user header array
-                                            size(userHeader), & ! KUHEAD   -> max number of user header elements to retrieve
-                                            userHeaderLen,    & ! NUHEAD  <-  number of user header elements retrieved
-                                            status)             ! ISTAT   <-  status (0=success)
-                                    else
-                                        !--------!
-                                        ! floats !
-                                        !--------!
-                                        call zrpd(            &
-                                            ifltab,           & ! IFLTAB  <-> file table
-                                            pathnames(o,n),   & ! CPATH    -> record name
-                                            nords,            & ! NORD    <-  number of ordinates
-                                            ncurves,          & ! NCURVE  <-  number of curves
-                                            ihoriz,           & ! IHORIZ  <-  which var plots on horizontals axis (1=ordinates, 2=values)
-                                            c1unit,           & ! C1UNIT  <-  unit of ordinates
-                                            c1type,           & ! C1TYPE  <-  data type of ordinates
-                                            c2unit,           & ! C2UNIT  <-  unit of curve values
-                                            c2type,           & ! C2TYPE  <-  data type of curve values
-                                            fvals_out,        & ! SVALUES <-  1D array of ordinates, 1st curve values, 2cn curve values, ...
-                                            size(fvals),      & ! KVALS    -> size of dvals_out must be at least (ncurve+1) * nords
-                                            nvals,            & ! NVALS   <-  number of ordinates + curve values retrieved
-                                            clabel,           & ! CLABEL  <-  array of labels for each curve
-                                            0,                & ! KLABEL   -> max number of labels to retrieve
-                                            l_label,          & ! LABEL   <-  whether labels were retrieved
-                                            userHeader,       & ! IUHEAD  <-  user header array
-                                            size(userHeader), & ! KUHEAD   -> max number of user header elements to retrieve
-                                            userHeaderLen,    & ! NUHEAD  <-  number of user header elements retrieved
-                                            status)             ! ISTAT   <-  status (0=success)
-                                    end if
-                                    dataInFile = status == 0
-                                    if (i == 1) then
-                                        !-------!
-                                        ! DSS 6 !
-                                        !-------!
-                                        if (dataInFile) then
-                                            call extractVdiFromUserHeader(vdiInFile, userHeader, userHeaderLen)
-                                        else
-                                            call initVerticalDatumInfo(vdiInFile)
-                                        end if
-                                    else
-                                        !-------!
-                                        ! DSS 7 !
-                                        !-------!
-                                        call getLocationVdi(vdiInFile, ifltab, pathnames(o,n))
-                                    end if
-                                    nativeDatumInFile = vdiInFile%nativeDatum
-                                    !--------------------------------!
-                                    ! set the default vertical datum !
-                                    !--------------------------------!
-                                    userHeaderStr = ' '
-                                    kk = k
-                                    call zset('VDTM', currentVerticalDatums(kk), 0)
-                                    if (p == 1) then
-                                        !------------------------------------------------!
-                                        ! add the vertical datum info to the user header !
-                                        !------------------------------------------------!
-                                        thisVdi = vdi(j)
-                                        if (vdi(j)%nativeDatum /= ' ') then
-                                            userHeaderStr = VERTICAL_DATUM_INFO_PARAM//':'//vdiStr(:len_trim(vdiStr))//';'
-                                        end if
-                                    else
-                                        thisVdi = blankVdi
-                                    end if
-                                    do
-                                        c1unit = unit(l)
-                                        c2unit = unit(l)
-                                        if (m > 1) then
-                                            !----------------------------------------------------------!
-                                            ! override the default vertical datum with the user header !
-                                            !----------------------------------------------------------!
-                                            kk = k2
-                                            len = len_trim(userHeaderStr) + 1
-                                            userHeaderStr(len:) = VERTICAL_DATUM_PARAM//':'// &
-                                                currentVerticalDatums(kk)(:len_trim(currentVerticalDatums(kk)))//';'
-                                        end if
-                                        if (m > 2) then
-                                            !--------------------------------------------------------!
-                                            ! override default and user header datums with unit spec !
-                                            !--------------------------------------------------------!
-                                            kk = k3
-                                            write(unitSpec,'(5a)')                     &
-                                                'U=',unit(l)(1:len_trim(unit(l))),'|', &
-                                                'V=',currentVerticalDatums(kk)
-                                            if (n == 1) then
-                                                c2unit = unitSpec
-                                            else
-                                                c1unit = unitSpec
-                                            end if
-                                        end if
-                                        !-----------------------------------------------!
-                                        ! figure out whether the zs?tsx? should succeed !
-                                        !-----------------------------------------------!
-                                        expectSuccess = .true.
-                                        if (dataInFile) then
-                                            !-----------------------!
-                                            ! existing data in file !
-                                            !-----------------------!
-                                            if (nativeDatumInFile == ' ') then
-                                                !-------------------------------!
-                                                ! native datum in file == UNSET !
-                                                !-------------------------------!
-                                                if (thisVdi%nativeDatum == ' ') then
-                                                    !--------------------------------!
-                                                    ! incoming native datum == UNSET !
-                                                    !--------------------------------!
-                                                    if (currentVerticalDatums(kk) /= CVD_UNSET) then
-                                                        !------------------------!
-                                                        ! current datum /= UNSET !
-                                                        !------------------------!
-                                                        expectSuccess = .false.
-                                                    end if
-                                                else
-                                                    !--------------------------------!
-                                                    ! incoming native datum /= UNSET !
-                                                    !--------------------------------!
-                                                    expectSuccess = .false.
-                                                end if
-                                            else if (nativeDatumInFile == CVD_NAVD88) then
-                                                !---------------------------------!
-                                                ! native datum in file == NAVD-88 !
-                                                !---------------------------------!
-                                                if (thisVdi%nativeDatum == ' ') then
-                                                    !--------------------------------!
-                                                    ! incoming native datum == UNSET !
-                                                    !--------------------------------!
-                                                    if (currentVerticalDatums(kk) == CVD_UNSET) then
-                                                        !--------------------------!
-                                                        ! current datum == NAVD-88 !
-                                                        !--------------------------!
-                                                        if (.not.unitIsFeet(unit(l)).and..not.unitIsMeters(unit(l))) then
-                                                            !------------------------!
-                                                            ! invalid incoming units !
-                                                            !------------------------!
-                                                            expectSuccess = .false.
-                                                        end if
-                                                    else if (currentVerticalDatums(kk) == CVD_NAVD88) then
-                                                        !--------------------------!
-                                                        ! current datum == NAVD-88 !
-                                                        !--------------------------!
-                                                        if (.not.unitIsFeet(unit(l)).and..not.unitIsMeters(unit(l))) then
-                                                            !------------------------!
-                                                            ! invalid incoming units !
-                                                            !------------------------!
-                                                            expectSuccess = .false.
-                                                        end if
-                                                    else if (currentVerticalDatums(kk) == CVD_NGVD29) then
-                                                        !--------------------------!
-                                                        ! current datum == NGVD-29 !
-                                                        !--------------------------!
-                                                        if (vdiInFile%offsetToNgvd29 == UNDEFINED_VERTICAL_DATUM_VALUE) then
-                                                            !---------------------------------------!
-                                                            ! incoming VDI has no offset to NGVD-29 !
-                                                            !---------------------------------------!
-                                                            expectSuccess = .false.
-                                                        else
-                                                            !------------------------------------!
-                                                            ! incoming VDI has offset to NGVD-29 !
-                                                            !------------------------------------!
-                                                            if (.not.unitIsFeet(unit(l)).and..not.unitIsMeters(unit(l))) then
-                                                                !------------------------!
-                                                                ! invalid incoming units !
-                                                                !------------------------!
-                                                                expectSuccess = .false.
-                                                            end if
-                                                        end if
-                                                    else
-                                                        !--------------------------!
-                                                        ! unexpected current datum !
-                                                        !--------------------------!
-                                                        expectSuccess = .false.
-                                                    end if
-                                                else if (thisVdi%nativeDatum /= CVD_NAVD88) then
-                                                    !----------------------------------!
-                                                    ! incoming native datum /= NAVD-88 !
-                                                    !----------------------------------!
-                                                    expectSuccess = .false.
-                                                else
-                                                    !----------------------------------!
-                                                    ! incoming native datum == NAVD-88 !
-                                                    !----------------------------------!
-                                                    if (currentVerticalDatums(kk) == CVD_UNSET) then
-                                                        !------------------------!
-                                                        ! current datum == UNSET !
-                                                        !------------------------!
-                                                        if (.not.unitIsFeet(unit(l)).and..not.unitIsMeters(unit(l))) then
-                                                            !------------------------!
-                                                            ! invalid incoming units !
-                                                            !------------------------!
-                                                            expectSuccess = .false.
-                                                        end if
-                                                    else if (currentVerticalDatums(kk) == CVD_NAVD88) then
-                                                        !---------------------------!
-                                                        ! current datum == NAVD-88  !
-                                                        !---------------------------!
-                                                        if (.not.unitIsFeet(unit(l)).and..not.unitIsMeters(unit(l))) then
-                                                            !------------------------!
-                                                            ! invalid incoming units !
-                                                            !------------------------!
-                                                            expectSuccess = .false.
-                                                        end if
-                                                    else
-                                                        !---------------------------!
-                                                        ! current datum /= NAVD-88  !
-                                                        !---------------------------!
-                                                        if (thisVdi%offsetToNavd88 == UNDEFINED_VERTICAL_DATUM_VALUE) then
-                                                            !---------------------------------------!
-                                                            ! incoming VDI has no offset to NAVD-88 !
-                                                            !---------------------------------------!
-                                                            expectSuccess = .false.
-                                                        else if (currentVerticalDatums(kk) /= CVD_NAVD88 .and. &
-                                                            currentVerticalDatums(kk) /= CVD_NGVD29) then
-                                                            !---------------------------------!
-                                                            ! current datum == UNSET or LOCAL !
-                                                            !---------------------------------!
-                                                            expectSuccess = .false.
-                                                        else
-                                                            !------------------------------------!
-                                                            ! incoming VDI has offset to NAVD-88 !
-                                                            !------------------------------------!
-                                                            if (.not.unitIsFeet(unit(l)).and..not.unitIsMeters(unit(l))) then
-                                                                !------------------------!
-                                                                ! invalid incoming units !
-                                                                !------------------------!
-                                                                expectSuccess = .false.
-                                                            end if
-                                                        end if
-                                                    end if
-                                                end if
-                                            else if (nativeDatumInFile == CVD_NGVD29) then
-                                                !---------------------------------!
-                                                ! native datum in file == NGVD-29 !
-                                                !---------------------------------!
-                                                if (thisVdi%nativeDatum == ' ') then
-                                                    !--------------------------------!
-                                                    ! incoming native datum == UNSET !
-                                                    !--------------------------------!
-                                                    if (currentVerticalDatums(kk) == CVD_UNSET) then
-                                                        !--------------------------!
-                                                        ! current datum == NGVD-29 !
-                                                        !--------------------------!
-                                                        if (.not.unitIsFeet(unit(l)).and..not.unitIsMeters(unit(l))) then
-                                                            !------------------------!
-                                                            ! invalid incoming units !
-                                                            !------------------------!
-                                                            expectSuccess = .false.
-                                                        end if
-                                                    else if (currentVerticalDatums(kk) == CVD_NGVD29) then
-                                                        !--------------------------!
-                                                        ! current datum == NGVD-29 !
-                                                        !--------------------------!
-                                                        if (.not.unitIsFeet(unit(l)).and..not.unitIsMeters(unit(l))) then
-                                                            !------------------------!
-                                                            ! invalid incoming units !
-                                                            !------------------------!
-                                                            expectSuccess = .false.
-                                                        end if
-                                                    else if (currentVerticalDatums(kk) == CVD_NAVD88) then
-                                                        !--------------------------!
-                                                        ! current datum == NAVD-88 !
-                                                        !--------------------------!
-                                                        if (vdiInFile%offsetToNavd88 == UNDEFINED_VERTICAL_DATUM_VALUE) then
-                                                            !---------------------------------------!
-                                                            ! incoming VDI has no offset to NAVD-88 !
-                                                            !---------------------------------------!
-                                                            expectSuccess = .false.
-                                                        else
-                                                            !------------------------------------!
-                                                            ! incoming VDI has offset to NAVD-88 !
-                                                            !------------------------------------!
-                                                            if (.not.unitIsFeet(unit(l)).and..not.unitIsMeters(unit(l))) then
-                                                                !------------------------!
-                                                                ! invalid incoming units !
-                                                                !------------------------!
-                                                                expectSuccess = .false.
-                                                            end if
-                                                        end if
-                                                    else
-                                                        !--------------------------!
-                                                        ! unexpected current datum !
-                                                        !--------------------------!
-                                                        expectSuccess = .false.
-                                                    end if
-                                                else if (thisVdi%nativeDatum /= CVD_NGVD29) then
-                                                    !----------------------------------!
-                                                    ! incoming native datum /= NGVD-29 !
-                                                    !----------------------------------!
-                                                    expectSuccess = .false.
-                                                else
-                                                    !----------------------------------!
-                                                    ! incoming native datum == NGVD-29 !
-                                                    !----------------------------------!
-                                                    if (currentVerticalDatums(kk) == CVD_UNSET) then
-                                                        !------------------------!
-                                                        ! current datum == UNSET !
-                                                        !------------------------!
-                                                        if (.not.unitIsFeet(unit(l)).and..not.unitIsMeters(unit(l))) then
-                                                            !------------------------!
-                                                            ! invalid incoming units !
-                                                            !------------------------!
-                                                            expectSuccess = .false.
-                                                        end if
-                                                    else if (currentVerticalDatums(kk) == CVD_NGVD29) then
-                                                        !---------------------------!
-                                                        ! current datum == NGVD-29  !
-                                                        !---------------------------!
-                                                        if (.not.unitIsFeet(unit(l)).and..not.unitIsMeters(unit(l))) then
-                                                            !------------------------!
-                                                            ! invalid incoming units !
-                                                            !------------------------!
-                                                            expectSuccess = .false.
-                                                        end if
-                                                    else
-                                                        !---------------------------!
-                                                        ! current datum /= NGVD-29  !
-                                                        !---------------------------!
-                                                        if (thisVdi%offsetToNgvd29 == UNDEFINED_VERTICAL_DATUM_VALUE) then
-                                                            !---------------------------------------!
-                                                            ! incoming VDI has no offset to NGVD-29 !
-                                                            !---------------------------------------!
-                                                            expectSuccess = .false.
-                                                        else if (currentVerticalDatums(kk) /= CVD_NAVD88 .and. &
-                                                            currentVerticalDatums(kk) /= CVD_NGVD29) then
-                                                            !---------------------------------!
-                                                            ! current datum == UNSET or LOCAL !
-                                                            !---------------------------------!
-                                                            expectSuccess = .false.
-                                                        else
-                                                            !------------------------------------!
-                                                            ! incoming VDI has offset to NGVD-29 !
-                                                            !------------------------------------!
-                                                            if (.not.unitIsFeet(unit(l)).and..not.unitIsMeters(unit(l))) then
-                                                                !------------------------!
-                                                                ! invalid incoming units !
-                                                                !------------------------!
-                                                                expectSuccess = .false.
-                                                            end if
-                                                        end if
-                                                    end if
-                                                end if
-                                            else
-                                                !-------------------------------!
-                                                ! native datum in file == LOCAL !
-                                                !-------------------------------!
-                                                if (currentVerticalDatums(kk) == nativeDatumInFile) then
-                                                    !------------------------!
-                                                    ! current datum == LOCAL !
-                                                    !------------------------!
-                                                    if (thisVdi%nativeDatum == ' ') then
-                                                        !--------------------------------!
-                                                        ! incoming native datum == UNSET !
-                                                        !--------------------------------!
-                                                        if (.not.unitIsFeet(unit(l)).and..not.unitIsMeters(unit(l))) then
-                                                            !------------------------!
-                                                            ! invalid incoming units !
-                                                            !------------------------!
-                                                            expectSuccess = .false.
-                                                        end if
-                                                    else if (thisVdi%nativeDatum == nativeDatumInFile) then
-                                                        !-------------------------------------!
-                                                        ! incoming native datum == this LOCAL !
-                                                        !-------------------------------------!
-                                                        if (.not.unitIsFeet(unit(l)).and..not.unitIsMeters(unit(l))) then
-                                                            !------------------------!
-                                                            ! invalid incoming units !
-                                                            !------------------------!
-                                                            expectSuccess = .false.
-                                                        end if
-                                                    else if (currentVerticalDatums(kk) == CVD_NAVD88.and.thisVdi%offsetToNavd88 /= &
-                                                        UNDEFINED_VERTICAL_DATUM_VALUE) then
-                                                        !----------------------------------------------------------!
-                                                        ! current datum is NAVD-88 and VDI has offset from NAVD-88 !
-                                                        !----------------------------------------------------------!
-                                                        expectSuccess = .true.
-                                                    else if (currentVerticalDatums(kk) == CVD_NGVD29.and.thisVdi%offsetToNgvd29 /= &
-                                                        UNDEFINED_VERTICAL_DATUM_VALUE) then
-                                                        !----------------------------------------------------------!
-                                                        ! current datum is NGVD-29 and VDI has offset from NGVD-29 !
-                                                        !----------------------------------------------------------!
-                                                        expectSuccess = .true.
-                                                    else
-                                                        !-----------------------------------------!
-                                                        ! current datum == UNSET or another LOCAL !
-                                                        !-----------------------------------------!
-                                                        expectSuccess = .false.
-                                                    end if
-                                                else
-                                                    !------------------------!
-                                                    ! current datum /= LOCAL !
-                                                    !------------------------!
-                                                    if (thisVdi%nativeDatum == ' ') then
-                                                        !-----------------------!
-                                                        ! native datum == UNSET !
-                                                        !-----------------------!
-                                                        if (.not.unitIsFeet(unit(l)).and..not.unitIsMeters(unit(l))) then
-                                                            !------------------------!
-                                                            ! invalid incoming units !
-                                                            !------------------------!
-                                                            expectSuccess = .false.
-                                                        end if
-                                                    else if (thisVdi%nativeDatum == nativeDatumInFile) then
-                                                        !-----------------------!
-                                                        ! native datum == LOCAL !
-                                                        !-----------------------!
-                                                        if (currentVerticalDatums(kk) == CVD_NAVD88.and.thisVdi%offsetToNavd88 /=  &
-                                                            UNDEFINED_VERTICAL_DATUM_VALUE) then
-                                                            !----------------------------------------------------------!
-                                                            ! current datum is NAVD-88 and VDI has offset from NAVD-88 !
-                                                            !----------------------------------------------------------!
-                                                            if (.not.unitIsFeet(unit(l)).and..not.unitIsMeters(unit(l))) then
-                                                                !------------------------!
-                                                                ! invalid incoming units !
-                                                                !------------------------!
-                                                                expectSuccess = .false.
-                                                            end if
-                                                        else if (currentVerticalDatums(kk) == CVD_NGVD29 .and. &
-                                                            thisVdi%offsetToNgvd29 /= UNDEFINED_VERTICAL_DATUM_VALUE) then
-                                                            !----------------------------------------------------------!
-                                                            ! current datum is NGVD-29 and VDI has offset from NGVD-29 !
-                                                            !----------------------------------------------------------!
-                                                            if (.not.unitIsFeet(unit(l)).and..not.unitIsMeters(unit(l))) then
-                                                                !------------------------!
-                                                                ! invalid incoming units !
-                                                                !------------------------!
-                                                                expectSuccess = .false.
-                                                            end if
-                                                        else
-                                                            !------------------------!
-                                                            ! current datum == UNSET !
-                                                            !------------------------!
-                                                            if (.not.unitIsFeet(unit(l)).and..not.unitIsMeters(unit(l))) then
-                                                                !------------------------!
-                                                                ! invalid incoming units !
-                                                                !------------------------!
-                                                                expectSuccess = .false.
-                                                            end if
-                                                        end if
-                                                    else
-                                                        !-----------------------!
-                                                        ! native datum /= LOCAL !
-                                                        !-----------------------!
-                                                        expectSuccess = .false.
-                                                    end if
-                                                end if
-                                            end if
-                                        else
-                                            !--------------------------!
-                                            ! no existing data in file !
-                                            !--------------------------!
-                                            if (thisVdi%nativeDatum == ' ') then
-                                                !--------------------------------!
-                                                ! incoming native datum == UNSET !
-                                                !--------------------------------!
-                                                if (currentVerticalDatums(kk) == CVD_UNSET) then
-                                                    !------------------------!
-                                                    ! current datum == UNSET !
-                                                    !------------------------!
-                                                    expectSuccess = .true.
-                                                else if (currentVerticalDatums(kk) == CVD_NAVD88) then
-                                                    !--------------------------!
-                                                    ! current datum == NAVD-88 !
-                                                    !--------------------------!
-                                                    if (vdiInFile%offsetToNavd88 /= UNDEFINED_VERTICAL_DATUM_VALUE) then
-                                                        !---------------------------------------------!
-                                                        ! VDI in file has a valid offset from NAVD-88 !
-                                                        !---------------------------------------------!
-                                                        if (.not.unitIsFeet(unit(l)).and..not.unitIsMeters(unit(l))) then
-                                                            !------------------------!
-                                                            ! invalid incoming units !
-                                                            !------------------------!
-                                                            expectSuccess = .false.
-                                                        end if
-                                                    else
-                                                        !-------------------=--------------------------!
-                                                        ! VDI in file has no valid offset from NAVD-88 !
-                                                        !--------------------=-------------------------!
-                                                        expectSuccess = .false.
-                                                    end if
-                                                else if (currentVerticalDatums(kk) == CVD_NGVD29) then
-                                                    !--------------------------!
-                                                    ! current datum == NAVD-88 !
-                                                    !--------------------------!
-                                                    if (vdiInFile%offsetToNgvd29 /= UNDEFINED_VERTICAL_DATUM_VALUE) then
-                                                        !---------------------------------------------!
-                                                        ! VDI in file has a valid offset from NGVD-29 !
-                                                        !---------------------------------------------!
-                                                        if (.not.unitIsFeet(unit(l)).and..not.unitIsMeters(unit(l))) then
-                                                            !------------------------!
-                                                            ! invalid incoming units !
-                                                            !------------------------!
-                                                            expectSuccess = .false.
-                                                        end if
-                                                    else
-                                                        !-------------------=--------------------------!
-                                                        ! VDI in file has no valid offset from NGVD-29 !
-                                                        !--------------------=-------------------------!
-                                                        expectSuccess = .false.
-                                                    end if
-                                                else
-                                                    !--------------------------!
-                                                    ! unexpected current datum !
-                                                    !--------------------------!
-                                                    expectSuccess = .false.
-                                                end if
-                                            else if (thisVdi%nativeDatum == CVD_NAVD88) then
-                                                !----------------------------------!
-                                                ! incoming native datum == NAVD-88 !
-                                                !----------------------------------!
-                                                if (currentVerticalDatums(kk) /= CVD_NAVD88 .and. &
-                                                    currentVerticalDatums(kk) /= CVD_NGVD29 .and. &
-                                                    currentVerticalDatums(kk) /= CVD_UNSET) then
-                                                    !------------------------!
-                                                    ! current datum is local !
-                                                    !------------------------!
-                                                    expectSuccess = .false.
-                                                else if (thisVdi%offsetToNavd88 == UNDEFINED_VERTICAL_DATUM_VALUE) then
-                                                    !---------------------------------------!
-                                                    ! incoming VDI has no offset to NAVD-88 !
-                                                    !---------------------------------------!
-                                                    expectSuccess = .false.
-                                                else
-                                                    !------------------------------------!
-                                                    ! incoming VDI has offset to NAVD-88 !
-                                                    !------------------------------------!
-                                                    if (.not.unitIsFeet(unit(l)).and..not.unitIsMeters(unit(l))) then
-                                                        !------------------------!
-                                                        ! invalid incoming units !
-                                                        !------------------------!
-                                                        expectSuccess = .false.
-                                                    end if
-                                                end if
-                                            else if (thisVdi%nativeDatum == CVD_NGVD29) then
-                                                !----------------------------------!
-                                                ! incoming native datum == NGVD-29 !
-                                                !----------------------------------!
-                                                if (currentVerticalDatums(kk) /= CVD_NAVD88 .and. &
-                                                    currentVerticalDatums(kk) /= CVD_NGVD29 .and. &
-                                                    currentVerticalDatums(kk) /= CVD_UNSET) then
-                                                    !------------------------!
-                                                    ! current datum is local !
-                                                    !------------------------!
-                                                    expectSuccess = .false.
-                                                else if (thisVdi%offsetToNgvd29 == UNDEFINED_VERTICAL_DATUM_VALUE) then
-                                                    !---------------------------------------!
-                                                    ! incoming VDI has no offset to NGVD-29 !
-                                                    !---------------------------------------!
-                                                    expectSuccess = .false.
-                                                else
-                                                    !------------------------------------!
-                                                    ! incoming VDI has offset to NGVD-29 !
-                                                    !------------------------------------!
-                                                    if (.not.unitIsFeet(unit(l)).and..not.unitIsMeters(unit(l))) then
-                                                        !------------------------!
-                                                        ! invalid incoming units !
-                                                        !------------------------!
-                                                        expectSuccess = .false.
-                                                    end if
-                                                end if
-                                            else
-                                                !--------------------------------!
-                                                ! incoming native datum == LOCAL !
-                                                !--------------------------------!
-                                                if (currentVerticalDatums(kk) == CVD_NAVD88.and.thisVdi%offsetToNavd88 /= &
-                                                    UNDEFINED_VERTICAL_DATUM_VALUE) then
-                                                    !----------------------------------------------------------!
-                                                    ! current datum is NAVD-88 and VDI has offset from NAVD-88 !
-                                                    !----------------------------------------------------------!
-                                                    if (.not.unitIsFeet(unit(l)).and..not.unitIsMeters(unit(l))) then
-                                                        !------------------------!
-                                                        ! invalid incoming units !
-                                                        !------------------------!
-                                                        expectSuccess = .false.
-                                                    end if
-                                                else if (currentVerticalDatums(kk) == CVD_NGVD29.and.thisVdi%offsetToNgvd29 /= &
-                                                    UNDEFINED_VERTICAL_DATUM_VALUE) then
-                                                    !----------------------------------------------------------!
-                                                    ! current datum is NGVD-29 and VDI has offset from NGVD-29 !
-                                                    !----------------------------------------------------------!
-                                                    if (.not.unitIsFeet(unit(l)).and..not.unitIsMeters(unit(l))) then
-                                                        !------------------------!
-                                                        ! invalid incoming units !
-                                                        !------------------------!
-                                                        expectSuccess = .false.
-                                                    end if
-                                                else
-                                                    !------------------------!
-                                                    ! current datum == UNSET !
-                                                    !------------------------!
-                                                    expectSuccess = .false.
-                                                end if
-                                            end if
-                                        end if
-                                        !-------------------------------------------------------!
-                                        ! store the paried data in the specified vertical datum !
-                                        !-------------------------------------------------------!
-                                        if (expectSuccess) then
-                                            write(*,'(a,i4,a)') 'Paired data test ',count,' expecting SUCCESS'
-                                        else
-                                            write(*,'(a,i4,a)') 'Paired test ',count,' expecting ERROR'
-                                        end if
-                                        write(*, *) '    pathname               = '//pathnames(o,n)(:len_trim(pathnames(o,n)))
-                                        write(*, *) '    data in file           =',dataInFile
-                                        write(*, *) '    native datum in file   = '//nativeDatumInFile
-                                        write(*, *) '    incoming native datum  = '//thisVdi%nativeDatum
-                                        write(*, *) '    incoming current datum = '//currentVerticalDatums(kk)
-                                        write(*, *) '    incoming unit          = '//c1unit(:len_trim(c1unit))//', ' &
-                                                                                   //c2unit(:len_trim(c2unit))
-                                        userHeaderLen = byteCountToIntCount(len_trim(userHeaderStr))
-                                        if (isBigEndian()) then
-                                            do ii = 1, userHeaderLen
-                                                userHeader(ii) = iswap(userHeader(ii))
-                                            end do
-                                        end if
-                                        if (o == 1) then
-                                            !---------!
-                                            ! doubles !
-                                            !---------!
-                                            dvals(1:6) = dordinates(:,l)
-                                            dvals(7:12) = dvalues(:,l)
-                                            call zspdd(          &
-                                                ifltab,          & ! IFLTAB  <-> file table
-                                                pathnames(o,n),  & ! CPATH    -> record name
-                                                numberOrdinates, & ! NORD     -> number of ordinates
-                                                numberCurves,    & ! NCURVE   -> number of curves
-                                                1,               & ! IHORIZ   -> which var plots on horizontals axis (1=ordinates, 2=values)
-                                                c1unit,          & ! C1UNIT  <-> unit of ordinates  (may be modified to remove current datum)
-                                                type,            & ! C1TYPE   -> data type of ordinates
-                                                c2unit,          & ! C2UNIT  <-> unit of curve values  (may be modified to remove current datum)
-                                                type,            & ! C2TYPE   -> data type of curve values
-                                                dvals,           & ! DVALUES  -> 1D array of ordinates, 1st curve values, 2cn curve values, ...
-                                                '',              & ! CLABEL   -> array of labels for each curve
-                                                .false.,         & ! LABEL    -> whether to store labels
-                                                userHeader,      & ! IUHEAD  <-> user header array  (may be modified to remove current datum)
-                                                userHeaderLen,   & ! NUHEAD  <-> number of user header elements to store (may be modified to remove current datum)
-                                                0,               & ! IPLAN    -> storage plan (0=always store, 1=only create new, 2=only overwrite existing)
-                                                status)            ! ISTAT   <-  status (0=success)
-                                        else
-                                            !--------!
-                                            ! floats !
-                                            !--------!
-                                            fvals(1:6) = fordinates(:,l)
-                                            fvals(7:12) = fvalues(:,l)
-                                            call zspd(           &
-                                                ifltab,          & ! IFLTAB  <-> file table
-                                                pathnames(o,n),  & ! CPATH    -> record name
-                                                numberOrdinates, & ! NORD     -> number of ordinates
-                                                numberCurves,    & ! NCURVE   -> number of curves
-                                                1,               & ! IHORIZ   -> which var plots on horizontals axis (1=ordinates, 2=values)
-                                                c1unit,          & ! C1UNIT  <-> unit of ordinates  (may be modified to remove current datum)
-                                                type,            & ! C1TYPE   -> data type of ordinates
-                                                c2unit,          & ! C2UNIT  <-> unit of curve values  (may be modified to remove current datum)
-                                                type,            & ! C2TYPE   -> data type of curve values
-                                                fvals,           & ! SVALUES  -> 1D array of ordinates, 1st curve values, 2cn curve values, ...
-                                                '',              & ! CLABEL   -> array of labels for each curve
-                                                .false.,         & ! LABEL    -> whether to store labels
-                                                userHeader,      & ! IUHEAD  <-> user header array  (may be modified to remove current datum)
-                                                userHeaderLen,   & ! NUHEAD  <-> number of user header elements to store (may be modified to remove current datum)
-                                                0,               & ! IPLAN    -> storage plan (0=always store, 1=only create new, 2=only overwrite existing)
-                                                status)            ! ISTAT   <-  status (0=success)
-                                        end if
-                                        call assert((status == 0) .eqv. expectSuccess)
-                                        if (status /= 0 .and. i == 1 .and. nativeDatumInFile /= ' ' .and. nativeDatumInFile /= &
-                                            currentVerticalDatums(kk)) then
-                                            !---------------------------------------------!
-                                            ! change of vertical datum information for v6 !
-                                            !                                             !
-                                            ! delete paired data record and re-try        !
-                                            !---------------------------------------------!
-                                            call zdelet6 (ifltab, pathnames(o,n)(:len_trim(pathnames(o,n))), &
-                                                len_trim(pathnames(o,n)), lfound)
-                                            call assert(lfound)
-                                            write(*, *) '==> DELETED '//pathnames(o,n)(:len_trim(pathnames(o,n)))
-                                            call initVerticalDatumInfo(vdiInFile)
-                                            nativeDatumInFile = vdiInFile%nativeDatum
-                                            dataInFile = .false.
-                                            count = count + 1
-                                            cycle
-                                        end if
-                                        exit
-                                    end do
-                                    if (i==2.and.j>1.and.k==1.and.l==1.and.m==1.and.n==1.and.o==1) then
+                                    do q = 1, 2
                                         count = count + 1
-                                        write(0,'(a,i4,a)') 'Paired data test ',count,' expecting SUCCESS'
-                                        call zset('VDOW', '', 1)
-                                        if (o == 1) then
-                                            !---------!
-                                            ! doubles !
-                                            !---------!
-                                            call zspdd(          &
-                                                ifltab,          & ! IFLTAB  <-> file table
-                                                pathnames(o,n),  & ! CPATH    -> record name
-                                                numberOrdinates, & ! NORD     -> number of ordinates
-                                                numberCurves,    & ! NCURVE   -> number of curves
-                                                1,               & ! IHORIZ   -> which var plots on horizontals axis (1=ordinates, 2=values)
-                                                c1unit,          & ! C1UNIT  <-> unit of ordinates  (may be modified to remove current datum)
-                                                type,            & ! C1TYPE   -> data type of ordinates
-                                                c2unit,          & ! C2UNIT  <-> unit of curve values  (may be modified to remove current datum)
-                                                type,            & ! C2TYPE   -> data type of curve values
-                                                dvals,           & ! DVALUES  -> 1D array of ordinates, 1st curve values, 2cn curve values, ...
-                                                '',              & ! CLABEL   -> array of labels for each curve
-                                                .false.,         & ! LABEL    -> whether to store labels
-                                                userHeader,      & ! IUHEAD  <-> user header array  (may be modified to remove current datum)
-                                                userHeaderLen,   & ! NUHEAD  <-> number of user header elements to store (may be modified to remove current datum)
-                                                0,               & ! IPLAN    -> storage plan (0=always store, 1=only create new, 2=only overwrite existing)
-                                                status)            ! ISTAT   <-  status (0=success)
-                                        else
-                                            !--------!
-                                            ! floats !
-                                            !--------!
-                                            call zspd(           &
-                                                ifltab,          & ! IFLTAB  <-> file table
-                                                pathnames(o,n),  & ! CPATH    -> record name
-                                                numberOrdinates, & ! NORD     -> number of ordinates
-                                                numberCurves,    & ! NCURVE   -> number of curves
-                                                1,               & ! IHORIZ   -> which var plots on horizontals axis (1=ordinates, 2=values)
-                                                c1unit,          & ! C1UNIT  <-> unit of ordinates  (may be modified to remove current datum)
-                                                type,            & ! C1TYPE   -> data type of ordinates
-                                                c2unit,          & ! C2UNIT  <-> unit of curve values  (may be modified to remove current datum)
-                                                type,            & ! C2TYPE   -> data type of curve values
-                                                fvals,           & ! SVALUES  -> 1D array of ordinates, 1st curve values, 2cn curve values, ...
-                                                '',              & ! CLABEL   -> array of labels for each curve
-                                                .false.,         & ! LABEL    -> whether to store labels
-                                                userHeader,      & ! IUHEAD  <-> user header array  (may be modified to remove current datum)
-                                                userHeaderLen,   & ! NUHEAD  <-> number of user header elements to store (may be modified to remove current datum)
-                                                0,               & ! IPLAN    -> storage plan (0=always store, 1=only create new, 2=only overwrite existing)
-                                                status)            ! ISTAT   <-  status (0=success)
-                                        end if
-                                        call assert(status == 0)
-                                        call zset('VDOW', '', 0)
-                                    end if
-                                    call zclose(ifltab)
-                                    if (status == 0) then
-                                        !------------------------------------------------------------!
-                                        ! set the default vertical datum to the datum we stored with !
-                                        !------------------------------------------------------------!
-                                        call zset('VDTM', currentVerticalDatums(kk), 0)
-                                        !--------------------------------------------------------!
-                                        ! retrieve the paired data in the default vertical datum !
-                                        !--------------------------------------------------------!
                                         ifltab = 0
                                         if (i == 1) then
                                             call zopen6(ifltab, filename(i), status)
@@ -2119,23 +1360,28 @@ subroutine testStoreRetrievePairedData()
                                             call zopen7(ifltab, filename(i), status)
                                         end if
                                         call assert(status == 0)
+                                        !------------------------------------------------------------------------------------!
+                                        ! get whether data exists in file and the native datum in the file for this pathname !
+                                        !------------------------------------------------------------------------------------!
+                                        call zset('VDTM', CVD_UNSET, 0)
+                                        nords = 0
+                                        ncurves = 0
+                                        nvals = 0
                                         if (o == 1) then
                                             !---------!
                                             ! doubles !
                                             !---------!
-                                            dvals(1:6) = dordinates(:,l)
-                                            dvals(7:12) = dvalues(:,l)
                                             call zrpdd(           &
                                                 ifltab,           & ! IFLTAB  <-> file table
                                                 pathnames(o,n),   & ! CPATH    -> record name
-                                                numberOrdinates,  & ! NORD    <-  number of ordinates
-                                                numberCurves,     & ! NCURVE  <-  number of curves
+                                                nords,            & ! NORD    <-  number of ordinates
+                                                ncurves,          & ! NCURVE  <-  number of curves
                                                 ihoriz,           & ! IHORIZ  <-  which var plots on horizontals axis (1=ordinates, 2=values)
                                                 c1unit,           & ! C1UNIT  <-  unit of ordinates
                                                 c1type,           & ! C1TYPE  <-  data type of ordinates
                                                 c2unit,           & ! C2UNIT  <-  unit of curve values
                                                 c2type,           & ! C2TYPE  <-  data type of curve values
-                                                dvals_out,        & ! DVALUES <-  1D array of ordinates, 1st curve values, 2cn curve values, ...
+                                                dvals_out,        & ! DVALUES <-  1D array of ordinates, 1st curve values, 2nd curve values, ...
                                                 size(dvals),      & ! KVALS    -> size of dvals_out must be at least (ncurve+1) * nords
                                                 nvals,            & ! NVALS   <-  number of ordinates + curve values retrieved
                                                 clabel,           & ! CLABEL  <-  array of labels for each curve
@@ -2149,19 +1395,17 @@ subroutine testStoreRetrievePairedData()
                                             !--------!
                                             ! floats !
                                             !--------!
-                                            fvals(1:6) = fordinates(:,l)
-                                            fvals(7:12) = fvalues(:,l)
                                             call zrpd(            &
                                                 ifltab,           & ! IFLTAB  <-> file table
                                                 pathnames(o,n),   & ! CPATH    -> record name
-                                                numberOrdinates,  & ! NORD    <-  number of ordinates
-                                                numberCurves,     & ! NCURVE  <-  number of curves
+                                                nords,            & ! NORD    <-  number of ordinates
+                                                ncurves,          & ! NCURVE  <-  number of curves
                                                 ihoriz,           & ! IHORIZ  <-  which var plots on horizontals axis (1=ordinates, 2=values)
                                                 c1unit,           & ! C1UNIT  <-  unit of ordinates
                                                 c1type,           & ! C1TYPE  <-  data type of ordinates
                                                 c2unit,           & ! C2UNIT  <-  unit of curve values
                                                 c2type,           & ! C2TYPE  <-  data type of curve values
-                                                fvals_out,        & ! SVALUES <-  1D array of ordinates, 1st curve values, 2cn curve values, ...
+                                                fvals_out,        & ! SVALUES <-  1D array of ordinates, 1st curve values, 2nd curve values, ...
                                                 size(fvals),      & ! KVALS    -> size of dvals_out must be at least (ncurve+1) * nords
                                                 nvals,            & ! NVALS   <-  number of ordinates + curve values retrieved
                                                 clabel,           & ! CLABEL  <-  array of labels for each curve
@@ -2172,26 +1416,332 @@ subroutine testStoreRetrievePairedData()
                                                 userHeaderLen,    & ! NUHEAD  <-  number of user header elements retrieved
                                                 status)             ! ISTAT   <-  status (0=success)
                                         end if
-                                        call zclose(ifltab)
-                                        call assert(status == 0)
-                                        call assert(numberOrdinates == 6)
-                                        call assert(numberCurves == 1)
-                                        call assert(c1unit == unit(l))
-                                        call assert(c2unit == unit(l))
-                                        call assert(c1type == type)
-                                        call assert(c2type == type)
-                                        if (o == 1) then
-                                            call assert(nvals == size(dvals))
-                                            do ii = 1, nvals
-                                                call assert(dvals_out(ii) == dvals(ii))
-                                            end do
+                                        dataInFile = status == 0
+                                        if (i == 1) then
+                                            !-------!
+                                            ! DSS 6 !
+                                            !-------!
+                                            if (dataInFile) then
+                                                call extractVdiFromUserHeader(vdiInFile, userHeader, userHeaderLen)
+                                            else
+                                                call initVerticalDatumInfo(vdiInFile)
+                                            end if
                                         else
-                                            call assert(nvals == size(fvals))
-                                            do ii = 1, nvals
-                                                call assert(fvals_out(ii) == fvals(ii))
+                                            !-------!
+                                            ! DSS 7 !
+                                            !-------!
+                                            call getLocationVdi(vdiInFile, ifltab, pathnames(o,n))
+                                        end if
+                                        nativeDatumInFile = vdiInFile%nativeDatum
+                                        userHeaderStr = ' '
+                                        userHeaderLen = 0
+                                        kk = k
+                                        !--------------------------------!
+                                        ! set the default vertical datum !
+                                        !--------------------------------!
+                                        call zset('VDTM', currentVerticalDatums(kk), 0)
+                                        if (p == 1) then
+                                            !------------------------------------------------!
+                                            ! add the vertical datum info to the user header !
+                                            !------------------------------------------------!
+                                            thisVdi = vdi(j)  
+                                            if (vdi(j)%nativeDatum /= ' ') then
+                                                dataVdiStr = vdiToString(thisVdi)
+                                                userHeaderStr = VERTICAL_DATUM_INFO_PARAM//':'//dataVdiStr(:len_trim(dataVdiStr))//';'
+                                            end if
+                                        else
+                                            !------------------------------------------------------!
+                                            ! don't add the vertical datum info to the user header !
+                                            !------------------------------------------------------!
+                                            thisVdi = blankVdi  
+                                        end if
+                                        c1unit = unit(l)
+                                        c2unit = unit(l)
+                                        if (m > 1) then
+                                            !----------------------------------------------------------!
+                                            ! override the default vertical datum with the user header !
+                                            !----------------------------------------------------------!
+                                            kk = k2
+                                            len = len_trim(userHeaderStr) + 1
+                                            userHeaderStr(len:) = VERTICAL_DATUM_PARAM//':'// &
+                                                currentVerticalDatums(kk)(:len_trim(currentVerticalDatums(kk)))//';'
+                                            if (m > 2) then
+                                                !--------------------------------------------------------!
+                                                ! override default and user header datums with unit spec !
+                                                !--------------------------------------------------------!
+                                                kk = k3
+                                                write(unitSpec,'(5a)')                     &
+                                                    'U=',unit(l)(1:len_trim(unit(l))),'|', &
+                                                    'V=',currentVerticalDatums(kk)
+                                                if (n == 1) then
+                                                    c2unit = unitSpec
+                                                else
+                                                    c1unit = unitSpec
+                                                end if
+                                            end if
+                                        end if
+                                        if (q == 2) then
+                                            !----------------------------!
+                                            ! delete any records in file !
+                                            !----------------------------!
+                                            if (dataInFile) then
+                                                call zdelete(ifltab, pathnames(o,n), status)
+                                                call assert(status == 0)
+                                            end if
+                                            dataInFile = .false.
+                                            if (i == 1) then
+                                                !--------------------------------------------------!
+                                                ! deleting records also deletes file VDI for DSS 6 !
+                                                !--------------------------------------------------!
+                                                call initVerticalDatumInfo(vdiInFile)
+                                                nativeDatumInFile = vdiInFile%nativeDatum
+                                            end if
+                                        end if
+                                        !-----------------------------------------------!
+                                        ! figure out whether the zs?tsx? should succeed !
+                                        !-----------------------------------------------!
+                                        call processStorageVdis(       &
+                                            offset,                    &
+                                            errmsg,                    &
+                                            vdiToString(vdiInFile),    &
+                                            vdiToString(thisVdi),      &
+                                            currentVerticalDatums(kk), &
+                                            dataInFile,                &
+                                            unit(l))
+                                        expectSuccess = errmsg == ' '
+                                        !-------------------------------------------------------!
+                                        ! store the paried data in the specified vertical datum !
+                                        !-------------------------------------------------------!
+                                        call printPdTestInfo(count, expectSuccess, pathnames(o,n), dataInFile, vdiInFile, thisVdi, currentVerticalDatums(kk), c1unit, c2unit)
+                                        userHeaderLen = byteCountToIntCount(len_trim(userHeaderStr))
+                                        if (isBigEndian()) then
+                                            do ii = 1, userHeaderLen
+                                                userHeader(ii) = iswap(userHeader(ii))
                                             end do
                                         end if
-                                    end if
+                                        if (o == 1) then
+                                            !---------!
+                                            ! doubles !
+                                            !---------!
+                                            dvals(1:6) = dordinates(:,l)
+                                            dvals(7:12) = dvalues(:,l)
+                                            call zspdd(          & 
+                                                ifltab,          & ! IFLTAB  <-> file table
+                                                pathnames(o,n),  & ! CPATH    -> record name
+                                                numberOrdinates, & ! NORD     -> number of ordinates
+                                                numberCurves,    & ! NCURVE   -> number of curves
+                                                1,               & ! IHORIZ   -> which var plots on horizontals axis (1=ordinates, 2=values)
+                                                c1unit,          & ! C1UNIT  <-> unit of ordinates  (may be modified to remove current datum)
+                                                type,            & ! C1TYPE   -> data type of ordinates
+                                                c2unit,          & ! C2UNIT  <-> unit of curve values  (may be modified to remove current datum)
+                                                type,            & ! C2TYPE   -> data type of curve values
+                                                dvals,           & ! DVALUES  -> 1D array of ordinates, 1st curve values, 2nd curve values, ...
+                                                '',              & ! CLABEL   -> array of labels for each curve
+                                                .false.,         & ! LABEL    -> whether to store labels
+                                                userHeader,      & ! IUHEAD   -> user header array
+                                                userHeaderLen,   & ! NUHEAD   -> number of user header elements to store
+                                                0,               & ! IPLAN    -> storage plan (0=always store, 1=only create new, 2=only overwrite existing)
+                                                status)            ! ISTAT   <-  status (0=success) 
+                                        else
+                                            !--------!
+                                            ! floats !
+                                            !--------!
+                                            fvals(1:6) = fordinates(:,l)
+                                            fvals(7:12) = fvalues(:,l)
+                                            call zspd(           & 
+                                                ifltab,          & ! IFLTAB  <-> file table
+                                                pathnames(o,n),  & ! CPATH    -> record name
+                                                numberOrdinates, & ! NORD     -> number of ordinates
+                                                numberCurves,    & ! NCURVE   -> number of curves
+                                                1,               & ! IHORIZ   -> which var plots on horizontals axis (1=ordinates, 2=values)
+                                                c1unit,          & ! C1UNIT  <-> unit of ordinates  (may be modified to remove current datum)
+                                                type,            & ! C1TYPE   -> data type of ordinates
+                                                c2unit,          & ! C2UNIT  <-> unit of curve values  (may be modified to remove current datum)
+                                                type,            & ! C2TYPE   -> data type of curve values
+                                                fvals,           & ! SVALUES  -> 1D array of ordinates, 1st curve values, 2nd curve values, ...
+                                                '',              & ! CLABEL   -> array of labels for each curve
+                                                .false.,         & ! LABEL    -> whether to store labels
+                                                userHeader,      & ! IUHEAD   -> user header array
+                                                userHeaderLen,   & ! NUHEAD   -> number of user header elements to store
+                                                0,               & ! IPLAN    -> storage plan (0=always store, 1=only create new, 2=only overwrite existing)
+                                                status)            ! ISTAT   <-  status (0=success) 
+                                        end if
+                                        call assert((status == 0) .eqv. expectSuccess)
+                                        if (status /= 0) then
+                                            if (index(errmsg, 'Data native datum') > 0 .and. index(errmsg, 'conflicts with file native datum') > 0) then
+                                                !--------------------------------------!
+                                                ! change of vertical datum information !
+                                                !                                      !
+                                                ! set VDOW to override file VDI        !
+                                                ! with data VDI and re-try             !
+                                                !--------------------------------------!
+                                                call zset('VDOW', ' ', 1)
+                                                count = count + 1
+                                                call processStorageVdis(       &
+                                                    offset,                    &
+                                                    errmsg,                    &
+                                                    vdiToString(vdiInFile),    &
+                                                    vdiToString(thisVdi),      &
+                                                    currentVerticalDatums(kk), &
+                                                    dataInFile,                &
+                                                    unit(l))
+                                                expectSuccess = errmsg == ' '
+                                                if (m > 2) then
+                                                    !-----------------------------------------------!
+                                                    ! unit spec has already been removed from units !
+                                                    !-----------------------------------------------!
+                                                    if (n == 1) then
+                                                        c2unit = unitSpec
+                                                    else
+                                                        c1unit = unitSpec
+                                                    end if
+                                                end if
+                                                call processStorageVdis(       &
+                                                    offset,                    &
+                                                    errmsg,                    &
+                                                    vdiToString(vdiInFile),    &
+                                                    vdiToString(thisVdi),      &
+                                                    currentVerticalDatums(kk), &
+                                                    dataInFile,                &
+                                                    unit(l))
+                                                expectSuccess = errmsg == ' '
+                                                if (o == 1) then
+                                                    !---------!
+                                                    ! doubles !
+                                                    !---------!
+                                                    call zspdd(          & 
+                                                        ifltab,          & ! IFLTAB  <-> file table
+                                                        pathnames(o,n),  & ! CPATH    -> record name
+                                                        numberOrdinates, & ! NORD     -> number of ordinates
+                                                        numberCurves,    & ! NCURVE   -> number of curves
+                                                        1,               & ! IHORIZ   -> which var plots on horizontals axis (1=ordinates, 2=values)
+                                                        c1unit,          & ! C1UNIT  <-> unit of ordinates  (may be modified to remove current datum)
+                                                        type,            & ! C1TYPE   -> data type of ordinates
+                                                        c2unit,          & ! C2UNIT  <-> unit of curve values  (may be modified to remove current datum)
+                                                        type,            & ! C2TYPE   -> data type of curve values
+                                                        dvals,           & ! DVALUES  -> 1D array of ordinates, 1st curve values, 2nd curve values, ...
+                                                        '',              & ! CLABEL   -> array of labels for each curve
+                                                        .false.,         & ! LABEL    -> whether to store labels
+                                                        userHeader,      & ! IUHEAD   -> user header array
+                                                        userHeaderLen,   & ! NUHEAD   -> number of user header elements to store
+                                                        0,               & ! IPLAN    -> storage plan (0=always store, 1=only create new, 2=only overwrite existing)
+                                                        status)            ! ISTAT   <-  status (0=success) 
+                                                else
+                                                    !--------!
+                                                    ! floats !
+                                                    !--------!
+                                                    call zspd(           & 
+                                                        ifltab,          & ! IFLTAB  <-> file table
+                                                        pathnames(o,n),  & ! CPATH    -> record name
+                                                        numberOrdinates, & ! NORD     -> number of ordinates
+                                                        numberCurves,    & ! NCURVE   -> number of curves
+                                                        1,               & ! IHORIZ   -> which var plots on horizontals axis (1=ordinates, 2=values)
+                                                        c1unit,          & ! C1UNIT  <-> unit of ordinates  (may be modified to remove current datum)
+                                                        type,            & ! C1TYPE   -> data type of ordinates
+                                                        c2unit,          & ! C2UNIT  <-> unit of curve values  (may be modified to remove current datum)
+                                                        type,            & ! C2TYPE   -> data type of curve values
+                                                        fvals,           & ! SVALUES  -> 1D array of ordinates, 1st curve values, 2nd curve values, ...
+                                                        '',              & ! CLABEL   -> array of labels for each curve
+                                                        .false.,         & ! LABEL    -> whether to store labels
+                                                        userHeader,      & ! IUHEAD   -> user header array
+                                                        userHeaderLen,   & ! NUHEAD   -> number of user header elements to store
+                                                        0,               & ! IPLAN    -> storage plan (0=always store, 1=only create new, 2=only overwrite existing)
+                                                        status)            ! ISTAT   <-  status (0=success) 
+                                                end if
+                                                call zset('VDOW', '', 0)
+                                                call assert((status == 0) .eqv. expectSuccess)
+                                            end if
+                                        end if
+                                        call zclose(ifltab)
+                                        if (status == 0) then
+                                            !------------------------------------------------------------!
+                                            ! set the default vertical datum to the datum we stored with !
+                                            !------------------------------------------------------------!
+                                            call zset('VDTM', currentVerticalDatums(kk), 0)
+                                            !--------------------------------------------------------!
+                                            ! retrieve the paired data in the default vertical datum !
+                                            !--------------------------------------------------------!
+                                            ifltab = 0
+                                            if (i == 1) then
+                                                call zopen6(ifltab, filename(i), status)
+                                            else
+                                                call zopen7(ifltab, filename(i), status)
+                                            end if
+                                            call assert(status == 0)
+                                            if (o == 1) then
+                                                !---------!
+                                                ! doubles !
+                                                !---------!
+                                                dvals(1:6) = dordinates(:,l)
+                                                dvals(7:12) = dvalues(:,l)
+                                                call zrpdd(           &
+                                                    ifltab,           & ! IFLTAB  <-> file table
+                                                    pathnames(o,n),   & ! CPATH    -> record name
+                                                    numberOrdinates,  & ! NORD    <-  number of ordinates
+                                                    numberCurves,     & ! NCURVE  <-  number of curves
+                                                    ihoriz,           & ! IHORIZ  <-  which var plots on horizontals axis (1=ordinates, 2=values)
+                                                    c1unit,           & ! C1UNIT  <-  unit of ordinates
+                                                    c1type,           & ! C1TYPE  <-  data type of ordinates
+                                                    c2unit,           & ! C2UNIT  <-  unit of curve values
+                                                    c2type,           & ! C2TYPE  <-  data type of curve values
+                                                    dvals_out,        & ! DVALUES <-  1D array of ordinates, 1st curve values, 2nd curve values, ...
+                                                    size(dvals),      & ! KVALS    -> size of dvals_out must be at least (ncurve+1) * nords
+                                                    nvals,            & ! NVALS   <-  number of ordinates + curve values retrieved
+                                                    clabel,           & ! CLABEL  <-  array of labels for each curve
+                                                    0,                & ! KLABEL   -> max number of labels to retrieve
+                                                    l_label,          & ! LABEL   <-  whether labels were retrieved
+                                                    userHeader,       & ! IUHEAD  <-  user header array
+                                                    size(userHeader), & ! KUHEAD   -> max number of user header elements to retrieve
+                                                    userHeaderLen,    & ! NUHEAD  <-  number of user header elements retrieved
+                                                    status)             ! ISTAT   <-  status (0=success)
+                                            else
+                                                !--------!
+                                                ! floats !
+                                                !--------!
+                                                fvals(1:6) = fordinates(:,l)
+                                                fvals(7:12) = fvalues(:,l)
+                                                call zrpd(            &
+                                                    ifltab,           & ! IFLTAB  <-> file table
+                                                    pathnames(o,n),   & ! CPATH    -> record name
+                                                    numberOrdinates,  & ! NORD    <-  number of ordinates
+                                                    numberCurves,     & ! NCURVE  <-  number of curves
+                                                    ihoriz,           & ! IHORIZ  <-  which var plots on horizontals axis (1=ordinates, 2=values)
+                                                    c1unit,           & ! C1UNIT  <-  unit of ordinates
+                                                    c1type,           & ! C1TYPE  <-  data type of ordinates
+                                                    c2unit,           & ! C2UNIT  <-  unit of curve values
+                                                    c2type,           & ! C2TYPE  <-  data type of curve values
+                                                    fvals_out,        & ! SVALUES <-  1D array of ordinates, 1st curve values, 2nd curve values, ...
+                                                    size(fvals),      & ! KVALS    -> size of dvals_out must be at least (ncurve+1) * nords
+                                                    nvals,            & ! NVALS   <-  number of ordinates + curve values retrieved
+                                                    clabel,           & ! CLABEL  <-  array of labels for each curve
+                                                    0,                & ! KLABEL   -> max number of labels to retrieve
+                                                    l_label,          & ! LABEL   <-  whether labels were retrieved
+                                                    userHeader,       & ! IUHEAD  <-  user header array
+                                                    size(userHeader), & ! KUHEAD   -> max number of user header elements to retrieve
+                                                    userHeaderLen,    & ! NUHEAD  <-  number of user header elements retrieved
+                                                    status)             ! ISTAT   <-  status (0=success)
+                                            end if
+                                            call zclose(ifltab)
+                                            call assert(status == 0)
+                                            call assert(numberOrdinates == 6)
+                                            call assert(numberCurves == 1)
+                                            call assert(c1unit == unit(l))
+                                            call assert(c2unit == unit(l))
+                                            call assert(c1type == type)
+                                            call assert(c2type == type)
+                                            if (o == 1) then
+                                                call assert(nvals == size(dvals))
+                                                do ii = 1, nvals
+                                                    call assert(dvals_out(ii) == dvals(ii))
+                                                end do
+                                            else
+                                                call assert(nvals == size(fvals))
+                                                do ii = 1, nvals
+                                                    call assert(fvals_out(ii) == fvals(ii))
+                                                end do
+                                            end if
+                                        end if
+                                    end do    
                                 end do
                             end do
                         end do
