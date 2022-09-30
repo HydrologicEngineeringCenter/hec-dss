@@ -345,7 +345,7 @@ int zwriteInternal(long long *ifltab, zStructTransfer* ztransfer, int checked,
 	else {
 		// existing record
 		//  Update sizes
-		status = zwriteOld(ifltab, ztransfer,
+		status = zwriteExisting(ifltab, ztransfer,
 			bufferControl, buffer, bufferAction, &wroteAtEOF);
 	}
 

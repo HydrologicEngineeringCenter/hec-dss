@@ -89,7 +89,6 @@
     <ClCompile Include="src\DssInterface\zquery7_.c" />
     <ClCompile Include="src\DssInterface\zritsi7_.c" />
     <ClCompile Include="src\DssInterface\zrpdi7_.c" />
-    <ClCompile Include="src\DssInterface\zrtxts7_.c" />
     <ClCompile Include="src\DssInterface\zsits7_.c" />
     <ClCompile Include="src\DssInterface\zspdi7_.c" />
     <ClCompile Include="src\DssInterface\ztextRetrieveArray_.c" />
@@ -219,7 +218,7 @@
     <ClCompile Include="src\Internal\zwriteEOFandFlush.c" />
     <ClCompile Include="src\Internal\zwriteInternal.c" />
     <ClCompile Include="src\Internal\zwriteNew.c" />
-    <ClCompile Include="src\Internal\zwriteOld.c" />
+    <ClCompile Include="src\Internal\zwriteExisting.c" />
     <ClCompile Include="src\Public\zaliasAdd.c" />
     <ClCompile Include="src\Public\zaliasGetPrimary.c" />
     <ClCompile Include="src\Public\zaliasList.c" />

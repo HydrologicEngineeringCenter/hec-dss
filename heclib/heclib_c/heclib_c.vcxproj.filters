@@ -483,9 +483,6 @@
     <ClCompile Include="src\DssInterface\zrpdi7_.c">
       <Filter>src\DssInterface</Filter>
     </ClCompile>
-    <ClCompile Include="src\DssInterface\zrtxts7_.c">
-      <Filter>src\DssInterface</Filter>
-    </ClCompile>
     <ClCompile Include="src\DssInterface\zsits7_.c">
       <Filter>src\DssInterface</Filter>
     </ClCompile>
@@ -873,7 +870,7 @@
     <ClCompile Include="src\Internal\zwriteNew.c">
       <Filter>src\Internal</Filter>
     </ClCompile>
-    <ClCompile Include="src\Internal\zwriteOld.c">
+    <ClCompile Include="src\Internal\zwriteExisting.c">
       <Filter>src\Internal</Filter>
     </ClCompile>
     <ClCompile Include="src\Public\zaliasAdd.c">

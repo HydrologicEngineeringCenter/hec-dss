@@ -424,8 +424,11 @@ void zspatialGridStructFree(zStructSpatialGrid *zstruct)
 	if (zstruct->_srsDefinition) free(zstruct->_srsDefinition);
 	if (zstruct->_timeZoneID) free(zstruct->_timeZoneID);
 	if (zstruct->_data) free(zstruct->_data);
+	if (zstruct->_maxDataValue) free(zstruct->_maxDataValue);
+	if (zstruct->_minDataValue) free(zstruct->_minDataValue);
+	if (zstruct->_meanDataValue) free(zstruct->_meanDataValue);
 
-	// free *void flaots.
+	// free *void floats.
 	memset(&(zstruct[0]), 0, sizeof(zStructSpatialGrid));
 	free(zstruct);
 }

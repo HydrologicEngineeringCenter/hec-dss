@@ -9,13 +9,13 @@
 
 
 /**
-*  Function:	zwriteOld
+*  Function:	zwriteExisting
 *
 *  Use:			Private (Internal)
 *
 *  Description:	Prepares pointers and allocates space for over writing an existing record.
 *
-*  Declaration: int zwriteOld(long long *ifltab, zStructTransfer* ztransfer,
+*  Declaration: int zwriteExisting(long long *ifltab, zStructTransfer* ztransfer,
 *							  long long bufferControl[4], int *buffer,
 *							  int bufferAction, int *wroteAtEOF);
 *
@@ -136,7 +136,7 @@
 *
 **/
 
-int zwriteOld(long long *ifltab, zStructTransfer* ztransfer,
+int zwriteExisting(long long *ifltab, zStructTransfer* ztransfer,
 			  long long bufferControl[4], int *buffer, int bufferAction, int *wroteAtEOF)
 
 {
@@ -168,9 +168,9 @@ int zwriteOld(long long *ifltab, zStructTransfer* ztransfer,
 
 	fileHeader = (long long *)ifltab[zdssKeys.kfileHeader];
 	if (zmessageLevel(ifltab, MESS_METHOD_WRITE_ID, MESS_LEVEL_INTERNAL_DIAG_1)) {
-		zmessageDebug(ifltab, DSS_FUNCTION_zwriteOld_ID, "Pathname: ", ztransfer->pathname);
+		zmessageDebug(ifltab, DSS_FUNCTION_zwriteExisting_ID, "Pathname: ", ztransfer->pathname);
 		_snprintf_s(messageString, sizeof(messageString), _TRUNCATE, " %d;", zhandle(ifltab));
-		zmessageDebug(ifltab, DSS_FUNCTION_zwriteOld_ID, "Handle: ", messageString);
+		zmessageDebug(ifltab, DSS_FUNCTION_zwriteExisting_ID, "Handle: ", messageString);
 	}
 
 	status = STATUS_OKAY;
@@ -196,7 +196,7 @@ int zwriteOld(long long *ifltab, zStructTransfer* ztransfer,
 
 	status = zput(ifltab, address, (int *)&ifltab[zdssKeys.kbinLastWrite], 2, 2);
 	if (zisError(status)) {
-		return zerrorUpdate(ifltab, status, DSS_FUNCTION_zwriteOld_ID);
+		return zerrorUpdate(ifltab, status, DSS_FUNCTION_zwriteExisting_ID);
 	}
 
 
@@ -206,9 +206,9 @@ int zwriteOld(long long *ifltab, zStructTransfer* ztransfer,
 	i8toi4(info[zdssInfoKeys.kinfoTypeVersion], &type, &version);
 	
 	if( type != ztransfer->dataType) {
-		return zerrorProcessing(ifltab, DSS_FUNCTION_zwriteOld_ID,
+		return zerrorProcessing(ifltab, DSS_FUNCTION_zwriteExisting_ID,
 			zdssErrorCodes.DIFFERENT_RECORD_TYPE, type, (long long)ztransfer->dataType,
-			zdssErrorSeverity.WARNING, ztransfer->pathname, "");
+			zdssErrorSeverity.WRITE_ERROR, ztransfer->pathname, "");
 	}
 
 	//  Be sure we don't try to store negative lengths
@@ -249,21 +249,21 @@ int zwriteOld(long long *ifltab, zStructTransfer* ztransfer,
 	if (newSize > originalSize) {
 		//  Need to expand!
 /**/		if (zmessageLevel(ifltab, MESS_METHOD_WRITE_ID, MESS_LEVEL_INTERNAL_DIAG_1)) {
-			zmessageDebug(ifltab, DSS_FUNCTION_zwriteOld_ID, "Record size has increased - Expanding", "");
+			zmessageDebug(ifltab, DSS_FUNCTION_zwriteExisting_ID, "Record size has increased - Expanding", "");
 			longSize = numberLongsInInts(newSize);
 			_snprintf_s(messageString, sizeof(messageString), _TRUNCATE, "%d;   New Size: %d 32-bit words;  %d 64-bit words",
 				originalSize, newSize, longSize);
-			zmessageDebug(ifltab, DSS_FUNCTION_zwriteOld_ID,  "Old size: ", messageString);
+			zmessageDebug(ifltab, DSS_FUNCTION_zwriteExisting_ID,  "Old size: ", messageString);
 			i8toi4(info[zdssInfoKeys.kinfoExpansion], &expansionNumber, &temp);
 			_snprintf_s(messageString, sizeof(messageString), _TRUNCATE, "%d", expansionNumber);
-			zmessageDebug(ifltab, DSS_FUNCTION_zwriteOld_ID,  "Number of expansions to now: ", messageString);
+			zmessageDebug(ifltab, DSS_FUNCTION_zwriteExisting_ID,  "Number of expansions to now: ", messageString);
 /**/		}
 
 		//  Save the iformation block with a moved status
 		info[zdssInfoKeys.kinfoStatus] = REC_STATUS_MOVED;
 		status = zput(ifltab, ifltab[zdssKeys.kaddInfoLastPath], (int *)info, numberInfo, 2);
 		if (zisError(status)) {
-			return zerrorUpdate(ifltab, status, DSS_FUNCTION_zwriteOld_ID);
+			return zerrorUpdate(ifltab, status, DSS_FUNCTION_zwriteExisting_ID);
 		}
 
 		//  Check that the old info and data areas are contiguous.  If so, we can reclaim their space
@@ -340,7 +340,7 @@ int zwriteOld(long long *ifltab, zStructTransfer* ztransfer,
 			_snprintf_s(messageString, sizeof(messageString), _TRUNCATE,
 				"%d,  New values allocated space: %d, Space actually used: %d",
 				expansionNumber, ztransfer->totalAllocatedSize, totalNumberInts);
-			zmessageDebug(ifltab, DSS_FUNCTION_zwriteOld_ID, "Expansion level used: ", messageString);
+			zmessageDebug(ifltab, DSS_FUNCTION_zwriteExisting_ID, "Expansion level used: ", messageString);
 		}
 
 		//  We always want to keep the info and data contiguous
@@ -364,7 +364,7 @@ int zwriteOld(long long *ifltab, zStructTransfer* ztransfer,
 		//  Write the address of the new information area in the existing pathname bin
 		status = zput(ifltab, ifltab[zdssKeys.kinfoAddInBin], (int *)&ifltab[zdssKeys.kaddInfoLastPath], 1, 2);
 		if (zisError(status)) {
-			return zerrorUpdate(ifltab, status, DSS_FUNCTION_zwriteOld_ID);
+			return zerrorUpdate(ifltab, status, DSS_FUNCTION_zwriteExisting_ID);
 		}
 
 		info[zdssInfoKeys.kinfoFlag] = DSS_INFO_FLAG;
@@ -423,11 +423,11 @@ int zwriteOld(long long *ifltab, zStructTransfer* ztransfer,
 		if (zmessageLevel(ifltab, MESS_METHOD_WRITE_ID, MESS_LEVEL_INTERNAL_DIAG_1)) {
 			_snprintf_s(messageString, sizeof(messageString), _TRUNCATE,
 				"%d,  Original size: %d", newSize, originalSize);
-			zmessageDebug(ifltab, DSS_FUNCTION_zwriteOld_ID, "Current record size is adequate, size: ", messageString);
+			zmessageDebug(ifltab, DSS_FUNCTION_zwriteExisting_ID, "Current record size is adequate, size: ", messageString);
 			_snprintf_s(messageString, sizeof(messageString), _TRUNCATE,
 				"%d,  Space actually used: %d",
 				ztransfer->totalAllocatedSize, totalNumberInts);
-			zmessageDebug(ifltab, DSS_FUNCTION_zwriteOld_ID, "Values (data) allocated size: ", messageString);
+			zmessageDebug(ifltab, DSS_FUNCTION_zwriteExisting_ID, "Values (data) allocated size: ", messageString);
 		}
 
 		//  Store the internal header array location and length
@@ -488,14 +488,14 @@ int zwriteOld(long long *ifltab, zStructTransfer* ztransfer,
 	ifltab[zdssKeys.kinfoSize] = numberInfo;
 	status = zputBuff(ifltab, ifltab[zdssKeys.kaddInfoLastPath], (int *)info, numberInfo, 2, bufferAction, bufferControl, buffer);
 	if (zisError(status)) {
-			return zerrorUpdate(ifltab, status, DSS_FUNCTION_zwriteOld_ID);
+			return zerrorUpdate(ifltab, status, DSS_FUNCTION_zwriteExisting_ID);
 	}
 
 	if (zmessageLevel(ifltab, MESS_METHOD_WRITE_ID, MESS_LEVEL_INTERNAL_DIAG_2)) {
 		i8toi4(info[zdssInfoKeys.kinfoTypeVersion], &ztransfer->dataType, &version);
 		_snprintf_s(messageString, sizeof(messageString), _TRUNCATE, "%lld; Data Address %lld; Data Type %d",
 			ifltab[zdssKeys.kinfoAddress], info[zdssInfoKeys.kinfoValues1Address], ztransfer->dataType);
-		zmessageDebug(ifltab, DSS_FUNCTION_zwriteOld_ID, "Exit; Info address: ", messageString);
+		zmessageDebug(ifltab, DSS_FUNCTION_zwriteExisting_ID, "Exit; Info address: ", messageString);
 	}
 
 	return status;

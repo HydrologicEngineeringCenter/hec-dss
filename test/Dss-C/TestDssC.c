@@ -8,6 +8,36 @@
 
 int runTheTests();
 
+int gridMemoryTest() {
+
+	long long ifltab[250];
+	int status = zopen(ifltab, "2017-06-28_event.dss");
+	if (status != 0) {
+		printf("Error during open.  status= %d\n", status);
+		return status;
+	}
+	char* path = "/SHG1k/Iowa50km/PRECIPITATION/26JUN2017:2300/26JUN2017:2400/AORC/";
+	if (status < 0) {
+		printf("Error during catalog.  Error code %d\n", status);
+		return status;
+	}
+	zStructSpatialGrid* gridStructRetrieve;
+
+	for (int i = 0; i < 100; i++)
+	{
+		gridStructRetrieve = zstructSpatialGridNew(path);
+		status = zspatialGridRetrieve(ifltab, gridStructRetrieve, 1);
+
+		zstructFree(gridStructRetrieve);
+		//zspatialGridStructFree(gridStructRetrieve);
+		if (status != STATUS_OKAY) {
+			printf("Error retrieving grid: %d", status);
+			return status;
+		}
+	}
+	zclose(ifltab);
+	return 0;
+}
 
 
 void usage(char* exeName)
@@ -74,6 +104,7 @@ int main(int argc, char* argv[])
 	}
 	else if (argc == 2 && strcmp(argv[1], "test") == 0) { // test
 		status = runTheTests();
+		
 	}
 
 	else if ((argc == 3 || argc == 4) && strcmp(argv[1], "catalog") == 0)
@@ -147,6 +178,10 @@ int runTheTests() {
 	char fileName7a[80];
 	char fileName6[80];
 	int status;
+
+	status = gridMemoryTest();
+	if (status != STATUS_OKAY)
+		return status;
 
 	status = units_issue_126();
 	if (status != STATUS_OKAY)
