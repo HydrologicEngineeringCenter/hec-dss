@@ -296,7 +296,7 @@ character function zlocationPath(pathname)
     integer (kind=4) na, nb, nc, nd, ne, nf, npath, status
 
     call zufpn(ca, na, cb, nb, cc, nc, cd, nd, ce, ne, cf, nf, pathname, len_trim(pathname), status)
-    call zfpn(ca, na, cb, nb, 'Location Info', 13, '', 0, , '', 0, '', 0, zlocationPath, npath)
+    call zfpn(ca, na, cb, nb, 'Location Info', 13, '', 0, '', 0, '', 0, zlocationPath, npath)
     
 end function zlocationPath
     
@@ -309,7 +309,7 @@ subroutine deleteTimeSeriesRecords( &
 
     implicit none
     
-    real (kind=8),       intent(in out) :: ifltab(*)
+    integer (kind=8),    intent(in out) :: ifltab(*)
     character (len=391), intent(in)     :: pathname
     integer (kind=4),    intent(in)     :: startJul, endJul
     logical (kind=4),    intent(in)     :: deleteLocationRecordAlso
@@ -745,7 +745,8 @@ subroutine testStoreRetrieveTimeSeries()
                                             thisVdi = vdi(j)
                                             if (vdi(j)%nativeDatum /= ' ') then
                                                 dataVdiStr = vdiToString(thisVdi)
-                                                userHeaderStr = VERTICAL_DATUM_INFO_PARAM//':'//dataVdiStr(:len_trim(dataVdiStr))//';'
+                                                userHeaderStr = VERTICAL_DATUM_INFO_PARAM &
+                                                    //':'//dataVdiStr(:len_trim(dataVdiStr))//';'
                                             end if
                                         else
                                             !------------------------------------------------------!
@@ -809,7 +810,8 @@ subroutine testStoreRetrieveTimeSeries()
                                         !-------------------------------------------------------!
                                         ! store the time series in the specified vertical datum !
                                         !-------------------------------------------------------!
-                                        call printTsTestInfo(count, expectSuccess, pathnames(o,n), dataInFile, vdiInFile, thisVdi, currentVerticalDatums(kk), unitSpec)
+                                        call printTsTestInfo(count, expectSuccess, pathnames(o,n), dataInFile, vdiInFile, thisVdi, &
+                                            currentVerticalDatums(kk), unitSpec)
                                         userHeaderLen = byteCountToIntCount(len_trim(userHeaderStr))
                                         call swapIfBigEndian(userHeader, userHeaderLen)
                                         numberValues = 6
@@ -911,7 +913,8 @@ subroutine testStoreRetrieveTimeSeries()
                                         end if
                                         call assert((status == 0) .eqv. expectSuccess)
                                         if (status /= 0) then
-                                            if (index(errmsg, 'Data native datum') > 0 .and. index(errmsg, 'conflicts with file native datum') > 0) then
+                                            if (index(errmsg, 'Data native datum') > 0 .and. &
+                                                index(errmsg, 'conflicts with file native datum') > 0) then
                                                 !--------------------------------------!
                                                 ! change of vertical datum information !
                                                 !                                      !
@@ -1447,7 +1450,8 @@ subroutine testStoreRetrievePairedData()
                                             thisVdi = vdi(j)  
                                             if (vdi(j)%nativeDatum /= ' ') then
                                                 dataVdiStr = vdiToString(thisVdi)
-                                                userHeaderStr = VERTICAL_DATUM_INFO_PARAM//':'//dataVdiStr(:len_trim(dataVdiStr))//';'
+                                                userHeaderStr = VERTICAL_DATUM_INFO_PARAM &
+                                                    //':'//dataVdiStr(:len_trim(dataVdiStr))//';'
                                             end if
                                         else
                                             !------------------------------------------------------!
@@ -1512,7 +1516,8 @@ subroutine testStoreRetrievePairedData()
                                         !-------------------------------------------------------!
                                         ! store the paried data in the specified vertical datum !
                                         !-------------------------------------------------------!
-                                        call printPdTestInfo(count, expectSuccess, pathnames(o,n), dataInFile, vdiInFile, thisVdi, currentVerticalDatums(kk), c1unit, c2unit)
+                                        call printPdTestInfo(count, expectSuccess, pathnames(o,n), dataInFile, vdiInFile, thisVdi, &
+                                            currentVerticalDatums(kk), c1unit, c2unit)
                                         userHeaderLen = byteCountToIntCount(len_trim(userHeaderStr))
                                         if (isBigEndian()) then
                                             do ii = 1, userHeaderLen
@@ -1568,7 +1573,8 @@ subroutine testStoreRetrievePairedData()
                                         end if
                                         call assert((status == 0) .eqv. expectSuccess)
                                         if (status /= 0) then
-                                            if (index(errmsg, 'Data native datum') > 0 .and. index(errmsg, 'conflicts with file native datum') > 0) then
+                                            if (index(errmsg, 'Data native datum') > 0 .and. &
+                                                index(errmsg, 'conflicts with file native datum') > 0) then
                                                 !--------------------------------------!
                                                 ! change of vertical datum information !
                                                 !                                      !
