@@ -193,6 +193,10 @@ int ztsStoreRegArgs(long long *ifltab, const char *pathname,
 			strlen (pathname), strlen (startDate), strlen (startTime),
 			sizeof(unitsPassed), sizeof(typePassed), (size_t) lenuserHeader,
 			strlen(timezone));
+
+		if (userHeaderNumber > 0) {
+			free(csupp);
+		}
 /*
 SUBROUTINE zsrtsc6 ( IFLTAB, CPATH, CDATE, CTIME, NVALS,
 * LDOUBLE, VALUES, DVALUES, JQUAL, LQUAL, CUNITS, CTYPE,

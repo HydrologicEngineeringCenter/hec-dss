@@ -48,6 +48,12 @@
       end if
       max_head_len = min(kuhead, size(iuhead_copy))
       iuhead_copy(:max_head_len) = iuhead(:max_head_len)
+      call bigEndian(i)
+      if (i.ne.0) then
+        do i = i, max_head_len
+          call zswap6(iuhead_copy(i), iuhead_copy(i))
+        end do
+      end if
       !--------------------------------------------------------!
       ! blank everything past the copy size or null terminator !
       !--------------------------------------------------------!
@@ -89,6 +95,12 @@
       !-------------------------------!
       if (cuhead(1:1).eq.';') cuhead = cuhead(2:)
       iuhead(:kuhead) = 0
+      call bigEndian(i)
+      if (i.ne.0) then
+        do i = i, max_head_len
+          call zswap6(iuhead_copy(i), iuhead_copy(i))
+        end do
+      end if
       iuhead(:max_head_len) = iuhead_copy(:max_head_len)
       nuhead = (len_trim(cuhead)-1)/4+1
       return

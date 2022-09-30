@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
 #include <string.h>
 
 #include "heclib7.h"
@@ -377,18 +378,67 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 		//-----------------------------------------------//
 		// convert to native vertical datum if necessary //
 		//-----------------------------------------------//
+		double offset = UNDEFINED_VERTICAL_DATUM_VALUE;
 		int allowOverwriteLocationVerticalDatum = FALSE;
 		float  *tmpFloatVals = NULL;
 		float  *origFloatVals = NULL;
 		double *tmpDoubleVals = NULL;
 		double *origDoubleVals = NULL;
-		char cPart[65];
+		char cPart[MAX_PART_SIZE];
+		char startDate[10];
+		char startTime[5];
+		char endDate[10];
+		char endTime[5];
 		zpathnameGetPart(tss->pathname, 3, cPart, sizeof(cPart));
 		if (!strncasecmp(cPart, "ELEV", 4) && (tss->floatValues || tss->doubleValues)) {
+			//-----------------------//
+			// get the current datum //
+			//-----------------------//
+			char cvertical_datum[CVERTICAL_DATUM_SIZE];
+			int  ivertical_datum = -1;
+			int  dataFound = FALSE;
+			ivertical_datum = getCurrentVerticalDatum(
+				cvertical_datum,
+				sizeof(cvertical_datum),
+				&tss->userHeader,       // any specified datum in these parameters is removed
+				&tss->userHeaderNumber, // ...
+				&tss->units);           // ...
+			//----------------------------//
+			// see if data already exists //
+			//----------------------------//
+			{
+				if (!tss->processedAlready) {
+					ztsProcessTimes(ifltab, tss, TRUE);
+				}
+				int blockSize = tss->timeWindow->blockSize;
+				int recordJul = 0;
+				int intervalSeconds = 0;
+				char recordPathname[(MAX_PART_SIZE - 1) * 6 + 8];
+				char ePart[MAX_PART_SIZE];
+				strcpy(recordPathname, tss->pathname);
+				zpathnameGetPart(recordPathname, 5, ePart, sizeof(ePart));
+				int isIrregular = ePart[0] == '~' || toupper(ePart[0]) == 'I';
+				if (isIrregular) {
+					recordJul = ztsIrregGetBlockStart(tss->startJulianDate, blockSize);
+				}
+				else {
+					int operation = 1;
+					ztsGetStandardInterval(7, &intervalSeconds, ePart, sizeof(ePart), &operation);
+					recordJul = ztsRegGetBlockStart(tss->startJulianDate, intervalSeconds, &blockSize);
+				}
+				while (recordJul <= tss->endJulianDate) {
+					julianToDate(recordJul, 104, ePart, sizeof(ePart));
+					zpathnameSetPart(recordPathname, sizeof(recordPathname), ePart, 4);
+					if (zcheck(ifltab, recordPathname) == STATUS_RECORD_FOUND) {
+						dataFound = TRUE;
+						break;
+					}
+					recordJul = ztsIncrementBlock(recordJul, blockSize);
+				}
+			}
 			//------------------------------------------------------//
 			// see if we have one or more verticalDatumInfo objects //
 			//------------------------------------------------------//
-			verticalDatumInfo *vdi;
 			verticalDatumInfo *vdiTs  = NULL;
 			verticalDatumInfo *vdiLoc = NULL;
 			verticalDatumInfo _vdiTs;
@@ -436,298 +486,112 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 				}
 				zstructFree(ls);
 			}
-			if (vdiTs && vdiLoc) {
-				zquery("VDOW", "", 0, &allowOverwriteLocationVerticalDatum);
-				if (allowOverwriteLocationVerticalDatum) {
-					vdi = vdiTs;
+			//----------------------------------------------------------------//
+			// process the VDIs and get the offset to use (or error messages) //
+			//----------------------------------------------------------------//
+			char* errMsg = processStorageVdis(&offset, vdiLoc, vdiTs, cvertical_datum, dataFound, tss->units);
+			if (errMsg) {
+				char errMsgChars[1024];
+				strcpy(errMsgChars, errMsg);
+				free(errMsg);
+				if (vdiTs != &_vdiTs) {
+					free(vdiTs);
+				}
+				return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID,
+					zdssErrorCodes.VERTICAL_DATUM_ERROR, 0,
+					0, zdssErrorSeverity.WARNING, tss->pathname,
+					errMsgChars);
+			}
+			zquery("VDOW", "", 0, &allowOverwriteLocationVerticalDatum);
+			if (offset != 0.) {
+				//--------------------------------------------------------------------------//
+				// use the offset to put the values back to the native datum before storing //
+				//--------------------------------------------------------------------------//
+				// use temporary arrays so the values stored to disk are modified but the   //
+				// values in the zstructTs object aren't modified after the call            //
+				//--------------------------------------------------------------------------//
+				if (tss->floatValues) {
+					tmpFloatVals = (float*)calloc(tss->numberValues, sizeof(float));
+					for (int i = 0; i < tss->numberValues; ++i) {
+						tmpFloatVals[i] = tss->floatValues[i] - (float)offset;
+					}
+					origFloatVals = tss->floatValues;
+					tss->floatValues = tmpFloatVals;
+				}
+				else if (tss->doubleValues) {
+					tmpDoubleVals = (double*)calloc(tss->numberValues, sizeof(double));
+					for (int i = 0; i < tss->numberValues; ++i) {
+						tmpDoubleVals[i] = tss->doubleValues[i] - offset;
+					}
+					origDoubleVals = tss->doubleValues;
+					tss->doubleValues = tmpDoubleVals;
+				}
+			}
+			if (vdiTs) {
+				//----------------------------------------------------------------------------//
+				// move the vertical datum info into the time series struct embedded location //
+				//----------------------------------------------------------------------------//
+				if (!tss->locationStruct) {
+					tss->locationStruct = zstructLocationNew(tss->pathname);
+					tss->allocated[zSTRUCT_TS_locationStruct] = TRUE;
+				}
+				tss->locationStruct->verticalUnits = unitIsFeet(vdiTs->unit) ? 1 : 2;
+				if (!strcmp(vdiTs->nativeDatum, CVERTICAL_DATUM_NAVD88)) {
+					tss->locationStruct->verticalDatum = IVERTICAL_DATUM_NAVD88;
+				}
+				else if (!strcmp(vdiTs->nativeDatum, CVERTICAL_DATUM_NGVD29)) {
+					tss->locationStruct->verticalDatum = IVERTICAL_DATUM_NGVD29;
 				}
 				else {
-					//-------------------------------------------------------------------//
-					// We have 2 sources of information, abort if they're not equivalent //
-					//-------------------------------------------------------------------//
-					char errmsg[1024];
-					//-----------------------//
-					// compare native datums //
-					//-----------------------//
-					if (strcmp(vdiTs->nativeDatum, vdiLoc->nativeDatum)) {
-						sprintf(
-							errmsg,
-							"\nIncoming native vertical datum of '%s' conflicts with location's native datum of '%s'.\n"
-							"Call 'zset(\"VDOW\", \"\", 1)' to allow overwriting the location's vertical datum information.\n"
-							"Conversion to datum '%s' was not performed.\n"
-							"No data stored.",
-							vdiTs->nativeDatum, vdiLoc->nativeDatum, vdiLoc->nativeDatum);
-						if (vdiTs != &_vdiTs) {
-							free(vdiTs);
-						}
-						return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID,
-							zdssErrorCodes.VERTICAL_DATUM_ERROR, 0,
-							0, zdssErrorSeverity.WARNING, tss->pathname,
-							errmsg);
-					}
-					//----------------------//
-					// compare offset units //
-					//----------------------//
-					if (strcmp(vdiTs->unit, vdiLoc->unit)) {
-						sprintf(
-							errmsg,
-							"\nIncoming vertical datum offset unit of %s conflicts with location's unit of %s.\n"
-							"Call 'zset(\"VDOW\", \"\", 1)' to allow overwriting the location's vertical datum information.\n"
-							"Conversion to datum '%s' was not performed.\n"
-							"No data stored.",
-							vdiTs->unit, vdiLoc->unit, vdiLoc->nativeDatum);
-						if (vdiTs != &_vdiTs) {
-							free(vdiTs);
-						}
-						return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID,
-							zdssErrorCodes.VERTICAL_DATUM_ERROR, 0,
-							0, zdssErrorSeverity.WARNING, tss->pathname,
-							errmsg);
-					}
-					//------------------------//
-					// compare NAVD-88 offset //
-					//------------------------//
-					if (vdiTs->offsetToNavd88 != vdiLoc->offsetToNavd88) {
-						sprintf(
-							errmsg,
-							"\nIncoming offset to NAVD-88 of %f %s conflicts with location's offset of %f %s.\n"
-							"Call 'zset(\"VDOW\", \"\", 1)' to allow overwriting the location's vertical datum information.\n"
-							"Conversion to datum '%s' was not performed.\n"
-							"No data stored.",
-							vdiTs->offsetToNavd88, vdiTs->unit, vdiLoc->offsetToNavd88, vdiLoc->unit, vdiLoc->nativeDatum);
-						if (vdiTs != &_vdiTs) {
-							free(vdiTs);
-						}
-						return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID,
-							zdssErrorCodes.VERTICAL_DATUM_ERROR, 0,
-							0, zdssErrorSeverity.WARNING, tss->pathname,
-							errmsg);
-					}
-					//------------------------//
-					// compare NGVD-29 offset //
-					//------------------------//
-					if (vdiTs->offsetToNgvd29 != vdiLoc->offsetToNgvd29) {
-						sprintf(
-							errmsg,
-							"\nIncoming offset to NGVD_29 of %f %s conflicts with existing offset of %f %s.\n"
-							"Call 'zset(\"VDOW\", \"\", 1)' to allow overwriting the location's vertical datum information.\n"
-							"Conversion to datum '%s' was not performed.\n"
-							"No data stored.",
-							vdiTs->offsetToNgvd29, vdiTs->unit, vdiLoc->offsetToNgvd29, vdiLoc->unit, vdiLoc->nativeDatum);
-						if (vdiTs != &_vdiTs) {
-							free(vdiTs);
-						}
-						return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID,
-							zdssErrorCodes.VERTICAL_DATUM_ERROR, 0,
-							0, zdssErrorSeverity.WARNING, tss->pathname,
-							errmsg);
-					}
-					vdi = vdiLoc;
+					tss->locationStruct->verticalDatum = IVERTICAL_DATUM_OTHER;
 				}
-			}
-			else {
-				//--------------------------//
-				// use the only one we have //
-				//--------------------------//
-				vdi = vdiTs ? vdiTs : vdiLoc;
-			}
-			if (vdi) {
-				double offset = 0.;
-				//----------------------------------//
-				// get the effective vertical datum //
-				//----------------------------------//
-				char cvertical_datum[CVERTICAL_DATUM_SIZE];
-				int  ivertical_datum = -1;
-				ivertical_datum = getEffectiveVerticalDatum(
-					cvertical_datum,
-					sizeof(cvertical_datum),
-					&tss->userHeader,       // any specified datum in these parameters is removed
-					&tss->userHeaderNumber, // ...
-					&tss->units);           // ...
-				//-------------------------------------------------------//
-				// now that we have a datum, determine the offset to use //
-				//-------------------------------------------------------//
-				switch(ivertical_datum) {
-					case IVERTICAL_DATUM_NAVD88 :
-						offset = vdi->offsetToNavd88;
-						break;
-					case IVERTICAL_DATUM_NGVD29 :
-						offset = vdi->offsetToNgvd29;
-						break;
-					default :
-						if(!strcmp(cvertical_datum, vdi->nativeDatum) || !strcmp(cvertical_datum, CVERTICAL_DATUM_OTHER)) {
-							offset = 0;
-						}
-						else {
-							offset = UNDEFINED_VERTICAL_DATUM_VALUE;
-						}
-						break;
+				char errmsg[256];
+				char* compressed = NULL;
+				char* cp = verticalDatumInfoToString(&compressed, vdiTs, TRUE);
+				if (compressed == NULL) {
+					sprintf(
+						errmsg,
+						"\nVertical datum information could not be assigned to location record.\n%s\n"
+						"No data stored.",
+						cp ? cp : "Error processing vertical datum representation");
+					if (vdiTs != &_vdiTs) {
+						free(vdiTs);
+					}
+					if (tmpFloatVals != NULL) {
+						tss->floatValues = origFloatVals;
+						free(tmpFloatVals);
+					}
+					if (tmpDoubleVals != NULL) {
+						tss->doubleValues = origDoubleVals;
+						free(tmpDoubleVals);
+					}
+					return zerrorProcessing(ifltab, DSS_FUNCTION_zpdStore_ID,
+						zdssErrorCodes.VERTICAL_DATUM_ERROR, 0,
+						0, zdssErrorSeverity.WARNING, tss->pathname,
+						errmsg);
 				}
-				if (offset != 0.) {
-					if (offset == UNDEFINED_VERTICAL_DATUM_VALUE) {
-						char errmsg[256];
-						sprintf(
-							errmsg,
-							"\nVertical datum offset is undefined for datum '%s'.\n"
-							"Datum conversion could not be performed.\n"
-							"No data stored.",
-							cvertical_datum);
-						if (vdiTs && (vdiTs != &_vdiTs)) {
-							free(vdiTs);
-						}
-						return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID,
-							zdssErrorCodes.VERTICAL_DATUM_ERROR, 0,
-							0, zdssErrorSeverity.WARNING, tss->pathname,
-							errmsg);
-					}
-					offset = getOffset(offset, vdi->unit, tss->units);
-					if (offset == UNDEFINED_VERTICAL_DATUM_VALUE) {
-						char errmsg[256];
-						sprintf(
-							errmsg,
-							"\nData unit (%s) and/or offset unit (%s) is invalid for vertical datum conversion.\n"
-							"Conversion to datum '%s' could not be performed.\n"
-							"No data stored.",
-							tss->units, vdi->unit, cvertical_datum);
-						if (vdiTs && (vdiTs != &_vdiTs)) {
-							free(vdiTs);
-						}
-						return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID,
-							zdssErrorCodes.VERTICAL_DATUM_ERROR, 0,
-							0, zdssErrorSeverity.WARNING, tss->pathname,
-							errmsg);
-					}
-					//--------------------------------------------------------------------------//
-					// use the offset to put the values back to the native datum before storing //
-					//--------------------------------------------------------------------------//
-					// use temporary arrays so the values stored to disk are modified but the   //
-					// values in the zstructTs object aren't modified after the call            //
-					//--------------------------------------------------------------------------//
-					if (tss->floatValues) {
-						tmpFloatVals = (float *)calloc(tss->numberValues, sizeof(float));
-						for (int i = 0; i < tss->numberValues; ++i) {
-							tmpFloatVals[i] = tss->floatValues[i] - (float) offset;
-						}
-						origFloatVals = tss->floatValues;
-						tss->floatValues = tmpFloatVals;
-					}
-					else if (tss->doubleValues) {
-						tmpDoubleVals = (double *)calloc(tss->numberValues, sizeof(double));
-						for (int i = 0; i < tss->numberValues; ++i) {
-							tmpDoubleVals[i] = tss->doubleValues[i] - offset;
-						}
-						origDoubleVals = tss->doubleValues;
-						tss->doubleValues = tmpDoubleVals;
-					}
-				}
-				if (vdi == vdiTs) {
-					//----------------------------------------------------------------------------//
-					// move the vertical datum info into the time series struct embedded location //
-					//----------------------------------------------------------------------------//
-					if (!tss->locationStruct) {
-						tss->locationStruct = zstructLocationNew(tss->pathname);
-						tss->allocated[zSTRUCT_TS_locationStruct] = TRUE;
-					}
-					tss->locationStruct->verticalUnits = unitIsFeet(vdi->unit) ? 1 : 2;
-					if (!strcmp(vdi->nativeDatum, CVERTICAL_DATUM_NAVD88)) {
-						tss->locationStruct->verticalDatum = IVERTICAL_DATUM_NAVD88;
-					}
-					else if (!strcmp(vdi->nativeDatum, CVERTICAL_DATUM_NGVD29)) {
-						tss->locationStruct->verticalDatum = IVERTICAL_DATUM_NGVD29;
-					}
-					else {
-						tss->locationStruct->verticalDatum = IVERTICAL_DATUM_OTHER;
-					}
-					char errmsg[256];
-					char *compressed = NULL;
-					char *cp = verticalDatumInfoToString(&compressed, vdi, TRUE);
-					if (compressed == NULL) {
-						sprintf(
-							errmsg,
-							"\nVertical datum information could not be assigned to location record.\n%s\n"
-							"No data stored.",
-							cp ? cp : "Error processing vertical datum representation");
-						if (vdiTs != &_vdiTs) {
-							free(vdiTs);
-						}
-						if (tmpFloatVals != NULL) {
-							tss->floatValues = origFloatVals;
-							free(tmpFloatVals);
-						}
-						if (tmpDoubleVals != NULL) {
-							tss->doubleValues = origDoubleVals;
-							free(tmpDoubleVals);
-						}
-						return zerrorProcessing(ifltab, DSS_FUNCTION_zpdStore_ID,
-							zdssErrorCodes.VERTICAL_DATUM_ERROR, 0,
-							0, zdssErrorSeverity.WARNING, tss->pathname,
-							errmsg);
-					}
-					else { 
-						if (tss->locationStruct->supplemental) {
-							status = insertIntoDelimitedString(
-								&tss->locationStruct->supplemental,
-								(int)strlen(tss->locationStruct->supplemental),
-								VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
-								compressed,
-								":",
-								TRUE,
-								';');
-							if (status) { // not enough space to insert
-								int newLen =
-									(int)strlen(tss->locationStruct->supplemental) +
-									VERTICAL_DATUM_INFO_USER_HEADER_PARAM_LEN +
-									(int)strlen(compressed) +
-									3;
-								tss->locationStruct->supplemental = (char *)realloc(
-									tss->locationStruct->supplemental,
-									newLen);
-								status = insertIntoDelimitedString(
-									&tss->locationStruct->supplemental,
-									newLen,
-									VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
-									compressed,
-									":",
-									TRUE,
-									';');
-								if (status) { // unexpected error
-									if (vdiTs != &_vdiTs) {
-										free(vdiTs);
-									}
-									sprintf(
-										errmsg,
-										"\nVertical datum information could not be assigned to location record.\n"
-										"No data stored.");
-									if (vdiTs && (vdiTs != &_vdiTs)) {
-										free(vdiTs);
-									}
-									free(compressed);
-									if (tmpFloatVals != NULL) {
-										tss->floatValues = origFloatVals;
-										free(tmpFloatVals);
-									}
-									if (tmpDoubleVals != NULL) {
-										tss->doubleValues = origDoubleVals;
-										free(tmpDoubleVals);
-									}
-									return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID,
-										zdssErrorCodes.VERTICAL_DATUM_ERROR, 0,
-										0, zdssErrorSeverity.WARNING, tss->pathname,
-										errmsg);
-								}
-							}
-						}
-						else {
-							int len =
+				else {
+					if (tss->locationStruct->supplemental) {
+						status = insertIntoDelimitedString(
+							&tss->locationStruct->supplemental,
+							(int)strlen(tss->locationStruct->supplemental),
+							VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
+							compressed,
+							":",
+							TRUE,
+							';');
+						if (status) { // not enough space to insert
+							int newLen =
+								(int)strlen(tss->locationStruct->supplemental) +
 								VERTICAL_DATUM_INFO_USER_HEADER_PARAM_LEN +
 								(int)strlen(compressed) +
 								3;
-							tss->locationStruct->supplemental = (char *)malloc(len);
-							memset(tss->locationStruct->supplemental, 0, len);
-							tss->locationStruct->allocated[zSTRUCT_otherInformation] = TRUE;
+							tss->locationStruct->supplemental = (char*)realloc(
+								tss->locationStruct->supplemental,
+								newLen);
 							status = insertIntoDelimitedString(
 								&tss->locationStruct->supplemental,
-								len,
+								newLen,
 								VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
 								compressed,
 								":",
@@ -736,13 +600,12 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 							if (status) { // unexpected error
 								if (vdiTs != &_vdiTs) {
 									free(vdiTs);
-									vdiTs = 0;
 								}
 								sprintf(
 									errmsg,
 									"\nVertical datum information could not be assigned to location record.\n"
 									"No data stored.");
-								if (vdiTs && (vdiTs != &_vdiTs)) {
+								if (vdiTs != &_vdiTs) {
 									free(vdiTs);
 								}
 								free(compressed);
@@ -760,45 +623,84 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 									errmsg);
 							}
 						}
-						free(compressed);
 					}
-				}
-				if (vdiTs != &_vdiTs) {
-					//--------------------------------------------------------------------//
-					// remove the vertical datum info from the user header before storing //
-					//                                                                    //
-					// don't need to remove current vertical datum, that is done in the   //
-					// getEffectiveVerticalDatum()                                        //
-					//--------------------------------------------------------------------//
-					char *userHeaderString = userHeaderToString(tss->userHeader, tss->userHeaderNumber);
-					if (userHeaderString) {
-						char *vdiStr = extractFromDelimitedString(
-							&userHeaderString,
+					else {
+						int len =
+							VERTICAL_DATUM_INFO_USER_HEADER_PARAM_LEN +
+							(int)strlen(compressed) +
+							3;
+						tss->locationStruct->supplemental = (char*)malloc(len);
+						memset(tss->locationStruct->supplemental, 0, len);
+						tss->locationStruct->allocated[zSTRUCT_otherInformation] = TRUE;
+						status = insertIntoDelimitedString(
+							&tss->locationStruct->supplemental,
+							len,
 							VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
+							compressed,
 							":",
 							TRUE,
-							TRUE,
 							';');
-						if (vdiStr) {
-							free(vdiStr);
-							int newHeaderSize;
-							int *newHeader = stringToUserHeader(userHeaderString, &newHeaderSize);
-							// free (tss->userHeader); -- don't know why this is a double free() !!!
-							tss->userHeader = newHeader;
-							tss->userHeaderNumber = newHeaderSize;
-							tss->allocated[zSTRUCT_userHeader] = TRUE;
-							// don't free newHeader - the zstructFree() call will get it.
+						if (status) { // unexpected error
+							sprintf(
+								errmsg,
+								"\nVertical datum information could not be assigned to location record.\n"
+								"No data stored.");
+							if (vdiTs != &_vdiTs) {
+								free(vdiTs);
+							}
+							free(compressed);
+							if (tmpFloatVals != NULL) {
+								tss->floatValues = origFloatVals;
+								free(tmpFloatVals);
+							}
+							if (tmpDoubleVals != NULL) {
+								tss->doubleValues = origDoubleVals;
+								free(tmpDoubleVals);
+							}
+							return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID,
+								zdssErrorCodes.VERTICAL_DATUM_ERROR, 0,
+								0, zdssErrorSeverity.WARNING, tss->pathname,
+								errmsg);
 						}
-						free(userHeaderString);
 					}
-					free(vdiTs);
+					free(compressed);
 				}
 			}
-		}
-		if (!zinquire(ifltab, "write")) {
-			return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID,
-				zdssErrorCodes.WRITE_ON_READ_ONLY, 0, 0,
-				zdssErrorSeverity.WARNING_NO_WRITE_ACCESS, tss->pathname, "");
+			if (vdiTs != &_vdiTs) {
+				//--------------------------------------------------------------------//
+				// remove the vertical datum info from the user header before storing //
+				//                                                                    //
+				// don't need to remove current vertical datum, that is done in the   //
+				// getCurrentVerticalDatum()                                          //
+				//--------------------------------------------------------------------//
+				char* userHeaderString = userHeaderToString(tss->userHeader, tss->userHeaderNumber);
+				if (userHeaderString) {
+					char* vdiStr = extractFromDelimitedString(
+						&userHeaderString,
+						VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
+						":",
+						TRUE,
+						TRUE,
+						';');
+					if (vdiStr) {
+						free(vdiStr);
+						int newHeaderSize;
+						int* newHeader = stringToUserHeader(userHeaderString, &newHeaderSize);
+						// free (tss->userHeader); -- don't know why this is a double free() !!!
+						tss->userHeader = newHeader;
+						tss->userHeaderNumber = newHeaderSize;
+						tss->allocated[zSTRUCT_userHeader] = TRUE;
+						// don't free newHeader - the zstructFree() call will get it.
+					}
+					free(userHeaderString);
+				}
+				free(vdiTs);
+			}
+			if (!zinquire(ifltab, "write")) {
+				return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID,
+					zdssErrorCodes.WRITE_ON_READ_ONLY, 0, 0,
+					zdssErrorSeverity.WARNING_NO_WRITE_ACCESS, tss->pathname, "");
+			}
 		}
 		if (tss->profileDepthsNumber > 0) {
 			if (tss->floatValues || tss->doubleValues) {

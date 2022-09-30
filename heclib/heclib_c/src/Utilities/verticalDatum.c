@@ -69,7 +69,7 @@ int unitisfeet_(char *unit, slen_t lenUnit) {
     F2C(unit, cUnit, lenUnit, lenUnit+1);
     int isFeet = unitIsFeet(cUnit);
     free(cUnit);
-    return isFeet;
+    return isFeet ? 1 : 0;
 }
 //
 // See verticalDatum.h for documentation
@@ -90,7 +90,7 @@ int unitismeters_(char *unit, slen_t lenUnit) {
     F2C(unit, cUnit, lenUnit, lenUnit+1);
     int isMeters = unitIsMeters(cUnit);
     free(cUnit);
-    return isMeters;
+    return isMeters ? 1 : 0;
 }
 //
 // See verticalDatum.h for documentation
@@ -100,6 +100,10 @@ double getOffset(double offset, const char *offsetUnit, const char *_dataUnit) {
     int dataInMeters   = 0;
     int offsetInFeet   = 0;
     int offsetInMeters = 0;
+
+    if (offset == UNDEFINED_VERTICAL_DATUM_VALUE) {
+        return offset;
+    }
     // blank trim the data unit (shouldn't have to do this)
     char *dataUnit = (char *)_malloc(strlen(_dataUnit)+1);
     strcpy(dataUnit, _dataUnit);
@@ -147,6 +151,20 @@ void getoffset_(
     *offset = getOffset(*offset, cOffsetUnit, cDataUnit);
     free(cOffsetUnit);
     free(cDataUnit);
+}
+int validelevunits_(
+    const char* offsetUnit,
+    const char* dataUnit,
+    slen_t lenOffsetUnit,
+    slen_t lenDataUnit) {
+    char* cOffsetUnit = (char*)_malloc(lenOffsetUnit + 1);
+    char* cDataUnit = (char*)_malloc(lenDataUnit + 1);
+    F2C(offsetUnit, cOffsetUnit, lenOffsetUnit, lenOffsetUnit + 1);
+    F2C(dataUnit, cDataUnit, lenDataUnit, lenDataUnit + 1);
+    double offset = getOffset(0, cOffsetUnit, cDataUnit);
+    free(cOffsetUnit);
+    free(cDataUnit);
+    return offset == UNDEFINED_VERTICAL_DATUM_VALUE ? 0 : 1;
 }
 
 #if !defined(__APPLE__) && !defined(__sun__)
@@ -321,7 +339,6 @@ char *userHeaderToString(const int *userHeader, const int userHeaderNumber) {
     }
     return str;
 }
-
 //
 // See verticalDatum.h for documentation
 //
@@ -761,8 +778,16 @@ char *validateXmlStructure(const char *xml) {
 //
 // See verticalDatum.h for documentation
 //
-char *stringToVerticalDatumInfo(verticalDatumInfo *vdi, const char *inputStr) {
-    char  *errmsg = NULL;
+void initializeVerticalDatumInfo(verticalDatumInfo* vdi) {
+    memset(vdi, 0, sizeof(*vdi));
+    vdi->offsetToNgvd29 = UNDEFINED_VERTICAL_DATUM_VALUE;
+    vdi->offsetToNavd88 = UNDEFINED_VERTICAL_DATUM_VALUE;
+}
+//
+// See verticalDatum.h for documentation
+//
+char* stringToVerticalDatumInfo(verticalDatumInfo* vdi, const char* inputStr) {
+    char* errmsg = NULL;
     char  *xml1;
     char  *xml;
     char   offsetBuf[2][128];
@@ -770,12 +795,7 @@ char *stringToVerticalDatumInfo(verticalDatumInfo *vdi, const char *inputStr) {
     double dtmp;
     textBoundaryInfo tbi;
 
-    vdi->offsetToNgvd29 = UNDEFINED_VERTICAL_DATUM_VALUE;
-    vdi->offsetToNgvd29IsEstimate = FALSE;
-    vdi->offsetToNavd88 = UNDEFINED_VERTICAL_DATUM_VALUE;
-    vdi->offsetToNavd88IsEstimate = FALSE;
-    memset(vdi->nativeDatum, 0, sizeof(vdi->nativeDatum)); // null terminators will exist after strncpy()
-    memset(vdi->unit, 0, sizeof(vdi->unit));                 // null terminators will exist after strncpy()
+    initializeVerticalDatumInfo(vdi);
 
     memset(offsetBuf, 0, sizeof(offsetBuf));               // null terminators will exist after strncpy()
 
@@ -876,7 +896,7 @@ char *stringToVerticalDatumInfo(verticalDatumInfo *vdi, const char *inputStr) {
         if (offsetBuf[i][0] == '\0') {
             if (i == 0) {
                 free(xml);
-                return MISSING_OFFSET_BLOCK_IN_XML;
+                return NULL; //MISSING_OFFSET_BLOCK_IN_XML;
             }
             break; // only 1 offset block
         }
@@ -1047,7 +1067,96 @@ verticalDatumInfo *extractVerticalDatumInfoFromUserHeader(const int *userHeader,
 //
 // See verticalDatum.h for documentation
 //
-int	getEffectiveVerticalDatum(
+void extractverticaldatuminfofromuserheader_(
+        char      *nativeDatum,
+        char      *unit,
+        double    *offsetToNavd88,
+        int       *offsetToNavd88IsEstimate,
+        double    *offsetToNgvd29,
+        int       *offsetToNgvd29IsEstimate,
+        const int *userHeader,
+        const int *userHeaderSize,
+        slen_t     lenNativeDatum,
+        slen_t     lenUnit) {
+    C2F(" ", nativeDatum, lenNativeDatum);
+    C2F(" ", unit,        lenUnit);
+    *offsetToNgvd29           = UNDEFINED_VERTICAL_DATUM_VALUE;
+    *offsetToNgvd29IsEstimate = TRUE;
+    *offsetToNavd88           = UNDEFINED_VERTICAL_DATUM_VALUE;
+    *offsetToNavd88IsEstimate = TRUE;
+    verticalDatumInfo *tmpVdi = extractVerticalDatumInfoFromUserHeader(userHeader, *userHeaderSize);
+    if (tmpVdi) {
+        C2F(tmpVdi->nativeDatum, nativeDatum, lenNativeDatum);
+        C2F(tmpVdi->unit,        unit,        lenUnit);
+        *offsetToNgvd29           = tmpVdi->offsetToNgvd29;
+        *offsetToNgvd29IsEstimate = tmpVdi->offsetToNgvd29IsEstimate;
+        *offsetToNavd88           = tmpVdi->offsetToNavd88;
+        *offsetToNavd88IsEstimate = tmpVdi->offsetToNavd88IsEstimate;
+        free(tmpVdi);
+    }
+}
+//
+// See verticalDatum.h for documentation
+//
+void getlocationverticaldatuminfo_(
+        char      *nativeDatum,
+        char      *unit,
+        double    *offsetToNavd88,
+        int       *offsetToNavd88IsEstimate,
+        double    *offsetToNgvd29,
+        int       *offsetToNgvd29IsEstimate,
+        long long *fileTable,
+        char      *pathname,
+        slen_t     lenNativeDatum,
+        slen_t     lenUnit,
+        slen_t     lenPathname) {
+
+    char *pathname_c = (char *)_malloc(lenPathname+1);
+    verticalDatumInfo vdi;
+    memset(&vdi, 0, sizeof(vdi));
+
+    F2C(pathname, pathname_c, lenPathname, lenPathname+1);
+    zStructLocation* ls = zstructLocationNew(pathname_c);
+    free(pathname_c);
+    if (ls) {
+        zlocationRetrieve(fileTable, ls);
+        if (ls->supplemental) {
+            char* compressedVdi = extractFromDelimitedString(
+                &ls->supplemental,
+                VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
+                ":",
+                TRUE,
+                FALSE,
+                ';');
+            if (compressedVdi) {
+                stringToVerticalDatumInfo(&vdi, compressedVdi);
+                strcpy(nativeDatum, vdi.nativeDatum);
+                free(compressedVdi);
+            }
+        }
+        zstructFree(ls);
+    }
+    if (strlen(vdi.nativeDatum) > 0) {
+        C2F(vdi.nativeDatum, nativeDatum, lenNativeDatum);
+        C2F(vdi.unit,        unit,        lenUnit);
+        *offsetToNgvd29           = vdi.offsetToNgvd29;
+        *offsetToNgvd29IsEstimate = vdi.offsetToNgvd29IsEstimate;
+        *offsetToNavd88           = vdi.offsetToNavd88;
+        *offsetToNavd88IsEstimate = vdi.offsetToNavd88IsEstimate;
+    }
+    else {
+        C2F(" ", nativeDatum, lenNativeDatum);
+        C2F(" ", unit,        lenUnit);
+        *offsetToNgvd29           = UNDEFINED_VERTICAL_DATUM_VALUE;
+        *offsetToNgvd29IsEstimate = TRUE;
+        *offsetToNavd88           = UNDEFINED_VERTICAL_DATUM_VALUE;
+        *offsetToNavd88IsEstimate = TRUE;
+    }
+}
+//
+// See verticalDatum.h for documentation
+//
+int	getCurrentVerticalDatum(
         char  *cverticalDatum,
         int    cverticalDatumSize,
         int  **userHeader,
@@ -1084,6 +1193,10 @@ int	getEffectiveVerticalDatum(
                 else if (!strcasecmp(verticalDatum, CVERTICAL_DATUM_NGVD29)) {
                     iverticalDatum = IVERTICAL_DATUM_NGVD29;
                     strcpy(cverticalDatum, CVERTICAL_DATUM_NGVD29);
+                }
+                else if (!strcasecmp(verticalDatum, CVERTICAL_DATUM_UNSET)) {
+                    iverticalDatum = IVERTICAL_DATUM_UNSET;
+                    strcpy(cverticalDatum, CVERTICAL_DATUM_UNSET);
                 }
                 else if (!strcasecmp(verticalDatum, CVERTICAL_DATUM_OTHER)) {
                     iverticalDatum = IVERTICAL_DATUM_OTHER;
@@ -1139,6 +1252,10 @@ int	getEffectiveVerticalDatum(
                 else if (!strcasecmp(verticalDatum, CVERTICAL_DATUM_NGVD29)) {
                     iverticalDatum = IVERTICAL_DATUM_NGVD29;
                     strcpy(cverticalDatum, CVERTICAL_DATUM_NGVD29);
+                }
+                else if (!strcasecmp(verticalDatum, CVERTICAL_DATUM_UNSET)) {
+                    iverticalDatum = IVERTICAL_DATUM_UNSET;
+                    strcpy(cverticalDatum, CVERTICAL_DATUM_UNSET);
                 }
                 else if (!strcasecmp(verticalDatum, CVERTICAL_DATUM_OTHER)) {
                     iverticalDatum = IVERTICAL_DATUM_OTHER;
@@ -1253,6 +1370,7 @@ char *normalizeVdiInUserHeader(int* userHeader, int* userHeaderNumber) {
                 ';');
         }
     }
+    free(vdiStr);
     if (status) {
         free(headerString);
         return "Memory reallocation error";
@@ -1295,7 +1413,7 @@ void verticaldatuminfotostring_(
     F2C(nativeDatum, vdi.nativeDatum, lenNativeDatum, sizeof(vdi.nativeDatum));
     F2C(unit, vdi.unit, lenUnit, sizeof(vdi.unit));
     vdi.offsetToNgvd29 = *offsetNgvd29;
-    vdi.offsetToNavd88IsEstimate = *offsetNgvd29IsEstimate;
+    vdi.offsetToNgvd29IsEstimate = *offsetNgvd29IsEstimate;
     vdi.offsetToNavd88 = *offsetNavd88;
     vdi.offsetToNavd88IsEstimate = *offsetNavd88IsEstimate;
     errmsg = verticalDatumInfoToString(&results, &vdi, *generateCompressed);
@@ -1316,5 +1434,326 @@ void normalizevdiinuserheader_(
     if (errmsg) {
         C2F(errmsg, errorMesage, lenErrorMessage);
     }
+}
+int isUndefinedVertDatumValue(double value) {
+    if (value == UNDEFINED_VERTICAL_DATUM_VALUE) {
+        return TRUE;
+    }
+    double ratio = value / UNDEFINED_VERTICAL_DATUM_VALUE;
+    return ratio > 0.95 && ratio < 1.05;
+}
+int areEqual(double d1, double d2, double epsilon) {
+    double diff = d1 - d2;
+    return (diff < epsilon) && (-diff < epsilon);
+}
+char* doubleToChar(double d, char* buf) {
+    sprintf(buf, "%f", d);
+    return buf;
+}
+//
+// Fortran wrapper for processStorageVdis
+//
+void processstoragevdis_(
+    double* offsetToUse,
+    char* errorMessage,
+    char* fileVdiStr,
+    char* dataVdiStr,
+    char* currentDatum,
+    int32_t* fileContainsData,
+    char* dataUnit,
+    slen_t lenErrorMessage,
+    slen_t lenFileVdiStr,
+    slen_t lenDataVdiStr,
+    slen_t lenCurrentDatum,
+    slen_t lenDataUnit) {
+
+    char* _fileVdiStr = (char*)malloc(lenFileVdiStr + 1);
+    char* _dataVdiStr = (char*)malloc(lenDataVdiStr + 1);
+    char* _currentDatum = (char*)malloc(lenCurrentDatum + 1);
+    char* _dataUnit = (char*)malloc(lenDataUnit + 1);
+    F2C(fileVdiStr, _fileVdiStr, lenFileVdiStr, lenFileVdiStr + 1);
+    F2C(dataVdiStr, _dataVdiStr, lenDataVdiStr, lenDataVdiStr + 1);
+    F2C(currentDatum, _currentDatum, lenCurrentDatum, lenCurrentDatum + 1);
+    F2C(dataUnit, _dataUnit, lenDataUnit, lenDataUnit + 1);
+
+    verticalDatumInfo fileVdi;
+    stringToVerticalDatumInfo(&fileVdi, _fileVdiStr);
+    verticalDatumInfo dataVdi;
+    stringToVerticalDatumInfo(&dataVdi, _dataVdiStr);
+    char* _errorMessage = processStorageVdis(offsetToUse, &fileVdi, &dataVdi, _currentDatum, *fileContainsData, _dataUnit);
+    if (_errorMessage) {
+        C2F(_errorMessage, errorMessage, lenErrorMessage);
+        free(_errorMessage);
+    }
+    else {
+        C2F("", errorMessage, lenErrorMessage);
+    }
+}
+
+//
+// See verticalDatum.h for documentation
+//
+char* processStorageVdis(
+    double* offsetToUse, 
+    verticalDatumInfo* _fileVdi, 
+    verticalDatumInfo* _dataVdi, 
+    char* _currentDatum, 
+    int fileContainsData, 
+    char* dataUnit) {
+
+    int vdiOverride = FALSE;
+    *offsetToUse = UNDEFINED_VERTICAL_DATUM_VALUE;
+    verticalDatumInfo fileVdi;
+    initializeVerticalDatumInfo(&fileVdi);
+    if (_fileVdi) {
+        strcpy(fileVdi.nativeDatum, _fileVdi->nativeDatum);
+        strcpy(fileVdi.unit, _fileVdi->unit);
+        fileVdi.offsetToNavd88 = _fileVdi->offsetToNavd88;
+        fileVdi.offsetToNavd88IsEstimate = _fileVdi->offsetToNavd88IsEstimate;
+        fileVdi.offsetToNgvd29 = _fileVdi->offsetToNgvd29;
+        fileVdi.offsetToNgvd29IsEstimate = _fileVdi->offsetToNgvd29IsEstimate;
+    }
+    verticalDatumInfo dataVdi;
+    initializeVerticalDatumInfo(&dataVdi);
+    if (_dataVdi) {
+        strcpy(dataVdi.nativeDatum, _dataVdi->nativeDatum);
+        strcpy(dataVdi.unit, _dataVdi->unit);
+        dataVdi.offsetToNavd88 = _dataVdi->offsetToNavd88;
+        dataVdi.offsetToNavd88IsEstimate = _dataVdi->offsetToNavd88IsEstimate;
+        dataVdi.offsetToNgvd29 = _dataVdi->offsetToNgvd29;
+        dataVdi.offsetToNgvd29IsEstimate = _dataVdi->offsetToNgvd29IsEstimate;
+    }
+    char* fileNativeDatum = !strcmp(fileVdi.nativeDatum, "") ? CVERTICAL_DATUM_UNSET : fileVdi.nativeDatum;
+    char* dataNativeDatum = !strcmp(dataVdi.nativeDatum, "") ? CVERTICAL_DATUM_UNSET : dataVdi.nativeDatum;
+    char* currentDatum = !strcmp(_currentDatum, "") ? CVERTICAL_DATUM_UNSET : _currentDatum;
+    char  errorMessage[1024];
+    //---------------------------------------------------------------------//
+    // test whether data native datum is compatible with file native datum //
+    //---------------------------------------------------------------------//
+    int compatibleNativeDatum = TRUE;
+    if (fileContainsData) {
+        compatibleNativeDatum = (
+            !strcmp(dataNativeDatum, CVERTICAL_DATUM_UNSET)
+            || !strcmp(fileNativeDatum, dataNativeDatum));
+    }
+    else {
+        compatibleNativeDatum = (
+            !strcmp(fileNativeDatum, CVERTICAL_DATUM_UNSET)
+            || !strcmp(dataNativeDatum, CVERTICAL_DATUM_UNSET)
+            || !strcmp(fileNativeDatum, dataNativeDatum));
+    }
+    if (!compatibleNativeDatum) {
+        char charVal[8];
+        zquery("VDOW", charVal, sizeof(charVal), &vdiOverride);
+        if (!vdiOverride) {
+            sprintf(
+                errorMessage,
+                " VERTICAL DATUM ERROR\n"
+                " Data native datum of %s conflicts with file native datum of %s.\n"
+                " No data stored.",
+                dataNativeDatum,
+                fileNativeDatum);
+            return strdup(errorMessage);
+        }
+    }
+    //-------------------------------------//
+    // test whether we have eqivalent VDIs //
+    //-------------------------------------//
+    if ((!strcmp(dataNativeDatum, fileNativeDatum)
+        && strcmp(dataNativeDatum, CVERTICAL_DATUM_UNSET))
+        && !vdiOverride) {
+        //---------------//
+        // compare units //
+        //---------------//
+        if (!unitIsFeet(dataVdi.unit) && !unitIsMeters(dataVdi.unit)) {
+            sprintf(
+                errorMessage,
+                " VERTICAL DATUM ERROR\n"
+                " Data VDI unit of %s is not recognized as feet or meters.\n"
+                " No data stored.",
+                dataVdi.unit);
+            return strdup(errorMessage);
+        }
+        if (!unitIsFeet(fileVdi.unit) && !unitIsMeters(fileVdi.unit)) {
+            sprintf(
+                errorMessage,
+                " VERTICAL DATUM ERROR\n"
+                " File VDI unit of %s is not recognized as feet or meters.\n"
+                " No data stored.",
+                fileVdi.unit);
+            return strdup(errorMessage);
+        }
+        //-------------------------//
+        // compare NAVD-88 offsets //
+        //-------------------------//
+        char buf[80];
+        if (isUndefinedVertDatumValue(dataVdi.offsetToNavd88) != isUndefinedVertDatumValue(fileVdi.offsetToNavd88)) {
+            sprintf(
+                errorMessage,
+                " VERTICAL DATUM ERROR\n"
+                " Data VDI offset to NAVD-88 of %s%s%s conflicts with file VDI offset of %s%s%s.\n"
+                " No data stored.",
+                isUndefinedVertDatumValue(dataVdi.offsetToNavd88) ? "UNDEFINED" : doubleToChar(dataVdi.offsetToNavd88, buf),
+                isUndefinedVertDatumValue(dataVdi.offsetToNavd88) ? "" : " ",
+                isUndefinedVertDatumValue(dataVdi.offsetToNavd88) ? "" : dataVdi.unit,
+                isUndefinedVertDatumValue(fileVdi.offsetToNavd88) ? "UNDEFINED" : doubleToChar(fileVdi.offsetToNavd88, buf),
+                isUndefinedVertDatumValue(fileVdi.offsetToNavd88) ? "" : " ",
+                isUndefinedVertDatumValue(fileVdi.offsetToNavd88) ? "" : fileVdi.unit);
+            return strdup(errorMessage);
+        }
+        if (!isUndefinedVertDatumValue(dataVdi.offsetToNavd88)) {
+            if (!areEqual(getOffset(dataVdi.offsetToNavd88, dataVdi.unit, fileVdi.unit), fileVdi.offsetToNavd88, FLT_EPSILON)) {
+                sprintf(
+                    errorMessage,
+                    " VERTICAL DATUM ERROR\n"
+                    " Data VDI offset to NAVD-88 of %f %s conflicts with file VDI offset of %f %s.\n"
+                    " No data stored.",
+                    dataVdi.offsetToNavd88,
+                    dataVdi.unit,
+                    fileVdi.offsetToNavd88,
+                    fileVdi.unit);
+                return strdup(errorMessage);
+            }
+            if (dataVdi.offsetToNavd88IsEstimate != fileVdi.offsetToNavd88IsEstimate) {
+                sprintf(
+                    errorMessage,
+                    " VERTICAL DATUM ERROR\n"
+                    " Data VDI offset to NAVD-88 is estimated of %s conflicts with file VDI offset is estimated of %s.\n"
+                    " No data stored.",
+                    dataVdi.offsetToNavd88IsEstimate ? "TRUE" : "FALSE",
+                    fileVdi.offsetToNavd88IsEstimate ? "TRUE" : "FALSE");
+                return strdup(errorMessage);
+            }
+        }
+        //-------------------------//
+        // compare NGVD-29 offsets //
+        //-------------------------//
+        if (isUndefinedVertDatumValue(dataVdi.offsetToNgvd29) != isUndefinedVertDatumValue(fileVdi.offsetToNgvd29)) {
+            sprintf(
+                errorMessage,
+                " VERTICAL DATUM ERROR\n"
+                " Data VDI offset to NGVD-29 of %s%s%s conflicts with file VDI offset of %s%s%s.\n"
+                " No data stored.",
+                isUndefinedVertDatumValue(dataVdi.offsetToNgvd29) ? "UNDEFINED" : doubleToChar(dataVdi.offsetToNgvd29, buf),
+                isUndefinedVertDatumValue(dataVdi.offsetToNgvd29) ? "" : " ",
+                isUndefinedVertDatumValue(dataVdi.offsetToNgvd29) ? "" : dataVdi.unit,
+                isUndefinedVertDatumValue(fileVdi.offsetToNgvd29) ? "UNDEFINED" : doubleToChar(fileVdi.offsetToNgvd29, buf),
+                isUndefinedVertDatumValue(fileVdi.offsetToNgvd29) ? "" : " ",
+                isUndefinedVertDatumValue(fileVdi.offsetToNgvd29) ? "" : fileVdi.unit);
+            return strdup(errorMessage);
+        }
+        if (!isUndefinedVertDatumValue(dataVdi.offsetToNgvd29)) {
+            if (!areEqual(getOffset(dataVdi.offsetToNgvd29, dataVdi.unit, fileVdi.unit), fileVdi.offsetToNgvd29, FLT_EPSILON)) {
+                sprintf(
+                    errorMessage,
+                    " VERTICAL DATUM ERROR\n"
+                    " Data VDI offset to NGVD-29 of %f %s conflicts with file VDI offset of %f %s.\n"
+                    " No data stored.",
+                    dataVdi.offsetToNgvd29,
+                    dataVdi.unit,
+                    fileVdi.offsetToNgvd29,
+                    fileVdi.unit);
+                return strdup(errorMessage);
+            }
+            if (dataVdi.offsetToNgvd29IsEstimate != fileVdi.offsetToNgvd29IsEstimate) {
+                sprintf(
+                    errorMessage,
+                    " VERTICAL DATUM ERROR\n"
+                    " Data VDI offset to NGVD-29 is estimated of %s conflicts with file VDI offset is estimated of %s.\n"
+                    " No data stored.",
+                    dataVdi.offsetToNgvd29IsEstimate ? "TRUE" : "FALSE",
+                    fileVdi.offsetToNgvd29IsEstimate ? "TRUE" : "FALSE");
+                return strdup(errorMessage);
+            }
+        }
+    }
+    //------------------------------------------------------------//
+    // test whether current datum is compatible with native datum //
+    //------------------------------------------------------------//
+    int compatibleCurrentDatum = FALSE;
+    if (strcmp(currentDatum, CVERTICAL_DATUM_UNSET)               // current datum != UNSET
+        && !strcmp(dataNativeDatum, CVERTICAL_DATUM_UNSET)        // && data datum == UNSET
+        && !strcmp(fileNativeDatum, CVERTICAL_DATUM_UNSET)) {     // && file datum == UNSET
+        compatibleCurrentDatum = FALSE;
+    }
+    else if (!strcmp(currentDatum, dataNativeDatum)                // current datum == data datum
+        || (!strcmp(dataNativeDatum, CVERTICAL_DATUM_UNSET)        // data datum == UNSET
+            && !strcmp(currentDatum, fileNativeDatum))             // && current datum == file datum
+        || !strcmp(currentDatum, CVERTICAL_DATUM_UNSET)            // current datum == UNSET
+        || !strcmp(currentDatum, CVERTICAL_DATUM_NAVD88)           // current datum == NAVD88
+        || !strcmp(currentDatum, CVERTICAL_DATUM_NGVD29)           // current datum == NGVD29
+        || (!strcmp(fileNativeDatum, CVERTICAL_DATUM_UNSET)        // file datum == UNSET
+            && !strcmp(dataNativeDatum, CVERTICAL_DATUM_UNSET))) { // && data datum == UNSET - current datum can be anything
+        compatibleCurrentDatum = TRUE;
+    }
+    else if (!strcmp(currentDatum, CVERTICAL_DATUM_UNSET)          // current datum == UNSET
+        && !strcmp(fileNativeDatum, CVERTICAL_DATUM_UNSET)         // && file datum == UNSET
+        && !strcmp(dataNativeDatum, CVERTICAL_DATUM_UNSET))  {     // && data datum == UNSET
+        compatibleCurrentDatum = TRUE;
+    }
+    else if (strcmp(currentDatum, CVERTICAL_DATUM_UNSET)           // current datum != UNSET
+        && strcmp(currentDatum, CVERTICAL_DATUM_NAVD88)            // && current datum != NAVD88
+        && strcmp(currentDatum, CVERTICAL_DATUM_NGVD29)) {         // && current datum != NGVD29 (current datum == LOCAL)
+
+        if (!strcmp(currentDatum, dataNativeDatum)) {              // data datum == SAME LOCAL
+            compatibleCurrentDatum = TRUE;
+        }
+        else if (!strcmp(dataNativeDatum, CVERTICAL_DATUM_UNSET)   // data datum == UNSET
+            && !strcmp(currentDatum, fileNativeDatum)) {           // && file datum == SAME LOCAL
+            compatibleCurrentDatum = TRUE;
+        }
+        else {                                                     // current datum != native (file or data) datum
+            compatibleCurrentDatum = FALSE;
+        }
+    }
+    if (!compatibleCurrentDatum) {
+        sprintf(
+            errorMessage,
+            " VERTICAL DATUM ERROR\n"
+            " Current datum of %s conflicts with %s native datum of %s.\n"
+            " No data stored.",
+            currentDatum,
+            strcmp(dataNativeDatum, CVERTICAL_DATUM_UNSET) ? "data" : "file",
+            strcmp(dataNativeDatum, CVERTICAL_DATUM_UNSET) ? dataNativeDatum : fileNativeDatum);
+        return strdup(errorMessage);
+    }
+    //--------------------------------------------//
+    // test whether we have a valid offset to use //
+    //--------------------------------------------//
+    verticalDatumInfo* targetVdi = strcmp(dataNativeDatum, CVERTICAL_DATUM_UNSET) || vdiOverride ? &dataVdi : &fileVdi;
+    if (!strcmp(currentDatum, CVERTICAL_DATUM_UNSET)         // current datum == UNSET 
+        || !strcmp(currentDatum, targetVdi->nativeDatum)) {  // || current datum == native datum
+        *offsetToUse = 0;
+    }
+    else if (!strcmp(currentDatum, CVERTICAL_DATUM_NAVD88)) {
+        *offsetToUse = getOffset(targetVdi->offsetToNavd88, targetVdi->unit, dataUnit);
+    }
+    else if (!strcmp(currentDatum, CVERTICAL_DATUM_NGVD29)) {
+        *offsetToUse = getOffset(targetVdi->offsetToNgvd29, targetVdi->unit, dataUnit);
+    }
+    if (*offsetToUse == UNDEFINED_VERTICAL_DATUM_VALUE) {
+        sprintf(
+            errorMessage,
+            " VERTICAL DATUM ERROR\n"
+            " No offset information. Cannot convert data from %s to %s\n"
+            " No data stored.",
+            currentDatum,
+            targetVdi->nativeDatum);
+        return strdup(errorMessage);
+    }
+    //-------------------------------------//
+    // test whether the data unit is valid //
+    //-------------------------------------//
+    if ((strcmp(fileNativeDatum, CVERTICAL_DATUM_UNSET) || strcmp(dataNativeDatum, CVERTICAL_DATUM_UNSET))
+        && (!unitIsFeet(dataUnit) && !unitIsMeters(dataUnit))) {
+        sprintf(
+            errorMessage,
+            " VERTICAL DATUM ERROR\n"
+            " Data unit of %s is not recognized as feet or meters.\n"
+            " No data stored.",
+            dataUnit);
+        return strdup(errorMessage);
+    }
+    return NULL;
 }
 

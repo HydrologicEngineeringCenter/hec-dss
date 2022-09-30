@@ -222,7 +222,7 @@ int unitIsMeters(const char *unit);
  * @param offsetUnit The unit of offset
  * @param dataUnit   The unit of the elevations being modified
  * 
- * @return The offset appropriate for adjusting the offsets with. Returns UNDEFINED_VERTICAL_DATUM_VALUE
+ * @return The offset appropriate for adjusting the data values with. Returns UNDEFINED_VERTICAL_DATUM_VALUE
  *         if either of the units cannot be identified as feet or meters
  */
 double getOffset(double offset, const char *offsetUnit, const char *dataUnit);
@@ -391,13 +391,19 @@ char *expandEmptyXmlTags(char **outputBuf, const char *inputBuf);
  */
 char *validateXmlStructure(const char *xml);
 /**
+ * initializes a verticalDatumInfo structure
+ *
+ * @param vdi       A ponter to a previously existing verticalDatumInfo sturcture
+ */
+void initializeVerticalDatumInfo(verticalDatumInfo *vdi);
+/**
  * Parses a standard vertical datum infomration XML instance into data structure
  *
  * @param vdi       A ponter to a previously existing verticalDatumInfo sturcture
  * @param intputStr The XML instance to parse. This may be either a plain text XML instance or one
  *                  that has been gzipped and base64 encoded
  */
-char *stringToVerticalDatumInfo(verticalDatumInfo *vdi, const char *inputStr);
+char* stringToVerticalDatumInfo(verticalDatumInfo* vdi, const char* inputStr);
 /**
  * Creates a (compressed or uncompressed) string from vertical datum information
  *
@@ -438,7 +444,7 @@ verticalDatumInfo *extractVerticalDatumInfoFromUserHeader(const int *userHeader,
  * contain only the value of the "U" key.
  * 
  */
-int	getEffectiveVerticalDatum(
+int	getCurrentVerticalDatum(
     char  *cverticalDatum,
     int    cverticalDatumSize,
     int  **userHeader,
@@ -569,6 +575,25 @@ void normalizevdiinuserheader_(
     int   *userHeaderNumber, 
     char  *errorMesage, 
     slen_t lenErrorMessage);
+
+/**
+ * Processes VDIs for storing to DSS
+ * @param offsetToUse      Receives the offset to use on the data values before storing 
+ * @param _fileVdi         VDI on disk for records to be stored
+ * @param _dataVdi         VDI of incoming data
+ * @param _currentDatum    Current datum of the incoming data values
+ * @param fileContainsData Whether the records to be stored have existing data (0/1)
+ * @param dataUnit         Unit of the incoming data values
+ * @return
+ */
+char* processStorageVdis(
+    double* offsetToUse,
+    verticalDatumInfo* _fileVdi,
+    verticalDatumInfo* _dataVdi,
+    char* _currentDatum,
+    int fileContainsData,
+    char* dataUnit);
+
 #ifdef __cplusplus
 } // extern "C"
 #endif
