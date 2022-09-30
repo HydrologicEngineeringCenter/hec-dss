@@ -1413,7 +1413,7 @@ void verticaldatuminfotostring_(
     F2C(nativeDatum, vdi.nativeDatum, lenNativeDatum, sizeof(vdi.nativeDatum));
     F2C(unit, vdi.unit, lenUnit, sizeof(vdi.unit));
     vdi.offsetToNgvd29 = *offsetNgvd29;
-    vdi.offsetToNavd88IsEstimate = *offsetNgvd29IsEstimate;
+    vdi.offsetToNgvd29IsEstimate = *offsetNgvd29IsEstimate;
     vdi.offsetToNavd88 = *offsetNavd88;
     vdi.offsetToNavd88IsEstimate = *offsetNavd88IsEstimate;
     errmsg = verticalDatumInfoToString(&results, &vdi, *generateCompressed);

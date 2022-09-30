@@ -18,10 +18,12 @@ module modVerticalDatumInfo
     character (len=cverticalDatumLen), parameter :: CVD_LOCAL  = 'OTHER  '
 
     type verticalDatumInfo
-        real (kind=8) :: offsetToNgvd29, offsetToNavd88
-        character (len=cverticalDatumLen) :: nativeDatum
-        character (len=unitLen) :: unit
-        logical :: offsetToNgvd29IsEstimate, offsetToNavd88IsEstimate
+        character (len = cverticalDatumLen) :: nativeDatum
+        character (len = unitLen)           :: unit
+        real      (kind = 8)                :: offsetToNavd88
+        logical   (kind = 4)                :: offsetToNavd88IsEstimate
+        real      (kind = 8)                :: offsetToNgvd29
+        logical   (kind = 4)                :: offsetToNgvd29IsEstimate
     end type verticalDatumInfo
 
     interface
@@ -1184,7 +1186,7 @@ subroutine testStoreRetrieveTimeSeries()
             end do
         end do
     end do
-    write(0,'(/,/,i5,a,/,/)') count,' time sereies tests passed'
+    write(*,'(/,/,i5,a,/,/)') count,' time sereies tests passed'
     return
 end subroutine testStoreRetrieveTimeSeries
 
@@ -1756,7 +1758,7 @@ subroutine testStoreRetrievePairedData()
             end do
         end do
     end do
-    write(0,'(/,/,i4,a/,/)') count,' paried data tests passed'
+    write(*,'(/,/,i4,a/,/)') count,' paried data tests passed'
     return
 end subroutine testStoreRetrievePairedData
 
