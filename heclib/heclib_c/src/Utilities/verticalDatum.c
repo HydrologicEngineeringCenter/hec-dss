@@ -1671,48 +1671,14 @@ char* processStorageVdis(
     // test whether current datum is compatible with native datum //
     //------------------------------------------------------------//
     int compatibleCurrentDatum = FALSE;
-    if (!strcmp(currentDatum, CVERTICAL_DATUM_UNSET)
-        || !strcmp(currentDatum, dataNativeDatum)
-        || (!strcmp(dataNativeDatum, CVERTICAL_DATUM_UNSET) && !strcmp(currentDatum, fileNativeDatum))
-        || !strcmp(currentDatum, CVERTICAL_DATUM_NAVD88)
-        || !strcmp(currentDatum, CVERTICAL_DATUM_NGVD29)) {
+    if (!strcmp(currentDatum, CVERTICAL_DATUM_UNSET)         // current datum == UNSET
+        || !strcmp(currentDatum, dataNativeDatum)            // || current datum == data native datum
+        || (!strcmp(dataNativeDatum, CVERTICAL_DATUM_UNSET)  // || data native datum == UNSET
+            && !strcmp(currentDatum, fileNativeDatum))       //    && current datum == file native datum
+        || !strcmp(currentDatum, CVERTICAL_DATUM_NAVD88)     // || current datum == NAVD-88
+        || !strcmp(currentDatum, CVERTICAL_DATUM_NGVD29)) {  // || current datum == NGVD-29
         compatibleCurrentDatum = TRUE;
     }
-    //if (strcmp(currentDatum, CVERTICAL_DATUM_UNSET)               // current datum != UNSET
-    //    && !strcmp(dataNativeDatum, CVERTICAL_DATUM_UNSET)        // && data datum == UNSET
-    //    && !strcmp(fileNativeDatum, CVERTICAL_DATUM_UNSET)) {     // && file datum == UNSET
-    //    compatibleCurrentDatum = FALSE;
-    //}
-    //else if (!strcmp(currentDatum, dataNativeDatum)                // current datum == data datum
-    //    || (!strcmp(dataNativeDatum, CVERTICAL_DATUM_UNSET)        // data datum == UNSET
-    //        && !strcmp(currentDatum, fileNativeDatum))             // && current datum == file datum
-    //    || !strcmp(currentDatum, CVERTICAL_DATUM_UNSET)            // current datum == UNSET
-    //    || !strcmp(currentDatum, CVERTICAL_DATUM_NAVD88)           // current datum == NAVD88
-    //    || !strcmp(currentDatum, CVERTICAL_DATUM_NGVD29)           // current datum == NGVD29
-    //    || (!strcmp(fileNativeDatum, CVERTICAL_DATUM_UNSET)        // file datum == UNSET
-    //        && !strcmp(dataNativeDatum, CVERTICAL_DATUM_UNSET))) { // && data datum == UNSET - current datum can be anything
-    //    compatibleCurrentDatum = TRUE;
-    //}
-    //else if (!strcmp(currentDatum, CVERTICAL_DATUM_UNSET)          // current datum == UNSET
-    //    && !strcmp(fileNativeDatum, CVERTICAL_DATUM_UNSET)         // && file datum == UNSET
-    //    && !strcmp(dataNativeDatum, CVERTICAL_DATUM_UNSET))  {     // && data datum == UNSET
-    //    compatibleCurrentDatum = TRUE;
-    //}
-    //else if (strcmp(currentDatum, CVERTICAL_DATUM_UNSET)           // current datum != UNSET
-    //    && strcmp(currentDatum, CVERTICAL_DATUM_NAVD88)            // && current datum != NAVD88
-    //    && strcmp(currentDatum, CVERTICAL_DATUM_NGVD29)) {         // && current datum != NGVD29 (current datum == LOCAL)
-
-    //    if (!strcmp(currentDatum, dataNativeDatum)) {              // data datum == SAME LOCAL
-    //        compatibleCurrentDatum = TRUE;
-    //    }
-    //    else if (!strcmp(dataNativeDatum, CVERTICAL_DATUM_UNSET)   // data datum == UNSET
-    //        && !strcmp(currentDatum, fileNativeDatum)) {           // && file datum == SAME LOCAL
-    //        compatibleCurrentDatum = TRUE;
-    //    }
-    //    else {                                                     // current datum != native (file or data) datum
-    //        compatibleCurrentDatum = FALSE;
-    //    }
-    //}
     if (!compatibleCurrentDatum) {
         sprintf(
             errorMessage,
