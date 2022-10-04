@@ -1,13 +1,13 @@
       subroutine set_user_header_param(iuhead, nuhead, kuhead, cparam, 
      *           cvalue, istat)
       !        
-      ! Retrieves the value of an associated parameter name from the user header
+      ! Sets the value of an associated parameter name in the user header
       !
       ! iuhead  The user header integer array
       ! nuhead  The number of integers used in the user header (size)
       ! kuhead  The number of integers in the user header (capacity)
-      ! cparam  The parameter to retrieve the value for
-      ! cvalue  The variable to hold the value
+      ! cparam  The parameter to set the value for
+      ! cvalue  The value to set for the parameter
       !  
       ! Mike Perryman
       ! USACE Hydrologic Engineering Center
