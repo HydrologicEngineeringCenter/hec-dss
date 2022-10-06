@@ -280,6 +280,17 @@ int insertIntoDelimitedString(
     return 0;
 }
 //
+// Fortran interface for stringToUserHeader
+//
+void stringtouserheader_(const char* str, int* userHeader, int* userHeaderCapacity, int* userHeaderNumber, slen_t lenStr) {
+    char* _str = (char*)malloc(lenStr + 1);
+    F2C(str, _str, lenStr, lenStr + 1);
+    int* _userHeader = stringToUserHeader(_str, userHeaderNumber);
+    memcpy(userHeader, _userHeader, min(*userHeaderCapacity, *userHeaderNumber) * sizeof(int));
+    free(_str);
+    free(_userHeader);
+}
+//
 // See verticalDatum.h for documentation
 //
 int *stringToUserHeader(const char *str, int *userHeaderNumber) {
@@ -300,6 +311,14 @@ int *stringToUserHeader(const char *str, int *userHeaderNumber) {
     }
     *userHeaderNumber = numInts;
     return userHeader;
+}
+//
+// Fortran interface for stringToUserHeader
+//
+void userheadertostring_(char* str, const int* userHeader, const int* userHeaderNumber, slen_t lenStr) {
+    char* _str = userHeaderToString(userHeader, *userHeaderNumber);
+    C2F(_str, str, lenStr);
+    free(_str);
 }
 //
 // See verticalDatum.h for documentation
@@ -515,6 +534,24 @@ char *findTextBetween(textBoundaryInfo *tbi, const char *buf, const char *after,
     return NULL;
 }
 //
+// Fortran interface for decodeAndGunzip
+//
+void decodeandgunzip_(char* results,
+    char* errMsg,
+    const char* inputBuf,
+    slen_t lenResults,
+    slen_t lenErrMsg,
+    slen_t lenInputBuf) {
+
+    char* _inputBuf = (char*)malloc(lenInputBuf + 1);
+    F2C(inputBuf, _inputBuf, lenInputBuf, lenInputBuf + 1);
+    char* _results = NULL;
+    char* _errMsg = decodeAndGunzip(&_results, _inputBuf);
+    C2F(_results, results, lenResults);
+    C2F(_errMsg, errMsg, lenErrMsg);
+    free(_inputBuf);
+}
+//
 // See verticalDatum.h for documentation
 //
 char *decodeAndGunzip(char **results, const char *inputBuf) {
@@ -567,6 +604,25 @@ char *decodeAndGunzip(char **results, const char *inputBuf) {
     strcpy(*results, textBuf);
     free(decodedBuf);
     return NULL;
+}
+//
+// Fortran interface for gzipAndEncode
+//
+void gzipandencode_(
+    char* results,
+    char* errMsg,
+    const char* inputBuf,
+    slen_t lenResults,
+    slen_t lenErrMsg,
+    slen_t lenInputBuf) {
+
+    char* _inputBuf = (char*)malloc(lenInputBuf + 1);
+    F2C(inputBuf, _inputBuf, lenInputBuf, lenInputBuf + 1);
+    char* _results = NULL;
+    char* _errMsg = gzipAndEncode(&_results, _inputBuf);
+    C2F(_results, results, lenResults);
+    C2F(_errMsg, errMsg, lenErrMsg);
+    free(_inputBuf);
 }
 //
 // See verticalDatum.h for documentation
@@ -1494,11 +1550,11 @@ void processstoragevdis_(
 // See verticalDatum.h for documentation
 //
 char* processStorageVdis(
-    double* offsetToUse, 
-    verticalDatumInfo* _fileVdi, 
-    verticalDatumInfo* _dataVdi, 
-    char* _currentDatum, 
-    int fileContainsData, 
+    double* offsetToUse,
+    verticalDatumInfo* _fileVdi,
+    verticalDatumInfo* _dataVdi,
+    char* _currentDatum,
+    int fileContainsData,
     char* dataUnit) {
 
     int vdiOverride = FALSE;
@@ -1694,7 +1750,7 @@ char* processStorageVdis(
     // test whether we have a valid offset to use //
     //--------------------------------------------//
     verticalDatumInfo* targetVdi = strcmp(dataNativeDatum, CVERTICAL_DATUM_UNSET) || vdiOverride ? &dataVdi : &fileVdi;
-    if (!strcmp(currentDatum, CVERTICAL_DATUM_UNSET)         // current datum == UNSET 
+    if (!strcmp(currentDatum, CVERTICAL_DATUM_UNSET)         // current datum == UNSET
         || !strcmp(currentDatum, targetVdi->nativeDatum)) {  // || current datum == native datum
         *offsetToUse = 0;
     }

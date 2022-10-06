@@ -427,7 +427,7 @@ subroutine testStoreRetrieveTimeSeries()
     integer (kind=4)        :: intvl, iblock, minblk, incblk, numvals, iymdjl
     real (kind=8)           :: dvalues(6,3), dvals(24), dvals_out(24), offset
     real (kind=4)           :: fvalues(6,3), fvals(24), fvals_out(24)
-    character (len=300)     :: errmsg, fileVdiStr, dataVdiStr
+    character (len=400)     :: errmsg, fileVdiStr, dataVdiStr
     character (len=80)      :: filename(2)
     character (len=391)     :: pathnames(2,2), recordPathname
     character (len=128)     :: ca, cb, cc, cd, ce, cf
