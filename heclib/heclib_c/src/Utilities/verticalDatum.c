@@ -286,7 +286,7 @@ void stringtouserheader_(const char* str, int* userHeader, int* userHeaderCapaci
     char* _str = (char*)malloc(lenStr + 1);
     F2C(str, _str, lenStr, lenStr + 1);
     int* _userHeader = stringToUserHeader(_str, userHeaderNumber);
-    memcpy(userHeader, _userHeader, min(*userHeaderCapacity, *userHeaderNumber) * sizeof(int));
+    memcpy(userHeader, _userHeader, MIN(*userHeaderCapacity, *userHeaderNumber) * sizeof(int));
     free(_str);
     free(_userHeader);
 }
