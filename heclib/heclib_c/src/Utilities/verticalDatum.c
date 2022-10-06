@@ -1557,9 +1557,9 @@ char* processStorageVdis(
     int fileContainsData,
     char* dataUnit) {
 
-    int vdiOverride = FALSE;
+    int vdiOverwrite = FALSE;
     char charVal[8];
-    zquery("VDOW", charVal, sizeof(charVal), &vdiOverride);
+    zquery("VDOW", charVal, sizeof(charVal), &vdiOverwrite);
     *offsetToUse = UNDEFINED_VERTICAL_DATUM_VALUE;
     verticalDatumInfo fileVdi;
     initializeVerticalDatumInfo(&fileVdi);
@@ -1601,7 +1601,7 @@ char* processStorageVdis(
             || !strcmp(fileNativeDatum, dataNativeDatum));
     }
     if (!compatibleNativeDatum) {
-        if (!vdiOverride) {
+        if (!vdiOverwrite) {
             sprintf(
                 errorMessage,
                 " VERTICAL DATUM ERROR\n"
@@ -1617,7 +1617,7 @@ char* processStorageVdis(
     //-------------------------------------//
     if ((!strcmp(dataNativeDatum, fileNativeDatum)
         && strcmp(dataNativeDatum, CVERTICAL_DATUM_UNSET))
-        && !vdiOverride) {
+        && !vdiOverwrite) {
         //---------------//
         // compare units //
         //---------------//
@@ -1749,7 +1749,7 @@ char* processStorageVdis(
     //--------------------------------------------//
     // test whether we have a valid offset to use //
     //--------------------------------------------//
-    verticalDatumInfo* targetVdi = strcmp(dataNativeDatum, CVERTICAL_DATUM_UNSET) || vdiOverride ? &dataVdi : &fileVdi;
+    verticalDatumInfo* targetVdi = strcmp(dataNativeDatum, CVERTICAL_DATUM_UNSET) || vdiOverwrite ? &dataVdi : &fileVdi;
     if (!strcmp(currentDatum, CVERTICAL_DATUM_UNSET)         // current datum == UNSET
         || !strcmp(currentDatum, targetVdi->nativeDatum)) {  // || current datum == native datum
         *offsetToUse = 0;
