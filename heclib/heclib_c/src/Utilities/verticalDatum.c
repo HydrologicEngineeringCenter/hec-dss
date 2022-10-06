@@ -1730,7 +1730,8 @@ char* processStorageVdis(
     if (!strcmp(currentDatum, CVERTICAL_DATUM_UNSET)         // current datum == UNSET
         || !strcmp(currentDatum, dataNativeDatum)            // || current datum == data native datum
         || (!strcmp(dataNativeDatum, CVERTICAL_DATUM_UNSET)  // || data native datum == UNSET
-            && !strcmp(currentDatum, fileNativeDatum))       //    && current datum == file native datum
+            && (!strcmp(currentDatum, fileNativeDatum)       //    && current datum == file native datum
+                || vdiOverwrite))                            //       || vdiOverwrite
         || !strcmp(currentDatum, CVERTICAL_DATUM_NAVD88)     // || current datum == NAVD-88
         || !strcmp(currentDatum, CVERTICAL_DATUM_NGVD29)) {  // || current datum == NGVD-29
         compatibleCurrentDatum = TRUE;
