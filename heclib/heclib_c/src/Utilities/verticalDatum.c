@@ -1558,6 +1558,8 @@ char* processStorageVdis(
     char* dataUnit) {
 
     int vdiOverride = FALSE;
+    char charVal[8];
+    zquery("VDOW", charVal, sizeof(charVal), &vdiOverride);
     *offsetToUse = UNDEFINED_VERTICAL_DATUM_VALUE;
     verticalDatumInfo fileVdi;
     initializeVerticalDatumInfo(&fileVdi);
@@ -1599,8 +1601,6 @@ char* processStorageVdis(
             || !strcmp(fileNativeDatum, dataNativeDatum));
     }
     if (!compatibleNativeDatum) {
-        char charVal[8];
-        zquery("VDOW", charVal, sizeof(charVal), &vdiOverride);
         if (!vdiOverride) {
             sprintf(
                 errorMessage,
