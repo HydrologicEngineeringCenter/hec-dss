@@ -556,19 +556,19 @@ void stringtoverticaldatuminfo_(
  * @param len_unit               Fortran hidden parameter for declared length of unit parameter
  */
 void verticaldatuminfotostring_(
-        char*    outputStr,
-        char*    errorMessage,
-        char*    nativeDatum,
-        char*    unit,
-        double*  offsetNgvd29,
-        int32_t* offsetNgvd29IsEstimate,
-        double*  offsetNavd88,
-        int32_t* offsetNavd88IsEstimate,
-        int32_t* generateCompressed,
-        slen_t   lenErrorMessage,
-        slen_t   lenOutputStr,
-        slen_t   lenNativeDatum,
-        slen_t   lenUnit);
+        char*          outputStr,
+        char*          errorMessage,
+        const char*    nativeDatum,
+        const char*    unit,
+        const double*  offsetNgvd29,
+        const int32_t* offsetNgvd29IsEstimate,
+        const double*  offsetNavd88,
+        const int32_t* offsetNavd88IsEstimate,
+        const int32_t* generateCompressed,
+        slen_t         lenErrorMessage,
+        slen_t         lenOutputStr,
+        slen_t         lenNativeDatum,
+        slen_t         lenUnit);
 /**
  * Fortran wrapper for normalizeVdiInUserHeader
  */
@@ -589,12 +589,12 @@ void normalizevdiinuserheader_(
  * @return
  */
 char* processStorageVdis(
-    double*            offsetToUse,
-    verticalDatumInfo* fileVdi,
-    verticalDatumInfo* dataVdi,
-    const char*        currentDatum,
-    int                fileContainsData,
-    const char*        dataUnit);
+    double*                  offsetToUse,
+    const verticalDatumInfo* fileVdi,
+    const verticalDatumInfo* dataVdi,
+    const char*              currentDatum,
+    int                      fileContainsData,
+    const char*              dataUnit);
 
 #ifdef __cplusplus
 } // extern "C"
