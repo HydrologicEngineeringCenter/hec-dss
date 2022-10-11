@@ -1605,6 +1605,15 @@ void processstoragevdis_(
     else {
         C2F("", errorMessage, lenErrorMessage);
     }
+    if (cFileVdiStr)
+        free(cFileVdiStr);
+    if (cDataVdiStr)
+        free(cDataVdiStr);
+    if (cCurrentDatum)
+        free(cCurrentDatum);
+    if (cDataUnit)
+        free(cDataUnit);
+
 }
 //
 // See verticalDatum.h for documentation

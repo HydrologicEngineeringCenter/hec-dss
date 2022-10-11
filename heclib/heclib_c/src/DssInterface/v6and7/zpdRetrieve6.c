@@ -60,6 +60,7 @@ int zpdRetrieve6(long long *ifltab, zStructPairedData *pds, int retrieveSizeFlag
 
 	status = zgetRecordSize6(ifltab, recordSize);
 	if (status != STATUS_RECORD_FOUND) {
+		zstructFree(recordSize);
 		return -1;
 	}
 

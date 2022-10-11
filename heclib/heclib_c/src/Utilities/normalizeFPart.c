@@ -224,6 +224,10 @@ int normalizeFPart(char** normalized, const char* fPart) {
 						break;
 					}
 					if (!validateFPartTag(tagValues[tagCount - 1].tag, tagValues[tagCount - 1].value)) {
+						if (buf) {
+							free(buf);
+							buf = 0;
+						}
 						switch (c) {
 						case 'C': return normalizeFPartStatus.INVALID_C_TAG_VALUE;
 						case 'T': return normalizeFPartStatus.INVALID_T_TAG_VALUE;

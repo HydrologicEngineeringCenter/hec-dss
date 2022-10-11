@@ -1358,6 +1358,7 @@ void testStoreRetrieveTimeSeries() {
                                                 0,
                                                 1);
                                             dataInFile = status == STATUS_OKAY && tss->numberValues > 0;
+                                            zstructFree(tss);
                                             zStructLocation* ls = zstructLocationNew(pathnames[n][o]);
                                             zlocationRetrieve(ifltab, ls);
                                             if (ls) {
@@ -1866,6 +1867,7 @@ void testStoreRetrievePairedData() {
                                                 }
                                                 zstructFree(ls);
                                             }
+                                            zstructFree(pds);
                                         }
                                         strcpy(nativeDatumInFile, vdiInFile.nativeDatum);
                                         //------------------------//
