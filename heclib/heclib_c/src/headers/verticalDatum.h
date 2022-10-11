@@ -49,7 +49,7 @@ extern "C" {
 
 #define BYTESWAP(d)                     \
 {                                       \
-    uint8_t *b1 = (uint8_t *)&d, b2[8]; \
+    uint8_t* b1 = (uint8_t* )&d, b2[8]; \
     switch(sizeof(d))                   \
     {                                   \
         case 1:                         \
@@ -137,6 +137,8 @@ extern "C" {
 //----------------//
 // error messages //
 //----------------//
+#define NULL_POINTER_ERROR                              "Null pointer error"
+#define INSUFFICIENT_SPACE_ERROR                        "Not enough space for data"
 #define MEMORY_ALLOCATION_ERROR                         "Memory allocation error"
 #define BASE64_DECODING_ERROR                           "Base64 decoding error"
 #define BASE64_ENCODING_ERROR                           "Base64 encoding error"
@@ -195,12 +197,12 @@ typedef struct verticalDatumInfo_s {
 } verticalDatumInfo;
 
 typedef struct textBoundaryInfo_s {
-    char *first;
-    char *firstNonBlank;
-    char *firstWithBoundary;
-    char *last;
-    char *lastNonBlank;
-    char *lastWithBoundary;
+    char* first;
+    char* firstNonBlank;
+    char* firstWithBoundary;
+    char* last;
+    char* lastNonBlank;
+    char* lastWithBoundary;
     int   offset;
     int   offsetNonBlank;
     int   len;
@@ -210,11 +212,11 @@ typedef struct textBoundaryInfo_s {
 /**
  * Returns TRUE if unit recognized as feet, otherwise FALSE
  */
-int unitIsFeet(const char *unit);
+int unitIsFeet(const char* unit);
 /**
  * Returns TRUE if unit recognized as meters, otherwise FALSE
  */
-int unitIsMeters(const char *unit);
+int unitIsMeters(const char* unit);
 /**
  * Returns a vertical datum offset adjusted for data unit
  * 
@@ -225,7 +227,7 @@ int unitIsMeters(const char *unit);
  * @return The offset appropriate for adjusting the data values with. Returns UNDEFINED_VERTICAL_DATUM_VALUE
  *         if either of the units cannot be identified as feet or meters
  */
-double getOffset(double offset, const char *offsetUnit, const char *dataUnit);
+double getOffset(double offset, const char* offsetUnit, const char* dataUnit);
 /**
  * Returns a parameter value from a string whose parts are delimited by a single character, optionally 
  * removing the parameter and value from the string
@@ -241,10 +243,10 @@ double getOffset(double offset, const char *offsetUnit, const char *dataUnit);
  *         this buffer is dynamically allocated using malloc() and must be freed using free() by the caller if this 
  *         call is successful.
  */
-char *extractFromDelimitedString(
-    char      **delimitedStr, 
-    const char *parameter, 
-    const char *separator,
+char* extractFromDelimitedString(
+    char**      delimitedStr, 
+    const char* parameter, 
+    const char* separator,
     int         matchCase, 
     int         removeFromString, 
     char        delimiter);
@@ -264,11 +266,11 @@ char *extractFromDelimitedString(
  * 
  */
 int insertIntoDelimitedString(
-    char      **delimitedString, 
+    char**      delimitedString, 
     int         delimitedStringSize, 
-    const char *parameter, 
-    const char *value, 
-    const char *separator, 
+    const char* parameter, 
+    const char* value, 
+    const char* separator, 
     int         overwriteExisting, 
     char        delimiter);
 /**
@@ -280,7 +282,7 @@ int insertIntoDelimitedString(
  * @return The string representation of the user header. Memory for this buffer 
  *         is dynamically allocated using malloc() and must be freed using free().
  */
-char *userHeaderToString(const int *userHeader, const int userHeaderNumber);
+char* userHeaderToString(const int* userHeader, int userHeaderNumber);
 /**
  * Creates a DSS record user header from a string
  * 
@@ -293,7 +295,7 @@ char *userHeaderToString(const int *userHeader, const int userHeaderNumber);
  *         zStructTime* structure. In that case the "allocated" structure member should
  *         be set to 1 to all zStructFree() to free the memory.
  */
-int *stringToUserHeader(const char *str, int *userHeaderNumber);
+int* stringToUserHeader(const char* str, int* userHeaderNumber);
 /**
  * Returns the length of a buffer required to hold a base-64 encoding of an input buffer of the specified length.
  *
@@ -325,7 +327,7 @@ int b64DecodedLen(int toDecodeLen);
  *
  * @return -1 if toEncodeLen < 0, otherwise 0 on success
  */
-int b64Encode(char **encoded, const char *toEncode, int toEncodeLen);
+int b64Encode(char** encoded, const char* toEncode, int toEncodeLen);
 /**
  * Base64-decodes a buffer
  *
@@ -338,7 +340,7 @@ int b64Encode(char **encoded, const char *toEncode, int toEncodeLen);
  * @return -2 if strlen(toDecode) is not a multiple of 4, -3 if any character in toDecode is not a valie
  *         base64 encoding character, otherwise 0 on success
  */
-int b64Decode(char **decoded, int *decodedLen, const char *toDecode);
+int b64Decode(char** decoded, int* decodedLen, const char* toDecode);
  
 /**
  * Locates the first occurrence of text in buffer that is bounded by specified text strings;
@@ -350,7 +352,7 @@ int b64Decode(char **decoded, int *decodedLen, const char *toDecode);
  *
  * @return An error message, which is NULL the function succeeds.
  */
-char *findTextBetween(textBoundaryInfo *tbi, const char *buf, const char *after, const char *before);
+char* findTextBetween(textBoundaryInfo* tbi, const char* buf, const char* after, const char* before);
 /**
  *  Returns a text string that has been gzipped and then base64 encoded to its original state
  *
@@ -360,7 +362,7 @@ char *findTextBetween(textBoundaryInfo *tbi, const char *buf, const char *after,
  *
  * @return An error message, which is NULL if the function succeeds.
  */
-char *decodeAndGunzip(char **results, const char *inputBuf);
+char* decodeAndGunzip(char** results, const char* inputBuf);
 /**
  * Gzips and base64 encodes a text string
  *
@@ -370,7 +372,7 @@ char *decodeAndGunzip(char **results, const char *inputBuf);
  *
  * @return An error message, which is NULL if the function succeeds.
  */
-char *gzipAndEncode(char **results, const char *inputBuf);
+char* gzipAndEncode(char** results, const char* inputBuf);
 /**
  * Expands empty tags of the format <tag_name/> to <tag_name></tag_name> for purpose of easy
  * structure validation.
@@ -381,7 +383,7 @@ char *gzipAndEncode(char **results, const char *inputBuf);
  *
  * @return An error message, which is NULL the function succeeds.
  */
-char *expandEmptyXmlTags(char **outputBuf, const char *inputBuf);
+char* expandEmptyXmlTags(char** outputBuf, const char* inputBuf);
 /**
  * Validates the well-formedness of an XML instance
  *
@@ -389,13 +391,13 @@ char *expandEmptyXmlTags(char **outputBuf, const char *inputBuf);
  *
  * @return An error message, which is NULL the function succeeds.
  */
-char *validateXmlStructure(const char *xml);
+char* validateXmlStructure(const char* xml);
 /**
  * initializes a verticalDatumInfo structure
  *
  * @param vdi       A ponter to a previously existing verticalDatumInfo sturcture
  */
-void initializeVerticalDatumInfo(verticalDatumInfo *vdi);
+void initializeVerticalDatumInfo(verticalDatumInfo* vdi);
 /**
  * Parses a standard vertical datum infomration XML instance into data structure
  *
@@ -416,7 +418,7 @@ char* stringToVerticalDatumInfo(verticalDatumInfo* vdi, const char* inputStr);
  *
  * @return An error message, which is NULL the function succeeds.
  */
-char *verticalDatumInfoToString(char **results, verticalDatumInfo *vdi, int generate_compressed);
+char* verticalDatumInfoToString(char** results, const verticalDatumInfo* vdi, int generate_compressed);
 /**
  * Returns any vertical datum info in a DSS record user header
  * 
@@ -426,7 +428,7 @@ char *verticalDatumInfoToString(char **results, verticalDatumInfo *vdi, int gene
  * @return A pointer to a dynmically allocated verticalDatumInfo struct, or NULL if the user header doesn't
  *         include any vertical datum info
  */
-verticalDatumInfo *extractVerticalDatumInfoFromUserHeader(const int *userHeader, const int userHeaderSize);
+verticalDatumInfo* extractVerticalDatumInfoFromUserHeader(const int* userHeader, int userHeaderSize);
 /**
  * Retrieves the effective vertical datum from the current environment. The effective vertical datum is
  * set from the following locations, in increasing priority
@@ -445,11 +447,11 @@ verticalDatumInfo *extractVerticalDatumInfoFromUserHeader(const int *userHeader,
  * 
  */
 int	getCurrentVerticalDatum(
-    char  *cverticalDatum,
+    char*  cverticalDatum,
     int    cverticalDatumSize,
-    int  **userHeader,
-    int   *userHeaderSize,
-    char **unit);
+    int**  userHeader,
+    int*   userHeaderSize,
+    char** unit);
 /**
  * Normalizes the VDI representation in the user header
  * 
@@ -458,7 +460,7 @@ int	getCurrentVerticalDatum(
  * 
  * @return NULL on success, otherwise an error message
  */
-char* normalizeVdiInUserHeader(int *userHeader, int *userHeaderNumber);
+char* normalizeVdiInUserHeader(int* userHeader, int* userHeaderNumber);
 /**
  * Fortan wrapper for stringToVerticalDatumInfo
  *
@@ -499,14 +501,14 @@ char* normalizeVdiInUserHeader(int *userHeader, int *userHeaderNumber);
  * @param lenUnit                Fortran hidden parameter for declared length of unit parameter
  */
 void stringtoverticaldatuminfo_(
-        char    *inputStr,
-        char    *errorMessage,
-        char    *nativeDatum,
-        char    *unit,
-        double  *offsetNgvd29,
-        int32_t *offsetNgvd29IsEstimate,
-        double  *offsetNavd88,
-        int32_t *offsetNavd88IsEstimate,
+        char*    inputStr,
+        char*    errorMessage,
+        char*    nativeDatum,
+        char*    unit,
+        double*  offsetNgvd29,
+        int32_t* offsetNgvd29IsEstimate,
+        double*  offsetNavd88,
+        int32_t* offsetNavd88IsEstimate,
         slen_t   lenInputStr,
         slen_t   lenErrorMessage,
         slen_t   lenNativeDatum,
@@ -554,15 +556,15 @@ void stringtoverticaldatuminfo_(
  * @param len_unit               Fortran hidden parameter for declared length of unit parameter
  */
 void verticaldatuminfotostring_(
-        char    *outputStr,
-        char    *errorMessage,
-        char    *nativeDatum,
-        char    *unit,
-        double  *offsetNgvd29,
-        int32_t *offsetNgvd29IsEstimate,
-        double  *offsetNavd88,
-        int32_t *offsetNavd88IsEstimate,
-        int32_t *generateCompressed,
+        char*    outputStr,
+        char*    errorMessage,
+        char*    nativeDatum,
+        char*    unit,
+        double*  offsetNgvd29,
+        int32_t* offsetNgvd29IsEstimate,
+        double*  offsetNavd88,
+        int32_t* offsetNavd88IsEstimate,
+        int32_t* generateCompressed,
         slen_t   lenErrorMessage,
         slen_t   lenOutputStr,
         slen_t   lenNativeDatum,
@@ -571,28 +573,28 @@ void verticaldatuminfotostring_(
  * Fortran wrapper for normalizeVdiInUserHeader
  */
 void normalizevdiinuserheader_(
-    int   *userHeader, 
-    int   *userHeaderNumber, 
-    char  *errorMesage, 
+    int*   userHeader, 
+    int*   userHeaderNumber, 
+    char*  errorMesage, 
     slen_t lenErrorMessage);
 
 /**
  * Processes VDIs for storing to DSS
  * @param offsetToUse      Receives the offset to use on the data values before storing 
- * @param _fileVdi         VDI on disk for records to be stored
- * @param _dataVdi         VDI of incoming data
- * @param _currentDatum    Current datum of the incoming data values
+ * @param fileVdi         VDI on disk for records to be stored
+ * @param dataVdi         VDI of incoming data
+ * @param currentDatum    Current datum of the incoming data values
  * @param fileContainsData Whether the records to be stored have existing data (0/1)
  * @param dataUnit         Unit of the incoming data values
  * @return
  */
 char* processStorageVdis(
-    double* offsetToUse,
-    verticalDatumInfo* _fileVdi,
-    verticalDatumInfo* _dataVdi,
-    char* _currentDatum,
-    int fileContainsData,
-    char* dataUnit);
+    double*            offsetToUse,
+    verticalDatumInfo* fileVdi,
+    verticalDatumInfo* dataVdi,
+    const char*        currentDatum,
+    int                fileContainsData,
+    const char*        dataUnit);
 
 #ifdef __cplusplus
 } // extern "C"
