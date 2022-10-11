@@ -133,6 +133,7 @@ JNIEXPORT void JNICALL Java_hec_heclib_util_Heclib_Hec_1zspdd
 	}
 
     /* Release */
+	zstructFree(pds);
     (*env)->ReleaseIntArrayElements (env, j_ifltab, ifltab, 0);
     (*env)->ReleaseStringUTFChars (env, j_pathname, pathname);
     (*env)->ReleaseStringUTFChars (env, j_c1unit, c1unit);

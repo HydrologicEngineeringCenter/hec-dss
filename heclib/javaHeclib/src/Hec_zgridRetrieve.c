@@ -63,7 +63,6 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1zgridRetrieve(
 	jint jnumber;
 	jfloat jflnumber;
 	jfloatArray	jflArray;
-	float			*flArray;
 	jintArray	jintAry;
 	
 	int boolRetrieveData;
@@ -610,11 +609,9 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1zgridRetrieve(
 
 	fid = (*env)->GetFieldID(env, cls, "_rangeLimitTable", "[F");
 	if (fid) {
-		flArray = (float *)calloc(gridStruct->_numberOfRanges, 4);
 		if (gridStruct->_rangeLimitTable) {
-			convertDataArray((void *)gridStruct->_rangeLimitTable, (void *)flArray, gridStruct->_numberOfRanges, 1, 1);
 			jflArray = (*env)->NewFloatArray(env, (jint)gridStruct->_numberOfRanges);
-			(*env)->SetFloatArrayRegion(env, jflArray, 0, (jint)gridStruct->_numberOfRanges, flArray);
+			(*env)->SetFloatArrayRegion(env, jflArray, 0, (jint)gridStruct->_numberOfRanges, gridStruct->_rangeLimitTable);
 			(*env)->SetObjectField(env, j_gridContainer, fid, jflArray);
 			(*env)->DeleteLocalRef(env, jflArray);
 		}

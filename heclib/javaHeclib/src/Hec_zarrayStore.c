@@ -139,6 +139,6 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1zarrayStore
 
     /* Release */
     (*env)->ReleaseIntArrayElements (env, j_ifltab, ifltab, 0);
-
+	zstructFree(arrayStruct);
 	return (jint)status;
 }
