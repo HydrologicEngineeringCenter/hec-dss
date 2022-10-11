@@ -1643,7 +1643,7 @@ char* processStorageVdis(
     }
     char* fileNativeDatum = !strcmp(fileVdi.nativeDatum, "") ? CVERTICAL_DATUM_UNSET : fileVdi.nativeDatum;
     char* dataNativeDatum = !strcmp(dataVdi.nativeDatum, "") ? CVERTICAL_DATUM_UNSET : dataVdi.nativeDatum;
-    char* currentDatum = !strcmp(_currentDatum, "") ? CVERTICAL_DATUM_UNSET : _currentDatum;
+    char* currentDatum = !strcmp((char*)_currentDatum, "") ? CVERTICAL_DATUM_UNSET : (char*)_currentDatum;
     char  errorMessage[1024];
     //---------------------------------------------------------------------//
     // test whether data native datum is compatible with file native datum //
