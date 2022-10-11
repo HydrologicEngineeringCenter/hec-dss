@@ -464,7 +464,8 @@ int testDateTime()
 		julianToYearMonthDay(jul, &year, &month, &day);
 		jul2 = yearMonthDayToJulian(year, month, day);
 		julianToDate(jul, 0, cdate, sizeof(cdate));
-		//printf(" %s,  %d,     %d  %d  %d\n", outName, jul, year, month, day);
+		if( i % 100000 == 0)
+		   printf(" %d, %d  %d  %d\n", jul, year, month, day);
 		if (jul2 != jul) {
 			printf ("Julian miss-match; Failure.  Original jul %d, computed jul %d,  date: %s\n", jul, jul2, cdate);
 			julianToYearMonthDay(jul, &year, &month, &day);
