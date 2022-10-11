@@ -501,18 +501,18 @@ char* normalizeVdiInUserHeader(int* userHeader, int* userHeaderNumber);
  * @param lenUnit                Fortran hidden parameter for declared length of unit parameter
  */
 void stringtoverticaldatuminfo_(
-        char*    inputStr,
-        char*    errorMessage,
-        char*    nativeDatum,
-        char*    unit,
-        double*  offsetNgvd29,
-        int32_t* offsetNgvd29IsEstimate,
-        double*  offsetNavd88,
-        int32_t* offsetNavd88IsEstimate,
-        slen_t   lenInputStr,
-        slen_t   lenErrorMessage,
-        slen_t   lenNativeDatum,
-        slen_t   lenUnit);
+        const char* inputStr,
+        char*       errorMessage,
+        char*       nativeDatum,
+        char*       unit,
+        double*     offsetNgvd29,
+        int32_t*    offsetNgvd29IsEstimate,
+        double*     offsetNavd88,
+        int32_t*    offsetNavd88IsEstimate,
+        slen_t      lenInputStr,
+        slen_t      lenErrorMessage,
+        slen_t      lenNativeDatum,
+        slen_t      lenUnit);
 /**
  * Fortan wrapper for verticalDatumInfoToString
  *
