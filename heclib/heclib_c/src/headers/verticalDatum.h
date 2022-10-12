@@ -445,13 +445,19 @@ verticalDatumInfo* extractVerticalDatumInfoFromUserHeader(const int* userHeader,
  * If the vertical datum is taken from the unit specification, the unit parameter is modified to 
  * contain only the value of the "U" key.
  * 
+ * @param cverticalDatum     Receives the character version of the effective vertical datum
+ * @param cverticalDatumSize Size of the buffer in cverticalDatum parameter
+ * @param userHeader         User header array. The contents may be modified by the routine but stack buffers are safe to pass in.
+ * @param userHeaderSize     The number of integers used for data in the userHeader parameter. The may be modified by the routine.
+ * @param unit               The unit specification. The contents may be modified by the routine but stack buffers are safe to pass in.
+ * @return                   The integer version of the effective vertical datum or -1 on error.
  */
 int	getCurrentVerticalDatum(
-    char*  cverticalDatum,
-    int    cverticalDatumSize,
-    int**  userHeader,
-    int*   userHeaderSize,
-    char** unit);
+    char* cverticalDatum,
+    int   cverticalDatumSize,
+    int* userHeader,
+    int*  userHeaderSize,
+    char* unit);
 /**
  * Normalizes the VDI representation in the user header
  * 

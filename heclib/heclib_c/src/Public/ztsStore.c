@@ -400,9 +400,9 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 			ivertical_datum = getCurrentVerticalDatum(
 				cvertical_datum,
 				sizeof(cvertical_datum),
-				&tss->userHeader,       // any specified datum in these parameters is removed
+				tss->userHeader,        // any specified datum in these parameters is removed
 				&tss->userHeaderNumber, // ...
-				&tss->units);           // ...
+				tss->units);            // ...
 			//----------------------------//
 			// see if data already exists //
 			//----------------------------//
@@ -686,7 +686,7 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 						free(vdiStr);
 						int newHeaderSize;
 						int* newHeader = stringToUserHeader(userHeaderString, &newHeaderSize);
-						// free (tss->userHeader); -- don't know why this is a double free() !!!
+						free (tss->userHeader);
 						tss->userHeader = newHeader;
 						tss->userHeaderNumber = newHeaderSize;
 						tss->allocated[zSTRUCT_userHeader] = TRUE;

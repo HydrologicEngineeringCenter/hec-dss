@@ -330,22 +330,31 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 		double offset_dep = 0.;
 		char   cvertical_datum_dep[CVERTICAL_DATUM_SIZE];
 		int    ivertical_datum_dep = -1;
+		int    userHeaderNumber = pds->userHeaderNumber;
+		int*   userHeaderCopy = malloc(userHeaderNumber * sizeof(int));
+		memcpy(userHeaderCopy, pds->userHeader, userHeaderNumber * sizeof(int));
 		if (indElev) {
 			ivertical_datum_ind = getCurrentVerticalDatum(
 				cvertical_datum_ind,
 				sizeof(cvertical_datum_ind),
-				&pds->userHeader,        // any specified datum in these parameters is removed
-				&pds->userHeaderNumber,  // ...
-				&pds->unitsIndependent); // ...
+				pds->userHeader,        // any specified datum in these parameters is removed
+				&pds->userHeaderNumber, // ...
+				pds->unitsIndependent); // ...
 		}
 		if (depElev) {
 			ivertical_datum_dep = getCurrentVerticalDatum(
 				cvertical_datum_dep,
 				sizeof(cvertical_datum_dep),
-				&pds->userHeader,        // any specified datum in these parameters is removed
-				&pds->userHeaderNumber,  // ...
-				&pds->unitsDependent);   // ...
+				userHeaderCopy,        // any specified datum in these parameters is removed
+				&userHeaderNumber,     // ...
+				pds->unitsDependent);  // ...
+			if (pds->userHeaderNumber != userHeaderNumber) {
+				memset(pds->userHeader, 0, pds->userHeaderNumber * sizeof(int));
+				memcpy(pds->userHeader, userHeaderCopy, userHeaderNumber * sizeof(int));
+				pds->userHeaderNumber = userHeaderNumber;
+			}
 		}
+		free(userHeaderCopy);
 		//----------------------------//
 		// see if data already exists //
 		//----------------------------//
@@ -617,7 +626,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 				free(vdiStr);
 				int newHeaderSize;
 				int *newHeader = stringToUserHeader(userHeaderString, &newHeaderSize);
-				// free (pds->userHeader); -- don't know why this is a double free() !!!
+				free (pds->userHeader);
 				pds->userHeader = newHeader;
 				pds->userHeaderNumber = newHeaderSize;
 				pds->allocated[zSTRUCT_userHeader] = TRUE;

@@ -1364,11 +1364,11 @@ void getlocationverticaldatuminfo_(
 // See verticalDatum.h for documentation
 //
 int	getCurrentVerticalDatum(
-        char*  cverticalDatum,
-        int    cverticalDatumSize,
-        int**  userHeader,
-        int*   userHeaderSize,
-        char** unit) {
+        char* cverticalDatum,
+        int   cverticalDatumSize,
+        int*  userHeader,
+        int*  userHeaderSize,
+        char* unit) {
 
     if (cverticalDatum == NULL || cverticalDatumSize < CVERTICAL_DATUM_SIZE) {
         return -1;
@@ -1382,8 +1382,8 @@ int	getCurrentVerticalDatum(
     //-----------------------------//
     // next, check the user header //
     //-----------------------------//
-    if (userHeader != NULL && *userHeader != NULL && *userHeaderSize > 0) {
-        char* userHeaderString = userHeaderToString(*userHeader, *userHeaderSize);
+    if (userHeader != NULL && *userHeaderSize > 0) {
+        char* userHeaderString = userHeaderToString(userHeader, *userHeaderSize);
         if (userHeaderString) {
             char* verticalDatum = extractFromDelimitedString(
                 &userHeaderString,
@@ -1417,8 +1417,17 @@ int	getCurrentVerticalDatum(
                 // remove vertical datum from userHeader //
                 //---------------------------------------//
                 int  newHeaderSize;
-                *userHeader = stringToUserHeader(userHeaderString, &newHeaderSize);
+                int* newUserHeader = stringToUserHeader(userHeaderString, &newHeaderSize);
+                if (newHeaderSize > *userHeaderSize) {
+                    free(newUserHeader);
+                    free(verticalDatum);
+                    free(userHeaderString);
+                    return -1; // shouldn't ever happen
+                }
+                memset(userHeader, 0, *userHeaderSize * sizeof(int));
+                memcpy(userHeader, newUserHeader, newHeaderSize * sizeof(int));
                 *userHeaderSize = newHeaderSize;
+                free(newUserHeader);
                 free(verticalDatum);
             }
             free(userHeaderString);
@@ -1427,13 +1436,13 @@ int	getCurrentVerticalDatum(
     //---------------------------------------//
     // finally, check the unit specification //
     //---------------------------------------//
-    if (unit != NULL && *unit != NULL) {
-        if (strchr(*unit, '|')) {
+    if (unit != NULL) {
+        if (strchr(unit, '|')) {
             char*  saveptr;
             char* value;
             char* unitValue = NULL;
             char* verticalDatum = NULL;
-            char* unitSpec = mallocAndCopy(*unit);
+            char* unitSpec = mallocAndCopy(unit);
             char* key = strtok_r(unitSpec, "|=", &saveptr);
             while (key) {
                 value = strtok_r(NULL, "|=", &saveptr);
@@ -1449,7 +1458,7 @@ int	getCurrentVerticalDatum(
                 //----------------------------------------------//
                 // convert the unit spec to a simple unit value //
                 //----------------------------------------------//
-                sprintf(*unit, "%s", unitValue); // safe becuase new string is always shorter than old string
+                sprintf(unit, "%s", unitValue); // safe becuase new string is always shorter than old string
             }
             if (verticalDatum) {
                 if (!strcasecmp(verticalDatum, CVERTICAL_DATUM_NAVD88)) {

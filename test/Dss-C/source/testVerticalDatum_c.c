@@ -1499,7 +1499,7 @@ void testStoreRetrieveTimeSeries() {
                                                     ';');
                                                 assert(status == 0);
                                             }
-                                            if (tss->userHeader) free(tss->userHeader);
+                                            free(tss->userHeader);
                                             tss->userHeader = stringToUserHeader(headerBuf, &tss->userHeaderNumber);
                                             tss->allocated[zSTRUCT_userHeader] = TRUE;
                                             if (m > 1) {
@@ -1967,7 +1967,7 @@ void testStoreRetrievePairedData() {
                                                     ';');
                                                 assert(status == 0);
                                             }
-                                            if (pds->userHeader) free(pds->userHeader);
+                                            free(pds->userHeader);
                                             pds->userHeader = stringToUserHeader(headerBuf, &pds->userHeaderNumber);
                                             pds->allocated[zSTRUCT_userHeader] = TRUE;
                                             if (m > 1) {
