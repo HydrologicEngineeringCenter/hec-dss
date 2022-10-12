@@ -626,7 +626,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 				free(vdiStr);
 				int newHeaderSize;
 				int *newHeader = stringToUserHeader(userHeaderString, &newHeaderSize);
-				free (pds->userHeader);
+				if (pds->allocated[zSTRUCT_userHeader]) free (pds->userHeader);
 				pds->userHeader = newHeader;
 				pds->userHeaderNumber = newHeaderSize;
 				pds->allocated[zSTRUCT_userHeader] = TRUE;

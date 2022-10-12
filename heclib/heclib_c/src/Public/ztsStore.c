@@ -686,7 +686,7 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 						free(vdiStr);
 						int newHeaderSize;
 						int* newHeader = stringToUserHeader(userHeaderString, &newHeaderSize);
-						free (tss->userHeader);
+						if (tss->allocated[zSTRUCT_userHeader]) free (tss->userHeader);
 						tss->userHeader = newHeader;
 						tss->userHeaderNumber = newHeaderSize;
 						tss->allocated[zSTRUCT_userHeader] = TRUE;
