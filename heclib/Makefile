@@ -18,7 +18,6 @@ ifeq ($(UNAME_S),Darwin)
 	MAKE=make
 endif
 all:
-	( cd ../nws_shef; $(MAKE) -j -f Makefile.$(Make_OS))
 	(cd heclib_c; $(MAKE) )
 	(cd heclib_f; $(MAKE) )		
 	(mkdir -p Output)
