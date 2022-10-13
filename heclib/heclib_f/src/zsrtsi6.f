@@ -281,6 +281,7 @@ C
      *    npart(4), ce, npart(5), cf, npart(6), cpath, npath, iistat)
         call juldat (ijuls, 104, cd, maxpart)
         do
+
           call zpath(ca, cb, cc, cd, ce, cf, cpath_this, npath)
           iiihead = 0
           inihead = 0
@@ -347,7 +348,7 @@ C
           call datjul(cd, ijul, iistat)
           if (ijul.gt.ijule) exit
           cpath_this = cpath_next
-        end do
+              end do
         !------------------------------!
         ! get the VDI of incoming data !
         !------------------------------!
@@ -430,7 +431,7 @@ C
           iuhead_copy2(:nuhead_copy2) = iuhead_copy1(:nuhead_copy1)
         end if
       end if
-      cunits = cunits(:min(len_trim(cunits),8))
+      if (len_trim(cunits).gt.8) cunits(9:) = ' '
 C
 C     Get time window
       CALL DATJUL ( CDATE, JULS, IERR)

@@ -448,7 +448,7 @@ C
           iuhead_copy2(:nuhead_copy2) = iuhead_copy1(:nuhead_copy1)
         end if
       end if
-      cunits = cunits(:min(len_trim(cunits),8))
+      if (len_trim(cunits).gt.8) cunits(9:) = ' '
 C
 C
 C     Get starting date of first block
