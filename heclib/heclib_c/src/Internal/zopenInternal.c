@@ -395,7 +395,7 @@
 		free((void*)ifltab[zdssKeys.kfullFilename]);
 	}
 	if (ifltab[zdssKeys.kfilename]) {
-		free(ifltab[zdssKeys.kfilename]);
+		free((void*)ifltab[zdssKeys.kfilename]);
 	}
 
 	ifltab[zdssKeys.kfilename] = (long long)malloc(size);
