@@ -131,6 +131,7 @@ int zmessageInterface(long long *ifltab, const char *message, int boolContinuati
 	for (i=0; i<maxMessageAvail ; i++) {
 		if (zmessageAvail.messLengths[i] == 0) {
 			zmessageAvail.messLengths[i] = len;
+			free(zmessageAvail.messages[i]);
 			zmessageAvail.messages[i] = (char *)malloc((size_t)len);
 			if (!zmessageAvail.messages[i]) return 0;
 			stringCopy(zmessageAvail.messages[i], (size_t)len, message, _TRUNCATE);

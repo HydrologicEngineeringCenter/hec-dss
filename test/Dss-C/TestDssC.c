@@ -387,6 +387,11 @@ int runTheTests() {
 	printf("\n\n\n#####################  Completion\n\n\n");
 	//	zsetMessageLevel(zmessaging_global_id, MESS_INTERNAL_DIAG_1);
 
+	for (int i = 0; i < maxMessageAvail; i++) {
+		// For intel inspector.
+		free(zmessageAvail.messages[i]);
+		zmessageAvail.messages[i] = NULL;
+	}
 
 
 	printf("\n\nAll tests passed!\n\nGoodbye DSS-7\n");

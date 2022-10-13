@@ -391,6 +391,13 @@
 
 	//  +9 makes sure names have enough space to swap on big endians
 	size = (int)strlen(filename) + 9;
+	if (ifltab[zdssKeys.kfullFilename]) {
+		free((void*)ifltab[zdssKeys.kfullFilename]);
+	}
+	if (ifltab[zdssKeys.kfilename]) {
+		free(ifltab[zdssKeys.kfilename]);
+	}
+
 	ifltab[zdssKeys.kfilename] = (long long)malloc(size);
 	charLong(filename, (void *)ifltab[zdssKeys.kfilename], 0, size, 1, 1);
 	size = (int)strlen(fullDssFilename) + 9;
