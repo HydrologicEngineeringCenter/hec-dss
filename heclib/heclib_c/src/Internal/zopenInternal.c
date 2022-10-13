@@ -379,8 +379,8 @@
 		ifltab[zdssKeys.kmultiUserAccess] = EXCLUSIVE_ACCESS;
 		status = zlockActive(ifltab, LOCKING_LEVEL_HIGH, LOCKING_LOCK_ON, LOCKING_FLUSH_OFF);
 		if (zisError(status)) {
-			free((long long*)ifltab[zdssKeys.kfileHeader]);
-			free((long long*)ifltab[zdssKeys.kpathBin]);
+			free((void*)ifltab[zdssKeys.kfileHeader]);
+			free((void*)ifltab[zdssKeys.kpathBin]);
 			closeFile(ihandle);
 			return zerrorUpdate(ifltab, status, DSS_FUNCTION_zopen_ID);
 		}
@@ -431,10 +431,10 @@
 
 	status = zcheckKeys(ifltab);
 	if (zisError(status)) {
-		free((long long*)ifltab[zdssKeys.kfileHeader]);
-		free((long long*)ifltab[zdssKeys.kpathBin]);
-		free((long long*)ifltab[zdssKeys.kfilename]);
-		free((long long*)ifltab[zdssKeys.kfullFilename]);
+		free((void*)ifltab[zdssKeys.kfileHeader]);
+		free((void*)ifltab[zdssKeys.kpathBin]);
+		free((void*)ifltab[zdssKeys.kfilename]);
+		free((void*)ifltab[zdssKeys.kfullFilename]);
 		closeFile(ihandle);
 		return zerrorUpdate(ifltab, status, DSS_FUNCTION_zopen_ID);
 	}
