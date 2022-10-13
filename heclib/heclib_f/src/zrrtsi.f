@@ -91,6 +91,7 @@ C     Vertical datum varible dimensions
       logical l_Navd88Estimated, l_Ngvd29Estimated
       integer vdiStrLen
 C
+      data lqblok /.false./
 
 
       INCLUDE 'zdsskz.h'
@@ -316,7 +317,7 @@ C
       IF (LFOUND) THEN
 C
 C     Write the message that the data was read
-      IF ((MLEVEL.GE.4).AND.(INSTAT.NE.-1)) THEN
+      IF (MLEVEL.GE.4) THEN
       IF (L80COL) THEN
       WRITE ( MUNIT,231) CTSPAT(1:NTSPAT)
  231  FORMAT(' --ZREAD:  ',A)

@@ -269,7 +269,7 @@ void testZsetZquery() {
     assert(intVal == FALSE);
 }
 void testV6TimeSeiresWithMultipleVerticalDatums() {
-    long long ifltab[250];
+    long long ifltab[250] = {0};
     int status;
     zStructTimeSeries* tss = NULL;
     verticalDatumInfo vdi;
@@ -1124,7 +1124,7 @@ void printPdTestInfo(
 
 void testStoreRetrieveTimeSeries() {
 // test storing and retriving time series data
-    long long ifltab[250];
+    long long ifltab[250] = {0};
     int status;
     zStructTimeSeries *tss = NULL;
     verticalDatumInfo vdi;
@@ -1637,7 +1637,7 @@ void testStoreRetrieveTimeSeries() {
 
 void testStoreRetrievePairedData() {
     // test storing and retrieving paired data
-    long long ifltab[250];
+    long long ifltab[250] = {0};
     zStructPairedData *pds;
     verticalDatumInfo vdi;
     verticalDatumInfo vdiInFile;

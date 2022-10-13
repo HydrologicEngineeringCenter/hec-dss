@@ -391,7 +391,7 @@ char* userHeaderToString(const int* userHeader, int userHeaderNumber) {
                 break;
             }
         }
-        while (*(cp-1) == ' ' && (cp - start) > 1) --cp;
+        while ((cp - start) > 1 == ' ' && *(cp-1)) --cp;
         len = cp - start;
 		if (len > 0) {
 			str = mallocAndInit((size_t)userHeaderNumber*4+1);

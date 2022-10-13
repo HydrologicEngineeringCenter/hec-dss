@@ -33,12 +33,12 @@
 
 int zconvertVersion(const char* fileNameFrom, const char* fileNameTo)
 {
-	long long ifltabFrom[600];
-	long long ifltabTo[600];
-	int status;
-	int versionNumber;
-	int nrecs;
-	char cscrat[20];
+	long long ifltabFrom[600] = {0};
+	long long ifltabTo[600] = {0};
+	int status = 0;
+	int versionNumber = 0;
+	int nrecs = 0;
+	char cscrat[20] = {0};
 
 
 	if (!fileNameFrom) {

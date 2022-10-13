@@ -51,7 +51,7 @@ int testDelete(const char *dssFilename7, const char *dssFilename6)
 	int status;
 	int i;
 	int iloop;
-	long long ifltab[500];
+	long long ifltab[500] = {0};
 	zStructTransfer *ztransfer1;
 	zStructTransfer *ztransfer2;
 	zStructTransfer *ztransfer3;

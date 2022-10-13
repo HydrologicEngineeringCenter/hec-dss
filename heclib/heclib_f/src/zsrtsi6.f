@@ -84,6 +84,8 @@ C     Vertical datum varible dimensions
       integer nuhead_copy1, iuhead_copy1(100)
       integer nuhead_copy2, iuhead_copy2(100)
 C
+      data cpath_this /' '/
+C
       INCLUDE 'zdssts.h'
 C
       INCLUDE 'zdsskz.h'

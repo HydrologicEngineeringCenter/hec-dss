@@ -46,6 +46,7 @@ C
       LOGICAL LDOUBLE, lfound
 C
       INTEGER IBPART(6), IEPART(6), ILPART(6), NPATH, INTLPS
+      INTEGER IBSIZE, JBSIZE
       CHARACTER CPATHNAME*(*), CUNITS*(*), CTYPE*(*)
       CHARACTER CPATH*392, CPATH1*392, CDATE1*9, CDATE2*9
       CHARACTER CTIME1*4, CTIME2*4, CDATE*9, CSCRAT*20
@@ -70,6 +71,7 @@ C     Vertical datum varible dimensions
       integer nuhead_copy2, iuhead_copy2(100)
       integer na, nb, nc, nd, ne, nf
 C
+      data cpath_this /' '/, ibsize /0/, jbsize /0/
 C
       INCLUDE 'zdssmz.h'
 C

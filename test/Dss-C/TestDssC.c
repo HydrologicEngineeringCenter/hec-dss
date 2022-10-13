@@ -10,7 +10,7 @@ int runTheTests();
 
 int gridMemoryTest() {
 
-	long long ifltab[250];
+	long long ifltab[250] = {0};
 	int status = zopen(ifltab, "2017-06-28_event.dss");
 	if (status != 0) {
 		printf("Error during open.  status= %d\n", status);
@@ -172,8 +172,8 @@ int main(int argc, char* argv[])
    return status;
 }
 int runTheTests() {
-	long long ifltab7[250];
-	long long ifltab6[250];
+	long long ifltab7[250] = {0};
+	long long ifltab6[250] = {0};
 	char fileName7[80];
 	char fileName7a[80];
 	char fileName6[80];

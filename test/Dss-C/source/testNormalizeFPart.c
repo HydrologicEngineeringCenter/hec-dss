@@ -405,7 +405,7 @@ int test_normalize_f_part() {
 	//--------------------------------------//
 	// now test storing and retrieving data //
 	//--------------------------------------//
-	long long ifltab[250];
+	long long ifltab[250] = {0};
 	zStructTimeSeries* tssStore = NULL;
 	zStructTimeSeries* tssRetrieve = NULL;
 	char* filename = "v7_c.dss";

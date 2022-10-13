@@ -47,6 +47,9 @@ C
       integer NBNSIZ,NBPWPA,NPATH,IUNIT,NBMWPA
 C
 C
+      data cpath /' '/, cip /' '/, cop /' '/, cinpath /' '/
+C
+C
       IF (MLEVEL.GE.11) WRITE (MUNIT,20) IFLTAB(KUNIT)
  20   FORMAT (T6,'-----DSS---Debug:  Enter ztssrch6;  Unit:',I5)
 C

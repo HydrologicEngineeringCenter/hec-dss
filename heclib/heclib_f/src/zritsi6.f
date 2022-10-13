@@ -77,6 +77,7 @@ C
 C
       LOGICAL LF, LFOUND, LGETQ, LPREV, LNEXT, LCASE, LDSWAP
       INTEGER IFORWD, INTLPS
+      data lgetq /.false./
 C
 C     Pathname variable dimensions
       character*64 ca, cb, cc, cd, ce, cf

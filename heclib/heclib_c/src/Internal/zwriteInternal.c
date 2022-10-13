@@ -159,17 +159,17 @@ int zwriteInternal(long long *ifltab, zStructTransfer* ztransfer, int checked,
 				   long long bufferControl[4], int *buffer, int boolUseBuffer)
 
 {
-	char messageString[100];
-	int status;
-	int version;
-	int temp;
-	long long *info;
-	long long *fileHeader;
-	int totalNumber;
-	int wroteAtEOF;
-	int totalNumberInts;
+	char messageString[100] = {0};
+	int status = 0;
+	int version = 0;
+	int temp = 0;
+	long long *info = NULL;
+	long long *fileHeader = NULL;
+	int totalNumber = 0;
+	int wroteAtEOF = 0;
+	int totalNumberInts = 0;
 	int zero = 0;
-	int bufferAction;
+	int bufferAction = 0;
 	int boolFillValues1 = 0;
 	int boolFillValues2 = 0;
 	int boolFillValues3 = 0;

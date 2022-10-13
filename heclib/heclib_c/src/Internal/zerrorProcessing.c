@@ -95,7 +95,7 @@ int zerrorProcessing(long long *ifltab, int functionID, int errorNumber, int sta
 					 long long iaddress, int severity, const char *pathname, const char *message)
 {
 	int errorCode;
-	int err;
+	int err = 0;
 	char *function_name;
 	char *cmess;
 	char buff[MAX_LEN_ERROR_MESS];
