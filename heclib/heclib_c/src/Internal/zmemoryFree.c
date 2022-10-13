@@ -63,8 +63,8 @@ void zmemoryFree(long long *ifltab)
 				zhandle(ifltab), (long long)memory);
 			 zmessageDebug(ifltab, DSS_FUNCTION_zmemoryFree_ID, "Free pathname bin memory;  Handle:", messageString);
 		}
-		free(memory);
 	}
+	free(memory);
 
 	//  Free the memory allocated for the record header (info area)
 	memory = (long long *)ifltab[zdssKeys.kinfo];
@@ -86,8 +86,8 @@ void zmemoryFree(long long *ifltab)
 				zhandle(ifltab), (long long)memory);
 			 zmessageDebug(ifltab, DSS_FUNCTION_zmemoryFree_ID, "Free record header memory;  Handle:", messageString);
 		}
-		free(memory);
 	}
+	free(memory);
 
 	//  Free the memory allocated for the reclaim array
 	memory = (long long *)ifltab[zdssKeys.kreclaim];
@@ -132,8 +132,8 @@ void zmemoryFree(long long *ifltab)
 				zhandle(ifltab), (long long)memory);
 			 zmessageDebug(ifltab, DSS_FUNCTION_zmemoryFree_ID, "Free main file header memory;  Handle:", messageString);
 		}
-		free(memory);
 	}
+	free(memory);
 
 	if (ifltab[zdssKeys.kcatStruct]) {
 		zstructFree((zStructCatalog*)ifltab[zdssKeys.kcatStruct]);
@@ -145,12 +145,12 @@ void zmemoryFree(long long *ifltab)
 		ifltab[zdssKeys.kCRCtable] = 0;
 	}
 
+	free((void *)ifltab[zdssKeys.kfilename]);
 	if (ifltab[zdssKeys.kfilename]) {
-		free((void *)ifltab[zdssKeys.kfilename]);
 		ifltab[zdssKeys.kfilename] = 0;
 	}
+	free((void *)ifltab[zdssKeys.kfullFilename]);
 	if (ifltab[zdssKeys.kfullFilename]) {
-		free((void *)ifltab[zdssKeys.kfullFilename]);
 		ifltab[zdssKeys.kfullFilename] = 0;
 	}
 

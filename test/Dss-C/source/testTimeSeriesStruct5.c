@@ -472,16 +472,25 @@ int testztsStruct5(long long *ifltab)
 	tss4->allocated[zSTRUCT_pathname] = 1;
 
 	status = ztsStore(ifltab, tss4, 0);
-	if (zcheckStatus(ifltab, status, 1, "Fail in testztsStruct5 Loc 140, store status")) return status;
+	if (zcheckStatus(ifltab, status, 1, "Fail in testztsStruct5 Loc 140, store status")) {
+		free(path);
+		return status; 
+	}
 
 	jul = dateToJulian("21Jan1991");
 	jul += numb -1;
 	julianToDate(jul, 4, cdate, 13);
 	tss2 = zstructTsNewTimes(path, "21Jan1991", "1200", cdate, "1200"); 
 	status = ztsRetrieve(ifltab, tss2, -1, 1, 1);
-	if (zcheckStatus(ifltab, status, 1, "Fail in testztsStruct5 Loc 141, retrieve status")) return status; 	
+	if (zcheckStatus(ifltab, status, 1, "Fail in testztsStruct5 Loc 141, retrieve status")) {
+		free(path);
+		return status; 
+	}
 	status = zcompareDataSets(ifltab, tss4, tss2, 1, 0, tss4->pathname, "Fail in testztsStruct5, Location 142");
-	if (status) return status;
+	if (status) {
+		free(path);
+		return status; 
+	}
 
 	if (tss4->cnotes) free(tss4->cnotes);
 	tss4->cnotes = (char *)calloc(tss4->numberValues, 5);
@@ -504,9 +513,13 @@ int testztsStruct5(long long *ifltab)
 	tss4->floatValues[510] = UNDEFINED_FLOAT;
 
 	status = ztsStore(ifltab, tss4, 4);
-	if (zcheckStatus(ifltab, status, 1, "Fail in testztsStruct5 Loc 142, store status")) return status; 
+	if (zcheckStatus(ifltab, status, 1, "Fail in testztsStruct5 Loc 142, store status")) {
+		free(path);
+		return status; 
+	}
 
 	tss3 = zstructTsNewTimes(path, "21Jan1991", "1200", cdate, "1200"); 
+	free(path);
 	status = ztsRetrieve(ifltab, tss3, -1, 1, 1);
 	if (zcheckStatus(ifltab, status, 1, "Fail in testztsStruct5 Loc 143, retrieve status")) return status; 	
 	

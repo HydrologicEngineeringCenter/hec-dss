@@ -111,12 +111,15 @@ int zpermCreate (long long *ifltab, int maxExpectedPathnames, int hashSize, int 
 	//  Pathname Bin
 	status = zmemoryGet(ifltab, zdssKeys.kpathBin, (int)fileHeader[zdssFileKeys.kbinSize], "Pathname bin");
 	if (zisError(status)) {
+		free((long long*)ifltab[zdssKeys.kfileHeader]);
 		return zerrorUpdate(ifltab, status, DSS_FUNCTION_zpermCreate_ID);
 	}
 
 	//  Record header (info area)
 	status = zmemoryGet(ifltab, zdssKeys.kinfo, zdssVals.maxInfoSize, "Record header (info area)");
 	if (zisError(status)) {
+		free((long long*)ifltab[zdssKeys.kfileHeader]);
+		free((long long*)ifltab[zdssKeys.kpathBin]);
 		return zerrorUpdate(ifltab, status, DSS_FUNCTION_zpermCreate_ID);
 	}
 
@@ -222,6 +225,8 @@ int zpermCreate (long long *ifltab, int maxExpectedPathnames, int hashSize, int 
 	//  Write these initial values to the permanent area (file header)
 	status = zpermWrite(ifltab);
 	if (zisError(status)) {
+		free((long long*)ifltab[zdssKeys.kfileHeader]);
+		free((long long*)ifltab[zdssKeys.kpathBin]);
 		return zerrorUpdate(ifltab, status, DSS_FUNCTION_zpermCreate_ID);
 	}
 
@@ -273,6 +278,8 @@ int zpermCreate (long long *ifltab, int maxExpectedPathnames, int hashSize, int 
 	fileHeader[zdssFileKeys.klockWriteArrayAddress] = zgetFileSpace(ifltab, (int)fileHeader[zdssFileKeys.klockArraySizes], 0, &atEOF);
 	status = zput(ifltab, fileHeader[zdssFileKeys.klockWriteArrayAddress] , zero, -(int)fileHeader[zdssFileKeys.klockArraySizes], 2);
 	if (zisError(status)) {
+		free((long long*)ifltab[zdssKeys.kfileHeader]);
+		free((long long*)ifltab[zdssKeys.kpathBin]);
 		return zerrorUpdate(ifltab, status, DSS_FUNCTION_zpermCreate_ID);
 	}
 
@@ -280,6 +287,8 @@ int zpermCreate (long long *ifltab, int maxExpectedPathnames, int hashSize, int 
 	fileHeader[zdssFileKeys.klockReadArrayAddress] = zgetFileSpace(ifltab, (int)fileHeader[zdssFileKeys.klockArraySizes], 0, &atEOF);
 	status = zput(ifltab, fileHeader[zdssFileKeys.klockReadArrayAddress] , zero, -(int)fileHeader[zdssFileKeys.klockArraySizes], 2);
 	if (zisError(status)) {
+		free((long long*)ifltab[zdssKeys.kfileHeader]);
+		free((long long*)ifltab[zdssKeys.kpathBin]);
 		return zerrorUpdate(ifltab, status, DSS_FUNCTION_zpermCreate_ID);
 	}
 
@@ -287,6 +296,8 @@ int zpermCreate (long long *ifltab, int maxExpectedPathnames, int hashSize, int 
 	fileHeader[zdssFileKeys.kpidArrayAddress] = zgetFileSpace(ifltab, (int)fileHeader[zdssFileKeys.klockArraySizes], 0, &atEOF);
 	status = zput(ifltab, fileHeader[zdssFileKeys.kpidArrayAddress] , zero, -(int)fileHeader[zdssFileKeys.klockArraySizes], 2);
 	if (zisError(status)) {
+		free((long long*)ifltab[zdssKeys.kfileHeader]);
+		free((long long*)ifltab[zdssKeys.kpathBin]);
 		return zerrorUpdate(ifltab, status, DSS_FUNCTION_zpermCreate_ID);
 	}
 
@@ -301,6 +312,8 @@ int zpermCreate (long long *ifltab, int maxExpectedPathnames, int hashSize, int 
 	fileHeader[zdssFileKeys.kaddHashTableStart] = zgetFileSpace(ifltab, size, 0, &atEOF);
 	status = zput(ifltab, fileHeader[zdssFileKeys.kaddHashTableStart], zero, -size, 2);
 	if (zisError(status)) {
+		free((long long*)ifltab[zdssKeys.kfileHeader]);
+		free((long long*)ifltab[zdssKeys.kpathBin]);
 		return zerrorUpdate(ifltab, status, DSS_FUNCTION_zpermCreate_ID);
 	}
 
@@ -313,6 +326,8 @@ int zpermCreate (long long *ifltab, int maxExpectedPathnames, int hashSize, int 
 	fileHeader[zdssFileKeys.kreclaimSegAvailableAdd] = fileHeader[zdssFileKeys.kreclaimTableAddress];
 	status = zput(ifltab, fileHeader[zdssFileKeys.kreclaimTableAddress], zero, -size, 2);
 	if (zisError(status)) {
+		free((long long*)ifltab[zdssKeys.kfileHeader]);
+		free((long long*)ifltab[zdssKeys.kpathBin]);
 		return zerrorUpdate(ifltab, status, DSS_FUNCTION_zpermCreate_ID);
 	}
 	fileHeader[zdssFileKeys.kreclaimTotal] = 0;
@@ -327,6 +342,8 @@ int zpermCreate (long long *ifltab, int maxExpectedPathnames, int hashSize, int 
 	fileHeader[zdssFileKeys.kaddNextEmptyBin] = fileHeader[zdssFileKeys.kaddFirstBin];
 	status = zput(ifltab, fileHeader[zdssFileKeys.kaddFirstBin], zero, -size, 2);
 	if (zisError(status)) {
+		free((long long*)ifltab[zdssKeys.kfileHeader]);
+		free((long long*)ifltab[zdssKeys.kpathBin]);
 		return zerrorUpdate(ifltab, status, DSS_FUNCTION_zpermCreate_ID);
 	}
 	fileHeader[zdssFileKeys.kbinsRemainInBlock] = fileHeader[zdssFileKeys.kbinsPerBlock];
@@ -334,18 +351,24 @@ int zpermCreate (long long *ifltab, int maxExpectedPathnames, int hashSize, int 
 	//  Write the EOF flag
 	status = zwriteEOF(ifltab);
 	if (zisError(status)) {
+		free((long long*)ifltab[zdssKeys.kfileHeader]);
+		free((long long*)ifltab[zdssKeys.kpathBin]);
 		return zerrorUpdate(ifltab, status, DSS_FUNCTION_zpermCreate_ID);
 	}
 
 	//  Write updated header to disk (includes hash table, path bin)
 	status = zpermWrite(ifltab);
 	if (zisError(status)) {
+		free((long long*)ifltab[zdssKeys.kfileHeader]);
+		free((long long*)ifltab[zdssKeys.kpathBin]);
 		return zerrorUpdate(ifltab, status, DSS_FUNCTION_zpermCreate_ID);
 	}
 
 	//  Force flush to disk
 	status = zflushToDisk(ifltab, 1);
 	if (zisError(status)) {
+		free((long long*)ifltab[zdssKeys.kfileHeader]);
+		free((long long*)ifltab[zdssKeys.kpathBin]);
 		return zerrorUpdate(ifltab, status, DSS_FUNCTION_zpermCreate_ID);
 	}
 
@@ -355,6 +378,8 @@ int zpermCreate (long long *ifltab, int maxExpectedPathnames, int hashSize, int 
 
 	status = zcheckKeys(ifltab);
 	if (zisError(status)) {
+		free((long long*)ifltab[zdssKeys.kfileHeader]);
+		free((long long*)ifltab[zdssKeys.kpathBin]);
 		return zerrorUpdate(ifltab, status, DSS_FUNCTION_zpermCreate_ID);
 	}
 

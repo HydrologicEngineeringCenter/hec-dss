@@ -77,22 +77,22 @@
 int zsqueeze7(long long *ifltab, int boolOnlyIfNeeded, int boolInPlace)
 {
 
-	long long ifltabTemp[400];
+	long long ifltabTemp[400] = {0};
 
-	char fullFilename[MAX_PATH];
-	char filename[MAX_PATH];
-	TCHAR tempDirW[MAX_PATH];
-	char tempName[MAX_PATH];
-	size_t len;
-	int ihandle;
-	int access;
-	int status;
-	int boolMessageLevelSet;
-	int numberPathnames;
-	int boolNeedSqueeze;
-	int version;
-	int i;
-	long long *fileHeader;
+	char fullFilename[MAX_PATH] = {0};
+	char filename[MAX_PATH] = {0};
+	TCHAR tempDirW[MAX_PATH] = {0};
+	char tempName[MAX_PATH] = {0};
+	size_t len = 0;
+	int ihandle = 0;
+	int access = 0;
+	int status = 0;
+	int boolMessageLevelSet = 0;
+	int numberPathnames = 0;
+	int boolNeedSqueeze = 0;
+	int version = 0;
+	int i = 0;
+	long long *fileHeader = NULL;
 
 
 

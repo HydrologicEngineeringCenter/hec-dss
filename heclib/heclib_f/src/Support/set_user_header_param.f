@@ -1,13 +1,13 @@
       subroutine set_user_header_param(iuhead, nuhead, kuhead, cparam, 
      *           cvalue, istat)
       !        
-      ! Retrieves the value of an associated parameter name from the user header
+      ! Sets the value of an associated parameter name in the user header
       !
       ! iuhead  The user header integer array
       ! nuhead  The number of integers used in the user header (size)
       ! kuhead  The number of integers in the user header (capacity)
-      ! cparam  The parameter to retrieve the value for
-      ! cvalue  The variable to hold the value
+      ! cparam  The parameter to set the value for
+      ! cvalue  The value to set for the parameter
       !  
       ! Mike Perryman
       ! USACE Hydrologic Engineering Center
@@ -45,6 +45,12 @@
       end if
       max_head_len = min(kuhead, size(iuhead_copy))
       iuhead_copy(:max_head_len) = iuhead(:max_head_len)
+      call bigEndian(i)
+      if (i.ne.0) then
+        do i = i, max_head_len
+          call zswap6(iuhead_copy(i), iuhead_copy(i))
+        end do
+      end if
       !--------------------------------------------------------!
       ! blank everything past the copy size or null terminator !
       !--------------------------------------------------------!
@@ -83,8 +89,14 @@
         ! replace the existing parameter or add a new one !
         !-------------------------------------------------!
         if (existing.ne." ") then
-          call remove_user_header_param(iuhead_copy, nuhead, kuhead, 
-     *    cparam)
+          call remove_user_header_param(iuhead, nuhead, kuhead, cparam)
+          iuhead_copy(:max_head_len) = iuhead(:max_head_len)
+          call bigEndian(i)
+          if (i.ne.0) then
+            do i = i, max_head_len
+              call zswap6(iuhead_copy(i), iuhead_copy(i))
+            end do
+          end if
         end if
         len = len_trim(cuhead)
         if (len.gt.0) then
@@ -95,6 +107,12 @@
         end if
         cuhead(len+1:) = cparam(:len_trim(cparam)) // ":" // 
      *    cvalue(:len_trim(cvalue)) // ";"
+        call bigEndian(i)
+        if (i.ne.0) then
+          do i = i, max_head_len
+            call zswap6(iuhead_copy(i), iuhead_copy(i))
+          end do
+        end if
         iuhead(:max_head_len) = iuhead_copy(:max_head_len)
         istat = 0
       end if  

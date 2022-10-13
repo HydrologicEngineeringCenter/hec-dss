@@ -191,6 +191,9 @@ int ztsStoreIrregArgs(long long *ifltab, const char *pathname,
 			sizeof(unitsPassed), sizeof(typePassed), (size_t) lenuserHeader,
 			strlen(timezone));
 
+		if (userHeaderNumber > 0) {
+			free(csupp);
+		}
 
 	}
 	else {

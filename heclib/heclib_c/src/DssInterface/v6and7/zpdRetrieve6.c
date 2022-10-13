@@ -25,24 +25,24 @@
 
 int zpdRetrieve6(long long *ifltab, zStructPairedData *pds, int retrieveSizeFlag)
 {
-	int i, j;
-	int ipos;
-	int len;
-	int labels;
-	int status;
-	float  *svalues;
-	double *dvalues;
-	int number;
-	int maxValues;
-	int boolDouble;
-	int hundred;
-	int userHeaderNumber;
-	char unitsIndependent[100];
-	char typeIndependent[100];
-	char unitsDependent[100];
-	char typeDependent[100];
-	char clabel[100][101];
-	zStructRecordSize *recordSize;
+	int i = 0, j = 0;
+	int ipos = 0;
+	int len = 0;
+	int labels = 0;
+	int status = 0;
+	float  *svalues = NULL;
+	double *dvalues = NULL;
+	int number = 0;
+	int maxValues = 0;
+	int boolDouble = 0;
+	int hundred = 0;
+	int userHeaderNumber = 0;
+	char unitsIndependent[100] = {'\0'};
+	char typeIndependent[100] = {'\0'};
+	char unitsDependent[100] = {'\0'};
+	char typeDependent[100] = {'\0'};
+	char clabel[100][101] = {'\0'};
+	zStructRecordSize *recordSize = NULL;
 
 
 	//  Check for correct DSS Version
@@ -60,6 +60,7 @@ int zpdRetrieve6(long long *ifltab, zStructPairedData *pds, int retrieveSizeFlag
 
 	status = zgetRecordSize6(ifltab, recordSize);
 	if (status != STATUS_RECORD_FOUND) {
+		zstructFree(recordSize);
 		return -1;
 	}
 

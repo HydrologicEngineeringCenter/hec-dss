@@ -256,20 +256,24 @@
 			charLong((void *)&iarray[2], (void *)cvers, 4, sizeof(cvers), 0, 1);
 			//  No ZDSS header (first 4 bytes)?
 			if (strncmp(cdss, zdssVals.czdss, 4) != 0) {
+				closeFile(ihandle);
 				return zerrorProcessing(ifltab, DSS_FUNCTION_zopen_ID, zdssErrorCodes.INVALID_DSS_FILE,
 										 0, 0, zdssErrorSeverity.WARNING_NO_FILE_ACCESS, fullDssFilename, cdss);
 			}			
 			else if (strncmp(cvers, zdssVals.czVersion, 1) != 0) {
 				//  Wrong version (e.g., version 6)
 				if (strncmp(cvers, "6", 1) == 0) {
+					closeFile(ihandle);
 					return zerrorProcessing(ifltab, DSS_FUNCTION_zopen_ID, zdssErrorCodes.INCOMPATIBLE_VERSION,
 						6, 0, zdssErrorSeverity.WARNING_NO_FILE_ACCESS, fullDssFilename, cvers);
 				}
 				else if (strncmp(cvers, "8", 1) == 0) {
+					closeFile(ihandle);
 					return zerrorProcessing(ifltab, DSS_FUNCTION_zopen_ID, zdssErrorCodes.INCOMPATIBLE_VERSION,
 						8, 0, zdssErrorSeverity.WARNING_NO_FILE_ACCESS, fullDssFilename, cvers);
 				}
 				else {
+					closeFile(ihandle);
 					return zerrorProcessing(ifltab, DSS_FUNCTION_zopen_ID, zdssErrorCodes.INVALID_HEADER_PARAMETER, 0,
 						0, zdssErrorSeverity.CORRUPT_FILE, cvers, "Invalid DSS file version string");
 				}
@@ -287,9 +291,11 @@
 			if (access == READ_ACCESS) {
 				//  If the file exists, but it is not a valid DSS file, and
 				//  we do not have write access, error out
+				closeFile(ihandle);
 				return zerrorUpdate(ifltab, status, DSS_FUNCTION_zopen_ID);
 			}
 			else {
+				closeFile(ihandle);
 				return zerrorUpdate(ifltab, status, DSS_FUNCTION_zopen_ID);
 			}
 		}
@@ -306,11 +312,13 @@
 			charLong((void *)&fileHeader[zdssFileKeys.kdss], (void *)cdss, 4, sizeof(cdss), 0, 1);
 			charLong((void *)&fileHeader[zdssFileKeys.kversion], (void *)cvers, 4, sizeof(cvers), 0, 1);
 			if (strncmp(cdss, zdssVals.czdss, 4) != 0) {
+				closeFile(ihandle);
 				return zerrorProcessing(ifltab, DSS_FUNCTION_zopen_ID, zdssErrorCodes.INVALID_DSS_FILE,
 										 0, 0, zdssErrorSeverity.INVALID_ARGUMENT, "", cdss);
 			}
 			else if (strncmp(cvers, zdssVals.czVersion, 1) != 0) {
 				//  Wrong version (e.g., version 6)
+				closeFile(ihandle);
 				return zerrorProcessing(ifltab, DSS_FUNCTION_zopen_ID, zdssErrorCodes.INCOMPATIBLE_VERSION,
 										 0, 0, zdssErrorSeverity.INVALID_ARGUMENT, "", cvers);
 			}
@@ -371,6 +379,9 @@
 		ifltab[zdssKeys.kmultiUserAccess] = EXCLUSIVE_ACCESS;
 		status = zlockActive(ifltab, LOCKING_LEVEL_HIGH, LOCKING_LOCK_ON, LOCKING_FLUSH_OFF);
 		if (zisError(status)) {
+			free((void*)ifltab[zdssKeys.kfileHeader]);
+			free((void*)ifltab[zdssKeys.kpathBin]);
+			closeFile(ihandle);
 			return zerrorUpdate(ifltab, status, DSS_FUNCTION_zopen_ID);
 		}
 	}
@@ -380,6 +391,13 @@
 
 	//  +9 makes sure names have enough space to swap on big endians
 	size = (int)strlen(filename) + 9;
+	if (ifltab[zdssKeys.kfullFilename]) {
+		free((void*)ifltab[zdssKeys.kfullFilename]);
+	}
+	if (ifltab[zdssKeys.kfilename]) {
+		free((void*)ifltab[zdssKeys.kfilename]);
+	}
+
 	ifltab[zdssKeys.kfilename] = (long long)malloc(size);
 	charLong(filename, (void *)ifltab[zdssKeys.kfilename], 0, size, 1, 1);
 	size = (int)strlen(fullDssFilename) + 9;
@@ -413,6 +431,11 @@
 
 	status = zcheckKeys(ifltab);
 	if (zisError(status)) {
+		free((void*)ifltab[zdssKeys.kfileHeader]);
+		free((void*)ifltab[zdssKeys.kpathBin]);
+		free((void*)ifltab[zdssKeys.kfilename]);
+		free((void*)ifltab[zdssKeys.kfullFilename]);
+		closeFile(ihandle);
 		return zerrorUpdate(ifltab, status, DSS_FUNCTION_zopen_ID);
 	}
 	return status;

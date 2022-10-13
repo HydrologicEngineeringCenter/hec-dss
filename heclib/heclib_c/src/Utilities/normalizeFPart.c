@@ -225,12 +225,13 @@ int normalizeFPart(char** normalized, const char* fPart) {
 					}
 					if (!validateFPartTag(tagValues[tagCount - 1].tag, tagValues[tagCount - 1].value)) {
 						switch (c) {
-						case 'C': return normalizeFPartStatus.INVALID_C_TAG_VALUE;
-						case 'T': return normalizeFPartStatus.INVALID_T_TAG_VALUE;
-						case 'V': return normalizeFPartStatus.INVALID_V_TAG_VALUE;
-						case 'R': return normalizeFPartStatus.INVALID_R_TAG_VALUE;
-						default: return normalizeFPartStatus.UNEXPECTED_ERROR;
+						case 'C': status = normalizeFPartStatus.INVALID_C_TAG_VALUE; break;
+						case 'T': status = normalizeFPartStatus.INVALID_T_TAG_VALUE; break;
+						case 'V': status = normalizeFPartStatus.INVALID_V_TAG_VALUE; break;
+						case 'R': status = normalizeFPartStatus.INVALID_R_TAG_VALUE; break;
+						default : status = normalizeFPartStatus.UNEXPECTED_ERROR; break;
 						}
+						break;
 					}
 				}
 				else {

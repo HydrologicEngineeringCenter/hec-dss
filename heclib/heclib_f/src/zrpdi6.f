@@ -244,7 +244,7 @@ C
       l_indElev = .false.
       l_depElev = .false.
       call zufpn(ca, na, cb, nb, cc, nc, cd, nd, ce, ne, cf, nf,
-     *           cpath, len_trim(cpath), istat)
+     *           cpath, len_trim(cpath), jstat)
       call upcase(cc)
       if (index(cc, 'ELEV').eq.1) then
         l_indElev = .true.
@@ -412,13 +412,6 @@ C
           end if
         end if
       end if
-	  call bigEndian(itemp)
-	  if (itemp.eq.1 .and. nuhead.gt.0) then
-	    do i = 1, nuhead
-		  call zswap6(iuhead(i), itemp)
-		  iuhead(i) = itemp
-		end do
-	  end if
       RETURN
 C
  900  CONTINUE

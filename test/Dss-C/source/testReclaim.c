@@ -14,31 +14,31 @@
 
 int testReclaim(const char *dssFilename)
 {
-	char path1[MAX_PATHNAME_LENGTH];
-	char path2[MAX_PATHNAME_LENGTH];
-	char path3[MAX_PATHNAME_LENGTH];
-	char path4[MAX_PATHNAME_LENGTH];
-	char path5[MAX_PATHNAME_LENGTH];
-	char path6[MAX_PATHNAME_LENGTH];
+	char path1[MAX_PATHNAME_LENGTH] = {0};
+	char path2[MAX_PATHNAME_LENGTH] = {0};
+	char path3[MAX_PATHNAME_LENGTH] = {0};
+	char path4[MAX_PATHNAME_LENGTH] = {0};
+	char path5[MAX_PATHNAME_LENGTH] = {0};
+	char path6[MAX_PATHNAME_LENGTH] = {0};
 
-	char loopName[30];
-	char message[80];
+	char loopName[30] = {0};
+	char message[80] = {0};
 
-	int status;
-	int i;
-	int iloop;
-	long long space;
-	long long space2;
-	long long ifltab[500];
-	zStructTransfer *ztransfer1;
-	zStructTransfer *ztransfer2;
-	zStructTransfer *ztransfer3;
-	zStructTransfer *ztransfer4;
-	zStructTransfer *ztransfer5;
-	zStructTransfer *ztransfer6;
+	int status = 0;
+	int i = 0;
+	int iloop = 0;
+	long long space = 0;
+	long long space2 = 0;
+	long long ifltab[500] = {0};
+	zStructTransfer *ztransfer1 = NULL;
+	zStructTransfer *ztransfer2 = NULL;
+	zStructTransfer *ztransfer3 = NULL;
+	zStructTransfer *ztransfer4 = NULL;
+	zStructTransfer *ztransfer5 = NULL;
+	zStructTransfer *ztransfer6 = NULL;
 
-	int values[2000];
-	int header[2000];
+	int values[2000] = {0};
+	int header[2000] = {0};
 
 
 	for (i=0; i<2000; i++) {

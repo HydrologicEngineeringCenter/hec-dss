@@ -21,23 +21,24 @@ int testCatalog()
 	int status;
 	int len;
 
-	long long ifltab[600];
+	long long ifltab[600] = {0};
 
 	zStructCatalog *catStruct;
 	zStructCatalog *catStruct2;
 	zStructTransfer* ztransfer;
-	char dssFilename[_MAX_PATH];
-	char filename[_MAX_PATH ];
-	char catFilename[_MAX_PATH];
-	char pathWithWild[100];
-	char pathname[200];
+	char dssFilename[_MAX_PATH] = {0};
+	char filename[_MAX_PATH ] = {0};
+	char catFilename[_MAX_PATH] = {0};
+	char pathWithWild[100] = {0};
+	char pathname[200] = {0};
 	int filePos;
 	int nPathname;
 	int count;
 	int i;
 	int permission;
 	int boolSame;
-	int buffer[1]; long long bufferControl[4] ={0,0,0,0};
+	int buffer[1];
+	long long bufferControl[4] ={0};
 	long long lastWriteTime;
 
 

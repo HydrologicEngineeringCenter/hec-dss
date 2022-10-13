@@ -50,8 +50,8 @@ int zsqueeze(const char *dssFilename)
 {
 
 
-	char tempDssFilename[_MAX_PATH];
-	long long ifltab[600];
+	char tempDssFilename[_MAX_PATH] = {0};
+	long long ifltab[600] = {0};
 	int version;
 	int status;
 

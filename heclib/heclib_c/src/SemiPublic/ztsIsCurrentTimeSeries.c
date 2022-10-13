@@ -47,6 +47,7 @@ int ztsIsCurrentTimeSeries(long long *ifltab, char* pathname)
 	int seconds;
 	int millsPastSecond;
 
+	memset(&timeWindow, 0, sizeof(timeWindow));
 	timeWindow.startJulian = UNDEFINED_TIME;
 	timeWindow.startTimeSeconds = -1;
 	timeWindow.endJulian = UNDEFINED_TIME;

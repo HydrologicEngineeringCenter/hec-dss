@@ -31,7 +31,7 @@ int testExpandedTimes(long long *ifltab)
 	tss1->endJulianDate = 0;
 	tss1->endTimeSeconds = 0;
 	//zset("MLVL", "", 10);
-	ztsMessTimeWindow((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, tss1);
+	ztsMessTimeWindow((long long*)ifltab, DSS_FUNCTION_other_ID, tss1);
 	status = ztsStore(ifltab, tss1, 0);
 	if (zcheckStatus(ifltab, status, 1, "Fail in testExpandedTimes Loc 1, store status ")) return status; 
 

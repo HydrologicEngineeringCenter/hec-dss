@@ -402,6 +402,10 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 			if (zmessageLevel(ifltab, MESS_METHOD_TS_WRITE_ID, MESS_LEVEL_USER_DIAG)) {
 				zmessage2(ifltab, "Pathname: ", tss->pathname);
 			}
+			if (normalized) {
+				free(normalized);
+				normalized = 0;
+			}
 			return status;
 		}
 		if (intervalType == 0) {
@@ -595,7 +599,7 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 							for (int i = 0; i < tss->numberValues; ++i) {
 								if (tss->floatValues) {
 									if (tss->floatValues[i] != UNDEFINED_FLOAT) {
-										tss->floatValues[i] += offset;
+										tss->floatValues[i] += (float)offset;
 									}
 								}
 								else {

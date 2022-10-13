@@ -41,7 +41,7 @@ int zcheckFile(long long *ifltab)
 
 	int istat;
 	long long *fileHeader;
-	char ctemp[5];
+	char ctemp[5] = {0};
 
 	/*  Future update
 	istat = zfileHeaderCheck(ifltab, 3);

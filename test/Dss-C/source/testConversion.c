@@ -57,6 +57,8 @@ int testConversion()
 	status  = zcopyFile(ifltab6, ifltab7, 0);
     if (status) {
 		printf("Error during conversion from 6 to 7, %s, status = %d!\n", filename7, status);
+		zclose(ifltab6);
+		zclose(ifltab7);
 		return  status;
 	}
     

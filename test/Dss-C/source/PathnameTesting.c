@@ -45,7 +45,10 @@ int PathnameTesting(char* dssFileName, int dssVersion)
 	tss1 = zstructTsNewRegDoubles(path, dvalues, 200, "21Nov2021", "1200", "cfs", "Inst-Val");
 	status = ztsStore(ifltab, tss1, 0);
 	zstructFree(tss1);
-	if (status != STATUS_OKAY) return status; 
+	if (status != STATUS_OKAY) {
+		zclose(ifltab);
+		return status; 
+	}
 
 	
 	zStructTimeSeries* tss2 = zstructTsNew(path);
@@ -54,12 +57,14 @@ int PathnameTesting(char* dssFileName, int dssVersion)
 
 	if (status != STATUS_OKAY) {
 		zstructFree(tss2);
+		zclose(ifltab);
 		return status;
 		}
 
 	if (tss2->numberValues != 200) {
 		printf("\nError reading path '%s'", path);
 		zstructFree(tss2);
+		zclose(ifltab);
 		return -1;
 	  }
 
