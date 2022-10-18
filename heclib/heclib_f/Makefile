@@ -6,7 +6,7 @@ SRC_DIRS := ./src
 UNAME_S := $(shell uname -s)
 
 ifeq ($(UNAME_S),Linux)
-	FWARNINGS=-Werror -Warray-bounds -Wc-binding-type -Wcharacter-truncation
+	FWARNINGS=-fallow-argument-mismatch -Warray-bounds -Wc-binding-type -Wcharacter-truncation
 	FDEBUG=-fcheck=all,no-recursion
 	FORTRAN=gfortran
 	FFLAGS=-c -g -cpp -m64 -fPIC $(FWARNINGS) $(FDEBUG) -Isrc/headers  

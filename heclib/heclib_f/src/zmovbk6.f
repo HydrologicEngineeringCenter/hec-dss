@@ -129,7 +129,7 @@ C              Copy single array to double
                      IF (IFLAG.EQ.-1) THEN
                         IF (.NOT.lismissingd(DBLOCK(M))) GO TO 140
                      ELSE IF (IFLAG.EQ.-4) THEN
-                        IF (lismissingd(SVALUES(I))) GO TO 140
+                        IF (lismissingf(SVALUES(I))) GO TO 140
                      ENDIF
                   ENDIF
                   IF (LTOL) THEN

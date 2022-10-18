@@ -1,6 +1,5 @@
       SUBROUTINE ZRECADD6(IFLTAB, CPATH, ILADD, ISTAT)
 C
-C
 C     Return internal record addresses for debugging purposes (only)
 C     ISTAT is returned as:
 C        0  Record found, ok to read/write
@@ -35,7 +34,7 @@ C
 C
 C     Check that IFLTAB is valid (e.g., the DSS file is open)
       IF (IFLTAB(1).NE.6) CALL ZERROR6(IFLTAB, 5, 'ZRECADD',
-     * 0, IFLTAB, ' ', 0, ' ',0)
+     * 0, 0, ' ', 0, ' ',0)
 C
       CALL ZRDINF6(IFLTAB, CPATH, NHEAD, NDATA, ISTAT)
       ILADD(1) = 0                       !  tableHash - DSS Version 7
@@ -59,8 +58,9 @@ C
  900  CONTINUE
       IF (.NOT.LNOABT) CALL ZDEBUG (MUNIT, INFO, 1, 30)
       NP = INFO(KINPAT)
-      CALL ZERROR6(IFLTAB, 11, 'ZRECADD', 0, NADD, CPATH, NPATH, CTPATH,
-     * NP)
+      i_temp=ILADD(1)
+      CALL ZERROR6(IFLTAB, 11, 'ZRECADD', 0, i_temp, CPATH,
+     *  len(CPATH), CPATH, NP)
       ISTAT = -1
       RETURN
 C

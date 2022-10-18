@@ -32,7 +32,7 @@ C
 C
 C     Check that IFLTAB is valid (e.g., the DSS file is open)
       IF (IFLTAB(1).NE.6) CALL zerror6 (IFLTAB, 5, 'zrtall6',
-     * 0, IFLTAB, ' ', 0, ' ',0)
+     * 0, 0, ' ', 0, ' ',0)
 C
 C
       CALL zmultu6 ( IFLTAB, .TRUE., .TRUE.)
