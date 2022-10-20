@@ -27,6 +27,7 @@ all:
 	(mkdir hec_f; cd hec_f; ar x ../heclib_f/Output/libhec_f.a)
 	($(AR) -rsc Output/heclib.a hec_c/*.o hec_f/*.o )  
 	(cd javaHeclib; $(MAKE) )
+
 	ls -la ./javaHeclib/Output/*javaHeclib.*
 	
 
