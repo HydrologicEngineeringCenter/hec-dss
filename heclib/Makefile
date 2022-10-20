@@ -2,7 +2,7 @@ UNAME_S := $(shell uname -s)
 
 ifeq ($(UNAME_S),Linux)
 	CWARNING=-Werror
-	CFLAGS=-m64 -c -fPIC -g -std=gnu99 -Isrc/headers $(CWARNING) -D__linux__
+	CFLAGS=-m64 -c -fPIC -g -std=gnu99 -Isrc/headers $(CWARNING) -D__linux__ -fcommon
 	Make_OS=Linux
 	MAKE=make
 endif
@@ -27,7 +27,6 @@ all:
 	(mkdir hec_f; cd hec_f; ar x ../heclib_f/Output/libhec_f.a)
 	($(AR) -rsc Output/heclib.a hec_c/*.o hec_f/*.o )  
 	(cd javaHeclib; $(MAKE) )
-
 	ls -la ./javaHeclib/Output/*javaHeclib.*
 	
 
