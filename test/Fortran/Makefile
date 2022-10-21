@@ -1,10 +1,15 @@
 .SUFFIXES: .f90
 UNAME_S := $(shell uname -s)
+FOR_VER := $(shell gfortran -dumpversion)
 
 ifeq ($(UNAME_S),Linux)
 	CWARNING=-Werror
 	CFLAGS=-m64 -fPIC -g -std=gnu99 -I../../heclib/heclib_c/src/headers -I. $(CWARNING)  -D__linux__
-	FWARNINGS=-Werror -Warray-bounds -Wc-binding-type -Wcharacter-truncation
+	FWARNINGS= -Warray-bounds -Wc-binding-type -Wcharacter-truncation
+	ifeq "$(FOR_VER)" "11"
+       FWARNINGS += -fallow-argument-mismatch
+	endif
+
 	FDEBUG=-fcheck=all,no-recursion
 	FFLAGS=-c -g -cpp -m64 -fPIC $(FWARNINGS) $(FDEBUG) -I../../heclib/heclib_f/src/headers
 	LDFLAGS = -lz -lrt -lgfortran -lm
