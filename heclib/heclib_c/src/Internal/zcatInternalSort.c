@@ -258,8 +258,28 @@ int zcatInternalSort(long long *ifltab, const char *pathWithWild, zStructCatalog
 	tempUnsorted = _tempnam( "", "cat_unsorted" );
 	tempSorted = _tempnam("", "cat_sorted");
 #else
-	tempUnsorted = tempnam("/tmp", "cat_unsorted");
-	tempSorted = tempnam("/tmp", "cat_sorted");
+	tempUnsorted=(char*)malloc(32*sizeof(char));
+	memset( tempUnsorted, 0, sizeof(tempUnsorted));
+	strcpy( tempUnsorted, "/tmp/cat_unsorted-XXXXXX");
+	int fileId = mkstemp(tempUnsorted);
+	if (fileId<1)
+	{
+		if (nonSortedStruct) zstructFree(nonSortedStruct);
+		nonSortedStruct = 0;
+		free(tempUnsorted);
+		return -1;
+	}
+	tempSorted=(char*)malloc(32*sizeof(char));
+	memset( tempSorted, 0, sizeof(tempSorted));
+	strcpy( tempSorted, "/tmp/cat_sorted-XXXXXX");
+	fileId = mkstemp(tempSorted);
+	if (fileId<1)
+	{
+		if (nonSortedStruct) zstructFree(nonSortedStruct);
+		nonSortedStruct = 0;
+		free(tempSorted);
+		return -1;
+	}
 #endif
 	if (!tempUnsorted) {
 		if (nonSortedStruct) zstructFree(nonSortedStruct);

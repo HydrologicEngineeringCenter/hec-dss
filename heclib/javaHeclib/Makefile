@@ -4,7 +4,7 @@ UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Linux)
 	CWARNING=-Werror
 	FDEBUG=-fcheck=all,no-recursion
-	CFLAGS=-m64 -fPIC -g -std=gnu99 $(CWARNING) $(INC_DIRS) -D__linux__
+	CFLAGS=-m64 -fPIC -g -std=gnu99 $(CWARNING) $(INC_DIRS) -D__linux__ -fcommon
 	LDFLAGS=-Wl,-z,defs,--wrap=powf -lz -lrt -lgfortran -lm
 endif
 ifeq ($(UNAME_S),SunOS)
