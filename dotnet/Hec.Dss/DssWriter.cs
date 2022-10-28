@@ -413,35 +413,26 @@ namespace Hec.Dss
     /// have broken links(rare), usually from a crash or disk damage.
     /// This is similar to de-fragmenting your file system.
     /// Once a squeeze has been accomplished, deleted data cannot be recovered.
-    /// Note that the parameters have no effect on Version 6 files.
-    /// </summary>
-    /// <param name="OnlyIfNeeded">Set to true to squeeze only if the file needs to be squeezed Set to 0 to force a squeeze.  Has no effect on version 6 files</param>
-    /// <param name="InPlaceSqueeze">Set to true to force an in-place squeeze, retaining ownership, etc.  
-    /// Copies back so the same file is used.This takes twice as long as a normal squeeze.
-    /// Set to 0 for a normal squeeze, where a file rename takes place(preferred).  Has no effect on version 6 files</param>
-    /// <returns>True if successful, false if unsuccessful</returns>
+    /// </summary>  
+    public static bool Squeeze(string filename)
+    {
+      int status = DSS.ZSqueeze(filename);
+      return status == 0;
+    }
+
+
+    [Obsolete("Squeeze(bool,bool) is deprecated, please use static Squeeze(filename) instead.")]
     public bool Squeeze(bool OnlyIfNeeded, bool InPlaceSqueeze)
     {
+      int status = -1;
       if (versionNumber == 7)
       {
-        int status = DSS.zSqueeze7(ref ifltab, OnlyIfNeeded ? 1 : 0, InPlaceSqueeze ? 1 : 0);
-        if (status < 0)
-        {
-          return false;
-        }
-        return true;
-      }
-      else
-      {
-        int status = DSS.ZSqueeze(filename);
-        if (status < 0)
-        {
-          return false;
-        }
-        else
-          return true;
+        status = DSS.zSqueeze7(ref ifltab, OnlyIfNeeded ? 1 : 0, InPlaceSqueeze ? 1 : 0);
+        return status == 0;
       }
 
+       status = DSS.ZSqueeze(filename);
+      return status == 0;
     }
 
     public void DeleteRecord(string pathName)
