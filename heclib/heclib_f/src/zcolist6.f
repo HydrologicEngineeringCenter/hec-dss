@@ -31,6 +31,7 @@ C
       CHARACTER CPATH*(*)
 C
       INTEGER IPBIN(128), JHASH, MHASH, IPBADD, JPBIN
+      integer tmp_array(1)
       INTEGER IADD, IPSTAT, NBMWPA, NBWPAT, N
       LOGICAL LCOLL
       CHARACTER CKPATH*393, CCPATH*393, CLPATH*393
@@ -59,7 +60,8 @@ C        the address of the first bin
 C        If a Hash table is used, read the address for this hash code
          IF (IFLTAB(KTABLE).EQ.1) THEN
             IADD = NPERM + JHASH
-            CALL zgtrec6 (IFLTAB, IPBADD, 1, IADD, .FALSE.)
+            CALL zgtrec6 (IFLTAB, tmp_array, 1, IADD, .FALSE.)
+            IPBADD=tmp_array(1)
             IF (MLEVEL.GE.10) WRITE (MUNIT,45) IPBADD
  45         FORMAT (T12,'Table address:',I8)
 C           Does a pathname bin exist for this hash code?  (Exit if no)

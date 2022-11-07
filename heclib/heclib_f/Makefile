@@ -4,9 +4,13 @@ SRC_DIRS := ./src
 
 
 UNAME_S := $(shell uname -s)
+FOR_VER := $(shell gfortran -dumpversion)
 
 ifeq ($(UNAME_S),Linux)
-	FWARNINGS=-Werror -Warray-bounds -Wc-binding-type -Wcharacter-truncation
+	FWARNINGS=-Warray-bounds -Wc-binding-type -Wcharacter-truncation
+	ifeq "$(FOR_VER)" "11"
+       FWARNINGS += -fallow-argument-mismatch
+	endif
 	FDEBUG=-fcheck=all,no-recursion
 	FORTRAN=gfortran
 	FFLAGS=-c -g -cpp -m64 -fPIC $(FWARNINGS) $(FDEBUG) -Isrc/headers  

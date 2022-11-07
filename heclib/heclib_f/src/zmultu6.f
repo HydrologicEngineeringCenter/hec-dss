@@ -63,7 +63,7 @@ C
       LOGICAL LOCK, LFLUSH
       INTEGER IFLTAB(*)
       integer I,J,IADD,IERR,ISIZE,IUNIT,JERR,KERR,IWORD
-      integer*8 IBYTE
+      integer IBYTE
       INCLUDE 'zdsskz.h'
 C
       INCLUDE 'zdssnz.h'

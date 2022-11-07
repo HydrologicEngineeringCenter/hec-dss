@@ -1,4 +1,4 @@
-#ifndef __sun__  
+#ifdef _MSC_VER
 #include <string.h>
 #include <jni.h>
 #include <stdio.h>

@@ -4,7 +4,7 @@ UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Linux)
 	CWARNING=-Werror
 	FDEBUG=-fcheck=all,no-recursion
-	CFLAGS=-m64 -fPIC -g -std=gnu99 $(CWARNING) $(INC_DIRS) -D__linux__
+	CFLAGS=-m64 -fPIC -g -std=gnu99 $(CWARNING) $(INC_DIRS) -D__linux__ -fcommon
 	LDFLAGS=-Wl,-z,defs,--wrap=powf -lz -lrt -lgfortran -lm
 endif
 ifeq ($(UNAME_S),SunOS)
@@ -27,7 +27,7 @@ BUILD_DIR := ./Output
 SRC_DIRS := ./src
 INC_DIRS=-Isrc -I../heclib_c/src/headers -I${JAVA_HOME}/include -I${JAVA_HOME}/include/linux
 INC_DIRS_MACOS=-Isrc -I../heclib_c/src/headers -I${JAVA_HOME}/include -I${JAVA_HOME}/include/darwin
-HLIBS=../heclib_f/Output/libhec_f.a ../heclib_c/Output/libhec_c.a ../../nws_shef/Output/libshefdss.a
+HLIBS=../heclib_f/Output/libhec_f.a ../heclib_c/Output/libhec_c.a 
 
 SRCS := $(shell find $(SRC_DIRS) -name '*.c' )
 

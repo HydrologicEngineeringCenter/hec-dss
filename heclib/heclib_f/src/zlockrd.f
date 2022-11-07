@@ -28,7 +28,7 @@ C
 C
       INTEGER IFLTAB(*), lockFlag, istat
       INTEGER  i, IERR
-      integer*8 lockPos
+      integer lockPos
 C
 C
       if ((lockFlag.eq.0).and.(ifltab(KLOCKRD).eq.0)) then
