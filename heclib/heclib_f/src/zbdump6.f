@@ -18,7 +18,7 @@ C
       IF (MLEVEL.GE.11) WRITE (MUNIT,20) IFLTAB(KUNIT),
      * IFLTAB(KHANDL), IBGBUF, IFLTAB(KMXREC)
  20   FORMAT (T5,'-----DSS---zbdump6:  Dump Buffers for unit:',I5,
-     * ',  Handle:',I4,/,T10,'Min Buffer:',I4,',  Max Record:',I6)
+     * ',  Handle:',I4,/,T10,'Min Buffer:',I4,',  Max Record:',I0)
       IF (MLEVEL.GE.12) THEN
       WRITE (MUNIT,21) JCREC
       WRITE (MUNIT,22) JBUNIT
