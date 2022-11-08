@@ -7,7 +7,10 @@ using System.Threading.Tasks;
 
 public class DssNative
 {
-   [DllImport("hecdss")]
+  [DllImport("hecdss")]
+  public static extern int hec_dss_CONSTANT_MAX_PATH_SIZE();
+
+  [DllImport("hecdss")]
    public static extern int hec_dss_open(string fileName, out IntPtr dss);
 
    [DllImport("hecdss")]
@@ -15,7 +18,9 @@ public class DssNative
 
    [DllImport("hecdss")]
    public static extern int hec_dss_version(IntPtr dss);
-   
+
+   [DllImport("hecdss")]
+   public static extern int hec_dss_record_count(IntPtr dss);
 
    [DllImport("hecdss")]
    public static extern IntPtr hec_dss_deprecated_ifltab(IntPtr dss);
@@ -37,5 +42,8 @@ public class DssNative
                                     string startDate, string startTime, 
                                     string endDate, string endTime,
                                     ref int numberValues);
+
+  [DllImport("hecdss", CharSet = CharSet.Ansi, ExactSpelling = true)]
+  public static extern int hec_dss_catalog(IntPtr dss, byte[] pathBuffer,int[] recordTypes,int count, int pathBufferItemSize);
 }
 
