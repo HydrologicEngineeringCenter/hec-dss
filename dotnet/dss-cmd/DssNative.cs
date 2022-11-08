@@ -7,7 +7,10 @@ using System.Threading.Tasks;
 
 public class DssNative
 {
-   [DllImport("hecdss")]
+  [DllImport("hecdss")]
+  public static extern int hec_dss_CONSTANT_MAX_PATH_SIZE();
+
+  [DllImport("hecdss")]
    public static extern int hec_dss_open(string fileName, out IntPtr dss);
 
    [DllImport("hecdss")]
@@ -18,7 +21,9 @@ public class DssNative
 
    [DllImport("hecdss")]
    public static extern int hec_dss_version(IntPtr dss);
-   
+
+   [DllImport("hecdss")]
+   public static extern int hec_dss_record_count(IntPtr dss);
 
    [DllImport("hecdss")]
    public static extern IntPtr hec_dss_deprecated_ifltab(IntPtr dss);
@@ -47,41 +52,7 @@ public class DssNative
                                     string endDate, string endTime,
                                     ref int numberValues);
 
-  [DllImport("hecdss")]
-  public static extern int hec_dss_tsRetrieveInfo(IntPtr dss, string pathname,
-                          byte[] units, int unitsLength,
-                          byte[] type, int typeLength);
-
-
-  [DllImport("hecdss")]
-  public static extern int hec_dss_catalog(IntPtr dss, byte[] pathBuffer,int[] recordTypes,[In] byte[] pathFilter,
-    int count, int pathBufferItemSize);
-
-  [DllImport("hecdss")]
-  public static extern int hec_dss_dateToYearMonthDay(string date,ref int year, ref int month, ref int day);
-
-  [DllImport("hecdss")]
-  public static extern int hec_dss_dateToJulian(string date);
-
-  [DllImport("hecdss")]
-  public static extern int hec_dss_julianToYearMonthDay(int julian, ref int year, ref int month, ref int day);
-
-
-  [DllImport("hecdss")]
-  public static extern int hec_dss_locationRetrieve(IntPtr dss, string fullPath, ref double x, ref double y, ref double z,
-                            ref int coordinateSystem, ref int coordinateID,
-                            ref int horizontalUnits, ref int horizontalDatum,
-                            ref int verticalUnits, ref int verticalDatum,
-                            byte[] timeZoneName, int timeZoneNameLength,
-                            byte[] supplemental, int supplementalLength);
-
-  [DllImport("hecdss")] 
-  public static extern int hec_dss_pdRetrieveInfo(IntPtr dss, string pathname,
-                            ref int numberOrdinates, ref int numberCurves,
-                            byte[] unitsIndependent, int unitsIndependentLength,
-                            byte[] unitsDependent, int unitsDependentLength,
-                            byte[] typeIndependent, int typeIndependentLength,
-                            byte[] typeDependent, int typeDependentLength);
-
+  [DllImport("hecdss", CharSet = CharSet.Ansi, ExactSpelling = true)]
+  public static extern int hec_dss_catalog(IntPtr dss, byte[] pathBuffer,int[] recordTypes,int count, int pathBufferItemSize);
 }
 
