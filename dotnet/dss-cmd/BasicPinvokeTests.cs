@@ -58,9 +58,23 @@ namespace dss_cmd
          [DllImport("hecdss", ExactSpelling = true)]
          static extern int hec_dss_test_string_char(byte[] outStr, int size);
 
-         
-         
-         Console.WriteLine(GetWindowsDirectory());
+      [DllImport("hecdss", ExactSpelling = true)]
+      static extern int hec_dss_test_list_of_string(byte[] s, int numberOfStrings, int size);
+
+      int numberOfStrings = 10;
+      int size = 400;
+      var array2 = ArrayPool<byte>.Shared.Rent(numberOfStrings*size);
+      hec_dss_test_list_of_string(array2, numberOfStrings,size);
+      
+      for (int i = 0; i < numberOfStrings; i++)
+      {
+        string a = Encoding.ASCII.GetString(array2,i*size,400);
+        Console.WriteLine("C#:'" + a+"'");
+      }
+      
+      ArrayPool<byte>.Shared.Return(array2);
+
+      Console.WriteLine(GetWindowsDirectory());
 
          int x = 0;
          hec_dss_test_modify_arg(ref x);
@@ -74,7 +88,7 @@ namespace dss_cmd
          Console.WriteLine("outStr = " + sb.ToString());
          
          
-         var array = ArrayPool<byte>.Shared.Rent(64);
+         byte[] array = ArrayPool<byte>.Shared.Rent(64);
          hec_dss_test_string_char(array, array.Length);
          s = Encoding.ASCII.GetString(array);
          Console.WriteLine("After call: s = " + s);
