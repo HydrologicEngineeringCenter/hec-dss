@@ -17,12 +17,14 @@ namespace DSSUnitTests
       int status;
             string fn = TestUtility.GetSimpleTempFileName(".dss");
       File.Delete(fn);
-      status = DSS.ZOpen(ref ifltab, fn);
+         IntPtr dss;
+      status = DssNative.hec_dss_open(fn,out dss);
+
       if (status != 0)
         Assert.Fail();
       if (!File.Exists(fn))
         Assert.Fail();
-      DSS.ZClose(ifltab);
+       DssNative.hec_dss_close(dss);
 
     }
     [TestMethod]
