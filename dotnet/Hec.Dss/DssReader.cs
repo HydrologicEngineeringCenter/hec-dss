@@ -428,11 +428,22 @@ namespace Hec.Dss
 
     private TimeSeries GetTimeSeries(DssPath dssPath, TimeWindow.ConsecutiveValueCompression compression, DateTime startDateTime = default(DateTime), DateTime endDateTime = default(DateTime), bool PreReadCatalog = true)
     {
+      bool datesProvided = startDateTime != default(DateTime) && endDateTime != default(DateTime);
+
       DssPath p = dssPath;
       if (dssPath is DssPathCondensed)
         p = new DssPath(((DssPathCondensed)dssPath).GetPath(0).PathWithoutDate);
       var blockTimeSeries = (CreateTSWrapper(p, startDateTime, endDateTime));
+      Hec.Dss.Time.DateTimeToHecDateTime(startDateTime,out string startDate,out string startTime);
+      Hec.Dss.Time.DateTimeToHecDateTime(endDateTime,out string endDate,out string endTime);
+      int numberValues=0;
+      int status = DssNative.hec_dss_tsGetSizes(this.dss, p.PathWithoutRange, startDate, startTime, endDate, endTime,ref numberValues);
       
+      // find array size needed.
+      // Daily or larget time steps.
+      //int ztsGetDateRange(long long* ifltab, const char* pathname, int boolFullSet,*int * firstValidJulian, int* lastValidJulian);
+      // less than daily time step use slower method that looks a times.
+      //int ztsGetDateTimeRange(long long *ifltab, const char *pathname, int boolFullSet, *int * firstValidJulian, int* firstSeconds,*int * lastValidJulian, int* lastSeconds);
       int retrieveFlag = 0;
       int retrieveDoublesFlag = 2; // get doubles
       int boolRetrieveQualityNotes = 1;
@@ -454,7 +465,7 @@ namespace Hec.Dss
         } 
       }
 
-      int status = DSS.ZTsRetrieve(ref ifltab, ref blockTimeSeries, retrieveFlag, retrieveDoublesFlag, boolRetrieveQualityNotes);
+      status = DSS.ZTsRetrieve(ref ifltab, ref blockTimeSeries, retrieveFlag, retrieveDoublesFlag, boolRetrieveQualityNotes);
 
       // if path is valid, and is time series, (status -1 proably means no data in the time window)
 
@@ -544,11 +555,11 @@ namespace Hec.Dss
         }
       }
       else
-        listTss.Add(CreateTSWrapper(CreateTSWrapperdssPath, startDateTime, endDateTime));
+        listTss.Add(CreateTSWrapper(dssPath, startDateTime, endDateTime));
       return listTss;
     }
 
-    private static ZStructTimeSeriesWrapper (DssPath path, DateTime startDateTime = default(DateTime), DateTime endDateTime = default(DateTime))
+    private static ZStructTimeSeriesWrapper CreateTSWrapper(DssPath path, DateTime startDateTime = default(DateTime), DateTime endDateTime = default(DateTime))
     {
       //TODO: Find out how DSS deals with null start and valid end, OR valid start null end.
       //If it handles it like we expect then this method needs to change to accomdate that

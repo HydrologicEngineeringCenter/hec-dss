@@ -2,6 +2,9 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
 using Hec.Dss.Native;
+using System.Buffers;
+using System.Collections.Generic;
+using System.Text;
 
 namespace DSSUnitTests
 {
@@ -30,17 +33,39 @@ namespace DSSUnitTests
     [TestMethod]
     public void TestCatalogV7()
     {
-      long[] ifltab = new long[250];
-      DSS.ZOpen(ref ifltab, TestUtility.BasePath + "sample7.dss");
-      ZStructCatalogWrapper catStruct = DSS.zStructCatalogNew();
-      int numberPaths = DSS.ZCatalog(ref ifltab, null, ref catStruct, 1);
-      Assert.IsTrue(numberPaths == 595);
+      IntPtr dss;
+      var status = DssNative.hec_dss_open(TestUtility.BasePath + "sample7.dss", out dss);
+
+      int count = DssNative.hec_dss_record_count(dss);
+
+      int pathBufferSize = DssNative.hec_dss_CONSTANT_MAX_PATH_SIZE();
+      byte[] rawCatalog = ArrayPool<byte>.Shared.Rent(count * pathBufferSize);
+      
+      int[] recordTypes = new int[count];
+      List<string> pathNameList = new List<string>();
+      try
+      {
+        var numRecords = DssNative.hec_dss_catalog(dss, rawCatalog, recordTypes, count, pathBufferSize);
+        for (int i = 0; i < numRecords; i++)
+        {
+          int start = i * pathBufferSize;
+          var end = System.Array.IndexOf(rawCatalog, (byte)0,start); // get rid of trailing \0\0
+          int size = Math.Min(end - start, pathBufferSize);
+          pathNameList.Add(Encoding.ASCII.GetString(rawCatalog, start, size));
+        }
+      }
+      finally
+      {
+        ArrayPool<byte>.Shared.Return(rawCatalog);
+      }
+      
+      Assert.IsTrue(pathNameList.Count == 595);
       int num = 1877;
       for (int i = 0; i < 5; i++)
       {
-        Assert.IsTrue(catStruct.PathNameList[i] == "//SACRAMENTO/PRECIP-INC/01Jan" + (num + i).ToString() + "/1Day/OBS/");
+        Assert.AreEqual("//SACRAMENTO/PRECIP-INC/01Jan" + (num + i).ToString() + "/1Day/OBS/", pathNameList[i]);
       }
-      DSS.ZClose(ifltab);
+      DssNative.hec_dss_close(dss);
     }
     [TestMethod]
     public void TestCatalogV7Continued()
