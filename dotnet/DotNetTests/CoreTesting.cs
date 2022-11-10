@@ -40,11 +40,17 @@ namespace DSSUnitTests
       int count = DssNative.hec_dss_record_count(dss);
 
       int pathBufferSize = DssNative.hec_dss_CONSTANT_MAX_PATH_SIZE();
-      byte[] rawCatalog = ArrayPool<byte>.Shared.Rent(count * pathBufferSize);
-      
+
+      //byte[] rawCatalog = ArrayPool<byte>.Shared.Rent(count * pathBufferSize);
+      //var mem = rawCatalog.AsMemory();
+      //MemoryHandle handle = mem.Pin();
+
+      byte[] rawCatalog = new byte[count*pathBufferSize];
       int[] recordTypes = new int[count];
-      List<string> pathNameList = new List<string>();
-      try
+      
+      List<string> pathNameList = new List<string>(count);
+
+      try //
       {
         var numRecords = DssNative.hec_dss_catalog(dss, rawCatalog, recordTypes, count, pathBufferSize);
         for (int i = 0; i < numRecords; i++)
@@ -57,14 +63,17 @@ namespace DSSUnitTests
       }
       finally
       {
-        ArrayPool<byte>.Shared.Return(rawCatalog);
+      //  handle.Dispose();
+        //ArrayPool<byte>.Shared.Return(rawCatalog);
       }
       
       Assert.IsTrue(pathNameList.Count == 595);
       int num = 1877;
       for (int i = 0; i < 5; i++)
       {
-        Assert.AreEqual("//SACRAMENTO/PRECIP-INC/01Jan" + (num + i).ToString() + "/1Day/OBS/", pathNameList[i]);
+        string p = "//SACRAMENTO/PRECIP-INC/01Jan" + (num + i).ToString() + "/1Day/OBS/";
+        var index = pathNameList.IndexOf(p);
+        Assert.IsTrue((index >= 0), "path not found:'" + p + "'");
       }
       DssNative.hec_dss_close(dss);
     }
