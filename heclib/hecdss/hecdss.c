@@ -245,3 +245,11 @@ HECDSS_API int hec_dss_tsRetrieve(dss_file* pdss, const char *pathname,
     zstructFree(tss);
     return status;
 }
+
+HECDSS_API int hec_dss_dateToYearMonthDay(const char* date,int*year, int* month, int* day) {
+  return dateToYearMonthDay(date, year, month, day);
+}
+
+HECDSS_API int hec_dss_dateToJulian(const char* date){
+  return dateToJulian(date);
+}

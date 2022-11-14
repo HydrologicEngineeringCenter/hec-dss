@@ -43,8 +43,16 @@ public class DssNative
                                     string endDate, string endTime,
                                     ref int numberValues);
 
-  [DllImport("hecdss", CharSet = CharSet.Ansi, ExactSpelling = true)]
+  [DllImport("hecdss")]
   public static extern int hec_dss_catalog(IntPtr dss, byte[] pathBuffer,int[] recordTypes,[In] byte[] pathFilter,
     int count, int pathBufferItemSize);
+
+  [DllImport("hecdss")]
+  public static extern int hec_dss_dateToYearMonthDay(string date,ref int year, ref int month, ref int day);
+
+  [DllImport("hecdss")]
+  public static extern int hec_dss_dateToJulian(string date);
+
+  
 }
 

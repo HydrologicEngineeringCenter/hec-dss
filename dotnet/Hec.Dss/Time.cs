@@ -17,7 +17,7 @@ namespace Hec.Dss
 
     const int UNDEFINED_TIME = -2147483647;
 
-    public static bool IsUndefinedTime(int t)
+    internal static bool IsUndefinedTime(int t)
     {
       return t == UNDEFINED_TIME;
     }
