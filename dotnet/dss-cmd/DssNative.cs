@@ -53,6 +53,7 @@ public class DssNative
                                     ref int numberValues);
 
   [DllImport("hecdss", CharSet = CharSet.Ansi, ExactSpelling = true)]
-  public static extern int hec_dss_catalog(IntPtr dss, byte[] pathBuffer,int[] recordTypes,int count, int pathBufferItemSize);
+  public static extern int hec_dss_catalog(IntPtr dss, byte[] pathBuffer,int[] recordTypes,[In] byte[] pathFilter,
+    int count, int pathBufferItemSize);
 }
 
