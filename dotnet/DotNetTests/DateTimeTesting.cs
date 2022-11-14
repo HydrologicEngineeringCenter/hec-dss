@@ -1,8 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Hec.Dss.Native;
 using Hec.Dss;
-
 namespace DSSUnitTests
 {
   [TestClass]
@@ -13,7 +11,7 @@ namespace DSSUnitTests
     {
       Console.WriteLine(date);
       int year = 0, month = 0, day = 0;
-      int status = DSS.DateToYearMonthDay(date, ref year, ref month, ref day);
+      int status = DssNative.hec_dss_dateToYearMonthDay(date, ref year, ref month, ref day);
       Console.WriteLine(year);
       Console.WriteLine(month);
       Console.WriteLine(day);
@@ -25,8 +23,8 @@ namespace DSSUnitTests
 
     void AssertExtractJulian(string date, int expectedJulian)
     {
-      int j = DSS.DateToJulian(date);
-      Assert.IsTrue(DSS.IsTimeDefined(j, 0));
+      int j = DssNative.hec_dss_dateToJulian(date);
+      Assert.IsTrue(!Time.IsUndefinedTime(j));
       Assert.AreEqual(expectedJulian, j);
     }
 
@@ -66,7 +64,7 @@ namespace DSSUnitTests
 
       for (int i = 0; i < dateStr.Length; i++)
       {
-        int j = DSS.DateToJulian(dateStr[i]);
+        int j = DssNative.hec_dss_dateToJulian(dateStr[i]);
         Console.WriteLine(dateStr[i] + ", " + j);
       }
       /*
@@ -102,11 +100,12 @@ namespace DSSUnitTests
       */
     }
 
+    [TestMethod]
     public void BugInvalidDate()
     {
-      int j = DSS.DateToJulian("22JUN2016 12:00");// this is NOT a valid date, because of the time.
+      int j = DssNative.hec_dss_dateToJulian("22JUN2016 12:00");// this is NOT a valid date, because of the time.
       Console.WriteLine(j);
-      Assert.IsFalse(DSS.IsTimeDefined(j, 0));// = -693786(NOT OK ?)
+      Assert.IsTrue(Time.IsUndefinedTime(j));// = -693786(NOT OK ?)
     }
 
     [TestMethod]
@@ -123,8 +122,8 @@ namespace DSSUnitTests
       ExtractYMD("01Jan-10000", -10000, 1, 1);
 
       ExtractYMD("01/01/-10000", -10000, 1, 1);
-
-      Assert.IsFalse(DSS.IsTimeDefined(DSS.DateToJulian("22HEC2016"), 0));
+      int j = DssNative.hec_dss_dateToJulian("22HEC2016");
+      Assert.IsTrue(Time.IsUndefinedTime(j));
     }
 
     [TestMethod]
