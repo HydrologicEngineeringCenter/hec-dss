@@ -2,11 +2,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.IO;
-using Hec.Dss.Native;
-using System.Buffers;
-using System.Collections.Generic;
-using System.Text;
-using Hec.Dss;
 
 namespace DSSUnitTests
 {
@@ -114,53 +109,18 @@ namespace DSSUnitTests
     [TestMethod]
     public void TestCatalogV6Continued()
     {
-      long[] ifltab = new long[250];
-      DSS.ZOpen(ref ifltab, TestUtility.BasePath + "sample6_ras.dss");
-      ZStructCatalogWrapper catStruct = DSS.zStructCatalogNew();
-      int numberPaths = DSS.ZCatalog(ref ifltab, "/*/*/*Flow*/*/*/*/", ref catStruct, 1);
-      Assert.IsTrue(numberPaths == 172);
-      Assert.IsTrue(catStruct.PathNameList[0] == "/AMERICAN/FOLSOM/FLOW-RES IN/01JAN2006/1DAY/OBS/");
-      Assert.IsTrue(catStruct.PathNameList[1] == "/AMERICAN/FOLSOM/FLOW-RES OUT/01JAN2006/1DAY/OBS/");
-      Assert.IsTrue(catStruct.PathNameList[2] == "/EF RUSSIAN/COYOTE/FLOW-RES IN/01MAR2006/1HOUR/SMOOTH/");
-      Assert.IsTrue(catStruct.PathNameList[3] == "/EF RUSSIAN/COYOTE/FLOW-RES OUT/01MAR2006/1HOUR//");
-      Assert.IsTrue(catStruct.PathNameList[4] == "/FISHKILL CREEK/BEACON NY/FREQ-FLOW///USGS/");
-      DSS.ZClose(ifltab);
-    }
-    [TestMethod]
-    public void TestCatalogPairedDataPathNamesV7()
-    {
-      long[] ifltab = new long[250];
-      DSS.ZOpen(ref ifltab, TestUtility.BasePath + "sample7.dss");
-      ZStructCatalogWrapper catStruct = DSS.zStructCatalogNew();
-      catStruct.TypeWantedStart = 200; //paired data regular
-      catStruct.TypeWantedEnd = 205;//paired data double
-      int numberPaths = DSS.ZCatalog(ref ifltab, null, ref catStruct, 1);
-      Assert.IsTrue(numberPaths == 595);
-      int num = 1877;
-      for (int i = 0; i < 5; i++)
-      {
-        string p = "//SACRAMENTO/PRECIP-INC/01Jan" + (num + i).ToString() + "/1Day/OBS/";
-        var index = pathNameList.IndexOf(p);
-        Assert.IsTrue((index >= 0), "path not found:'" + p + "'");
-      }
+      var status = DssNative.hec_dss_open(TestUtility.BasePath + "sample6_ras.dss", out IntPtr dss);
+      var catalog = DssReader.GetRawCatalog(dss, "/*/*/*Flow*/*/*/*/");
       DssNative.hec_dss_close(dss);
-    }
-    [TestMethod]
-    public void TestCatalogV7Continued()
-    {
-      var status = DssNative.hec_dss_open(TestUtility.BasePath + "sample7.dss", out IntPtr dss);
 
-      var catalog = DssReader.GetRawCatalog(dss,out int[] recordTypes,"/*/*/*Flow*/*/*/*/");
-
-      DssNative.hec_dss_close(dss);
-      Assert.AreEqual(167,catalog.Count);
-      
-      Assert.IsTrue(catalog.Contains("/AMERICAN/FOLSOM/FLOW-RES IN/01Jan2006/1Day/OBS/"));
-      Assert.IsTrue(catalog.Contains("/AMERICAN/FOLSOM/FLOW-RES OUT/01Jan2006/1Day/OBS/"));
-      Assert.IsTrue(catalog.Contains("/EF RUSSIAN/COYOTE/FLOW-RES IN/01Mar2006/1Hour/SMOOTH/"));
-      Assert.IsTrue(catalog.Contains("/EF RUSSIAN/COYOTE/FLOW-RES OUT/01Mar2006/1Hour//"));
+      Assert.AreEqual(172,catalog.Count);
+      Assert.IsTrue(catalog.Contains("/AMERICAN/FOLSOM/FLOW-RES IN/01JAN2006/1DAY/OBS/"));
+      Assert.IsTrue(catalog.Contains("/AMERICAN/FOLSOM/FLOW-RES OUT/01JAN2006/1DAY/OBS/"));
+      Assert.IsTrue(catalog.Contains("/EF RUSSIAN/COYOTE/FLOW-RES IN/01MAR2006/1HOUR/SMOOTH/"));
+      Assert.IsTrue(catalog.Contains("/EF RUSSIAN/COYOTE/FLOW-RES OUT/01MAR2006/1HOUR//"));
       Assert.IsTrue(catalog.Contains("/FISHKILL CREEK/BEACON NY/FREQ-FLOW///USGS/"));
     }
+
 
   }
 }
