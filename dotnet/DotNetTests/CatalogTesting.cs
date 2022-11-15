@@ -196,6 +196,7 @@ namespace DSSUnitTests
     }
 
     [TestMethod]
+    [Ignore]
     public void CondencedCatalog6()
     {
      var t = Catalog(TestUtility.BasePath + "sample6.dss", true);

@@ -66,13 +66,13 @@ namespace Hec.Dss
       int status = DssNative.hec_dss_open(filename,out dss);
 
       this.filename = filename;
-      versionNumber = GetDSSFileVersion();
 
       switch (status)
       {
         case 0:
-          //no problem
-          break;
+            //no problem
+            versionNumber = GetDSSFileVersion();
+            break;
 
         case -1:
           throw new Exception("Unable to create the DSS file.");
@@ -85,6 +85,8 @@ namespace Hec.Dss
 
         case -10:
           throw new Exception("No filename provided.");
+        case -700:
+          throw new Exception("This library only supports DSS version 7 files");
 
         default:
           throw new Exception("Error opening DSS file.");
@@ -112,19 +114,13 @@ namespace Hec.Dss
 
     private DssPathCollection GetCatalogInternal(bool includeMetaData)
     {
-      bool sorted = false;
+
+      var rawCatalog = GetRawCatalog(dss, out int[] intRecordTypes);
       RecordType[] recordTypes = null;
 
-      ZStructCatalogWrapper cat = DSS.zStructCatalogNew();
-      int status = DSS.ZCatalog(ref ifltab, null, ref cat, sorted ? 1 : 0);
-      if (status < 0)
-        throw new Exception("ZCatalog reported a failure with retrieving DSS filenames");
+      recordTypes = ConvertToRecordType(intRecordTypes);
 
-      var paths = cat.PathNameList;
-      if (cat.RecordType != null)
-        recordTypes = ConvertToRecordType(cat.RecordType);
-
-      var condensed = new DssPathCollection(filename, paths, recordTypes, condensed: true);
+      var condensed = new DssPathCollection(filename, rawCatalog.ToArray(), recordTypes, condensed: true);
 
       if (includeMetaData)
         GetMetaDataForCatalog(condensed);
@@ -132,13 +128,13 @@ namespace Hec.Dss
       return condensed;
     }
 
-    internal static List<string> GetRawCatalog(IntPtr dss, string filter="")
+    internal static List<string> GetRawCatalog(IntPtr dss,out int[] recordTypes, string filter="")
     {
       int count = DssNative.hec_dss_record_count(dss);
       int pathBufferSize = DssNative.hec_dss_CONSTANT_MAX_PATH_SIZE();
 
       byte[] rawCatalog = new byte[count * pathBufferSize];
-      int[] recordTypes = new int[count];
+      recordTypes = new int[count];
 
       List<string> pathNameList = new List<string>(count);
       byte[] byteFilter = new byte[] { 0 };
@@ -655,17 +651,17 @@ namespace Hec.Dss
     /// <returns></returns>
     public TimeSeries GetEmptyTimeSeries(DssPath path)
     {
-      ZStructTimeSeriesWrapper tss;
 
-      if (path is DssPathCondensed)
-      {
-        var parts = ((DssPathCondensed)path).GetComprisingDSSPaths();
-        path = parts[0];
-      }
+       if (path is DssPathCondensed)
+         {
+          var parts = ((DssPathCondensed)path).GetComprisingDSSPaths();
+          path = parts[0];
+         }
+      int size = 64;
+      byte[] units = new byte[size];
+      byte[] type = new byte[size];
 
-      tss = DSS.ZStructTsNew(path.FullPath);
-
-      int status = DSS.ZTsRetrieveEmpty(ref ifltab, ref tss);
+      int status = DssNative.hec_dss_tsRetrieveInfo(dss, path.FullPath, units, size, type, size);
 
       var rval = new TimeSeries();
       if (status != 0)
@@ -673,10 +669,12 @@ namespace Hec.Dss
         return rval;
       }
       rval.Path = path;
-      rval.Units = tss.Units;
-      rval.DataType = tss.Type;
-      var locationInfo = new LocationInformation(tss.locationStruct);
-      rval.LocationInformation = locationInfo;
+      rval.Units = Encoding.ASCII.GetString(units);
+      rval.DataType = Encoding.ASCII.GetString(type);
+
+      //TODO location info
+     // var locationInfo = new LocationInformation(tss.locationStruct);
+      //rval.LocationInformation = locationInfo;
       return rval;
     }
 
@@ -921,8 +919,8 @@ namespace Hec.Dss
 
     public void Dispose()
     {
-      DSS.ZClose(ifltab);
-      _iflTabGC.Free();
+      //DSS.ZClose(ifltab);
+      //_iflTabGC.Free();
     }
 
     public enum LevelID

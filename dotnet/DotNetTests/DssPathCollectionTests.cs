@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DSSUnitTests;
-using Hec.Dss;
+﻿using Hec.Dss;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.IO;
 
 namespace DSSUnitTests
 {
@@ -19,7 +13,7 @@ namespace DSSUnitTests
     public void RegularDssPathCollection()
     {
       string dssFile = @".\tempdssfile.dss";
-      string srcFile = TestUtility.BasePath + @"benchmarks6/BaldEDmbrk.dss";
+      string srcFile = TestUtility.BasePath + @"benchmarks6/BaldEDmbrk7.dss";
       File.Delete(dssFile);
       CopyAsReadWrite(srcFile, dssFile);
       string path = @"/BALD EAGLE LOC HAV/105178.6/FLOW-CUM/17FEB1999-23FEB1999/1MIN/DAMBRKSIMBRCH/";
@@ -31,13 +25,6 @@ namespace DSSUnitTests
         Assert.IsTrue(ts.Units == "ACRE-FT");
         Assert.IsTrue(ts.DataType == "INST-CUM");
       }
-    }
-
-    [TestMethod]
-    public void InitializeCountTest()
-    {
-      var Paths = new List<DssPath>();
-      Assert.IsTrue(Paths.Count == 0);
     }
 
     public static void CopyAsReadWrite(string fromFN, string toFN)

@@ -44,6 +44,12 @@ public class DssNative
                                     ref int numberValues);
 
   [DllImport("hecdss")]
+  public static extern int hec_dss_tsRetrieveInfo(IntPtr dss, string pathname,
+                          byte[] units, int unitsLength,
+                          byte[] type, int typeLength);
+
+
+  [DllImport("hecdss")]
   public static extern int hec_dss_catalog(IntPtr dss, byte[] pathBuffer,int[] recordTypes,[In] byte[] pathFilter,
     int count, int pathBufferItemSize);
 
