@@ -56,6 +56,15 @@ HECDSS_API int hec_dss_CONSTANT_MAX_PATH_SIZE() {
   return MAX_PATHNAME_SIZE;
 }
 
+HECDSS_API int hec_dss_log_error(const char* message) {
+  printf("\nError %s", message);
+  return 0;
+}
+HECDSS_API int hec_dss_log_warning(const char* message) {
+  printf("\nWarning: %s", message);
+  return 0;
+}
+
 HECDSS_API int hec_dss_open(const char* filename, dss_file** dss)
 {
     dss_file* f = (dss_file*)malloc(sizeof(dss_file));
@@ -63,25 +72,23 @@ HECDSS_API int hec_dss_open(const char* filename, dss_file** dss)
         return -1;
     
     int status = zopen(f->ifltab,filename);
+    if (status != 0)
+      return status;
     int version = zgetVersion(f->ifltab);
-    /*if (version != 7) {
+    if (version != 7) {
+        hec_dss_log_error("version %d is not supported.\nOnly version 7 DSS files are supported");
         zclose(f->ifltab);
-        return -2;
-    }*/
-
+        return -700;
+    }
     *dss = f;
     return status;
 }
-HECDSS_API int hec_dss_close(dss_file *dss)
-{
+
+HECDSS_API int hec_dss_close(dss_file *dss){
     int status = zclose(dss->ifltab);
     free(dss);
     dss = 0;
     return status;
-}
-
-HECDSS_API long long* hec_dss_deprecated_ifltab(dss_file* dss) {
-    return &dss->ifltab[0];
 }
 
 HECDSS_API int hec_dss_version(dss_file* dss) {
@@ -141,13 +148,6 @@ HECDSS_API int hec_dss_catalog(dss_file* dss, char* pathBuffer, int* recordTypes
   return maxPaths;
 }
 
-HECDSS_API void hec_dss_deprecated_ifltab_print(long long* ifltab) {
-    for (size_t i = 0; i < 10; i++)
-    {
-        printf("\nhec_dss_deprecated_ifltab_info ifltab[%d] = %ld",(int)i, (int)ifltab[i]);
-    }
-    
-}
 // get length of time series
 HECDSS_API int hec_dss_tsGetSizes(dss_file* pdss, const char* pathname,
     const char* startDate, const char* startTime,
@@ -177,18 +177,20 @@ HECDSS_API int hec_dss_tsGetSizes(dss_file* pdss, const char* pathname,
 
 }
 /// <summary>
-/// 
 /// Retrive an empty time series.
-/// Used to get meta data for a time series
+/// Used to get units and type for a time series
 /// </summary>
 /// <param name="pdss"></param>
 /// <param name="pathname"></param>
+/// <param name="units"></param>
+/// <param name="unitsLength"></param>
+/// <param name="type"></param>
+/// <param name="typeLength"></param>
 /// <returns></returns>
-HECDSS_API int hec_dss_tsRetrieveInfo_not_used(dss_file* pdss, const char* pathname,char* units, 
+HECDSS_API int hec_dss_tsRetrieveInfo(dss_file* pdss, const char* pathname,char* units, 
                                        const int unitsLength, char* type, const int typeLength) {
 
-    zStructTransfer* transfer;
-    transfer = zstructTransferNew(pathname, 0);
+    zStructTransfer* transfer = zstructTransferNew(pathname, 0);
     zStructTimeSeries* tss = zstructTsNew(pathname);
     transfer->internalHeaderMode = 1;
     int status = zread(pdss->ifltab, transfer);
@@ -198,11 +200,8 @@ HECDSS_API int hec_dss_tsRetrieveInfo_not_used(dss_file* pdss, const char* pathn
         status = ztsInternalHeaderUnpack(tss, transfer->internalHeader, transfer->internalHeaderNumber);
     }
     stringCopy(units, unitsLength, tss->units, strlen(tss->units));
+    stringCopy(type, typeLength, tss->type, strlen(tss->type));
     
-    //*numberValues = transfer->numberValues;
-    /*	printf("transfer->dataType = %d\n", transfer->dataType);
-        printf("type = %s\n", tss->theStruct->type);
-    */
     zstructFree(tss);
     zstructFree(transfer);
     return status;
