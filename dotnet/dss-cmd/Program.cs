@@ -12,10 +12,6 @@ IntPtr dss=(IntPtr)0;
 string filename = "sample7.dss";
 var status = DssNative.hec_dss_open(filename,out dss);
 
-var ifltab = DssNative.hec_dss_deprecated_ifltab(dss);
-
-DssNative.hec_dss_deprecated_ifltab_print(ifltab);
-
 Console.WriteLine("version: " + DssNative.hec_dss_version(dss));
 
 string path = "/GREEN RIVER/GLENFIR/FLOW/01Apr1992/1Hour/OBS/";

@@ -66,7 +66,6 @@ namespace Hec.Dss
       int status = DssNative.hec_dss_open(filename,out dss);
 
       this.filename = filename;
-      versionNumber = GetDSSFileVersion();
 
       switch (status)
       {
@@ -129,13 +128,13 @@ namespace Hec.Dss
       return condensed;
     }
 
-    internal static List<string> GetRawCatalog(IntPtr dss, string filter="")
+    internal static List<string> GetRawCatalog(IntPtr dss,out int[] recordTypes, string filter="")
     {
       int count = DssNative.hec_dss_record_count(dss);
       int pathBufferSize = DssNative.hec_dss_CONSTANT_MAX_PATH_SIZE();
 
       byte[] rawCatalog = new byte[count * pathBufferSize];
-      int[] recordTypes = new int[count];
+      recordTypes = new int[count];
 
       List<string> pathNameList = new List<string>(count);
       byte[] byteFilter = new byte[] { 0 };
@@ -699,10 +698,10 @@ namespace Hec.Dss
           path = parts[0];
          }
       int size = 64;
-      ByteString units = new ByteString(size);
-      ByteString type = new ByteString(size);
+      byte[] units = new byte[size];
+      byte[] type = new byte[size];
 
-      int status = DssNative.hec_dss_tsRetrieveInfo(dss, path.FullPath, units.Data, size, type.Data, size);
+      int status = DssNative.hec_dss_tsRetrieveInfo(dss, path.FullPath, units, size, type, size);
 
       var rval = new TimeSeries();
       if (status != 0)
@@ -710,8 +709,8 @@ namespace Hec.Dss
         return rval;
       }
       rval.Path = path;
-      rval.Units = units.ToString();
-      rval.DataType = type.ToString();
+      rval.Units = Encoding.ASCII.GetString(units);
+      rval.DataType = Encoding.ASCII.GetString(type);
 
       //TODO location info
      // var locationInfo = new LocationInformation(tss.locationStruct);
@@ -984,11 +983,8 @@ namespace Hec.Dss
 
     public void Dispose()
     {
-      DSS.ZClose(ifltab);
-      _iflTabGC.Free();
-      _iflTabGC.Free();
-      _iflTabGC.Free();
-      _iflTabGC.Free();
+      //DSS.ZClose(ifltab);
+      //_iflTabGC.Free();
     }
 
     public enum LevelID
