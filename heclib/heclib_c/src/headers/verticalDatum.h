@@ -582,6 +582,7 @@ void verticaldatuminfotostring_(
 void normalizevdiinuserheader_(
     int*   userHeader, 
     int*   userHeaderNumber, 
+    int*   userHeaderSize,
     char*  errorMesage, 
     slen_t lenErrorMessage);
 
