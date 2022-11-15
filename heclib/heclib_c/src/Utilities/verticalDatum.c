@@ -1015,7 +1015,7 @@ char* stringToVerticalDatumInfo(verticalDatumInfo* vdi, const char* inputStr) {
         vdi->offsetToNgvd29 = 0.f;
         vdi->offsetToNgvd29IsEstimate = FALSE;
     }
-    else if (!strcmp(vdi->nativeDatum, CVERTICAL_DATUM_OTHER)) {
+    else {
         //---------------------------------------//
         // get the local datum name if it exists //
         //---------------------------------------//
@@ -1025,10 +1025,6 @@ char* stringToVerticalDatumInfo(verticalDatumInfo* vdi, const char* inputStr) {
             strncpy(vdi->nativeDatum, tbi.firstNonBlank, len);
             vdi->nativeDatum[len] = '\0'; // because we're overwriting a previous value
         }
-    }
-    else {
-        free(xml);
-        return INVALID_NATIVE_DATUM_IN_XML;
     }
     //----------------------------------------//
     // get the sub-xml blocks for the offsets //
@@ -1180,9 +1176,10 @@ char* verticalDatumInfoToString(char** results, const verticalDatumInfo* vdi, in
 
     sprintf(cp, "<vertical-datum-info unit=\"%s\">\n", vdi->unit);
     while (*cp)++cp;
-    if (!strcmp(vdi->nativeDatum, "NGVD-29") ||
-        !strcmp(vdi->nativeDatum, "NGVD-29") ||
-        !strcmp(vdi->nativeDatum, "OTHER")) {
+    if (!strcmp(vdi->nativeDatum, CVERTICAL_DATUM_NGVD29) ||
+        !strcmp(vdi->nativeDatum, CVERTICAL_DATUM_NAVD88) ||
+        !strcmp(vdi->nativeDatum, CVERTICAL_DATUM_OTHER) ||
+        !strcmp(vdi->nativeDatum, CVERTICAL_DATUM_LOCAL)) {
 
         sprintf(cp, "  <native-datum>%s</native-datum>\n", vdi->nativeDatum);
     }
@@ -1234,7 +1231,7 @@ verticalDatumInfo* extractVerticalDatumInfoFromUserHeader(const int* userHeader,
             FALSE,
             ';');
         if (vdiStr) {
-            vdi = (verticalDatumInfo*)mallocAndInit(sizeof(verticalDatumInfo));
+            vdi = (verticalDatumInfo*)malloc(sizeof(verticalDatumInfo));
             char* errmsg = stringToVerticalDatumInfo(vdi, vdiStr);
             if (errmsg != NULL) {
                 if (vdi) {
@@ -1493,10 +1490,11 @@ int	getCurrentVerticalDatum(
 void normalizevdiinuserheader_(
     int*   userHeader,
     int*   userHeaderNumber,
+    int*   userHeaderSize,
     char*  errorMesage,
     slen_t lenErrorMessage) {
 
-    char* cErrMsg = normalizeVdiInUserHeader(userHeader, userHeaderNumber);
+    char* cErrMsg = normalizeVdiInUserHeader(userHeader, userHeaderNumber, *userHeaderSize);
     if (cErrMsg) {
         C2F(cErrMsg, errorMesage, lenErrorMessage);
     }
@@ -1504,7 +1502,7 @@ void normalizevdiinuserheader_(
 //
 // See verticalDatum.h for documentation
 //
-char* normalizeVdiInUserHeader(int* userHeader, int* userHeaderNumber) {
+char* normalizeVdiInUserHeader(int* userHeader, int* userHeaderNumber, int userHeaderSize) {
     char* headerString = userHeaderToString(userHeader, *userHeaderNumber);
     if (!headerString) return NULL;
     int headerStringSize = strlen(headerString);
@@ -1522,6 +1520,11 @@ char* normalizeVdiInUserHeader(int* userHeader, int* userHeaderNumber) {
     verticalDatumInfo vdi;
     char* errmsg = stringToVerticalDatumInfo(&vdi, vdiStr);
     free(vdiStr);
+    if (errmsg) {
+        free(headerString);
+        return errmsg;
+    }
+    errmsg = verticalDatumInfoToString(&vdiStr, &vdi, FALSE);
     if (errmsg) {
         free(headerString);
         return errmsg;
@@ -1562,13 +1565,27 @@ char* normalizeVdiInUserHeader(int* userHeader, int* userHeaderNumber) {
         free(headerString);
         return MEMORY_ALLOCATION_ERROR;
     }
+    char* workbuf = strdup(headerString);
+    headerString[0] = '\0';
+    char* saveptr = NULL;
+    char* cp = strtok_r(workbuf, ";", &saveptr);
+    while (cp) {
+        int offset = strspn(cp, " ");
+        if (offset < strlen(cp)) {
+            strcat(headerString, &cp[offset]);
+            strcat(headerString, ";");
+        }
+        cp = strtok_r(NULL, ";", &saveptr);
+    }
+    free(workbuf);
     int newHeaderNumber;
     int* newHeader = stringToUserHeader(headerString, &newHeaderNumber);
-    if (newHeaderNumber > *userHeaderNumber) {
+    if (newHeaderNumber > userHeaderSize) {
         free(headerString);
         free(newHeader);
         return INSUFFICIENT_SPACE_ERROR;
     }
+    *userHeaderNumber = newHeaderNumber;
     for (int i = 0; i < *userHeaderNumber; ++i) {
         userHeader[i] = i < newHeaderNumber ? newHeader[i] : 0;
     }
@@ -1606,6 +1623,9 @@ void processstoragevdis_(
     stringToVerticalDatumInfo(&fileVdi, cFileVdiStr);
     verticalDatumInfo dataVdi;
     stringToVerticalDatumInfo(&dataVdi, cDataVdiStr);
+    char* cp = NULL;
+    verticalDatumInfoToString(&cp, &dataVdi, FALSE);
+    free(cp);
     char* cErrorMessage = processStorageVdis(offsetToUse, &fileVdi, &dataVdi, cCurrentDatum, *fileContainsData, cDataUnit);
     if (cErrorMessage) {
         C2F(cErrorMessage, errorMessage, lenErrorMessage);
@@ -1805,13 +1825,14 @@ char* processStorageVdis(
     // test whether current datum is compatible with native datum //
     //------------------------------------------------------------//
     int compatibleCurrentDatum = FALSE;
-    if (!strcmp(currentDatum, CVERTICAL_DATUM_UNSET)         // current datum == UNSET
-        || !strcmp(currentDatum, dataNativeDatum)            // || current datum == data native datum
-        || (!strcmp(dataNativeDatum, CVERTICAL_DATUM_UNSET)  // || data native datum == UNSET
-            && (!strcmp(currentDatum, fileNativeDatum)       //    && current datum == file native datum
-                || vdiOverwrite))                            //       || vdiOverwrite
-        || !strcmp(currentDatum, CVERTICAL_DATUM_NAVD88)     // || current datum == NAVD-88
-        || !strcmp(currentDatum, CVERTICAL_DATUM_NGVD29)) {  // || current datum == NGVD-29
+    if (!strcmp(currentDatum, CVERTICAL_DATUM_UNSET)               // current datum == UNSET
+        || !strcmp(currentDatum, dataNativeDatum)                  // || current datum == data native datum
+        || (!strcmp(dataNativeDatum, CVERTICAL_DATUM_UNSET)        // || data native datum == UNSET
+            && (!strcmp(currentDatum, fileNativeDatum)             //    && current datum == file native datum
+                || !strcmp(fileNativeDatum, CVERTICAL_DATUM_UNSET) //       || file native datum == UNSET
+                || vdiOverwrite))                                  //       || vdiOverwrite
+        || !strcmp(currentDatum, CVERTICAL_DATUM_NAVD88)           // || current datum == NAVD-88
+        || !strcmp(currentDatum, CVERTICAL_DATUM_NGVD29)) {        // || current datum == NGVD-29
         compatibleCurrentDatum = TRUE;
     }
     if (!compatibleCurrentDatum) {
@@ -1828,16 +1849,27 @@ char* processStorageVdis(
     //--------------------------------------------//
     // test whether we have a valid offset to use //
     //--------------------------------------------//
-    verticalDatumInfo* targetVdi = strcmp(dataNativeDatum, CVERTICAL_DATUM_UNSET) || vdiOverwrite ? &dataVdi : &fileVdi;
-    if (!strcmp(currentDatum, CVERTICAL_DATUM_UNSET)         // current datum == UNSET
-        || !strcmp(currentDatum, targetVdi->nativeDatum)) {  // || current datum == native datum
+    verticalDatumInfo* targetVdi = NULL;
+    if (!strcmp(currentDatum, dataNativeDatum) && !strcmp(fileNativeDatum, CVERTICAL_DATUM_UNSET)) {
         *offsetToUse = 0;
     }
-    else if (!strcmp(currentDatum, CVERTICAL_DATUM_NAVD88)) {
-        *offsetToUse = getOffset(targetVdi->offsetToNavd88, targetVdi->unit, dataUnit);
-    }
-    else if (!strcmp(currentDatum, CVERTICAL_DATUM_NGVD29)) {
-        *offsetToUse = getOffset(targetVdi->offsetToNgvd29, targetVdi->unit, dataUnit);
+    else {
+        if (strcmp(dataNativeDatum, CVERTICAL_DATUM_UNSET) || vdiOverwrite) {
+            targetVdi = &dataVdi;
+        }
+        else {
+            targetVdi = &fileVdi;
+        }
+        if (!strcmp(currentDatum, CVERTICAL_DATUM_UNSET)         // current datum == UNSET
+            || !strcmp(currentDatum, targetVdi->nativeDatum)) {  // || current datum == native datum
+            *offsetToUse = 0;
+        }
+        else if (!strcmp(currentDatum, CVERTICAL_DATUM_NAVD88)) {
+            *offsetToUse = getOffset(targetVdi->offsetToNavd88, targetVdi->unit, dataUnit);
+        }
+        else if (!strcmp(currentDatum, CVERTICAL_DATUM_NGVD29)) {
+            *offsetToUse = getOffset(targetVdi->offsetToNgvd29, targetVdi->unit, dataUnit);
+        }
     }
     if (*offsetToUse == UNDEFINED_VERTICAL_DATUM_VALUE) {
         sprintf(

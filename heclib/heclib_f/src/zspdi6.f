@@ -161,7 +161,11 @@ C     Check that IFLTAB is valid (e.g., the DSS file is open)
         !------------------------------!
         ! get the VDI of incoming data !
         !------------------------------!
-        call normalizeVdiInUserHeader(iuhead_copy2,nuhead_copy2,errMsg)
+        call normalizeVdiInUserHeader(
+     *    iuhead_copy2,
+     *    nuhead_copy2,
+     *    size(iuhead_copy2),
+     *    errMsg)
         call get_user_header_param(
      *    iuhead_copy2,
      *    nuhead_copy2,
@@ -438,6 +442,11 @@ C       compatibility)
 	    ENDIF
         ENDIF
 
+         call normalizeVdiInUserHeader(
+     *     iuhead_copy2,
+     *     nuhead_copy2,
+     *     size(iuhead_copy2),
+     *     errMsg)
          CALL zwritex6(IFLTAB, CPATH, NPATH, IGBUFF, NIHEAD,
      *   ICHEAD, 0, iuhead_copy2, nuhead_copy2, BUFF, NTOT, JTYPE,
      *   0, ISTAT, LFOUND)
@@ -501,6 +510,11 @@ C
  120  CONTINUE
 	    ENDIF
 C
+      call normalizeVdiInUserHeader(
+     *  iuhead_copy2,
+     *  nuhead_copy2,
+     *  size(iuhead_copy2),
+     *  errMsg)
       IF (LDOUBLE) THEN
          JTYPE = 205
          N = NVALS * 2

@@ -462,11 +462,12 @@ int	getCurrentVerticalDatum(
  * Normalizes the VDI representation in the user header
  * 
  * @param userHeader       the integer array
- * @param userHeaderNumber the number of integers in the array
+ * @param userHeaderNumber the number of integers used in the array
+ * @param userHeaderSize   the max number of integers for the array
  * 
  * @return NULL on success, otherwise an error message
  */
-char* normalizeVdiInUserHeader(int* userHeader, int* userHeaderNumber);
+char* normalizeVdiInUserHeader(int* userHeader, int* userHeaderNumber, int userHeaderSize);
 /**
  * Fortan wrapper for stringToVerticalDatumInfo
  *
@@ -581,6 +582,7 @@ void verticaldatuminfotostring_(
 void normalizevdiinuserheader_(
     int*   userHeader, 
     int*   userHeaderNumber, 
+    int*   userHeaderSize,
     char*  errorMesage, 
     slen_t lenErrorMessage);
 

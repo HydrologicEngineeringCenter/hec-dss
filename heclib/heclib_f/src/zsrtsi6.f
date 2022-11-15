@@ -347,11 +347,20 @@ C
           call datjul(cd, ijul, iistat)
           if (ijul.gt.ijule) exit
           cpath_this = cpath_next
-        end do
+              end do
         !------------------------------!
         ! get the VDI of incoming data !
         !------------------------------!
-        call normalizeVdiInUserHeader(iuhead_copy2,nuhead_copy2,errMsg)
+        call get_user_header_param(
+     *    iuhead_copy2,
+     *    nuhead_copy2,
+     *    VERTICAL_DATUM_INFO_PARAM,
+     *    dataVdiStr)
+        call normalizeVdiInUserHeader(
+     *    iuhead_copy2,
+     *    nuhead_copy2,
+     *    size(iuhead_copy2),
+     *    errMsg)
         call get_user_header_param(
      *    iuhead_copy2,
      *    nuhead_copy2,
@@ -971,8 +980,16 @@ C     Now store the header arrays
       CALL zptrec6(IFLTAB, IIHEAD, KIHEAD, INFO(NPPWRD+KIAIHE), .FALSE.)
       IF (NCHEAD.GT.0) CALL zptrec6 (IFLTAB, IDCH, NCHEAD,
      * INFO(NPPWRD+KIACHE), .FALSE.)
-      IF (nuhead_copy2.GT.0) CALL zptrec6 (IFLTAB, iuhead_copy2,
-     * nuhead_copy2, INFO(NPPWRD+KIAUHE), .FALSE.)
+      if (nuhead_copy2.gt.0) then
+        call normalizeVdiInUserHeader(
+     *    iuhead_copy2,
+     *    nuhead_copy2,
+     *    size(iuhead_copy2),
+     *    errMsg)
+        call zptrec6 (ifltab, iuhead_copy2, nuhead_copy2,
+     *    info(nppwrd+kiauhe), .false.)
+      end if
+
 C
 C     Now store the data array
 C
