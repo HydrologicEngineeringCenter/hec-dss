@@ -369,7 +369,11 @@ C
         !------------------------------!
         ! get the VDI of incoming data !
         !------------------------------!
-        call normalizeVdiInUserHeader(iuhead_copy2,nuhead_copy2,errMsg)
+        call normalizeVdiInUserHeader(
+     *    iuhead_copy2,
+     *    nuhead_copy2,
+     *    size(iuhead_copy2),
+     *    errMsg)
         call get_user_header_param(
      *    iuhead_copy2,
      *    nuhead_copy2,
@@ -1012,6 +1016,11 @@ C     Write data to DSS
       NLDATA = NPAIRS
       IF (LQUAL) CALL zset6 ('QUAL', 'ON', 1)
       NDA = IBSIZE * IMULT
+      call normalizeVdiInUserHeader(
+     *  iuhead_copy2,
+     *  nuhead_copy2,
+     *  size(iuhead_copy2),
+     *  errMsg)
       CALL zwritex6 (IFLTAB, CPATH1, NPATH, IIHEAD, KIHEAD, IDUM, 0,
      * iuhead_copy2, nuhead_copy2, BUFF, NDA, ITYPE, 0, IST, LF)
       CALL zinqir6 (IFLTAB, 'STATUS', CSCRAT, JSTAT)
