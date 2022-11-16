@@ -298,7 +298,7 @@ namespace Hec.Dss
       }
       if (item.RecordType == RecordType.PairedData)
       {
-        var pd = GetPairedData(item.FullPath);
+        var pd = GetPairedData(item.FullPath,true);
 
         if (pd != null)
         {
@@ -690,17 +690,41 @@ namespace Hec.Dss
     }
 
     /// <summary>
-    /// Gets the double values and ordinates from the paired data at the given path name. If there is a problem, ordinates and values will be null.
+    /// Gets the double values and ordinates from the paired data at the given path name. 
+    /// If there is a problem, ordinates and values will be null.
     /// </summary>
     /// <param name="pathname">pathname for the paired data</param>
-    /// <param name="ordinates">ordinates to return from function</param>
-    /// <param name="values">values to return from function</param>
-    /// <param name="dataType">An array of size 2, the first value is the type of the independent, the second value is the type of the dependent.</param>
-    /// <param name="dataUnits">An array of size 2, the first value is the units of the independent, the second value is the units of the dependent.</param>
-    public PairedData GetPairedData(string pathname)
+    public PairedData GetPairedData(string pathname, bool metaDataOnly=false)
     {
+      int numberOrdinates = 0;
+      int numberCurves = 0;
+      int size = 128;
+      int status;
+      ByteString unitsIndependent = new ByteString(size);
+      ByteString unitsDependent = new ByteString(size);
+      ByteString typeIndependent = new ByteString(size);
+      ByteString typeDependent = new ByteString(size);
+      if (metaDataOnly)
+      {
+          status = DssNative.hec_dss_pdRetrieveInfo(dss, pathname, ref numberOrdinates, ref numberCurves,
+          unitsIndependent.Data, unitsIndependent.Data.Length,
+          unitsDependent.Data, unitsDependent.Data.Length,
+          typeIndependent.Data, typeIndependent.Data.Length,
+        typeDependent.Data, typeDependent.Data.Length );
+
+        var pd = new PairedData();
+        if (status != 0)
+          return pd;
+
+        pd.UnitsIndependent = unitsIndependent.ToString();
+        pd.UnitsDependent = unitsDependent.ToString();  
+        pd.TypeDependent = typeDependent.ToString(); 
+        pd.TypeIndependent = typeIndependent.ToString() ;
+
+        return pd;
+      }
       ZStructPairedDataWrapper pds = DSS.ZStructPdNew(pathname);
-      int status = DSS.ZpdRetrieve(ref ifltab, ref pds, 2);
+      status = DSS.ZpdRetrieve(ref ifltab, ref pds, 2);
       if (status != 0)
       {
         return null;

@@ -155,8 +155,7 @@ HECDSS_API int hec_dss_catalog(dss_file* dss, char* pathBuffer, int* recordTypes
   int maxPaths = catStruct->numberPathnames > count ? count : catStruct->numberPathnames;
   for (int i = 0; i < maxPaths; i++)
   {
-    if( catStruct->recordType) // for DSS6 this is null
-      recordTypes[i] = catStruct->recordType[i];
+    recordTypes[i] = catStruct->recordType[i];
     char* s = pathBuffer + i * pathBufferItemSize;
     stringCopy(s, pathBufferItemSize, catStruct->pathnameList[i], strlen(catStruct->pathnameList[i]));
   }
@@ -224,7 +223,7 @@ HECDSS_API int hec_dss_tsRetrieveInfo(dss_file* pdss, const char* pathname,char*
 }
 
 
-HECDSS_API int hec_dss_tsRetrieve(dss_file* pdss, const char *pathname, 
+HECDSS_API int hec_dss_tsRetrieve(dss_file* dss, const char *pathname, 
                                   const char *startDate, const char *startTime, 
                                   const char* endDate,   const char *endTime,
                                   int *timeArray, double *valueArray, const int arraySize,
@@ -239,11 +238,11 @@ HECDSS_API int hec_dss_tsRetrieve(dss_file* pdss, const char *pathname,
     tss->endJulianDate = dateToJulian(endDate);
     tss->endTimeSeconds = timeStringToSeconds(endTime);
     
-    int retrieveDoublesFlag = 2; // get doubles
-    int boolRetrieveAnyQualityNotes = 1;
-    int retrieveUsingTimeWindowFlag = 0; // Adhere to time window provided and generate the time array
+    const int retrieveDoublesFlag = 2; // get doubles
+    const int boolRetrieveAnyQualityNotes = 1;
+    const int retrieveUsingTimeWindowFlag = 0; // Adhere to time window provided and generate the time array
 
-    int status = ztsRetrieve(pdss->ifltab, tss, retrieveUsingTimeWindowFlag,retrieveDoublesFlag, boolRetrieveAnyQualityNotes);
+    int status = ztsRetrieve(dss->ifltab, tss, retrieveUsingTimeWindowFlag,retrieveDoublesFlag, boolRetrieveAnyQualityNotes);
     if (status == 0) {
         *numberValuesRead = tss->numberValues;
         *julianBaseDate = tss->julianBaseDate;
@@ -284,9 +283,68 @@ HECDSS_API int hec_dss_locationRetrieve(dss_file* dss, const char* fullPath,
     if( loc->supplemental)
       stringCopy(supplemental, supplementalLength, loc->supplemental, strlen(loc->supplemental));
   }
-  return status;
   zstructFree(loc);
+  return status;
+ 
 }
+/// <summary>
+/// hec_dss_pdRetrieveInfo is used by client app to determine
+/// required array sizes for calling hec_dss_pdRetrieve.
+/// 
+/// </summary>
+/// <param name="dss">pointer to dss_file</param>
+/// <param name="pathname">path of paired data</param>
+/// <param name="numberOrdinates">number of rows for ordinates, and curves</param>
+/// <param name="numberCurves">number of columns in the curve dataset</param>
+/// <returns></returns>
+HECDSS_API int hec_dss_pdRetrieveInfo(dss_file* dss, const char* pathname,
+                                    int* numberOrdinates, int* numberCurves, 
+                                    char* unitsIndependent, const int unitsIndependentLength,
+                                    char* unitsDependent, const int unitsDependentLength,
+                                    char* typeIndependent, const int typeIndependentLength,
+                                    char* typeDependent, const int typeDependentLength){
+  zStructPairedData* pds = zstructPdNew(pathname);
+  pds->endingOrdinate = 1;// hack to retrive meta data, with minimal actual data.
+  int returnDoubles = 2;
+  int status = zpdRetrieve(dss->ifltab, pds, returnDoubles);
+
+  *numberOrdinates = pds->numberOrdinates;
+  *numberCurves = pds->numberCurves;
+  if (pds->unitsIndependent)
+    stringCopy(unitsIndependent, unitsIndependentLength, pds->unitsIndependent, strlen(pds->unitsIndependent));
+  if (pds->unitsDependent)
+    stringCopy(unitsDependent, unitsDependentLength, pds->unitsDependent, strlen(pds->unitsDependent));
+  if (pds->typeIndependent)
+    stringCopy(typeIndependent, typeIndependentLength, pds->typeIndependent, strlen(pds->typeIndependent));
+  if (pds->typeDependent)
+    stringCopy(typeDependent, typeDependentLength, pds->typeDependent, strlen(pds->typeDependent));
+
+
+
+  zstructFree(pds);
+  return status;
+
+}
+
+HECDSS_API int hec_dss_pdRetrieve(dss_file* dss, const char* pathname,
+  double* doubleOrdinates, double* valdoubleValues, const int arraySize,
+  int* numberOrdinates, int* numberCurves,
+  char* unitsIndependent, const int unitsIndependentLength,
+  char* typeIndependent, const int typeIndependentLength,
+  char* unitsDependent, const int unitsDependentLength,
+  char* typeDependent, const int typeDependentLength,
+  int* boolIndependentIsXaxis,
+  int* precision,
+  char* labels, const int labelsLength)
+{
+  zStructPairedData* pds = zstructPdNew(pathname);
+  int returnDoubles = 2;
+  int status = zpdRetrieve(dss->ifltab, pds, returnDoubles);
+
+    zstructFree(pds);
+    return status;
+}
+
 
 HECDSS_API int hec_dss_dateToYearMonthDay(const char* date,int*year, int* month, int* day) {
   return dateToYearMonthDay(date, year, month, day);
