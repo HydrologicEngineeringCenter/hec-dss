@@ -658,10 +658,10 @@ namespace Hec.Dss
           path = parts[0];
          }
       int size = 64;
-      byte[] units = new byte[size];
-      byte[] type = new byte[size];
+      ByteString units = new ByteString(size);
+      ByteString type = new ByteString(size);
 
-      int status = DssNative.hec_dss_tsRetrieveInfo(dss, path.FullPath, units, size, type, size);
+      int status = DssNative.hec_dss_tsRetrieveInfo(dss, path.FullPath, units.Data, size, type.Data, size);
 
       var rval = new TimeSeries();
       if (status != 0)
@@ -669,8 +669,8 @@ namespace Hec.Dss
         return rval;
       }
       rval.Path = path;
-      rval.Units = Encoding.ASCII.GetString(units);
-      rval.DataType = Encoding.ASCII.GetString(type);
+      rval.Units = units.ToString();
+      rval.DataType = type.ToString();
 
       //TODO location info
      // var locationInfo = new LocationInformation(tss.locationStruct);
