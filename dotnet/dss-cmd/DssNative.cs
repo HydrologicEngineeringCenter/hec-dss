@@ -76,5 +76,13 @@ public class DssNative
                             byte[] timeZoneName, int timeZoneNameLength,
                             byte[] supplemental, int supplementalLength);
 
+  [DllImport("hecdss")] 
+  public static extern int hec_dss_pdRetrieveInfo(IntPtr dss, string pathname,
+                            ref int numberOrdinates, ref int numberCurves,
+                            byte[] unitsIndependent, int unitsIndependentLength,
+                            byte[] unitsDependent, int unitsDependentLength,
+                            byte[] typeIndependent, int typeIndependentLength,
+                            byte[] typeDependent, int typeDependentLength);
+
 }
 

@@ -739,7 +739,7 @@ namespace Hec.Dss
           unitsIndependent.Data, unitsIndependent.Data.Length,
           unitsDependent.Data, unitsDependent.Data.Length,
           typeIndependent.Data, typeIndependent.Data.Length,
-          typeDependent.Data, typeDependent.Data.Length );
+        typeDependent.Data, typeDependent.Data.Length );
 
         var pd = new PairedData();
         if (status != 0)
