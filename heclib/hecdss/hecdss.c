@@ -4,6 +4,18 @@
 
 #include "zdssKeys.h"
 
+/*
+ hecdss.c contains code for a shared object/dll, providing an API to work with DSS files.
+
+ This API is designed with perspective that the calling/client code is in charge of managing memory.
+ The only exception is hec_dss_open(const char* filename, dss_file** dss).   hec_dss_open allocates 
+ one internal structure that must be freed by calling hec_dss_close;
+
+ For reading data: The client passes in pre-allocated arrays, with the size, then the API copies data 
+ into those arrays
+ 
+
+*/
 // public declaration
 typedef struct dss_file dss_file;
 
@@ -243,6 +255,33 @@ HECDSS_API int hec_dss_tsRetrieve(dss_file* pdss, const char *pathname,
 
     zstructFree(tss);
     return status;
+}
+HECDSS_API int hec_dss_locationRetrieve(dss_file* dss, const char* fullPath, 
+                            double* x,double* y, double* z,
+                            int* coordinateSystem, int* coordinateID, 
+                            int* horizontalUnits,int* horizontalDatum,
+                            int* verticalUnits, int* verticalDatum,
+                            char* timeZoneName, const int timeZoneNameLength,
+                            char* supplemental, const int supplementalLength){
+
+  zStructLocation* loc = zstructLocationNew(fullPath);
+  int status = zlocationRetrieve(dss->ifltab, loc);
+  if (status == 0) {
+    *x = loc->xOrdinate;
+    *y = loc->yOrdinate;
+    *z = loc->zOrdinate;
+    *coordinateSystem = loc->coordinateSystem;
+    *coordinateID = loc->coordinateID;
+    *verticalUnits = loc->verticalUnits;
+    *verticalDatum = loc->verticalDatum;
+
+    if(loc->timeZoneName)
+      stringCopy(timeZoneName, timeZoneNameLength, loc->timeZoneName, strlen(loc->timeZoneName));
+    if( loc->supplemental)
+      stringCopy(supplemental, supplementalLength, loc->supplemental, strlen(loc->supplemental));
+  }
+  return status;
+  zstructFree(loc);
 }
 
 HECDSS_API int hec_dss_dateToYearMonthDay(const char* date,int*year, int* month, int* day) {

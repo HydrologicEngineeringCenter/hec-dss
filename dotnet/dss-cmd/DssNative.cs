@@ -59,6 +59,13 @@ public class DssNative
   [DllImport("hecdss")]
   public static extern int hec_dss_dateToJulian(string date);
 
-  
+  [DllImport("hecdss")]
+  public static extern int hec_dss_locationRetrieve(IntPtr dss, string fullPath, ref double x, ref double y, ref double z,
+                            ref int coordinateSystem, ref int coordinateID,
+                            ref int horizontalUnits, ref int horizontalDatum,
+                            ref int verticalUnits, ref int verticalDatum,
+                            byte[] timeZoneName, int timeZoneNameLength,
+                            byte[] supplemental, int supplementalLength);
+
 }
 

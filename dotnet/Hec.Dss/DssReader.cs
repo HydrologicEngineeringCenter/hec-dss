@@ -159,7 +159,6 @@ namespace Hec.Dss
       if (!collection.HasRecordTypes) // recordTypes is null for V6
       {
         SetRecordType(collection);
-
       }
 
       HashSet<string> uDataUnits = new HashSet<string>();
@@ -169,13 +168,25 @@ namespace Hec.Dss
       HashSet<double> uZs = new HashSet<double>();
       foreach (var item in collection)
       {
-        var loc = DSS.ZLocationRetrieve(ref ifltab, item.FullPath);
-        item.XOrdinate = loc.XOrdinate;
-        item.YOrdinate = loc.YOrdinate;
-        item.ZOrdinate = loc.ZOrdinate;
-        uXs.Add(loc.XOrdinate);
-        uYs.Add(loc.YOrdinate);
-        uZs.Add(loc.ZOrdinate);
+        double x=0, y=0, z=0;
+        int coordinateSystem = 0, coordinateID = 0;
+        int horizontalUnits=0,horizontalDatum = 0;
+        int verticalUnits=0, verticalDatum = 0;
+        ByteString timeZoneName = new ByteString(64);
+        ByteString supplemental = new ByteString(64);// could be bigger, but we are ignoring supplemental here.
+        var loc = DssNative.hec_dss_locationRetrieve(dss, item.FullPath, ref x, ref y, ref z,
+         ref coordinateSystem, ref coordinateID,
+         ref horizontalUnits, ref horizontalDatum,
+         ref verticalUnits, ref verticalDatum,
+         timeZoneName.Data, timeZoneName.Data.Length,
+         supplemental.Data, supplemental.Data.Length);
+
+        item.XOrdinate = x;
+        item.YOrdinate = y;
+        item.ZOrdinate = z;
+        uXs.Add(x);
+        uYs.Add(y);
+        uZs.Add(z);
 
         ReadHeaderInfo(item, collection, uDataUnits, uDataTypes);
       }
