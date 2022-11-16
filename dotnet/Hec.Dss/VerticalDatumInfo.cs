@@ -88,9 +88,9 @@ namespace Hec.Dss
     //public String CurrentDatum = "";
     public String LocalDatumName = "";
     public String Units = "";
-    public double Elevation = Constant.UndefinedDouble;
-    public double NGVD29Offset = Constant.UndefinedDouble;
-    public double NAVD88Offset = Constant.UndefinedDouble;
+    public double Elevation = Constant.UNDEFINED_VERTICAL_DATUM_VALUE;
+    public double NGVD29Offset = Constant.UNDEFINED_VERTICAL_DATUM_VALUE;
+    public double NAVD88Offset = Constant.UNDEFINED_VERTICAL_DATUM_VALUE;
     public bool NGVD29OffsetIsEstimate = true;
     public bool NAVD88OffsetIsEstimate = true;
 

@@ -7,6 +7,10 @@
 /*
  hecdss.c contains code for a shared object/dll, providing an API to work with DSS files.
 
+ Only DSS version 7 files are supported.  DSS version 6 files can be converted using HEC-DSSVue
+ https://www.hec.usace.army.mil/software/hec-dssvue/
+
+
  This API is designed with perspective that the calling/client code is in charge of managing memory.
  The only exception is hec_dss_open(const char* filename, dss_file** dss).   hec_dss_open allocates 
  one internal structure that must be freed by calling hec_dss_close;
