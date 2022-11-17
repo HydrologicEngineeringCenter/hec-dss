@@ -213,14 +213,5 @@ namespace DSSUnitTests
       }
     }
 
-    [TestMethod]
-    [Ignore]
-    public void CondencedCatalog6()
-    {
-     var t = Catalog(TestUtility.BasePath + "sample6.dss", true);
-      Console.WriteLine("sample6.dss catalog has "+t.Rows.Count+" rows ");
-      Assert.IsTrue(t.Rows.Count == 36);
-    }
-
   }
 }
