@@ -20,8 +20,6 @@
  
 
 */
-// public declaration
-typedef struct dss_file dss_file;
 
 // private definition 
 struct dss_file {
@@ -107,17 +105,12 @@ HECDSS_API int hec_dss_close(dss_file *dss){
     return status;
 }
 
-HECDSS_API int hec_dss_version(dss_file* dss) {
+HECDSS_API int hec_dss_version(dss_file* dss) { 
     if (!dss)
         return 0;
     return zgetVersion(dss->ifltab);
 }
 
-/// <summary>
-/// Returns number of records (includes aliases)
-/// </summary>
-/// <param name="dss"></param>
-/// <returns>number of records</returns>
 HECDSS_API int hec_dss_record_count(dss_file* dss) {
     if (!dss)
         return 0;
@@ -163,7 +156,6 @@ HECDSS_API int hec_dss_catalog(dss_file* dss, char* pathBuffer, int* recordTypes
   return maxPaths;
 }
 
-// get length of time series
 HECDSS_API int hec_dss_tsGetSizes(dss_file* pdss, const char* pathname,
     const char* startDate, const char* startTime,
     const char* endDate, const char* endTime,
@@ -191,17 +183,7 @@ HECDSS_API int hec_dss_tsGetSizes(dss_file* pdss, const char* pathname,
     return status;
 
 }
-/// <summary>
-/// Retrive an empty time series.
-/// Used to get units and type for a time series
-/// </summary>
-/// <param name="pdss"></param>
-/// <param name="pathname"></param>
-/// <param name="units"></param>
-/// <param name="unitsLength"></param>
-/// <param name="type"></param>
-/// <param name="typeLength"></param>
-/// <returns></returns>
+
 HECDSS_API int hec_dss_tsRetrieveInfo(dss_file* pdss, const char* pathname,char* units, 
                                        const int unitsLength, char* type, const int typeLength) {
 
