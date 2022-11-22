@@ -20,7 +20,7 @@ public class DssNative
    public static extern int hec_dss_close(IntPtr dss);
 
    [DllImport("hecdss")]
-   public static extern int hec_dss_version(IntPtr dss);
+   internal static extern int hec_dss_version(IntPtr dss);
 
    [DllImport("hecdss")]
    public static extern int hec_dss_record_count(IntPtr dss);

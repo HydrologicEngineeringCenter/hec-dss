@@ -40,7 +40,6 @@ namespace Hec.Dss
     {
     }
 
-    private GCHandle _iflTabGC;
     private IntPtr dss;
     /// <summary>
     /// Constructor for DSSREADER object
