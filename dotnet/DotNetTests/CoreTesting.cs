@@ -91,38 +91,6 @@ namespace DSSUnitTests
       Assert.IsTrue(catalog.Contains("/EF RUSSIAN/COYOTE/FLOW-RES OUT/01Mar2006/1Hour//"));
       Assert.IsTrue(catalog.Contains("/FISHKILL CREEK/BEACON NY/FREQ-FLOW///USGS/"));
     }
-    [TestMethod]
-    [Ignore]
-    public void TestCatalogV6()
-    {
-      var status = DssNative.hec_dss_open(TestUtility.BasePath + "sample6_ras.dss", out IntPtr dss);
-      var catalog = DssReader.GetRawCatalog(dss, out int[] recordTypes);
-      DssNative.hec_dss_close(dss);
-
-      Assert.AreEqual(627, catalog.Count);
-      int num = 1877;
-      for (int i = 0; i < 5; i++)
-      {
-        var path = "//SACRAMENTO/PRECIP-INC/01JAN" + (num + i).ToString() + "/1DAY/OBS/";
-        Assert.AreEqual(path, catalog[catalog.IndexOf(path)]);
-      }
-    }
-    [TestMethod]
-    [Ignore]
-    public void TestCatalogV6Continued()
-    {
-      var status = DssNative.hec_dss_open(TestUtility.BasePath + "sample6_ras.dss", out IntPtr dss);
-      var catalog = DssReader.GetRawCatalog(dss, out int[] recordTypes, "/*/*/*Flow*/*/*/*/");
-      DssNative.hec_dss_close(dss);
-
-      Assert.AreEqual(172,catalog.Count);
-      Assert.IsTrue(catalog.Contains("/AMERICAN/FOLSOM/FLOW-RES IN/01JAN2006/1DAY/OBS/"));
-      Assert.IsTrue(catalog.Contains("/AMERICAN/FOLSOM/FLOW-RES OUT/01JAN2006/1DAY/OBS/"));
-      Assert.IsTrue(catalog.Contains("/EF RUSSIAN/COYOTE/FLOW-RES IN/01MAR2006/1HOUR/SMOOTH/"));
-      Assert.IsTrue(catalog.Contains("/EF RUSSIAN/COYOTE/FLOW-RES OUT/01MAR2006/1HOUR//"));
-      Assert.IsTrue(catalog.Contains("/FISHKILL CREEK/BEACON NY/FREQ-FLOW///USGS/"));
-    }
-
 
   }
 }
