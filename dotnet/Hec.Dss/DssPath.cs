@@ -116,6 +116,9 @@ namespace Hec.Dss
       }
     }
 
+    /// <summary>
+    /// Returns D part with the first Date in the range
+    /// </summary>
     internal string PathWithoutRange
     {
       get

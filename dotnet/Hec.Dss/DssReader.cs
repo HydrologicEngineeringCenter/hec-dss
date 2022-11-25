@@ -461,31 +461,86 @@ namespace Hec.Dss
         return true;
     }
 
+    /// <summary>
+    /// GetTimeSeries reads time series data.
+    /// if the time windows (startDateTime, endDateTime) are not defined the whole data set is returned
+    /// </summary>
+    /// <param name="dssPath"></param>
+    /// <param name="compression"></param>
+    /// <param name="startDateTime"></param>
+    /// <param name="endDateTime"></param>
+    /// <param name="PreReadCatalog"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
     private TimeSeries GetTimeSeries(DssPath dssPath, TimeWindow.ConsecutiveValueCompression compression, DateTime startDateTime = default(DateTime), DateTime endDateTime = default(DateTime), bool PreReadCatalog = true)
     {
+      ValidateTsPathExists(dssPath, PreReadCatalog);
+
       bool datesProvided = startDateTime != default(DateTime) && endDateTime != default(DateTime);
 
-      DssPath p = dssPath;
-      if (dssPath is DssPathCondensed)
-        p = new DssPath(((DssPathCondensed)dssPath).GetPath(0).PathWithoutDate);
-      var blockTimeSeries = (CreateTSWrapper(p, startDateTime, endDateTime));
-      Hec.Dss.Time.DateTimeToHecDateTime(startDateTime,out string startDate,out string startTime);
-      Hec.Dss.Time.DateTimeToHecDateTime(endDateTime,out string endDate,out string endTime);
-      int numberValues=0;
-      int status = DssNative.hec_dss_tsGetSizes(this.dss, p.PathWithoutRange, startDate, startTime, endDate, endTime,ref numberValues);
-      
+
+      Hec.Dss.Time.DateTimeToHecDateTime(startDateTime, out string startDate, out string startTime);
+      Hec.Dss.Time.DateTimeToHecDateTime(endDateTime, out string endDate, out string endTime);
+
+      if (!datesProvided ) { // return whole data-set
+        const int boolFullSet = 1;
+        int firstValidJulian = 0, firstSeconds = 0, lastValidJulian = 0, lastSeconds = 0;
+        DssNative.hec_dss_tsGetDateTimeRange(dss, dssPath.FullPath, boolFullSet,
+            ref firstValidJulian, ref firstSeconds, ref lastValidJulian, ref lastSeconds);
+        Time.JulianToHecDateTime(firstValidJulian, firstSeconds, out startDate, out startTime);
+        Time.JulianToHecDateTime(lastValidJulian, lastSeconds, out endDate, out endTime);
+
+      }
+      int numberValues = 0;
       // find array size needed.
-      // Daily or larget time steps.
-      //int ztsGetDateRange(long long* ifltab, const char* pathname, int boolFullSet,*int * firstValidJulian, int* lastValidJulian);
-      // less than daily time step use slower method that looks a times.
-      //int ztsGetDateTimeRange(long long *ifltab, const char *pathname, int boolFullSet, *int * firstValidJulian, int* firstSeconds,*int * lastValidJulian, int* lastSeconds);
-      int retrieveFlag = 0;
-      int retrieveDoublesFlag = 2; // get doubles
-      int boolRetrieveQualityNotes = 1;
+      int status = DssNative.hec_dss_tsGetSizes(this.dss, dssPath.PathWithoutDate, startDate, startTime, endDate, endTime, ref numberValues);
 
-      TimeSeries rVal = null;
-      TimeSeries innerTimeSeries = new TimeSeries();
 
+      int[] times = new int[numberValues];
+      double[] values = new double[numberValues];
+      int numberValuesRead = 0;
+      int julianBaseDate = 0, timeGranularitySeconds = 60;
+      ByteString units = new ByteString(64);
+      ByteString type = new ByteString(64);
+
+      status = DssNative.hec_dss_tsRetrieve(dss, dssPath.PathWithoutRange, 
+          startDate, startTime, endDate, endTime, times, values, numberValues,
+         ref numberValuesRead, ref julianBaseDate, ref timeGranularitySeconds,
+         units.Data, units.Length, type.Data, type.Length);
+
+      TimeSeries ts = new TimeSeries();
+      
+      if (status == 0)
+      {
+        Array.Resize(ref values, numberValuesRead);
+        ts.Values = values;
+        Array.Resize(ref times, numberValuesRead);
+        ts.Times = Time.DateTimesFromJulianArray(times, timeGranularitySeconds, julianBaseDate);
+        ts.DataType = type.ToString();
+        ts.Units = units.ToString();
+        ts.Path = new DssPath(dssPath.FullPath);
+      
+      //ToTimeSeries.Qualities = fromTimeSeries.Quality;
+      
+    //  var locationInfo = new LocationInformation(fromTimeSeries.locationStruct);
+      //ts.LocationInformation = locationInfo;
+        if (compression != TimeWindow.ConsecutiveValueCompression.None)
+          ts = ts.Compress(compression);
+      }
+      else {
+        return GetEmptyTimeSeries(dssPath);
+      }
+
+
+      if (dssPath.IsRegular) // only applies to regular interval
+        ts.Trim();
+
+      return ts;
+
+    }
+
+    private void ValidateTsPathExists(DssPath dssPath, bool PreReadCatalog)
+    {
       if (PreReadCatalog)
       {
         if (!PathExists(dssPath))
@@ -497,50 +552,15 @@ namespace Hec.Dss
         if (rt != RecordType.RegularTimeSeries && rt != RecordType.IrregularTimeSeries)
         {
           throw new Exception("Error reading path " + dssPath.FullPath + ".  This path is not a time series");
-        } 
+        }
       }
-
-      status = DSS.ZTsRetrieve(ref ifltab, ref blockTimeSeries, retrieveFlag, retrieveDoublesFlag, boolRetrieveQualityNotes);
-
-      // if path is valid, and is time series, (status -1 proably means no data in the time window)
-
-      if (status == 0 )
-      {
-        SetTimeSeriesInfo(blockTimeSeries, innerTimeSeries);
-
-        if (compression != TimeWindow.ConsecutiveValueCompression.None)
-          innerTimeSeries = innerTimeSeries.Compress(compression);
-
-        rVal = innerTimeSeries;
-      }
-      
-      if (rVal == null)
-        return GetEmptyTimeSeries(dssPath);
-
-      if (dssPath.IsRegular) // only applies to regular interval
-        rVal.Trim();
-
-      return rVal;
-      
-    }
-
-    private void SetTimeSeriesInfo(ZStructTimeSeriesWrapper fromTimeSeries, TimeSeries ToTimeSeries) 
-    {
-      ToTimeSeries.Path = new DssPath(fromTimeSeries.Pathname);
-      ToTimeSeries.Units = fromTimeSeries.Units;
-      ToTimeSeries.Times = GetTsTimes(fromTimeSeries);
-      ToTimeSeries.Values = GetTsValues(fromTimeSeries);
-      ToTimeSeries.Qualities = fromTimeSeries.Quality;
-      ToTimeSeries.DataType = fromTimeSeries.Type;
-      ToTimeSeries.ProgramName = fromTimeSeries.ProgramName;
-      var locationInfo = new LocationInformation(fromTimeSeries.locationStruct);
-      ToTimeSeries.LocationInformation = locationInfo;
     }
 
     /// <summary>
-    /// Gets a DSSTimeSeries from the DSS file.  Can be either irregular or regular time series data.  
+    /// Gets a TimeSeries from the DSS file.  Can be either irregular or regular time series data.  
     /// data is returned as doubles
     /// If there is a problem, values and times will be null.
+    /// if the time windows (startDateTime, endDateTime) are not defined the whole data set is returned
     /// </summary>
     ///  <param name="dssPath"></param>
     ///  <param name="startDateTime">starting DateTime (optional overrides path D part)</param>
@@ -622,36 +642,7 @@ namespace Hec.Dss
       return values;
     }
 
-    private static DateTime[] GetTsTimes(ZStructTimeSeriesWrapper ts)
-    {
-      if (ts.Times == null)
-        throw new NullReferenceException("Time Series Times array was null.  Something didn't work right in DSS.");
-
-      int[] timesJulian = ts.Times;
-      DateTime[] times = new DateTime[timesJulian.Length];
-
-      double divisor = (60d * 60d * 24d) / ts.TimeGranularitySeconds;
-
-      // When ts.TimeGranularitySeconds is 60 (e.g. timesJulian is in minutes), this is roughly correct
-      // DateTime.FromOADate((double)timesJulian[0] / (60 * 24))
-      for (int j = 0; j < times.Length; j++)
-      {
-        // There appears to be an off-by-1-day error common to julian dates - DEC 1899 vs JAN 1900
-        times[j] = DateTime.FromOADate((timesJulian[j] / divisor) + ts.JulianBaseDate + 1);
-      }
-      return times;
-    }
-
-    private static DateTime DateTimeFromJulian_DSSLibrary(int julian, int julianBaseDate = 0, int timeGranularitySeconds = 60)
-    {
-      // This implementation works, but uses string manipulation and is REALLLY slow
-      string d = "".PadRight(20);
-      string h = "".PadRight(20);
-      DSS.GetDateAndTime(julian, timeGranularitySeconds, julianBaseDate,
-          ref d, d.Length, ref h, h.Length);
-      return Time.ConvertFromHecDateTime(d, h);
-    }
-
+    
 
     /// <summary>
     /// GetEmptyTimeSeries returns a time series without the data
@@ -811,7 +802,7 @@ namespace Hec.Dss
       }
 
       rval.ColumnValues = tss.DoubleProfileDepths;
-      rval.Times = GetTsTimes(tss);
+      rval.Times = Time.DateTimesFromJulianArray(tss.Times,tss.TimeGranularitySeconds,tss.JulianBaseDate);
       rval.Values = DoubleArrayToMatrix(tss.DoubleProfileValues, rval.ColumnValues.Length, tss.NumberValues);
       return rval;
     }

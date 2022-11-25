@@ -16,7 +16,7 @@ Console.WriteLine("version: " + DssNative.hec_dss_version(dss));
 
 string path = "/GREEN RIVER/GLENFIR/FLOW/01Apr1992/1Hour/OBS/";
 int numberValuesRead = 0;
-int julianBaseDate = 0;
+int julianBaseDate = 0, timeGranularitySeconds = 0;
 
 var units = ArrayPool<byte>.Shared.Rent(32);
 var type = ArrayPool<byte>.Shared.Rent(32);
@@ -36,8 +36,9 @@ Console.WriteLine(numberValues);
 int[] times = new int[numberValues];
 double[] value = new double[numberValues];
 
-status = DssNative.hec_dss_tsRetrieve(dss, path, startDate, startTime, endDate, endTime, times, value, numberValues, 
-   ref numberValuesRead, ref julianBaseDate,
+status = DssNative.hec_dss_tsRetrieve(dss, path, startDate, startTime, endDate, endTime,
+    times, value, numberValues, 
+   ref numberValuesRead, ref julianBaseDate,ref timeGranularitySeconds,
    units,units.Length, type, type.Length);
 
 Console.WriteLine("numberValuesRead: "+numberValuesRead);
