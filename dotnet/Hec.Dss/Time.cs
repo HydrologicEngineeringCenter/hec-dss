@@ -90,10 +90,10 @@ namespace Hec.Dss
       return t;
     }
 
-    internal static string JulianToHecDate(int julianBaseDate)
+    internal static string JulianToHecDate(int julian)
     {
       int y = 0, m = 0, d = 0;
-      DSS.JulianToYearMonthDay(julianBaseDate, ref y, ref m, ref d);
+      DssNative.hec_dss_julianToYearMonthDay(julian, ref y, ref m, ref d);
       DateTime t = new DateTime(y, m, d);
 
       return t.ToString(HecDateFormat);
@@ -239,6 +239,13 @@ namespace Hec.Dss
     /// <param name="time"></param>
     public static void DateTimeToHecDateTime(DateTime t, out string date, out string time)
     {
+      if( t == default(DateTime))
+      {
+        date = "";
+        time = "";
+        return;
+      }
+      
       if (t == t.Date) // 00:00
       {
         t = t.AddDays(-1);
@@ -275,11 +282,45 @@ namespace Hec.Dss
       }
       return rval;
     }
+    internal static DateTime[] DateTimesFromJulianArray(int[] timesJulian, int timeGranularitySeconds, int julianBaseDate)
+    {
+      if (timesJulian == null)
+        throw new NullReferenceException("Time Series Times array was null.  Something didn't work right in DSS.");
+
+      DateTime[] times = new DateTime[timesJulian.Length];
+
+      double divisor = (60d * 60d * 24d) / timeGranularitySeconds;
+
+      for (int j = 0; j < times.Length; j++)
+      {
+        // There appears to be an off-by-1-day error common to julian dates - DEC 1899 vs JAN 1900
+        times[j] = DateTime.FromOADate((timesJulian[j] / divisor) + julianBaseDate + 1);
+      }
+      return times;
+    }
+
+    private static DateTime DateTimeFromJulian_DSSLibrary(int julian, int julianBaseDate = 0, int timeGranularitySeconds = 60)
+    {
+      // This implementation works, but uses string manipulation and is REALLLY slow
+      string d = "".PadRight(20);
+      string h = "".PadRight(20);
+      DSS.GetDateAndTime(julian, timeGranularitySeconds, julianBaseDate,
+          ref d, d.Length, ref h, h.Length);
+      return Time.ConvertFromHecDateTime(d, h);
+    }
 
     internal static int DateToJulian(DateTime t)
     {
       return DSS.DateToJulian(HecDateToString(t));
     }
 
+    internal static void JulianToHecDateTime(int julian, int seconds, out string date, out string time)
+    {
+      int year = 0, month = 0, day = 0;
+      DssNative.hec_dss_julianToYearMonthDay(julian, ref year, ref month, ref day);
+      DateTime t = new DateTime(year, month, day);
+      t = t.AddSeconds(seconds);
+      DateTimeToHecDateTime(t, out date, out time);
+    }
   }
 }
