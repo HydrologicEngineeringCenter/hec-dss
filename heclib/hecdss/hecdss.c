@@ -115,7 +115,7 @@ HECDSS_API int hec_dss_record_count(dss_file* dss) {
     if (!dss)
         return 0;
 
-    long long nrec = zinquire(dss->ifltab, "nrec");
+    long long nrec = zinquire(dss->ifltab, "nrec");// does this include aliases?
     
     return (int)nrec;
     }
@@ -156,12 +156,23 @@ HECDSS_API int hec_dss_catalog(dss_file* dss, char* pathBuffer, int* recordTypes
   return maxPaths;
 }
 
-HECDSS_API int hec_dss_tsGetSizes(dss_file* pdss, const char* pathname,
+HECDSS_API int  hec_dss_tsGetDateTimeRange(dss_file* dss, const char* pathname, const int boolFullSet,
+                                            int* firstValidJulian, int* firstSeconds,
+                                            int* lastValidJulian, int* lastSeconds) {
+
+  int status = ztsGetDateTimeRange(dss->ifltab, pathname, boolFullSet, 
+                                  firstValidJulian, firstSeconds, 
+                                  lastValidJulian, lastSeconds);
+
+  return status;
+}
+
+HECDSS_API int hec_dss_tsGetSizes(dss_file* dss, const char* pathname,
     const char* startDate, const char* startTime,
     const char* endDate, const char* endTime,
     int* numberValues) {
-    
-
+  //?? int ztsGetDateTimeRange(long long *ifltab, const char *pathname, int boolFullSet, *int * firstValidJulian, int* firstSeconds,*int * lastValidJulian, int* lastSeconds);
+  
     zStructRecordSize* recordSize = zstructRecordSizeNew(pathname);
     zStructTimeSeries* tss = zstructTsNew(pathname);
 
@@ -170,7 +181,8 @@ HECDSS_API int hec_dss_tsGetSizes(dss_file* pdss, const char* pathname,
     tss->endJulianDate = dateToJulian(endDate);
     tss->endTimeSeconds = timeStringToSeconds(endTime);
 
-    int status = ztsGetSizes(pdss->ifltab, tss, recordSize);
+    ztsProcessTimes(dss->ifltab, tss, 1);
+    int status = ztsGetSizes(dss->ifltab, tss, recordSize);
     if( status ==0 )
     *numberValues = recordSize->logicalNumberValues;
     
@@ -209,7 +221,7 @@ HECDSS_API int hec_dss_tsRetrieve(dss_file* dss, const char *pathname,
                                   const char *startDate, const char *startTime, 
                                   const char* endDate,   const char *endTime,
                                   int *timeArray, double *valueArray, const int arraySize,
-                                  int *numberValuesRead, int* julianBaseDate,
+                                  int *numberValuesRead, int* julianBaseDate,int* timeGranularitySeconds,
                                   char* units,const int unitsLength, char* type,const int typeLength)
 {
     *numberValuesRead = 0; 
@@ -222,15 +234,34 @@ HECDSS_API int hec_dss_tsRetrieve(dss_file* dss, const char *pathname,
     
     const int retrieveDoublesFlag = 2; // get doubles
     const int boolRetrieveAnyQualityNotes = 1;
+    /*int retrieveFlag
+      * A flag indicating how to readand trim data.
+      * For regular interval data :
+    *retrieveFlag = 0 : Adhere to time window provided and generate the time array.
+      * retrieveFlag = -1 : Trim data.Remove missing values at the beginning and end of data set(not inside),
+      *andgenerate the time array.
+      * retrieveFlag = -2 : Adhere to time window provided but do not include time array.
+      * retrieveFlag = -3 : Trim data.Remove missing values at the beginning and end of data set(not inside),
+      * no time array.
+      * For irregular interval data :
+    *retrieveFlag = 0 : Adhere to time window provided.
+      * retrieveFlag = 1 : Retrieve one value previous to start of time window
+      * retrieveFlag = 2 : Retrieve one value after end of time window
+      * retrieveFlag = 3 : Retrieve one value before and one value after time window
+      */
     const int retrieveUsingTimeWindowFlag = 0; // Adhere to time window provided and generate the time array
 
     int status = ztsRetrieve(dss->ifltab, tss, retrieveUsingTimeWindowFlag,retrieveDoublesFlag, boolRetrieveAnyQualityNotes);
     if (status == 0) {
-        *numberValuesRead = tss->numberValues;
         *julianBaseDate = tss->julianBaseDate;
+        *timeGranularitySeconds = tss->timeGranularitySeconds;
+        
         stringCopy(units, unitsLength, tss->units, strlen(tss->units));
         stringCopy(type, typeLength, tss->type, strlen(tss->type));
-        for (int i = 0; i < tss->numberValues; i++) {
+        int size = min(tss->numberValues, arraySize);
+        size = max(0, size);
+        *numberValuesRead = size;
+        for (int i = 0; i < size; i++) {
             timeArray[i] = tss->times[i];
             valueArray[i] = tss->doubleValues[i];
             // to Do quality....
@@ -334,4 +365,9 @@ HECDSS_API int hec_dss_dateToYearMonthDay(const char* date,int*year, int* month,
 
 HECDSS_API int hec_dss_dateToJulian(const char* date){
   return dateToJulian(date);
+}
+
+HECDSS_API void hec_dss_julianToYearMonthDay(const int julian, int* year, int* month,int* day){
+
+  julianToYearMonthDay(julian, year, month, day);
 }

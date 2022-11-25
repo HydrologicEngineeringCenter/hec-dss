@@ -37,7 +37,7 @@ public class DssNative
                                      string startDate, string startTime,
                                      string endDate, string endTime,
                                      int[] timeArray, double[] valueArray, int arraySize,
-                                     ref int numberValuesRead, ref int julianBaseDate,
+                                     ref int numberValuesRead, ref int julianBaseDate, ref int timeGranularitySeconds,
                                      byte[] units, int unitsLength, byte[] type, int typeLength);
 
 
@@ -67,6 +67,10 @@ public class DssNative
 
   [DllImport("hecdss")]
   public static extern int hec_dss_dateToJulian(string date);
+
+  [DllImport("hecdss")]
+  public static extern int hec_dss_julianToYearMonthDay(int julian, ref int year, ref int month, ref int day);
+
 
   [DllImport("hecdss")]
   public static extern int hec_dss_locationRetrieve(IntPtr dss, string fullPath, ref double x, ref double y, ref double z,

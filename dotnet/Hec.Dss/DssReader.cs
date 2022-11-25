@@ -500,25 +500,9 @@ namespace Hec.Dss
     /// <exception cref="Exception"></exception>
     private TimeSeries GetTimeSeries(DssPath dssPath, TimeWindow.ConsecutiveValueCompression compression, DateTime startDateTime = default(DateTime), DateTime endDateTime = default(DateTime), bool PreReadCatalog = true)
     {
-      bool datesProvided = startDateTime != default(DateTime) && endDateTime != default(DateTime);
+      ValidateTsPathExists(dssPath, PreReadCatalog);
 
-      DssPath p = dssPath;
-      if (dssPath is DssPathCondensed)
-        p = new DssPath(((DssPathCondensed)dssPath).GetPath(0).PathWithoutDate);
-      var blockTimeSeries = (CreateTSWrapper(p, startDateTime, endDateTime));
-      Hec.Dss.Time.DateTimeToHecDateTime(startDateTime,out string startDate,out string startTime);
-      Hec.Dss.Time.DateTimeToHecDateTime(endDateTime,out string endDate,out string endTime);
-      int numberValues=0;
-      int status = DssNative.hec_dss_tsGetSizes(this.dss, p.PathWithoutRange, startDate, startTime, endDate, endTime,ref numberValues);
-      
-      // find array size needed.
-      // Daily or larget time steps.
-      //int ztsGetDateRange(long long* ifltab, const char* pathname, int boolFullSet,*int * firstValidJulian, int* lastValidJulian);
-      // less than daily time step use slower method that looks a times.
-      //int ztsGetDateTimeRange(long long *ifltab, const char *pathname, int boolFullSet, *int * firstValidJulian, int* firstSeconds,*int * lastValidJulian, int* lastSeconds);
-      int retrieveFlag = 0;
-      int retrieveDoublesFlag = 2; // get doubles
-      int boolRetrieveQualityNotes = 1;
+      bool datesProvided = startDateTime != default(DateTime) && endDateTime != default(DateTime);
 
 
       Hec.Dss.Time.DateTimeToHecDateTime(startDateTime, out string startDate, out string startTime);
@@ -537,23 +521,27 @@ namespace Hec.Dss
       // find array size needed.
       int status = DssNative.hec_dss_tsGetSizes(this.dss, dssPath.PathWithoutDate, startDate, startTime, endDate, endTime, ref numberValues);
 
-      status = DSS.ZTsRetrieve(ref ifltab, ref blockTimeSeries, retrieveFlag, retrieveDoublesFlag, boolRetrieveQualityNotes);
 
-      // if path is valid, and is time series, (status -1 proably means no data in the time window)
+      int[] times = new int[numberValues];
+      double[] values = new double[numberValues];
+      int numberValuesRead = 0;
+      int julianBaseDate = 0, timeGranularitySeconds = 60;
+      ByteString units = new ByteString(64);
+      ByteString type = new ByteString(64);
 
-      if (status == 0 )
+      status = DssNative.hec_dss_tsRetrieve(dss, dssPath.PathWithoutRange, 
+          startDate, startTime, endDate, endTime, times, values, numberValues,
+         ref numberValuesRead, ref julianBaseDate, ref timeGranularitySeconds,
+         units.Data, units.Length, type.Data, type.Length);
+
+      TimeSeries ts = new TimeSeries();
+      
+      if (status == 0)
       {
-        /* LATER: change TimeSeries.Times and TimeSeries.Values to  Memory<int> and Memory<double>
-         * This can avoid the possible need to resize.
-        var mt = new System.Memory<int>(times);
-        var t = mt.Slice(0, numberValuesRead);
-        var x = t.Span;
-        var ta = x[3];
-        */
-        Array.Resize(ref times,numberValuesRead);
-        ts.Times = Time.DateTimesFromJulianArray(times, timeGranularitySeconds, julianBaseDate);
         Array.Resize(ref values, numberValuesRead);
         ts.Values = values;
+        Array.Resize(ref times, numberValuesRead);
+        ts.Times = Time.DateTimesFromJulianArray(times, timeGranularitySeconds, julianBaseDate);
         ts.DataType = type.ToString();
         ts.Units = units.ToString();
         ts.Path = new DssPath(dssPath.FullPath);
