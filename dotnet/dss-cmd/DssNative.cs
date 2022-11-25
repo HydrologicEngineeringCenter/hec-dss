@@ -34,8 +34,14 @@ public class DssNative
                                      string startDate, string startTime,
                                      string endDate, string endTime,
                                      int[] timeArray, double[] valueArray, int arraySize,
-                                     ref int numberValuesRead, ref int julianBaseDate,
+                                     ref int numberValuesRead, ref int julianBaseDate, ref int timeGranularitySeconds,
                                      byte[] units, int unitsLength, byte[] type, int typeLength);
+
+
+  [DllImport("hecdss")]
+  internal static extern int hec_dss_tsGetDateTimeRange(IntPtr dss, string pathname, int boolFullSet,
+                                            ref int firstValidJulian, ref int firstSeconds,
+                                            ref int lastValidJulian, ref int lastSeconds);
 
    [DllImport("hecdss", CharSet = CharSet.Ansi, ExactSpelling = true)] 
    public static extern int hec_dss_tsGetSizes(IntPtr dss, string pathname,
@@ -58,6 +64,10 @@ public class DssNative
 
   [DllImport("hecdss")]
   public static extern int hec_dss_dateToJulian(string date);
+
+  [DllImport("hecdss")]
+  public static extern int hec_dss_julianToYearMonthDay(int julian, ref int year, ref int month, ref int day);
+
 
   [DllImport("hecdss")]
   public static extern int hec_dss_locationRetrieve(IntPtr dss, string fullPath, ref double x, ref double y, ref double z,

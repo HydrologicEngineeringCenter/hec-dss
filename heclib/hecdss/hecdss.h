@@ -111,5 +111,5 @@ HECDSS_API int hec_dss_tsRetrieve(dss_file* dss, const char* pathname,
   const char* startDate, const char* startTime,
   const char* endDate, const char* endTime,
   int* timeArray, double* valueArray, const int arraySize,
-  int* numberValuesRead, int* julianBaseDate,
+  int* numberValuesRead, int* julianBaseDate, int* timeGranularitySeconds,
   char* units, const int unitsLength, char* type, const int typeLength);

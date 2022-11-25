@@ -20,6 +20,7 @@ namespace Hec.Dss
       Data = Encoding.ASCII.GetBytes(s);
     }
     
+    public int Length { get { return Data.Length; } }
     public byte[] Data { get; }
 
     public void Dispose()
