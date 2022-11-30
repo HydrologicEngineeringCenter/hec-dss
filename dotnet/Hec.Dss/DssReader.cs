@@ -431,9 +431,9 @@ namespace Hec.Dss
         pathName = (path as DssPathCondensed).GetComprisingDSSPaths()[0].FullPath;
       }
 
-      int rtInt = DSS.ZDataType(ref ifltab, pathName);
+      int rtInt = DssNative.hec_dss_dataType(dss, path.FullPath);
 
-      if (rtInt == -1)
+      if (rtInt <=0)
       {
         //Try again, but slower version.
 
@@ -495,8 +495,9 @@ namespace Hec.Dss
       // find array size needed.
       int status = DssNative.hec_dss_tsGetSizes(this.dss, dssPath.PathWithoutDate, startDate, startTime, endDate, endTime, ref numberValues);
 
-
-      int[] times = new int[numberValues];
+      
+      
+      int[] times = new int [numberValues];
       double[] values = new double[numberValues];
       int numberValuesRead = 0;
       int julianBaseDate = 0, timeGranularitySeconds = 60;
@@ -512,10 +513,17 @@ namespace Hec.Dss
       
       if (status == 0)
       {
+        /* LATER: change TimeSeries.Times and TimeSeries.Values to  Memory<int> and Memory<double>
+         * This can avoid the possible need to resize.
+        var mt = new System.Memory<int>(times);
+        var t = mt.Slice(0, numberValuesRead);
+        var x = t.Span;
+        var ta = x[3];
+        */
+        Array.Resize(ref times,numberValuesRead);
+        ts.Times = Time.DateTimesFromJulianArray(times, timeGranularitySeconds, julianBaseDate);
         Array.Resize(ref values, numberValuesRead);
         ts.Values = values;
-        Array.Resize(ref times, numberValuesRead);
-        ts.Times = Time.DateTimesFromJulianArray(times, timeGranularitySeconds, julianBaseDate);
         ts.DataType = type.ToString();
         ts.Units = units.ToString();
         ts.Path = new DssPath(dssPath.FullPath);

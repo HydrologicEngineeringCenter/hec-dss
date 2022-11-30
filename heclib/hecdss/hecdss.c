@@ -339,6 +339,12 @@ HECDSS_API int hec_dss_pdRetrieveInfo(dss_file* dss, const char* pathname,
 
 }
 
+HECDSS_API int hec_dss_dataType(dss_file* dss, const char* pathname) {
+
+  return zdataType(dss->ifltab, pathname);
+}
+
+
 HECDSS_API int hec_dss_pdRetrieve(dss_file* dss, const char* pathname,
   double* doubleOrdinates, double* valdoubleValues, const int arraySize,
   int* numberOrdinates, int* numberCurves,
