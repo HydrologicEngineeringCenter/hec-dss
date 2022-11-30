@@ -162,51 +162,8 @@ namespace Hec.Dss
       Cover 
     };
 
-    /// <summary>
-    /// Flags for retrieving regular Time Series
-    /// </summary>
-    public enum RegularRetrieve 
-    {
-      /// <summary>
-      /// Adhere to time window provided and generate the time array.
-      /// </summary>
-      AdhereWithTimeArray,
-      /// <summary>
-      /// Trim data.  Remove missing values at the beginning and end of data set (not inside), and generate the time array.
-      /// </summary>
-      TrimWithTimeArray,
-      /// <summary>
-      /// Adhere to time window provided but do not include time array.
-      /// </summary>
-      AdhereWithoutTimeArray,
-      /// <summary>
-      /// Trim data.  Remove missing values at the beginning and end of data set (not inside), no time array.
-      /// </summary>
-      TrimWithoutTimeArray
-    };
 
-    /// <summary>
-    /// Flags for retrieving irregular Time Series
-    /// </summary>
-    public enum IrregularRetrieve 
-    {
-      /// <summary>
-      /// Adhere to time window provided.
-      /// </summary>
-      Adhere,
-      /// <summary>
-      /// Retrieve one value previous to start of time window.
-      /// </summary>
-      RetrieveBefore,
-      /// <summary>
-      /// Retrieve one value after end of time window.
-      /// </summary>
-      RetrieveAfter,
-      /// <summary>
-      /// Retrieve one value before and one value after time window.
-      /// </summary>
-      RetrieveBeforeAndAfter
-    };
+    
 
     public enum ConsecutiveValueCompression
     { 
@@ -223,7 +180,7 @@ namespace Hec.Dss
       /// </summary>
       ZeroAndNoData,
       /// <summary>
-      /// Trim out (or never read) spans of consecutive data (keep first consecutive data last)
+      /// Trim out (or never read) spans of consecutive data (keep first consecutive data and last)
       /// </summary>
       AnyValue
     }
