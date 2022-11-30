@@ -340,6 +340,8 @@ namespace Hec.Dss
 
 
       int newSize = last - first + 1;
+      if (newSize == Values.Length)
+        return; 
       double[] tempValues = new double[newSize];
       DateTime[] tempDates = new DateTime[newSize];
       int[] tempQuality = new int[newSize];
