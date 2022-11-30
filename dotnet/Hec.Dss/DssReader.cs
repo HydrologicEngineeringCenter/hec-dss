@@ -440,7 +440,7 @@ namespace Hec.Dss
         var catalog = GetCatalog();
         var cmp = new DssPath.DatelessComparer();
         pathName = catalog.Where(p => cmp.Equals(p, path)).First().PathWithoutRange;
-        rtInt = DSS.ZDataType(ref ifltab, pathName);
+        rtInt = DssNative.hec_dss_dataType(dss, path.FullPath);
       }
 
       return RecordTypeFromInt(rtInt);
