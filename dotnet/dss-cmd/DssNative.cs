@@ -28,6 +28,9 @@ public class DssNative
    [DllImport("hecdss")]
    public static extern void hec_dss_deprecated_ifltab_print(IntPtr ifltab);
 
+  [DllImport("hecdss")]
+  public static extern int hec_dss_dataType(IntPtr dss, string pathname);
+
 
    [DllImport("hecdss", CharSet = CharSet.Ansi, ExactSpelling = true)]
    public static extern int hec_dss_tsRetrieve(IntPtr dss, string pathname,

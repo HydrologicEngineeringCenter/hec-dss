@@ -244,6 +244,10 @@ namespace Hec.Dss
       }
     }
 
+    public override string ToString()
+    {
+      return FullPath;
+    }
 
     public static bool EqualsDateLess(DssPath x, DssPath y)
     {

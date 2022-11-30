@@ -84,10 +84,21 @@ HECDSS_API int hec_dss_tsGetSizes(dss_file* pdss, const char* pathname,
 /// <param name="type">output: type of data: PER-AVER, PER-CUM,INST-VAL,INST-CUM https://www.hec.usace.army.mil/confluence/dssvuedocs/latest/introduction/time-series-conventions</param>
 /// <param name="typeLength">input: size of units buffer</param>
 /// <returns>zero on success</returns>
-HECDSS_API int hec_dss_tsRetrieveInfo(dss_file* pdss, const char* pathname, char* units,
+HECDSS_API int hec_dss_tsRetrieveInfo(dss_file* dss, const char* pathname, char* units,
   const int unitsLength, char* type, const int typeLength);
 
 
+/// <summary>
+/// Returns the DSS dataType as an integer
+/// A return value of zero or negative indicates an error finding the return type
+/// </summary>
+/// <param name="pdss"></param>
+/// <param name="pathname"></param>
+/// <returns></returns>
+HECDSS_API int hec_dss_dataType(dss_file* dss, const char* pathname);
+
+
+  
 /// <summary>
 /// use hec_dss_tsRetrieve to read time series data
 /// </summary>

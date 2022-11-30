@@ -1,10 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net472;net5.0</TargetFrameworks>
+    <TargetFrameworks>net6.0</TargetFrameworks>
     <Platforms>AnyCPU</Platforms>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <AssemblyName>Hec.Dss</AssemblyName>
-    <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch> 
+    <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
+    <UserSecretsId>9386b4da-9131-4e8a-a405-dd8b884ef60d</UserSecretsId> 
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\dss-cmd\DssNative.cs" Link="DssNative.cs" />
