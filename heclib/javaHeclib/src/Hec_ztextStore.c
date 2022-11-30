@@ -159,11 +159,11 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1ztextStore(
 	if (fid) {
 		stringArray = (*env)->GetObjectField (env, j_textContainer, fid);
 		if (stringArray) {
-			len = (int)(*env)->GetArrayLength(env, stringArray);
-			if (len > 0) {
+			int labelCount = (int)(*env)->GetArrayLength(env, stringArray);
+			if (labelCount > 0) {
 				//  Count the number of characters first
 				count = 0;
-				for (i=0; i<len; i++) {
+				for (i=0; i< labelCount; i++) {
 					jstr = (jstring) (*env)->GetObjectArrayElement(env, stringArray, i);
 					if (!jstr) break;
 					cstr = (*env)->GetStringUTFChars(env, jstr, 0);
@@ -182,7 +182,7 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1ztextStore(
 					textStruct->labels = (char *)calloc(count, 1);
 					textStruct->allocated[zSTRUCT_TX_labels] = 1;
 					count = 0;
-					for (i=0; i<len; i++) {
+					for (i=0; i< labelCount; i++) {
 						jstr = (jstring) (*env)->GetObjectArrayElement(env, stringArray, i);
 						cstr = (*env)->GetStringUTFChars(env, jstr, 0);
 						if (cstr) {
