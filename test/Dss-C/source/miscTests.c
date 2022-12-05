@@ -34,6 +34,18 @@ int stringTests() {
 	if (trimmedUnits)
 		free(trimmedUnits);
 
+
+
+	char* units3 = "  M "; // blanks both sides 
+	trimmedUnits = mallocAndCopyTrim(units3);
+	len = strlen(trimmedUnits);
+	if (len != 1) {
+		free(trimmedUnits);
+		return STATUS_NOT_OKAY;
+	}
+	if (trimmedUnits)
+		free(trimmedUnits);
+
 	return STATUS_OKAY;
 }
 
