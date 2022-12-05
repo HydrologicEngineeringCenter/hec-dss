@@ -38,6 +38,7 @@ char *mallocAndCopyTrim(const char *copyFromString)
 	int len;
 	int i;
 	int istart;
+	int end;
 	int size;
 	int ipos;
 
@@ -54,39 +55,19 @@ char *mallocAndCopyTrim(const char *copyFromString)
 		copyTo = (char *)calloc((size_t)1, CHAR_SIZE);
 		return copyTo;
 	}
+	int trimLen = trimPositions(copyFromString, &istart, &end);
 
-	//  Remove leading blanks
-	istart = 0;
-	for (i = 0; i < len; i++) {
-		if (copyFromString[i] == ' ') {
-			istart++;
-		}
-		else {
-			break;
-		}
-	}
 
 	//  All blanks?
-	if (istart == len) {
+	if (trimLen==0) {
 		copyTo = (char *)calloc((size_t)1, CHAR_SIZE);
 		return copyTo;
 	}
 
-	//  Remove trailing blanks
-	if (copyFromString[len-1] == ' ') {
-		len--;
-		for (i=len; i>0; i--) {
-			if (copyFromString[i] != ' ') {
-				len = i+1;
-				break;
-			}
-		}
-	}
-
 
 	//   Allocate memory
-	size = len - istart + 1;
-	copyTo = (char *)malloc((size_t)size);
+	size = end - istart + 2;
+	copyTo = (char *)calloc((size_t)size, CHAR_SIZE);
 
 	if (!copyTo) {
 		fprintf(stderr, "\n\nExhausted Memory - mallocAndCopy, size: %d\n\n", len);
@@ -94,7 +75,7 @@ char *mallocAndCopyTrim(const char *copyFromString)
 	}
 
 	ipos = 0;
-	for (i= istart; i<len; i++) {
+	for (i= istart; i<=end; i++) {
 		copyTo[ipos++] = copyFromString[i];
 	}
 

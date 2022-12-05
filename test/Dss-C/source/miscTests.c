@@ -6,27 +6,34 @@
 #include "zStructTimeSeries.h"
 #include "TestDssC.h"
 
-
+int stringTests();
 int miscTests()
 {
-	long long ifltab[250];
-	char ctime[20];
-	zStructTimeSeries *tss1;
-
-	int status;
-	
-	status = STATUS_OKAY;
-
-	status = hec_dss_zopen(ifltab, "Sample7.dss");
-	if (status != STATUS_OKAY) return status;
-
-	tss1 = zstructTsNewTimes("/Basin/Location/Flow//1Hour/Java Sample/", "20Jan2010", "1000", "30Jan2010", "1200"); 
-	status = ztsRetrieve(ifltab, tss1, -1, 1, 0);
-	if (status != STATUS_OKAY) return status; 
-
-	secondsToTimeString(tss1->startTimeSeconds, 0, 0,  ctime, sizeof(ctime));
-	printf("Time = %s\n", ctime);
-
+	int status = stringTests();
 	return status;
+}
+int stringTests() {
+
+	char* units = "M    ";
+	char* trimmedUnits = mallocAndCopyTrim(units);
+	if (strlen(trimmedUnits) != 1) {
+		free(trimmedUnits);
+		return STATUS_NOT_OKAY;
+	}
+	
+	if (trimmedUnits)
+		free(trimmedUnits);
+	
+	char* units2 = "    "; // all blanks return \0
+	trimmedUnits = mallocAndCopyTrim(units2);
+	int len = strlen(trimmedUnits);
+	if (len != 0) {
+		free(trimmedUnits);
+		return STATUS_NOT_OKAY;
+	}
+	if (trimmedUnits)
+		free(trimmedUnits);
+
+
 }
 
