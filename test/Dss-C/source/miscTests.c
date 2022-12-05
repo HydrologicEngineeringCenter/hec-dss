@@ -34,6 +34,6 @@ int stringTests() {
 	if (trimmedUnits)
 		free(trimmedUnits);
 
-
+	return STATUS_OKAY;
 }
 
