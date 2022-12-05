@@ -71,6 +71,7 @@ void copyTwoStrings(char *mess, int sizeofMess, const char* str1, const char* st
 int compareTss (long long *ifltab, zStructTimeSeries* tss1, zStructTimeSeries* tss2, const char *str);
 int comparePDs (long long *ifltab, zStructPairedData *pds1, zStructPairedData *pds2, const char *str);
 int testMisc();
+int miscTests();
 int testDateTime();
 int testDelete(const char *dssFilename7, const char *dssFilename6);
 int runTests(long long* ifltab);
