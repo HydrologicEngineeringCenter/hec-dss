@@ -16,7 +16,7 @@ int main()
 
 
 	//  Open the DSS file; Create if it doesn't exist
-	status = zopen(ifltab, "SamplePairedData.dss");
+	status = hec_dss_zopen(ifltab, "SamplePairedData.dss");
 	if (status != STATUS_OKAY) return status;
 
 	//  Write a rating table data set.  Gen up the data

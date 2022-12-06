@@ -10,7 +10,7 @@
 
 	fvalues[0] = 3.14159;
 
-	status = zopen(ifltab, "ts_write.dss");
+	status = hec_dss_zopen(ifltab, "ts_write.dss");
 	if (status != STATUS_OKAY)
 	{
 		printf("\nError:  Yikes.. bad news with zopen(ts_write.dss)");

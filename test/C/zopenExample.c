@@ -11,7 +11,7 @@ int main(int argc, char* argv[])
 	char fileOut[] = "zopenExampleProcessed.dss";
 
 	 
-	status = zopen(ifltabIn, fileIn);
+	status = hec_dss_zopen(ifltabIn, fileIn);
 	if (status != 0) {
 		if (zmessageAvailable(ifltabIn)) {
 			printf("%s\n", zgetMessage(ifltabIn));
@@ -20,7 +20,7 @@ int main(int argc, char* argv[])
 		return -1;
 	}
 	//  Now open the file we are writing to.  It does not have to exist.
-	status = zopen(ifltabOut, fileOut);
+	status = hec_dss_zopen(ifltabOut, fileOut);
 	if (status != 0) {
 		if (zmessageAvailable(ifltabOut)) {
 			printf("%s\n", zgetMessage(ifltabOut));

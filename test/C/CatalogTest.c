@@ -34,7 +34,7 @@ int main(int argc, char* argv[])
 			printf("*** Error - DSS file must exist for this sample.  File: %s\n", filename);
 			return -1;
 		}
-		status = zopen(ifltab, filename);
+		status = hec_dss_zopen(ifltab, filename);
 		if (status != STATUS_OKAY) return status;
 
 		//  Get a regular full sorted catalog and print first 5 pathnames

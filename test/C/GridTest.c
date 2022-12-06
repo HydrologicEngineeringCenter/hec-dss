@@ -183,7 +183,7 @@ int main(int argc, char *argv[]) {
 	if (!verify)
 		remove(dssFile);
 	memset(ifltab7, 0, 250 * sizeof(long long));
-	status = zopen(ifltab7, dssFile);
+	status = hec_dss_zopen(ifltab7, dssFile);
 	if (status != STATUS_OKAY) {
 		printf("Error opeing file: %d", status);
 		return -1;

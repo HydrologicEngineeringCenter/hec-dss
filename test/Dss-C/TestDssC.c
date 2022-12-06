@@ -11,7 +11,7 @@ int runTheTests();
 int gridMemoryTest() {
 
 	long long ifltab[250] = {0};
-	int status = zopen(ifltab, "2017-06-28_event.dss");
+	int status = hec_dss_zopen(ifltab, "2017-06-28_event.dss");
 	if (status != 0) {
 		printf("Error during open.  status= %d\n", status);
 		return status;
@@ -238,8 +238,8 @@ int runTheTests() {
 
 	//catStruct = zstructCatalogNew(); 
 
-	//status = zopen(ifltab7, "C:\\Users\\q0hecwjc\\Desktop\\funny.dss");
-	//status = zopen(ifltab7, "C:\\Users\\q0hecwjc\\Desktop\\db7.dss");
+	//status = hec_dss_zopen(ifltab7, "C:\\Users\\q0hecwjc\\Desktop\\funny.dss");
+	//status = hec_dss_zopen(ifltab7, "C:\\Users\\q0hecwjc\\Desktop\\db7.dss");
 	//status = zcatalog((long long*)ifltab7, catStruct->pathWithWildChars, catStruct, 0);
 
 	//testCatalog();
@@ -248,7 +248,7 @@ int runTheTests() {
 	//stringCopy(fileName7, sizeof(fileName7), "C:/Users/q0hecwjc/Desktop/snow.2016.01.dss", sizeof(fileName7));	
 	//stringCopy(fileName7, sizeof(fileName7), "C:/Users/q0hecwjc/Desktop/airtemp.2016.04.dss", sizeof(fileName7));	
 	//stringCopy(fileName7, sizeof(fileName7), "C:/Users/q0hecwjc/Documents/test.dss", sizeof(fileName7));
-	//status = zopen(ifltab7, fileName7);
+	//status = hec_dss_zopen(ifltab7, fileName7);
 	//if (status) return status;
 	//status =spatialDateTime ("01DEC2016:2400", &jul, &jul2);
 	//status = testAdHoc2();
@@ -273,7 +273,7 @@ int runTheTests() {
 	stringCopy(fileName7, sizeof(fileName7), "testDss7.dss", sizeof(fileName7));
 	remove(fileName7);
 
-	status = zopen(ifltab7, fileName7);
+	status = hec_dss_zopen(ifltab7, fileName7);
 	if (status) return status;
 
 	//status = testztsStruct1(ifltab7);
@@ -311,7 +311,7 @@ int runTheTests() {
 	remove(fileName6);
 	status = zopen6(ifltab6, fileName6);
 	if (status != STATUS_OKAY) return status;
-	status = zopen(ifltab7, fileName7);
+	status = hec_dss_zopen(ifltab7, fileName7);
 	if (status) return status;
 	status = testIO_Interface(ifltab7, ifltab6);
 	if (status != STATUS_OKAY) return status;
@@ -341,7 +341,7 @@ int runTheTests() {
 
 	//  Try the tests with the file detuned
 	remove(fileName7);
-	status = zopen(ifltab7, fileName7);
+	status = hec_dss_zopen(ifltab7, fileName7);
 	if (status != STATUS_OKAY) return status;
 	zsetFile(ifltab7, "detune", "", 1);
 
@@ -356,7 +356,7 @@ int runTheTests() {
 	//  Try the tests with the space reclamation off
 	printf("\n\nDetuned tests passed....\nNow turn off space reclamation\n\n\n");
 	remove(fileName7);
-	status = zopen(ifltab7, fileName7);
+	status = hec_dss_zopen(ifltab7, fileName7);
 	if (status != STATUS_OKAY) return status;
 	zsetFile(ifltab7, "reclaim", "", 0);
 
@@ -372,7 +372,7 @@ int runTheTests() {
 	//  Try the tests with the file detuned and space reclamation off
 	printf("\n\nTests passed....\nNow detune and turn off space reclamation\n\n\n");
 	remove(fileName7);
-	status = zopen(ifltab7, fileName7);
+	status = hec_dss_zopen(ifltab7, fileName7);
 	if (status != STATUS_OKAY) return status;
 	zsetFile(ifltab7, "detune", "", 1);
 	zsetFile(ifltab7, "reclaim", "", 0);
@@ -416,7 +416,7 @@ int writeDoubleArray() {
 	struct1->numberDoubleArray = nvalues;
 
 	deleteFile("C:/temp/testarray.dss");
-	int status = zopen(ifltab, "C:/temp/testarray.dss");
+	int status = hec_dss_zopen(ifltab, "C:/temp/testarray.dss");
 
 	status = zarrayStore(ifltab, struct1);
 	if (status != STATUS_OKAY) {
@@ -435,7 +435,7 @@ int multipleWriteDeleteSlowDown() {
 	int status, i;
 
 	deleteFile("C:/temp/testpd.dss");
-	status = zopen(ifltab, "C:/temp/testpd.dss");
+	status = hec_dss_zopen(ifltab, "C:/temp/testpd.dss");
 	//zsetfi_(ifltab,"reclaim", " ", RECLAIM_NONE,&i,&status,7,1);
 
 	//zsetfi_(ifltab, "FMULT", "ON", &number, &status,
@@ -486,7 +486,7 @@ int SolarisTesting()
 		fvalues[i] = (float)(i + 1);
 	}
 
-	int status = zopen(ifltab, "charlong_7.dss");
+	int status = hec_dss_zopen(ifltab, "charlong_7.dss");
 	if (status) return status;
 
 
@@ -513,7 +513,7 @@ int UnitPaddingIssue()
 	long long ifltab[250];
 	char* path = "//Dry Creek/Flow/01Feb2014/1Hour/N0H0B0";
 	zStructTimeSeries* tss1 = zstructTsNew(path);
-	int status = zopen(ifltab, "k7-small.dss");
+	int status = hec_dss_zopen(ifltab, "k7-small.dss");
 	if (status) return status;
 
 	status = ztsRetrieve(ifltab, tss1, -1, 1, 0);
@@ -524,7 +524,7 @@ int UnitPaddingIssue()
 
 	long long ifltab2[250];
 	deleteFile("k7-small-updated.dss");
-	status = zopen(ifltab2, "k7-small-updated.dss");
+	status = hec_dss_zopen(ifltab2, "k7-small-updated.dss");
 	tss1->pathname = "//Dry Creek/Flow/01Feb2014/1Hour/karl";
 	ztsStore(ifltab2, tss1, 0);
 	zstructFree(tss1);
@@ -597,7 +597,7 @@ int units_issue_126()
 	zStructTimeSeries* tss2 = zstructTsNew(path);
 	long long ifltab2[250];
 	memset(ifltab2,0,sizeof(ifltab2));
-	zopen(ifltab2, dssFileName);
+	hec_dss_zopen(ifltab2, dssFileName);
 	status = ztsRetrieve(ifltab2, tss2, -1, 1, 0);
 
 	printf("\nunits= '%s'", tss2->units);

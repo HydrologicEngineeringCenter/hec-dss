@@ -17,7 +17,7 @@ int miscTests()
 	
 	status = STATUS_OKAY;
 
-	status = zopen(ifltab, "Sample7.dss");
+	status = hec_dss_zopen(ifltab, "Sample7.dss");
 	if (status != STATUS_OKAY) return status;
 
 	tss1 = zstructTsNewTimes("/Basin/Location/Flow//1Hour/Java Sample/", "20Jan2010", "1000", "30Jan2010", "1200"); 

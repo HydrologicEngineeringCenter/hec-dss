@@ -53,7 +53,7 @@ int testCatalog()
 	}
 	
 	//  Open the file
-	status = zopen(ifltab, dssFilename);
+	status = hec_dss_zopen(ifltab, dssFilename);
 	if (zcheckStatus(ifltab, status, 1, "Fail in testCatalog Loc 2, zopen status ")) return status; 
 
 	//  Get a complete catalog (all pathnames in the DSS file)
@@ -100,7 +100,7 @@ int testCatalog()
 	}
 	
 	//  Open the file
-	status = zopen(ifltab, dssFilename);
+	status = hec_dss_zopen(ifltab, dssFilename);
 	if (zcheckStatus(ifltab, status, 1, "Fail in testCatalog Loc 2, zopen status ")) return status; 
 
 	//  Get a complete catalog (all pathnames in the DSS file)
@@ -400,7 +400,7 @@ int testCatalog()
 	}
 	
 	//  Open the file
-	status = zopen(ifltab, dssFilename);
+	status = hec_dss_zopen(ifltab, dssFilename);
 	if (zcheckStatus(ifltab, status, 1, "Fail in testCatalog Loc 42, zopen status ")) return status; 
 
 	//  Get a complete catalog (all pathnames in the DSS file)

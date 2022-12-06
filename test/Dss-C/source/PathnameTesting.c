@@ -17,7 +17,7 @@ int PathnameTesting(char* dssFileName, int dssVersion)
 	deleteFile(dssFileName);
 	
 	if (dssVersion == 7)
-		status = zopen(ifltab, dssFileName);
+		status = hec_dss_zopen(ifltab, dssFileName);
 	else if (dssVersion == 6)
 		status = zopen6(ifltab, dssFileName);
 	else {

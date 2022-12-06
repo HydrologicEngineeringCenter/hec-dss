@@ -14,7 +14,7 @@ namespace Hec {
 				pin_ptr<long long> itfltabPinned = &ifltab[0];
 				IntPtr marshallToDssFileName = Marshal::StringToHGlobalAnsi(DSSFileName);
 				char * ptrToDssFileName = static_cast<char*>(marshallToDssFileName.ToPointer());
-				int status = zopen(itfltabPinned, ptrToDssFileName);
+				int status = hec_dss_zopen(itfltabPinned, ptrToDssFileName);
 				Marshal::FreeHGlobal(marshallToDssFileName);
 				return status;
 			}

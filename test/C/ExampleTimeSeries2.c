@@ -17,7 +17,7 @@ int main()
 	int ich;
 
 	//  Open the DSS file; Create if it doesn't exist
-	status = zopen(ifltab, "ExampleTimeSeries2.dss");
+	status = hec_dss_zopen(ifltab, "ExampleTimeSeries2.dss");
 	if (status != STATUS_OKAY) return status;
 
 

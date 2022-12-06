@@ -12,7 +12,7 @@ int main()
 	int status;
 
 	//  Open the DSS file.  
-	status = zopen(ifltab, "SampleText1.dss");
+	status = hec_dss_zopen(ifltab, "SampleText1.dss");
 	if (status != STATUS_OKAY) return status;
 
 	//  Store the text string
