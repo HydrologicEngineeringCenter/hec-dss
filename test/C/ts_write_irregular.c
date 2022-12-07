@@ -20,7 +20,7 @@ int main()
 	itimes[2] = 1440 * 2;
 
 	count = 3;
-	status = zopen(ifltab, "ts_write_irregular.dss");
+	status = hec_dss_zopen(ifltab, "ts_write_irregular.dss");
 	if (status != STATUS_OKAY)
 	{
 		printf("\nError:  Yikes.. bad news with zopen(ts_write_irregular.dss)");

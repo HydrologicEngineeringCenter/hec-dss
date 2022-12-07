@@ -21,7 +21,7 @@ int Bulletin_17C_SSP_Issue()
 	memset(ifltab, 0, sizeof(ifltab));
 	//  Open the DSS file; Create if it doesn't exist
 	
-	status = zopen(ifltab, "Bulletin_17C_Examples.dss");
+	status = hec_dss_zopen(ifltab, "Bulletin_17C_Examples.dss");
 	if (status != STATUS_OKAY) return status;
 	  tss = zstructTsNew("/Santa Cruz River/Lochiel/FLOW-ANNUAL PEAK//IR-CENTURY/USGS/");
 	  tss->boolRetrieveAllTimes = 1;

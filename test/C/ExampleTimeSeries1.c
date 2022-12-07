@@ -14,7 +14,7 @@ int main()
 
     memset(ifltab,0,sizeof(ifltab));
 	//  Open the DSS file; Create if it doesn't exist
-	status = zopen(ifltab, "ExampleTimeSeries1.dss");
+	status = hec_dss_zopen(ifltab, "ExampleTimeSeries1.dss");
 	if (status != STATUS_OKAY) return status;
 
 	//  Write a regular interval data set.  Gen up the data

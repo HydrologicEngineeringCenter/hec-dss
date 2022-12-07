@@ -16,7 +16,7 @@ int main()
 	itimes[1] = 1440;
 
      zsetMessageLevel(10,20);
-	status = zopen(ifltab, "ExampleSecondGranularity.dss");
+	status = hec_dss_zopen(ifltab, "ExampleSecondGranularity.dss");
 	if (status != STATUS_OKAY) return status;
 
 	tss2 = zstructTsNewIrregDoubles("/Basin/Location/Flow//~1Day/C Example/", dvalues, 2, itimes, SECOND_GRANULARITY, "20April2012", "cfs", "Inst-Val");	

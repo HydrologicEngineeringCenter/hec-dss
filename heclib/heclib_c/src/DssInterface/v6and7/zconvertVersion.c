@@ -57,7 +57,7 @@ int zconvertVersion(const char* fileNameFrom, const char* fileNameTo)
 				zdssErrorSeverity.WARNING_NO_FILE_ACCESS, "", fileNameTo);
 	}
 
-	status = zopen(ifltabFrom, fileNameFrom);
+	status = hec_dss_zopen(ifltabFrom, fileNameFrom);
 	if (zisError(status)) {
 		printf("Error opening file %s\n", fileNameFrom);
 		return status;
@@ -81,7 +81,7 @@ int zconvertVersion(const char* fileNameFrom, const char* fileNameTo)
 				zdssErrorCodes.FILE_EXISTS, 0, 0,
 				zdssErrorSeverity.WARNING_NO_FILE_ACCESS, fileNameTo, "");
 		}
-		status = zopen(ifltabTo, fileNameTo);
+		status = hec_dss_zopen(ifltabTo, fileNameTo);
 	}
 
 	if (status == 0) {

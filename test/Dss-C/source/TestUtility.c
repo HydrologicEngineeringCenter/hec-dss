@@ -18,7 +18,7 @@
 int CheckPathnames(char* dssFileName)
 {
 	long long ifltab[250];
-	int status = zopen(ifltab, dssFileName);
+	int status = hec_dss_zopen(ifltab, dssFileName);
 	if (status < 0) {
 		printf("Error opening file.  status = %d\n", status);
 		return status;
@@ -38,7 +38,7 @@ int PrintHashTable(const char* dssFilename) {
 	long long ifltab[250];
 	long long tableHash=-1;
 	long long binAddress;
-	int status = zopen(ifltab, dssFilename);
+	int status = hec_dss_zopen(ifltab, dssFilename);
 	if (status < 0) {
 		printf("Error opening file.  status = %d\n", status);
 		return status;
@@ -68,7 +68,7 @@ int PrintHashTable(const char* dssFilename) {
 int CheckFile(char* dssFileName)
 {
 	long long ifltab[250];
-	int status = zopen(ifltab, dssFileName);
+	int status = hec_dss_zopen(ifltab, dssFileName);
 	if (status < 0) {
 		printf("Error opening file.  status = %d\n", status);
 		return status;
@@ -82,7 +82,7 @@ int CheckFile(char* dssFileName)
 int CheckLinks(char* dssFileName)
 {
 	long long ifltab[250];
-	int status = zopen(ifltab, dssFileName);
+	int status = hec_dss_zopen(ifltab, dssFileName);
 	if (status < 0) {
 		printf("Error opening file.  status = %d\n", status);
 		return status;
@@ -102,7 +102,7 @@ int CheckLinks(char* dssFileName)
 int PrintCatalog(char* dssFileName, int details){
 
 	long long ifltab[250];
-	int status = zopen(ifltab, dssFileName);
+	int status = hec_dss_zopen(ifltab, dssFileName);
 	if (status != 0) {
 		printf("Error during open.  status= %d\n", status);
 		return status;
@@ -140,7 +140,7 @@ zstructFree(catStruct);
 }
 int Zqueeze(char* dssFileName) {
 	long long ifltab[250];
-	int status = zopen(ifltab, dssFileName);
+	int status = hec_dss_zopen(ifltab, dssFileName);
 	if (status != 0) {
 		printf("Error during open.  status= %d\n", status);
 		return status;
@@ -156,7 +156,7 @@ int Zqueeze(char* dssFileName) {
 int ReadTimeSeries(char* dssFileName)
 {
 	long long ifltab[250];
-	int status = zopen(ifltab, dssFileName);
+	int status = hec_dss_zopen(ifltab, dssFileName);
 	zStructCatalog* catStruct = zstructCatalogNew();
 	status = zcatalog(ifltab, (const char*)0, catStruct, 1);
 	zStructTimeSeries* tss;
@@ -193,7 +193,7 @@ int WriteTimeSeries(char* dssFileName, int version, int timeSeriesCount, int tim
 	if (version == 6)
 		status = zopen6(ifltab, dssFileName);
 	else
-		status = zopen(ifltab, dssFileName);
+		status = hec_dss_zopen(ifltab, dssFileName);
 
 	if (status != STATUS_OKAY) return status;
 
@@ -275,7 +275,7 @@ int Lock(char* dssFileName, int sleepSeconds) {
 	{
 		ifltab[i] = 0;
 	}
-	int status = zopen(ifltab, dssFileName);
+	int status = hec_dss_zopen(ifltab, dssFileName);
 
 	printf("\nattempting to lock file %s", dssFileName);
 
@@ -331,7 +331,7 @@ int CheckLocking(char* dssFileName) {
 	printf("\ncheck-lock\n");
 	
 
-	status = zopen(ifltab, dssFileName);
+	status = hec_dss_zopen(ifltab, dssFileName);
 	PrintTable(ifltab);
 
 	if (zgetVersion(ifltab) == 6) {
@@ -377,7 +377,7 @@ int Export(char* dssFileName, char* path, int metaDataOnly)
 {
 	long long ifltab[250];
 	char cdate[13], ctime[10];
-	int status = zopen(ifltab, dssFileName);
+	int status = hec_dss_zopen(ifltab, dssFileName);
 	zStructRecordSize* rs = zstructRecordSizeNew(path);
 
 	status = zgetRecordSize(ifltab, rs);
@@ -429,7 +429,7 @@ int Export(char* dssFileName, char* path, int metaDataOnly)
 int ReadGrids(const char* file1){
 	long long start_time = getCurrentTimeMillis();
 	long long ifltab1[250];
-	int status = zopen(ifltab1, file1);
+	int status = hec_dss_zopen(ifltab1, file1);
 
 	zStructCatalog* catStruct = zstructCatalogNew();
 	status = zcatalog(ifltab1, (const char*)0, catStruct, 1);
@@ -481,7 +481,7 @@ int ImportProfile(const char* csvFilename, const char* dssFilename, const char* 
 	tss->allocated[zSTRUCT_TS_type] = 1;
 
 	long long ifltab[250];
-	int status = zopen(ifltab, dssFilename);
+	int status = hec_dss_zopen(ifltab, dssFilename);
 	if (status != 0)
 	{
 		rval = -1;

@@ -15,7 +15,7 @@
 	int boolRetrieveQualityNotes = 0;
 	float expected;
 
-	status = zopen(ifltab, "v6-pc.dss");
+	status = hec_dss_zopen(ifltab, "v6-pc.dss");
 	zsetMessageLevel(6, 17);
 	if (status != STATUS_OKAY)
 	{

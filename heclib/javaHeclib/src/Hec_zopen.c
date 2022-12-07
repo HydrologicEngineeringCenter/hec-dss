@@ -49,7 +49,7 @@ JNIEXPORT int JNICALL Java_hec_heclib_util_Heclib_Hec_1zopen
 		*status = zopen6((long long*)ifltab, fileName);
 	}
 	else {
-		*status = zopen ((long long*)ifltab, fileName);
+		*status = hec_dss_zopen ((long long*)ifltab, fileName);
 	}
 
 	if (zmessageLevel((long long*)ifltab, MESS_METHOD_JNI_ID, MESS_LEVEL_INTERNAL_DIAG_1)) {		

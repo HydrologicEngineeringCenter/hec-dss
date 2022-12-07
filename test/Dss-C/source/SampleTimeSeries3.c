@@ -39,7 +39,7 @@ int sampleTimeSeries3()
 	tss1 = zstructTsNewRegDoubles("/Basin/Location/Flow//1Hour/Quality/", dvalues, 200,"20Jan2010", "2400", "cfs", "Inst-Val");
 	tss1->quality = quality;
 
-	status = zopen(ifltab, "Sample7.dss");
+	status = hec_dss_zopen(ifltab, "Sample7.dss");
 	status = ztsStore(ifltab, tss1, 0);
 
 	tss2 = zstructTsNew("/Basin/Location/Flow//1Hour/Quality/");

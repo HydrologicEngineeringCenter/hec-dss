@@ -169,7 +169,7 @@ int testAdHoc2()
 
 	//strncpy_s(fileName7, sizeof(fileName7), "C:/Users/q0hecwjc/Desktop/weather_orig2.dss", sizeof(fileName7));
 	stringCopy(fileName7, sizeof(fileName7), "test7x.dss", sizeof(fileName7));
-	status = zopen(ifltab7, fileName7);
+	status = hec_dss_zopen(ifltab7, fileName7);
 	if (status) return status;
 
 	//zsetMessageLevel(MESS_METHOD_LOCKING_ID, MESS_LEVEL_INTERNAL_DIAG_2);
@@ -187,14 +187,14 @@ int testAdHoc2()
 	
 
 /*	strncpy_s(fileName7, sizeof(fileName7), "sample7.dss", sizeof(fileName7));
-	status = zopen(ifltab7, fileName7);
+	status = hec_dss_zopen(ifltab7, fileName7);
 	if (status) return status;
 	status = zdelete(ifltab7, "/GREEN RIVER/GLENFIR/FLOW/01Apr1992/1Hour/OBS/");
 
 
 	path = mallocAndCopy("//BLOOMSBURG/FLOW//IR-MONTH/ESTIMATED SAME DAY/");
 	strncpy_s(fileName7, sizeof(fileName7), "C:/Users/q0hecwjc/Desktop/Trinity_0525_25K_Events.dss", sizeof(fileName7));
-	status = zopen(ifltab7, fileName7);
+	status = hec_dss_zopen(ifltab7, fileName7);
 	if (status) return status;
 	zopenExtended(long long *ifltab, const char *dssFilename, int fileVersion,
 	int access, int maxExpectedPathnames, int hashSize, int binSize);
@@ -255,7 +255,7 @@ int testAdHoc2()
 
 	path = mallocAndCopy("//FOLSOM-POOL/FLOW-OUT/01Jan2000/1Hour/C:000004|NOENSEMBLE3/");
 	stringCopy(fileName7, sizeof(fileName7), "forBill/DSS_Failure_Files/2018_04_20/simulation.dss", sizeof(fileName7));
-	status = zopen(ifltab7, fileName7);
+	status = hec_dss_zopen(ifltab7, fileName7);
 	if (status) return status;
 
 	ztrans = zstructTransferNew(path, 1);
@@ -269,7 +269,7 @@ int testAdHoc2()
 
 	tss2 = zstructTsNewRegFloats(path, (float *)ztrans->values1, ztrans->values1Number/2, "01Jan2000", "0100", "cfs", "INST-VAL");
 
-	status = zopen(ifltab6, "mydb7.dss");
+	status = hec_dss_zopen(ifltab6, "mydb7.dss");
 	if (status) return status;
 	status = ztsStore(ifltab6, tss2, 0);
 
@@ -282,10 +282,10 @@ int testAdHoc2()
 
 
 	stringCopy(fileName7, sizeof(fileName7), "C:/Users/q0hecwjc/Desktop/Reservoir Info.dss", sizeof(fileName7));
-	status = zopen(ifltab6, "C:/Users/q0hecwjc/Desktop/Reservoir2.dss");
+	status = hec_dss_zopen(ifltab6, "C:/Users/q0hecwjc/Desktop/Reservoir2.dss");
 	if (status) return status;
 
-	status = zopen(ifltab7, fileName7);
+	status = hec_dss_zopen(ifltab7, fileName7);
 	if (status) return status;
 
 	//zloadcache6_(ifltab7, &status);
@@ -304,11 +304,11 @@ int testAdHoc2()
 	return status;
 
 	stringCopy(fileName7, sizeof(fileName7), "empty.dss", sizeof(fileName7));
-	status = zopen(ifltab7, fileName7);
+	status = hec_dss_zopen(ifltab7, fileName7);
 	if (status) return status;
 
 	stringCopy(fileName7, sizeof(fileName7), "empty2.dss", sizeof(fileName7));
-	status = zopen(ifltab6, fileName7);
+	status = hec_dss_zopen(ifltab6, fileName7);
 	if (status) return status;
 
 
@@ -320,7 +320,7 @@ int testAdHoc2()
 	zerrorMessage(name, sizeof(name), status, code, low);
 
 	stringCopy(fileName7, sizeof(fileName7), "sample7.dss", sizeof(fileName7));
-	status = zopen(ifltab7, fileName7);
+	status = hec_dss_zopen(ifltab7, fileName7);
 	if (status) return status;	
 
 	zcheckFile(ifltab7);
@@ -331,7 +331,7 @@ int testAdHoc2()
 	status = zdelete(ifltab7, path);
 	status = zcheck(ifltab7, path);
 	zclose(ifltab7);
-	zopen(ifltab7, fileName7);
+	hec_dss_zopen(ifltab7, fileName7);
 	status = zcheck(ifltab7, path);
 
 	tss2 = zstructTsNew(path);
@@ -402,10 +402,10 @@ int testAdHoc()
 	//getCurrentDateTime(&julian, &secondsPastMidnight, &millsPastSecond);
 	//start = getCurrentTimeMillis();
 	//unlink("C:/Users/q0hecwjc/Desktop/tt1.dss");
-	//status = zopen(ifltab, "C:/Users/q0hecwjc/Desktop/S_Santian_R_CW1.dss");
+	//status = hec_dss_zopen(ifltab, "C:/Users/q0hecwjc/Desktop/S_Santian_R_CW1.dss");
 	//zset("MLVL", "", 15);
-	//status = zopen(ifltab2, "C:/Users/q0hecwjc/Desktop/tt1.dss");
-	status = zopen(ifltab, "trim/test6.dss");
+	//status = hec_dss_zopen(ifltab2, "C:/Users/q0hecwjc/Desktop/tt1.dss");
+	status = hec_dss_zopen(ifltab, "trim/test6.dss");
 	tss1 = zstructTsNew("//KEYS/ELEV//1HOUR/OBS/");
 	status = ztsRetrieve(ifltab, tss1, -1, 1, 1);
 	if (status != STATUS_OKAY) {
@@ -464,7 +464,7 @@ int testAdHoc()
 	return 0;
 
 	catStruct = zstructCatalogNew();
-	status = zopen(ifltab, "C:/Users/q0hecwjc/Desktop/Bald_Eagle_HMSFRA.dss");
+	status = hec_dss_zopen(ifltab, "C:/Users/q0hecwjc/Desktop/Bald_Eagle_HMSFRA.dss");
 	status = zcatalog((long long*)ifltab, catStruct->pathWithWildChars, catStruct, 0);
 	if (zisError(status)) {
 		return status;
@@ -489,7 +489,7 @@ int testAdHoc()
 	
 
 
-	zopen(ifltab, "mydb6.dss");
+	hec_dss_zopen(ifltab, "mydb6.dss");
 	number = 15;
 	zset6_("MLVL", " ", &number, 4, 1);
 	number = 2;
@@ -500,9 +500,9 @@ int testAdHoc()
 	zsetfi_(ifltab, "FMULT", "ON", &number, &status,
 		5, 2);
 		*/
-	//zopen(ifltab, (const char*)0);
+	//hec_dss_zopen(ifltab, (const char*)0);
 
-	zopen(ifltab, "Sample7.dss");
+	hec_dss_zopen(ifltab, "Sample7.dss");
 	zset("MLVL", "", 2);
 
 	//for (i = 0; i < 500000; i++) {
@@ -517,7 +517,7 @@ int testAdHoc()
 	return 0;
 
 
-	zopen(ifltab, "BasePORshortXSonlyFIA4b.dss");
+	hec_dss_zopen(ifltab, "BasePORshortXSonlyFIA4b.dss");
 
 	stringCopy(pathname, sizeof(pathname), "/RUSSIAN COYOTETODC/35.61/FLOW//1HOUR/TW-Tests_P:POR_Short:RAS-POR/", _TRUNCATE);
 	tss1 = zstructTsNewTimes(pathname, "", "", "", "");
@@ -535,7 +535,7 @@ int testAdHoc()
 		strlen(pathname), strlen(cpath1));
 
 	/*
-	zopen(ifltab, "forBill/SSP_Examples/SSP_EXAMPLES.dss");
+	hec_dss_zopen(ifltab, "forBill/SSP_Examples/SSP_EXAMPLES.dss");
 
 	stringCopy(pathname, sizeof(pathname), "/CHATTAHOOCHEE RIVER/CORNELIA, GA/FLOW/01Jan1962/1Day/USGS/", _TRUNCATE);
 	stringCopy(cpath1, sizeof(cpath1), "/CHATTAHOOCHEE RIVER/CORNELIA, GA/FLOW/01Jan1962/1Day/v5/", _TRUNCATE);
@@ -548,7 +548,7 @@ int testAdHoc()
 	zcheckMultiUser((long long*)ifltab);
 	zduplicateRecord(ifltab, pathname, cpath1);
 
-	zopen(ifltab, "collections7.dss");
+	hec_dss_zopen(ifltab, "collections7.dss");
 	stringCopy(pathname, sizeof(pathname), "/AMERICAN/FOLSOM/FLOW-RES IN/01JAN2006/1DAY/C:000101|RUN A/", _TRUNCATE);
 	catStruct = zstructCatalogNew();
 	nPathname = zcollectionCat(ifltab, pathname, catStruct);
@@ -566,7 +566,7 @@ int testAdHoc()
 
 
 	zmessage2(ifltab, "mess 1", "second mess");
-	zopen(ifltab, "C:/Users/q0hecwjc/Desktop/zz.dss");
+	hec_dss_zopen(ifltab, "C:/Users/q0hecwjc/Desktop/zz.dss");
 	tss1 = zstructTsNew("//06192500/FLOW-ANNUAL PEAK/01jan1700 - 01jan2200/IR-Century/USGS/");
 	status = ztsRetrieve(ifltab, tss1, 0, 0, 0);
 	status = 0;
@@ -609,18 +609,18 @@ int testAdHoc()
 	strcat_s(cpath2, sizeof(cpath2), pos);
 
 	catStruct = zstructCatalogNew();
-	status = zopen(ifltab, "coll7.dss");
+	status = hec_dss_zopen(ifltab, "coll7.dss");
 	status = zcatInternalSort(ifltab, 0, catStruct, 0, 0, 1);
 	for (i = 0; i < catStruct->numberPathnames; i++) {
 		printf("%s\n", catStruct->pathnameList[i]);
 	}
 	
-	status = zopen(ifltab, "C:/CWMS/forecast/2017.05.02-1800/Russian_River/hms/RussianRiver.dss");
+	status = hec_dss_zopen(ifltab, "C:/CWMS/forecast/2017.05.02-1800/Russian_River/hms/RussianRiver.dss");
 	pdsd1 = zstructPdNew("//LAKE SONOMA/ELEVATION-AREA///TABLE/");
 	zpdRetrieve(ifltab, pdsd1, 0);
 	zclose(ifltab);
 
-	status = zopen(ifltab, "sample7.dss");
+	status = hec_dss_zopen(ifltab, "sample7.dss");
 	pdsd1->xprecision = -1;
 	pdsd1->yprecision = -1;
 	zpdStore(ifltab, pdsd1, 0);
@@ -651,7 +651,7 @@ int testAdHoc()
 	status = zspatialTinRetrieve(ifltab, tinStructRetrieve, 1);
 * /
 
-	status = zopen(ifltab, "C:/hmsproj7/c7.dss");
+	status = hec_dss_zopen(ifltab, "C:/hmsproj7/c7.dss");
 	tss1 = zstructTsNew("//SUBBASIN-1/FLOW-UNIT GRAPH/TS-PATTERN/5MIN/RUN:CURRENT/");
 	// tss1->boolRetrieveAllTimes = 1;
 	status = ztsRetrieve(ifltab, tss1, 0, 0, 0);
@@ -663,12 +663,12 @@ int testAdHoc()
 	zclose(ifltab);
 	return 0;
 	/*
-	//status = zopen(ifltab, "M:/O'Connell/Public/for Bill/DSS no data/svSA_33.dss");
+	//status = hec_dss_zopen(ifltab, "M:/O'Connell/Public/for Bill/DSS no data/svSA_33.dss");
 //	zset("mlvl", "", 11);
-	//status = zopen(ifltab, "sample7.dss");
+	//status = hec_dss_zopen(ifltab, "sample7.dss");
 	
 	unlink("pd7.dss");
-	status = zopen(ifltab, "pd7.dss");
+	status = hec_dss_zopen(ifltab, "pd7.dss");
 	testPairedData4(ifltab);
 	zclose(ifltab);
 	return 0;
@@ -686,7 +686,7 @@ int testAdHoc()
 
 	/*	
 	int number[1], ex[1], itype[1];
-	status = zopen(ifltab, "febv7.dss");
+	status = hec_dss_zopen(ifltab, "febv7.dss");
 	stringCopy(cpath1, sizeof(cpath1), "/PROJTEST/TRY1//31MAY2012:0700/01JUN2012:0700//", _TRUNCATE);
 	zdtype_ ((long long*)ifltab, cpath1, number, ex,
              cpath2, itype,
@@ -798,7 +798,7 @@ int testAdHoc()
 
 	strncpy_s(fileName7, sizeof(fileName7), "testDss7.dss", sizeof(fileName7));
 	_unlink(fileName7);
-	status = zopen(ifltab7, fileName7);
+	status = hec_dss_zopen(ifltab7, fileName7);
 	if (status) return status;
 	//zsetMessageLevel(MESS_METHOD_TS_WRITE_ID, MESS_LEVEL_INTERNAL_DIAG_1);
 	status = testExpandedTimesIrreg2(ifltab7);
@@ -835,7 +835,7 @@ return status;
 
 /*
 	
-	status = zopen(ifltab, "sample7.dss");
+	status = hec_dss_zopen(ifltab, "sample7.dss");
 	if (status != STATUS_OKAY) return;
 	//zset("MLVL", "", 15);
 	tss1 = zstructTsNew("//SACRAMENTO/TEMP-MAX/01JAN1980/1DAY/OBS/");
@@ -867,7 +867,7 @@ return status;
 
 	strncpy_s(fileName7, sizeof(fileName7), "testTimes7.dss", sizeof(fileName7));
 	_unlink(fileName7);
-	status = zopen(ifltab7, fileName7);
+	status = hec_dss_zopen(ifltab7, fileName7);
 	if (status) return status;
 
 
@@ -887,15 +887,15 @@ return status;
 	status = (int) fileTime;
 	status = numberPeriods(60, -328444, 1440, 1800000, 1440);
 
-	status = zopen(ifltab,"wat.dss");
+	status = hec_dss_zopen(ifltab,"wat.dss");
 	tss1 = zstructTsNew("//BONNERS FERRY FLOW-LOC/FLOW/01Oct1000 - 01Oct5950/1Day/KL_STD_B:FRA_50YEAR:RESSIM-F1_SB_F/");
 	status = ztsRetrieve(ifltab, tss1, 0, 1, 1);
 	//BONNERS FERRY FLOW-LOC/FLOW/01Jan1000/1Day/KL_STD_B:FRA_50YEAR:RESSIM-F1_SB_F/
 
 
 	/////////////////////////////////////////
-	//status = zopen(ifltab,"TimeWIndowIntervalSim.dss");
-	status = zopen(ifltab,"Mark.dss");
+	//status = hec_dss_zopen(ifltab,"TimeWIndowIntervalSim.dss");
+	status = hec_dss_zopen(ifltab,"Mark.dss");
 	stringCopy(cpath1, sizeof(cpath1), "B=AG RESORT C=FLOW E=15MIN F=TEST:FEB_1986:HMS-(RUN)FEB_1986", _TRUNCATE);
 	//stringCopy(cpath1, sizeof(cpath1), "B=AG RESORT C=FLOW E=15Minute F=TEST:FEB_1986:HMS-(RUN)FEB_1986", _TRUNCATE);
 	i = 0;
@@ -906,7 +906,7 @@ return status;
 	
 
 	strncpy_s(fileName7, sizeof(fileName7), "testTimes7.dss", sizeof(fileName7));
-	status = zopen(ifltab7, fileName7);
+	status = hec_dss_zopen(ifltab7, fileName7);
 	if (status) return status;
 	catStruct = zstructCatalogNew();
 	//  int zcatalog(long long *ifltab, const char *pathWithWild, zStructCatalog *catStruct, int boolSorted);
@@ -914,7 +914,7 @@ return status;
 	printf("%s\n", catStruct->pathnameList[0]);
 
 
-	status = zopen(ifltab, "sample7.dss");
+	status = hec_dss_zopen(ifltab, "sample7.dss");
 	if (status != STATUS_OKAY) return;
 	//  Get the last write time of the file (in mills)
 	fileTime = zgetLastWriteTimeFile(ifltab);
@@ -942,7 +942,7 @@ return status;
 
 	strncpy_s(fileName7, sizeof(fileName7), "testTimes7.dss", sizeof(fileName7));
 	_unlink(fileName7);
-	status = zopen(ifltab7, fileName7);
+	status = hec_dss_zopen(ifltab7, fileName7);
 	if (status) return status;
 	status = zcheckFile(ifltab7);
 
@@ -953,7 +953,7 @@ return status;
 	status = zwrite(ifltab7, ztransfer);
 	//zclose(ifltab7);
 
-	//status = zopen(ifltab7, fileName7);
+	//status = hec_dss_zopen(ifltab7, fileName7);
 	if (status) return status;
 	status = zcheckFile(ifltab7);
 
@@ -984,7 +984,7 @@ return status;
 
 
 	//zsetMessageLevel(MESS_METHOD_TS_READ_ID, MESS_LEVEL_INTERNAL_DIAG_2);
-	status = zopen(ifltab, "sample6.dss");
+	status = hec_dss_zopen(ifltab, "sample6.dss");
 	catStruct = zstructCatalogNew();
 	status = zcatalog((long long*)ifltab, catStruct->pathWithWildChars, catStruct, 0);
 
@@ -995,7 +995,7 @@ return status;
 	
 /*	strncpy_s(fileName7, sizeof(fileName7), "testTimes7.dss", sizeof(fileName7));
 	_unlink(fileName7);
-	status = zopen(ifltab7, fileName7);
+	status = hec_dss_zopen(ifltab7, fileName7);
 	if (status) return status;
 	
 	status = testExpandedTimesIrreg(ifltab7);
@@ -1003,7 +1003,7 @@ return status;
 	if (status == STATUS_OKAY) return status;
 /*
 	unlink("ru7.dss");
-	status = zopen(ifltab, "ru7.dss");
+	status = hec_dss_zopen(ifltab, "ru7.dss");
 	if (status) return status;
 	status = testTimeSeriesPattern(ifltab);
 	zclose(ifltab);
@@ -1015,8 +1015,8 @@ return status;
 	//zopenDisk("small7.dss", &handle, 0, 0);
 	//  zcopyRecord((long long*)ifltabFrom, (long long*)ifltabTo, pathnameFrom, pathnameTo);
 /*
-	zopen(ifltab, "FailedMerge/HMS.dss");
-	zopen(ifltab2, "FailedMerge/toMerge/HMS.dss");
+	hec_dss_zopen(ifltab, "FailedMerge/HMS.dss");
+	hec_dss_zopen(ifltab2, "FailedMerge/toMerge/HMS.dss");
 	//"/HMS/Hydrologic Sampling-Flow Sampler/Probability-Flow/Frequency/Sayers Inflow Jct - PEAK FLOW MAX/C:000025|Existing C:500 Year H:HydroSampl-Flow Sampler/"
 	zcopyRecord(ifltab, ifltab2, 
 		"/HMS/Hydrologic Sampling-Flow Sampler/Probability-Flow/Frequency/Sayers Inflow Jct - PEAK FLOW MAX/C:000025|Existing C:500 Year H:HydroSampl-Flow Sampler/",
@@ -1028,7 +1028,7 @@ return status;
 
 
 
-	zopen(ifltab, "C:/hmsproj/tifton/tifton.dss");
+	hec_dss_zopen(ifltab, "C:/hmsproj/tifton/tifton.dss");
 	tss1 = zstructTsNew("//74006/FLOW-UNIT GRAPH/TS-PATTERN/1HOUR/RUN:RUN 1/");
 	status = ztsRetrieve(ifltab, tss1, 0, 0, 0);
 	//status = ztsRetrievePattern(ifltab, tss1, 0);
@@ -1048,12 +1048,12 @@ return status;
 	//zsetMessageLevel(zmessaging_put_ID, MESS_INTERNAL_DIAG_2);
 	//zsetMessageLevel(zmessaging_get_ID, MESS_INTERNAL_DIAG_2);
 /*
-	status = zopen(ifltab, "new7.dss");
+	status = hec_dss_zopen(ifltab, "new7.dss");
 	testztsStruct1(ifltab);
 	zclose(ifltab);
 	return 0;
 
-	status = zopen(ifltab, "sample7.dss");
+	status = hec_dss_zopen(ifltab, "sample7.dss");
 	if (status != STATUS_OKAY) return;
 	//  Get the last write time of the file (in mills)
 	fileTime = zgetLastWriteTimeFile(ifltab);
@@ -1074,10 +1074,10 @@ return status;
 
 
 
-	//status = zopen(ifltab, "test777.dss");
+	//status = hec_dss_zopen(ifltab, "test777.dss");
 
 	/*
-	status = zopen(ifltab, "test.dss");
+	status = hec_dss_zopen(ifltab, "test.dss");
 	nfound = 19;
 	stringCopy(cpath1, sizeof(cpath1), "filecheck.txt", _TRUNCATE);
 	fortranopen_(&nfound, cpath1, strlen(cpath1));
@@ -1108,14 +1108,14 @@ return status;
 		//ztsGetPathTimeWindow(7, cpath1, sizeof(cpath1), &timeWindowx); 
 
         // Read ------------------------------------------------------------------------
-		//status = zopen(ifltab, "febv7.dss");
+		//status = hec_dss_zopen(ifltab, "febv7.dss");
 		
 		stringCopy(cpath1, sizeof(cpath1), "/PROJTEST/TRY1//31MAY2012:0700/01JUN2012:0700//", _TRUNCATE);
 		/* First call to zreadx gets the sizes of the flattened grid info array
 		 * (stored as the internal header of the grid record) and the actual
 		 * compressed data array
 		 */
-/*		status = zopen(ifltab, "C:/Users/q0hecwjc/Desktop/a7.dss");
+/*		status = hec_dss_zopen(ifltab, "C:/Users/q0hecwjc/Desktop/a7.dss");
 		zcheckFile(ifltab);
 
 		plan[0] = 1;
@@ -1139,7 +1139,7 @@ return status;
 		zclose(ifltab);
 
 
-		status = zopen(ifltab, "sample7.dss");
+		status = hec_dss_zopen(ifltab, "sample7.dss");
 
 		plan[0] = 1;
 		zreadx_(ifltab, cpath1,
@@ -1198,8 +1198,8 @@ return status;
     CloseHandle( hProcess );
 	
 	printCurrentTime(1);/*
-	status = zopen(ifltab, "big7.dss");
-	//status = zopen(ifltab, "sample7.dss");
+	status = hec_dss_zopen(ifltab, "big7.dss");
+	//status = hec_dss_zopen(ifltab, "sample7.dss");
 	zset("MLVL", "", 1);
 	QueryPerformanceFrequency(&Frequency); 
 	for (i=0; i<5; i++) {
@@ -1254,7 +1254,7 @@ return status;
 	printCurrentTime(1);
 	stringCopy(cpath3, sizeof(cpath3), "//SACRAMENTO/TEMP-MIN//1Day/", _TRUNCATE);
 	zset("MLVL", "", 3);
-	status = zopen(ifltab2, "\"sample7.dss\"");
+	status = hec_dss_zopen(ifltab2, "\"sample7.dss\"");
 
 
 /*     The lockFlag (second) argument  is as follows:
@@ -1314,13 +1314,13 @@ return status;
 	return 0;
 	/*
 	_unlink("testDead.dss");
-	status = zopen(ifltab, "testDead.dss");
+	status = hec_dss_zopen(ifltab, "testDead.dss");
 	status = testTimeSeries5(ifltab);
 	return status;
 	zopenExtended(long long *ifltab, const char *dssFilename, int fileVersion, 
 			 int access, int maxExpectedPathnames, int hashSize, int binSize)
 
-	status = zopen(ifltab, "sample6.dss");
+	status = hec_dss_zopen(ifltab, "sample6.dss");
 	//zset("MLVL", "", 12);
 	//status = zcatalogFile((long long *)ifltab, catalogName, boolSorted, pathWithWild);
 	status = zcatalogFile(ifltab, "sample6.dsc", 0, "");
@@ -1333,23 +1333,23 @@ return status;
 	}
 	return status;
 
-/*	status = zopen(ifltab2, "tt.dss");
+/*	status = hec_dss_zopen(ifltab2, "tt.dss");
 	if (status != STATUS_OKAY) return status;
 	status =  zcopyFile(ifltab, ifltab2, 0);
 
 
-	//status = zopen(ifltab, "SSP/SSP2.1DSS7_Testing/20160226_testing/20160226_SSPwDSS7_testing/20160226_SSPwDSS7_testing.dss");
-	status = zopen(ifltab, "C:/Weather/weather.dss");
+	//status = hec_dss_zopen(ifltab, "SSP/SSP2.1DSS7_Testing/20160226_testing/20160226_SSPwDSS7_testing/20160226_SSPwDSS7_testing.dss");
+	status = hec_dss_zopen(ifltab, "C:/Weather/weather.dss");
 	if (status != STATUS_OKAY) return status;
 	*/
 
 	/*
-	status = zopen(ifltab, "detune.dss");
+	status = hec_dss_zopen(ifltab, "detune.dss");
 	tss1 = zstructTsNewTimes("/a/b/c/01Jan1900/1Day/f/", "01jan1900", "2400", "31dec1999", "2400");
 	status = ztsRetrieve((long long*)ifltab, tss1, 0, 0, 0);
 	zclose(ifltab);
 
-	status = zopen(ifltab, "w1.dss");
+	status = hec_dss_zopen(ifltab, "w1.dss");
 	zsetFile(ifltab, "detune" , "", 1);
 	ztsStore(ifltab, tss1, 0);
 	zclose(ifltab);
@@ -1358,11 +1358,11 @@ return status;
 
 	//zsqueeze("z:");
 	zset("mlvl", "", 10);
-	//status = zopen(ifltab2, "sample7.dss");
-	status = zopen(ifltab2, "DssFiles/simulation7_fromWaterhsed6.dss");
+	//status = hec_dss_zopen(ifltab2, "sample7.dss");
+	status = hec_dss_zopen(ifltab2, "DssFiles/simulation7_fromWaterhsed6.dss");
 	zsqueezeNeeded(ifltab2);
-	//status = zopen(ifltab, "s7.dss");
-	//status = zopen(ifltab2, "s7c.dss");
+	//status = hec_dss_zopen(ifltab, "s7.dss");
+	//status = hec_dss_zopen(ifltab2, "s7c.dss");
 	//status = zcopyFile(ifltab, ifltab2, 0);
 	zsqueeze7(ifltab, 1, 1);
 	//Sleep(300000);
@@ -1382,7 +1382,7 @@ return status;
 	/*zsetMessageLevel(zmessaging_perm_ID, MESS_INTERNAL_DIAG_2);
 	zsetMessageLevel(zmessaging_get_ID, MESS_INTERNAL_DIAG_2);
 	zsetMessageLevel(zmessaging_put_ID, MESS_INTERNAL_DIAG_2);  
-	status = zopen(ifltab, "TestingPM.dss");
+	status = hec_dss_zopen(ifltab, "TestingPM.dss");
 	pdsd1 = zstructPdNew("/TestingPM/Hydrologic Sampling-HS - St. Paul Levee 30years/Event-Flow/Output/Upstream Boundary Conditions - MAX FLOW/C:000000|Without Pr:TimeWindow:HydroSampl-HS - St. Paul Levee 30/");
 	//zset("MLVL", "", 12);
 	status = zpdRetrieve((long long*)ifltab, pdsd1, 2);
@@ -1391,7 +1391,7 @@ return status;
 	return status;
 
 	
-	status = zopen(ifltab, "w1.dss");
+	status = hec_dss_zopen(ifltab, "w1.dss");
 	tss1 = zstructTsNewTimes("/a/b/c/01Jan1900/1Day/f/", "01jan1900", "2400", "31dec1999", "2400");
 	status = ztsRetrieve((long long*)ifltab, tss1, 0, 0, 0);
 	return status;
@@ -1438,7 +1438,7 @@ return status;
 	ztsProcessTimes(ifltab, tss1, 0);
 	ztsGetPathTimeWindow(7, cpath, strlen(cpath), &timeWindow) ; */
 
-	status = zopen(ifltab, "Sample6.dss");
+	status = hec_dss_zopen(ifltab, "Sample6.dss");
 	cpath = mallocAndCopy("//SACRAMENTO/PRECIP-INC//1Day/OBS/");
 	//status = ztsGetDateRange(ifltab, cpath, 1, startJulian, endJulian);
 	if (status < 0) {
@@ -1487,7 +1487,7 @@ zinquireChar(ifltab, "type", cbuff, sizeof(cbuff), &searchOption);
 free(cpath);
 zclose(ifltab);
 return -1;
-	status = zopen(ifltab, "sample.dss");
+	status = hec_dss_zopen(ifltab, "sample.dss");
 	if (status != STATUS_OKAY) return status;
 
 
@@ -1508,9 +1508,9 @@ return -1;
 	millis = zgetLastWriteTimeFile(ifltab);
 */
 
-	status = zopen(ifltab2, "DSS-7_Testing/SSP2.1DSS7_Testing/SSP2.1wDSS7_LogFile/SSP2.1wDSS7_LogFile.dss");
+	status = hec_dss_zopen(ifltab2, "DSS-7_Testing/SSP2.1DSS7_Testing/SSP2.1wDSS7_LogFile/SSP2.1wDSS7_LogFile.dss");
 	if (status != STATUS_OKAY) return status;
-	status = zopen(ifltab, "C:/Users/q0hecwjc/Desktop/db7.dss");
+	status = hec_dss_zopen(ifltab, "C:/Users/q0hecwjc/Desktop/db7.dss");
 	if (status != STATUS_OKAY) return status;
 
 
@@ -1580,7 +1580,7 @@ void tstCnotes() {
 	char alpha[] = { "abcdefghijklmnopqrstuvwxyz" };
 
 	stringCopy(fileName7, sizeof(fileName7), "C:/Temp/char7.dss", sizeof(fileName7));
-	status = zopen(ifltab7, fileName7);
+	status = hec_dss_zopen(ifltab7, fileName7);
 
 	/*
 	zStructTimeSeries* zstructTsNewRegDoubles(const char* pathname, double *doubleValues, int numberValues,

@@ -3,7 +3,7 @@
 #include "heclib.h"
 #include "hecdssInternal.h"
 
-int zopen(long long *ifltab, const char *dssFilename)
+int hec_dss_zopen(long long *ifltab, const char *dssFilename)
 {
 	int version;
 	int status;
