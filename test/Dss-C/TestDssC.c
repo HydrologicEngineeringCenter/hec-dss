@@ -8,6 +8,7 @@
 
 int runTheTests();
 
+
 int gridMemoryTest() {
 
 	long long ifltab[250] = {0};
@@ -178,6 +179,11 @@ int runTheTests() {
 	char fileName7a[80];
 	char fileName6[80];
 	int status;
+
+	status = miscTests();
+	if (status != STATUS_OKAY)
+		return status;
+
 
 	status = gridMemoryTest();
 	if (status != STATUS_OKAY)
