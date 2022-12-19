@@ -323,7 +323,6 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1ztsRetrieve(
 			}
 		}
 
-		
 		// Set the units and type 
 		fid = (*env)->GetFieldID (env, cls, "units", "Ljava/lang/String;");
 		if (fid) {
@@ -591,7 +590,9 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1ztsRetrieve(
 					free(tss->doubleProfileValues);
 					tss->doubleProfileValues = 0;
 				}
-			}
+				hec_dss_jni_setStringField(env, cls, j_timeSeriesContainer, "unitsProfileValues", tss->unitsProfileValues);
+				hec_dss_jni_setStringField(env, cls, j_timeSeriesContainer, "unitsProfileDepths", tss->unitsProfileDepths);
+			} // end profile
 		}
 
 		//  Precision

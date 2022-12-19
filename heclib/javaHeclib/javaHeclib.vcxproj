@@ -241,12 +241,14 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="jni_utility.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="src\javaHeclib.h" />
     <ClInclude Include="version.h" />
     <ClInclude Include="version_build.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="jni_utility.c" />
     <ClCompile Include="src\C_CatalogToJava.c" />
     <ClCompile Include="src\Hec_closescratchdsscatalog.c" />
     <ClCompile Include="src\Hec_datjul.c" />
