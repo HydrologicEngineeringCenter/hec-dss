@@ -3,13 +3,14 @@
 #include <string.h>
 #include <jni.h>
 #include <stdio.h>
+#include "fortran_string_len_size.h"
 
 
 void runshefdss_ (long long *ifltab, int *unitLog, const char *inputFile,  const char *shefParamFile, 
 		const char *sensorFile, const char *paramFile, int *lstoreAll,
 		int *ntotal, int *nsets, int *status, 
-		size_t leninputFile, size_t lenshefParamFile,
-		size_t lensensorFile, size_t lenparamFile);
+		slen_t leninputFile, slen_t lenshefParamFile,
+		slen_t lensensorFile, slen_t lenparamFile);
 
 //hec.heclib.dss.Sheflib.Hec_RunShefDss
 // hec.importExport.shef.Sheflib.Hec_RunShefDss 

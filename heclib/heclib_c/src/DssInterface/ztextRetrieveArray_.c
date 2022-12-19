@@ -8,12 +8,13 @@
 #include "zdssMessages.h"
 #include "zdssVals.h"
 #include "hecdssInternal.h"
+#include "fortran_string_len_size.h"
 
 
 
 void ztextretrievearray_ (long long *ifltab, const char *pathname, char* clines, int *maxLines,
 						  int *numberLines, int *userHeader, int *maxHeader, int *numberUserHeader,
-						  int *istatus, size_t lenPathname, size_t lenClines)
+						  int *istatus, slen_t lenPathname, slen_t lenClines)
 {
 	int status;
 	int i;

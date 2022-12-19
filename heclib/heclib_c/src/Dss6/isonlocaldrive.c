@@ -1,9 +1,11 @@
+#include <fortran_string_len_size.h>
+
 #ifdef _MSC_VER
 
 #include <windows.h>
 #include <stdlib.h>
 
-void isonlocaldrive_ (const char *pathName, int *isLocal, size_t len_pathName)
+void isonlocaldrive_ (const char *pathName, int *isLocal, slen_t len_pathName)
 {
 
 	wchar_t absPath[_MAX_PATH];
@@ -33,7 +35,7 @@ void isonlocaldrive_ (const char *pathName, int *isLocal, size_t len_pathName)
 	}
 }
 #else
-void isonlocaldrive_(const char *pathName, int *isLocal, int len_pathName)
+void isonlocaldrive_(const char *pathName, int *isLocal, slen_t len_pathName)
 {
 	*isLocal = 1;
 }

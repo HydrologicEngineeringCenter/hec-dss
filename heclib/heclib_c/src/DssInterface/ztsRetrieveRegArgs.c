@@ -7,6 +7,7 @@
 #include "zdssMessages.h"
 #include "hecdssInternal.h"
 #include "zStructTsTimeWindow.h"
+#include "fortran_string_len_size.h"
 
 
 //  Full method to retrieve regular interval time series data,
@@ -165,8 +166,8 @@ void ztsretrieveregargs_(long long *ifltab, const char *path,
 				int userHeader[], int *userHeaderArraySize, int *userHeaderNumber,
 				char *units, char *type,
 				int *precisionValues, char *timeZoneName, int *status,
-				int pathLen, int startDateLen, int startTimeLen, int cNotesLen,
-				int unitsLen, int typeLen, int timeZoneLen)
+				slen_t pathLen, slen_t startDateLen, slen_t startTimeLen, slen_t cNotesLen,
+				slen_t unitsLen, slen_t typeLen, slen_t timeZoneLen)
 
 
 {

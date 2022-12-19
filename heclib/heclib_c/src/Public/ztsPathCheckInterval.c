@@ -2,7 +2,7 @@
 
 #include "heclib7.h"
 #include "hecdssInternal.h"
-
+#include "fortran_string_len_size.h"
 
 /**
 *  Function:	ztsPathCheckInterval
@@ -63,7 +63,7 @@ int ztsPathCheckInterval(long long *ifltab, char *pathname, size_t sizeofPathnam
 
 
 //  Fortran interface
-void ztspathcheckinterval_ (long long *ifltab, char *pathname, size_t sizeofPathname)
+void ztspathcheckinterval_ (long long *ifltab, char *pathname, slen_t sizeofPathname)
 {
 	char *path;
 

@@ -4,6 +4,7 @@
 #include "heclib.h"
 #include "hecdssInternal.h"
 #include "zdssKeys.h"
+#include "fortran_string_len_size.h"
 
 /**
 *  Function:	zcopyRecord
@@ -215,7 +216,7 @@ int zcopyRecord(long long *ifltabFrom, long long *ifltabTo, const char *pathname
 }
 
 void zcopyrecord_ (long long *ifltabFrom, long long *ifltabTo, const char *pathnameFrom, const char *pathnameTo, int *status,
-					size_t pathnameFromLen, size_t pathnameToLen)
+					slen_t pathnameFromLen, slen_t pathnameToLen)
 {
 	char *pathFrom;
 	char *pathTo;

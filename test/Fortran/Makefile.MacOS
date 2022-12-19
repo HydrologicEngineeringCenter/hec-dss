@@ -2,7 +2,7 @@
 #  Dss-Fortran testing makefile for MacOS
 #
 
-FFLAGS=-I ../heclib/heclib_f/src/headers -m64 -g -c -O -fallow-argument-mismatch
+FFLAGS=-I ../heclib/heclib_f/src/headers -m64 -g -c -cpp -O -fallow-argument-mismatch
 FORTRAN=gfortran
 HLIBS=../../heclib/heclib_f/Output/libhec_f.a ../../heclib/heclib_c/Output/libhec_c.a
 
@@ -221,4 +221,4 @@ Output/test_vertical_datums_f_.o
 
 
 Dss-Fortran:$(OBJS)
-	$(FORTRAN) -m64 -fPIC   Output/*.o ${HLIBS} ${HLIBS} ${HLIBS} -o Output/Dss-Fortran -lz -lm
+	$(FORTRAN) -m64 -fPIC   Output/*.o -L${GFORTRAN_PATH} ${HLIBS} ${HLIBS} ${HLIBS} -o Output/Dss-Fortran -lz -lm -lc

@@ -18,7 +18,7 @@ ifeq ($(UNAME_S),SunOS)
 	F90=f95
 endif
 ifeq ($(UNAME_S),Darwin)
-    LDFLAGS=-L${GFORTRAN_PATH} -lz -lgfortran -lm
+    LDFLAGS=-L${GFORTRAN_PATH} -lz -lgfortran -lm -lc
 	CWARNING=-Werror=implicit-function-declaration
     CFLAGS=-m64 -dynamiclib -fPIC -g -std=gnu99 -I../../heclib/heclib_c/src/headers -I. $(CWARNING)
     MAKE=make

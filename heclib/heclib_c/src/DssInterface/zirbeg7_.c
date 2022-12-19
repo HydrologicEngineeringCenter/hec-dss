@@ -10,7 +10,7 @@
 //  Avoid using
 
 void zirbeg7_ (int *julianStart, char *ePart, int *iyear, int *imonth,
-			   int *iday, int *blockSize, int *minblk, int *incblk, size_t lenEpart)
+			   int *iday, int *blockSize, int *minblk, int *incblk, slen_t lenEpart)
 {
 	int flag;
 	int ierror;

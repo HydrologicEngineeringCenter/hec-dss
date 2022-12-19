@@ -8,7 +8,7 @@
 #include "zdssLocking.h"
 #include "zdssMessages.h"
 #include "hecdssInternal.h"
-
+#include "fortran_string_len_size.h"
 
 //  Fortran compatible
 void zrpdi7_ (long long *ifltab, const char *pathname,
@@ -20,10 +20,10 @@ void zrpdi7_ (long long *ifltab, const char *pathname,
 			char *labels, int *maxNumberLabels, int *boolLabelsRead,
 			int *userHeader, int *userHeaderArraySize, int *numberUserHeaderRead,
 			int *istat,
-			size_t pathnameLen,
-			size_t unitsIndependentLen, size_t typeIndependentLen,
-			size_t unitsDependentLen, size_t typeDependentLen,
-			size_t lablesLength)
+			slen_t pathnameLen,
+			slen_t unitsIndependentLen, slen_t typeIndependentLen,
+			slen_t unitsDependentLen, slen_t typeDependentLen,
+			slen_t lablesLength)
 {
 	zStructPairedData *pds;
 

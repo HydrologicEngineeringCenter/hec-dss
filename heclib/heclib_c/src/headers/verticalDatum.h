@@ -7,24 +7,7 @@ extern "C" {
  
 #include <float.h>
 #include <stdint.h>
-
-#if defined(_MSC_VER)
-	#ifdef _WIN64
-			typedef int64_t slen_t;
-	#else
-			typedef int32_t slen_t;
-	#endif
-#else
-    # if __GNUC__
-        #if __GNUC__ > 7
-            typedef size_t slen_t;
-        #else
-            typedef int slen_t;
-        #endif
-    #else
-        typedef int32_t slen_t;
-    #endif
-#endif
+#include "fortran_string_len_size.h"
  
 #define F2C(f, c, flen, clen) {                    \
     int len = flen < clen ? flen : clen - 1;       \

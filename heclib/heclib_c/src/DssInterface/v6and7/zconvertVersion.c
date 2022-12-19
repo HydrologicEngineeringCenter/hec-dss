@@ -94,7 +94,7 @@ int zconvertVersion(const char* fileNameFrom, const char* fileNameTo)
 }
 
 void zconvertversion_ (const char* fileNameFrom, const char* fileNameTo, int *status,
-					   size_t fileNameFromLen, size_t fileNameToLen)
+					   slen_t fileNameFromLen, slen_t fileNameToLen)
 {
 	char *fileFrom;
 	char *fileTo;

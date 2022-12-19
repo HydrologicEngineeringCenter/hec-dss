@@ -7,7 +7,7 @@
 #include "zdssKeys.h"
 #include "zdssVals.h"
 #include "hecdssInternal.h"
-
+#include "fortran_string_len_size.h"
 
 
 //
@@ -69,7 +69,7 @@ int zputInfo (long long *ifltab, const char *pathname, int *ibuff)
 }
 
 //  Fortran compatible interface
-void zputinfo7_ (long long *ifltab, const char *pathname, int *ibuff, int *status, size_t lenPathname)
+void zputinfo7_ (long long *ifltab, const char *pathname, int *ibuff, int *status, slen_t lenPathname)
 {
 	char *path;
 
