@@ -13,6 +13,7 @@
 #include "zdssMessages.h"
 #include "heclib.h"
 #include "zerrorCodes.h"
+#include "fotran_string_len_size.h"
 
 /**
 *  Function:	zcatalogFile
@@ -143,7 +144,7 @@ int zcatalogFile(long long *ifltab, const char *catalogFilename, int boolSorted,
 
 
 void zcatalogfile7_(long long *ifltab, const char *catalogFilename, int *boolSorted, const char *pathWithWildChars, int *status,
-	size_t lencatalogFilename, size_t lenpathWithWildChars)
+	slen_t lencatalogFilename, slen_t lenpathWithWildChars)
 {
 	char *filename;
 	char *path;
