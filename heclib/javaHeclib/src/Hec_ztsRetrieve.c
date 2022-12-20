@@ -602,8 +602,8 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1ztsRetrieve(
 			hec_dss_jni_setStringField(env, cls, j_timeSeriesContainer, "supplementalInfo", headerString);
 			if (zgetVersion((long long*)ifltab) == 7) {
 				free(headerString);
+			}
 		}
-
 		//  Now fill in extra container values
 		//  watershed
 		len = zpathnameGetPart (tss->pathname, 1, cpart, sizeof(cpart));
