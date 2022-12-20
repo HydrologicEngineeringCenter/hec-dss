@@ -325,29 +325,8 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1ztsRetrieve(
 		}
 
 		// Set the units and type 
-		fid = (*env)->GetFieldID (env, cls, "units", "Ljava/lang/String;");
-		if (fid) {
-			if (tss->units) {
-				jstr = (*env)->NewStringUTF(env, tss->units);
-			}
-			else {
-				jstr = (*env)->NewStringUTF(env, "");
-			}
-			(*env)->SetObjectField (env, j_timeSeriesContainer, fid, jstr);
-			(*env)->DeleteLocalRef(env, jstr);
-
-		}
-		fid = (*env)->GetFieldID (env, cls, "type", "Ljava/lang/String;");
-		if (fid) {
-			if (tss->type) {
-				jstr = (*env)->NewStringUTF(env, tss->type);
-			}
-			else {
-				jstr = (*env)->NewStringUTF(env, "");
-			}
-			(*env)->SetObjectField (env, j_timeSeriesContainer, fid, jstr);
-			(*env)->DeleteLocalRef(env, jstr);
-		}
+		hec_dss_jni_setStringField(env,cls, j_timeSeriesContainer, "units", tss->units);
+		hec_dss_jni_setStringField(env, cls, j_timeSeriesContainer, "type", tss->type);
 
 		//  Data related
 		//  Data is stored as doubles (not recommended, unless required)
@@ -655,45 +634,25 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1ztsRetrieve(
 		//  watershed
 		len = zpathnameGetPart (tss->pathname, 1, cpart, sizeof(cpart));
 		if (len > 0) {
-			fid = (*env)->GetFieldID (env, cls, "watershed", "Ljava/lang/String;");
-			if (fid) {
-				jstr = (*env)->NewStringUTF(env, cpart);
-				(*env)->SetObjectField (env, j_timeSeriesContainer, fid, jstr);
-				(*env)->DeleteLocalRef(env, jstr);
-			}
+			hec_dss_jni_setStringField(env, cls, j_timeSeriesContainer, "watershed", cpart);
 		}
 
 		//  location
 		len = zpathnameGetPart (tss->pathname, 2, cpart, sizeof(cpart));
 		if (len > 0) {
-			fid = (*env)->GetFieldID (env, cls, "location", "Ljava/lang/String;");
-			if (fid) {
-				jstr = (*env)->NewStringUTF(env, cpart);
-				(*env)->SetObjectField (env, j_timeSeriesContainer, fid, jstr);
-				(*env)->DeleteLocalRef(env, jstr);
-			}
+			hec_dss_jni_setStringField(env, cls, j_timeSeriesContainer, "location", cpart);
 		}
 
 		//  parameter
 		len = zpathnameGetPart (tss->pathname, 3, cpart, sizeof(cpart));
 		if (len > 0) {
-			fid = (*env)->GetFieldID (env, cls, "parameter", "Ljava/lang/String;");
-			if (fid) {
-				jstr = (*env)->NewStringUTF(env, cpart);
-				(*env)->SetObjectField (env, j_timeSeriesContainer, fid, jstr);
-				(*env)->DeleteLocalRef(env, jstr);
-			}
+			hec_dss_jni_setStringField(env, cls, j_timeSeriesContainer, "parameter", cpart);
 		}
 
 		//  version
 		len = zpathnameGetPart (tss->pathname, 6, cpart, sizeof(cpart));
 		if (len > 0) {
-			fid = (*env)->GetFieldID (env, cls, "version", "Ljava/lang/String;");
-			if (fid) {
-				jstr = (*env)->NewStringUTF(env, cpart);
-				(*env)->SetObjectField (env, j_timeSeriesContainer, fid, jstr);
-				(*env)->DeleteLocalRef(env, jstr);
-			}
+			hec_dss_jni_setStringField(env, cls, j_timeSeriesContainer, "version", cpart);
 		}
 
 		//  Last write time
