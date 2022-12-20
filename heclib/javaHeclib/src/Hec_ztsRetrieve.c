@@ -5,6 +5,7 @@
 #include "heclib.h"
 #include "javaHeclib.h"
 #include "verticalDatum.h"
+#include "jni_utility.h"
 
 JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1ztsRetrieve(
 	JNIEnv       *env,
@@ -323,31 +324,9 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1ztsRetrieve(
 			}
 		}
 
-		
 		// Set the units and type 
-		fid = (*env)->GetFieldID (env, cls, "units", "Ljava/lang/String;");
-		if (fid) {
-			if (tss->units) {
-				jstr = (*env)->NewStringUTF(env, tss->units);
-			}
-			else {
-				jstr = (*env)->NewStringUTF(env, "");
-			}
-			(*env)->SetObjectField (env, j_timeSeriesContainer, fid, jstr);
-			(*env)->DeleteLocalRef(env, jstr);
-
-		}
-		fid = (*env)->GetFieldID (env, cls, "type", "Ljava/lang/String;");
-		if (fid) {
-			if (tss->type) {
-				jstr = (*env)->NewStringUTF(env, tss->type);
-			}
-			else {
-				jstr = (*env)->NewStringUTF(env, "");
-			}
-			(*env)->SetObjectField (env, j_timeSeriesContainer, fid, jstr);
-			(*env)->DeleteLocalRef(env, jstr);
-		}
+		hec_dss_jni_setStringField(env,cls, j_timeSeriesContainer, "units", tss->units);
+		hec_dss_jni_setStringField(env, cls, j_timeSeriesContainer, "type", tss->type);
 
 		//  Data related
 		//  Data is stored as doubles (not recommended, unless required)
@@ -591,7 +570,9 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1ztsRetrieve(
 					free(tss->doubleProfileValues);
 					tss->doubleProfileValues = 0;
 				}
-			}
+				hec_dss_jni_setStringField(env, cls, j_timeSeriesContainer, "unitsProfileValues", tss->unitsProfileValues);
+				hec_dss_jni_setStringField(env, cls, j_timeSeriesContainer, "unitsProfileDepths", tss->unitsProfileDepths);
+			} // end profile
 		}
 
 		//  Precision
@@ -607,91 +588,45 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1ztsRetrieve(
 		}
 
 		//  Time zone
-		fid = (*env)->GetFieldID (env, cls, "timeZoneID", "Ljava/lang/String;");
-		if ((*env)->ExceptionOccurred(env)) {
-			(*env)->ExceptionClear(env);
-		}
-		else { 
-			if (fid) {
-				if (tss->timeZoneName) {
-					len = (int)strlen(tss->timeZoneName);
-					if (len > 2) {
-						jstr = (*env)->NewStringUTF(env, tss->timeZoneName);
-						(*env)->SetObjectField(env, j_timeSeriesContainer, fid, jstr);
-						(*env)->DeleteLocalRef(env, jstr);
-					}
-				}
-			}
-		}
+		hec_dss_jni_setStringField(env, cls, j_timeSeriesContainer, "timeZoneID", tss->timeZoneName);
 
 		//  User header (supplemental)
 		if (tss->userHeaderNumber > 0) {
-			fid = (*env)->GetFieldID (env, cls, "supplementalInfo", "Ljava/lang/String;");
-			if ((*env)->ExceptionOccurred(env)) {
-				(*env)->ExceptionClear(env);
+			char* headerString = NULL;
+			if (zgetVersion((long long*)ifltab) == 7) {
+				headerString = userHeaderToString(tss->userHeader, tss->userHeaderNumber);
 			}
-			else { 
-				if (fid) {
-					char *headerString = NULL;
-					if (zgetVersion((long long *)ifltab) == 7) {
-						headerString = userHeaderToString(tss->userHeader, tss->userHeaderNumber);
-					}
-					else {
-						headerString = (char *)tss->userHeader;
-					}
-					jstr = (*env)->NewStringUTF(env, (const char *)headerString);
-					(*env)->SetObjectField (env, j_timeSeriesContainer, fid, jstr);
-					(*env)->DeleteLocalRef(env, jstr);
-					if (zgetVersion((long long *)ifltab) == 7) {
-						free(headerString);
-					}
-				}
+			else {
+				headerString = (char*)tss->userHeader;
+			}
+			hec_dss_jni_setStringField(env, cls, j_timeSeriesContainer, "supplementalInfo", headerString);
+			if (zgetVersion((long long*)ifltab) == 7) {
+				free(headerString);
 			}
 		}
-
 		//  Now fill in extra container values
 		//  watershed
 		len = zpathnameGetPart (tss->pathname, 1, cpart, sizeof(cpart));
 		if (len > 0) {
-			fid = (*env)->GetFieldID (env, cls, "watershed", "Ljava/lang/String;");
-			if (fid) {
-				jstr = (*env)->NewStringUTF(env, cpart);
-				(*env)->SetObjectField (env, j_timeSeriesContainer, fid, jstr);
-				(*env)->DeleteLocalRef(env, jstr);
-			}
+			hec_dss_jni_setStringField(env, cls, j_timeSeriesContainer, "watershed", cpart);
 		}
 
 		//  location
 		len = zpathnameGetPart (tss->pathname, 2, cpart, sizeof(cpart));
 		if (len > 0) {
-			fid = (*env)->GetFieldID (env, cls, "location", "Ljava/lang/String;");
-			if (fid) {
-				jstr = (*env)->NewStringUTF(env, cpart);
-				(*env)->SetObjectField (env, j_timeSeriesContainer, fid, jstr);
-				(*env)->DeleteLocalRef(env, jstr);
-			}
+			hec_dss_jni_setStringField(env, cls, j_timeSeriesContainer, "location", cpart);
 		}
 
 		//  parameter
 		len = zpathnameGetPart (tss->pathname, 3, cpart, sizeof(cpart));
 		if (len > 0) {
-			fid = (*env)->GetFieldID (env, cls, "parameter", "Ljava/lang/String;");
-			if (fid) {
-				jstr = (*env)->NewStringUTF(env, cpart);
-				(*env)->SetObjectField (env, j_timeSeriesContainer, fid, jstr);
-				(*env)->DeleteLocalRef(env, jstr);
-			}
+			hec_dss_jni_setStringField(env, cls, j_timeSeriesContainer, "parameter", cpart);
 		}
 
 		//  version
 		len = zpathnameGetPart (tss->pathname, 6, cpart, sizeof(cpart));
 		if (len > 0) {
-			fid = (*env)->GetFieldID (env, cls, "version", "Ljava/lang/String;");
-			if (fid) {
-				jstr = (*env)->NewStringUTF(env, cpart);
-				(*env)->SetObjectField (env, j_timeSeriesContainer, fid, jstr);
-				(*env)->DeleteLocalRef(env, jstr);
-			}
+			hec_dss_jni_setStringField(env, cls, j_timeSeriesContainer, "version", cpart);
 		}
 
 		//  Last write time

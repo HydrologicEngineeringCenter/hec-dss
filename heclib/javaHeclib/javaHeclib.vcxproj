@@ -243,6 +243,7 @@
   <ItemGroup>
     <ClInclude Include="resource.h" />
     <ClInclude Include="src\javaHeclib.h" />
+    <ClInclude Include="src\jni_utility.h" />
     <ClInclude Include="version.h" />
     <ClInclude Include="version_build.h" />
   </ItemGroup>
@@ -411,6 +412,7 @@
     <ClCompile Include="src\Hec_zwritx.c" />
     <ClCompile Include="src\Hec_zwritxBytes.c" />
     <ClCompile Include="src\JavaCatalogToC.c" />
+    <ClCompile Include="src\jni_utility.c" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="version.rc" />
