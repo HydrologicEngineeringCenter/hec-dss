@@ -4,7 +4,7 @@
 #include "heclib.h"
 #include "zdssMessages.h"
 #include "hecdssInternal.h"
-#include "fortran_sting_len_size.h"
+#include "fortran_string_len_size.h"
 
 /**
 *  Function:	zlocationStore
