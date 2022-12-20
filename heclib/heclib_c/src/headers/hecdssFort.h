@@ -14,7 +14,7 @@
 //  Not converted
 
 void zcatalogfile7_(long long *ifltab, const char *catalogFilename, int *boolSorted, const char *pathWithWildChars, int *status,
-	size_t lencatalogFilename, size_t lenpathWithWildChars);
+	slen_t lencatalogFilename, slen_t lenpathWithWildChars);
 
 
 void zloadcache6_(long long *ifltab, int* istat);
@@ -231,7 +231,7 @@ void zundel_(long long *ifltab, const char *pathname, int *numberPathname,
 			 int *status, slen_t lenPathname);
 void zcopyfile_ (long long *ifltabFrom, long long *ifltabTo, int *istat);
 void zcopyrecord_(long long *ifltabFrom, long long *ifltabTo, const char *pathnameFrom,
-				 const char *pathnameTo, int *status, size_t pathnameFromLen, slen_t pathnameToLen);
+				 const char *pathnameTo, int *status, slen_t pathnameFromLen, slen_t pathnameToLen);
 void zdblook6_ (long long *ifltab, int *address, int *length);
 void zdebugout7_(long long *ifltab, long long *iarray, long long *address, int *len);
 void zdbmod6_ (long long *ifltab, int *address, int *value,
@@ -298,7 +298,7 @@ void zrrtsxd_(long long *ifltab, const char *cpath, const char *cdate, const cha
 	slen_t cpath_len, slen_t cdate_len, slen_t ctime_len, slen_t cunits_len, slen_t ctype_len);
 void zrtxts_(long long *ifltab, const char *cpath, char *cstring, int *kstring, int *nstring,
 	int *iuhead, int *kuhead, int *nuhead, int *istat, slen_t cpath_len, slen_t cstring_len);
-void zset_(const char *cflg, const char *cstr, int *numb, size_t cflg_len, size_t cstr_len);
+void zset_(const char *cflg, const char *cstr, int *numb, slen_t cflg_len, slen_t cstr_len);
 void zsetfi_(long long *ifltab, const char *cparam, const char *calpha, int *inumb, int *istatus,
 	slen_t cparam_len, slen_t calpha_len);
 void zsits_(long long *ifltab, const char *cpath, int *itimes, float *values, int *nvals,
@@ -318,7 +318,7 @@ void zsitsxd_(long long *ifltab, const char *cpath, int *itimes, double *dvalues
 void zspd_(long long *ifltab, const char *cpath, int *nord, int *ncurve, int *ihoriz,
 	const char *c1unit, const char *c1type, const char *c2unit, const char *c2type,
 	float *svalues, const char *clabel, int *label, int *iuhead, int *nuhead, int *iplan, int *istat,
-	size_t cpath_len, slen_t c1unit_len, slen_t c1type_len, slen_t c2unit_len, slen_t c2type_len, slen_t clabel_len);
+	slen_t cpath_len, slen_t c1unit_len, slen_t c1type_len, slen_t c2unit_len, slen_t c2type_len, slen_t clabel_len);
 void zspdd_(long long *ifltab, const char *cpath, int *nord, int *ncurve, int *ihoriz,
 	const char *c1unit, const char *c1type, const char *c2unit, const char *c2type, double *dvalues,
 	const char *clabel, int *label, int *iuhead, int *nuhead, int *iplan, int *istat,
@@ -349,7 +349,7 @@ void zsrtsxd_(long long *ifltab, const char *cpath, const char *cdate, const cha
 	int *ldhigh, int *nprec, int *istat,
 	slen_t cpath_len, slen_t cdate_len, slen_t ctime_len, slen_t cunits_len, slen_t ctype_len);
 void zstxta_(long long *ifltab, const char *cpath, const char *carray, int *narray,
-	int *iuhead, int *nuhead, int *istat, size_t cpath_len, size_t carray_len);
+	int *iuhead, int *nuhead, int *istat, slen_t cpath_len, slen_t carray_len);
 void ztsinfo_(long long *ifltab, const char *cpath, int *juls, int *istime,
 	int *jule, int *ietime, char *cunits, char *ctype, int *lqual, int *ldouble, int *lfound,
 	slen_t cpath_len, slen_t cunits_len, slen_t ctype_len);
