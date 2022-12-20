@@ -588,46 +588,20 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1ztsRetrieve(
 		}
 
 		//  Time zone
-		fid = (*env)->GetFieldID (env, cls, "timeZoneID", "Ljava/lang/String;");
-		if ((*env)->ExceptionOccurred(env)) {
-			(*env)->ExceptionClear(env);
-		}
-		else { 
-			if (fid) {
-				if (tss->timeZoneName) {
-					len = (int)strlen(tss->timeZoneName);
-					if (len > 2) {
-						jstr = (*env)->NewStringUTF(env, tss->timeZoneName);
-						(*env)->SetObjectField(env, j_timeSeriesContainer, fid, jstr);
-						(*env)->DeleteLocalRef(env, jstr);
-					}
-				}
-			}
-		}
+		hec_dss_jni_setStringField(env, cls, j_timeSeriesContainer, "timeZoneID", tss->timeZoneName);
 
 		//  User header (supplemental)
 		if (tss->userHeaderNumber > 0) {
-			fid = (*env)->GetFieldID (env, cls, "supplementalInfo", "Ljava/lang/String;");
-			if ((*env)->ExceptionOccurred(env)) {
-				(*env)->ExceptionClear(env);
+			char* headerString = NULL;
+			if (zgetVersion((long long*)ifltab) == 7) {
+				headerString = userHeaderToString(tss->userHeader, tss->userHeaderNumber);
 			}
-			else { 
-				if (fid) {
-					char *headerString = NULL;
-					if (zgetVersion((long long *)ifltab) == 7) {
-						headerString = userHeaderToString(tss->userHeader, tss->userHeaderNumber);
-					}
-					else {
-						headerString = (char *)tss->userHeader;
-					}
-					jstr = (*env)->NewStringUTF(env, (const char *)headerString);
-					(*env)->SetObjectField (env, j_timeSeriesContainer, fid, jstr);
-					(*env)->DeleteLocalRef(env, jstr);
-					if (zgetVersion((long long *)ifltab) == 7) {
-						free(headerString);
-					}
-				}
+			else {
+				headerString = (char*)tss->userHeader;
 			}
+			hec_dss_jni_setStringField(env, cls, j_timeSeriesContainer, "supplementalInfo", headerString);
+			if (zgetVersion((long long*)ifltab) == 7) {
+				free(headerString);
 		}
 
 		//  Now fill in extra container values
