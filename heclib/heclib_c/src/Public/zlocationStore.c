@@ -4,7 +4,7 @@
 #include "heclib.h"
 #include "zdssMessages.h"
 #include "hecdssInternal.h"
-
+#include "fortran_sting_len_size.h"
 
 /**
 *  Function:	zlocationStore
@@ -265,7 +265,7 @@ int zlocationStore(long long *ifltab, zStructLocation *locationStruct, int stora
 void zlocationstore_(long long *ifltab, const char *path,
 					double coordinates[3], int coordinateDescription[6],
 					char *timeZoneName, char *supplemental, int *status,
-					size_t pathLen, size_t timeZoneLen, size_t supplementalLen)
+					slen_t pathLen, slen_t timeZoneLen, slen_t supplementalLen)
 {
 	char *pathname;
 	zStructLocation* locationStruct;
