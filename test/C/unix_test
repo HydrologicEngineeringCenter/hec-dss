@@ -43,7 +43,8 @@ echo "running $1"
 ./Output/$1 $2 > ./Output/$1_test.log 
 status=$?
 if [ $status -ne 0 ]; then
- echo "Test_Error with $1"  
+ echo "Test_Error with $1"
+ tail -50 ./Output/$1_test.log
  fail_count=$((fail_count+1))
  else
  pass_count=$((pass_count+1))
