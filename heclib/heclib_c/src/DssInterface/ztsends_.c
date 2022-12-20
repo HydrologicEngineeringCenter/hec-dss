@@ -1,6 +1,7 @@
 #include "heclib.h"
 #include "heclib6.h"
 #include "hecdssInternal.h"
+#include "fortran_string_len_size.h"
 
 
 //  Depreciated.  Use ztsGetDateRange() instead
@@ -10,7 +11,7 @@
 
 void ztsends_(long long *ifltab, const char* pathname, int *isearch,
 			  int *juls, int *istime, int *jule, int *ietime,
-			  int *boolFound, size_t lenPathname)
+			  int *boolFound, slen_t lenPathname)
 {
 	int status;
 	int startSeconds;

@@ -10,6 +10,7 @@
 #include "hecdssInternal.h"
 #include "zdssMessages.h"
 #include "hecdssFort.h"
+#include "fortran_string_len_size.h"
 
 
 /**
@@ -126,7 +127,7 @@ int zdataType6(long long *ifltab, const char* pathname)
 
 //  Fortran compatible interface
 void zdatatype_(long long *ifltab, const char* pathname, int *dataType,
-			 int *status, size_t lenPathname)
+			 int *status, slen_t lenPathname)
 {
 	char *path;
 	path = stringFortToC(pathname, lenPathname);
@@ -139,7 +140,7 @@ void zdatatype_(long long *ifltab, const char* pathname, int *dataType,
 //CALL zdtype7 (IFLTAB, CPATH, NDATA, LFOUND, CDTYPE, IDTYPE)
 //  Fortran compatible interface
 int zdatatype7_(long long *ifltab, const char* pathname, int *numberData,
-			 int *status, int *dataType, size_t lenPathname)
+			 int *status, int *dataType, slen_t lenPathname)
 {
 	 char *path;
 	 zStructRecordBasics *recordBasics;

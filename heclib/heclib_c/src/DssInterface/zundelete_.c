@@ -1,6 +1,7 @@
 #include <stdlib.h>
 
 #include "heclib.h"
+#include "fortran_string_len_size.h"
 
 /**
 *  Function:	zundelete - Fortran Interface
@@ -29,7 +30,7 @@
 *
 **/
 
-void zundelete_(long long *ifltab, const char *pathname, int *status, size_t lenPathname)
+void zundelete_(long long *ifltab, const char *pathname, int *status, slen_t lenPathname)
 {
 	char *path;
 
@@ -45,7 +46,7 @@ void zundelete_(long long *ifltab, const char *pathname, int *status, size_t len
 
 //  Depreciated version
 void zundel_(long long *ifltab, const char *pathname, int *numberPathname,
-			 int *status, size_t lenPathname)
+			 int *status, slen_t lenPathname)
 {
 	char *path;
 

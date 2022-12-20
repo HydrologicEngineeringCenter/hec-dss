@@ -8,6 +8,7 @@
 #include "zdssMessages.h"
 #include "zdssVals.h"
 #include "hecdssInternal.h"
+#include "fortran_string_len_size.h"
 
 
 void zspdi7_(long long *ifltab, const char *pathname,
@@ -18,10 +19,10 @@ void zspdi7_(long long *ifltab, const char *pathname,
 			 const char *labels, int *boolStoreLabels,
 			 int *userHeader, int *userHeaderNumber,
 			 int *iplan, int *istat,
-			 size_t pathnameLen,
-			 size_t unitsIndependentLen, size_t typeIndependentLen,
-			 size_t unitsDependentLen, size_t typeDependentLen,
-			 size_t lablesLength)
+			 slen_t pathnameLen,
+			 slen_t unitsIndependentLen, slen_t typeIndependentLen,
+			 slen_t unitsDependentLen, slen_t typeDependentLen,
+			 slen_t lablesLength)
 {
 
 

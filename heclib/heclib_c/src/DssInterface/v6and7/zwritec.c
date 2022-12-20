@@ -3,6 +3,7 @@
 #include "heclib7.h"
 #include "hecdssFort.h"
 #include "hecdssInternal.h"
+#include "fortran_string_len_size.h"
 
 
 
@@ -88,7 +89,7 @@ void zwritec_(long long *ifltab, const char* path,
 			 int *values2, int *values2Number,
 			 int *numberValues, int *logicalNumberValues,
 			 int *totalAllocatedSize, int *totalExpandedSize, int *dataType,
-			 int *status, size_t pathLen)
+			 int *status, slen_t pathLen)
 {
 
 	char *pathname;

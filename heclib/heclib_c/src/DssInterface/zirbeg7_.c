@@ -4,6 +4,7 @@
 #include "heclib6.h"
 #include "hecdssInternal.h"
 #include "hecdssFort.h"
+#include "fortran_string_len_size.h"
 
 
 //  For Compatibility purposes only

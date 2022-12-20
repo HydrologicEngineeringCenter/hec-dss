@@ -2,6 +2,7 @@
 
 #include "heclib.h"
 #include "hecdssInternal.h"
+#include "fortran_string_len_size.h"
 
 int zset(const char* parameter, const char* charVal, int integerValue)
 {
@@ -21,7 +22,7 @@ int zset(const char* parameter, const char* charVal, int integerValue)
 	return status;
 }
 
-int zset7_(const char* parameter, const char* charVal, int *integerValue, size_t lenParam, size_t lenCharVal)
+int zset7_(const char* parameter, const char* charVal, int *integerValue, slen_t lenParam, slen_t lenCharVal)
 {
 	int rval =0;
 	char *c_parm;

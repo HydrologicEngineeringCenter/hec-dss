@@ -1,6 +1,7 @@
 #include <stdlib.h>
 
 #include "heclib.h"
+#include "fortran_string_len_size.h"
 
 /**
 *  Function:	zdelete - Fortran Interface
@@ -29,7 +30,7 @@
 *
 **/
 
-void zdelete_(long long *ifltab, const char *pathname, int *status, size_t lenPathname)
+void zdelete_(long long *ifltab, const char *pathname, int *status, slen_t lenPathname)
 {
 	int boolfound;
 	char *path;
@@ -54,7 +55,7 @@ void zdelete_(long long *ifltab, const char *pathname, int *status, size_t lenPa
 
 //  Version 6 fully compatible
 void zdelet_(long long *ifltab, const char *pathname, int *numberPathname,
-			 int *boolfound, size_t lenPathname)
+			 int *boolfound, slen_t lenPathname)
 {
 	int status;
 	char *path;

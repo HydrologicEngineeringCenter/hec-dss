@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "heclib.h"
+#include "fortran_string_len_size.h"
 
 /**
 *  Function:	zconvertVersion

@@ -5,6 +5,7 @@
 #include "zdssKeys.h"
 #include "hecdssFort.h"
 #include "hecdssInternal.h"
+#include "fortran_string_len_size.h"
 
 //  C Callable
 //  Accesses both DSS-6 and DSS-7 files.
@@ -96,7 +97,7 @@ void zreadx_(long long *ifltab, const char *pathname,
 			 int *header2, int *header2ArraySize, int *header2Number,
 			 int *userHeader, int *userHeaderArraySize, int *userHeaderNumber,
 			 int *values, int *valuesSize, int *valuesNumber,
-			 int *readPlan, int *recordFound, size_t pathLen)
+			 int *readPlan, int *recordFound, slen_t pathLen)
 {
 	char path[MAX_PATHNAME_LENGTH];
 

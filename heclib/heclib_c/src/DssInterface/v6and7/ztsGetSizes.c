@@ -1,4 +1,5 @@
 #include "heclib.h"
+#include "fortran_string_len_size.h"
 
 /**
 *  Function:	ztsGetSizes
@@ -73,8 +74,8 @@ void ztsgetsizes_(long long *ifltab, const char *pathname,
 						int *numberValues, int *valueSize,
 						int *qualityElementSize, int *inoteElementSize,
 						int *totalLengthCnotesInRecords, int *userHeaderNumber, int *status,
-						size_t pathLen, size_t startDateLen, size_t startTimeLen,
-						size_t endDateLen, size_t endTimeLen)
+						slen_t pathLen, slen_t startDateLen, slen_t startTimeLen,
+						slen_t endDateLen, slen_t endTimeLen)
 {
 
 	char *path;

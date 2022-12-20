@@ -3,6 +3,7 @@
 #include "heclib.h"
 #include "hecdssInternal.h"
 #include "zdssKeys.h"
+#include "fortran_string_len_size.h"
 
 /**
 *  Function:	zcheck
@@ -86,7 +87,7 @@ int zcheck(long long *ifltab, const char* pathname)
 
 //  Fortran compatible interface, for DSS-6 calls also
 void zcheck7_(long long *ifltab, const char* pathname, int *numberPathname,
-			 int *numberHeader, int *numberData, int *lfound, size_t lenPathname)
+			 int *numberHeader, int *numberData, int *lfound, slen_t lenPathname)
 {
 	char *cpath;
 	long long *info;

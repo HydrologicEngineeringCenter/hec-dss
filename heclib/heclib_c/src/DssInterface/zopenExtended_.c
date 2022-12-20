@@ -2,9 +2,10 @@
 
 #include "hecdssInternal.h"
 #include "heclib.h"
+#include "fortran_string_len_size.h"
 
 int zopenextended_(long long *ifltab, const char *dssFilename, int *fileVersion,
-			 int *access, int *maxExpectedPathnames, int *hashSize, int *binSize, size_t lenDssFilename)
+			 int *access, int *maxExpectedPathnames, int *hashSize, int *binSize, slen_t lenDssFilename)
 {
 	int version;
 	int status;

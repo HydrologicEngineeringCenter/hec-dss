@@ -9,7 +9,7 @@
 #include "zdssVals.h"
 #include "hecdssInternal.h"
 #include "hecdssFort.h"
-
+#include "fortran_string_len_size.h"
 
 
 //  z read Complete  (complete argument lists)
@@ -133,7 +133,7 @@ void zreadc_(long long *ifltab, const char* pathname,
 			 int *values2, int *values2Size, int *values2Number,
 			 int *numberValues, int *logicalNumberValues,
 			 int *totalAllocatedSize, int *totalExpandedSize, int *dataType,
-			 int *status, size_t pathnameLen)
+			 int *status, slen_t pathnameLen)
 {
 
 	char path[MAX_PATHNAME_LENGTH];
