@@ -13,7 +13,7 @@
 #include "zdssMessages.h"
 #include "heclib.h"
 #include "zerrorCodes.h"
-#include "fotran_string_len_size.h"
+#include "fortran_string_len_size.h"
 
 /**
 *  Function:	zcatalogFile
