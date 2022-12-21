@@ -2,7 +2,7 @@
 #include <string.h>
 #include <jni.h>
 #include <stdio.h>
-#include "fotran_string_len_size.h"
+#include "fortran_string_len_size.h"
 
 void loadparam_ (int *iunitOut, const char *cpfile,  
 		const char *csfile, 
