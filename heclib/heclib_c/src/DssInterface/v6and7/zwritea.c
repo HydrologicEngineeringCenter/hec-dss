@@ -1,7 +1,7 @@
 #include "heclib7.h"
 #include "hecdssFort.h"
 #include "hecdssInternal.h"
-#include "fortran_string_len_size.h"
+
 
 //  C Callable - uses original arguments
 //  For compatibility purposes.
@@ -56,7 +56,7 @@ void zwritea(long long *ifltab, const char *path, int *npath,
 void zwritea_(long long *ifltab, const char *path, int *npath,
 			int *userHeader, int *userHeaderNumber,
 			int *values, int *valuesNumber,
-			int *flag, int *recordFound, slen_t pathLen)
+			int *flag, int *recordFound, size_t pathLen)
 {
 	char *pathname;
 

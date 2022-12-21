@@ -2,7 +2,7 @@
 
 #include "hecdssInternal.h"
 #include "heclib.h"
-#include "fortran_string_len_size.h"
+
 
 /*
 	zopen interfaces for Fortran
@@ -18,7 +18,7 @@
 */
 
 
-void zopen_(long long *ifltab, const char *dssFilename, int *status, slen_t lenDssFilename)
+void zopen_(long long *ifltab, const char *dssFilename, int *status, size_t lenDssFilename)
 {
 	int version;
 	char *cname;
@@ -46,7 +46,7 @@ void zopen_(long long *ifltab, const char *dssFilename, int *status, slen_t lenD
 	free(cname);
 }
 
-void zopen7_(long long *ifltab, const char *dssFilename, int *status, slen_t lenDssFilename)
+void zopen7_(long long *ifltab, const char *dssFilename, int *status, size_t lenDssFilename)
 {
 	int version;
 	char *cname;
@@ -63,7 +63,7 @@ void zopen7_(long long *ifltab, const char *dssFilename, int *status, slen_t len
 	free(cname);
 }
 
-void zopen6_(long long *ifltab, const char *dssFilename, int *status, slen_t lenDssFilename)
+void zopen6_(long long *ifltab, const char *dssFilename, int *status, size_t lenDssFilename)
 {
 	int version;
 	char *cname;

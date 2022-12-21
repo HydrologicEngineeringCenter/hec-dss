@@ -9,7 +9,7 @@
 #include "hecdssInternal.h"
 #include "zdssKeys.h"
 #include "TestDssC.h"
-#include "fortran_string_len_size.h"
+
 
 
 int testMultiUser(char *filename, int version, int numberDatasets, int accessMode /*2=multi, 3=single, 4=exclusive*/)

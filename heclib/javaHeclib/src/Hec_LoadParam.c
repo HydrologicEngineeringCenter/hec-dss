@@ -2,11 +2,11 @@
 #include <string.h>
 #include <jni.h>
 #include <stdio.h>
-#include "fortran_string_len_size.h"
+
 
 void loadparam_ (int *iunitOut, const char *cpfile,  
 		const char *csfile, 
-		slen_t lencpfile, slen_t lencsfile);
+		size_t lencpfile, size_t lencsfile);
 
 
 JNIEXPORT void JNICALL Java_hec_heclib_dss_Sheflib_Hec_1LoadParam

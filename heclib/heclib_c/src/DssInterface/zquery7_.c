@@ -5,7 +5,7 @@
 #include "zprogress.h"
 #include "zdssMessages.h"
 #include "heclib.h"
-#include "fortran_string_len_size.h"
+
 
 /**
 *  Function:	zquery
@@ -45,7 +45,7 @@
 
 
 //  Fortran compatible interface
-void zquery7_(const char* parameter, char* charVal, int *integerVal, slen_t lenParameter, slen_t lenCharVal)
+void zquery7_(const char* parameter, char* charVal, int *integerVal, size_t lenParameter, size_t lenCharVal)
 {
 	int istat;
 	char *param;

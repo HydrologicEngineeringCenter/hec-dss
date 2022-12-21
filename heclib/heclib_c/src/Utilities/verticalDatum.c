@@ -110,7 +110,7 @@ char* doubleToChar(double d, char* buf) {
 //
 // Fortran wrapper for unitIsFeet
 //
-int unitisfeet_(const char* unit, slen_t lenUnit) {
+int unitisfeet_(const char* unit, size_t lenUnit) {
     char* cUnit = (char*)mallocAndInit(lenUnit + 1);
     F2C(unit, cUnit, lenUnit, lenUnit + 1);
     int isFeet = unitIsFeet(cUnit);
@@ -131,7 +131,7 @@ int unitIsFeet(const char* unit) {
 //
 // Fortran wrapper for unitIsMeters
 //
-int unitismeters_(const char* unit, slen_t lenUnit) {
+int unitismeters_(const char* unit, size_t lenUnit) {
     char* cUnit = (char*)mallocAndInit(lenUnit + 1);
     F2C(unit, cUnit, lenUnit, lenUnit + 1);
     int isMeters = unitIsMeters(cUnit);
@@ -156,8 +156,8 @@ void getoffset_(
     double*     offset,
     const char* offsetUnit,
     const char* dataUnit,
-    slen_t      lenOffsetUnit,
-    slen_t      lenDataUnit) {
+    size_t      lenOffsetUnit,
+    size_t      lenDataUnit) {
 
     char* cOffsetUnit = (char*)mallocAndInit(lenOffsetUnit + 1);
     char* cDataUnit = (char*)mallocAndInit(lenDataUnit + 1);
@@ -324,7 +324,7 @@ void stringtouserheader_(
     int*        userHeader,
     int*        userHeaderCapacity,
     int*        userHeaderNumber,
-    slen_t      lenStr) {
+    size_t      lenStr) {
 
     char* cStr = (char*)malloc(lenStr + 1);
     F2C(str, cStr, lenStr, lenStr + 1);
@@ -362,7 +362,7 @@ void userheadertostring_(
     char*      str,
     const int* userHeader,
     const int* userHeaderNumber,
-    slen_t     lenStr) {
+    size_t     lenStr) {
 
     char* cStr = userHeaderToString(userHeader, *userHeaderNumber);
     C2F(cStr, str, lenStr);
@@ -591,9 +591,9 @@ void decodeandgunzip_(
     char*       results,
     char*       errMsg,
     const char* inputBuf,
-    slen_t      lenResults,
-    slen_t      lenErrMsg,
-    slen_t      lenInputBuf) {
+    size_t      lenResults,
+    size_t      lenErrMsg,
+    size_t      lenInputBuf) {
 
     char* cInputBuf = (char*)malloc(lenInputBuf + 1);
     F2C(inputBuf, cInputBuf, lenInputBuf, lenInputBuf + 1);
@@ -664,9 +664,9 @@ void gzipandencode_(
     char*       results,
     char*       errMsg,
     const char* inputBuf,
-    slen_t      lenResults,
-    slen_t      lenErrMsg,
-    slen_t      lenInputBuf) {
+    size_t      lenResults,
+    size_t      lenErrMsg,
+    size_t      lenInputBuf) {
 
     char* cInputBuf = (char*)malloc(lenInputBuf + 1);
     F2C(inputBuf, cInputBuf, lenInputBuf, lenInputBuf + 1);
@@ -905,10 +905,10 @@ void stringtoverticaldatuminfo_(
     int32_t*    offsetNgvd29IsEstimate,
     double*     offsetNavd88,
     int32_t*    offsetNavd88IsEstimate,
-    slen_t      lenInputStr,
-    slen_t      lenErrorMessage,
-    slen_t      lenNativeDatum,
-    slen_t      lenUnit) {
+    size_t      lenInputStr,
+    size_t      lenErrorMessage,
+    size_t      lenNativeDatum,
+    size_t      lenUnit) {
     char* cInputStr = (char*)mallocAndInit(lenInputStr + 1);
     F2C(inputStr, cInputStr, lenInputStr, lenInputStr + 1);
     char* cErrMsg;
@@ -1147,10 +1147,10 @@ void verticaldatuminfotostring_(
     const double*  offsetNavd88,
     const int32_t* offsetNavd88IsEstimate,
     const int32_t* generateCompressed,
-    slen_t         lenErrorMessage,
-    slen_t         lenOutputStr,
-    slen_t         lenNativeDatum,
-    slen_t         lenUnit) {
+    size_t         lenErrorMessage,
+    size_t         lenOutputStr,
+    size_t         lenNativeDatum,
+    size_t         lenUnit) {
 
     char* cErrMsg;
     char* cResults;
@@ -1268,8 +1268,8 @@ void extractverticaldatuminfofromuserheader_(
         int*       offsetToNgvd29IsEstimate,
         const int* userHeader,
         const int* userHeaderSize,
-        slen_t     lenNativeDatum,
-        slen_t     lenUnit) {
+        size_t     lenNativeDatum,
+        size_t     lenUnit) {
     C2F(" ", nativeDatum, lenNativeDatum);
     C2F(" ", unit,        lenUnit);
     *offsetToNgvd29           = UNDEFINED_VERTICAL_DATUM_VALUE;
@@ -1311,9 +1311,9 @@ void getlocationverticaldatuminfo_(
         int*       offsetToNgvd29IsEstimate,
         long long* fileTable,
         char*      pathname,
-        slen_t     lenNativeDatum,
-        slen_t     lenUnit,
-        slen_t     lenPathname) {
+        size_t     lenNativeDatum,
+        size_t     lenUnit,
+        size_t     lenPathname) {
 
     char* cPathname = (char*)mallocAndInit(lenPathname+1);
     verticalDatumInfo vdi;
@@ -1492,7 +1492,7 @@ void normalizevdiinuserheader_(
     int*   userHeaderNumber,
     int*   userHeaderSize,
     char*  errorMesage,
-    slen_t lenErrorMessage) {
+    size_t lenErrorMessage) {
 
     char* cErrMsg = normalizeVdiInUserHeader(userHeader, userHeaderNumber, *userHeaderSize);
     if (cErrMsg) {
@@ -1604,11 +1604,11 @@ void processstoragevdis_(
     const char*    currentDatum,
     const int32_t* fileContainsData,
     const char*    dataUnit,
-    slen_t         lenErrorMessage,
-    slen_t         lenFileVdiStr,
-    slen_t         lenDataVdiStr,
-    slen_t         lenCurrentDatum,
-    slen_t         lenDataUnit) {
+    size_t         lenErrorMessage,
+    size_t         lenFileVdiStr,
+    size_t         lenDataVdiStr,
+    size_t         lenCurrentDatum,
+    size_t         lenDataUnit) {
 
     char* cFileVdiStr = (char*)malloc(lenFileVdiStr + 1);
     char* cDataVdiStr = (char*)malloc(lenDataVdiStr + 1);

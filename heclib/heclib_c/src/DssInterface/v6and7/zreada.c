@@ -1,7 +1,7 @@
 #include "heclib7.h"
 #include "hecdssFort.h"
 #include "hecdssInternal.h"
-#include "fortran_string_len_size.h"
+
 
 //  zread Abbreviated (arguments).
 //	C Callable - uses original arguments
@@ -64,7 +64,7 @@ void zreada(long long *ifltab, const char *path, int *npath,
 void zreada_(long long *ifltab, const char *path, int *npath,
 			int *userHeader, int *userHeaderNumber,
 			int *values, int *valuesNumber,
-			int *readFlag, int *recordFound, slen_t pathLen)
+			int *readFlag, int *recordFound, size_t pathLen)
 {
 	char pathname[MAX_PATHNAME_LENGTH];
 

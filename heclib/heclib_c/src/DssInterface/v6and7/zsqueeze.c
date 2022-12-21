@@ -9,7 +9,7 @@
 #include "hecdss7.h"
 #include "heclib.h"
 #include "zdssMessages.h"
-#include "fortran_string_len_size.h"
+
 
 /**
 *  Function:	zsqueeze
@@ -108,7 +108,7 @@ int zsqueeze(const char *dssFilename)
 
 }
 
-void zsqueeze_(const char *dssFilename, int *istatus, slen_t fileNameLength)
+void zsqueeze_(const char *dssFilename, int *istatus, size_t fileNameLength)
 {
 	char *filename;
 
@@ -118,7 +118,7 @@ void zsqueeze_(const char *dssFilename, int *istatus, slen_t fileNameLength)
 
 }
 
-void zsqueeze7_(const char *dssFilename, int *istatus, slen_t fileNameLength)
+void zsqueeze7_(const char *dssFilename, int *istatus, size_t fileNameLength)
 {
 	char *filename;
 

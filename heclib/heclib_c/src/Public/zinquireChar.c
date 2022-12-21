@@ -178,7 +178,7 @@ int zinquireChar(long long *ifltab, const char *request, char *creturn, size_t c
 }
 
 int zinquirechar_ (long long *ifltab, const char *parameter, char *charVal, int *lenCharValIn, int *integerVal,
-					slen_t lenParameter, slen_t lenCharVal2)
+					size_t lenParameter, size_t lenCharVal2)
 {
 	int istat;
 	int lenCharVal;

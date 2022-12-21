@@ -1,12 +1,12 @@
 #include "heclib.h"
 #include "hecdssInternal.h"
-#include "fortran_string_len_size.h"
+
 
 
 //  Fortran compatible interface
 
 //  FIX ME
-void zgetfileversion_(const char *dssFilename, int *iver, slen_t lenDssFilename)
+void zgetfileversion_(const char *dssFilename, int *iver, size_t lenDssFilename)
 {
 	char *cname;
 
@@ -19,7 +19,7 @@ void zgetfileversion_(const char *dssFilename, int *iver, slen_t lenDssFilename)
 	free(cname);
 }
 
-void zcheckfilever_(const char *dssFilename, int *iver, slen_t lenDssFilename)
+void zcheckfilever_(const char *dssFilename, int *iver, size_t lenDssFilename)
 {
 	char *cname;
 

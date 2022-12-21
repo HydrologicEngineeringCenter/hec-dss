@@ -7,7 +7,7 @@
 #include "zdssKeys.h"
 #include "zdssVals.h"
 #include "hecdssInternal.h"
-#include "fortran_string_len_size.h"
+
 
 
 //  DEPRECIATED - USE zgetRecordSize INSTEAD
@@ -62,7 +62,7 @@ int zgetInfo7(long long *ifltab, const char *pathname, int *ibuff)
 }
 
 //  Fortran compatible interface
-void zgetinfo7_ (long long *ifltab, const char *pathname, int *ibuff, int *status, slen_t lenPathname)
+void zgetinfo7_ (long long *ifltab, const char *pathname, int *ibuff, int *status, size_t lenPathname)
 {
 	char *path;
 	path = stringFortToC(pathname, lenPathname);

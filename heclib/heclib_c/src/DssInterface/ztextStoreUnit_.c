@@ -5,7 +5,7 @@
 #include "zdssMessages.h"
 #include "heclib.h"
 #include "hecdssFort.h"
-#include "fortran_string_len_size.h"
+
 
 /**
 *  Function:	ztextStoreUnit
@@ -48,7 +48,7 @@
 */
 
 void ztextstoreunit_(long long *ifltab, const char *pathname, int *fortranUnit,
-					 int *numberLines, int *status, slen_t lenPathname)
+					 int *numberLines, int *status, size_t lenPathname)
 {
 
 	int numberCharacters;

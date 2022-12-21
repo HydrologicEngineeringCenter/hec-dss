@@ -7,7 +7,7 @@
 #include "zdssMessages.h"
 #include "hecdssInternal.h"
 #include "zStructTsTimeWindow.h"
-#include "fortran_string_len_size.h"
+
 
 
 /*
@@ -38,7 +38,7 @@ void zritsi7_(long long *ifltab, const char *path,
 				int *userHeader, int *userHeaderArraySize, int *userHeaderNumber,
 				double coordinates[], int coordinateDescription[], int *boolCoordinatesRead,
 				int *readFlag, int *status,
-				slen_t pathLen, slen_t unitsLen, slen_t typeLen)
+				size_t pathLen, size_t unitsLen, size_t typeLen)
 {
 
 	int i;

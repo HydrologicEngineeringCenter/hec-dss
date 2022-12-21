@@ -8,7 +8,7 @@
 #include "zdssMessages.h"
 #include "hecdssInternal.h"
 #include "zStructTsTimeWindow.h"
-#include "fortran_string_len_size.h"
+
 
 
 
@@ -28,9 +28,9 @@ void ztsirregstorefull_(long long *ifltab, const char *path,
 						const char *units, const char *type, int *precisionValues,
 						const char *timeZoneName,
 						int *storageFlag, int *status,
-						slen_t pathLen, slen_t baseDateLen, slen_t cnotesLen,
-						slen_t unitsLen, slen_t typeLen,
-						slen_t timeZoneNameLen)
+						size_t pathLen, size_t baseDateLen, size_t cnotesLen,
+						size_t unitsLen, size_t typeLen,
+						size_t timeZoneNameLen)
 
 {
 	int ipos;

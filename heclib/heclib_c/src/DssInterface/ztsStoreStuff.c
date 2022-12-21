@@ -8,7 +8,7 @@
 #include "zdssMessages.h"
 #include "hecdssInternal.h"
 #include "hecdssFort.h"
-#include "fortran_string_len_size.h"
+
 
 //  FORTRAN Callable
 //  call zsrtsd(ifltab1, cpath1, '25JUN1957', '2400', nvals, data1, 'CFS', 'PER-AVER', 0, status)
@@ -18,8 +18,8 @@ void zsrtsd7_(long long *ifltab, const char *path,
 				int *numberValues, int *values,
 				const char *units, const char *type,
 				int *storageFlag, int *status,
-				slen_t pathLen, slen_t startDateLen,
-				slen_t startTimeLen, slen_t unitsLen, slen_t typeLen)
+				size_t pathLen, size_t startDateLen,
+				size_t startTimeLen, size_t unitsLen, size_t typeLen)
 {
 	int quality[1];
 	int notes[1];
@@ -59,9 +59,9 @@ void ztsregstorefull_(long long *ifltab, const char *path,
 				int userHeader[], int *userHeaderNumber,
 				const char *units, const char *type, int *precisionValues,
 				const char *timeZoneName, int *storageFlag, int *status,
-				slen_t pathLen, slen_t startDateLen, slen_t startTimeLen,
-				slen_t cnotesLen, slen_t unitsLen, slen_t typeLen,
-				slen_t timeZoneLen)
+				size_t pathLen, size_t startDateLen, size_t startTimeLen,
+				size_t cnotesLen, size_t unitsLen, size_t typeLen,
+				size_t timeZoneLen)
 
 {
 	int ipos;
@@ -192,8 +192,8 @@ void zsrtsi7_(long long *ifltab, const char *path,
 				int *storageFlag,
 				int *ignore1, int *ignore2, int *ignore3, int *ignore4, int *nprec,
 				int *status,
-				slen_t pathLen, slen_t startDateLen,
-				slen_t startTimeLen, slen_t unitsLen, slen_t typeLen)
+				size_t pathLen, size_t startDateLen,
+				size_t startTimeLen, size_t unitsLen, size_t typeLen)
 {
 
 	int valueSize;

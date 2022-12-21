@@ -2,12 +2,12 @@
 
 #include "heclib7.h"
 #include "hecdssInternal.h"
-#include "fortran_string_len_size.h"
+
 
 
 
 //  Fortran Interface
-void zpathnamegetpart_ (const char *pathname, int *partPosition, char *part, slen_t pathnameLength, slen_t sizeofPart)
+void zpathnamegetpart_ (const char *pathname, int *partPosition, char *part, size_t pathnameLength, size_t sizeofPart)
 {
 	char cPart[MAX_PART_SIZE];
 

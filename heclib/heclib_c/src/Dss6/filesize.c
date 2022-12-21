@@ -17,7 +17,7 @@ typedef __int64 int64_t;
 #endif
 
 #include "heclibDate.h"
-#include "fortran_string_len_size.h"
+
 
 //
 // Get the size in bytes of the specified file.
@@ -47,7 +47,7 @@ int stringCopy(char *destination, size_t sizeOfDestination, const char* source, 
 	// filename versions //
 	//-------------------//
 
-	void filesizen64_(char *fname, int64_t *nbytes, int32_t *status, slen_t filename_len) {
+	void filesizen64_(char *fname, int64_t *nbytes, int32_t *status, size_t filename_len) {
 
 #ifdef _MSC_VER
 		struct __stat64 buf;
@@ -60,7 +60,7 @@ int stringCopy(char *destination, size_t sizeOfDestination, const char* source, 
 #endif
 	}
 
-	void filesizen_(char *filename, int32_t *nbytes, int32_t *status, slen_t filename_len) {
+	void filesizen_(char *filename, int32_t *nbytes, int32_t *status, size_t filename_len) {
 
 		char *fname = NULL;
 		int32_t i;

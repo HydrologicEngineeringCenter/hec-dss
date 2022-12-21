@@ -7,7 +7,7 @@
 #include "heclib.h"
 #include "heclib6.h"
 #include "zStructTsTimeWindow.h"
-#include "fortran_string_len_size.h"
+
 
 float zmissingFlag();
 
@@ -105,8 +105,8 @@ void zrrtsd7_(long long *ifltab, const char *path,
 				int *maxNumberValues, int *numberRead, int *values,
 				char *units, char *type,
 				int *timeOffsetSeconds, int *status,
-				slen_t pathLen, slen_t startDateLen,
-				slen_t startTimeLen, slen_t unitsLen, slen_t typeLen)
+				size_t pathLen, size_t startDateLen,
+				size_t startTimeLen, size_t unitsLen, size_t typeLen)
 
 {
 	int quality[1];
@@ -182,8 +182,8 @@ void zrrts7_(long long *ifltab, const char *path,
 				int *maxNumberValues, int *numberRead, int *values,
 				char *units, char *type,
 				int *timeOffsetSeconds, int *status,
-				slen_t pathLen, slen_t startDateLen,
-				slen_t startTimeLen, slen_t unitsLen, slen_t typeLen)
+				size_t pathLen, size_t startDateLen,
+				size_t startTimeLen, size_t unitsLen, size_t typeLen)
 
 {
 	int quality[1];
@@ -242,8 +242,8 @@ void zrrtsi7_(long long *ifltab, const char *path,
 				int *compressionNotUsed,
 				double coordinates[], int coordinateDescription[], int *boolCoordinates,
 				int *istat,
-				slen_t pathLen, slen_t startDateLen,
-				slen_t startTimeLen, slen_t unitsLen, slen_t typeLen)
+				size_t pathLen, size_t startDateLen,
+				size_t startTimeLen, size_t unitsLen, size_t typeLen)
 
 {
 	int zero = 0;

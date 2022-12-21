@@ -8,7 +8,7 @@
 #include "zdssMessages.h"
 #include "zdssVals.h"
 #include "hecdssInternal.h"
-#include "fortran_string_len_size.h"
+
 
 
 int zpdstore_(long long *ifltab, const char *pathname,
@@ -21,10 +21,10 @@ int zpdstore_(long long *ifltab, const char *pathname,
 					int *userHeader, int *userHeaderNumber,
 					const char *timeZoneName,
 					int *xprecision, int *yprecision, int *storageFlag,
-					slen_t pathnameLen,
-					slen_t unitsIndependentLen, slen_t typeIndependentLen,
-					slen_t unitsDependentLen, slen_t typeDependentLen,
-					slen_t lablesLength, slen_t timeZoneNameLen)
+					size_t pathnameLen,
+					size_t unitsIndependentLen, size_t typeIndependentLen,
+					size_t unitsDependentLen, size_t typeDependentLen,
+					size_t lablesLength, size_t timeZoneNameLen)
 
 {
 

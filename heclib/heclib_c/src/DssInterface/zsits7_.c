@@ -5,7 +5,7 @@
 #include "heclib7.h"
 #include "hecdssInternal.h"
 #include "zStructTsTimeWindow.h"
-#include "fortran_string_len_size.h"
+
 
 
 
@@ -19,7 +19,7 @@ void zsits7_(long long *ifltab, const char *path,
 				int *numberValues, int *julianBase,
 				const char *units, const char *type, 
 				int *storageFlag, int *status,
-				slen_t pathLen, slen_t unitsLen, slen_t typeLen)
+				size_t pathLen, size_t unitsLen, size_t typeLen)
 {
 	char *pathname;
 	char *cunits;
@@ -57,7 +57,7 @@ void zsitsi7_(long long *ifltab, const char *path,
 			  double coordinates[], int *numberCoordinates,
 			  int coordinateDescription[],  int *numbCoordDescription,
 			  int *storageFlag, int *status,
-			  slen_t pathLen, slen_t unitsLen, slen_t typeLen)
+			  size_t pathLen, size_t unitsLen, size_t typeLen)
 {
 	char *pathname;
 	char *cunits;

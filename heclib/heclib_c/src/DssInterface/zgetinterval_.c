@@ -2,10 +2,10 @@
 
 #include "hecdssInternal.h"
 #include "heclib.h"
-#include "fortran_string_len_size.h"
+
 
 void zgetinterval_(int *intervalMins, char *Epart, int *numberData,
-				   int *status, slen_t lengthEpart)
+				   int *status, size_t lengthEpart)
 {
 	// ************* UNTESTED and LIMITED ******************
 	char cepart[MAX_PART_SIZE];

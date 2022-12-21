@@ -2,13 +2,13 @@
 
 #include "heclib7.h"
 #include "hecdssInternal.h"
-#include "fortran_string_len_size.h"
+
 //#include "hecdss_6.h"
 
 void zpathnameform_(const char *aPart, const char *bPart, const char *cPart, const char *dPart,
 	const char *ePart, const char *fPart, char *pathname,
-	slen_t aPartLen, slen_t bPartLen, slen_t cPartLen, slen_t dPartLen,
-	slen_t ePartLen, slen_t fPartLen, slen_t sizeofPathname)
+	size_t aPartLen, size_t bPartLen, size_t cPartLen, size_t dPartLen,
+	size_t ePartLen, size_t fPartLen, size_t sizeofPathname)
 {
 	char *caPart;
 	char *cbPart;

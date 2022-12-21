@@ -7,7 +7,7 @@
 #include "zdssKeys.h"
 #include "zdssVals.h"
 #include "hecdssInternal.h"
-#include "fortran_string_len_size.h"
+
 
 //  DEPRECIATED - USE zgetRecordAddresses INSTEAD
 //  This function is here only for version 6 compatibility
@@ -84,7 +84,7 @@ int zrecordAddresses(long long *ifltab, const char* pathname, long long *address
 //  Fortran compatible interface
 
 void zrecadd7_(long long *ifltab, const char* pathname, long long *addresses,
-			 int *status, slen_t lenPathname)
+			 int *status, size_t lenPathname)
 {
 	char *path;
 

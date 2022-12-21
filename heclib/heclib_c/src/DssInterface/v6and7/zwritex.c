@@ -3,7 +3,7 @@
 #include "heclib7.h"
 #include "hecdssFort.h"
 #include "hecdssInternal.h"
-#include "fortran_string_len_size.h"
+
 
 //  C Callable
 //  Accesses both DSS-6 and DSS-7 files.
@@ -96,7 +96,7 @@ void zwritex_(long long *ifltab, const char *path, int *npath,
 			 int *userHeader, int *userHeaderNumber,
 			 int *values, int *valuesNumber, int *dataType,
 			 int *plan, int *status, int *recordFound,
-			 slen_t pathLen)
+			 size_t pathLen)
 {
 	char *pathname;
 

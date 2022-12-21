@@ -1,7 +1,7 @@
 #include <string.h>
 
 #include "heclib.h"
-#include "fortran_string_len_size.h"
+
 
 /**
 *  Function:	zdelete
@@ -50,7 +50,7 @@ int zdelete(long long *ifltab, const char* pathname)
 }
 
 void zdelet7_(long long *ifltab, const char* pathname, int *numberPathname,
-	int *found, slen_t lenPathname)
+	int *found, size_t lenPathname)
 {
 	char *cpath;
 

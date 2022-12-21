@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-#include "fortran_string_len_size.h"
+
 #include "heclib.h"
 #include "zdssKeys.h"
 #include "zdssMessages.h"
@@ -284,7 +284,7 @@ long long zinquire(long long *ifltab, const char *request)
 	return longNumber;
 }
 
-long long zinquire_ (long long *ifltab, const char *parameter, slen_t lenParameter)
+long long zinquire_ (long long *ifltab, const char *parameter, size_t lenParameter)
 {
 	long long longNumber;
 	char *param;

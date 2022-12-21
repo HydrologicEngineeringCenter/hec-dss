@@ -4,7 +4,7 @@
 
 #include "zdssMessages.h"
 #include "heclib.h"
-#include "fortran_string_len_size.h"
+
 
 /**
 *  Function:	ztextRetrieveUnit
@@ -49,7 +49,7 @@
 
 
 void ztextretrieveunit_(long long *ifltab, const char *pathname, int *ifortUnit,
-					    int *numberLines, int *status, slen_t lenPathname)
+					    int *numberLines, int *status, size_t lenPathname)
 {
 	int i;
 	int len;

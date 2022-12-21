@@ -7,7 +7,7 @@
 #include "zdssMessages.h"
 #include "hecdssInternal.h"
 #include "hecdssFort.h"
-#include "fortran_string_len_size.h"
+
 
 /*
 
@@ -19,7 +19,7 @@ C
 //  call ztextStoreArray(ifltab, cpath, carray,  nlines, iuhead, nuhead, istat)
 void ztextstorearray_ (long long *ifltab, const char *pathname, char *clines,
 					 int *numberLines, int *userHeader, int *numberUserHeader,
-					 int *istatus, slen_t lenPathname, slen_t lenClines)
+					 int *istatus, size_t lenPathname, size_t lenClines)
 {
 	int i;
 	int ipos;

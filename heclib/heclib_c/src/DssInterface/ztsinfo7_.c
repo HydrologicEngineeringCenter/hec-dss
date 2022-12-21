@@ -7,7 +7,7 @@
 #include "zdssMessages.h"
 #include "zdssVals.h"
 #include "hecdssInternal.h"
-#include "fortran_string_len_size.h"
+
 
 /////////////////////////////
 ///////////////  Deprecated   Use ztsGetDateRange instead.
@@ -16,7 +16,7 @@
 int ztsinfo7_(long long *ifltab, const char *path,  int *firstJulian, int *firstMins,
 			   int *lastJulian, int *lastMins, char *cunits, char *ctype,
 			   int *lquality, int *ldouble, int *lfound,
-			   slen_t lenpath, slen_t lencunits, slen_t lenctype)
+			   size_t lenpath, size_t lencunits, size_t lenctype)
 {
 
 	/*

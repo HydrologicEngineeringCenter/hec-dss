@@ -3,7 +3,7 @@
 #include <string.h>
 
 #include "heclib.h"
-#include "fortran_string_len_size.h"
+
 
 /**
 *  Function:	zconvertVersion
@@ -95,7 +95,7 @@ int zconvertVersion(const char* fileNameFrom, const char* fileNameTo)
 }
 
 void zconvertversion_ (const char* fileNameFrom, const char* fileNameTo, int *status,
-					   slen_t fileNameFromLen, slen_t fileNameToLen)
+					   size_t fileNameFromLen, size_t fileNameToLen)
 {
 	char *fileFrom;
 	char *fileTo;

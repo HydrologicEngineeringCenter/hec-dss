@@ -3,12 +3,12 @@
 #include <string.h>
 #include <jni.h>
 #include <stdio.h>
-#include "fortran_string_len_size.h"
+
 
 void toshef_ (int *iunitShef, int *iunitLog, const char *cpath,  
 		int *intl, float *data, int *itime, int *ndata,
 		const char *cunits, 
-		slen_t lencpath, slen_t lencunits);
+		size_t lencpath, size_t lencunits);
 
 
 JNIEXPORT void JNICALL Java_hec_heclib_dss_Sheflib_Hec_1ToShef

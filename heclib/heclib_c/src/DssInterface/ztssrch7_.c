@@ -3,7 +3,7 @@
 #include <stdlib.h>
 
 #include "hecdss7.h"
-#include "fortran_string_len_size.h"
+
 
 /**
 *  Function:	ztssrch7_
@@ -50,7 +50,7 @@
 
 
 void ztssrch7_ (long long *ifltab, const char *pathname, int *fortranUnit, char *pathFound, int *numberFound,
-			   slen_t lenPathname, slen_t pathFoundLen)
+			   size_t lenPathname, size_t pathFoundLen)
 {
 	int number;
 	zStructCatalog *tsPaths;
