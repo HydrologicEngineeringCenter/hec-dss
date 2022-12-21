@@ -10,7 +10,7 @@
 	#endif
 #else
     # if __GNUC__
-        #if __GNUC__ > 7 || (defined(__APPLE__) && defined(__ARM64_ARCH_8__)) 
+        #if __GNUC__ > 7 || defined(__APPLE__)
             typedef size_t slen_t;
         #else
             typedef int slen_t;

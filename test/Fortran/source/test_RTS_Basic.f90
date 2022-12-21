@@ -30,6 +30,9 @@
       do i=1, nvals
        data1(i) =FLOAT(i)
        data3(i) = data1(i)  
+       if (i < 10 .or. i > 990) then
+	       write(0,'(a,i4,a,f5.0)') 'data1(',i,') = ',data1(i)
+       end if
       end do
   !  goto 210
 !
@@ -44,10 +47,14 @@
 
     IOFSET = 0
     NVALS = 3
+    write(0,*) '==> CP1'
     call zrrts(ifltab1, cpath1, '05JUN1957', '2300', NVALS, data2, cunits, ctype, IOFSET, status)
+    write(0,*) '==> CP3'
 
     if (status.ne.0) go to 900
+    write(0,*) '==> CP4'
     call zinqir(ifltab1, 'error', ctemp, status)
+    write(0,*) '==> CP5'
     if (status.ne.0) go to 900
     data3(1) = zmissingFlag()
     data3(3) = zmissingFlag()
