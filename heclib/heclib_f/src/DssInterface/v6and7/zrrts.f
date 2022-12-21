@@ -33,28 +33,11 @@ C
      *      CUNITS, CTYPE, IUHEAD, KUHEAD, NUHEAD, IOFSET, JCOMP,
      *      COORDS, ICDESC, LCOORDS, ISTAT)
       ELSE
-	   write(0,*) 'ifltab  = ', ifltab(1)
-	   write(0,*) 'cpath   = ', cpath
-	   write(0,*) 'cdate   = ', cdate
-	   write(0,*) 'ctime   = ', ctime
-	   write(0,*) 'kvals   = ', kvals
-	   write(0,*) 'lqual   = ', lqual
-	   write(0,*) 'kuhead  = ', kuhead
            call zrrtsi7 (IFLTAB, CPATH, CDATE, CTIME, KVALS, NVALS,
      *      .FALSE., LFILDOB, SVALUES, DVALUES, JQUAL, LQUAL, LQREAD,
      *      CUNITS, CTYPE, IUHEAD, KUHEAD, NUHEAD, IOFSET,
      *      JCOMP, COORDS, ICDESC, LCOORDS, ISTAT)
-	   write(0,*) 'nvals   = ', nvals
-	   write(0,*) 'svalues = ', (svalues(i), i=1,nvals)
-	   write(0,*) 'lqread  = ', lqread
-	   write(0,*) 'cunits  = ', cunits
-	   write(0,*) 'ctype   = ', ctype
-	   write(0,*) 'nuhead  = ', nuhead
-	   write(0,*) 'lcoords = ', lcoords
-	   write(0,*) 'iofset  = ', iofset 
-	   write(0,*) 'istat   = ', istat
       ENDIF
-      write(0,*) '==> CP2'
 C
 C
       RETURN

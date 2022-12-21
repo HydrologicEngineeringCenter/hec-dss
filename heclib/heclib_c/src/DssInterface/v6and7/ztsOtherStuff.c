@@ -263,12 +263,6 @@ void zrrtsi7_(long long *ifltab, const char *path,
 	float missing;
 
 
-	fprintf(stderr, "pathLen      = %zu\n", pathLen);
-	fprintf(stderr, "startDateLen = %zu\n", startDateLen);
-	fprintf(stderr, "startTimeLen = %zu\n", startTimeLen);
-	fprintf(stderr, "unitsLen     = %zu\n", unitsLen);
-	fprintf(stderr, "typeLen      = %zu\n", pathLen);
-
 	pathname = stringFortToC(path, pathLen);
 	sDate = stringFortToC(startDate, startDateLen);
 	sTime = stringFortToC(startTime, startTimeLen);
