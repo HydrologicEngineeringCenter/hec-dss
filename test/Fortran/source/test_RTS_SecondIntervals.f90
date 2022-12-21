@@ -20,7 +20,7 @@
       external zmissingFlag
 !
 !
-      WRITE(messageUnit, *)'Begin test_RTS_Basic'
+      WRITE(messageUnit, *)'Begin test_RTS_SecondIntervals'
       nvals = 100000
       do i=1, nvals
        data1(i) =FLOAT(i)
@@ -48,11 +48,11 @@
     if (status.ne.0) go to 900
     call zinqir(ifltab1, 'error', ctemp, status)
     if (status.ne.0) go to 900
-    call checkString('CFS', cunits, 'test_RTS_Basic units, loc 10', status)
+    call checkString('CFS', cunits, 'test_RTS_SecondIntervals units, loc 10', status)
     if (status.ne.0) go to 900
-    call checkString('PER-AVER', ctype, 'test_RTS_Basic type, loc 10', status)
+    call checkString('PER-AVER', ctype, 'test_RTS_SecondIntervals type, loc 10', status)
     if (status.ne.0) go to 900
-    call checkFloats(data3, data2, nvals, 'test_RTS_Basic Values, loc 10', status)
+    call checkFloats(data3, data2, nvals, 'test_RTS_SecondIntervals Values, loc 10', status)
     if (status.ne.0) go to 900
 
 
@@ -72,11 +72,11 @@
     if (status.ne.0) go to 900
     call zinqir(ifltab1, 'error', ctemp, status)
     if (status.ne.0) go to 900
-    call checkString('CFS', cunits, 'test_RTS_Basic units, loc 10', status)
+    call checkString('CFS', cunits, 'test_RTS_SecondIntervals units, loc 10', status)
     if (status.ne.0) go to 900
-    call checkString('PER-AVER', ctype, 'test_RTS_Basic type, loc 10', status)
+    call checkString('PER-AVER', ctype, 'test_RTS_SecondIntervals type, loc 10', status)
     if (status.ne.0) go to 900
-    call checkFloats(data3, data2, nvals, 'test_RTS_Basic Values, loc 10', status)
+    call checkFloats(data3, data2, nvals, 'test_RTS_SecondIntervals Values, loc 10', status)
     if (status.ne.0) go to 900
 
 !

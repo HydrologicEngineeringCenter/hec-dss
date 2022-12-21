@@ -4,6 +4,7 @@
 #include "hecdssInternal.h"
 
 
+
 void secondstotimestring_(int *seconds, int *millsPastSecond, int *timeStyle, char *timeString, size_t lenTimeString)
 {
 	char tString[20];

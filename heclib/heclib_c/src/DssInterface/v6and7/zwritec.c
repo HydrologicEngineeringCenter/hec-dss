@@ -6,6 +6,7 @@
 
 
 
+
 int zwritec(long long *ifltab, const char* pathname,
 			void *internalHeader, int internalHeaderNumber,
 			void *header2, int header2Number,

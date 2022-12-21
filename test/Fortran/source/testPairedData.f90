@@ -40,7 +40,7 @@
     !goto 530
     cpath1 = '/Paired Data/One Curve/Stage-Flow/F/No Labels/F/'
 
-    call zspd (ifltab1, cpath1, nOrdinates, 1, 1, 'Feet', 'UNT', 'CFS', 'UNT', data1, '', 0, userHeader, 0, 0, status)
+    call zspd (ifltab1, cpath1, nOrdinates, 1, 1, 'Feet', 'UNT', 'CFS', 'UNT', data1, '', .false., userHeader, 0, 0, status)
     if (status.ne.0) go to 900
     call zinqir(ifltab1, 'error', ctemp, status)
     if (status.ne.0) go to 900

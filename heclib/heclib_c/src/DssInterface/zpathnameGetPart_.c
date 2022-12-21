@@ -5,6 +5,7 @@
 
 
 
+
 //  Fortran Interface
 void zpathnamegetpart_ (const char *pathname, int *partPosition, char *part, size_t pathnameLength, size_t sizeofPart)
 {

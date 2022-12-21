@@ -2,6 +2,7 @@
 
 #include "heclib.h"
 
+
 /**
 *  Function:	zdelete
 *
@@ -49,7 +50,7 @@ int zdelete(long long *ifltab, const char* pathname)
 }
 
 void zdelet7_(long long *ifltab, const char* pathname, int *numberPathname,
-	int *found, int lenPathname)
+	int *found, size_t lenPathname)
 {
 	char *cpath;
 

@@ -37,7 +37,8 @@
 
 
 #define DSS_VERSION "7-IQ"
-#define DSS_VERSION_DATE "19 December 2022"
+#define DSS_VERSION_DATE "21 December 2022"
+
 
 
 const char *ztypeName(int recordType, int boolAbbreviation);

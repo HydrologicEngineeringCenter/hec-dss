@@ -1,3 +1,4 @@
+
 #ifdef _MSC_VER
 
 #include <windows.h>
@@ -33,7 +34,8 @@ void isonlocaldrive_ (const char *pathName, int *isLocal, size_t len_pathName)
 	}
 }
 #else
-void isonlocaldrive_(const char *pathName, int *isLocal, int len_pathName)
+#include <stddef.h>
+void isonlocaldrive_(const char *pathName, int *isLocal, size_t len_pathName)
 {
 	*isLocal = 1;
 }

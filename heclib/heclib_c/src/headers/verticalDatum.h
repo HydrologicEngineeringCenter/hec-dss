@@ -8,23 +8,6 @@ extern "C" {
 #include <float.h>
 #include <stdint.h>
 
-#if defined(_MSC_VER)
-	#ifdef _WIN64
-			typedef int64_t slen_t;
-	#else
-			typedef int32_t slen_t;
-	#endif
-#else
-    # if __GNUC__
-        #if __GNUC__ > 7
-            typedef size_t slen_t;
-        #else
-            typedef int slen_t;
-        #endif
-    #else
-        typedef int32_t slen_t;
-    #endif
-#endif
  
 #define F2C(f, c, flen, clen) {                    \
     int len = flen < clen ? flen : clen - 1;       \
@@ -516,10 +499,10 @@ void stringtoverticaldatuminfo_(
         int32_t*    offsetNgvd29IsEstimate,
         double*     offsetNavd88,
         int32_t*    offsetNavd88IsEstimate,
-        slen_t      lenInputStr,
-        slen_t      lenErrorMessage,
-        slen_t      lenNativeDatum,
-        slen_t      lenUnit);
+        size_t      lenInputStr,
+        size_t      lenErrorMessage,
+        size_t      lenNativeDatum,
+        size_t      lenUnit);
 /**
  * Fortan wrapper for verticalDatumInfoToString
  *
@@ -572,10 +555,10 @@ void verticaldatuminfotostring_(
         const double*  offsetNavd88,
         const int32_t* offsetNavd88IsEstimate,
         const int32_t* generateCompressed,
-        slen_t         lenErrorMessage,
-        slen_t         lenOutputStr,
-        slen_t         lenNativeDatum,
-        slen_t         lenUnit);
+        size_t         lenErrorMessage,
+        size_t         lenOutputStr,
+        size_t         lenNativeDatum,
+        size_t         lenUnit);
 /**
  * Fortran wrapper for normalizeVdiInUserHeader
  */
@@ -584,7 +567,7 @@ void normalizevdiinuserheader_(
     int*   userHeaderNumber, 
     int*   userHeaderSize,
     char*  errorMesage, 
-    slen_t lenErrorMessage);
+    size_t lenErrorMessage);
 
 /**
  * Processes VDIs for storing to DSS

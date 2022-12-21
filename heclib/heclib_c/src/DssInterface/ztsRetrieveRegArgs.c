@@ -9,6 +9,7 @@
 #include "zStructTsTimeWindow.h"
 
 
+
 //  Full method to retrieve regular interval time series data,
 //  passing arguments instead of a struct
 //  Used for Fortran compatibility
@@ -165,8 +166,8 @@ void ztsretrieveregargs_(long long *ifltab, const char *path,
 				int userHeader[], int *userHeaderArraySize, int *userHeaderNumber,
 				char *units, char *type,
 				int *precisionValues, char *timeZoneName, int *status,
-				int pathLen, int startDateLen, int startTimeLen, int cNotesLen,
-				int unitsLen, int typeLen, int timeZoneLen)
+				size_t pathLen, size_t startDateLen, size_t startTimeLen, size_t cNotesLen,
+				size_t unitsLen, size_t typeLen, size_t timeZoneLen)
 
 
 {

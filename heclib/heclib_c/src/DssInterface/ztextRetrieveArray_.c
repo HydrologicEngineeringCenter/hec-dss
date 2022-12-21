@@ -11,6 +11,7 @@
 
 
 
+
 void ztextretrievearray_ (long long *ifltab, const char *pathname, char* clines, int *maxLines,
 						  int *numberLines, int *userHeader, int *maxHeader, int *numberUserHeader,
 						  int *istatus, size_t lenPathname, size_t lenClines)

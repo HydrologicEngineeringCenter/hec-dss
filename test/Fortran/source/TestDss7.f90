@@ -25,7 +25,7 @@
 
 !    call workbench()
 !    call exit()
-    status = test_vertical_datums_f()
+!    status = test_vertical_datums_f()
     
      if(status.ne.0) call exit(status)
     

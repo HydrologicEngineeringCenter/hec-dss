@@ -24,7 +24,7 @@
       external zmissingFlag
 !
 !
-      WRITE(messageUnit, *)'Begin test_RTS_Basic'
+      WRITE(messageUnit, *)'Begin test'
       nvals = 1000
       maxVals = 1000
       do i=1, nvals

@@ -11,6 +11,7 @@
 
 
 
+
 void ztextretrievestring_ (long long *ifltab, const char *pathname, char* cstring, int *maxString,
 						  int *numberString, int *userHeader, int *maxHeader, int *numberUserHeader,
 						  int *istatus, size_t lenPathname, size_t lenCstring)
