@@ -34,6 +34,7 @@ void isonlocaldrive_ (const char *pathName, int *isLocal, size_t len_pathName)
 	}
 }
 #else
+#include <stddef.h>
 void isonlocaldrive_(const char *pathName, int *isLocal, size_t len_pathName)
 {
 	*isLocal = 1;
