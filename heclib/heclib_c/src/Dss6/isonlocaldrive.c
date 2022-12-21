@@ -1,4 +1,3 @@
-#include <fortran_string_len_size.h>
 
 #ifdef _MSC_VER
 
