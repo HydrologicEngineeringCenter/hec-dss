@@ -20,15 +20,18 @@ permissions:
 jobs:
   run-linters:
     name: Run linters
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v2
 
       # Install your linters here
+      - name: Install ClangFormat
+        run: sudo apt-get install -y clang-format
 
       - name: Run linters
         uses: wearerequired/lint-action@v2
         with:
-          # Enable your linters here
+         clang_format: true
+         
