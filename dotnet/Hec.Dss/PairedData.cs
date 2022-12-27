@@ -17,7 +17,7 @@ namespace Hec.Dss
     public string TypeDependent { get; set; }
     public string UnitsIndependent { get; set; }
     public string UnitsDependent { get; set; }
-    public int CurveCount { get { return Values.Count; } }
+    public int CurveCount { get { return Values[0].Length; } }
 
     public LocationInformation LocationInformation { get; set; }
 
