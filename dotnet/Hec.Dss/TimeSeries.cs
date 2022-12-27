@@ -104,23 +104,16 @@ namespace Hec.Dss
       return Path.IsRegular;
     }
 
-    public bool IsRegular(DateTime[] times)
+    public static bool IsRegular(DateTime[] times)
     {
-      var temp = times;
-      var td = temp[1] - temp[0];
-      for (int i = 0; i < temp.Length; i++)
+      if (times == null || times.Length < 2)
+        return false;
+
+      var diff = times[1] - times[0];
+      for (int i = 1; i < times.Length - 1; i++)
       {
-        if (i == 0)
-          continue;
-        else if (i == temp.Length - 1)
-          break;
-        else
-        {
-          if (temp[i + 1] - temp[i] == td) // check if time difference is the same throughout list
-            continue;
-          else
-            return false;
-        }
+        if (times[i + 1] - times[i] != diff) // check if time difference is the same throughout list
+          return false;
       }
       return true;
     }

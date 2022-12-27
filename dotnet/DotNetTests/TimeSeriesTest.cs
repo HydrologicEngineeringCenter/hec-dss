@@ -498,6 +498,8 @@ namespace DSSUnitTests
       //ts.WriteToConsole();
       int idx = ts.IndexOf(t);
       Assert.IsTrue(idx >= 0);
+      Assert.IsTrue(ts.IsRegular());
+      Assert.IsTrue(TimeSeries.IsRegular(ts.Times));
       Assert.AreEqual(60, ts.Values[idx], 0.001);
 
       Console.WriteLine(ts.Values.Length);
@@ -754,6 +756,19 @@ namespace DSSUnitTests
             Assert.AreEqual(expectedCountAfterTrim, s.Count,message);
 
      }
+
+    [TestMethod()]  
+     public void CheckIsRegularInterval()
+    {
+      DateTime t1 = new DateTime(2022, 1, 1);
+      DateTime t2 = new DateTime(2022, 1, 2);
+      DateTime t3 = new DateTime(2022, 1, 3);
+
+      bool reg = TimeSeries.IsRegular(new DateTime[] { t1, t2, t3 });
+      Assert.IsTrue(reg);
+      reg = TimeSeries.IsRegular(new DateTime[] { t1, t3, t2 });
+      Assert.IsFalse(reg);
+    }
 
     }
 }
