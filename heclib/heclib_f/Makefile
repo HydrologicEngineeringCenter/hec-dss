@@ -4,16 +4,20 @@ SRC_DIRS := ./src
 
 
 UNAME_S := $(shell uname -s)
+UNAME_M := $(shell uname -m)
 FOR_VER := $(shell gfortran -dumpversion)
 
 ifeq ($(UNAME_S),Linux)
-	FWARNINGS=-Warray-bounds -Wc-binding-type -Wcharacter-truncation
+	FWARNINGS=-Warray-bounds -Wc-binding-type -Wcharacter-truncation -fallow-argument-mismatch
 	ifeq "$(FOR_VER)" "11"
        FWARNINGS += -fallow-argument-mismatch
 	endif
 	FDEBUG=-fcheck=all,no-recursion
 	FORTRAN=gfortran
-	FFLAGS=-c -g -cpp -m64 -fPIC $(FWARNINGS) $(FDEBUG) -Isrc/headers  
+	ifneq ($(UNAME_M),aarch64)
+		BITS=-m64
+	endif
+	FFLAGS=-c $(BITS) -g -cpp -fPIC $(FWARNINGS) $(FDEBUG) -Isrc/headers  
 	FIND=find
 endif
 ifeq ($(UNAME_S),SunOS)

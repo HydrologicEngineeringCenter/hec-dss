@@ -1,8 +1,12 @@
 UNAME_S := $(shell uname -s)
+UNAME_M := $(shell uname -m)
 
 ifeq ($(UNAME_S),Linux)
 	CWARNING=-Werror
-	CFLAGS=-m64 -c -fPIC -g -std=gnu99 -Isrc/headers $(CWARNING) -D__linux__ -fcommon
+	ifneq ($(UNAME_M),aarch64)
+		BITS=-m64
+	endif
+	CFLAGS=-c $(BITS) -fPIC -g -std=gnu99 -Isrc/headers $(CWARNING) -D__linux__ -fcommon
 	Make_OS=Linux
 	MAKE=make
 endif
