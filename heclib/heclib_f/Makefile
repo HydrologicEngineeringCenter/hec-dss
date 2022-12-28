@@ -5,11 +5,11 @@ SRC_DIRS := ./src
 
 UNAME_S := $(shell uname -s)
 UNAME_M := $(shell uname -m)
-FOR_VER := $(shell gfortran -dumpversion)
+FOR_VER := $(shell gfortran -dumpversion|cut -c1,2)
 
 ifeq ($(UNAME_S),Linux)
 	FWARNINGS=-Warray-bounds -Wc-binding-type -Wcharacter-truncation -fallow-argument-mismatch
-	ifeq "$(FOR_VER)" "11"
+	ifeq "$(FOR_VER)" "12"
        FWARNINGS += -fallow-argument-mismatch
 	endif
 	FDEBUG=-fcheck=all,no-recursion
