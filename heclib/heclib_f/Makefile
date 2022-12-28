@@ -8,7 +8,10 @@ UNAME_M := $(shell uname -m)
 FOR_VER := $(shell gfortran -dumpversion|cut -c1,2)
 
 ifeq ($(UNAME_S),Linux)
-	FWARNINGS=-Warray-bounds -Wc-binding-type -Wcharacter-truncation -fallow-argument-mismatch
+	FWARNINGS=-Warray-bounds -Wc-binding-type -Wcharacter-truncation
+	ifeq "$(FOR_VER)" "11"
+       FWARNINGS += -fallow-argument-mismatch
+	endif
 	ifeq "$(FOR_VER)" "12"
        FWARNINGS += -fallow-argument-mismatch
 	endif
