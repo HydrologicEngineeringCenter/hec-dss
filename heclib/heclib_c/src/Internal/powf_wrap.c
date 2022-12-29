@@ -5,7 +5,7 @@
 #include <features.h>
 #include <math.h> /* powf call */
  /* glibc redefined powf in 2.27, breaks compatibility with prior versions */
-#if defined(__GLIBC__) && (__GLIBC__ == 2) && (__GLIBC_MINOR__ >= 27)
+#if (defined(__GLIBC__) && (__GLIBC__ == 2) && (__GLIBC_MINOR__ >= 27)) || (defined(__GNUC__) && (__GNUC__ <= 10))
 
 /* 64 bit glibc powf was defined in 2.2.5 */
 #if __LP64__

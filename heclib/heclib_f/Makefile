@@ -9,6 +9,9 @@ FOR_VER := $(shell gfortran -dumpversion|cut -c1,2)
 
 ifeq ($(UNAME_S),Linux)
 	FWARNINGS=-Warray-bounds -Wc-binding-type -Wcharacter-truncation
+	ifeq "$(FOR_VER)" "10"
+       FWARNINGS += -fallow-argument-mismatch
+	endif
 	ifeq "$(FOR_VER)" "11"
        FWARNINGS += -fallow-argument-mismatch
 	endif

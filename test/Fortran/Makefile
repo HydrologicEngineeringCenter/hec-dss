@@ -10,6 +10,9 @@ ifeq ($(UNAME_S),Linux)
 	CWARNING=-Werror
 	CFLAGS=$(BITS) -fPIC -g -std=gnu99 -I../../heclib/heclib_c/src/headers -I. $(CWARNING)  -D__linux__
 	FWARNINGS= -Warray-bounds -Wc-binding-type -Wcharacter-truncation
+	ifeq "$(FOR_VER)" "10"
+	        FWARNINGS += -fallow-argument-mismatch
+	endif
 	ifeq "$(FOR_VER)" "11"
 	        FWARNINGS += -fallow-argument-mismatch
 	endif
