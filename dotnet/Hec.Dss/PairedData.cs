@@ -17,8 +17,7 @@ namespace Hec.Dss
     public string TypeDependent { get; set; }
     public string UnitsIndependent { get; set; }
     public string UnitsDependent { get; set; }
-    public int YCount { get { return Values.Count; } }
-    public int XCount { get { return Values[0].Length; } }
+    public int CurveCount { get { return Values[0].Length; } }
 
     public LocationInformation LocationInformation { get; set; }
 
@@ -78,7 +77,7 @@ namespace Hec.Dss
       }
       
 
-      for (int i = 0; i < XCount; i++)
+      for (int i = 0; i < CurveCount; i++)
       {
         var row = new object[] { };
         if (includeIndex)
