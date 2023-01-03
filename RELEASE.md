@@ -1,9 +1,11 @@
-# Release notes
+# Version 7-IQ-6
 
-- Action 1
-- Action 2
+- Added release workflow to build assests
+- Workflow `release.yml` builds ubuntu and macos assests
 
-## Other notes
+# Version 7-IP
 
-***Some special note***
-
+- Fixed bug seen on Windows/Fortran: forrtl: severe (408): fort: (12): Variable CLINE has substring ending point 5 which is greater than the variable length of 4
+- Fixed java crash on JNI call to Hec_zinquire, Hec_zlastWriteTime, and Hec_zlastWriteTimeFile
+- Dropped support for older Microsoft compiler: if _MSC_VER < 1400
+- Added support for macOS
