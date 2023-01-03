@@ -5,18 +5,13 @@ SRC_DIRS := ./src
 
 UNAME_S := $(shell uname -s)
 UNAME_M := $(shell uname -m)
-FOR_VER := $(shell gfortran -dumpversion|cut -c1,2)
+FOR_VER := $(shell gfortran -dumpversion | cut -c1,2)
+F_GE_10 := $(shell if [ "$(FOR_VER)" -ge "10" ]; then echo 1; else echo 0; fi; )
 
 ifeq ($(UNAME_S),Linux)
 	FWARNINGS=-Warray-bounds -Wc-binding-type -Wcharacter-truncation
-	ifeq "$(FOR_VER)" "10"
-       FWARNINGS += -fallow-argument-mismatch
-	endif
-	ifeq "$(FOR_VER)" "11"
-       FWARNINGS += -fallow-argument-mismatch
-	endif
-	ifeq "$(FOR_VER)" "12"
-       FWARNINGS += -fallow-argument-mismatch
+	ifeq "$(F_GE_10)" "1"
+		FWARNINGS += -fallow-argument-mismatch
 	endif
 	FDEBUG=-fcheck=all,no-recursion
 	FORTRAN=gfortran
