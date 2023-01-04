@@ -1,12 +1,16 @@
 .SUFFIXES: .f90
 UNAME_S := $(shell uname -s)
+UNAME_M := $(shell uname -m)
 
 ifeq ($(UNAME_S),Linux)
+	ifneq ($(UNAME_M),aarch64)
+		BITS=-m64
+	endif
 	CWARNING=-Werror
-	CFLAGS=-m64 -fPIC -g -std=gnu99 -I../../heclib/heclib_c/src/headers -I. $(CWARNING)  -D__linux__ -fcommon
+	CFLAGS=$(BITS) -fPIC -g -std=gnu99 -I../../heclib/heclib_c/src/headers -I. $(CWARNING)  -D__linux__ -fcommon
 	FWARNINGS=-Werror -Warray-bounds -Wc-binding-type -Wcharacter-truncation
 	FDEBUG=-fcheck=all,no-recursion
-	FFLAGS=-c -g -cpp -m64 -fPIC $(FWARNINGS) $(FDEBUG) -I../../heclib/heclib_f/src/headers
+	FFLAGS=-c $(BITS) -g -cpp -fPIC $(FWARNINGS) $(FDEBUG) -I../../heclib/heclib_f/src/headers
 	LDFLAGS = -lz -lrt -lgfortran -lm
 	MAKE=make
         F90=gfortran
