@@ -23,7 +23,7 @@ jobs:
           cd ${{ github.workspace }}/heclib
           make
 
-      - name: Test 1
+      - name: build and run Dss-C test program
         run: |
-          echo "Test 1"
- 
+          cd test/Dss-C
+          make test
