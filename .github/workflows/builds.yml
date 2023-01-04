@@ -1,4 +1,4 @@
-name: Tests
+name: Builds
 
 on:
   push:
@@ -23,7 +23,3 @@ jobs:
           cd ${{ github.workspace }}/heclib
           make
 
-      - name: build and run Dss-C test program
-        run: |
-          cd test/Dss-C
-          make test
