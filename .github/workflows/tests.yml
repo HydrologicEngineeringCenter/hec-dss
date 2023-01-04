@@ -1,0 +1,29 @@
+name: Release
+
+on:
+  push:
+
+env:
+  GFORTRAN_PATH: "/usr/local/lib/gcc/11"
+
+jobs:
+  library-Build:
+    strategy:
+      matrix:
+        os: [ubuntu-20.04, macos-11]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Build javaHeclib
+        run: |
+          sudo ln -s /usr/local/bin/gfortran-11 /usr/local/bin/gfortran
+          cd ${{ github.workspace }}/heclib
+          make
+
+      - name: Test 1
+        run: |
+          echo "Test 1"
+ 
