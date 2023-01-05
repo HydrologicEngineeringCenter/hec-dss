@@ -1915,7 +1915,7 @@ int* copyVdiFromLocationStructToUserHeader(
                     headerBuf == malloc(len);
                     if (headerBuf == NULL) {
                         free(compressed);
-                        status = -1;
+                        *status = -1;
                         break;
                     }
                 }
@@ -1929,14 +1929,14 @@ int* copyVdiFromLocationStructToUserHeader(
                     if (cp == NULL) {
                         free(compressed);
                         free(headerBuf);
-                        status = -2;
+                        *status = -2;
                         break;
                     }
                     headerBuf = cp;
                     if (insertIntoDelimitedString(&headerBuf, len, VERTICAL_DATUM_INFO_USER_HEADER_PARAM, compressed, ":", FALSE, ';')) {
                         // unexpected error
                         free(compressed);
-                        status = -3;
+                        *status = -3;
                         return userHeader;
                     }
                 }
