@@ -12,7 +12,7 @@ void testZsetZquery();
 void testStoreRetrieveTimeSeries();
 void testV6TimeSeiresWithMultipleVerticalDatums();
 void testStoreRetrievePairedData();
-void testV7CopyRecordWithVdi();
+void testCopyRecordWithVdi();
 
 const int SRC = 0;
 const int DST = 1;
@@ -27,7 +27,7 @@ int test_vertical_datums_c() {
     //testStoreRetrieveTimeSeries();
     //testV6TimeSeiresWithMultipleVerticalDatums();
     //testStoreRetrievePairedData();
-    testV7CopyRecordWithVdi();
+    testCopyRecordWithVdi();
     return 0;
 }
 void testDelimitedStringOps() {
@@ -2271,7 +2271,7 @@ void retrieveAndCompareVdi(long long *ifltab, const char* pathname, const void *
     }
 }
 
-void testV7CopyRecordWithVdi() {
+void testCopyRecordWithVdi() {
     long long ifltab[2][250] = { 0 };
     int status;
     zStructTimeSeries* tss = NULL;
