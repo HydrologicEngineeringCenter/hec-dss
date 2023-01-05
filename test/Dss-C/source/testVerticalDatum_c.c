@@ -3,6 +3,7 @@
 #include <ctype.h>
 #include <heclib.h>
 #include <verticalDatum.h>
+#include <math.h>
 
 void testDelimitedStringOps();
 void testGzipAndEncodingOps();
@@ -2271,8 +2272,9 @@ void retrieveAndCompareVdi(long long *ifltab, const char* pathname, const void *
     }
 }
 
-void testCopyRecordWithVdi() {
-    long long ifltab[2][250] = { 0 };
+void testCopyRecordWithVdi_NoVdiInDestination() {
+    long long ifltab[2][250];
+    memset(ifltab, 0, sizeof(ifltab));
     int status;
     zStructTimeSeries* tss = NULL;
     zStructPairedData* pds = NULL;
@@ -2352,8 +2354,6 @@ void testCopyRecordWithVdi() {
         ""
 
     };
-
-    zset("MLVL", "", 1);
 
     for (int srcDssVer = 6; srcDssVer <= 7; ++srcDssVer) {
         for (int dstDssVer = 6; dstDssVer <= 7; ++dstDssVer) {
@@ -2525,3 +2525,596 @@ void testCopyRecordWithVdi() {
     remove(filename[SRC]);
     remove(filename[DST]);
 }
+
+void testCopyRecordWithVdi_OtherNativeDatumInDestination() {
+    long long ifltab[2][250];
+    memset(ifltab, 0, sizeof(ifltab));
+    int status;
+    zStructTimeSeries* tss = NULL;
+    zStructPairedData* pds = NULL;
+    verticalDatumInfo vdi[2];
+    memset(vdi, 0, sizeof(vdi));
+    const char* filename[2] = { "vdiCopyTestSource.dss", "vdiCopyTestDestination.dss" };
+    const char* tsPathname[2] = { "//TsSourceLoc/Elev/01Oct2021/1Hour/Test/", "//TsDestinationLoc/Elev/01Oct2021/1Hour/Test/" };
+    const char* pdPathname[2] = { "//PdSourceLoc/Stage-Elev///Test/", "//TsDestinationLoc/Stage-Elev///Test/" };
+    double tsValues[] = { 1000,1001,1002,1003,1004,1005 };
+    int numberTsValues = sizeof(tsValues) / sizeof(tsValues[0]);
+    double pdOrdinates[] = { 1000,1001,1002,1003,1004,1005 };
+    double pdValues[] = { 1000,1001,1002,1003,1004,1005 };
+    int numberPdOrdinates = 6;
+    int numberPdCurves = 1;
+    char* startDate = "01Oct2021";
+    char* startTime = "01:00";
+    char* endDate = "01Oct2021";
+    char* endTime = "24:00";
+    char* unit = "ft";
+    char* type = "INST-VAL";
+    char* errmsg = NULL;
+    char* compressed = NULL;
+    char* headerBuf = NULL;
+    int   len = 0;
+    int   dssver;
+    char* vdiXml = NULL;
+    char* xml[] = {
+        "<vertical-datum-info unit=\"ft\">\n"
+        "  <native-datum>NGVD-29</native-datum>\n"
+        "  <elevation>615.2</elevation>\n"
+        "  <offset estimate=\"true\">\n"
+        "    <to-datum>NAVD-88</to-datum>\n"
+        "    <value>0.3855</value>\n"
+        "  </offset>\n"
+        "</vertical-datum-info>\n",
+
+        "<vertical-datum-info unit=\"ft\">\n"
+        "  <native-datum>NAVD-88</native-datum>\n"
+        "  <elevation>615.5885</elevation>\n"
+        "  <offset estimate=\"true\">\n"
+        "    <to-datum>NGVD-29</to-datum>\n"
+        "    <value>-0.3855</value>\n"
+        "  </offset>\n"
+        "</vertical-datum-info>\n"
+    };
+    int xmlCount = sizeof(xml) / sizeof(xml[0]);
+
+    for (int srcDssVer = 6; srcDssVer <= 7; ++srcDssVer) {
+        for (int dstDssVer = 6; dstDssVer <= 7; ++dstDssVer) {
+
+            remove(filename[SRC]);
+            if (srcDssVer == 6) {
+                status = zopen6(ifltab[SRC], filename[SRC]);
+            }
+            else {
+                status = zopen7(ifltab[SRC], filename[SRC]);
+            }
+            assert(status == STATUS_OKAY);
+            dssver = (int)zgetVersion(ifltab[SRC]);
+
+            remove(filename[DST]);
+            if (dstDssVer == 6) {
+                status = zopen6(ifltab[DST], filename[DST]);
+            }
+            else {
+                status = zopen7(ifltab[DST], filename[DST]);
+            }
+            assert(status == STATUS_OKAY);
+
+            for (int i = 0; i < xmlCount; ++i) {
+                int j = (i + 1) % xmlCount; // for other VDI
+                printf("\n-------------------------------\n%3d\n-------------------------------\n", i);
+                stringToVerticalDatumInfo(&vdi[SRC], xml[i]);
+                printf("==> Source (v%d) : %s\n", dssver, vdi[i].nativeDatum);
+                //-----------------------------//
+                // create a source time series //
+                //-----------------------------//
+                tss = zstructTsNewRegDoubles(
+                    tsPathname[SRC],
+                    tsValues,
+                    numberTsValues,
+                    startDate,
+                    startTime,
+                    unit,
+                    type);
+                assert(tss != NULL);
+                //-----------------------------//
+                // create a source paired data //
+                //-----------------------------//
+                pds = zstructPdNewDoubles(
+                    pdPathname[SRC],
+                    pdOrdinates,
+                    pdValues,
+                    numberPdOrdinates,
+                    numberPdCurves,
+                    unit,
+                    "UNT",
+                    unit,
+                    "UNT");
+                //-----------------------------------------------//
+                // add VDI to source time series and paired data //
+                //-----------------------------------------------//
+                stringToVerticalDatumInfo(&vdi[SRC], xml[i]);
+                errmsg = gzipAndEncode(&compressed, xml[i]);
+                assert(errmsg == NULL);
+                len = VERTICAL_DATUM_INFO_USER_HEADER_PARAM_LEN + strlen(compressed) + 2;
+                headerBuf = (char*)malloc(len + 1);
+                assert(headerBuf != NULL);
+                memset(headerBuf, 0, len + 1);
+                status = insertIntoDelimitedString(
+                    &headerBuf,
+                    len + 1,
+                    VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
+                    compressed,
+                    ":",
+                    FALSE,
+                    ';');
+                assert(status == STATUS_OKAY);
+                free(compressed);
+                tss->userHeader = stringToUserHeader(headerBuf, &tss->userHeaderNumber);
+                tss->allocated[zSTRUCT_userHeader] = TRUE;
+                pds->userHeader = stringToUserHeader(headerBuf, &pds->userHeaderNumber);
+                pds->allocated[zSTRUCT_userHeader] = TRUE;
+                //-----------------------------//
+                // delete any previous records //
+                //-----------------------------//
+                zdelete(ifltab[SRC], tsPathname[SRC]);
+                zdelete(ifltab[SRC], zlocationPath(tsPathname[SRC]));
+                zdelete(ifltab[SRC], pdPathname[SRC]);
+                zdelete(ifltab[SRC], zlocationPath(pdPathname[SRC]));
+                //-----------------------------------------------------//
+                // store the source time series to the source DSS file //
+                //-----------------------------------------------------//
+                status = ztsStore(
+                    ifltab[SRC], // file table
+                    tss,         // time series struct
+                    0);          // storage flag (0=reg:replace all, irr:merge)
+                assert(status == STATUS_OKAY);
+                zstructFree(tss);
+                //------------------------------//
+                // store the source paired data //
+                //------------------------------//
+                status = zpdStore(ifltab[SRC], pds, 0);
+                assert(status == STATUS_OKAY);
+                zstructFree(pds);
+
+                //----------------------------------//
+                // create a destination time series //
+                //----------------------------------//
+                tss = zstructTsNewRegDoubles(
+                    tsPathname[DST],
+                    tsValues,
+                    numberTsValues,
+                    startDate,
+                    startTime,
+                    unit,
+                    type);
+                assert(tss != NULL);
+                //----------------------------------//
+                // create a destination paired data //
+                //----------------------------------//
+                pds = zstructPdNewDoubles(
+                    pdPathname[DST],
+                    pdOrdinates,
+                    pdValues,
+                    numberPdOrdinates,
+                    numberPdCurves,
+                    unit,
+                    "UNT",
+                    unit,
+                    "UNT");
+                //----------------------------------------------------//
+                // add VDI to destination time series and paired data //
+                //----------------------------------------------------//
+                stringToVerticalDatumInfo(&vdi[DST], xml[j]);
+                errmsg = gzipAndEncode(&compressed, xml[j]);
+                assert(errmsg == NULL);
+                len = VERTICAL_DATUM_INFO_USER_HEADER_PARAM_LEN + strlen(compressed) + 2;
+                headerBuf = (char*)malloc(len + 1);
+                assert(headerBuf != NULL);
+                memset(headerBuf, 0, len + 1);
+                status = insertIntoDelimitedString(
+                    &headerBuf,
+                    len + 1,
+                    VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
+                    compressed,
+                    ":",
+                    FALSE,
+                    ';');
+                assert(status == STATUS_OKAY);
+                free(compressed);
+                tss->userHeader = stringToUserHeader(headerBuf, &tss->userHeaderNumber);
+                tss->allocated[zSTRUCT_userHeader] = TRUE;
+                pds->userHeader = stringToUserHeader(headerBuf, &pds->userHeaderNumber);
+                pds->allocated[zSTRUCT_userHeader] = TRUE;
+                //-----------------------------//
+                // delete any previous records //
+                //-----------------------------//
+                zdelete(ifltab[SRC], tsPathname[DST]);
+                zdelete(ifltab[SRC], zlocationPath(tsPathname[DST]));
+                zdelete(ifltab[SRC], pdPathname[DST]);
+                zdelete(ifltab[SRC], zlocationPath(pdPathname[DST]));
+                zdelete(ifltab[DST], tsPathname[DST]);
+                zdelete(ifltab[DST], zlocationPath(tsPathname[DST]));
+                zdelete(ifltab[DST], pdPathname[DST]);
+                zdelete(ifltab[DST], zlocationPath(pdPathname[DST]));
+                //----------------------------------------------------------//
+                // store the destination time series to the source DSS file //
+                //----------------------------------------------------------//
+                status = ztsStore(
+                    ifltab[SRC], // file table
+                    tss,         // time series struct
+                    0);          // storage flag (0=reg:replace all, irr:merge)
+                assert(status == STATUS_OKAY);
+                //---------------------------------------------------------------//
+                // store the destination time series to the destination DSS file //
+                //---------------------------------------------------------------//
+                status = ztsStore(
+                    ifltab[DST], // file table
+                    tss,         // time series struct
+                    0);          // storage flag (0=reg:replace all, irr:merge)
+                assert(status == STATUS_OKAY);
+                //----------------------------------------------------------//
+                // store the destination paired data to the source DSS file //
+                //----------------------------------------------------------//
+                status = zpdStore(ifltab[SRC], pds, 0);
+                assert(status == STATUS_OKAY);
+                //---------------------------------------------------------------//
+                // store the destination paired data to the destination DSS file //
+                //---------------------------------------------------------------//
+                status = zpdStore(ifltab[DST], pds, 0);
+                assert(status == STATUS_OKAY);
+                zstructFree(tss);
+                zstructFree(pds);
+                //-------------------------------------------------------------------------------------------//
+                // copy the time series to a location in the same DSS file that has a different native datum //
+                //-------------------------------------------------------------------------------------------//
+                printf("==> %s:%s (v%d)\n", filename[SRC], tsPathname[DST], dstDssVer);
+                status = zcopyRecord(ifltab[SRC], ifltab[SRC], tsPathname[SRC], tsPathname[DST]);
+                assert(status != STATUS_OKAY);
+                //-------------------------------------------------------------------------------------------//
+                // copy the paired data to a location in the same DSS file that has a different native datum //
+                //-------------------------------------------------------------------------------------------//
+                printf("==> %s:%s (v%d)\n", filename[SRC], pdPathname[DST], dstDssVer);
+                status = zcopyRecord(ifltab[SRC], ifltab[SRC], pdPathname[SRC], pdPathname[DST]);
+                assert(status != STATUS_OKAY);
+                //------------------------------------------------------------------------------------------//
+                // copy the time series to a location in another DSS file that has a different native datum //
+                //------------------------------------------------------------------------------------------//
+                printf("==> %s:%s (v%d)\n", filename[DST], tsPathname[DST], dstDssVer);
+                status = zcopyRecord(ifltab[SRC], ifltab[DST], tsPathname[SRC], tsPathname[DST]);
+                assert(status != STATUS_OKAY);
+                //------------------------------------------------------------------------------------------//
+                // copy the paired data to a location in another DSS file that has a different native datum //
+                //------------------------------------------------------------------------------------------//
+                printf("==> %s:%s (v%d)\n", filename[DST], pdPathname[DST], dstDssVer);
+                status = zcopyRecord(ifltab[SRC], ifltab[DST], pdPathname[SRC], pdPathname[DST]);
+                assert(status != STATUS_OKAY);
+            }
+            zclose(ifltab[SRC]);
+            zclose(ifltab[DST]);
+        }
+    }
+    remove(filename[SRC]);
+    remove(filename[DST]);
+}
+
+void testCopyRecordWithVdi_SameNativeDatumInDestination() {
+    long long ifltab[2][250];
+    memset(ifltab, 0, sizeof(ifltab));
+    int status;
+    zStructTimeSeries* tss = NULL;
+    zStructPairedData* pds = NULL;
+    verticalDatumInfo vdi;
+    const char* filename[2] = { "vdiCopyTestSource.dss", "vdiCopyTestDestination.dss" };
+    const char* tsPathname[2] = { "//TsSourceLoc/Elev/01Oct2021/1Hour/Test/", "//TsDestinationLoc/Elev/01Oct2021/1Hour/Test/" };
+    const char* pdPathname[2] = { "//PdSourceLoc/Stage-Elev///Test/", "//TsDestinationLoc/Stage-Elev///Test/" };
+    double tsValues[2][6] = { { 1000,1001,1002,1003,1004,1005 }, {1,2,3,4,5} };
+    int numberTsValues = 6;
+    double pdOrdinates[] = { 1000,1001,1002,1003,1004,1005 };
+    double pdValues[2][6] = { {1000,1001,1002,1003,1004,1005}, {1,2,3,4,5} };
+    int numberPdOrdinates = 6;
+    int numberPdCurves = 1;
+    char* startDate = "01Oct2021";
+    char* startTime = "01:00";
+    char* endDate = "01Oct2021";
+    char* endTime = "24:00";
+    char* unit = "ft";
+    char* type = "INST-VAL";
+    char* errmsg = NULL;
+    char* compressed = NULL;
+    char* headerBuf = NULL;
+    int   len = 0;
+    int   dssver;
+    int   i;
+    char* vdiXml = NULL;
+    char* xml = {
+        "<vertical-datum-info unit=\"ft\">\n"
+        "  <native-datum>NGVD-29</native-datum>\n"
+        "  <elevation>615.2</elevation>\n"
+        "  <offset estimate=\"true\">\n"
+        "    <to-datum>NAVD-88</to-datum>\n"
+        "    <value>0.3855</value>\n"
+        "  </offset>\n"
+        "</vertical-datum-info>\n"
+    };
+
+    for (int srcDssVer = 6; srcDssVer <= 7; ++srcDssVer) {
+        for (int dstDssVer = 6; dstDssVer <= 7; ++dstDssVer) {
+
+            remove(filename[SRC]);
+            if (srcDssVer == 6) {
+                status = zopen6(ifltab[SRC], filename[SRC]);
+            }
+            else {
+                status = zopen7(ifltab[SRC], filename[SRC]);
+            }
+            assert(status == STATUS_OKAY);
+            dssver = (int)zgetVersion(ifltab[SRC]);
+
+            remove(filename[DST]);
+            if (dstDssVer == 6) {
+                status = zopen6(ifltab[DST], filename[DST]);
+            }
+            else {
+                status = zopen7(ifltab[DST], filename[DST]);
+            }
+            assert(status == STATUS_OKAY);
+
+            stringToVerticalDatumInfo(&vdi, xml);
+            printf("==> Source (v%d) : %s\n", dssver, vdi.nativeDatum);
+            //-----------------------------//
+            // create a source time series //
+            //-----------------------------//
+            tss = zstructTsNewRegDoubles(
+                tsPathname[SRC],
+                tsValues[SRC],
+                numberTsValues,
+                startDate,
+                startTime,
+                unit,
+                type);
+            assert(tss != NULL);
+            //-----------------------------//
+            // create a source paired data //
+            //-----------------------------//
+            pds = zstructPdNewDoubles(
+                pdPathname[SRC],
+                pdOrdinates,
+                pdValues[SRC],
+                numberPdOrdinates,
+                numberPdCurves,
+                unit,
+                "UNT",
+                unit,
+                "UNT");
+            //-----------------------------------------------//
+            // add VDI to source time series and paired data //
+            //-----------------------------------------------//
+            stringToVerticalDatumInfo(&vdi, xml);
+            errmsg = gzipAndEncode(&compressed, xml);
+            assert(errmsg == NULL);
+            len = VERTICAL_DATUM_INFO_USER_HEADER_PARAM_LEN + strlen(compressed) + 2;
+            headerBuf = (char*)malloc(len + 1);
+            assert(headerBuf != NULL);
+            memset(headerBuf, 0, len + 1);
+            status = insertIntoDelimitedString(
+                &headerBuf,
+                len + 1,
+                VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
+                compressed,
+                ":",
+                FALSE,
+                ';');
+            assert(status == STATUS_OKAY);
+            free(compressed);
+            tss->userHeader = stringToUserHeader(headerBuf, &tss->userHeaderNumber);
+            tss->allocated[zSTRUCT_userHeader] = TRUE;
+            pds->userHeader = stringToUserHeader(headerBuf, &pds->userHeaderNumber);
+            pds->allocated[zSTRUCT_userHeader] = TRUE;
+            //-----------------------------//
+            // delete any previous records //
+            //-----------------------------//
+            zdelete(ifltab[SRC], tsPathname[SRC]);
+            zdelete(ifltab[SRC], zlocationPath(tsPathname[SRC]));
+            zdelete(ifltab[SRC], pdPathname[SRC]);
+            zdelete(ifltab[SRC], zlocationPath(pdPathname[SRC]));
+            //-----------------------------------------------------//
+            // store the source time series to the source DSS file //
+            //-----------------------------------------------------//
+            status = ztsStore(
+                ifltab[SRC], // file table
+                tss,         // time series struct
+                0);          // storage flag (0=reg:replace all, irr:merge)
+            assert(status == STATUS_OKAY);
+            zstructFree(tss);
+            //------------------------------//
+            // store the source paired data //
+            //------------------------------//
+            status = zpdStore(ifltab[SRC], pds, 0);
+            assert(status == STATUS_OKAY);
+            zstructFree(pds);
+
+            //----------------------------------//
+            // create a destination time series //
+            //----------------------------------//
+            tss = zstructTsNewRegDoubles(
+                tsPathname[DST],
+                tsValues[DST],
+                numberTsValues,
+                startDate,
+                startTime,
+                unit,
+                type);
+            assert(tss != NULL);
+            //----------------------------------//
+            // create a destination paired data //
+            //----------------------------------//
+            pds = zstructPdNewDoubles(
+                pdPathname[DST],
+                pdOrdinates,
+                pdValues[DST],
+                numberPdOrdinates,
+                numberPdCurves,
+                unit,
+                "UNT",
+                unit,
+                "UNT");
+            //----------------------------------------------------//
+            // add VDI to destination time series and paired data //
+            //----------------------------------------------------//
+            stringToVerticalDatumInfo(&vdi, xml);
+            errmsg = gzipAndEncode(&compressed, xml);
+            assert(errmsg == NULL);
+            len = VERTICAL_DATUM_INFO_USER_HEADER_PARAM_LEN + strlen(compressed) + 2;
+            headerBuf = (char*)malloc(len + 1);
+            assert(headerBuf != NULL);
+            memset(headerBuf, 0, len + 1);
+            status = insertIntoDelimitedString(
+                &headerBuf,
+                len + 1,
+                VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
+                compressed,
+                ":",
+                FALSE,
+                ';');
+            assert(status == STATUS_OKAY);
+            free(compressed);
+            tss->userHeader = stringToUserHeader(headerBuf, &tss->userHeaderNumber);
+            tss->allocated[zSTRUCT_userHeader] = TRUE;
+            pds->userHeader = stringToUserHeader(headerBuf, &pds->userHeaderNumber);
+            pds->allocated[zSTRUCT_userHeader] = TRUE;
+            //-----------------------------//
+            // delete any previous records //
+            //-----------------------------//
+            zdelete(ifltab[SRC], tsPathname[DST]);
+            zdelete(ifltab[SRC], zlocationPath(tsPathname[DST]));
+            zdelete(ifltab[SRC], pdPathname[DST]);
+            zdelete(ifltab[SRC], zlocationPath(pdPathname[DST]));
+            zdelete(ifltab[DST], tsPathname[DST]);
+            zdelete(ifltab[DST], zlocationPath(tsPathname[DST]));
+            zdelete(ifltab[DST], pdPathname[DST]);
+            zdelete(ifltab[DST], zlocationPath(pdPathname[DST]));
+            //----------------------------------------------------------//
+            // store the destination time series to the source DSS file //
+            //----------------------------------------------------------//
+            status = ztsStore(
+                ifltab[SRC], // file table
+                tss,         // time series struct
+                0);          // storage flag (0=reg:replace all, irr:merge)
+            assert(status == STATUS_OKAY);
+            //---------------------------------------------------------------//
+            // store the destination time series to the destination DSS file //
+            //---------------------------------------------------------------//
+            status = ztsStore(
+                ifltab[DST], // file table
+                tss,         // time series struct
+                0);          // storage flag (0=reg:replace all, irr:merge)
+            assert(status == STATUS_OKAY);
+            //----------------------------------------------------------//
+            // store the destination paired data to the source DSS file //
+            //----------------------------------------------------------//
+            status = zpdStore(ifltab[SRC], pds, 0);
+            assert(status == STATUS_OKAY);
+            //---------------------------------------------------------------//
+            // store the destination paired data to the destination DSS file //
+            //---------------------------------------------------------------//
+            status = zpdStore(ifltab[DST], pds, 0);
+            assert(status == STATUS_OKAY);
+            zstructFree(tss);
+            zstructFree(pds);
+            //-------------------------------------------------------------------------------------------//
+            // copy the time series to a location in the same DSS file that has a different native datum //
+            //-------------------------------------------------------------------------------------------//
+            printf("==> %s:%s (v%d)\n", filename[SRC], tsPathname[DST], dstDssVer);
+            status = zcopyRecord(ifltab[SRC], ifltab[SRC], tsPathname[SRC], tsPathname[DST]);
+            assert(status == STATUS_OKAY);
+            //-------------------------------------------------------//
+            // retrieve the copied time series and verify the values //
+            //-------------------------------------------------------//
+            tss = zstructTsNewTimes(
+                tsPathname[DST],
+                startDate,
+                startTime,
+                endDate,
+                endTime);
+            assert(tss != NULL);
+            status = ztsRetrieve(
+                ifltab[SRC], // file table
+                tss,         // time series struct
+                0,           // retrieve flag (0=adhere to time window and [for reg] create times array)
+                0,           // retrieve doubles flag (0=as stored, 1=floats, 2=doubles)
+                1);          // retrieve quality flag (0/1)
+            assert(status == STATUS_OKAY);
+            for (int i = 0; i < numberTsValues; ++i) {
+                assert(fabs(tss->doubleValues[i] - tsValues[SRC][i]) < FLT_EPSILON);
+            }
+            //-------------------------------------------------------------------------------------------//
+            // copy the paired data to a location in the same DSS file that has a different native datum //
+            //-------------------------------------------------------------------------------------------//
+            printf("==> %s:%s (v%d)\n", filename[SRC], pdPathname[DST], dstDssVer);
+            status = zcopyRecord(ifltab[SRC], ifltab[SRC], pdPathname[SRC], pdPathname[DST]);
+            assert(status == STATUS_OKAY);
+            //-------------------------------------------------------//
+            // retrieve the copied paired data and verify the values //
+            //-------------------------------------------------------//
+            pds = zstructPdNew(pdPathname[DST]);
+            assert(pds != NULL);
+            status = zpdRetrieve(ifltab[SRC], pds, 0);
+            assert(status == STATUS_OKAY);
+            for (int i = 0; i < numberPdOrdinates; ++i) {
+                assert(fabs(pds->doubleValues[i] - pdValues[SRC][i]) < FLT_EPSILON);
+            }
+            //------------------------------------------------------------------------------------------//
+            // copy the time series to a location in another DSS file that has a different native datum //
+            //------------------------------------------------------------------------------------------//
+            printf("==> %s:%s (v%d)\n", filename[DST], tsPathname[DST], dstDssVer);
+            status = zcopyRecord(ifltab[SRC], ifltab[DST], tsPathname[SRC], tsPathname[DST]);
+            assert(status == STATUS_OKAY);
+            //-------------------------------------------------------//
+            // retrieve the copied time series and verify the values //
+            //-------------------------------------------------------//
+            tss = zstructTsNewTimes(
+                tsPathname[DST],
+                startDate,
+                startTime,
+                endDate,
+                endTime);
+            assert(tss != NULL);
+            status = ztsRetrieve(
+                ifltab[DST], // file table
+                tss,         // time series struct
+                0,           // retrieve flag (0=adhere to time window and [for reg] create times array)
+                0,           // retrieve doubles flag (0=as stored, 1=floats, 2=doubles)
+                1);          // retrieve quality flag (0/1)
+            assert(status == STATUS_OKAY);
+            for (int i = 0; i < numberTsValues; ++i) {
+                assert(fabs(tss->doubleValues[i] - tsValues[SRC][i]) < FLT_EPSILON);
+            }
+            //------------------------------------------------------------------------------------------//
+            // copy the paired data to a location in another DSS file that has a different native datum //
+            //------------------------------------------------------------------------------------------//
+            printf("==> %s:%s (v%d)\n", filename[DST], pdPathname[DST], dstDssVer);
+            status = zcopyRecord(ifltab[SRC], ifltab[DST], pdPathname[SRC], pdPathname[DST]);
+            assert(status == STATUS_OKAY);
+            //-------------------------------------------------------//
+            // retrieve the copied paired data and verify the values //
+            //-------------------------------------------------------//
+            pds = zstructPdNew(pdPathname[DST]);
+            assert(pds != NULL);
+            status = zpdRetrieve(ifltab[DST], pds, 0);
+            assert(status == STATUS_OKAY);
+            for (int i = 0; i < numberPdOrdinates; ++i) {
+                assert(fabs(pds->doubleValues[i] - pdValues[SRC][i]) < FLT_EPSILON);
+            }
+            zclose(ifltab[SRC]);
+            zclose(ifltab[DST]);
+        }
+    }
+    remove(filename[SRC]);
+    remove(filename[DST]);
+}
+
+void testCopyRecordWithVdi() {
+    testCopyRecordWithVdi_NoVdiInDestination();
+    testCopyRecordWithVdi_OtherNativeDatumInDestination();
+    testCopyRecordWithVdi_SameNativeDatumInDestination();
+}
+

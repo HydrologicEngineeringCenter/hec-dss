@@ -293,7 +293,27 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 				pds->typeIndependent = '\0';
 			}
 		}
-		return zpdStore6(ifltab, pds, storageFlag);
+		// copy any VDI from location struct into user header
+		int* origHeader = pds->userHeader;
+		int origHeaderNumber = pds->userHeaderNumber;
+		int* hdr = copyVdiFromLocationStructToUserHeader(pds->locationStruct, pds->userHeader, &pds->userHeaderNumber, FALSE, &status);
+		if (status != STATUS_OKAY) {
+			zstructFree(pds);
+			return zerrorProcessing(ifltab, DSS_FUNCTION_zpdStore_ID,
+				zdssErrorCodes.CANNOT_ALLOCATE_MEMORY, 0, 0,
+				zdssErrorSeverity.MEMORY_ERROR,
+				pds->pathname, "Copying paired data VDI to user header");
+		}
+		pds->userHeader = hdr;
+		pds->allocated[zSTRUCT_userHeader] = pds->userHeader != NULL;
+		status = zpdStore6(ifltab, pds, storageFlag);
+		// restore the original user header
+		if (hdr != origHeader) {
+			pds->userHeader = origHeader;
+			pds->userHeaderNumber = origHeaderNumber;
+			free(hdr);
+		}
+		return status;
 	}
 	//-----------------------------------------------//
 	// convert to native vertical datum if necessary //

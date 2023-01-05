@@ -345,11 +345,30 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 				0, zdssErrorSeverity.WARNING, tss->pathname,
 				"Profiles are not implemented in version 6");
 		}
+		// copy any VDI from location struct into user header
+		int* origHeader = tss->userHeader;
+		int origHeaderNumber = tss->userHeaderNumber;
+		int* hdr = copyVdiFromLocationStructToUserHeader(tss->locationStruct, tss->userHeader, &tss->userHeaderNumber, FALSE, &status);
+		if (status != STATUS_OKAY) {
+			zstructFree(tss);
+			return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID,
+				zdssErrorCodes.CANNOT_ALLOCATE_MEMORY, 0, 0,
+				zdssErrorSeverity.MEMORY_ERROR,
+				tss->pathname, "Copying time series VDI to user header");
+		}
+		tss->userHeader = hdr;
+		tss->allocated[zSTRUCT_userHeader] = tss->userHeader != NULL;
 		if (intervalType == 0) {
 			status = ztsStoreReg6(ifltab, tss, storageFlag);
 		}
 		else {
 			status = ztsStoreIrreg6(ifltab, tss, storageFlag);
+		}
+		// restore the original user header
+		if (hdr != origHeader) {
+			tss->userHeader = origHeader;
+			tss->userHeaderNumber = origHeaderNumber;
+			free(hdr);
 		}
 	}
 	else {

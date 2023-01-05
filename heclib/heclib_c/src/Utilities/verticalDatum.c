@@ -1901,10 +1901,11 @@ int* copyVdiFromLocationStructToUserHeader(
     zStructLocation* locStruct,
     int* userHeader,
     int* userHeaderNumber,
+    int freeOriginalHeader,
     int* status) {
 
+    *status = 0;
     if (locStruct->supplemental) {
-        *status = 0;
         char* compressed = extractFromDelimitedString(&locStruct->supplemental, VERTICAL_DATUM_INFO_USER_HEADER_PARAM, ":", TRUE, FALSE, ';');
         if (compressed) {
             do {
@@ -1941,7 +1942,9 @@ int* copyVdiFromLocationStructToUserHeader(
                     }
                 }
                 free(compressed);
-                free(userHeader);
+                if (freeOriginalHeader) {
+                    free(userHeader);
+                }
                 userHeader = stringToUserHeader(headerBuf, userHeaderNumber);
                 free(headerBuf);
             } while (FALSE);
