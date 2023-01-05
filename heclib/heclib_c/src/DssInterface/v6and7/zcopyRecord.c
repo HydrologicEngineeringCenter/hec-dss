@@ -230,6 +230,19 @@ int zcopyRecord(long long *ifltabFrom, long long *ifltabTo, const char *pathname
 						zdssErrorSeverity.MEMORY_ERROR,
 						pathnameTo, "Allocating ts location pathname");
 				}
+				if (versFileFrom == 7 && versFileTo == 6) {
+					// copy any VDI from location struct into user header
+					int* hdr = copyVdiFromLocationStructToUserHeader(tss->locationStruct, tss->userHeader, &tss->userHeaderNumber, &status);
+					if (status != STATUS_OKAY) {
+						zstructFree(tss);
+						return zerrorProcessing(ifltabFrom, DSS_FUNCTION_zcopyRecord_ID,
+							zdssErrorCodes.CANNOT_ALLOCATE_MEMORY, 0, 0,
+							zdssErrorSeverity.MEMORY_ERROR,
+							pathnameTo, "Copying time series VDI to user header");
+					}
+					tss->userHeader = hdr;
+					tss->allocated[zSTRUCT_userHeader] = tss->userHeader != NULL;
+				}
 			}
 			status = ztsStore(ifltabTo, tss, 0);
 			zstructFree(tss);
@@ -271,6 +284,19 @@ int zcopyRecord(long long *ifltabFrom, long long *ifltabTo, const char *pathname
 						zdssErrorCodes.CANNOT_ALLOCATE_MEMORY, 0, 0,
 						zdssErrorSeverity.MEMORY_ERROR,
 						pathnameTo, "Allocating paired data location pathname");
+				}
+				if (versFileFrom == 7 && versFileTo == 6) {
+					// copy any VDI from location struct into user header
+					int* hdr = copyVdiFromLocationStructToUserHeader(pds->locationStruct, pds->userHeader, &pds->userHeaderNumber, &status);
+					if (status != STATUS_OKAY) {
+						zstructFree(tss);
+						return zerrorProcessing(ifltabFrom, DSS_FUNCTION_zcopyRecord_ID,
+							zdssErrorCodes.CANNOT_ALLOCATE_MEMORY, 0, 0,
+							zdssErrorSeverity.MEMORY_ERROR,
+							pathnameTo, "Copying paired data VDI to user header");
+					}
+					pds->userHeader = hdr;
+					pds->allocated[zSTRUCT_userHeader] = pds->userHeader != NULL;
 				}
 			}
 			status = zpdStore(ifltabTo, pds, 0);

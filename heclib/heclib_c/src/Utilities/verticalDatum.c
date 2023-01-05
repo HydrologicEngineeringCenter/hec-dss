@@ -1896,3 +1896,56 @@ char* processStorageVdis(
     }
     return NULL;
 }
+
+int* copyVdiFromLocationStructToUserHeader(
+    zStructLocation* locStruct,
+    int* userHeader,
+    int* userHeaderNumber,
+    int* status) {
+
+    if (locStruct->supplemental) {
+        *status = 0;
+        char* compressed = extractFromDelimitedString(&locStruct->supplemental, VERTICAL_DATUM_INFO_USER_HEADER_PARAM, ":", TRUE, FALSE, ';');
+        if (compressed) {
+            do {
+                char* headerBuf = userHeaderToString(userHeader, *userHeaderNumber);
+                int len;
+                if (headerBuf == NULL) {
+                    len = VERTICAL_DATUM_INFO_USER_HEADER_PARAM_LEN + strlen(compressed) + 3;
+                    headerBuf == malloc(len);
+                    if (headerBuf == NULL) {
+                        free(compressed);
+                        status = -1;
+                        break;
+                    }
+                }
+                else {
+                    len = strlen(headerBuf);
+                }
+                if (-1 == insertIntoDelimitedString(&headerBuf, len, VERTICAL_DATUM_INFO_USER_HEADER_PARAM, compressed, ":", FALSE, ';')) {
+                    // insufficent space
+                    len = strlen(headerBuf) + VERTICAL_DATUM_INFO_USER_HEADER_PARAM_LEN + strlen(compressed) + 4;
+                    char* cp = realloc(headerBuf, len);
+                    if (cp == NULL) {
+                        free(compressed);
+                        free(headerBuf);
+                        status = -2;
+                        break;
+                    }
+                    headerBuf = cp;
+                    if (insertIntoDelimitedString(&headerBuf, len, VERTICAL_DATUM_INFO_USER_HEADER_PARAM, compressed, ":", FALSE, ';')) {
+                        // unexpected error
+                        free(compressed);
+                        status = -3;
+                        return userHeader;
+                    }
+                }
+                free(compressed);
+                free(userHeader);
+                userHeader = stringToUserHeader(headerBuf, userHeaderNumber);
+                free(headerBuf);
+            } while (FALSE);
+        }
+    }
+    return userHeader;
+}

@@ -2141,10 +2141,12 @@ void retrieveAndCompareVdi(long long ifltab, const char* pathname, const void *s
     int status;
     int dummy;
     int dssver;
+    int* userHeader = NULL;
+    int userHeaderNumber = 0;
     void* destinationData = NULL;
 
     zinquireChar(ifltab, "name", filename, sizeof(filename), &dummy);
-    dssver = (int)zinquire(ifltab, "FVER")/10000;
+    dssver = (int)zgetVersion(ifltab);
 
     switch (*(int*)sourceData) {
     case DATA_TYPE_RTS:
@@ -2195,6 +2197,8 @@ void retrieveAndCompareVdi(long long ifltab, const char* pathname, const void *s
                 1);       // retrieve quality flag (0/1)
             assert(status == STATUS_OKAY);
             locStruct = tss[DST]->locationStruct;
+            userHeader = tss[DST]->userHeader;
+            userHeaderNumber = tss[DST]->userHeaderNumber;
             destinationData = tss[DST];
         }
         break;
@@ -2230,6 +2234,8 @@ void retrieveAndCompareVdi(long long ifltab, const char* pathname, const void *s
             assert(pds[DST] != NULL);
             status = zpdRetrieve(ifltab, pds[DST], 0);
             assert(status == STATUS_OKAY);
+            userHeader = pds[DST]->userHeader;
+            userHeaderNumber = pds[DST]->userHeaderNumber;
             locStruct = pds[DST]->locationStruct;
             destinationData = pds[DST];
         }
@@ -2237,16 +2243,26 @@ void retrieveAndCompareVdi(long long ifltab, const char* pathname, const void *s
     default:
         assert(FALSE);
     }
-    if (locStruct != NULL) {
-        //----------------------------------------------//
-        // verify the destination VDI is same as source //
-        //----------------------------------------------//
+    //----------------------------------------------//
+    // verify the destination VDI is same as source //
+    //----------------------------------------------//
+    if (userHeaderNumber != 0) {
+        pVdi = extractVerticalDatumInfoFromUserHeader(userHeader, userHeaderNumber);
+        assert(pVdi != NULL);
+        errmsg = verticalDatumInfoToString(&vdiXml[DST], pVdi, FALSE);
+        free(pVdi);
+        assert(errmsg == NULL);
+    }
+    else if (locStruct != NULL && locStruct->supplemental != NULL) {
         compressed = extractFromDelimitedString(&locStruct->supplemental, VERTICAL_DATUM_INFO_USER_HEADER_PARAM, ":", TRUE, FALSE, ';');
         assert(compressed != NULL);
         errmsg = decodeAndGunzip(&vdiXml[DST], compressed);
         free(compressed);
         assert(errmsg == NULL);
         assert(vdiXml[DST] != NULL);
+    }
+    assert((vdiXml[SRC] == NULL) == (vdiXml[DST] == NULL));
+    if (vdiXml[DST] != NULL) {
         printf("\n==> %s:%s (v%d)\n%s\n", filename, pathname, dssver, vdiXml[DST]);
         assert(strcmp(vdiXml[DST], vdiXml[SRC]) == 0);
         free(vdiXml[SRC]);
@@ -2339,162 +2355,173 @@ void testV7CopyRecordWithVdi() {
 
     zset("MLVL", "", 1);
 
-    remove(filename[SRC]);
-    status = zopen7(ifltab[SRC], filename[SRC]);
-    assert(status == STATUS_OKAY);
-    dssver = (int)zinquire(ifltab[SRC], "FVER") / 10000;
+    for (int srcDssVer = 6; srcDssVer <= 7; ++srcDssVer) {
+        for (int dstDssVer = 6; dstDssVer <= 7; ++dstDssVer) {
 
-    remove(filename[DST]);
-    status = zopen7(ifltab[DST], filename[DST]);
-    assert(status == STATUS_OKAY);
-
-    pVdi = malloc(sizeof(verticalDatumInfo));
-    assert(pVdi != NULL);
-
-    for (int i = 0; i < sizeof(xml) / sizeof(xml[0]); ++i) {
-        printf("\n-------------------------------\n%3d\n-------------------------------\n", i);
-        //-------------------//
-        // normalize the xml //
-        //-------------------//
-        if (strlen(xml[i]) > 0) {
-            errmsg = stringToVerticalDatumInfo(pVdi, xml[i]);
-            assert(errmsg == NULL);
-            errmsg = verticalDatumInfoToString(&xml[i], pVdi, FALSE);
-            assert(errmsg == NULL);
-        }
-        printf("==> Source (v%d)\n%s\n", dssver, xml[i]);
-        //-----------------------------//
-        // create a source time series //
-        //-----------------------------//
-        tss = zstructTsNewRegDoubles(
-            tsPathname[SRC],
-            tsValues,
-            numberTsValues,
-            startDate,
-            startTime,
-            unit,
-            type);
-        assert(tss != NULL);
-        //-----------------------------//
-        // create a source paired data //
-        //-----------------------------//
-        pds = zstructPdNewDoubles(
-            pdPathname[SRC],
-            pdOrdinates,
-            pdValues,
-            numberPdOrdinates,
-            numberPdCurves,
-            unit,
-            "UNT",
-            unit,
-            "UNT");
-        //-----------------------------------------------//
-        // add VDI to source time series and paired data //
-        //-----------------------------------------------//
-        if (strlen(xml[i]) > 0) {
-            stringToVerticalDatumInfo(&vdi[SRC], xml[i]);
-            errmsg = gzipAndEncode(&compressed, xml[i]);
-            assert(errmsg == NULL);
-            len = VERTICAL_DATUM_INFO_USER_HEADER_PARAM_LEN + strlen(compressed) + 2;
-            headerBuf = (char*)malloc(len + 1);
-            assert(headerBuf != NULL);
-            memset(headerBuf, 0, len + 1);
-            status = insertIntoDelimitedString(
-                &headerBuf,
-                len + 1,
-                VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
-                compressed,
-                ":",
-                FALSE,
-                ';');
+            remove(filename[SRC]);
+            if (srcDssVer == 6) {
+                status = zopen6(ifltab[SRC], filename[SRC]);
+            }
+            else {
+                status = zopen7(ifltab[SRC], filename[SRC]);
+            }
             assert(status == STATUS_OKAY);
-            free(compressed);
-            tss->userHeader = stringToUserHeader(headerBuf, &tss->userHeaderNumber);
-            tss->allocated[zSTRUCT_userHeader] = TRUE;
-            pds->userHeader = stringToUserHeader(headerBuf, &pds->userHeaderNumber);
-            pds->allocated[zSTRUCT_userHeader] = TRUE;
+            dssver = (int)zgetVersion(ifltab[SRC]);
+
+            remove(filename[DST]);
+            if (dstDssVer == 6) {
+                status = zopen6(ifltab[DST], filename[DST]);
+            }
+            else {
+                status = zopen7(ifltab[DST], filename[DST]);
+            }
+            assert(status == STATUS_OKAY);
+
+            pVdi = malloc(sizeof(verticalDatumInfo));
+            assert(pVdi != NULL);
+
+            for (int i = 0; i < sizeof(xml) / sizeof(xml[0]); ++i) {
+                printf("\n-------------------------------\n%3d\n-------------------------------\n", i);
+                //-------------------//
+                // normalize the xml //
+                //-------------------//
+                if (strlen(xml[i]) > 0) {
+                    errmsg = stringToVerticalDatumInfo(pVdi, xml[i]);
+                    assert(errmsg == NULL);
+                    errmsg = verticalDatumInfoToString(&xml[i], pVdi, FALSE);
+                    assert(errmsg == NULL);
+                }
+                printf("==> Source (v%d)\n%s\n", dssver, xml[i]);
+                //-----------------------------//
+                // create a source time series //
+                //-----------------------------//
+                tss = zstructTsNewRegDoubles(
+                    tsPathname[SRC],
+                    tsValues,
+                    numberTsValues,
+                    startDate,
+                    startTime,
+                    unit,
+                    type);
+                assert(tss != NULL);
+                //-----------------------------//
+                // create a source paired data //
+                //-----------------------------//
+                pds = zstructPdNewDoubles(
+                    pdPathname[SRC],
+                    pdOrdinates,
+                    pdValues,
+                    numberPdOrdinates,
+                    numberPdCurves,
+                    unit,
+                    "UNT",
+                    unit,
+                    "UNT");
+                //-----------------------------------------------//
+                // add VDI to source time series and paired data //
+                //-----------------------------------------------//
+                if (strlen(xml[i]) > 0) {
+                    stringToVerticalDatumInfo(&vdi[SRC], xml[i]);
+                    errmsg = gzipAndEncode(&compressed, xml[i]);
+                    assert(errmsg == NULL);
+                    len = VERTICAL_DATUM_INFO_USER_HEADER_PARAM_LEN + strlen(compressed) + 2;
+                    headerBuf = (char*)malloc(len + 1);
+                    assert(headerBuf != NULL);
+                    memset(headerBuf, 0, len + 1);
+                    status = insertIntoDelimitedString(
+                        &headerBuf,
+                        len + 1,
+                        VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
+                        compressed,
+                        ":",
+                        FALSE,
+                        ';');
+                    assert(status == STATUS_OKAY);
+                    free(compressed);
+                    tss->userHeader = stringToUserHeader(headerBuf, &tss->userHeaderNumber);
+                    tss->allocated[zSTRUCT_userHeader] = TRUE;
+                    pds->userHeader = stringToUserHeader(headerBuf, &pds->userHeaderNumber);
+                    pds->allocated[zSTRUCT_userHeader] = TRUE;
+                }
+                //-----------------------------//
+                // delete any previous records //
+                //-----------------------------//
+                zdelete(ifltab[SRC], tsPathname[SRC]);
+                zdelete(ifltab[SRC], zlocationPath(tsPathname[SRC]));
+                zdelete(ifltab[SRC], pdPathname[SRC]);
+                zdelete(ifltab[SRC], zlocationPath(pdPathname[SRC]));
+                //-----------------------------------------------------//
+                // store the source time series to the source DSS file //
+                //-----------------------------------------------------//
+                status = ztsStore(
+                    ifltab[SRC], // file table
+                    tss,         // time series struct
+                    0);          // storage flag (0=reg:replace all, irr:merge)
+                assert(status == STATUS_OKAY);
+                //-------------------------------//
+                // verify that we stored the VDI //
+                //-------------------------------//
+                retrieveAndCompareVdi(ifltab[SRC], tsPathname[SRC], tss);
+                //------------------------------//
+                // store the source paired data //
+                //------------------------------//
+                status = zpdStore(ifltab[SRC], pds, 0);
+                assert(status == STATUS_OKAY);
+                //-------------------------------//
+                // verify that we stored the VDI //
+                //-------------------------------//
+                retrieveAndCompareVdi(ifltab[SRC], pdPathname[SRC], pds);
+                //-------------------------------------------------------------------------//
+                // copy the time series to a location in the same DSS file that has no VDI //
+                //-------------------------------------------------------------------------//
+                zdelete(ifltab[SRC], tsPathname[DST]);
+                zdelete(ifltab[SRC], zlocationPath(tsPathname[DST]));
+                status = zcopyRecord(ifltab[SRC], ifltab[SRC], tsPathname[SRC], tsPathname[DST]);
+                assert(status == STATUS_OKAY);
+                //---------------------------//
+                // verify the VDI was copied //
+                //---------------------------//
+                retrieveAndCompareVdi(ifltab[SRC], tsPathname[DST], tss);
+                //-------------------------------------------------------------------------//
+                // copy the paired data to a location in the same DSS file that has no VDI //
+                //-------------------------------------------------------------------------//
+                zdelete(ifltab[SRC], pdPathname[DST]);
+                zdelete(ifltab[SRC], zlocationPath(pdPathname[DST]));
+                status = zcopyRecord(ifltab[SRC], ifltab[SRC], pdPathname[SRC], pdPathname[DST]);
+                assert(status == STATUS_OKAY);
+                //---------------------------//
+                // verify the VDI was copied //
+                //---------------------------//
+                retrieveAndCompareVdi(ifltab[SRC], pdPathname[DST], pds);
+                //------------------------------------------------------------------------//
+                // copy the time series to a location in another DSS file that has no VDI //
+                //------------------------------------------------------------------------//
+                zdelete(ifltab[DST], tsPathname[DST]);
+                zdelete(ifltab[DST], zlocationPath(tsPathname[DST]));
+                status = zcopyRecord(ifltab[SRC], ifltab[DST], tsPathname[DST], tsPathname[DST]);
+                assert(status == STATUS_OKAY);
+                //---------------------------//
+                // verify the VDI was copied //
+                //---------------------------//
+                retrieveAndCompareVdi(ifltab[DST], tsPathname[DST], tss);
+                //------------------------------------------------------------------------//
+                // copy the paired data to a location in another DSS file that has no VDI //
+                //------------------------------------------------------------------------//
+                zdelete(ifltab[DST], pdPathname[DST]);
+                zdelete(ifltab[DST], zlocationPath(pdPathname[DST]));
+                status = zcopyRecord(ifltab[SRC], ifltab[DST], pdPathname[SRC], pdPathname[DST]);
+                assert(status == STATUS_OKAY);
+                //---------------------------//
+                // verify the VDI was copied //
+                //---------------------------//
+                retrieveAndCompareVdi(ifltab[DST], pdPathname[DST], pds);
+                zstructFree(tss);
+            }
+            free(pVdi);
+            zclose(ifltab[SRC]);
+            zclose(ifltab[DST]);
         }
-        //-----------------------------//
-        // delete any previous records //
-        //-----------------------------//
-        zdelete(ifltab[SRC], tsPathname[SRC]);
-        zdelete(ifltab[SRC], zlocationPath(tsPathname[SRC]));
-        zdelete(ifltab[SRC], pdPathname[SRC]);
-        zdelete(ifltab[SRC], zlocationPath(pdPathname[SRC]));
-        //-----------------------------------------------------//
-        // store the source time series to the source DSS file //
-        //-----------------------------------------------------//
-        status = ztsStore(
-            ifltab[SRC], // file table
-            tss,         // time series struct
-            0);          // storage flag (0=reg:replace all, irr:merge)
-        assert(status == STATUS_OKAY);
-        //-------------------------------//
-        // verify that we stored the VDI //
-        //-------------------------------//
-        retrieveAndCompareVdi(ifltab[SRC], tsPathname[SRC], tss);
-        //------------------------------//
-        // store the source paired data //
-        //------------------------------//
-        status = zpdStore(ifltab[SRC], pds, 0);
-        assert(status == STATUS_OKAY);
-        //-------------------------------//
-        // verify that we stored the VDI //
-        //-------------------------------//
-        retrieveAndCompareVdi(ifltab[SRC], pdPathname[SRC], pds);
-        //-------------------------------------------------------------------------//
-        // copy the time series to a location in the same DSS file that has no VDI //
-        //-------------------------------------------------------------------------//
-        zdelete(ifltab[SRC], tsPathname[DST]);
-        zdelete(ifltab[SRC], zlocationPath(tsPathname[DST]));
-        status = zcopyRecord(ifltab[SRC], ifltab[SRC], tsPathname[SRC], tsPathname[DST]);
-        assert(status == STATUS_OKAY);
-        //---------------------------//
-        // verify the VDI was copied //
-        //---------------------------//
-        retrieveAndCompareVdi(ifltab[SRC], tsPathname[DST], tss);
-        //-------------------------------------------------------------------------//
-        // copy the paired data to a location in the same DSS file that has no VDI //
-        //-------------------------------------------------------------------------//
-        zdelete(ifltab[SRC], pdPathname[DST]);
-        zdelete(ifltab[SRC], zlocationPath(pdPathname[DST]));
-        status = zcopyRecord(ifltab[SRC], ifltab[SRC], pdPathname[SRC], pdPathname[DST]);
-        assert(status == STATUS_OKAY);
-        //---------------------------//
-        // verify the VDI was copied //
-        //---------------------------//
-        retrieveAndCompareVdi(ifltab[SRC], pdPathname[DST], pds);
-        //------------------------------------------------------------------------//
-        // copy the time series to a location in another DSS file that has no VDI //
-        //------------------------------------------------------------------------//
-        zdelete(ifltab[DST], tsPathname[DST]);
-        zdelete(ifltab[DST], zlocationPath(tsPathname[DST]));
-        status = zcopyRecord(ifltab[SRC], ifltab[DST], tsPathname[DST], tsPathname[DST]);
-        assert(status == STATUS_OKAY);
-        //---------------------------//
-        // verify the VDI was copied //
-        //---------------------------//
-        retrieveAndCompareVdi(ifltab[DST], tsPathname[DST], tss);
-        //------------------------------------------------------------------------//
-        // copy the paired data to a location in another DSS file that has no VDI //
-        //------------------------------------------------------------------------//
-        zdelete(ifltab[DST], pdPathname[DST]);
-        zdelete(ifltab[DST], zlocationPath(pdPathname[DST]));
-        status = zcopyRecord(ifltab[SRC], ifltab[DST], pdPathname[SRC], pdPathname[DST]);
-        assert(status == STATUS_OKAY);
-        //---------------------------//
-        // verify the VDI was copied //
-        //---------------------------//
-        retrieveAndCompareVdi(ifltab[DST], pdPathname[DST], pds);
-        zstructFree(tss);
     }
-
-    free(pVdi);
-
-    zclose(ifltab[SRC]);
     remove(filename[SRC]);
-
-    zclose(ifltab[DST]);
     remove(filename[DST]);
-
 }

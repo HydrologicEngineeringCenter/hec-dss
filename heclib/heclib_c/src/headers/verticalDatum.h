@@ -7,7 +7,7 @@ extern "C" {
  
 #include <float.h>
 #include <stdint.h>
-
+#include <zStructLocation.h>
  
 #define F2C(f, c, flen, clen) {                    \
     int len = flen < clen ? flen : clen - 1;       \
@@ -586,6 +586,20 @@ char* processStorageVdis(
     const char*              currentDatum,
     int                      fileContainsData,
     const char*              dataUnit);
+
+/**
+ * Copies any VDI from a location struct to a user header. Used for copying DSS 7 records to DSS 6
+ * @param locStruct        The location struct 
+ * @param userHeader       The user header integer array
+ * @param userHeaderNumber The number of ints in the user header
+ * @param status           Receives 0 on success or < 0 on error
+ * @return The (possibly reallocated) user header on success
+ */
+int* copyVdiFromLocationStructToUserHeader(
+    zStructLocation* locStruct,
+    int* userHeader,
+    int* userHeaderNumber,
+    int* status);
 
 #ifdef __cplusplus
 } // extern "C"
