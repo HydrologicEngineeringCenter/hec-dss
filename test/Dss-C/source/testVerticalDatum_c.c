@@ -2121,7 +2121,7 @@ void testStoreRetrievePairedData() {
     }
     printf("\n\n%5d Paired data tests passed\n\n\n", count);
 }
-void retrieveAndCompareVdi(long long ifltab, const char* pathname, const void *sourceData) {
+void retrieveAndCompareVdi(long long *ifltab, const char* pathname, const void *sourceData) {
     zStructTimeSeries* tss[2];
     memset(tss, 0, sizeof(tss));
     zStructPairedData* pds[2];
