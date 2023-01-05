@@ -14,6 +14,10 @@ void testV6TimeSeiresWithMultipleVerticalDatums();
 void testStoreRetrievePairedData();
 void testV7CopyRecordWithVdi();
 
+const int SRC = 0;
+const int DST = 1;
+const int RETR = 2;
+
 int test_vertical_datums_c() {
     //testDelimitedStringOps();
     //testGzipAndEncodingOps();
@@ -2117,17 +2121,145 @@ void testStoreRetrievePairedData() {
     }
     printf("\n\n%5d Paired data tests passed\n\n\n", count);
 }
+void retrieveAndCompareVdi(long long ifltab, const char* pathname, const void *sourceData) {
+    zStructTimeSeries* tss[2];
+    memset(tss, 0, sizeof(tss));
+    zStructPairedData* pds[2];
+    memset(pds, 0, sizeof(pds));
+    zStructLocation* locStruct = NULL;
+    verticalDatumInfo* pVdi = NULL;
+    char* vdiXml[2];
+    memset(vdiXml, 0, sizeof(vdiXml));
+    char* errmsg = NULL;
+    char* compressed = NULL;
+    char startDate[10];
+    char startTime[6];
+    char endDate[10];
+    char endTime[6];
+    char filename[_MAX_PATH];
+    int* structType = (int*)sourceData;
+    int status;
+    int dummy;
+    int dssver;
+    void* destinationData = NULL;
+
+    zinquireChar(ifltab, "name", filename, sizeof(filename), &dummy);
+    dssver = (int)zinquire(ifltab, "FVER")/10000;
+
+    switch (*(int*)sourceData) {
+    case DATA_TYPE_RTS:
+        //-------------//
+        // time series //
+        //-------------//
+        tss[SRC] = (zStructTimeSeries*)sourceData;
+        //--------------------//
+        // get the source VDI //
+        //--------------------//
+        if (tss[SRC]->userHeaderNumber) {
+            pVdi = extractVerticalDatumInfoFromUserHeader(tss[SRC]->userHeader, tss[SRC]->userHeaderNumber);
+            assert(pVdi != NULL);
+            errmsg = verticalDatumInfoToString(&vdiXml[SRC], pVdi, FALSE);
+            free(pVdi);
+            assert(errmsg == NULL);
+            assert(vdiXml[SRC] != NULL);
+        }
+        else if (tss[SRC]->locationStruct != NULL && tss[SRC]->locationStruct->supplemental != NULL) {
+            locStruct = tss[SRC]->locationStruct;
+            compressed = extractFromDelimitedString(&locStruct->supplemental, VERTICAL_DATUM_INFO_USER_HEADER_PARAM, ":", TRUE, FALSE, ';');
+            assert(compressed != NULL);
+            errmsg = decodeAndGunzip(&vdiXml[SRC], compressed);
+            free(compressed);
+            assert(errmsg == NULL);
+            assert(vdiXml[SRC] != NULL);
+        }
+        if (vdiXml[SRC] != NULL) {
+            //--------------------------------------//
+            // retrieve the destination time series //
+            //--------------------------------------//
+            julianToDate(tss[SRC]->timeWindow->startJulian, 4, startDate, sizeof(startDate));
+            sprintf(startTime, "%2.2d:%2.2d", tss[SRC]->timeWindow->startTimeSeconds / 3600, tss[SRC]->timeWindow->startTimeSeconds % 3600);
+            julianToDate(tss[SRC]->timeWindow->endJulian, 4, endDate, sizeof(endDate));
+            sprintf(endTime, "%2.2d:%2.2d", tss[SRC]->timeWindow->endTimeSeconds / 3600, tss[SRC]->timeWindow->endTimeSeconds % 3600);
+            tss[DST] = zstructTsNewTimes(
+                pathname,
+                startDate,
+                startTime,
+                endDate,
+                endTime);
+            assert(tss[DST] != NULL);
+            status = ztsRetrieve(
+                ifltab,   // file table
+                tss[DST], // time series struct
+                0,        // retrieve flag (0=adhere to time window and [for reg] create times array)
+                0,        // retrieve doubles flag (0=as stored, 1=floats, 2=doubles)
+                1);       // retrieve quality flag (0/1)
+            assert(status == STATUS_OKAY);
+            locStruct = tss[DST]->locationStruct;
+            destinationData = tss[DST];
+        }
+        break;
+    case DATA_TYPE_PD: 
+        //-------------//
+        // paired data //
+        //-------------//
+        pds[SRC] = (zStructPairedData*)sourceData;
+        //--------------------//
+        // get the source VDI //
+        //--------------------//
+        if (pds[SRC]->userHeaderNumber) {
+            pVdi = extractVerticalDatumInfoFromUserHeader(pds[SRC]->userHeader, pds[SRC]->userHeaderNumber);
+            assert(pVdi != NULL);
+            errmsg = verticalDatumInfoToString(&vdiXml[SRC], pVdi, FALSE);
+            free(pVdi);
+            assert(errmsg == NULL);
+        }
+        else if (pds[SRC]->locationStruct != NULL && pds[SRC]->locationStruct->supplemental != NULL) {
+            locStruct = pds[SRC]->locationStruct;
+            compressed = extractFromDelimitedString(&locStruct->supplemental, VERTICAL_DATUM_INFO_USER_HEADER_PARAM, ":", TRUE, FALSE, ';');
+            assert(compressed != NULL);
+            errmsg = decodeAndGunzip(&vdiXml[SRC], compressed);
+            free(compressed);
+            assert(errmsg == NULL);
+            assert(vdiXml[SRC] != NULL);
+        }
+        if (vdiXml[SRC] != NULL) {
+            //--------------------------------------//
+            // retrieve the destination time series //
+            //--------------------------------------//
+            pds[DST] = zstructPdNew(pathname);
+            assert(pds[DST] != NULL);
+            status = zpdRetrieve(ifltab, pds[DST], 0);
+            assert(status == STATUS_OKAY);
+            locStruct = pds[DST]->locationStruct;
+            destinationData = pds[DST];
+        }
+        break;
+    default:
+        assert(FALSE);
+    }
+    if (locStruct != NULL) {
+        //----------------------------------------------//
+        // verify the destination VDI is same as source //
+        //----------------------------------------------//
+        compressed = extractFromDelimitedString(&locStruct->supplemental, VERTICAL_DATUM_INFO_USER_HEADER_PARAM, ":", TRUE, FALSE, ';');
+        assert(compressed != NULL);
+        errmsg = decodeAndGunzip(&vdiXml[DST], compressed);
+        free(compressed);
+        assert(errmsg == NULL);
+        assert(vdiXml[DST] != NULL);
+        printf("\n==> %s:%s (v%d)\n%s\n", filename, pathname, dssver, vdiXml[DST]);
+        assert(strcmp(vdiXml[DST], vdiXml[SRC]) == 0);
+        free(vdiXml[SRC]);
+        free(vdiXml[DST]);
+        zstructFree(destinationData);
+    }
+}
 
 void testV7CopyRecordWithVdi() {
-    const int SRC = 0;
-    const int DST = 1;
-    const int RETR = 2;
     long long ifltab[2][250] = { 0 };
     int status;
-    zStructTimeSeries* tss[3];
-    memset(tss, 0, sizeof(tss));
-    zStructPairedData* pds[3];
-    memset(pds, 0, sizeof(pds));
+    zStructTimeSeries* tss = NULL;
+    zStructPairedData* pds = NULL;
     verticalDatumInfo vdi[2];
     memset(vdi, 0, sizeof(vdi));
     verticalDatumInfo* pVdi;
@@ -2150,6 +2282,7 @@ void testV7CopyRecordWithVdi() {
     char* compressed = NULL;
     char* headerBuf = NULL;
     int   len = 0;
+    int   dssver;
     char* vdiXml = NULL;
     char* xml[] = {
         "<vertical-datum-info unit=\"ft\">\n"
@@ -2204,9 +2337,12 @@ void testV7CopyRecordWithVdi() {
 
     };
 
+    zset("MLVL", "", 1);
+
     remove(filename[SRC]);
     status = zopen7(ifltab[SRC], filename[SRC]);
     assert(status == STATUS_OKAY);
+    dssver = (int)zinquire(ifltab[SRC], "FVER") / 10000;
 
     remove(filename[DST]);
     status = zopen7(ifltab[DST], filename[DST]);
@@ -2216,7 +2352,7 @@ void testV7CopyRecordWithVdi() {
     assert(pVdi != NULL);
 
     for (int i = 0; i < sizeof(xml) / sizeof(xml[0]); ++i) {
-        printf("-------------------------------\n%3d\n-------------------------------\n", i);
+        printf("\n-------------------------------\n%3d\n-------------------------------\n", i);
         //-------------------//
         // normalize the xml //
         //-------------------//
@@ -2226,11 +2362,11 @@ void testV7CopyRecordWithVdi() {
             errmsg = verticalDatumInfoToString(&xml[i], pVdi, FALSE);
             assert(errmsg == NULL);
         }
-        printf("\n%s\n", xml[i]);
+        printf("==> Source (v%d)\n%s\n", dssver, xml[i]);
         //-----------------------------//
         // create a source time series //
         //-----------------------------//
-        tss[SRC] = zstructTsNewRegDoubles(
+        tss = zstructTsNewRegDoubles(
             tsPathname[SRC],
             tsValues,
             numberTsValues,
@@ -2238,8 +2374,11 @@ void testV7CopyRecordWithVdi() {
             startTime,
             unit,
             type);
-        assert(tss[SRC] != NULL);
-        pds[SRC] = zstructPdNewDoubles(
+        assert(tss != NULL);
+        //-----------------------------//
+        // create a source paired data //
+        //-----------------------------//
+        pds = zstructPdNewDoubles(
             pdPathname[SRC],
             pdOrdinates,
             pdValues,
@@ -2249,9 +2388,9 @@ void testV7CopyRecordWithVdi() {
             "UNT",
             unit,
             "UNT");
-        //---------//
-        // add VDI //
-        //---------//
+        //-----------------------------------------------//
+        // add VDI to source time series and paired data //
+        //-----------------------------------------------//
         if (strlen(xml[i]) > 0) {
             stringToVerticalDatumInfo(&vdi[SRC], xml[i]);
             errmsg = gzipAndEncode(&compressed, xml[i]);
@@ -2270,10 +2409,10 @@ void testV7CopyRecordWithVdi() {
                 ';');
             assert(status == STATUS_OKAY);
             free(compressed);
-            tss[SRC]->userHeader = stringToUserHeader(headerBuf, &tss[SRC]->userHeaderNumber);
-            tss[SRC]->allocated[zSTRUCT_userHeader] = TRUE;
-            pds[SRC]->userHeader = stringToUserHeader(headerBuf, &pds[SRC]->userHeaderNumber);
-            pds[SRC]->allocated[zSTRUCT_userHeader] = TRUE;
+            tss->userHeader = stringToUserHeader(headerBuf, &tss->userHeaderNumber);
+            tss->allocated[zSTRUCT_userHeader] = TRUE;
+            pds->userHeader = stringToUserHeader(headerBuf, &pds->userHeaderNumber);
+            pds->allocated[zSTRUCT_userHeader] = TRUE;
         }
         //-----------------------------//
         // delete any previous records //
@@ -2287,64 +2426,22 @@ void testV7CopyRecordWithVdi() {
         //-----------------------------------------------------//
         status = ztsStore(
             ifltab[SRC], // file table
-            tss[SRC],    // time series struct
+            tss,         // time series struct
             0);          // storage flag (0=reg:replace all, irr:merge)
         assert(status == STATUS_OKAY);
-        //---------------------------------//
-        // retrieve the stored time series //
-        //---------------------------------//
-        tss[RETR] = zstructTsNewTimes(
-            tsPathname[SRC],
-            startDate,
-            startTime,
-            endDate,
-            endTime);
-        assert(tss[RETR] != NULL);
-        status = ztsRetrieve(
-            ifltab[SRC], // file table
-            tss[RETR],   // time series struct
-            0,           // retrieve flag (0=adhere to time window and [for reg] create times array)
-            0,           // retrieve doubles flag (0=as stored, 1=floats, 2=doubles)
-            1);          // retrieve quality flag (0/1)
-        assert(status == STATUS_OKAY);
-        //----------------------------------//
-        // verify the VDI is what we stored //
-        //----------------------------------//
-        if (strlen(xml[i]) > 0) {
-            compressed = extractFromDelimitedString(&tss[RETR]->locationStruct->supplemental, VERTICAL_DATUM_INFO_USER_HEADER_PARAM, ":", TRUE, FALSE, ';');
-            assert(compressed != NULL);
-            errmsg = decodeAndGunzip(&vdiXml, compressed);
-            assert(errmsg == NULL);
-            assert(vdiXml != NULL);
-            printf("\n%s (%s)\n%s\n", filename[SRC], tsPathname[SRC], vdiXml);
-            assert(strcmp(xml[i], vdiXml) == 0);
-        }
-        zstructFree(tss[RETR]);
+        //-------------------------------//
+        // verify that we stored the VDI //
+        //-------------------------------//
+        retrieveAndCompareVdi(ifltab[SRC], tsPathname[SRC], tss);
         //------------------------------//
         // store the source paired data //
         //------------------------------//
-        status = zpdStore(ifltab[SRC], pds[SRC], 0);
+        status = zpdStore(ifltab[SRC], pds, 0);
         assert(status == STATUS_OKAY);
-        //---------------------------------//
-        // retrieve the stored paired data //
-        //---------------------------------//
-        pds[RETR] = zstructPdNew(pdPathname[SRC]);
-        assert(pds[RETR] != NULL);
-        status = zpdRetrieve(ifltab[SRC], pds[RETR], 0);
-        assert(status == STATUS_OKAY);
-        //----------------------------------//
-        // verify the VDI is what we stored //
-        //----------------------------------//
-        if (strlen(xml[i]) > 0) {
-            compressed = extractFromDelimitedString(&pds[RETR]->locationStruct->supplemental, VERTICAL_DATUM_INFO_USER_HEADER_PARAM, ":", TRUE, FALSE, ';');
-            assert(compressed != NULL);
-            errmsg = decodeAndGunzip(&vdiXml, compressed);
-            assert(errmsg == NULL);
-            assert(vdiXml != NULL);
-            printf("\n%s (%s)\n%s\n", filename[SRC], pdPathname[SRC], vdiXml);
-            assert(strcmp(xml[i], vdiXml) == 0);
-        }
-        zstructFree(pds[RETR]);
+        //-------------------------------//
+        // verify that we stored the VDI //
+        //-------------------------------//
+        retrieveAndCompareVdi(ifltab[SRC], pdPathname[SRC], pds);
         //-------------------------------------------------------------------------//
         // copy the time series to a location in the same DSS file that has no VDI //
         //-------------------------------------------------------------------------//
@@ -2352,36 +2449,10 @@ void testV7CopyRecordWithVdi() {
         zdelete(ifltab[SRC], zlocationPath(tsPathname[DST]));
         status = zcopyRecord(ifltab[SRC], ifltab[SRC], tsPathname[SRC], tsPathname[DST]);
         assert(status == STATUS_OKAY);
-        //---------------------------------//
-        // retrieve the copied time series //
-        //---------------------------------//
-        tss[RETR] = zstructTsNewTimes(
-            tsPathname[DST],
-            startDate,
-            startTime,
-            endDate,
-            endTime);
-        assert(tss[RETR] != NULL);
-        status = ztsRetrieve(
-            ifltab[SRC], // file table
-            tss[RETR],   // time series struct
-            0,           // retrieve flag (0=adhere to time window and [for reg] create times array)
-            0,           // retrieve doubles flag (0=as stored, 1=floats, 2=doubles)
-            1);          // retrieve quality flag (0/1)
-        assert(status == STATUS_OKAY);
         //---------------------------//
         // verify the VDI was copied //
         //---------------------------//
-        if (strlen(xml[i]) > 0) {
-            compressed = extractFromDelimitedString(&tss[RETR]->locationStruct->supplemental, VERTICAL_DATUM_INFO_USER_HEADER_PARAM, ":", TRUE, FALSE, ';');
-            assert(compressed != NULL);
-            errmsg = decodeAndGunzip(&vdiXml, compressed);
-            assert(errmsg == NULL);
-            assert(vdiXml != NULL);
-            printf("\n%s (%s)\n%s\n", filename[SRC], tsPathname[DST], vdiXml);
-            assert(strcmp(xml[i], vdiXml) == 0);
-        }
-        zstructFree(tss[RETR]);
+        retrieveAndCompareVdi(ifltab[SRC], tsPathname[DST], tss);
         //-------------------------------------------------------------------------//
         // copy the paired data to a location in the same DSS file that has no VDI //
         //-------------------------------------------------------------------------//
@@ -2389,26 +2460,10 @@ void testV7CopyRecordWithVdi() {
         zdelete(ifltab[SRC], zlocationPath(pdPathname[DST]));
         status = zcopyRecord(ifltab[SRC], ifltab[SRC], pdPathname[SRC], pdPathname[DST]);
         assert(status == STATUS_OKAY);
-        //---------------------------------//
-        // retrieve the copied paired data //
-        //---------------------------------//
-        pds[RETR] = zstructPdNew(pdPathname[DST]);
-        assert(pds[RETR] != NULL);
-        status = zpdRetrieve(ifltab[SRC], pds[RETR], 0);
-        assert(status == STATUS_OKAY);
-        //----------------------------------//
-        // verify the VDI is what we stored //
-        //----------------------------------//
-        if (strlen(xml[i]) > 0) {
-            compressed = extractFromDelimitedString(&pds[RETR]->locationStruct->supplemental, VERTICAL_DATUM_INFO_USER_HEADER_PARAM, ":", TRUE, FALSE, ';');
-            assert(compressed != NULL);
-            errmsg = decodeAndGunzip(&vdiXml, compressed);
-            assert(errmsg == NULL);
-            assert(vdiXml != NULL);
-            printf("\n%s (%s)\n%s\n", filename[SRC], pdPathname[SRC], vdiXml);
-            assert(strcmp(xml[i], vdiXml) == 0);
-        }
-        zstructFree(pds[RETR]);
+        //---------------------------//
+        // verify the VDI was copied //
+        //---------------------------//
+        retrieveAndCompareVdi(ifltab[SRC], pdPathname[DST], pds);
         //------------------------------------------------------------------------//
         // copy the time series to a location in another DSS file that has no VDI //
         //------------------------------------------------------------------------//
@@ -2416,36 +2471,10 @@ void testV7CopyRecordWithVdi() {
         zdelete(ifltab[DST], zlocationPath(tsPathname[DST]));
         status = zcopyRecord(ifltab[SRC], ifltab[DST], tsPathname[DST], tsPathname[DST]);
         assert(status == STATUS_OKAY);
-        //---------------------------------//
-        // retrieve the copied time series //
-        //---------------------------------//
-        tss[RETR] = zstructTsNewTimes(
-            tsPathname[DST],
-            startDate,
-            startTime,
-            endDate,
-            endTime);
-        assert(tss[RETR] != NULL);
-        status = ztsRetrieve(
-            ifltab[DST], // file table
-            tss[RETR],   // time series struct
-            0,           // retrieve flag (0=adhere to time window and [for reg] create times array)
-            0,           // retrieve doubles flag (0=as stored, 1=floats, 2=doubles)
-            1);          // retrieve quality flag (0/1)
-        assert(status == STATUS_OKAY);
         //---------------------------//
         // verify the VDI was copied //
         //---------------------------//
-        if (strlen(xml[i]) > 0) {
-            compressed = extractFromDelimitedString(&tss[RETR]->locationStruct->supplemental, VERTICAL_DATUM_INFO_USER_HEADER_PARAM, ":", TRUE, FALSE, ';');
-            assert(compressed != NULL);
-            errmsg = decodeAndGunzip(&vdiXml, compressed);
-            assert(errmsg == NULL);
-            assert(vdiXml != NULL);
-            printf("\n%s (%s)\n%s\n", filename[DST], tsPathname[DST], vdiXml);
-            assert(strcmp(xml[i], vdiXml) == 0);
-        }
-        zstructFree(tss[RETR]);
+        retrieveAndCompareVdi(ifltab[DST], tsPathname[DST], tss);
         //------------------------------------------------------------------------//
         // copy the paired data to a location in another DSS file that has no VDI //
         //------------------------------------------------------------------------//
@@ -2453,29 +2482,11 @@ void testV7CopyRecordWithVdi() {
         zdelete(ifltab[DST], zlocationPath(pdPathname[DST]));
         status = zcopyRecord(ifltab[SRC], ifltab[DST], pdPathname[SRC], pdPathname[DST]);
         assert(status == STATUS_OKAY);
-        //---------------------------------//
-        // retrieve the copied paired data //
-        //---------------------------------//
-        pds[RETR] = zstructPdNew(pdPathname[DST]);
-        assert(pds[RETR] != NULL);
-        status = zpdRetrieve(ifltab[DST], pds[RETR], 0);
-        assert(status == STATUS_OKAY);
-        //----------------------------------//
-        // verify the VDI is what we stored //
-        //----------------------------------//
-        if (strlen(xml[i]) > 0) {
-            compressed = extractFromDelimitedString(&pds[RETR]->locationStruct->supplemental, VERTICAL_DATUM_INFO_USER_HEADER_PARAM, ":", TRUE, FALSE, ';');
-            assert(compressed != NULL);
-            errmsg = decodeAndGunzip(&vdiXml, compressed);
-            assert(errmsg == NULL);
-            assert(vdiXml != NULL);
-            printf("\n%s (%s)\n%s\n", filename[DST], pdPathname[DST], vdiXml);
-            assert(strcmp(xml[i], vdiXml) == 0);
-        }
-        zstructFree(pds[RETR]);
-
-
-        zstructFree(tss[SRC]);
+        //---------------------------//
+        // verify the VDI was copied //
+        //---------------------------//
+        retrieveAndCompareVdi(ifltab[DST], pdPathname[DST], pds);
+        zstructFree(tss);
     }
 
     free(pVdi);
