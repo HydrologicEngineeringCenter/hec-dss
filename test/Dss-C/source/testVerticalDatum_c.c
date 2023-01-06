@@ -2364,8 +2364,8 @@ void testCopyRecordWithVdi_NoVdiInDestination() {
 
         ""
     };
-    int xmlCount = 7;
-    char *xml[xmlCount];
+    const int xmlCount = sizeof(_xml) / sizeof(_xml[0]);
+    char *xml[sizeof(_xml) / sizeof(_xml[0])];
     memset(xml, 0, sizeof(xml));
 
     //-------------------//
