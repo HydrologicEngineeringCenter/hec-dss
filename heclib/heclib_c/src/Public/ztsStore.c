@@ -357,7 +357,6 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 				tss->pathname, "Copying time series VDI to user header");
 		}
 		tss->userHeader = hdr;
-		tss->allocated[zSTRUCT_userHeader] = tss->userHeader != NULL;
 		if (intervalType == 0) {
 			status = ztsStoreReg6(ifltab, tss, storageFlag);
 		}

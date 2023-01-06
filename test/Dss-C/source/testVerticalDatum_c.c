@@ -20,14 +20,14 @@ const int DST = 1;
 const int RETR = 2;
 
 int test_vertical_datums_c() {
-    //testDelimitedStringOps();
-    //testGzipAndEncodingOps();
-    //testUserHeaderOps();
-    //testVerticalDatumInfoSerialization();
-    //testZsetZquery();
-    //testStoreRetrieveTimeSeries();
-    //testV6TimeSeiresWithMultipleVerticalDatums();
-    //testStoreRetrievePairedData();
+    testDelimitedStringOps();
+    testGzipAndEncodingOps();
+    testUserHeaderOps();
+    testVerticalDatumInfoSerialization();
+    testZsetZquery();
+    testStoreRetrieveTimeSeries();
+    testV6TimeSeiresWithMultipleVerticalDatums();
+    testStoreRetrievePairedData();
     testCopyRecordWithVdi();
     return 0;
 }
@@ -509,6 +509,7 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                                     printf("\t\t\t\tFailed.\n");
                                 }
                             }
+                            free(userHeader2);
                         }
                         else {
                             //-------------------------------------//
@@ -543,7 +544,7 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                             //------------------------------------------//
                             tss->userHeader = userHeader2;
                             tss->userHeaderNumber = userHeaderNumber;
-                            tss->allocated[zSTRUCT_userHeader] = FALSE; // will free memory separately
+                            tss->allocated[zSTRUCT_userHeader] = TRUE;
                             //-----------------------//
                             // store the time series //
                             //-----------------------//
@@ -561,7 +562,6 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                             }
                             zstructFree(tss);
                         }
-                        free(userHeader2);
                         userHeader2 = NULL;
                     }
                 }
@@ -1088,7 +1088,9 @@ void deleteTimeSeriesRecords(
         recordJul = ztsIncrementBlock(recordJul, blockSize);
     }
     if (deleteLocationRecordAlso) {
-        zdelete(ifltab, zlocationPath(pathname));
+        char *locationPath = zlocationPath(pathname);
+        zdelete(ifltab, locationPath);
+        free(locationPath);
     }
 }
 
@@ -2122,6 +2124,13 @@ void testStoreRetrievePairedData() {
     }
     printf("\n\n%5d Paired data tests passed\n\n\n", count);
 }
+
+void deleteLocationRecord(long long * ifltab, const char *pathname) {
+    char *locationPathname = zlocationPath(pathname);
+    zdelete(ifltab, locationPathname);
+    free(locationPathname);
+}
+
 void retrieveAndCompareVdi(long long *ifltab, const char* pathname, const void *sourceData) {
     zStructTimeSeries* tss[2];
     memset(tss, 0, sizeof(tss));
@@ -2138,9 +2147,10 @@ void retrieveAndCompareVdi(long long *ifltab, const char* pathname, const void *
     char endDate[10];
     char endTime[6];
     char filename[_MAX_PATH];
+    memset(filename, 0, sizeof(filename));
     int* structType = (int*)sourceData;
     int status;
-    int dummy;
+    int dummy = 0;
     int dssver;
     int* userHeader = NULL;
     int userHeaderNumber = 0;
@@ -2149,6 +2159,7 @@ void retrieveAndCompareVdi(long long *ifltab, const char* pathname, const void *
     zinquireChar(ifltab, "name", filename, sizeof(filename), &dummy);
     dssver = (int)zgetVersion(ifltab);
 
+    fprintf(stderr, "%p\t%d\n", sourceData, *(int*)sourceData);
     switch (*(int*)sourceData) {
     case DATA_TYPE_RTS:
         //-------------//
@@ -2302,7 +2313,7 @@ void testCopyRecordWithVdi_NoVdiInDestination() {
     int   len = 0;
     int   dssver;
     char* vdiXml = NULL;
-    char* xml[] = {
+    const char* _xml[] = {
         "<vertical-datum-info unit=\"ft\">\n"
         "  <native-datum>NGVD-29</native-datum>\n"
         "  <elevation>615.2</elevation>\n"
@@ -2352,9 +2363,27 @@ void testCopyRecordWithVdi_NoVdiInDestination() {
         "</vertical-datum-info>\n",
 
         ""
-
     };
+    int xmlCount = 7;
+    char *xml[xmlCount];
+    memset(xml, 0, sizeof(xml));
 
+    //-------------------//
+    // normalize the xml //
+    //-------------------//
+    for (int i = 0; i < xmlCount; ++i) {
+        if (strlen(_xml[i]) > 0) {
+            errmsg = stringToVerticalDatumInfo(&vdi[0], _xml[i]);
+            assert(errmsg == NULL);
+            char *cp = NULL;
+            errmsg = verticalDatumInfoToString(&cp, &vdi[0], FALSE);
+            assert(errmsg == NULL);
+            xml[i] = cp;
+        }
+        else {
+            xml[i] = strdup("");
+        }
+    }
     for (int srcDssVer = 6; srcDssVer <= 7; ++srcDssVer) {
         for (int dstDssVer = 6; dstDssVer <= 7; ++dstDssVer) {
 
@@ -2377,20 +2406,11 @@ void testCopyRecordWithVdi_NoVdiInDestination() {
             }
             assert(status == STATUS_OKAY);
 
-            pVdi = malloc(sizeof(verticalDatumInfo));
-            assert(pVdi != NULL);
+            // pVdi = malloc(sizeof(verticalDatumInfo));
+            // assert(pVdi != NULL);
 
-            for (int i = 0; i < sizeof(xml) / sizeof(xml[0]); ++i) {
+            for (int i = 0; i < xmlCount; ++i) {
                 printf("\n-------------------------------\n%3d\n-------------------------------\n", i);
-                //-------------------//
-                // normalize the xml //
-                //-------------------//
-                if (strlen(xml[i]) > 0) {
-                    errmsg = stringToVerticalDatumInfo(pVdi, xml[i]);
-                    assert(errmsg == NULL);
-                    errmsg = verticalDatumInfoToString(&xml[i], pVdi, FALSE);
-                    assert(errmsg == NULL);
-                }
                 printf("==> Source (v%d)\n%s\n", dssver, xml[i]);
                 //-----------------------------//
                 // create a source time series //
@@ -2442,14 +2462,15 @@ void testCopyRecordWithVdi_NoVdiInDestination() {
                     tss->allocated[zSTRUCT_userHeader] = TRUE;
                     pds->userHeader = stringToUserHeader(headerBuf, &pds->userHeaderNumber);
                     pds->allocated[zSTRUCT_userHeader] = TRUE;
+                    free(headerBuf);
                 }
                 //-----------------------------//
                 // delete any previous records //
                 //-----------------------------//
                 zdelete(ifltab[SRC], tsPathname[SRC]);
-                zdelete(ifltab[SRC], zlocationPath(tsPathname[SRC]));
+                deleteLocationRecord(ifltab[SRC], tsPathname[SRC]);
                 zdelete(ifltab[SRC], pdPathname[SRC]);
-                zdelete(ifltab[SRC], zlocationPath(pdPathname[SRC]));
+                deleteLocationRecord(ifltab[SRC], pdPathname[SRC]);
                 //-----------------------------------------------------//
                 // store the source time series to the source DSS file //
                 //-----------------------------------------------------//
@@ -2475,7 +2496,7 @@ void testCopyRecordWithVdi_NoVdiInDestination() {
                 // copy the time series to a location in the same DSS file that has no VDI //
                 //-------------------------------------------------------------------------//
                 zdelete(ifltab[SRC], tsPathname[DST]);
-                zdelete(ifltab[SRC], zlocationPath(tsPathname[DST]));
+                deleteLocationRecord(ifltab[SRC], tsPathname[DST]);
                 status = zcopyRecord(ifltab[SRC], ifltab[SRC], tsPathname[SRC], tsPathname[DST]);
                 assert(status == STATUS_OKAY);
                 //---------------------------//
@@ -2486,7 +2507,7 @@ void testCopyRecordWithVdi_NoVdiInDestination() {
                 // copy the paired data to a location in the same DSS file that has no VDI //
                 //-------------------------------------------------------------------------//
                 zdelete(ifltab[SRC], pdPathname[DST]);
-                zdelete(ifltab[SRC], zlocationPath(pdPathname[DST]));
+                deleteLocationRecord(ifltab[SRC], pdPathname[DST]);
                 status = zcopyRecord(ifltab[SRC], ifltab[SRC], pdPathname[SRC], pdPathname[DST]);
                 assert(status == STATUS_OKAY);
                 //---------------------------//
@@ -2497,7 +2518,7 @@ void testCopyRecordWithVdi_NoVdiInDestination() {
                 // copy the time series to a location in another DSS file that has no VDI //
                 //------------------------------------------------------------------------//
                 zdelete(ifltab[DST], tsPathname[DST]);
-                zdelete(ifltab[DST], zlocationPath(tsPathname[DST]));
+                deleteLocationRecord(ifltab[DST], tsPathname[DST]);
                 status = zcopyRecord(ifltab[SRC], ifltab[DST], tsPathname[DST], tsPathname[DST]);
                 assert(status == STATUS_OKAY);
                 //---------------------------//
@@ -2508,7 +2529,7 @@ void testCopyRecordWithVdi_NoVdiInDestination() {
                 // copy the paired data to a location in another DSS file that has no VDI //
                 //------------------------------------------------------------------------//
                 zdelete(ifltab[DST], pdPathname[DST]);
-                zdelete(ifltab[DST], zlocationPath(pdPathname[DST]));
+                deleteLocationRecord(ifltab[DST], pdPathname[DST]);
                 status = zcopyRecord(ifltab[SRC], ifltab[DST], pdPathname[SRC], pdPathname[DST]);
                 assert(status == STATUS_OKAY);
                 //---------------------------//
@@ -2516,11 +2537,14 @@ void testCopyRecordWithVdi_NoVdiInDestination() {
                 //---------------------------//
                 retrieveAndCompareVdi(ifltab[DST], pdPathname[DST], pds);
                 zstructFree(tss);
+                zstructFree(pds);
             }
-            free(pVdi);
             zclose(ifltab[SRC]);
             zclose(ifltab[DST]);
         }
+    }
+    for (int i = 0; i < xmlCount; ++i) {
+        free(xml[i]);
     }
     remove(filename[SRC]);
     remove(filename[DST]);
@@ -2652,13 +2676,14 @@ void testCopyRecordWithVdi_OtherNativeDatumInDestination() {
                 tss->allocated[zSTRUCT_userHeader] = TRUE;
                 pds->userHeader = stringToUserHeader(headerBuf, &pds->userHeaderNumber);
                 pds->allocated[zSTRUCT_userHeader] = TRUE;
+                free(headerBuf);
                 //-----------------------------//
                 // delete any previous records //
                 //-----------------------------//
                 zdelete(ifltab[SRC], tsPathname[SRC]);
-                zdelete(ifltab[SRC], zlocationPath(tsPathname[SRC]));
+                deleteLocationRecord(ifltab[SRC], tsPathname[SRC]);
                 zdelete(ifltab[SRC], pdPathname[SRC]);
-                zdelete(ifltab[SRC], zlocationPath(pdPathname[SRC]));
+                deleteLocationRecord(ifltab[SRC], pdPathname[SRC]);
                 //-----------------------------------------------------//
                 // store the source time series to the source DSS file //
                 //-----------------------------------------------------//
@@ -2668,9 +2693,9 @@ void testCopyRecordWithVdi_OtherNativeDatumInDestination() {
                     0);          // storage flag (0=reg:replace all, irr:merge)
                 assert(status == STATUS_OKAY);
                 zstructFree(tss);
-                //------------------------------//
-                // store the source paired data //
-                //------------------------------//
+                //-----------------------------------------------------//
+                // store the source paired data to the source DSS file //
+                //-----------------------------------------------------//
                 status = zpdStore(ifltab[SRC], pds, 0);
                 assert(status == STATUS_OKAY);
                 zstructFree(pds);
@@ -2724,17 +2749,18 @@ void testCopyRecordWithVdi_OtherNativeDatumInDestination() {
                 tss->allocated[zSTRUCT_userHeader] = TRUE;
                 pds->userHeader = stringToUserHeader(headerBuf, &pds->userHeaderNumber);
                 pds->allocated[zSTRUCT_userHeader] = TRUE;
+                free(headerBuf);
                 //-----------------------------//
                 // delete any previous records //
                 //-----------------------------//
                 zdelete(ifltab[SRC], tsPathname[DST]);
-                zdelete(ifltab[SRC], zlocationPath(tsPathname[DST]));
+                deleteLocationRecord(ifltab[SRC], tsPathname[DST]);
                 zdelete(ifltab[SRC], pdPathname[DST]);
-                zdelete(ifltab[SRC], zlocationPath(pdPathname[DST]));
+                deleteLocationRecord(ifltab[SRC], pdPathname[DST]);
                 zdelete(ifltab[DST], tsPathname[DST]);
-                zdelete(ifltab[DST], zlocationPath(tsPathname[DST]));
+                deleteLocationRecord(ifltab[DST], tsPathname[DST]);
                 zdelete(ifltab[DST], pdPathname[DST]);
-                zdelete(ifltab[DST], zlocationPath(pdPathname[DST]));
+                deleteLocationRecord(ifltab[DST], pdPathname[DST]);
                 //----------------------------------------------------------//
                 // store the destination time series to the source DSS file //
                 //----------------------------------------------------------//
@@ -2909,13 +2935,14 @@ void testCopyRecordWithVdi_SameNativeDatumInDestination() {
             tss->allocated[zSTRUCT_userHeader] = TRUE;
             pds->userHeader = stringToUserHeader(headerBuf, &pds->userHeaderNumber);
             pds->allocated[zSTRUCT_userHeader] = TRUE;
+            free(headerBuf);
             //-----------------------------//
             // delete any previous records //
             //-----------------------------//
             zdelete(ifltab[SRC], tsPathname[SRC]);
-            zdelete(ifltab[SRC], zlocationPath(tsPathname[SRC]));
+            deleteLocationRecord(ifltab[SRC], tsPathname[SRC]);
             zdelete(ifltab[SRC], pdPathname[SRC]);
-            zdelete(ifltab[SRC], zlocationPath(pdPathname[SRC]));
+            deleteLocationRecord(ifltab[SRC], pdPathname[SRC]);
             //-----------------------------------------------------//
             // store the source time series to the source DSS file //
             //-----------------------------------------------------//
@@ -2931,7 +2958,6 @@ void testCopyRecordWithVdi_SameNativeDatumInDestination() {
             status = zpdStore(ifltab[SRC], pds, 0);
             assert(status == STATUS_OKAY);
             zstructFree(pds);
-
             //----------------------------------//
             // create a destination time series //
             //----------------------------------//
@@ -2981,17 +3007,18 @@ void testCopyRecordWithVdi_SameNativeDatumInDestination() {
             tss->allocated[zSTRUCT_userHeader] = TRUE;
             pds->userHeader = stringToUserHeader(headerBuf, &pds->userHeaderNumber);
             pds->allocated[zSTRUCT_userHeader] = TRUE;
+            free(headerBuf);
             //-----------------------------//
             // delete any previous records //
             //-----------------------------//
             zdelete(ifltab[SRC], tsPathname[DST]);
-            zdelete(ifltab[SRC], zlocationPath(tsPathname[DST]));
+            deleteLocationRecord(ifltab[SRC], tsPathname[DST]);
             zdelete(ifltab[SRC], pdPathname[DST]);
-            zdelete(ifltab[SRC], zlocationPath(pdPathname[DST]));
+            deleteLocationRecord(ifltab[SRC], pdPathname[DST]);
             zdelete(ifltab[DST], tsPathname[DST]);
-            zdelete(ifltab[DST], zlocationPath(tsPathname[DST]));
+            deleteLocationRecord(ifltab[DST], tsPathname[DST]);
             zdelete(ifltab[DST], pdPathname[DST]);
-            zdelete(ifltab[DST], zlocationPath(pdPathname[DST]));
+            deleteLocationRecord(ifltab[DST], pdPathname[DST]);
             //----------------------------------------------------------//
             // store the destination time series to the source DSS file //
             //----------------------------------------------------------//
@@ -3046,6 +3073,7 @@ void testCopyRecordWithVdi_SameNativeDatumInDestination() {
             for (int i = 0; i < numberTsValues; ++i) {
                 assert(fabs(tss->doubleValues[i] - tsValues[SRC][i]) < FLT_EPSILON);
             }
+            zstructFree(tss);
             //-------------------------------------------------------------------------------------------//
             // copy the paired data to a location in the same DSS file that has a different native datum //
             //-------------------------------------------------------------------------------------------//
@@ -3062,6 +3090,7 @@ void testCopyRecordWithVdi_SameNativeDatumInDestination() {
             for (int i = 0; i < numberPdOrdinates; ++i) {
                 assert(fabs(pds->doubleValues[i] - pdValues[SRC][i]) < FLT_EPSILON);
             }
+            zstructFree(pds);
             //------------------------------------------------------------------------------------------//
             // copy the time series to a location in another DSS file that has a different native datum //
             //------------------------------------------------------------------------------------------//
@@ -3088,6 +3117,7 @@ void testCopyRecordWithVdi_SameNativeDatumInDestination() {
             for (int i = 0; i < numberTsValues; ++i) {
                 assert(fabs(tss->doubleValues[i] - tsValues[SRC][i]) < FLT_EPSILON);
             }
+            zstructFree(tss);
             //------------------------------------------------------------------------------------------//
             // copy the paired data to a location in another DSS file that has a different native datum //
             //------------------------------------------------------------------------------------------//
@@ -3104,6 +3134,7 @@ void testCopyRecordWithVdi_SameNativeDatumInDestination() {
             for (int i = 0; i < numberPdOrdinates; ++i) {
                 assert(fabs(pds->doubleValues[i] - pdValues[SRC][i]) < FLT_EPSILON);
             }
+            zstructFree(pds);
             zclose(ifltab[SRC]);
             zclose(ifltab[DST]);
         }

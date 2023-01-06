@@ -593,12 +593,15 @@ char* processStorageVdis(
  * @param userHeader       The user header integer array
  * @param userHeaderNumber The number of ints in the user header
  * @param status           Receives 0 on success or < 0 on error
+ * @param freeOriginalHeader Flag to specify whether to free the original header if a new header is allocated
+ *                           in order to provide enough space for the VDI
  * @return The (possibly reallocated) user header on success
  */
 int* copyVdiFromLocationStructToUserHeader(
     zStructLocation* locStruct,
     int* userHeader,
     int* userHeaderNumber,
+    int freeOriginalHeader,
     int* status);
 
 #ifdef __cplusplus

@@ -305,7 +305,6 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 				pds->pathname, "Copying paired data VDI to user header");
 		}
 		pds->userHeader = hdr;
-		pds->allocated[zSTRUCT_userHeader] = pds->userHeader != NULL;
 		status = zpdStore6(ifltab, pds, storageFlag);
 		// restore the original user header
 		if (hdr != origHeader) {
