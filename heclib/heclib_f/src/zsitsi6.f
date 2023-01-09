@@ -69,7 +69,7 @@ C     Vertical datum varible dimensions
       logical*4 l_modified, l_exists
       integer nuhead_copy1, iuhead_copy1(100)
       integer nuhead_copy2, iuhead_copy2(100)
-      integer na, nb, nc, nd, ne, nf
+      integer na, nb, nc, nd, ne, nf, paramIsElev
 C
       data cpath_this /' '/, ibsize /0/, jbsize /0/
 C
@@ -282,9 +282,8 @@ C
       !-----------------------------------------------!
       ! convert to native vertical datum if necessary !
       !-----------------------------------------------!
-      cc = cpath(ibpart(3):iepart(3))
-      call upcase(cc)
-      if (index(cc,'ELEV').eq.1) then
+      call pathnameIsElevTs(cpath, paramIsElev)
+      if (paramIsElev.eq.1) then
         !-----------------------!
         ! elevation time series !
         !-----------------------!

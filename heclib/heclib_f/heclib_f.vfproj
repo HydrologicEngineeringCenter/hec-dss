@@ -179,6 +179,7 @@
 		<File RelativePath=".\src\Support\cjchr.f"/>
 		<File RelativePath=".\src\Support\convi4toi8.f"/>
 		<File RelativePath=".\src\Support\convi8toi4.f"/>
+		<File RelativePath=".\src\Support\crack_unit_spec.f"/>
 		<File RelativePath=".\src\Support\curtim.f"/>
 		<File RelativePath=".\src\Support\datcll.f"/>
 		<File RelativePath=".\src\Support\datcln.f"/>
@@ -259,7 +260,6 @@
 		<File RelativePath=".\src\Support\xrealc.f"/>
 		<File RelativePath=".\src\Support\xreald.f"/>
 		<File RelativePath=".\src\Support\ymddat.f"/></Filter>
-		<File RelativePath=".\src\Support\crack_unit_spec.f"/>
 		<File RelativePath=".\src\dssCopyStatus.f"/>
 		<File RelativePath=".\src\Support\get_user_header_param.f"/>
 		<File RelativePath=".\src\getCurrentRec.f"/>

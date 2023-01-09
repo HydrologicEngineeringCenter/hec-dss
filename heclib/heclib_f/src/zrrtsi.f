@@ -80,16 +80,12 @@ C     Local Dimensions
 	PARAMETER (KIHEAD = 24)
       INTEGER IIHEAD(KIHEAD)
 C
-C     Pathname variable dimensions
-      character*64 ca, cb, cc, cd, ce, cf
-      integer na, nb, nc, nd, ne, nf, npath
-C
 C     Vertical datum varible dimensions
       character*400 vdiStr, errMsg
       character*16 nativeDatum, unit, cvdatum1, prevVerticalDatum
       double precision offsetNavd88, offsetNgvd29, vertDatumOffset
       logical l_Navd88Estimated, l_Ngvd29Estimated
-      integer vdiStrLen
+      integer vdiStrLen, paramIsElev
 C
       data lqblok /.false./
 
@@ -400,10 +396,8 @@ C
       !---------------------------------------------------------!
       ! convert values to requested vertical datum if necessary !
       !---------------------------------------------------------!
-      call zufpn(ca, na, cb, nb, cc, nc, cd, nd, ce, ne, cf, nf,
-     *           cpath, len_trim(cpath), iistat)
-      call upcase(cc)
-      if (index(cc, 'ELEV').eq.1) then
+      call pathnameIsElevTs(cpath, paramIsElev)
+      if (paramIsElev.eq.1) then
         !--------------------------!
         ! time series is elevation !
         !--------------------------!

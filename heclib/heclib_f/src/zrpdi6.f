@@ -19,12 +19,8 @@ C
       LOGICAL LFOUND, LABEL, LDOUBLE, LEND
       LOGICAL LFILDOB
 C
-C     Pathname variable dimensions
-      character*64 ca, cb, cc, cd, ce, cf
-      integer na, nb, nc, nd, ne, nf, npath
-C
 C     Vertical datum varible dimensions
-      integer iuhead_copy(100)
+      integer iuhead_copy(100), paramIsElev
       character*400 vdiStr, errMsg
       character*16 unit
       character*16 nativeDatum, cvdatum1
@@ -241,17 +237,9 @@ C
       !---------------------------------------------------------!
       ! convert values to requested vertical datum if necessary !
       !---------------------------------------------------------!
-      l_indElev = .false.
-      l_depElev = .false.
-      call zufpn(ca, na, cb, nb, cc, nc, cd, nd, ce, ne, cf, nf,
-     *           cpath, len_trim(cpath), jstat)
-      call upcase(cc)
-      if (index(cc, 'ELEV').eq.1) then
-        l_indElev = .true.
-      end if
-      if (index(cc, '-ELEV').gt.0) then
-        l_depElev = .true.
-      endif
+      call pathnameIsElevPd(cpath, paramIsElev)
+      l_indElev = (paramIsElev.eq.1).or.(paramIsElev.eq.3)
+      l_depElev = (paramIsElev.eq.2).or.(paramIsElev.eq.3)
       if (l_indElev.or.l_depElev) then
         !------------------------------------------------------!
         ! paired data has elevation in ordinates and/or values !

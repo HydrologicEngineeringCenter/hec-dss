@@ -423,9 +423,7 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 		//--------------------------------------------------//
 		// convert to requested vertical datum if necessary //
 		//--------------------------------------------------//
-		char cPart[65];
-		zpathnameGetPart(tss->pathname, 3, cPart, sizeof(cPart));
-		if (!strncasecmp(cPart, "ELEV", 4)) {
+		if (pathnameIsElevTs(tss->pathname)) {
 			//------------------------//
 			// parameter is elevation //
 			//------------------------//

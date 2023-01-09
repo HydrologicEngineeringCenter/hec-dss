@@ -4,6 +4,7 @@
 #include "heclib.h"
 #include "hecdssInternal.h"
 #include "zdssKeys.h"
+#include "verticalDatum.h"
 
 
 /**
@@ -125,6 +126,19 @@ int zcopyRecord(long long *ifltabFrom, long long *ifltabTo, const char *pathname
 					}
 				}
 			}
+			if (boolInternalCopy) {
+				//----------------------------------------------------------------------------//
+				// force standard copy if source and destination records are Elev time series //
+				//----------------------------------------------------------------------------//
+				if (pathnameIsElevTs(pathnameFrom) && pathnameIsElevTs(pathnameTo)) {
+					boolInternalCopy = 0; // zcopyRecordInternal doesn't copy VDI in location record
+				}
+			}
+		}
+		else if ((dataType >= DATA_TYPE_PD) && (dataType < DATA_TYPE_TEXT)) {
+			if (pathnameIsElevPd(pathnameFrom) && pathnameIsElevPd(pathnameTo)) {
+				boolInternalCopy = 0; // zcopyRecordInternal doesn't copy VDI in location record
+			}
 		}
 	}
 	else {
@@ -171,6 +185,19 @@ int zcopyRecord(long long *ifltabFrom, long long *ifltabTo, const char *pathname
 				free(tss->timeWindow);
 				tss->timeWindow = 0;
 			}
+			if (tss->locationStruct) {
+				if (tss->locationStruct->pathname) {
+					free(tss->locationStruct->pathname);
+				}
+				tss->locationStruct->pathname = mallocAndCopyPath(pathnameTo);
+				if (!tss->pathname) {
+					zstructFree(tss);
+					return zerrorProcessing(ifltabFrom, DSS_FUNCTION_zcopyRecord_ID,
+						zdssErrorCodes.CANNOT_ALLOCATE_MEMORY, 0, 0,
+						zdssErrorSeverity.MEMORY_ERROR,
+						pathnameTo, "Allocating ts location pathname");
+				}
+			}
 			status = ztsStore(ifltabTo, tss, 0);
 			zstructFree(tss);
 			if (zisError(status)) {
@@ -199,6 +226,19 @@ int zcopyRecord(long long *ifltabFrom, long long *ifltabTo, const char *pathname
 										zdssErrorCodes.CANNOT_ALLOCATE_MEMORY, 0, 0,
 										zdssErrorSeverity.MEMORY_ERROR,
 										pathnameTo, "Allocating paired data pathname");
+			}
+			if (pds->locationStruct) {
+				if (pds->locationStruct->pathname) {
+					free(pds->locationStruct->pathname);
+				}
+				pds->locationStruct->pathname = mallocAndCopyPath(pathnameTo);
+				if (!pds->pathname) {
+					zstructFree(pds);
+					return zerrorProcessing(ifltabFrom, DSS_FUNCTION_zcopyRecord_ID,
+						zdssErrorCodes.CANNOT_ALLOCATE_MEMORY, 0, 0,
+						zdssErrorSeverity.MEMORY_ERROR,
+						pathnameTo, "Allocating paired data location pathname");
+				}
 			}
 			status = zpdStore(ifltabTo, pds, 0);
 			zstructFree(pds);

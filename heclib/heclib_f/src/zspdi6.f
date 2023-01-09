@@ -35,17 +35,13 @@ C
       LOGICAL LABEL, LFOUND, LDOUBLE
       INTEGER MAXLABEL
 C
-C     Pathname variable dimensions
-      character*64 ca, cb, cc, cd, ce, cf
-      integer na, nb, nc, nd, ne, nf, npath
-C
 C     Vertical datum varible dimensions
       character*400 fileVdiStr, dataVdiStr, errMsg
       character*16 unit, cvdatum1, cvdatum2
       character*16 cvdatum_ind, cvdatum_dep
       double precision vertDatumOffset_ind, vertDatumOffset_dep
       logical*4 l_indElev, l_depElev, l_ordsModified, l_valsModified
-      integer nuhead_copy1, iuhead_copy1(100)
+      integer nuhead_copy1, iuhead_copy1(100), paramIsElev
       integer nuhead_copy2, iuhead_copy2(100)
 C
       INCLUDE 'zdssmz.h'
@@ -105,19 +101,11 @@ C     Check that IFLTAB is valid (e.g., the DSS file is open)
       !--------------------------------------------------------------!
       ! convert the values to the native vertical datum if necessary !
       !--------------------------------------------------------------!
-      l_indElev = .false.
-      l_depElev = .false.
       l_ordsModified = .false.
       l_valsModified = .false.
-      call zufpn(ca, na, cb, nb, cc, nc, cd, nd, ce, ne, cf, nf,
-     *           cpath, len_trim(cpath), istat)
-      call upcase(cc)
-      if (index(cc, 'ELEV').eq.1) then
-        l_indElev = .true.
-      end if
-      if (index(cc, '-ELEV').gt.0) then
-        l_depElev = .true.
-      endif
+      call pathnameIsElevPd(cpath, paramIsElev)
+      l_indElev = (paramIsElev.eq.1).or.(paramIsElev.eq.3)
+      l_depElev = (paramIsElev.eq.2).or.(paramIsElev.eq.3)
       if (l_indElev.or.l_depElev) then
         !----------------------------------!
         ! elevation in ordinates or values !
