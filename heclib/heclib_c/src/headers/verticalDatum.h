@@ -604,6 +604,37 @@ int* copyVdiFromLocationStructToUserHeader(
     int freeOriginalHeader,
     int* status);
 
+/**
+ * Returns whether a DSS pathname is an elevation time series. Really only test whether the C pathname
+ * part is "Elev"; no other tests are performed.
+ * 
+ * @param pathname The pathname to test
+ * @return whether the C pathname part starts with "Elev" (case insensitive)
+ */
+int pathnameIsElevTs(const char* pathname);
+
+/**
+ * Returns whether a DSS pathname is paired data with elevation in independent or dependent parameter. Really only test the C pathname
+ * part to see if either parameter starts with "Elev"; no other tests are performed.
+ *
+ * @param pathname The pathname to test
+ * @return <ul>
+ *         <li><b>0</b> if neither parameter is elevation</li>
+ *         <li><b>1</b> if only independent parameter is elevation</li>
+ *         <li><b>2</b> if only dependent parameter is elevation</li>
+ *         <li><b>3</b> if both independent and dependent parameters are elevation</li>
+ *         </ul>
+ */
+int pathnameIsElevPd(const char* pathname);
+
+/**
+ * Returns whether a DSS pathname is an elevation time sereis or paired data. Really only tests the C pathname part
+ *
+ * @param pathname The pathname to test
+ * @return whether either parameter in the C pathname part starts with "Elev" (case insensitive)
+ */
+int pathnameIsElevTsOrPd(const char* pathname);
+
 #ifdef __cplusplus
 } // extern "C"
 #endif

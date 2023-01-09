@@ -79,16 +79,12 @@ C
       INTEGER IFORWD, INTLPS
       data lgetq /.false./
 C
-C     Pathname variable dimensions
-      character*64 ca, cb, cc, cd, ce, cf
-      integer na, nb, nc, nd, ne, nf, npath
-C
 C     Vertical datum varible dimensions
       character*400 vdiStr, errMsg
       character*16 nativeDatum, prevVerticalDatum, unit, cvdatum1
       double precision offsetNavd88, offsetNgvd29, vertDatumOffset
       logical l_Navd88Estimated, l_Ngvd29Estimated
-      integer vdiStrLen
+      integer vdiStrLen, paramIsElev
 C
 C
 C
@@ -445,10 +441,8 @@ C
       ! get the vertical datum offset if necessary !
       !--------------------------------------------!
       vertDatumOffset = 0
-      call zufpn(ca, na, cb, nb, cc, nc, cd, nd, ce, ne, cf, nf,
-     *           cpath1, len_trim(cpath1), istat)
-      call upcase(cc)
-      if (index(cc, 'ELEV').eq.1) then
+      call pathnameIsElevTs(cpath1, paramIsElev)
+      if (paramIsElev.eq.1) then
         !--------------------------!
         ! time series is elevation !
         !--------------------------!

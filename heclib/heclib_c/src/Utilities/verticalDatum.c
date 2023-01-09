@@ -1860,8 +1860,8 @@ char* processStorageVdis(
         else {
             targetVdi = &fileVdi;
         }
-        if (!strcmp(currentDatum, CVERTICAL_DATUM_UNSET)         // current datum == UNSET
-            || !strcmp(currentDatum, targetVdi->nativeDatum)) {  // || current datum == native datum
+        if (!strcmp(currentDatum, CVERTICAL_DATUM_UNSET)      // current datum == UNSET
+         || !strcmp(currentDatum, targetVdi->nativeDatum)) {  // || current datum == native datum
             *offsetToUse = 0;
         }
         else if (!strcmp(currentDatum, CVERTICAL_DATUM_NAVD88)) {
@@ -1896,7 +1896,9 @@ char* processStorageVdis(
     }
     return NULL;
 }
-
+//
+// See verticalDatum.h for documentation
+//
 int* copyVdiFromLocationStructToUserHeader(
     zStructLocation* locStruct,
     int* userHeader,
@@ -1951,4 +1953,60 @@ int* copyVdiFromLocationStructToUserHeader(
         }
     }
     return userHeader;
+}
+//
+// See verticalDatum.h for documentation
+//
+int pathnameIsElevTs(const char* pathname) {
+    int isElevTs = FALSE;
+    if (pathname != NULL) {
+        char cPart[MAX_PART_SIZE];
+        zpathnameGetPart(pathname, 3, cPart, sizeof(cPart));
+        isElevTs = !strncasecmp(cPart, "ELEV", 4);
+    }
+    return isElevTs;
+}
+void pathnameiselevts_(const char* pathname, int* result, size_t pathnameLen) {
+    char* cPathname = mallocAndInit(pathnameLen + 1);
+    F2C(pathname, cPathname, pathnameLen, pathnameLen + 1);
+    *result = pathnameIsElevTs(cPathname);
+    free(cPathname);
+}
+//
+// See verticalDatum.h for documentation
+//
+int pathnameIsElevPd(const char* pathname) {
+    int result = 0;
+    if (pathname != NULL) {
+        char cPart[MAX_PART_SIZE];
+        zpathnameGetPart(pathname, 3, cPart, sizeof(cPart));
+        char* saveptr;
+        char* cp = strtok_r(cPart, "-", &saveptr);
+        if (!strncasecmp(cp, "ELEV", 4)) {
+            result += 1;
+        }
+        cp = strtok_r(NULL, "-", &saveptr);
+        if (!strncasecmp(cp, "ELEV", 4)) {
+            result += 2;
+        }
+    }
+    return result;
+}
+void pathnameiselevpd_(const char* pathname, int* result, size_t pathnameLen) {
+    char* cPathname = mallocAndInit(pathnameLen + 1);
+    F2C(pathname, cPathname, pathnameLen, pathnameLen + 1);
+    *result = pathnameIsElevPd(cPathname);
+    free(cPathname);
+}
+//
+// See verticalDatum.h for documentation
+//
+int pathnameIsElevTsOrPd(const char* pathname) {
+    return pathnameIsElevTs(pathname) || pathnameIsElevPd(pathname);
+}
+void pathnameiselevtsorpd_(const char* pathname, int* result, size_t pathnameLen) {
+    char* cPathname = mallocAndInit(pathnameLen + 1);
+    F2C(pathname, cPathname, pathnameLen, pathnameLen + 1);
+    *result = pathnameIsElevTsOrPd(cPathname);
+    free(cPathname);
 }

@@ -130,47 +130,14 @@ int zcopyRecord(long long *ifltabFrom, long long *ifltabTo, const char *pathname
 				//----------------------------------------------------------------------------//
 				// force standard copy if source and destination records are Elev time series //
 				//----------------------------------------------------------------------------//
-				char cPart[MAX_PART_SIZE];
-				zpathnameGetPart(pathnameFrom, 3, cPart, sizeof(cPart));
-				if (!strncasecmp(cPart, "ELEV", 4)) {
-					zpathnameGetPart(pathnameTo, 3, cPart, sizeof(cPart));
-					if (!strncasecmp(cPart, "ELEV", 4)) {
-						boolInternalCopy = 0; // zcopyRecordInternal doesn't copy VDI in location record
-					}
+				if (pathnameIsElevTs(pathnameFrom) && pathnameIsElevTs(pathnameTo)) {
+					boolInternalCopy = 0; // zcopyRecordInternal doesn't copy VDI in location record
 				}
 			}
 		}
 		else if ((dataType >= DATA_TYPE_PD) && (dataType < DATA_TYPE_TEXT)) {
-			//----------------------------------------------------------------------------//
-			// force standard copy if source and destination records are Elev paired data //
-			//----------------------------------------------------------------------------//
-			int indElev = FALSE;
-			int depElev = FALSE;
-			char cPart[MAX_PART_SIZE];
-			char* saveptr;
-			char* cp;
-			zpathnameGetPart(pathnameFrom, 3, cPart, sizeof(cPart));
-			cp = strtok_r(cPart, "-", &saveptr);
-			if (!strncasecmp(cp, "ELEV", 4)) {
-				indElev = TRUE;
-			}
-			cp = strtok_r(NULL, "-", &saveptr);
-			if (cp && !strncasecmp(cp, "ELEV", 4)) {
-				depElev = TRUE;
-			}
-			if (indElev || depElev) {
-				zpathnameGetPart(pathnameTo, 3, cPart, sizeof(cPart));
-				cp = strtok_r(cPart, "-", &saveptr);
-				if (!strncasecmp(cp, "ELEV", 4)) {
-					indElev = TRUE;
-				}
-				cp = strtok_r(NULL, "-", &saveptr);
-				if (cp && !strncasecmp(cp, "ELEV", 4)) {
-					depElev = TRUE;
-				}
-				if (indElev || depElev) {
-					boolInternalCopy = 0; // zcopyRecordInternal doesn't copy VDI in location record
-				}
+			if (pathnameIsElevPd(pathnameFrom) && pathnameIsElevPd(pathnameTo)) {
+				boolInternalCopy = 0; // zcopyRecordInternal doesn't copy VDI in location record
 			}
 		}
 	}
