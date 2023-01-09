@@ -2519,7 +2519,7 @@ void testCopyRecordWithVdi_NoVdiInDestination() {
                 //------------------------------------------------------------------------//
                 zdelete(ifltab[DST], tsPathname[DST]);
                 deleteLocationRecord(ifltab[DST], tsPathname[DST]);
-                status = zcopyRecord(ifltab[SRC], ifltab[DST], tsPathname[DST], tsPathname[DST]);
+                status = zcopyRecord(ifltab[SRC], ifltab[DST], tsPathname[SRC], tsPathname[DST]);
                 assert(status == STATUS_OKAY);
                 //---------------------------//
                 // verify the VDI was copied //

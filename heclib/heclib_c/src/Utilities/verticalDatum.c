@@ -1903,7 +1903,7 @@ int* copyVdiFromLocationStructToUserHeader(
     zStructLocation* locStruct,
     int* userHeader,
     int* userHeaderNumber,
-    int freeOriginalHeader,
+    const int freeOriginalHeader,
     int* status) {
 
     *status = 0;
