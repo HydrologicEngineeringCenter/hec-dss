@@ -43,7 +43,10 @@ namespace Hec.Dss
       {
         DPartStart = _comprisedDParts[0];
         DPartEnd = _comprisedDParts[_comprisedDParts.Count - 1];
-        Dpart = DPartStart + "-" + DPartEnd;
+        if (_comprisedDParts.Count > 1)
+          Dpart = DPartStart + "-" + DPartEnd;
+        else
+          Dpart = DPartStart;
       }
     }
 
@@ -54,7 +57,10 @@ namespace Hec.Dss
       _comprisedDParts = comprisedDParts;
       DPartStart = _comprisedDParts[0];
       DPartEnd = _comprisedDParts[_comprisedDParts.Count - 1];
-      Dpart = DPartStart + "-" + DPartEnd;
+      if (_comprisedDParts.Count > 1)
+        Dpart = DPartStart + "-" + DPartEnd;
+      else
+        Dpart = DPartStart;
     }
 
     /// <summary>

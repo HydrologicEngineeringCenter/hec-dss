@@ -182,7 +182,7 @@ namespace Hec.Dss
       foreach (var path in unsorted)
       {
         // Check if path's DPart is an actual HecDateTime
-        if (!Time.TryConvertFromHecDateTime(path.Dpart, out _))
+        if (path.RecordType == RecordType.Grid || !Time.TryConvertFromHecDateTime(path.Dpart, out _))
         {
           otherPaths.Add(path);
           // Add non time series path to paths list.
