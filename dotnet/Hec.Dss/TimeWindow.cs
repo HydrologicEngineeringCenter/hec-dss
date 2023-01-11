@@ -129,7 +129,7 @@ namespace Hec.Dss
       }
       catch (ArgumentOutOfRangeException)
       {
-        return "";
+        return "IR-YEAR";
       }
 
     }

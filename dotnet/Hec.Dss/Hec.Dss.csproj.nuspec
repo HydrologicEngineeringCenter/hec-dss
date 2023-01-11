@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Hec.Dss</id>
-    <version>1.2.2</version>
+    <version>1.2.3</version>
     <authors>Hydrologic Engineering Center</authors>
     <owners>HEC</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
