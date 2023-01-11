@@ -37,7 +37,7 @@
 
 
 #define DSS_VERSION "7-IQ"
-#define DSS_VERSION_DATE "9 January 2023"
+#define DSS_VERSION_DATE "11 January 2023"
 
 
 
