@@ -20,13 +20,13 @@ const int DST = 1;
 const int RETR = 2;
 
 int test_vertical_datums_c() {
-    // testDelimitedStringOps();
-    // testGzipAndEncodingOps();
-    // testUserHeaderOps();
-    // testVerticalDatumInfoSerialization();
-    // testZsetZquery();
-    // testStoreRetrieveTimeSeries();
-    // testV6TimeSeiresWithMultipleVerticalDatums();
+    testDelimitedStringOps();
+    testGzipAndEncodingOps();
+    testUserHeaderOps();
+    testVerticalDatumInfoSerialization();
+    testZsetZquery();
+    testStoreRetrieveTimeSeries();
+    testV6TimeSeiresWithMultipleVerticalDatums();
     testStoreRetrievePairedData();
     testCopyRecordWithVdi();
     return 0;
