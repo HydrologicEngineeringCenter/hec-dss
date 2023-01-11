@@ -4,6 +4,7 @@
 #include "heclib.h"
 #include "hecdssInternal.h"
 #include "zdssKeys.h"
+#include "verticalDatum.h"
 
 /**
 *  Function:	zduplicateRecord
@@ -50,6 +51,10 @@ int zduplicateRecord(long long *ifltab, const char *pathnameFrom, const char *pa
 	int ldup;
 	int *IBUFF1, KBUFF1, *IBUFF2, KBUFF2;
 
+	if (pathnameIsElevTsOrPd(pathnameFrom) && pathnameIsElevTsOrPd(pathnameTo)) {
+		// force zcopyRecord if elevation time series or paired data to get VDI
+		return zcopyRecord(ifltab, ifltab, pathnameFrom, pathnameTo);
+	}
 	vers = zgetVersion(ifltab);
 	if (vers == 6) {
 		ldup = 1;

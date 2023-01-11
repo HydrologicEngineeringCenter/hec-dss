@@ -251,17 +251,7 @@ C
           !----------------------------------------!
           call get_user_header_param(iuhead, nuhead,
      *      VERTICAL_DATUM_INFO_PARAM, vdiStr)
-          if (vdiStr.eq." ") then
-            if (mlevel.ge.1) then
-              write (munit,'(/,a,a,/,a,a,a,/,a)')
-     *          ' *****DSS*** zrpdi6:  ERROR  - NO VERTICAL DATUM',
-     *          ' OFFSET INFORMATION.',' Cannot convert from ',
-     *          ' native datum to ', cvdatum1(1:len_trim(cvdatum1)),
-     *          ' Elevations were not converted.'
-            end if
-            istat = 13
-            return
-          else
+          if (len_trim(vdiStr).gt.0) then
             !-----------------------------------------------------------!
             ! we retrieved a user header and it has vertical datum info !
             !-----------------------------------------------------------!
