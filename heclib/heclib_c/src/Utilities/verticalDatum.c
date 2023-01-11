@@ -994,7 +994,17 @@ char* stringToVerticalDatumInfo(verticalDatumInfo* vdi, const char* inputStr) {
         return NO_OFFSET_UNIT_IN_XML;
     }
     strncpy(vdi->unit, tbi.firstNonBlank, MIN(tbi.lenNonBlank, sizeof(vdi->unit)-1));
-    if (strcmp(vdi->unit, "ft") && strcmp(vdi->unit, "m")) {
+    if (unitIsFeet(vdi->unit)) {
+        if (strcmp(vdi->unit, "ft")) {
+            strcpy(vdi->unit, "ft");
+        }
+    }
+    else if (unitIsMeters(vdi->unit)) {
+        if (strcmp(vdi->unit, "m")) {
+            strcpy(vdi->unit, "m");
+        }
+    }
+    else {
         free(xml);
         return INVALID_OFFSET_UNIT_IN_XML;
     }
