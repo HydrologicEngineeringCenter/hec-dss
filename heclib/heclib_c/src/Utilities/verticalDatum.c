@@ -1860,8 +1860,13 @@ char* processStorageVdis(
         else {
             targetVdi = &fileVdi;
         }
-        if (!strcmp(currentDatum, CVERTICAL_DATUM_UNSET)      // current datum == UNSET
-         || !strcmp(currentDatum, targetVdi->nativeDatum)) {  // || current datum == native datum
+        char *targetNativeDatum = targetVdi->nativeDatum;
+        if (targetNativeDatum == NULL || targetNativeDatum[0] == '\0') {
+            targetNativeDatum = CVERTICAL_DATUM_UNSET;
+        }
+        if (!strcmp(currentDatum, CVERTICAL_DATUM_UNSET)         // current datum == UNSET
+            || !strcmp(targetNativeDatum, CVERTICAL_DATUM_UNSET) // || target datum == UNSET
+            || !strcmp(currentDatum, targetVdi->nativeDatum)) {  // || current datum == native datum
             *offsetToUse = 0;
         }
         else if (!strcmp(currentDatum, CVERTICAL_DATUM_NAVD88)) {
