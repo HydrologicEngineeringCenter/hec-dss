@@ -16,8 +16,7 @@ namespace DSSUnitTests
       long[] ifltab = new long[250];
       int status;
             string fn = TestUtility.GetSimpleTempFileName(".dss");
-      File.Delete(fn);
-         IntPtr dss;
+      IntPtr dss;
       status = DssNative.hec_dss_open(fn,out dss);
 
       if (status != 0)

@@ -18,9 +18,6 @@ namespace DSSUnitTests
 
     public DSSIOUnitTest()
     {
-      //
-      // TODO: Add constructor logic here
-      //
     }
 
     private TestContext testContextInstance;
@@ -41,51 +38,11 @@ namespace DSSUnitTests
       }
     }
 
-    #region Additional test attributes
-    //
-    // You can use the following additional attributes as you write your tests:
-    //
-    // Use ClassInitialize to run code before running the first test in the class
-    // [ClassInitialize()]
-    // public static void MyClassInitialize(TestContext testContext) { }
-    //
-    // Use ClassCleanup to run code after all tests in a class have run
-    // [ClassCleanup()]
-    // public static void MyClassCleanup() { }
-    //
-    // Use TestInitialize to run code before running each test 
-    // [TestInitialize()]
-    // public void MyTestInitialize() { }
-    //
-    // Use TestCleanup to run code after each test has run
-    // [TestCleanup()]
-    // public void MyTestCleanup() { }
-    //
-    #endregion
-
-    public static void CopyAsReadWrite(string fromFN, string toFN)
-    {
-      // Set permissions to allow us to delete it
-      if (File.Exists(toFN))
-      {
-        System.IO.FileInfo fi = new System.IO.FileInfo(toFN);
-        fi.IsReadOnly = false;
-        File.Delete(toFN);
-      }
-
-      File.Copy(fromFN, toFN);
-
-      // Reset the read/write permissions
-      System.IO.FileInfo fileInfo = new System.IO.FileInfo(toFN);
-      fileInfo.IsReadOnly = false;
-    }
 
     [TestMethod]
     public void GenerateRandomRecordsAndRead()
     {
-      const string srcfile = TestUtility.BasePath + "version7AlbersGridsTimeSeries.dss";
-      const string dssFile = @".\tempdssfile.dss";
-      CopyAsReadWrite(srcfile, dssFile);
+      var dssFile = TestUtility.GetCopyForTesting("version7AlbersGridsTimeSeries.dss");
       GenerateRecords(dssFile);
       RunReadTest(dssFile);
     }
@@ -94,10 +51,7 @@ namespace DSSUnitTests
     [Ignore]
     public void Try1SecondEPart()
     {
-      string dssFile = @".\tempdssfile.dss";
-      string srcFile = TestUtility.BasePath + "version7AlbersGrid.dss";
-      File.Delete(dssFile);
-      CopyAsReadWrite(srcFile, dssFile);
+      string dssFile = TestUtility.GetCopyForTesting("version7AlbersGrid.dss");
       string path = @"/SHG/TRUCKEE RIVER/TEMP-AIR/31JAN2016:2400//INTERPOLATED-ROUNDED/";
       using (DssWriter dss = new DssWriter(dssFile))
       {
@@ -111,73 +65,15 @@ namespace DSSUnitTests
         TimeSeries ts = new TimeSeries(dssPath.FullPath, values, dssPath.GetDPartAsDateTime(), "lol", "INST-VAL");
         dss.Write(ts, true);
       }
-      //File.Delete(dssFile);
     }
 
-    //[TestMethod]
-    //public void TryReadBEDSS()
-    //{
-    //  GDAL.ExecutableTests.InitializeGDAL();
-
-    //  const string srcfile = TestUtility.BasePath +  @"C:\Users\q0hecajk\Documents\Testing\_Rainfall\2017.09_RAS_Coordination\DSS\precip.2017.07.dss";
-    //  const string dssFile = @".\tempdssfile.dss";
-    //  const string prjFile = @"C:\Users\q0hecajk\Documents\Testing\_Rainfall\2017.09_RAS_Coordination\RAS\BaldEagleCrkMulti2D\Albers_Custom.prj";
-    //  const string tiff_Chemung = @"C:\Users\q0hecajk\Documents\Testing\_Rainfall\2017.09_RAS_Coordination\RAS\BaldEagleCrkMulti2D\Sample Rainfall\Chemung.tif";
-    //  const string tiff_Juanita = @"C:\Users\q0hecajk\Documents\Testing\_Rainfall\2017.09_RAS_Coordination\RAS\BaldEagleCrkMulti2D\Sample Rainfall\Juanita.tif";
-    //  const string tiff_mainstem = @"C:\Users\q0hecajk\Documents\Testing\_Rainfall\2017.09_RAS_Coordination\RAS\BaldEagleCrkMulti2D\Sample Rainfall\MainStemSusq.tif";
-    //  const string tiff_upper = @"C:\Users\q0hecajk\Documents\Testing\_Rainfall\2017.09_RAS_Coordination\RAS\BaldEagleCrkMulti2D\Sample Rainfall\UpperSusq.tif";
-    //  const string tiff_west = @"C:\Users\q0hecajk\Documents\Testing\_Rainfall\2017.09_RAS_Coordination\RAS\BaldEagleCrkMulti2D\Sample Rainfall\WestSusq.tif";
-
-    //  CopyAsReadWrite(srcfile, dssFile);
-    //  string path_chemung = @"/SHG/CHEMUNG RIVER/PRECIP/24JUL2017:0600/24JUL2017:0700/NDGD-RTMA/"; // chemung
-    //  string path_juanita = @"/SHG/JUNIATA RIVER/PRECIP/24JUL2017:0600/24JUL2017:0700/NDGD-RTMA/"; // juanita
-    //  string path_mainstem = @"/SHG/MAIN STEM SUSQUEHANNA RIVER/PRECIP/24JUL2017:0600/24JUL2017:0700/NDGD-RTMA/";
-    //  string path_upper = @"/SHG/UPPER SUSQUEHANNA RIVER/PRECIP/24JUL2017:0600/24JUL2017:0700/NDGD-RTMA/";
-    //  string path_west = @"/SHG/WEST BRANCH SUSQUEHANNA RIVER/PRECIP/24JUL2017:0600/24JUL2017:0700/NDGD-RTMA/";
-
-    //  using (DSSWriter dss = new DSSWriter(dssFile))
-    //  {
-    //    Action<string, string> ProcessGridWriteTiff = (dssPath, tiffFile) =>
-    //    {
-    //      Grid grid = dss.GetGrid(dssPath, true);
-
-    //      var values = grid.GriddedValues;
-    //      int width = grid.NumberOfCellsX;
-    //      int height = grid.NumberOfCellsY;
-
-    //      // ALBERS grids are in 2KM units
-    //      File.Delete(tiffFile);
-    //      TiffAssist.FloatTiffWriter.Write(tiffFile, width, height, (r, c) => values[(height - r - 1) * width + c]);
-
-    //      if(false)
-    //      {
-    //        var proj = new GDALAssist.ESRIProjection(prjFile);
-    //        GDALAssist.Metadata.SetProjectionInfo(tiffFile, proj);
-    //        RasMapperLib.InterpolatedLayer.AddGeoreferencing(tiffFile, grid.LowerLeftCellX * 2000, (grid.LowerLeftCellY + height) * 2000, grid.CellSize);
-    //      }
-    //      else
-    //      {
-    //        RasMapperLib.InterpolatedLayer.AddGeoreferencing(tiffFile, grid.LowerLeftCellX, (grid.LowerLeftCellY + height), 1);
-    //      }
-    //    };
-
-    //    ProcessGridWriteTiff(path_chemung, tiff_Chemung);
-    //    ProcessGridWriteTiff(path_juanita, tiff_Juanita);
-    //    ProcessGridWriteTiff(path_mainstem, tiff_mainstem);
-    //    ProcessGridWriteTiff(path_upper, tiff_upper);
-    //    ProcessGridWriteTiff(path_west, tiff_west);
-    //  }
-    //  File.Delete(dssFile);
-
-
-    //}
 
     [TestMethod]
-    public void TestGetRecordType
-      
-      ()
+    public void TestGetRecordType()
     {
-      using (DssReader r = new DssReader(TestUtility.BasePath + "sample7.dss"))
+      string dssFileName = TestUtility.GetCopyForTesting("sample7.dss");
+
+      using (DssReader r = new DssReader(dssFileName))
       {
         var catalog = r.GetCatalog(true);
         var path = catalog.GetCondensedPath(new DssPath("//SACRAMENTO/PRECIP-INC/11Jul1877 - 30Jun2009/1Day/OBS/"));
@@ -189,7 +85,8 @@ namespace DSSUnitTests
     [TestMethod]
     public void TestGetRecordTypeNoDPart()
     {
-      using (DssReader r = new DssReader(TestUtility.BasePath + "sample7.dss"))
+      var dssFile = TestUtility.GetCopyForTesting("sample7.dss");
+      using (DssReader r = new DssReader(dssFile))
       {
         var recordType = r.GetRecordType(new DssPath("//SACRAMENTO/PRECIP-INC//1Day/OBS/"));
         Assert.IsTrue(recordType == RecordType.RegularTimeSeries);
@@ -200,21 +97,14 @@ namespace DSSUnitTests
     [Ignore]
     public void WriteGridTest()
     {
-      string dssFile = @".\tempdssfile.dss";
-      File.Delete(dssFile);
-      const string srcfile = TestUtility.BasePath + "version7AlbersGridsTimeSeries.dss";
-      CopyAsReadWrite(srcfile, dssFile);
+      var dssFile = TestUtility.GetCopyForTesting("version7AlbersGridsTimeSeries.dss");
       RunWriteTest(dssFile);
     }
 
     [TestMethod]
-    [Ignore]
     public void ReadGrid()
     {
-      string dssFile = @".\tempdssfile.dss";
-      string srcFile = TestUtility.BasePath + "version7AlbersGrid.dss";
-      File.Delete(dssFile);
-      CopyAsReadWrite(srcFile, dssFile);
+      var dssFile = TestUtility.GetCopyForTesting("version7AlbersGridsTimeSeries.dss");
       string path = @"/SHG/TRUCKEE RIVER/TEMP-AIR/31JAN2016:2400//INTERPOLATED-ROUNDED/";
       using (DssWriter dss = new DssWriter(dssFile))
       {
@@ -224,19 +114,14 @@ namespace DSSUnitTests
         string s = grid.SRSDefinition;
         Console.WriteLine(s);
       }
-      File.Delete(dssFile);
     }
 
 
 
     [TestMethod]
-    [Ignore]
     public void WriteGrid()
     {
-      string dssFile = @".\tempdssfile.dss";
-      string srcFile = TestUtility.BasePath + "version7AlbersGrid.dss";
-      File.Delete(dssFile);
-      CopyAsReadWrite(srcFile, dssFile);
+      var dssFile = TestUtility.GetCopyForTesting("version7AlbersGrid.dss");
       string newPath = @"/LOL/MYOWN/TEMP-AIR/31JAN2016:2400//GRID/";
       using (DssWriter dss = new DssWriter(dssFile))
       {
@@ -250,16 +135,12 @@ namespace DSSUnitTests
         Grid grid = null;// = dss.CreateNewSpecifiedGrid(newPath, data, 0, 0, 10, 10, sizeof(float), Grid.EDataType.INST_CUM, "mm", DateTime.Now, DateTime.Now, Grid.CompressionMethod.ZLIB_DEFLATE, "PROJCS[\"UTM_ZONE_16N_WGS84\",GEOGCS[\"WGS_84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS84\", 6378137.0, 298.257223563]],PRIMEM[\"Greenwich\", 0],UNIT[\"degree\", 0.01745329251994328]],UNIT[\"Meter\", 1.0],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"latitude_of_origin\", 0],PARAMETER[\"central_meridian\", -87],PARAMETER[\"scale_factor\", 0.9996],PARAMETER[\"false_easting\", 500000],PARAMETER[\"false_northing\", 0],AXIS[\"Easting\", EAST],AXIS[\"Northing\", NORTH]]");
         dss.StoreGrid(newPath, grid);
       }
-      File.Delete(dssFile);
     }
 
     [TestMethod]
     public void GetHeaderInformationTimeSeries()
     {
-      string dssFile = @".\tempdssfile.dss";
-      string srcFile = TestUtility.BasePath + @"benchmarks6/BaldEDmbrk.dss";
-      File.Delete(dssFile);
-      CopyAsReadWrite(srcFile, dssFile);
+      string dssFile = TestUtility.GetCopyForTesting(@"benchmarks6\BaldEDmbrk7.dss");
       string path = @"/BALD EAGLE LOC HAV/105178.6/FLOW-CUM/17FEB1999-23FEB1999/1MIN/DAMBRKSIMBRCH/";
       using (DssReader dss = new DssReader(dssFile))
       {
@@ -274,10 +155,7 @@ namespace DSSUnitTests
     [TestMethod]
     public void GetHeaderInformationPairedData()
     {
-      string dssFile = @".\tempdssfile.dss";
-      string srcFile = TestUtility.BasePath + @"benchmarks6\BaldEDmbrk.dss";
-      File.Delete(dssFile);
-      CopyAsReadWrite(srcFile, dssFile);
+      string dssFile = TestUtility.GetCopyForTesting(@"benchmarks6\BaldEDmbrk7.dss");
       string path = @"/BALD EAGLE LOC HAV//LOCATION-ELEV//19FEB1999 2055/DAMBRKSIMBRCH/";
       using (DssReader dss = new DssReader(dssFile))
       {
@@ -292,10 +170,7 @@ namespace DSSUnitTests
     [TestMethod]
     public void GetHeaderInformationGrid()
     {
-      string dssFile = @".\tempdssfile.dss";
-      string srcFile = TestUtility.BasePath + @"containsGrids7.dss";
-      File.Delete(dssFile);
-      CopyAsReadWrite(srcFile, dssFile);
+      string dssFile = TestUtility.GetCopyForTesting("containsGrids7.dss");
       string path = @"/SHG/LAKE WINNEBAGO/PRECIP/01JUN2016:0600/01JUN2016:1200/WPC-QPF/";
       using (DssReader dss = new DssReader(dssFile))
       {
@@ -335,10 +210,7 @@ namespace DSSUnitTests
     [TestMethod]
     public void CheckGetCorrespondingCondensedPath()
     {
-      string dssFile = @".\tempdssfile.dss";
-      string srcFile = TestUtility.BasePath + @"benchmarks6\Ark.dss";
-      File.Delete(dssFile);
-      CopyAsReadWrite(srcFile, dssFile);
+      string dssFile = TestUtility.GetCopyForTesting(@"benchmarks6\Ark7.dss");
       DssPath path = new DssPath(@"/A34-01 A34-01/-2600.0/FLOW/01JAN2003/1DAY/VER 6.1.3 03-05/");
       using (DssReader reader = new DssReader(dssFile))
       {
@@ -346,17 +218,12 @@ namespace DSSUnitTests
         DssPathCondensed conPath = paths.GetCondensedPath(path);
         Assert.IsTrue(conPath != null);
       }
-
     }
 
     [TestMethod]
-    [Ignore]
     public void CheckIfDPartComingOutAsDateTimeNoRange()
     {
-      string dssFile = @".\tempdssfile.dss";
-      string srcFile = TestUtility.BasePath + "version7AlbersGrid.dss";
-      File.Delete(dssFile);
-      CopyAsReadWrite(srcFile, dssFile);
+      var dssFile = TestUtility.GetCopyForTesting("version7AlbersGrid.dss");
       string path = @"/SHG/TRUCKEE RIVER/TEMP-AIR/31JAN2016:2400//INTERPOLATED-ROUNDED/";
       using (DssReader dss = new DssReader(dssFile))
       {
@@ -381,10 +248,7 @@ namespace DSSUnitTests
     [TestMethod]
     public void CheckIfDPartComingOutAsDateTimeWithRange()
     {
-      string dssFile = @".\tempdssfile.dss";
-      string srcFile = TestUtility.BasePath + "version7AlbersGridsTimeSeries.dss";
-      File.Delete(dssFile);
-      CopyAsReadWrite(srcFile, dssFile);
+      string dssFile = TestUtility.GetCopyForTesting("version7AlbersGridsTimeSeries.dss");
       string path = @"//BERLIN/FLOW/01May2016-01Jun2016/1Hour/Q0W0/";
       using (DssReader dss = new DssReader(dssFile))
       {

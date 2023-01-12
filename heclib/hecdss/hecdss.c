@@ -85,7 +85,7 @@ HECDSS_API int hec_dss_open(const char* filename, dss_file** dss)
     if (f == 0)
         return -1;
     
-    int status = zopen(f->ifltab,filename);
+    int status = hec_dss_zopen(f->ifltab,filename);
     if (status != 0)
       return status;
     int version = zgetVersion(f->ifltab);
