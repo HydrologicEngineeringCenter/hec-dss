@@ -17,7 +17,6 @@ void testCopyRecordWithVdi();
 
 const int SRC = 0;
 const int DST = 1;
-const int RETR = 2;
 
 int test_vertical_datums_c() {
     testDelimitedStringOps();
@@ -2294,7 +2293,7 @@ void testCopyRecordWithVdi_NoVdiInDestination() {
     verticalDatumInfo* pVdi;
     const char* filename[2] = {"vdiCopyTestSource.dss", "vdiCopyTestDestination.dss"};
     const char* tsPathname[2] = { "//TsSourceLoc/Elev/01Oct2021/1Hour/Test/", "//TsDestinationLoc/Elev/01Oct2021/1Hour/Test/" };
-    const char* pdPathname[2] = { "//PdSourceLoc/Stage-Elev///Test/", "//TsDestinationLoc/Stage-Elev///Test/" };
+    const char* pdPathname[2] = { "//PdSourceLoc/Stage-Elev///Test/", "//PdDestinationLoc/Stage-Elev///Test/" };
     double tsValues[] = {1000,1001,1002,1003,1004,1005};
     int numberTsValues = sizeof(tsValues) / sizeof(tsValues[0]);
     double pdOrdinates[] = { 1000,1001,1002,1003,1004,1005 };
@@ -2560,7 +2559,7 @@ void testCopyRecordWithVdi_OtherNativeDatumInDestination() {
     memset(vdi, 0, sizeof(vdi));
     const char* filename[2] = { "vdiCopyTestSource.dss", "vdiCopyTestDestination.dss" };
     const char* tsPathname[2] = { "//TsSourceLoc/Elev/01Oct2021/1Hour/Test/", "//TsDestinationLoc/Elev/01Oct2021/1Hour/Test/" };
-    const char* pdPathname[2] = { "//PdSourceLoc/Stage-Elev///Test/", "//TsDestinationLoc/Stage-Elev///Test/" };
+    const char* pdPathname[2] = { "//PdSourceLoc/Stage-Elev///Test/", "//PdDestinationLoc/Stage-Elev///Test/" };
     double tsValues[] = { 1000,1001,1002,1003,1004,1005 };
     int numberTsValues = sizeof(tsValues) / sizeof(tsValues[0]);
     double pdOrdinates[] = { 1000,1001,1002,1003,1004,1005 };
@@ -2600,6 +2599,7 @@ void testCopyRecordWithVdi_OtherNativeDatumInDestination() {
     };
     int xmlCount = sizeof(xml) / sizeof(xml[0]);
 
+    zset("MLVL", "", 0);
     for (int srcDssVer = 6; srcDssVer <= 7; ++srcDssVer) {
         for (int dstDssVer = 6; dstDssVer <= 7; ++dstDssVer) {
 
@@ -2789,30 +2789,118 @@ void testCopyRecordWithVdi_OtherNativeDatumInDestination() {
                 assert(status == STATUS_OKAY);
                 zstructFree(tss);
                 zstructFree(pds);
-                //-------------------------------------------------------------------------------------------//
-                // copy the time series to a location in the same DSS file that has a different native datum //
-                //-------------------------------------------------------------------------------------------//
-                printf("==> %s:%s (v%d)\n", filename[SRC], tsPathname[DST], dstDssVer);
-                status = zcopyRecord(ifltab[SRC], ifltab[SRC], tsPathname[SRC], tsPathname[DST]);
-                assert(status != STATUS_OKAY);
-                //-------------------------------------------------------------------------------------------//
-                // copy the paired data to a location in the same DSS file that has a different native datum //
-                //-------------------------------------------------------------------------------------------//
-                printf("==> %s:%s (v%d)\n", filename[SRC], pdPathname[DST], dstDssVer);
-                status = zcopyRecord(ifltab[SRC], ifltab[SRC], pdPathname[SRC], pdPathname[DST]);
-                assert(status != STATUS_OKAY);
+                if (dstDssVer == srcDssVer) {
+                    //-------------------------------------------------------------------------------------------//
+                    // copy the time series to a location in the same DSS file that has a different native datum //
+                    //-------------------------------------------------------------------------------------------//
+                    printf("==> %s:%s (v%d)\n", filename[SRC], tsPathname[DST], dstDssVer);
+                    status = zcopyRecord(ifltab[SRC], ifltab[SRC], tsPathname[SRC], tsPathname[DST]);
+                    if (dstDssVer == 6) {
+                        assert(status == STATUS_OKAY);
+                        //-------------------------------------------------------//
+                        // retrieve the copied time series and verify the values //
+                        //-------------------------------------------------------//
+                        tss = zstructTsNewTimes(
+                            tsPathname[DST],
+                            startDate,
+                            startTime,
+                            endDate,
+                            endTime);
+                        assert(tss != NULL);
+                        status = ztsRetrieve(
+                            ifltab[SRC], // file table
+                            tss,         // time series struct
+                            0,           // retrieve flag (0=adhere to time window and [for reg] create times array)
+                            0,           // retrieve doubles flag (0=as stored, 1=floats, 2=doubles)
+                            1);          // retrieve quality flag (0/1)
+                        assert(status == STATUS_OKAY);
+                        for (int i = 0; i < numberTsValues; ++i) {
+                            assert(fabs(tss->doubleValues[i] - tsValues[i]) < FLT_EPSILON);
+                        }
+                        zstructFree(tss);
+                    }
+                    else {
+                        assert(status != STATUS_OKAY);
+                    }
+                }
                 //------------------------------------------------------------------------------------------//
                 // copy the time series to a location in another DSS file that has a different native datum //
                 //------------------------------------------------------------------------------------------//
-                printf("==> %s:%s (v%d)\n", filename[DST], tsPathname[DST], dstDssVer);
+                printf("==> %s:%s (v%d)\n", filename[SRC], tsPathname[DST], dstDssVer);
                 status = zcopyRecord(ifltab[SRC], ifltab[DST], tsPathname[SRC], tsPathname[DST]);
-                assert(status != STATUS_OKAY);
+                if (dstDssVer == 6) {
+                    assert(status == STATUS_OKAY);
+                    //-------------------------------------------------------//
+                    // retrieve the copied time series and verify the values //
+                    //-------------------------------------------------------//
+                    tss = zstructTsNewTimes(
+                        tsPathname[DST],
+                        startDate,
+                        startTime,
+                        endDate,
+                        endTime);
+                    assert(tss != NULL);
+                    status = ztsRetrieve(
+                        ifltab[DST], // file table
+                        tss,         // time series struct
+                        0,           // retrieve flag (0=adhere to time window and [for reg] create times array)
+                        0,           // retrieve doubles flag (0=as stored, 1=floats, 2=doubles)
+                        1);          // retrieve quality flag (0/1)
+                    assert(status == STATUS_OKAY);
+                    for (int i = 0; i < numberTsValues; ++i) {
+                        assert(fabs(tss->doubleValues[i] - tsValues[i]) < FLT_EPSILON);
+                    }
+                    zstructFree(tss);
+                }
+                else {
+                    assert(status != STATUS_OKAY);
+                }
+                if (dstDssVer == srcDssVer) {
+                    //-------------------------------------------------------------------------------------------//
+                    // copy the paired data to a location in the same DSS file that has a different native datum //
+                    //-------------------------------------------------------------------------------------------//
+                    printf("==> %s:%s (v%d)\n", filename[DST], pdPathname[DST], dstDssVer);
+                    status = zcopyRecord(ifltab[SRC], ifltab[SRC], pdPathname[SRC], pdPathname[DST]);
+                    if (dstDssVer == 6) {
+                        assert(status == STATUS_OKAY);
+                        //-------------------------------------------------------//
+                        // retrieve the copied paired data and verify the values //
+                        //-------------------------------------------------------//
+                        pds = zstructPdNew(pdPathname[DST]);
+                        assert(pds != NULL);
+                        status = zpdRetrieve(ifltab[SRC], pds, 0);
+                        assert(status == STATUS_OKAY);
+                        for (int i = 0; i < numberPdOrdinates; ++i) {
+                            assert(fabs(pds->doubleValues[i] - pdValues[i]) < FLT_EPSILON);
+                        }
+                        zstructFree(pds);
+                    }
+                    else {
+                        assert(status != STATUS_OKAY);
+                    }
+                }
                 //------------------------------------------------------------------------------------------//
                 // copy the paired data to a location in another DSS file that has a different native datum //
                 //------------------------------------------------------------------------------------------//
                 printf("==> %s:%s (v%d)\n", filename[DST], pdPathname[DST], dstDssVer);
                 status = zcopyRecord(ifltab[SRC], ifltab[DST], pdPathname[SRC], pdPathname[DST]);
-                assert(status != STATUS_OKAY);
+                if (dstDssVer == 6) {
+                    assert(status == STATUS_OKAY);
+                    //-------------------------------------------------------//
+                    // retrieve the copied paired data and verify the values //
+                    //-------------------------------------------------------//
+                    pds = zstructPdNew(pdPathname[DST]);
+                    assert(pds != NULL);
+                    status = zpdRetrieve(ifltab[DST], pds, 0);
+                    assert(status == STATUS_OKAY);
+                    for (int i = 0; i < numberPdOrdinates; ++i) {
+                        assert(fabs(pds->doubleValues[i] - pdValues[i]) < FLT_EPSILON);
+                    }
+                    zstructFree(pds);
+                }
+                else {
+                    assert(status != STATUS_OKAY);
+                }
             }
             zclose(ifltab[SRC]);
             zclose(ifltab[DST]);
@@ -2831,7 +2919,7 @@ void testCopyRecordWithVdi_SameNativeDatumInDestination() {
     verticalDatumInfo vdi;
     const char* filename[2] = { "vdiCopyTestSource.dss", "vdiCopyTestDestination.dss" };
     const char* tsPathname[2] = { "//TsSourceLoc/Elev/01Oct2021/1Hour/Test/", "//TsDestinationLoc/Elev/01Oct2021/1Hour/Test/" };
-    const char* pdPathname[2] = { "//PdSourceLoc/Stage-Elev///Test/", "//TsDestinationLoc/Stage-Elev///Test/" };
+    const char* pdPathname[2] = { "//PdSourceLoc/Stage-Elev///Test/", "//PdDestinationLoc/Stage-Elev///Test/" };
     double tsValues[2][6] = { { 1000,1001,1002,1003,1004,1005 }, {1,2,3,4,5} };
     int numberTsValues = 6;
     double pdOrdinates[] = { 1000,1001,1002,1003,1004,1005 };
@@ -3144,6 +3232,7 @@ void testCopyRecordWithVdi_SameNativeDatumInDestination() {
 }
 
 void testCopyRecordWithVdi() {
+    zset("MLVL", "", 0);
     testCopyRecordWithVdi_NoVdiInDestination();
     testCopyRecordWithVdi_OtherNativeDatumInDestination();
     testCopyRecordWithVdi_SameNativeDatumInDestination();
