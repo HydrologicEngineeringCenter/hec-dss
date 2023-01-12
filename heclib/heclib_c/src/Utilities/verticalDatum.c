@@ -1997,12 +1997,12 @@ int pathnameIsElevPd(const char* pathname) {
         zpathnameGetPart(pathname, 3, cPart, sizeof(cPart));
         char* saveptr;
         char* cp = strtok_r(cPart, "-", &saveptr);
-        if (cp == NULL || !strncasecmp(cp, "ELEV", 4)) {
+        if (cp != NULL && !strncasecmp(cp, "ELEV", 4)) {
             result += 1;
         }
         if (cp) {
             cp = strtok_r(NULL, "-", &saveptr);
-            if (cp == NULL || !strncasecmp(cp, "ELEV", 4)) {
+            if (cp != NULL && !strncasecmp(cp, "ELEV", 4)) {
                 result += 2;
             }
         }
