@@ -11,9 +11,9 @@ namespace DSSUnitTests
   {
 
     //public const string BasePath = @"M:\_Projects\HEC-DSS\test-data\";
-    public const string BasePath = @"../../../../../../dss-test-data/";
+    internal const string BasePath = @"../../../../../../dss-test-data/";
 
-    public static string GetSimpleTempFileName(string extension)
+    internal static string GetSimpleTempFileName(string extension)
     {
 
       string path = Path.GetTempPath();
@@ -24,9 +24,20 @@ namespace DSSUnitTests
       if (File.Exists(fn))
         throw new Exception("File allready exists");
 
-      File.Create(fn).Close();
-
       return fn;
+    }
+
+    internal static string GetCopyForTesting(string fileName)
+    {
+       string tempFileName = GetSimpleTempFileName(".dss");
+
+      File.Copy(Path.Combine(BasePath, fileName), tempFileName);
+
+      // Reset the read/write permissions
+      System.IO.FileInfo fileInfo = new System.IO.FileInfo(tempFileName);
+      fileInfo.IsReadOnly = false;
+
+      return tempFileName;
     }
   }
 }
