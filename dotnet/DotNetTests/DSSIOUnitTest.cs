@@ -161,16 +161,55 @@ namespace DSSUnitTests
       {
         DssPathCollection paths = dss.GetCatalog();
         var dsspath = paths.FindExactPath(path);
-        var pd = dss.GetPairedData(dsspath.FullPath);
-        Assert.IsTrue(pd.UnitsDependent == "FEET");
-        Assert.IsTrue(pd.TypeDependent == "UNT");
+        // read meta-data only.
+        var pd = dss.GetPairedData(dsspath.FullPath,true);
+        Assert.AreEqual("FEET", pd.UnitsDependent);
+        Assert.AreEqual("UNT", pd.TypeDependent);
         Assert.AreEqual("Riv Sta",pd.UnitsIndependent);
+
+        // read full record
+        pd = dss.GetPairedData(dsspath.FullPath);
+        Assert.AreEqual("FEET",pd.UnitsDependent );
+        Assert.AreEqual("UNT",pd.TypeDependent);
+        Assert.AreEqual("Riv Sta", pd.UnitsIndependent);
+
         Assert.AreEqual(178, pd.Ordinates.Length);
         Assert.AreEqual(1, pd.CurveCount);
       }
     }
-
     [TestMethod]
+    public void PairedDataWithLabels()
+    {
+      string dssFile = TestUtility.GetCopyForTesting("examples-all-data-types.dss");
+      using (DssReader dss = new DssReader(dssFile))
+      {
+        var pd = dss.GetPairedData("/paired-data-multi-column/RIVERDALE/FREQ-FLOW/MAX ANALYTICAL//1969-01 H33(MAX)/");
+        Assert.AreEqual("PERCENT", pd.UnitsIndependent);
+        Assert.AreEqual("FREQ", pd.TypeIndependent);
+
+        Assert.AreEqual("CFS", pd.UnitsDependent);
+        Assert.AreEqual("FLOW", pd.TypeDependent);
+        CollectionAssert.AreEqual(new String[] { "COMPUTED", "EXP PROB", "5%LIMIT", "95%LIMIT" },
+                   pd.Labels.ToArray());
+        Assert.AreEqual(12, pd.Ordinates.Length);
+        var expectedX = new double[] { 0.100, 0.200, 0.500, 1.000, 2.000, 5.000, 10.00, 20.00, 50.00, 80.00, 90.00, 95.00 };
+
+        var col1 = new double[] {20912.98,18679.56,15956.85,14054.34,12272.15,10074.43,8505.39,6981.07,4893.24,3529.99,3009.38,2652.78};
+        var col2 = new double[] { 24993.01, 21581.48, 17745.02, 15239.98, 13022.79, 10438.13, 8692.51, 7057.34, 4893.24, 3499.13, 2960.99, 2586.76 };
+        var col3 = new double[] { 30978.08, 26919.98, 22142.58, 18927.51, 16019.20, 12590.91, 10270.00, 8142.02, 5507.09, 4000.26, 3457.57, 3090.23 };
+        var col4 = new double[] { 16020.89, 14562.59, 12741.07, 11434.04, 10178.26, 8576.13, 7383.06, 6165.35, 4340.02, 3021.05, 2504.77, 2153.57 };
+
+        var c = Comparer<double>.Create((x, y) => Math.Abs(x - y)<0.01 ? 0:-1) ;
+        CollectionAssert.AreEqual(expectedX, pd.Ordinates,c);
+        CollectionAssert.AreEqual(col1, pd.Values[0],c);
+        CollectionAssert.AreEqual(col2, pd.Values[1],c);
+        CollectionAssert.AreEqual(col3, pd.Values[2],c);
+        CollectionAssert.AreEqual(col4, pd.Values[3],c);
+
+      }
+    }
+
+      [TestMethod]
     public void GetHeaderInformationGrid()
     {
       string dssFile = TestUtility.GetCopyForTesting("containsGrids7.dss");
