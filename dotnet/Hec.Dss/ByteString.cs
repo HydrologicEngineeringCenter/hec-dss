@@ -29,15 +29,42 @@ namespace Hec.Dss
 
     public override string ToString()
     {
-      if (Data == null)
-        return "";
-      if (Data.Length == 0)
+      if (Data == null || Data.Length == 0)
         return "";
       var end = System.Array.IndexOf(Data, (byte)0); // get rid of trailing \0
       int count = Math.Min(end, Data.Length);
 
       return Encoding.ASCII.GetString(Data,0,count);  
     }
- 
+    /// <summary>
+    /// Returns string array by spliting on \0
+    /// </summary>
+    /// <returns></returns>
+    public string[] ToStringArray()
+    {
+      var rawString = Encoding.ASCII.GetString(Data);
+
+      return rawString.Split('\0');
+
+      //List<string> rval = new List<string>();
+      //if (Data == null || Data.Length == 0)
+      //  return rval.ToArray();
+
+      //int index = 0;
+      //while(index < Data.Length)
+      //{
+      //  var indexToZero = System.Array.IndexOf(Data, (byte)0,index);
+      //  if (indexToZero < 0)
+      //    break;
+      //  int count = indexToZero - index;
+      //  if (count <= 0)
+      //    break;
+      //  var s = Encoding.ASCII.GetString(Data, index, count);
+      //  index = indexToZero + 1;
+      //}
+      
+      //return rval.ToArray();
+
+    }
   }
 }

@@ -86,7 +86,19 @@ public class DssNative
                             byte[] unitsIndependent, int unitsIndependentLength,
                             byte[] unitsDependent, int unitsDependentLength,
                             byte[] typeIndependent, int typeIndependentLength,
-                            byte[] typeDependent, int typeDependentLength);
+                            byte[] typeDependent, int typeDependentLength,
+                            ref int labelsLength);
+
+  [DllImport("hecdss")]
+  public static extern int hec_dss_pdRetrieve(IntPtr dss, string pathname,
+  double[] Ordinates, int OrdinatesLength,
+  double[] Values, int ValuesLength,
+  ref int numberOrdinates, ref int numberCurves,
+  byte[] unitsIndependent, int unitsIndependentLength,
+  byte[] typeIndependent, int typeIndependentLength,
+  byte[] unitsDependent, int unitsDependentLength,
+  byte[] typeDependent, int typeDependentLength,
+  byte[] labels, int labelsLength);
 
 }
 

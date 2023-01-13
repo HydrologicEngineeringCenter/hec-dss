@@ -66,6 +66,17 @@ HECDSS_API int hec_dss_test_list_of_string(char* data, int rows, int columns) {
   return 0;
 }
 
+void hec_dss_array_copy(double* destination, const long destinationSize,
+  double* source, const size_t sourceSize) {
+  size_t numberToCopy = sourceSize < destinationSize ? sourceSize: destinationSize;
+
+  for (size_t i = 0; i < numberToCopy; i++)
+  {
+    destination[i] = source[i];
+  }
+
+}
+
 HECDSS_API int hec_dss_CONSTANT_MAX_PATH_SIZE() {
   return MAX_PATHNAME_SIZE;
 }
@@ -315,7 +326,8 @@ HECDSS_API int hec_dss_pdRetrieveInfo(dss_file* dss, const char* pathname,
                                     char* unitsIndependent, const int unitsIndependentLength,
                                     char* unitsDependent, const int unitsDependentLength,
                                     char* typeIndependent, const int typeIndependentLength,
-                                    char* typeDependent, const int typeDependentLength){
+                                    char* typeDependent, const int typeDependentLength,
+                                    int* labelsLength){
   zStructPairedData* pds = zstructPdNew(pathname);
   pds->endingOrdinate = 1;// hack to retrive meta data, with minimal actual data.
   int returnDoubles = 2;
@@ -331,8 +343,8 @@ HECDSS_API int hec_dss_pdRetrieveInfo(dss_file* dss, const char* pathname,
     stringCopy(typeIndependent, typeIndependentLength, pds->typeIndependent, strlen(pds->typeIndependent));
   if (pds->typeDependent)
     stringCopy(typeDependent, typeDependentLength, pds->typeDependent, strlen(pds->typeDependent));
-
-
+  if (pds->labels)
+    *labelsLength = pds->labelsLength;
 
   zstructFree(pds);
   return status;
@@ -346,19 +358,54 @@ HECDSS_API int hec_dss_dataType(dss_file* dss, const char* pathname) {
 
 
 HECDSS_API int hec_dss_pdRetrieve(dss_file* dss, const char* pathname,
-  double* doubleOrdinates, double* valdoubleValues, const int arraySize,
+  double* doubleOrdinates, const int  doubleOrdinatesLength,
+  double* doubleValues, const int doubleValuesLength,
   int* numberOrdinates, int* numberCurves,
   char* unitsIndependent, const int unitsIndependentLength,
   char* typeIndependent, const int typeIndependentLength,
   char* unitsDependent, const int unitsDependentLength,
   char* typeDependent, const int typeDependentLength,
-  int* boolIndependentIsXaxis,
-  int* precision,
   char* labels, const int labelsLength)
 {
   zStructPairedData* pds = zstructPdNew(pathname);
   int returnDoubles = 2;
   int status = zpdRetrieve(dss->ifltab, pds, returnDoubles);
+
+  if (pds->numberOrdinates != doubleOrdinatesLength && status == 0)
+  {
+    hec_dss_log_error("in hec_dss_pdRetrieve the doubleOrdinatesLength argument does not match what was read from disk.");
+    status = -1;
+  }
+  if (pds->numberCurves * pds->numberOrdinates != doubleValuesLength && status == 0)
+  {
+    hec_dss_log_error("in hec_dss_pdRetrieve the doubleValuesLength argument does not match what was read from disk.");
+    status = -1;
+  }
+
+  if (status == 0) {
+  
+    *numberOrdinates = pds->numberOrdinates;
+    *numberCurves = pds->numberCurves;
+    /// -- leaving these meta-data below out for initial version.
+    //*boolIndependentIsXaxis = pds->boolIndependentIsXaxis; 
+    //*xprecision = pds->xprecision;
+    // *yprecision = pds->yprecision;
+
+
+    if (pds->unitsIndependent)
+      stringCopy(unitsIndependent, unitsIndependentLength, pds->unitsIndependent, strlen(pds->unitsIndependent));
+    if (pds->unitsDependent)
+      stringCopy(unitsDependent, unitsDependentLength, pds->unitsDependent, strlen(pds->unitsDependent));
+    if (pds->typeIndependent)
+      stringCopy(typeIndependent, typeIndependentLength, pds->typeIndependent, strlen(pds->typeIndependent));
+    if (pds->typeDependent)
+      stringCopy(typeDependent, typeDependentLength, pds->typeDependent, strlen(pds->typeDependent));
+
+    hec_dss_array_copy(doubleOrdinates, doubleOrdinatesLength, pds->doubleOrdinates, pds->numberOrdinates);
+    hec_dss_array_copy(doubleValues, doubleValuesLength, pds->doubleValues, pds->numberOrdinates* pds->numberCurves);
+
+  }
+
 
     zstructFree(pds);
     return status;
