@@ -7,8 +7,8 @@
 /*
  hecdss.c contains code for a shared object/dll, providing an API to work with DSS files.
 
- Only DSS version 7 files are supported.  DSS version 6 files can be converted using HEC-DSSVue
- https://www.hec.usace.army.mil/software/hec-dssvue/
+ Only DSS version 7 files are supported.  DSS version 6 files can be converted to DSS version 7
+ using HEC-DSSVue https://www.hec.usace.army.mil/software/hec-dssvue/
 
 
  This API is designed with perspective that the calling/client code is in charge of managing memory.
@@ -329,7 +329,7 @@ HECDSS_API int hec_dss_pdRetrieveInfo(dss_file* dss, const char* pathname,
                                     char* typeDependent, const int typeDependentLength,
                                     int* labelsLength){
   zStructPairedData* pds = zstructPdNew(pathname);
-  pds->endingOrdinate = 1;// hack to retrive meta data, with minimal actual data.
+  //pds->endingOrdinate = 1;// hack to retrive meta data, with minimal actual data.
   int returnDoubles = 2;
   int status = zpdRetrieve(dss->ifltab, pds, returnDoubles);
 
@@ -400,7 +400,12 @@ HECDSS_API int hec_dss_pdRetrieve(dss_file* dss, const char* pathname,
       stringCopy(typeIndependent, typeIndependentLength, pds->typeIndependent, strlen(pds->typeIndependent));
     if (pds->typeDependent)
       stringCopy(typeDependent, typeDependentLength, pds->typeDependent, strlen(pds->typeDependent));
-
+    if (pds->labels) {
+      int size = pds->labelsLength > labelsLength ? labelsLength :pds->labelsLength;
+      for (int i = 0; i < size; i++)
+        labels[i] = pds->labels[i];
+    }
+      
     hec_dss_array_copy(doubleOrdinates, doubleOrdinatesLength, pds->doubleOrdinates, pds->numberOrdinates);
     hec_dss_array_copy(doubleValues, doubleValuesLength, pds->doubleValues, pds->numberOrdinates* pds->numberCurves);
 

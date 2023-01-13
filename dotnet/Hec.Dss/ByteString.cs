@@ -43,28 +43,12 @@ namespace Hec.Dss
     public string[] ToStringArray()
     {
       var rawString = Encoding.ASCII.GetString(Data);
-
-      return rawString.Split('\0');
-
-      //List<string> rval = new List<string>();
-      //if (Data == null || Data.Length == 0)
-      //  return rval.ToArray();
-
-      //int index = 0;
-      //while(index < Data.Length)
-      //{
-      //  var indexToZero = System.Array.IndexOf(Data, (byte)0,index);
-      //  if (indexToZero < 0)
-      //    break;
-      //  int count = indexToZero - index;
-      //  if (count <= 0)
-      //    break;
-      //  var s = Encoding.ASCII.GetString(Data, index, count);
-      //  index = indexToZero + 1;
-      //}
-      
-      //return rval.ToArray();
-
+      var rval = rawString.TrimEnd('\0').Split('\0');
+      for (int i = 0; i < rval.Length; i++)
+      {
+        rval[i] = rval[i].Trim();
+      }
+      return rval;
     }
   }
 }
