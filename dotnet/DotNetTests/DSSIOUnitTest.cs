@@ -164,6 +164,9 @@ namespace DSSUnitTests
         var pd = dss.GetPairedData(dsspath.FullPath);
         Assert.IsTrue(pd.UnitsDependent == "FEET");
         Assert.IsTrue(pd.TypeDependent == "UNT");
+        Assert.AreEqual("Riv Sta",pd.UnitsIndependent);
+        Assert.AreEqual(178, pd.Ordinates.Length);
+        Assert.AreEqual(1, pd.CurveCount);
       }
     }
 

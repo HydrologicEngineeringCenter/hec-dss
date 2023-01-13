@@ -358,14 +358,6 @@ namespace Hec {
 				return toReturn;
 			}
 
-			/// <summary>
-			/// Creates and returns a struct to pass data into DSS.  A lower level call often used for retreiving data.  Use ZStructFree when finished.
-			///</summary>
-			int DSS::ZpdRetrieve(array<long long> ^% ifltab, ZStructPairedDataWrapper ^% pds, int retrieveDoubleFlag)
-			{
-				pin_ptr<long long> ifltabPinned = &ifltab[0];
-				return zpdRetrieve(ifltabPinned, pds->theStruct, retrieveDoubleFlag);
-			}
 
 			int DSS::ZpdStore(array<long long>^% ifltab, ZStructPairedDataWrapper ^% pds, int storageFlag)
 			{

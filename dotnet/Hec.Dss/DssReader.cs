@@ -722,97 +722,72 @@ namespace Hec.Dss
     {
       int numberOrdinates = 0;
       int numberCurves = 0;
+      int labelsLength = 0;
       int size = 128;
       int status;
       ByteString unitsIndependent = new ByteString(size);
       ByteString unitsDependent = new ByteString(size);
       ByteString typeIndependent = new ByteString(size);
       ByteString typeDependent = new ByteString(size);
-      if (metaDataOnly)
-      {
-          status = DssNative.hec_dss_pdRetrieveInfo(dss, pathname, ref numberOrdinates, ref numberCurves,
-          unitsIndependent.Data, unitsIndependent.Data.Length,
-          unitsDependent.Data, unitsDependent.Data.Length,
-          typeIndependent.Data, typeIndependent.Data.Length,
-          typeDependent.Data, typeDependent.Data.Length );
-
-        var pd = new PairedData();
-        if (status != 0)
-          return pd;
-
-        pd.UnitsIndependent = unitsIndependent.ToString();
-        pd.UnitsDependent = unitsDependent.ToString();  
-        pd.TypeDependent = typeDependent.ToString(); 
-        pd.TypeIndependent = typeIndependent.ToString() ;
-
-        return pd;
-      }
-      ZStructPairedDataWrapper pds = DSS.ZStructPdNew(pathname);
-      status = DSS.ZpdRetrieve(ref ifltab, ref pds, 2);
-      if (status != 0)
-      {
-        return null;
-      }
 
       var rval = new PairedData();
 
+      status = DssNative.hec_dss_pdRetrieveInfo(dss, pathname, ref numberOrdinates, ref numberCurves,
+        unitsIndependent.Data, unitsIndependent.Data.Length,
+        unitsDependent.Data, unitsDependent.Data.Length,
+        typeIndependent.Data, typeIndependent.Data.Length,
+        typeDependent.Data, typeDependent.Data.Length,
+        ref labelsLength);
+
+      if (status != 0 || numberOrdinates<=0 || numberCurves<=0 )
+        return rval;
+
+      rval.UnitsIndependent = unitsIndependent.ToString();
+      rval.UnitsDependent = unitsDependent.ToString();  
+      rval.TypeDependent = typeDependent.ToString(); 
+      rval.TypeIndependent = typeIndependent.ToString() ;
+
+      if (metaDataOnly)
+        return rval;
+
+      double[] Ordinates = new double[numberOrdinates];
+      double[] Values = new double[numberOrdinates*numberCurves];
+      ByteString labels = new ByteString(labelsLength);
+
+      status = DssNative.hec_dss_pdRetrieve(dss, pathname, Ordinates, Ordinates.Length,
+        Values, Values.Length, ref numberOrdinates, ref numberCurves,
+         unitsIndependent.Data, unitsIndependent.Data.Length,
+        unitsDependent.Data, unitsDependent.Data.Length,
+        typeIndependent.Data, typeIndependent.Data.Length,
+        typeDependent.Data, typeDependent.Data.Length,
+        labels.Data, labels.Data.Length);
+
+      if (status != 0)
+      {
+        return rval;
+      }
+
       rval.Path = new DssPath(pathname);
-      rval.Ordinates = pds.DoubleOrdinates;
+      rval.Ordinates = Ordinates;
 
-      if (pds.FloatValues == null) // doubles
+      
+      int k = 0;
+      rval.Values = new List<double[]>();
+      for (int col = 0; col < numberCurves; col++)
       {
-        int k = 0;
-        rval.Values = new List<double[]>();
-        for (int col = 0; col < pds.NumberCurves; col++)
+        var curve = new double[numberOrdinates];
+        for (int row = 0; row < curve.Length; row++)
         {
-          var a = new double[pds.NumberOrdinates];
-          for (int row = 0; row < pds.NumberOrdinates; row++)
-          {
-            a[row] = pds.DoubleValues[k++];
-          }
-          rval.Values.Add(a);
+          curve[row] = Values[k++];
         }
+        rval.Values.Add(curve);
       }
-      else if (pds.DoubleValues == null) // convert floats to doubles
-      {
-        int k = 0;
-        rval.Values = new List<double[]>();
-        for (int col = 0; col < pds.NumberCurves; col++)
-        {
-          var a = new double[pds.NumberOrdinates];
-          for (int row = 0; row < pds.NumberOrdinates; row++)
-          {
-            a[row] = pds.FloatValues[k++];
-          }
-          rval.Values.Add(a);
-        }
-      }
-
-      if (pds.Labels != null)
-      {
-        int i = 0;
-        int j = 0;
-        while (j < pds.Labels.Length) // get labels
-        {
-          string label = "";
-          while (pds.Labels[j] != 0 && j < pds.Labels.Length - 1)
-          {
-            char c = (char)pds.Labels[j];
-            label += c.ToString();
-            j++;
-          }
-          rval.Labels.Add(label);
-          j++;
-          i++;
-        }
-      }
-
-      rval.TypeDependent = pds.TypeDependent;
-      rval.TypeIndependent = pds.TypeIndependent;
-      rval.UnitsDependent = pds.UnitsDependent;
-      rval.UnitsIndependent = pds.UnitsIndependent;
-      var loc = new LocationInformation(pds.LocationStruct);
-      rval.LocationInformation = loc;
+      List<String> titles = new List<String>();
+      titles.AddRange(labels.ToStringArray());
+      rval.Labels = titles;
+      // TO DO .. Location Stucture...
+     // var loc = new LocationInformation(pds.LocationStruct);
+      //rval.LocationInformation = loc;
 
       return rval;
     }
