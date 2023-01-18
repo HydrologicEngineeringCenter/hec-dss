@@ -9,7 +9,50 @@ namespace DSSUnitTests
   [TestClass]
   public class PathTesting
   {
-  
+
+    [TestMethod]
+    public void TestIsTimeSeries()
+    {
+      // work through all DSS files 
+      // if the file is DSS 7:
+      //     get catalog that includs record type
+      //     test the DssPath.IsTimeSeries() method
+
+      var files = Directory.GetFiles(TestUtility.BasePath, "*.dss", SearchOption.AllDirectories);
+
+      foreach (var file in files)
+      {
+        using (DssReader dss = new DssReader(file))
+        {
+          var version = dss.GetDSSFileVersion();
+          if (version == 7)
+          {
+            var catalog = dss.GetCatalog();
+            foreach (var path in catalog)
+            {
+              var type = path.RecordType;
+
+              var pathRaw = new DssPath(path.FullPath);
+
+              if (type == RecordType.RegularTimeSeries
+                || type == RecordType.IrregularTimeSeries
+                || type == RecordType.RegularTimeSeriesProfile)
+              {
+                Assert.IsTrue(pathRaw.IsTimeSeries());
+                Assert.IsTrue(path.IsTimeSeries());
+              }
+              else
+              {
+                Assert.IsFalse(pathRaw.IsTimeSeries());
+                Assert.IsFalse(path.IsTimeSeries());
+              }
+            }
+
+          }
+
+        }
+      }
+    }
 
         [TestMethod]
     public void TestPartEVariants()

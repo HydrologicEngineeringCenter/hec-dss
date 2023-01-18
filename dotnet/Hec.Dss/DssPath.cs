@@ -102,6 +102,21 @@ namespace Hec.Dss
       return DPartAsDateTime != default(DateTime);
     }
 
+    public bool DPartIsDateOrDateRange()
+    {
+      if (DPartIsDate())
+        return true;
+
+      //not a date, but could be a date range
+      var splitByDash = Dpart.Split('-');
+      if (splitByDash.Length == 2)
+      {
+        return Time.TryConvertFromHecDateTime(splitByDash[0], out _) && Time.TryConvertFromHecDateTime(splitByDash[1], out _);
+      }
+      else
+        return false;
+    }
+
     /// <summary>
     /// returns a path without the Date (part D) 
     /// used to sort by all parts, except Date
@@ -281,16 +296,17 @@ namespace Hec.Dss
       ZOrdinate = zOrdinate;
     }
 
-    internal bool IsTimeSeries()
+    public bool IsTimeSeries()
     {
-      if (RecordType == RecordType.RegularTimeSeries || RecordType == RecordType.IrregularTimeSeries)
+      if (RecordType == RecordType.RegularTimeSeries || RecordType == RecordType.IrregularTimeSeries
+         || RecordType == RecordType.RegularTimeSeriesProfile)
         return true;
 
       if (RecordType == RecordType.Unknown) // estimate based on path format.
       {
         //A time series will have a Date in the DPart (or be blank)
         // and EPart will have valid interval or block size
-        if (Dpart.Trim() == "" || DPartIsDate()
+        if ((Dpart.Trim() == "" || DPartIsDateOrDateRange())
           && TimeWindow.SecondsInInterval(this) != 0)
           return true;
       }
