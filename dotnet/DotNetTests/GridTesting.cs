@@ -380,22 +380,6 @@ YCoord Of Grid Cell Zero: 0.0
       }
     }
 
-    [TestMethod]
-    public void ExpandPathTest()
-    {
-      string fn = TestUtility.BasePath + "NDFD_Wind.dss";
-
-      var sum = 0;
-      using (var dssr = new DssReader(fn, DssReader.MethodID.MESS_METHOD_GENERAL_ID, DssReader.LevelID.MESS_LEVEL_CRITICAL))
-      {
-        var cat = dssr.GetCatalog(false);
-        foreach (var item in cat.CondensedPaths)
-        {
-          sum += cat.ExpandPath(item, true).Count;
-        }
-        Assert.IsTrue(sum == cat.UnCondensedPaths.Count);
-      }
-    }
   }
   
 }

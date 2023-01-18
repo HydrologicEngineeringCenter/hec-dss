@@ -181,8 +181,7 @@ namespace Hec.Dss
 
       foreach (var path in unsorted)
       {
-        // Check if path's DPart is an actual HecDateTime
-        if (path.RecordType == RecordType.Grid || !Time.TryConvertFromHecDateTime(path.Dpart, out _))
+        if( !path.IsTimeSeries())
         {
           otherPaths.Add(path);
           // Add non time series path to paths list.
@@ -276,28 +275,6 @@ namespace Hec.Dss
 
     public IList<DssPathCondensed> CondensedPaths { get; private set; }
     public IList<DssPath> UnCondensedPaths { get; private set; }
-
-    /// <summary>
-    /// Returns all uncondensed paths that match the given path.
-    /// </summary>
-    /// <param name="path"></param>
-    /// <param name="isGrid"></param>
-    /// <returns></returns>
-    public List<DssPath> ExpandPath(DssPath path, bool isGrid = false)
-    {
-      if (isGrid)
-      {
-        if (UnCondensedPaths.Count == 0)
-          return PathAssist.FilterByPart(Paths, path.Apart, path.Bpart, path.Cpart, "", "", path.Fpart);
-
-        return PathAssist.FilterByPart(UnCondensedPaths, path.Apart, path.Bpart, path.Cpart, "", "", path.Fpart);
-      }
-
-      if (UnCondensedPaths.Count == 0)
-        return PathAssist.FilterByPart(Paths, path.Apart, path.Bpart, path.Cpart, "", path.Epart, path.Fpart);
-
-      return PathAssist.FilterByPart(UnCondensedPaths, path.Apart, path.Bpart, path.Cpart, "", path.Epart, path.Fpart);
-    }
 
     public IList<string> GetUniqueAParts()
     {

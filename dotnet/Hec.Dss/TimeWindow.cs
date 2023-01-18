@@ -99,7 +99,7 @@ namespace Hec.Dss
       int seconds = 0;
       for (int i = 0; i < TimeIntervals7.Length; i++) // look through v7 time intervals
       {
-        if (String.Compare(dssPath.Epart, TimeIntervals7[i], true) == 0)
+        if (String.Compare(dssPath.Epart.TrimStart('~'), TimeIntervals7[i], true) == 0)
         {
           seconds = TimeIntervalSeconds7[i];
           break;
@@ -109,7 +109,7 @@ namespace Hec.Dss
       {
         for (int i = 0; i < TimeIntervals6.Length; i++)
         {
-          if (String.Compare(dssPath.Epart, TimeIntervals6[i], true) == 0)
+          if (String.Compare(dssPath.Epart.TrimStart('~'), TimeIntervals6[i], true) == 0)
           {
             seconds = TimeIntervalSeconds6[i];
             break;
