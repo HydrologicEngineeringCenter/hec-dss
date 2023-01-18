@@ -281,6 +281,23 @@ namespace Hec.Dss
       ZOrdinate = zOrdinate;
     }
 
+    internal bool IsTimeSeries()
+    {
+      if (RecordType == RecordType.RegularTimeSeries || RecordType == RecordType.IrregularTimeSeries)
+        return true;
+
+      if (RecordType == RecordType.Unknown) // estimate based on path format.
+      {
+        //A time series will have a Date in the DPart (or be blank)
+        // and EPart will have valid interval or block size
+        if (Dpart.Trim() == "" || DPartIsDate()
+          && TimeWindow.SecondsInInterval(this) != 0)
+          return true;
+      }
+
+      return false;
+    }
+
     public DssPath(string path)
     {
       if (path == null)

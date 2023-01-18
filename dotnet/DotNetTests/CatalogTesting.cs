@@ -11,7 +11,7 @@ namespace DSSUnitTests
   {
 
     [TestMethod]
-    public void GridTest()
+    public void GridTest7()
     {
       var fn = Path.Combine(TestUtility.BasePath, "SixAndOneHour.dss");
       using (DssReader reader = new DssReader(fn))
@@ -26,8 +26,25 @@ namespace DSSUnitTests
       }
 
     }
+    [TestMethod]
+    public void GridTest6()
+    {
+      var fn = Path.Combine(TestUtility.BasePath, "SixAndOneHour6.dss");
+      using (DssReader reader = new DssReader(fn))
+      {
+        var cat = reader.GetCatalog();
+        var tbl = cat.ToDataTable();
+        Console.WriteLine(cat);
+        Assert.AreEqual(29, cat.CondensedPaths.Count);
+        Assert.AreEqual(29, cat.Count);
 
-   [TestMethod]
+
+      
+      }
+
+    }
+
+    [TestMethod]
     public void DssPathBug()
     {
       var p = new DssPath("A", "B", "C", "D", "E", "F");
