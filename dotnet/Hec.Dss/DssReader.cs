@@ -153,32 +153,6 @@ namespace Hec.Dss
       return pathNameList;
     }
 
-    internal static List<string> GetRawCatalog(IntPtr dss,out int[] recordTypes, string filter="")
-    {
-      int count = DssNative.hec_dss_record_count(dss);
-      int pathBufferSize = DssNative.hec_dss_CONSTANT_MAX_PATH_SIZE();
-
-      byte[] rawCatalog = new byte[count * pathBufferSize];
-      recordTypes = new int[count];
-
-      List<string> pathNameList = new List<string>(count);
-      byte[] byteFilter = new byte[] { 0 };
-      if( filter!= "")
-      {
-        byteFilter = Encoding.ASCII.GetBytes(filter); 
-      }
-        var numRecords = DssNative.hec_dss_catalog(dss, rawCatalog, recordTypes, byteFilter, count, pathBufferSize);
-        for (int i = 0; i < numRecords; i++)
-        {
-          int start = i * pathBufferSize;
-          var end = System.Array.IndexOf(rawCatalog, (byte)0, start); // get rid of trailing \0\0
-          int size = Math.Min(end - start, pathBufferSize);
-          pathNameList.Add(Encoding.ASCII.GetString(rawCatalog, start, size));
-        }
-
-      return pathNameList;
-    }
-
     private void GetMetaDataForCatalog(DssPathCollection collection)
     {
       if (!collection.HasRecordTypes) // recordTypes is null for V6
