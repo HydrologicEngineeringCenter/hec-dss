@@ -216,12 +216,11 @@ HECDSS_API int hec_dss_tsRetrieveInfo(dss_file* pdss, const char* pathname,char*
     int status = zread(pdss->ifltab, transfer);
     if (status == 0)
     {
-        int intervalType = ztsProcessTimes(pdss->ifltab, tss, 0);
-        status = ztsInternalHeaderUnpack(tss, transfer->internalHeader, transfer->internalHeaderNumber);
+      int intervalType = ztsProcessTimes(pdss->ifltab, tss, 0);
+      status = ztsInternalHeaderUnpack(tss, transfer->internalHeader, transfer->internalHeaderNumber);
+      stringCopy(units, unitsLength, tss->units, strlen(tss->units));
+      stringCopy(type, typeLength, tss->type, strlen(tss->type));
     }
-    stringCopy(units, unitsLength, tss->units, strlen(tss->units));
-    stringCopy(type, typeLength, tss->type, strlen(tss->type));
-    
     zstructFree(tss);
     zstructFree(transfer);
     return status;
