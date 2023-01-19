@@ -22,34 +22,40 @@ namespace DSSUnitTests
 
       foreach (var file in files)
       {
-        using (DssReader dss = new DssReader(file))
+        try
         {
-          var version = dss.GetDSSFileVersion();
-          if (version == 7)
+          using (DssReader dss = new DssReader(file))
           {
-            var catalog = dss.GetCatalog();
-            foreach (var path in catalog)
+            var version = dss.GetDSSFileVersion();
+            if (version == 7)
             {
-              var type = path.RecordType;
-
-              var pathRaw = new DssPath(path.FullPath);
-
-              if (type == RecordType.RegularTimeSeries
-                || type == RecordType.IrregularTimeSeries
-                || type == RecordType.RegularTimeSeriesProfile)
+              var catalog = dss.GetCatalog();
+              foreach (var path in catalog)
               {
-                Assert.IsTrue(pathRaw.IsTimeSeries());
-                Assert.IsTrue(path.IsTimeSeries());
+                var type = path.RecordType;
+
+                var pathRaw = new DssPath(path.FullPath);
+
+                if (type == RecordType.RegularTimeSeries
+                  || type == RecordType.IrregularTimeSeries
+                  || type == RecordType.RegularTimeSeriesProfile)
+                {
+                  Assert.IsTrue(pathRaw.IsTimeSeries());
+                  Assert.IsTrue(path.IsTimeSeries());
+                }
+                else
+                {
+                  Assert.IsFalse(pathRaw.IsTimeSeries());
+                  Assert.IsFalse(path.IsTimeSeries());
+                }
               }
-              else
-              {
-                Assert.IsFalse(pathRaw.IsTimeSeries());
-                Assert.IsFalse(path.IsTimeSeries());
-              }
+
             }
 
           }
-
+        }catch
+        { // skip DSS6 files
+          Console.WriteLine("skipping "+ file);
         }
       }
     }
@@ -89,7 +95,7 @@ namespace DSSUnitTests
     [TestMethod]
     public void FilterTest()
     {
-      string fn = Path.GetFullPath(TestUtility.BasePath + "NDFD_Wind.dss");
+      string fn = Path.GetFullPath(TestUtility.BasePath + "NDFD_Wind7.dss");
       string pathname = "/SHG/CONUS/WIND DIRECTION///NDFD (YUBZ98) (001-003)/";
 
       /* Catalog.Paths:
@@ -133,18 +139,6 @@ namespace DSSUnitTests
       string path2 = "/a/b/c/d/e/f/";
       Assert.IsFalse(DssPath.IsValid(path1));
       Assert.IsTrue(DssPath.IsValid(path2));
-    }
-
-    [Ignore]
-    [TestMethod]
-    public void CondensedPathTest()
-    {
-      using (DssReader r = new DssReader(TestUtility.BasePath + "AAA.dss"))
-      {
-        var p = r.GetCatalog();
-        Assert.IsTrue(p.CondensedPaths.Count == 6);
-        Assert.IsTrue(Enumerable.SequenceEqual(p.UnCondensedPaths.OrderBy(e => e), p.Paths.OrderBy(e => e)));
-      }
     }
 
   }

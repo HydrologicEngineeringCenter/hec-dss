@@ -97,6 +97,7 @@ namespace DSSUnitTests
     [Ignore]
     public void WriteGridTest()
     {
+      Assert.IsTrue(false, "Grid Not implemented");
       var dssFile = TestUtility.GetCopyForTesting("version7AlbersGridsTimeSeries.dss");
       RunWriteTest(dssFile);
     }
@@ -104,6 +105,7 @@ namespace DSSUnitTests
     [TestMethod]
     public void ReadGrid()
     {
+      Assert.IsTrue(false, "Grid Not implemented");
       var dssFile = TestUtility.GetCopyForTesting("version7AlbersGridsTimeSeries.dss");
       string path = @"/SHG/TRUCKEE RIVER/TEMP-AIR/31JAN2016:2400//INTERPOLATED-ROUNDED/";
       using (DssWriter dss = new DssWriter(dssFile))
@@ -121,6 +123,7 @@ namespace DSSUnitTests
     [TestMethod]
     public void WriteGrid()
     {
+      Assert.IsTrue(false, "Grid Not implemented");
       var dssFile = TestUtility.GetCopyForTesting("version7AlbersGrid.dss");
       string newPath = @"/LOL/MYOWN/TEMP-AIR/31JAN2016:2400//GRID/";
       using (DssWriter dss = new DssWriter(dssFile))
@@ -141,7 +144,7 @@ namespace DSSUnitTests
     public void GetHeaderInformationTimeSeries()
     {
       string dssFile = TestUtility.GetCopyForTesting(@"benchmarks6\BaldEDmbrk7.dss");
-      string path = @"/BALD EAGLE LOC HAV/105178.6/FLOW-CUM/17FEB1999-23FEB1999/1MIN/DAMBRKSIMBRCH/";
+      string path = "/BALD EAGLE LOC HAV/105178.6/FLOW-CUM/17Feb1999-23Feb1999/1Minute/DAMBRKSIMBRCH/";
       using (DssReader dss = new DssReader(dssFile))
       {
         DssPathCollection paths = dss.GetCatalog(true);
@@ -212,6 +215,7 @@ namespace DSSUnitTests
       [TestMethod]
     public void GetHeaderInformationGrid()
     {
+      Assert.IsTrue(false, "Grid Not implemented");
       string dssFile = TestUtility.GetCopyForTesting("containsGrids7.dss");
       string path = @"/SHG/LAKE WINNEBAGO/PRECIP/01JUN2016:0600/01JUN2016:1200/WPC-QPF/";
       using (DssReader dss = new DssReader(dssFile))
