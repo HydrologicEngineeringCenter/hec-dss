@@ -67,11 +67,12 @@ HECDSS_API int hec_dss_catalog(dss_file* dss, char* pathBuffer, int* recordTypes
 /// <param name="endDate">input: end date</param>
 /// <param name="endTime">input: end time</param>
 /// <param name="numberValues">output: number of values found</param>
+/// <param name="qualityElementSize">number of columns of quality data</param>
 /// <returns>zero on success</returns>
-HECDSS_API int hec_dss_tsGetSizes(dss_file* pdss, const char* pathname,
+HECDSS_API int hec_dss_tsGetSizes(dss_file* dss, const char* pathname,
   const char* startDate, const char* startTime,
   const char* endDate, const char* endTime,
-  int* numberValues);
+  int* numberValues, int* qualityElementSize);
 
 /// <summary>
 /// Retrive an empty time series.
@@ -122,5 +123,6 @@ HECDSS_API int hec_dss_tsRetrieve(dss_file* dss, const char* pathname,
   const char* startDate, const char* startTime,
   const char* endDate, const char* endTime,
   int* timeArray, double* valueArray, const int arraySize,
-  int* numberValuesRead, int* julianBaseDate, int* timeGranularitySeconds,
+  int* numberValuesRead, int* quality, int* qualityLength,
+  int* julianBaseDate, int* timeGranularitySeconds,
   char* units, const int unitsLength, char* type, const int typeLength);

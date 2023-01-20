@@ -21,24 +21,22 @@ int julianBaseDate = 0, timeGranularitySeconds = 0;
 var units = ArrayPool<byte>.Shared.Rent(32);
 var type = ArrayPool<byte>.Shared.Rent(32);
 
-string startDateTime = "01Jan1877 01:00";
-string endDateTime = "31Jan1877 24:00";
 string startDate = "";
 string startTime = "";
 string endDate = ""; //endDateTime.Split(' ')[0]
 string endTime = "";
 
 int numberValues = 0;
-
-DssNative.hec_dss_tsGetSizes(dss, path, startDate,startTime,endDate, endTime, ref numberValues);
-Console.WriteLine(numberValues);
+int qualityLength = 0;
+DssNative.hec_dss_tsGetSizes(dss, path, startDate, startTime, endDate, endTime, ref numberValues, ref qualityLength);
 
 int[] times = new int[numberValues];
+int[] quality= new int[numberValues];
 double[] value = new double[numberValues];
 
 status = DssNative.hec_dss_tsRetrieve(dss, path, startDate, startTime, endDate, endTime,
-    times, value, numberValues, 
-   ref numberValuesRead, ref julianBaseDate,ref timeGranularitySeconds,
+    times, value, numberValues,ref numberValuesRead, quality, ref qualityLength,
+   ref julianBaseDate,ref timeGranularitySeconds,
    units,units.Length, type, type.Length);
 
 Console.WriteLine("numberValuesRead: "+numberValuesRead);

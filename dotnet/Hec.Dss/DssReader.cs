@@ -492,13 +492,17 @@ namespace Hec.Dss
 
       }
       int numberValues = 0;
+      int qualityElementSize=0;
       // find array size needed.
-      int status = DssNative.hec_dss_tsGetSizes(this.dss, dssPath.PathWithoutDate, startDate, startTime, endDate, endTime, ref numberValues);
+      int status = DssNative.hec_dss_tsGetSizes(this.dss, dssPath.PathWithoutDate, startDate, startTime,
+              endDate, endTime, ref numberValues, ref qualityElementSize);
 
       
       
       int[] times = new int [numberValues];
       double[] values = new double[numberValues];
+      int qualityLength = numberValues * qualityElementSize;
+      var quality = new int[qualityLength];
       int numberValuesRead = 0;
       int julianBaseDate = 0, timeGranularitySeconds = 60;
       ByteString units = new ByteString(64);
@@ -506,7 +510,7 @@ namespace Hec.Dss
 
       status = DssNative.hec_dss_tsRetrieve(dss, dssPath.PathWithoutRange, 
           startDate, startTime, endDate, endTime, times, values, numberValues,
-         ref numberValuesRead, ref julianBaseDate, ref timeGranularitySeconds,
+         ref numberValuesRead, quality, ref qualityLength, ref julianBaseDate, ref timeGranularitySeconds,
          units.Data, units.Length, type.Data, type.Length);
 
       TimeSeries ts = new TimeSeries();
@@ -523,6 +527,8 @@ namespace Hec.Dss
         Array.Resize(ref times,numberValuesRead);
         ts.Times = Time.DateTimesFromJulianArray(times, timeGranularitySeconds, julianBaseDate);
         Array.Resize(ref values, numberValuesRead);
+        if (qualityLength > 0)
+          ts.Qualities = quality;
         ts.Values = values;
         ts.DataType = type.ToString();
         ts.Units = units.ToString();

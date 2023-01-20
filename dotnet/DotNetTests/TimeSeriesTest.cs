@@ -647,11 +647,15 @@ namespace DSSUnitTests
     [TestMethod]
     public void ToDataTableWithQuality()
     {
-      DssPath path = new DssPath("/MISSISSIPPI/ST. LOUIS/FLOW//1Day/OBS/");
-      using (DssReader r = new DssReader(TestUtility.BasePath + "sample7.dss"))
+      var pathString = "/regular-time-series/GAPT/FLOW//6Hour/forecast1/";
+
+      DssPath path = new DssPath(pathString);
+      using (DssReader r = new DssReader(TestUtility.BasePath + "examples-all-data-types.dss"))
       {
         var ts = r.GetTimeSeries(path);
         var dt = ts.ToDataTable();
+        var s = dt.Rows[0]["Quality"].ToString().Trim();
+        Assert.AreEqual("OriginalValue, NoRevision", s);
       }
     }
 

@@ -36,6 +36,7 @@ public class DssNative
   public static extern int hec_dss_tsStoreRegular(IntPtr dss, string pathname,
             string startDate, string startTime,
             double[] valueArray, int arraySize,
+            int[] qualityArray, int qualityArraySize,
             int saveAsFloat,
             byte[] units, byte[] type);
 
@@ -44,7 +45,8 @@ public class DssNative
                                      string startDate, string startTime,
                                      string endDate, string endTime,
                                      int[] timeArray, double[] valueArray, int arraySize,
-                                     ref int numberValuesRead, ref int julianBaseDate, ref int timeGranularitySeconds,
+                                     ref int numberValuesRead,int[] quality,ref int qualityLength, 
+                                     ref int julianBaseDate, ref int timeGranularitySeconds,
                                      byte[] units, int unitsLength, byte[] type, int typeLength);
 
 
@@ -57,7 +59,7 @@ public class DssNative
    public static extern int hec_dss_tsGetSizes(IntPtr dss, string pathname,
                                     string startDate, string startTime, 
                                     string endDate, string endTime,
-                                    ref int numberValues);
+                                    ref int numberValues, ref int qualityElementSize);
 
   [DllImport("hecdss")]
   public static extern int hec_dss_tsRetrieveInfo(IntPtr dss, string pathname,

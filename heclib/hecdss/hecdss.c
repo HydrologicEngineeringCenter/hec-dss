@@ -181,7 +181,7 @@ HECDSS_API int  hec_dss_tsGetDateTimeRange(dss_file* dss, const char* pathname, 
 HECDSS_API int hec_dss_tsGetSizes(dss_file* dss, const char* pathname,
     const char* startDate, const char* startTime,
     const char* endDate, const char* endTime,
-    int* numberValues) {
+    int* numberValues, int* qualityElementSize) {
   //?? int ztsGetDateTimeRange(long long *ifltab, const char *pathname, int boolFullSet, *int * firstValidJulian, int* firstSeconds,*int * lastValidJulian, int* lastSeconds);
   
     zStructRecordSize* recordSize = zstructRecordSizeNew(pathname);
@@ -196,6 +196,8 @@ HECDSS_API int hec_dss_tsGetSizes(dss_file* dss, const char* pathname,
     int status = ztsGetSizes(dss->ifltab, tss, recordSize);
     if( status ==0 )
     *numberValues = recordSize->logicalNumberValues;
+    *qualityElementSize = recordSize->tsQualityElementSize;
+    
     
 
     if( tss)
@@ -231,7 +233,8 @@ HECDSS_API int hec_dss_tsRetrieve(dss_file* dss, const char *pathname,
                                   const char *startDate, const char *startTime, 
                                   const char* endDate,   const char *endTime,
                                   int *timeArray, double *valueArray, const int arraySize,
-                                  int *numberValuesRead, int* julianBaseDate,int* timeGranularitySeconds,
+                                  int *numberValuesRead, int *quality, int* qualityLength,
+                                  int* julianBaseDate,int* timeGranularitySeconds,
                                   char* units,const int unitsLength, char* type,const int typeLength)
 {
     *numberValuesRead = 0; 
@@ -274,8 +277,9 @@ HECDSS_API int hec_dss_tsRetrieve(dss_file* dss, const char *pathname,
         for (int i = 0; i < size; i++) {
             timeArray[i] = tss->times[i];
             valueArray[i] = tss->doubleValues[i];
-            // to Do quality....
-            // tss->quality
+            if (*qualityLength > 0) // TO DO.. quality can have multiple columns
+              quality[i] = tss->quality[i];
+
         }
     }
 
@@ -284,28 +288,31 @@ HECDSS_API int hec_dss_tsRetrieve(dss_file* dss, const char *pathname,
 }
 HECDSS_API int hec_dss_tsStoreRegular(dss_file* dss, const char* pathname,
   const char* startDate, const char* startTime,
-  double* valueArray, const int arraySize, const int saveAsFloat,
+  double* valueArray, const int ValueArraySize, 
+  int* qualityArray, const int qualityArraySize,
+  const int saveAsFloat,
   const char* units, const char* type)
 {
   zStructTimeSeries* tss = 0;
 
-  
   if (saveAsFloat) {
-    float* values = (float*)malloc((size_t)arraySize * 4);
+    float* values = (float*)malloc((size_t)ValueArraySize * 4);
     if (values == 0) {
       hec_dss_log_error("Error allocating memory in hec_dss_tsStoreRegular ");
       return -1;
     }
 
-    for (int i = 0; i < arraySize; i++)
+    for (int i = 0; i < ValueArraySize; i++)
     {
       values[i] = (float)valueArray[i];
     }
-    tss = zstructTsNewRegFloats(pathname, values, arraySize, startDate, startTime, units, type);
+    tss = zstructTsNewRegFloats(pathname, values, ValueArraySize, startDate, startTime, units, type);
     tss->allocated[zSTRUCT_TS_floatValues];
+    if (qualityArraySize > 0 && qualityArraySize == ValueArraySize)
+      tss->quality = qualityArray;
   }
   else {
-    tss = zstructTsNewRegDoubles(pathname, valueArray, arraySize, startDate, startTime, units, type);
+    tss = zstructTsNewRegDoubles(pathname, valueArray, ValueArraySize, startDate, startTime, units, type);
   }
   
   const int storageFlag = 0;// storageFlag = 0  Always replace data (Regular Interval)

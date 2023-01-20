@@ -116,7 +116,11 @@ namespace Hec.Dss
       if (ts.IsRegular())
       {// store as Regular times series
         Time.DateTimeToHecDateTime(ts.StartDateTime, out string date, out string time);
-        rval = DssNative.hec_dss_tsStoreRegular(dss, ts.Path.FullPath,date, time, ts.Values, ts.Values.Length, saveAsFloat ? 1 : 0, units.Data, type.Data);
+        int qualityLength = 0;
+        if( ts.Qualities != null )
+           qualityLength = ts.Qualities.Length;
+        rval = DssNative.hec_dss_tsStoreRegular(dss, ts.Path.FullPath,date, time, ts.Values,
+                   ts.Values.Length,ts.Qualities,qualityLength, saveAsFloat ? 1 : 0, units.Data, type.Data);
 
       }
       else
