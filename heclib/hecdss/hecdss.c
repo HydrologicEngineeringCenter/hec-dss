@@ -282,6 +282,42 @@ HECDSS_API int hec_dss_tsRetrieve(dss_file* dss, const char *pathname,
     zstructFree(tss);
     return status;
 }
+HECDSS_API int hec_dss_tsStoreRegular(dss_file* dss, const char* pathname,
+  const char* startDate, const char* startTime,
+  double* valueArray, const int arraySize, const int saveAsFloat,
+  const char* units, const char* type)
+{
+  zStructTimeSeries* tss = 0;
+
+  
+  if (saveAsFloat) {
+    float* values = (float*)malloc((size_t)arraySize * 4);
+    if (values == 0) {
+      hec_dss_log_error("Error allocating memory in hec_dss_tsStoreRegular ");
+      return -1;
+    }
+
+    for (int i = 0; i < arraySize; i++)
+    {
+      values[i] = (float)valueArray[i];
+    }
+    tss = zstructTsNewRegFloats(pathname, values, arraySize, startDate, startTime, units, type);
+    tss->allocated[zSTRUCT_TS_floatValues];
+  }
+  else {
+    tss = zstructTsNewRegDoubles(pathname, valueArray, arraySize, startDate, startTime, units, type);
+  }
+  
+  const int storageFlag = 0;// storageFlag = 0  Always replace data (Regular Interval)
+  //	 storageFlag = 1  replace  (Irregular)
+
+  int status = ztsStore(dss->ifltab, tss, storageFlag);
+  
+
+  zstructFree(tss);
+  return status;
+}
+
 HECDSS_API int hec_dss_locationRetrieve(dss_file* dss, const char* fullPath, 
                             double* x,double* y, double* z,
                             int* coordinateSystem, int* coordinateID, 

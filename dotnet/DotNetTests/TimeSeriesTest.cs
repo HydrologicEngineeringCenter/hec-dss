@@ -296,7 +296,7 @@ namespace DSSUnitTests
     [TestMethod]
     public void ReadWriteDailyRegular()
     {
-      var fn = "dot_net_ReadWriteDailyRegular.dss";
+      var fn = TestUtility.GetSimpleTempFileName(".dss");
 
       var t = new DateTime(1965, 1, 1);
       var ts = CreateSampleTimeSeries(t, "cfs", "Inst-Val");
@@ -306,7 +306,6 @@ namespace DSSUnitTests
       using (DssWriter w = new DssWriter(fn))
       {
         w.Write(ts);
-        t = new DateTime(1965, 1, 1);
         var ts2 = w.GetTimeSeries(ts.Path, ts.StartDateTime, ts.Times[ts.Times.Length - 1]);
         Console.WriteLine(ts2.Path);
         Compare(ts, ts2);

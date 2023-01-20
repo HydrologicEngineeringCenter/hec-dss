@@ -40,7 +40,7 @@ namespace Hec.Dss
     {
     }
 
-    private IntPtr dss;
+    protected IntPtr dss;
     /// <summary>
     /// Constructor for DSSREADER object
     /// </summary>

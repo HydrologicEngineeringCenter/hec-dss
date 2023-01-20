@@ -32,6 +32,13 @@ public class DssNative
   public static extern int hec_dss_dataType(IntPtr dss, string pathname);
 
 
+  [DllImport("hecdss")]
+  public static extern int hec_dss_tsStoreRegular(IntPtr dss, string pathname,
+            string startDate, string startTime,
+            double[] valueArray, int arraySize,
+            int saveAsFloat,
+            byte[] units, byte[] type);
+
    [DllImport("hecdss", CharSet = CharSet.Ansi, ExactSpelling = true)]
    public static extern int hec_dss_tsRetrieve(IntPtr dss, string pathname,
                                      string startDate, string startTime,
