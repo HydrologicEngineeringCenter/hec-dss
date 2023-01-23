@@ -180,6 +180,10 @@ int runTheTests() {
 	char fileName6[80];
 	int status;
 
+	status = testLargeCopy();
+	if (status != STATUS_OKAY)
+		return status;
+
 	status = miscTests();
 	if (status != STATUS_OKAY)
 		return status;
