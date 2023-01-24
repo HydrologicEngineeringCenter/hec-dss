@@ -4,21 +4,6 @@
 #define KIHEAD 1000
 #define KCHEAD 100
 
-#ifdef _MSC_VER
-char* strndup(const char* src, size_t max_len) {
-	char* dst = (char*)malloc(max_len + 1);
-	if (dst != NULL) {
-		int i;
-		for (i = 0; i < max_len; ++i) {
-			if (!src[i]) break;
-			dst[i] = src[i];
-		}
-		dst[i] = '\0';
-	}
-	return dst;
-}
-#endif
-
 int zCopyRecord6Dynamic(long long* ifltabFrom, long long* ifltabTo, const char* pathnameFrom, const char* pathnameTo) {
 
 	int nPathname;
@@ -70,10 +55,8 @@ int zCopyRecord6Dynamic(long long* ifltabFrom, long long* ifltabTo, const char* 
 #undef KCHEAD
 
 void zcopyrecord6dynamic_(long long* ifltabFrom, long long* ifltabTo, const char* pathnameFrom, const char* pathnameTo, int* status, size_t pathnameFromLen, size_t pathnameToLen) {
-	char* cPathnameFrom = strndup(pathnameFrom, pathnameFromLen);
-	for (char* cp = cPathnameFrom + pathnameFromLen - 1; *cp == ' '; --cp) *cp = '\0';
-	char* cPathnameTo = strndup(pathnameTo, pathnameToLen);
-	for (char* cp = cPathnameTo + pathnameToLen - 1; *cp == ' '; --cp) *cp = '\0';
+	char* cPathnameFrom = stringFortToC(pathnameFrom, pathnameFromLen);
+	char* cPathnameTo = stringFortToC(pathnameTo, pathnameToLen);
 	*status = zCopyRecord6Dynamic(ifltabFrom, ifltabTo, cPathnameFrom, cPathnameTo);
 	free(cPathnameFrom);
 	free(cPathnameTo);
