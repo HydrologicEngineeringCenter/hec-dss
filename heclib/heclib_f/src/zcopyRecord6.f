@@ -6,6 +6,7 @@ C     Depricated.  Use zcopyRecord (C version) instead.
       implicit none
 C
       include 'dss_parameters.h'
+
       INTEGER ifltabFrom(*), ifltabTo(*)
       CHARACTER cpathFrom*(*), cpathTo*(*)
       CHARACTER(len=dss_maxpath) CPATH
@@ -286,21 +287,37 @@ C
 C
         IPLAN = 0
 
-        CALL ZREADX(ifltabFrom, cpathFrom(1:npathFrom), IIHEAD, KIHEAD,
-     *  NIHEAD, ICHEAD, KCHEAD, NCHEAD, INTBUF, NIBUFF, NUHEAD, ILBUFF,
-     *  KLBUFF, NVALS, IPLAN, LFOUND)
-        IF (.NOT.LFOUND) THEN
-           if ((mlvl.ge.2).and.(munit.gt.0)) then
-              write(munit, 17) cpathFrom(1:npathFrom)
- 17           Format(' ---zcopyRecord Loc i, Error reading record: ',A)
-            endif
-           ISTAT = -1
-           RETURN
-        ENDIF
+        call zcheck(
+     *    ifltabFrom,
+     *    cpathto(1:npathTo),
+     *    npathTo,
+     *    nuhead,
+     *    nvals,
+     *    lfound)
+        if (nvals.gt.klbuff) then
+          call zCopyRecord6Dynamic(
+     *      ifltabFrom,
+     *      ifltabTo,
+     *      cpathFrom,
+     *      cpathTo,
+     *      istat)
+        else
+          CALL ZREADX(ifltabFrom, cpathFrom(1:npathFrom), IIHEAD,KIHEAD,
+     *    NIHEAD, ICHEAD, KCHEAD, NCHEAD, INTBUF, NIBUFF, NUHEAD,ILBUFF,
+     *    KLBUFF, NVALS, IPLAN, LFOUND)
+          IF (.NOT.LFOUND) THEN
+             if ((mlvl.ge.2).and.(munit.gt.0)) then
+               write(munit, 17) cpathFrom(1:npathFrom)
+ 17            Format(' ---zcopyRecord Loc i, Error reading record: ',A)
+              endif
+             ISTAT = -1
+             RETURN
+          ENDIF
+          CALL ZWRITEX(ifltabTo, cpathTo(1:npathTo), npathTo, IIHEAD,
+     *      NIHEAD,ICHEAD, NCHEAD, INTBUF, NUHEAD, ILBUFF, NVALS,
+     *      IDTYPE, IPLAN, ISTAT, LFOUND)
+        endif
 C
-       CALL ZWRITEX(ifltabTo, cpathTo(1:npathTo), npathTo,IIHEAD,NIHEAD,
-     *  ICHEAD, NCHEAD, INTBUF, NUHEAD, ILBUFF, NVALS, IDTYPE,
-     *  IPLAN, ISTAT, LFOUND)
        IF (ISTAT.ne.0) THEN
            if ((mlvl.ge.2).and.(munit.gt.0)) then
               write(munit, 22) istat, cpathTo(1:npathTo)

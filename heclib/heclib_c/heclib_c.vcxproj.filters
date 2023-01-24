@@ -1302,6 +1302,9 @@
     <ClCompile Include="src\Utilities\normalizeFPart.c">
       <Filter>src\Utilities</Filter>
     </ClCompile>
+    <ClCompile Include="src\Internal\zCopyRecord6Dynamic.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\headers\zlib\zconf.h">
