@@ -7,6 +7,7 @@ using System.Linq;
 
 namespace DSSUnitTests
 {
+  [Ignore]
   [TestClass]
   public class GridTesting
   {

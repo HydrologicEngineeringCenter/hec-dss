@@ -120,26 +120,6 @@ namespace DSSUnitTests
 
         Assert.AreEqual(0, pd.LocationInformation.CoordinateID);
       }
-
-    }
-
-    [TestMethod]
-    public void GetPairedDataV6()
-    {
-      var path = "/A/B/STAGE-FLOW//E/F/";
-      using (DssReader r = new DssReader(TestUtility.BasePath + "spd6.dss"))
-      {
-        var pd = r.GetPairedData(path);
-
-        Assert.AreEqual("FEET", pd.UnitsIndependent);
-        Assert.AreEqual("UNT", pd.TypeDependent);
-
-        Assert.AreEqual("CFS", pd.UnitsDependent);
-        Assert.AreEqual("UNT", pd.TypeDependent);
-
-        Assert.IsNotNull(pd);
-      }
-
     }
 
     [TestMethod]

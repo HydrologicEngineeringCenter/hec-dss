@@ -71,9 +71,9 @@ namespace Hec.Dss
       get
       {
         return
-             this.XOrdinate != Constant.UndefinedDouble
-          && this.YOrdinate != Constant.UndefinedDouble
-          && this.ZOrdinate != Constant.UndefinedDouble;
+             this.XOrdinate != Constant.UNDEFINED_LOCATION_INFO_VALUE
+          && this.YOrdinate != Constant.UNDEFINED_LOCATION_INFO_VALUE
+          && this.ZOrdinate != Constant.UNDEFINED_LOCATION_INFO_VALUE;
 
       }
     }
@@ -131,6 +131,9 @@ namespace Hec.Dss
       }
     }
 
+    /// <summary>
+    /// Returns D part with the first Date in the range
+    /// </summary>
     internal string PathWithoutRange
     {
       get
@@ -241,6 +244,10 @@ namespace Hec.Dss
       }
     }
 
+    public override string ToString()
+    {
+      return FullPath;
+    }
 
     public static bool EqualsDateLess(DssPath x, DssPath y)
     {
@@ -261,7 +268,7 @@ namespace Hec.Dss
     }
 
     public DssPath(string A = "", string B = "", string C = "", string D = "", string E = "", string F = "", RecordType recordType = RecordType.Unknown,
-      string dataType = "", string dataUnits = "", double xOrdinate = Constant.UndefinedDouble, double yOrdinate = Constant.UndefinedDouble, double zOrdinate = Constant.UndefinedDouble)
+      string dataType = "", string dataUnits = "", double xOrdinate = Constant.UNDEFINED_LOCATION_INFO_VALUE, double yOrdinate = Constant.UNDEFINED_LOCATION_INFO_VALUE, double zOrdinate = Constant.UNDEFINED_LOCATION_INFO_VALUE)
     {
       _Apart = A;
       _Bpart = B;
@@ -279,7 +286,7 @@ namespace Hec.Dss
     }
 
     public DssPath(string A = "", string B = "", string C = "", DateTime D = default(DateTime), string E = "", string F = "", RecordType recordType = RecordType.Unknown,
-      string dataType = "", string dataUnits = "", double xOrdinate = Constant.UndefinedDouble, double yOrdinate = Constant.UndefinedDouble, double zOrdinate = Constant.UndefinedDouble)
+      string dataType = "", string dataUnits = "", double xOrdinate = Constant.UNDEFINED_LOCATION_INFO_VALUE, double yOrdinate = Constant.UNDEFINED_LOCATION_INFO_VALUE, double zOrdinate = Constant.UNDEFINED_LOCATION_INFO_VALUE)
     {
       _Apart = A;
       _Bpart = B;

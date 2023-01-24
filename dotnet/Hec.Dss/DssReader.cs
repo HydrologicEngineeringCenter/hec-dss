@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Text;
 using Hec.Dss.Native;
 
+[assembly: InternalsVisibleTo("DotNetTests")]
 namespace Hec.Dss
 {
   public class DssReader : IDisposable
@@ -19,8 +22,6 @@ namespace Hec.Dss
 
 
     protected int versionNumber;
-
-    static List<DssReader> ActiveReaders;
 
     DssPathCollection _catalog = null;
 
@@ -39,44 +40,38 @@ namespace Hec.Dss
     {
     }
 
-    private GCHandle _iflTabGC;
+    protected IntPtr dss;
     /// <summary>
     /// Constructor for DSSREADER object
     /// </summary>
     /// <param name="filename">Location of DSS file</param>
     public DssReader(string filename, MethodID messageMethod = MethodID.MESS_METHOD_GENERAL_ID, LevelID messageLevel = LevelID.MESS_LEVEL_GENERAL)
     {
-      GetDssFile(filename, messageMethod, messageLevel);
+      OpenDssFile(filename, messageMethod, messageLevel);
     }
 
     public DssReader(string filename, int version, MethodID messageMethod = MethodID.MESS_METHOD_GENERAL_ID, LevelID messageLevel = LevelID.MESS_LEVEL_GENERAL)
     {
       DssGlobals.SetDefaultVersion(version);
-      GetDssFile(filename, messageMethod, messageLevel);
+      OpenDssFile(filename, messageMethod, messageLevel);
     }
 
-    private void GetDssFile(string filename, MethodID messageMethod, LevelID messageLevel)
+    private void OpenDssFile(string filename, MethodID messageMethod, LevelID messageLevel)
     {
-      if (ActiveReaders == null)
-      {
-        ActiveReaders = new List<DssReader>();
-      }
-      ActiveReaders.Add(this);
       if (messageMethod != MethodID.MESS_METHOD_GENERAL_ID || messageLevel != LevelID.MESS_LEVEL_GENERAL)
       {
         DssGlobals.SetMessageLevel(messageMethod,messageLevel);
       }
-      _iflTabGC = GCHandle.Alloc(ifltab, GCHandleType.Pinned);
-      int status;
+      int status = DssNative.hec_dss_open(filename,out dss);
+
       this.filename = filename;
-      status = DSS.ZOpen(ref ifltab, filename);
-      versionNumber = GetDSSFileVersion();
 
       switch (status)
       {
         case 0:
-          //no problem
-          break;
+            //no problem
+            versionNumber = GetDSSFileVersion();
+            break;
 
         case -1:
           throw new Exception("Unable to create the DSS file.");
@@ -89,6 +84,8 @@ namespace Hec.Dss
 
         case -10:
           throw new Exception("No filename provided.");
+        case -700:
+          throw new Exception("This library only supports DSS version 7 files");
 
         default:
           throw new Exception("Error opening DSS file.");
@@ -116,19 +113,13 @@ namespace Hec.Dss
 
     private DssPathCollection GetCatalogInternal(bool includeMetaData)
     {
-      bool sorted = false;
+
+      var rawCatalog = GetRawCatalog(dss, out int[] intRecordTypes);
       RecordType[] recordTypes = null;
 
-      ZStructCatalogWrapper cat = DSS.zStructCatalogNew();
-      int status = DSS.ZCatalog(ref ifltab, null, ref cat, sorted ? 1 : 0);
-      if (status < 0)
-        throw new Exception("ZCatalog reported a failure with retrieving DSS filenames");
+      recordTypes = ConvertToRecordType(intRecordTypes);
 
-      var paths = cat.PathNameList;
-      if (cat.RecordType != null)
-        recordTypes = ConvertToRecordType(cat.RecordType);
-
-      var condensed = new DssPathCollection(filename, paths, recordTypes, condensed: true);
+      var condensed = new DssPathCollection(filename, rawCatalog.ToArray(), recordTypes, condensed: true);
 
       if (includeMetaData)
         GetMetaDataForCatalog(condensed);
@@ -136,12 +127,37 @@ namespace Hec.Dss
       return condensed;
     }
 
+    internal static List<string> GetRawCatalog(IntPtr dss,out int[] recordTypes, string filter="")
+    {
+      int count = DssNative.hec_dss_record_count(dss);
+      int pathBufferSize = DssNative.hec_dss_CONSTANT_MAX_PATH_SIZE();
+
+      byte[] rawCatalog = new byte[count * pathBufferSize];
+      recordTypes = new int[count];
+
+      List<string> pathNameList = new List<string>(count);
+      byte[] byteFilter = new byte[] { 0 };
+      if( filter!= "")
+      {
+        byteFilter = Encoding.ASCII.GetBytes(filter); 
+      }
+        var numRecords = DssNative.hec_dss_catalog(dss, rawCatalog, recordTypes, byteFilter, count, pathBufferSize);
+        for (int i = 0; i < numRecords; i++)
+        {
+          int start = i * pathBufferSize;
+          var end = System.Array.IndexOf(rawCatalog, (byte)0, start); // get rid of trailing \0\0
+          int size = Math.Min(end - start, pathBufferSize);
+          pathNameList.Add(Encoding.ASCII.GetString(rawCatalog, start, size));
+        }
+
+      return pathNameList;
+    }
+
     private void GetMetaDataForCatalog(DssPathCollection collection)
     {
       if (!collection.HasRecordTypes) // recordTypes is null for V6
       {
         SetRecordType(collection);
-
       }
 
       HashSet<string> uDataUnits = new HashSet<string>();
@@ -151,13 +167,25 @@ namespace Hec.Dss
       HashSet<double> uZs = new HashSet<double>();
       foreach (var item in collection)
       {
-        var loc = DSS.ZLocationRetrieve(ref ifltab, item.FullPath);
-        item.XOrdinate = loc.XOrdinate;
-        item.YOrdinate = loc.YOrdinate;
-        item.ZOrdinate = loc.ZOrdinate;
-        uXs.Add(loc.XOrdinate);
-        uYs.Add(loc.YOrdinate);
-        uZs.Add(loc.ZOrdinate);
+        double x=0, y=0, z=0;
+        int coordinateSystem = 0, coordinateID = 0;
+        int horizontalUnits=0,horizontalDatum = 0;
+        int verticalUnits=0, verticalDatum = 0;
+        ByteString timeZoneName = new ByteString(64);
+        ByteString supplemental = new ByteString(64);// could be bigger, but we are ignoring supplemental here.
+        var loc = DssNative.hec_dss_locationRetrieve(dss, item.FullPath, ref x, ref y, ref z,
+         ref coordinateSystem, ref coordinateID,
+         ref horizontalUnits, ref horizontalDatum,
+         ref verticalUnits, ref verticalDatum,
+         timeZoneName.Data, timeZoneName.Data.Length,
+         supplemental.Data, supplemental.Data.Length);
+
+        item.XOrdinate = x;
+        item.YOrdinate = y;
+        item.ZOrdinate = z;
+        uXs.Add(x);
+        uYs.Add(y);
+        uZs.Add(z);
 
         ReadHeaderInfo(item, collection, uDataUnits, uDataTypes);
       }
@@ -269,7 +297,7 @@ namespace Hec.Dss
       }
       if (item.RecordType == RecordType.PairedData)
       {
-        var pd = GetPairedData(item.FullPath);
+        var pd = GetPairedData(item.FullPath,true);
 
         if (pd != null)
         {
@@ -403,16 +431,16 @@ namespace Hec.Dss
         pathName = (path as DssPathCondensed).GetComprisingDSSPaths()[0].FullPath;
       }
 
-      int rtInt = DSS.ZDataType(ref ifltab, pathName);
+      int rtInt = DssNative.hec_dss_dataType(dss, path.FullPath);
 
-      if (rtInt == -1)
+      if (rtInt <=0)
       {
         //Try again, but slower version.
 
         var catalog = GetCatalog();
         var cmp = new DssPath.DatelessComparer();
         pathName = catalog.Where(p => cmp.Equals(p, path)).First().PathWithoutRange;
-        rtInt = DSS.ZDataType(ref ifltab, pathName);
+        rtInt = DssNative.hec_dss_dataType(dss, path.FullPath);
       }
 
       return RecordTypeFromInt(rtInt);
@@ -433,20 +461,100 @@ namespace Hec.Dss
         return true;
     }
 
+    /// <summary>
+    /// GetTimeSeries reads time series data.
+    /// if the time windows (startDateTime, endDateTime) are not defined the whole data set is returned
+    /// </summary>
+    /// <param name="dssPath"></param>
+    /// <param name="compression"></param>
+    /// <param name="startDateTime"></param>
+    /// <param name="endDateTime"></param>
+    /// <param name="PreReadCatalog"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
     private TimeSeries GetTimeSeries(DssPath dssPath, TimeWindow.ConsecutiveValueCompression compression, DateTime startDateTime = default(DateTime), DateTime endDateTime = default(DateTime), bool PreReadCatalog = true)
     {
-      DssPath p = dssPath;
-      if (dssPath is DssPathCondensed)
-        p = new DssPath(((DssPathCondensed)dssPath).GetPath(0).PathWithoutDate);
-      var blockTimeSeries = (CreateTSWrapper(p, startDateTime, endDateTime));
+      ValidateTsPathExists(dssPath, PreReadCatalog);
+
+      bool datesProvided = startDateTime != default(DateTime) && endDateTime != default(DateTime);
+
+
+      Hec.Dss.Time.DateTimeToHecDateTime(startDateTime, out string startDate, out string startTime);
+      Hec.Dss.Time.DateTimeToHecDateTime(endDateTime, out string endDate, out string endTime);
+
+      if (!datesProvided ) { // return whole data-set
+        const int boolFullSet = 1;
+        int firstValidJulian = 0, firstSeconds = 0, lastValidJulian = 0, lastSeconds = 0;
+        DssNative.hec_dss_tsGetDateTimeRange(dss, dssPath.FullPath, boolFullSet,
+            ref firstValidJulian, ref firstSeconds, ref lastValidJulian, ref lastSeconds);
+        Time.JulianToHecDateTime(firstValidJulian, firstSeconds, out startDate, out startTime);
+        Time.JulianToHecDateTime(lastValidJulian, lastSeconds, out endDate, out endTime);
+
+      }
+      int numberValues = 0;
+      int qualityElementSize=0;
+      // find array size needed.
+      int status = DssNative.hec_dss_tsGetSizes(this.dss, dssPath.PathWithoutDate, startDate, startTime,
+              endDate, endTime, ref numberValues, ref qualityElementSize);
+
       
-      int retrieveFlag = 0;
-      int retrieveDoublesFlag = 2; // get doubles
-      int boolRetrieveQualityNotes = 1;
+      
+      int[] times = new int [numberValues];
+      double[] values = new double[numberValues];
+      int qualityLength = numberValues * qualityElementSize;
+      var quality = new int[qualityLength];
+      int numberValuesRead = 0;
+      int julianBaseDate = 0, timeGranularitySeconds = 60;
+      ByteString units = new ByteString(64);
+      ByteString type = new ByteString(64);
 
-      TimeSeries rVal = null;
-      TimeSeries innerTimeSeries = new TimeSeries();
+      status = DssNative.hec_dss_tsRetrieve(dss, dssPath.PathWithoutRange, 
+          startDate, startTime, endDate, endTime, times, values, numberValues,
+         ref numberValuesRead, quality, ref qualityLength, ref julianBaseDate, ref timeGranularitySeconds,
+         units.Data, units.Length, type.Data, type.Length);
 
+      TimeSeries ts = new TimeSeries();
+      
+      if (status == 0)
+      {
+        /* LATER: change TimeSeries.Times and TimeSeries.Values to  Memory<int> and Memory<double>
+         * This can avoid the possible need to resize.
+        var mt = new System.Memory<int>(times);
+        var t = mt.Slice(0, numberValuesRead);
+        var x = t.Span;
+        var ta = x[3];
+        */
+        Array.Resize(ref times,numberValuesRead);
+        ts.Times = Time.DateTimesFromJulianArray(times, timeGranularitySeconds, julianBaseDate);
+        Array.Resize(ref values, numberValuesRead);
+        if (qualityLength > 0)
+          ts.Qualities = quality;
+        ts.Values = values;
+        ts.DataType = type.ToString();
+        ts.Units = units.ToString();
+        ts.Path = new DssPath(dssPath.FullPath);
+      
+      //ToTimeSeries.Qualities = fromTimeSeries.Quality;
+      
+    //  var locationInfo = new LocationInformation(fromTimeSeries.locationStruct);
+      //ts.LocationInformation = locationInfo;
+        if (compression != TimeWindow.ConsecutiveValueCompression.None)
+          ts = ts.Compress(compression);
+      }
+      else {
+        return GetEmptyTimeSeries(dssPath);
+      }
+
+
+      if (dssPath.IsRegular) // only applies to regular interval
+        ts.Trim();
+
+      return ts;
+
+    }
+
+    private void ValidateTsPathExists(DssPath dssPath, bool PreReadCatalog)
+    {
       if (PreReadCatalog)
       {
         if (!PathExists(dssPath))
@@ -458,50 +566,15 @@ namespace Hec.Dss
         if (rt != RecordType.RegularTimeSeries && rt != RecordType.IrregularTimeSeries)
         {
           throw new Exception("Error reading path " + dssPath.FullPath + ".  This path is not a time series");
-        } 
+        }
       }
-
-      int status = DSS.ZTsRetrieve(ref ifltab, ref blockTimeSeries, retrieveFlag, retrieveDoublesFlag, boolRetrieveQualityNotes);
-
-      // if path is valid, and is time series, (status -1 proably means no data in the time window)
-
-      if (status == 0 )
-      {
-        SetTimeSeriesInfo(blockTimeSeries, innerTimeSeries);
-
-        if (compression != TimeWindow.ConsecutiveValueCompression.None)
-          innerTimeSeries = innerTimeSeries.Compress(compression);
-
-        rVal = innerTimeSeries;
-      }
-      
-      if (rVal == null)
-        return GetEmptyTimeSeries(dssPath);
-
-      if (dssPath.IsRegular) // only applies to regular interval
-        rVal.Trim();
-
-      return rVal;
-      
-    }
-
-    private void SetTimeSeriesInfo(ZStructTimeSeriesWrapper fromTimeSeries, TimeSeries ToTimeSeries) 
-    {
-      ToTimeSeries.Path = new DssPath(fromTimeSeries.Pathname);
-      ToTimeSeries.Units = fromTimeSeries.Units;
-      ToTimeSeries.Times = GetTsTimes(fromTimeSeries);
-      ToTimeSeries.Values = GetTsValues(fromTimeSeries);
-      ToTimeSeries.Qualities = fromTimeSeries.Quality;
-      ToTimeSeries.DataType = fromTimeSeries.Type;
-      ToTimeSeries.ProgramName = fromTimeSeries.ProgramName;
-      var locationInfo = new LocationInformation(fromTimeSeries.locationStruct);
-      ToTimeSeries.LocationInformation = locationInfo;
     }
 
     /// <summary>
-    /// Gets a DSSTimeSeries from the DSS file.  Can be either irregular or regular time series data.  
+    /// Gets a TimeSeries from the DSS file.  Can be either irregular or regular time series data.  
     /// data is returned as doubles
     /// If there is a problem, values and times will be null.
+    /// if the time windows (startDateTime, endDateTime) are not defined the whole data set is returned
     /// </summary>
     ///  <param name="dssPath"></param>
     ///  <param name="startDateTime">starting DateTime (optional overrides path D part)</param>
@@ -583,36 +656,7 @@ namespace Hec.Dss
       return values;
     }
 
-    private static DateTime[] GetTsTimes(ZStructTimeSeriesWrapper ts)
-    {
-      if (ts.Times == null)
-        throw new NullReferenceException("Time Series Times array was null.  Something didn't work right in DSS.");
-
-      int[] timesJulian = ts.Times;
-      DateTime[] times = new DateTime[timesJulian.Length];
-
-      double divisor = (60d * 60d * 24d) / ts.TimeGranularitySeconds;
-
-      // When ts.TimeGranularitySeconds is 60 (e.g. timesJulian is in minutes), this is roughly correct
-      // DateTime.FromOADate((double)timesJulian[0] / (60 * 24))
-      for (int j = 0; j < times.Length; j++)
-      {
-        // There appears to be an off-by-1-day error common to julian dates - DEC 1899 vs JAN 1900
-        times[j] = DateTime.FromOADate((timesJulian[j] / divisor) + ts.JulianBaseDate + 1);
-      }
-      return times;
-    }
-
-    private static DateTime DateTimeFromJulian_DSSLibrary(int julian, int julianBaseDate = 0, int timeGranularitySeconds = 60)
-    {
-      // This implementation works, but uses string manipulation and is REALLLY slow
-      string d = "".PadRight(20);
-      string h = "".PadRight(20);
-      DSS.GetDateAndTime(julian, timeGranularitySeconds, julianBaseDate,
-          ref d, d.Length, ref h, h.Length);
-      return Time.ConvertFromHecDateTime(d, h);
-    }
-
+    
 
     /// <summary>
     /// GetEmptyTimeSeries returns a time series without the data
@@ -622,17 +666,17 @@ namespace Hec.Dss
     /// <returns></returns>
     public TimeSeries GetEmptyTimeSeries(DssPath path)
     {
-      ZStructTimeSeriesWrapper tss;
 
-      if (path is DssPathCondensed)
-      {
-        var parts = ((DssPathCondensed)path).GetComprisingDSSPaths();
-        path = parts[0];
-      }
+       if (path is DssPathCondensed)
+         {
+          var parts = ((DssPathCondensed)path).GetComprisingDSSPaths();
+          path = parts[0];
+         }
+      int size = 64;
+      ByteString units = new ByteString(size);
+      ByteString type = new ByteString(size);
 
-      tss = DSS.ZStructTsNew(path.FullPath);
-
-      int status = DSS.ZTsRetrieveEmpty(ref ifltab, ref tss);
+      int status = DssNative.hec_dss_tsRetrieveInfo(dss, path.FullPath, units.Data, size, type.Data, size);
 
       var rval = new TimeSeries();
       if (status != 0)
@@ -640,89 +684,90 @@ namespace Hec.Dss
         return rval;
       }
       rval.Path = path;
-      rval.Units = tss.Units;
-      rval.DataType = tss.Type;
-      var locationInfo = new LocationInformation(tss.locationStruct);
-      rval.LocationInformation = locationInfo;
+      rval.Units = units.ToString();
+      rval.DataType = type.ToString();
+
+      //TODO location info
+     // var locationInfo = new LocationInformation(tss.locationStruct);
+      //rval.LocationInformation = locationInfo;
       return rval;
     }
 
     /// <summary>
-    /// Gets the double values and ordinates from the paired data at the given path name. If there is a problem, ordinates and values will be null.
+    /// Gets the double values and ordinates from the paired data at the given path name. 
+    /// If there is a problem, ordinates and values will be null.
     /// </summary>
     /// <param name="pathname">pathname for the paired data</param>
-    /// <param name="ordinates">ordinates to return from function</param>
-    /// <param name="values">values to return from function</param>
-    /// <param name="dataType">An array of size 2, the first value is the type of the independent, the second value is the type of the dependent.</param>
-    /// <param name="dataUnits">An array of size 2, the first value is the units of the independent, the second value is the units of the dependent.</param>
-    public PairedData GetPairedData(string pathname)
+    public PairedData GetPairedData(string pathname, bool metaDataOnly=false)
     {
-      ZStructPairedDataWrapper pds = DSS.ZStructPdNew(pathname);
-      int status = DSS.ZpdRetrieve(ref ifltab, ref pds, 2);
-      if (status != 0)
-      {
-        return null;
-      }
+      int numberOrdinates = 0;
+      int numberCurves = 0;
+      int labelsLength = 0;
+      int size = 128;
+      int status;
+      ByteString unitsIndependent = new ByteString(size);
+      ByteString unitsDependent = new ByteString(size);
+      ByteString typeIndependent = new ByteString(size);
+      ByteString typeDependent = new ByteString(size);
 
       var rval = new PairedData();
 
+      status = DssNative.hec_dss_pdRetrieveInfo(dss, pathname, ref numberOrdinates, ref numberCurves,
+        unitsIndependent.Data, unitsIndependent.Data.Length,
+        unitsDependent.Data, unitsDependent.Data.Length,
+        typeIndependent.Data, typeIndependent.Data.Length,
+        typeDependent.Data, typeDependent.Data.Length,
+        ref labelsLength);
+
+      if (status != 0 || numberOrdinates<=0 || numberCurves<=0 )
+        return rval;
+
+      rval.UnitsIndependent = unitsIndependent.ToString();
+      rval.UnitsDependent = unitsDependent.ToString();  
+      rval.TypeDependent = typeDependent.ToString(); 
+      rval.TypeIndependent = typeIndependent.ToString() ;
+
+      if (metaDataOnly)
+        return rval;
+
+      double[] Ordinates = new double[numberOrdinates];
+      double[] Values = new double[numberOrdinates*numberCurves];
+      ByteString labels = new ByteString(labelsLength);
+
+      status = DssNative.hec_dss_pdRetrieve(dss, pathname, Ordinates, Ordinates.Length,
+        Values, Values.Length, ref numberOrdinates, ref numberCurves,
+         unitsIndependent.Data, unitsIndependent.Data.Length,
+        unitsDependent.Data, unitsDependent.Data.Length,
+        typeIndependent.Data, typeIndependent.Data.Length,
+        typeDependent.Data, typeDependent.Data.Length,
+        labels.Data, labels.Data.Length);
+
+      if (status != 0)
+      {
+        return rval;
+      }
+
       rval.Path = new DssPath(pathname);
-      rval.Ordinates = pds.DoubleOrdinates;
+      rval.Ordinates = Ordinates;
 
-      if (pds.FloatValues == null) // doubles
+      
+      int k = 0;
+      rval.Values = new List<double[]>();
+      for (int col = 0; col < numberCurves; col++)
       {
-        int k = 0;
-        rval.Values = new List<double[]>();
-        for (int col = 0; col < pds.NumberCurves; col++)
+        var curve = new double[numberOrdinates];
+        for (int row = 0; row < curve.Length; row++)
         {
-          var a = new double[pds.NumberOrdinates];
-          for (int row = 0; row < pds.NumberOrdinates; row++)
-          {
-            a[row] = pds.DoubleValues[k++];
-          }
-          rval.Values.Add(a);
+          curve[row] = Values[k++];
         }
+        rval.Values.Add(curve);
       }
-      else if (pds.DoubleValues == null) // convert floats to doubles
-      {
-        int k = 0;
-        rval.Values = new List<double[]>();
-        for (int col = 0; col < pds.NumberCurves; col++)
-        {
-          var a = new double[pds.NumberOrdinates];
-          for (int row = 0; row < pds.NumberOrdinates; row++)
-          {
-            a[row] = pds.FloatValues[k++];
-          }
-          rval.Values.Add(a);
-        }
-      }
-
-      if (pds.Labels != null)
-      {
-        int i = 0;
-        int j = 0;
-        while (j < pds.Labels.Length) // get labels
-        {
-          string label = "";
-          while (pds.Labels[j] != 0 && j < pds.Labels.Length - 1)
-          {
-            char c = (char)pds.Labels[j];
-            label += c.ToString();
-            j++;
-          }
-          rval.Labels.Add(label);
-          j++;
-          i++;
-        }
-      }
-
-      rval.TypeDependent = pds.TypeDependent;
-      rval.TypeIndependent = pds.TypeIndependent;
-      rval.UnitsDependent = pds.UnitsDependent;
-      rval.UnitsIndependent = pds.UnitsIndependent;
-      var loc = new LocationInformation(pds.LocationStruct);
-      rval.LocationInformation = loc;
+      List<String> titles = new List<String>();
+      titles.AddRange(labels.ToStringArray());
+      rval.Labels = titles;
+      // TO DO .. Location Stucture...
+     // var loc = new LocationInformation(pds.LocationStruct);
+      //rval.LocationInformation = loc;
 
       return rval;
     }
@@ -746,7 +791,7 @@ namespace Hec.Dss
       }
 
       rval.ColumnValues = tss.DoubleProfileDepths;
-      rval.Times = GetTsTimes(tss);
+      rval.Times = Time.DateTimesFromJulianArray(tss.Times,tss.TimeGranularitySeconds,tss.JulianBaseDate);
       rval.Values = DoubleArrayToMatrix(tss.DoubleProfileValues, rval.ColumnValues.Length, tss.NumberValues);
       return rval;
     }
@@ -841,7 +886,7 @@ namespace Hec.Dss
     /// <returns>6 or 7 depending on the version</returns>
     public int GetDSSFileVersion()
     {
-      return (int)ifltab[0]; // little endian only
+      return DssNative.hec_dss_version(dss);
     }
 
 
@@ -888,9 +933,8 @@ namespace Hec.Dss
 
     public void Dispose()
     {
-      ActiveReaders.Remove(this);
-      DSS.ZClose(ifltab);
-      _iflTabGC.Free();
+      //DSS.ZClose(ifltab);
+      //_iflTabGC.Free();
     }
 
     public enum LevelID

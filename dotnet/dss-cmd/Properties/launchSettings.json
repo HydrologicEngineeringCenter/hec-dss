@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "dss-cmd": {
+      "commandName": "Project",
+      "workingDirectory": "C:\\project\\hec-dss\\heclib\\hecdss\\x64\\Debug",
+      "nativeDebugging": true
+    }
+  }
+}

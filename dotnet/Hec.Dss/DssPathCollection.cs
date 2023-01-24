@@ -414,7 +414,7 @@ namespace Hec.Dss
     {
       for (int i = 0; i < Paths.Count; i++)
       {
-        if (path == Paths[i].FullPath)
+        if (String.Compare(path, Paths[i].FullPath, true) ==0)
         {
           return Paths[i];
         }
