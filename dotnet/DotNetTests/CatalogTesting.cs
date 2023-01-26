@@ -196,5 +196,19 @@ namespace DSSUnitTests
       }
     }
 
+    [TestMethod]
+    public void FindExactPath()
+    {
+      string dssFile = TestUtility.GetCopyForTesting(@"benchmarks6/BaldEDmbrk7.dss");
+      string path = @"/BALD EAGLE LOC HAV/105178.6/FLOW-CUM/17FEB1999-23FEB1999/1Minute/DAMBRKSIMBRCH/";
+      using (DssReader dss = new DssReader(dssFile))
+      {
+        DssPathCollection paths = dss.GetCatalog(true);
+        var dsspath = paths.FindExactPath(path);
+        var ts = dss.GetEmptyTimeSeries(dsspath);
+        Assert.AreEqual("ACRE-FT", ts.Units);
+        Assert.AreEqual("INST-CUM", ts.DataType);
+      }
+    }
   }
 }
