@@ -338,26 +338,6 @@ namespace Hec {
 				return zpdStore(ifltabPinned, pds->theStruct, storageFlag);
 			}
 
-			/// <summary>
-			/// Creates a new struct used for storing the catalog.  Be sure to call zstructFree() when you are done.
-			///</summary>
-			ZStructCatalogWrapper ^ DSS::zStructCatalogNew()
-			{
-				return gcnew ZStructCatalogWrapper(zstructCatalogNew());
-			}
-
-			/// <summary>
-			/// Fills in a catalog struct of all pathnames in the DSS file.  If you want the pathnames to be sorted, set boolSorted to 1, otherwise 0.   Returns the number of pathnames in the struct, otherwise a negative for an error.
-			///</summary>
-			int DSS::ZCatalog(array<long long> ^% ifltab, String ^ pathWithWild, ZStructCatalogWrapper ^% catStruct, int boolSorted)
-			{
-				pin_ptr<long long> ifltabPinned = &ifltab[0];
-				IntPtr marshallToPathWithWild = Marshal::StringToHGlobalAnsi(pathWithWild);
-				char * ptrToPathWithWild = static_cast<char*>(marshallToPathWithWild.ToPointer());
-				int toReturn = zcatalog(ifltabPinned, ptrToPathWithWild, catStruct->theStruct, boolSorted);
-				Marshal::FreeHGlobal(marshallToPathWithWild);
-				return toReturn;
-			}
 
 			/// <summary>
 			/// You can delete a single record by calling the function “zdelete” with the pathname of the record you want to delete.  If you accidently delete a record, it might be recovered by calling zundelete.  However, deleted space is returned to the recycle pool, so that function is not guaranteed to work, and there is less probability of an undelete as more is written to the file.  “Squeezing” a file permanently removes space from undeleted records and is recommended after many deletes or renames, etc.   Returns STATUS_OKAY for successfully deleting the record, or an error code for an unsuccessful call.  Errors include the record does not exist, or you do not have write access, among others.

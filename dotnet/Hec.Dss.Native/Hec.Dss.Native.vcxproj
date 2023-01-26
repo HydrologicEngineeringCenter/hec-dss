@@ -171,7 +171,6 @@
     <ClInclude Include="Source\resource.h" />
     <ClInclude Include="Source\DSS.h" />
     <ClInclude Include="Source\ZStruct.h" />
-    <ClInclude Include="Source\ZStructCatalogWrapper.h" />
     <ClInclude Include="Source\ZStructPairedDataWrapper.h" />
     <ClInclude Include="Source\ZStructSpatialGridWrapper.h" />
     <ClInclude Include="Source\ZStructTimeSeriesWrapper.h" />
