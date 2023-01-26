@@ -13,6 +13,13 @@ namespace DSSUnitTests
     //public const string BasePath = @"M:\_Projects\HEC-DSS\test-data\";
     internal const string BasePath = @"../../../../../../dss-test-data/";
 
+
+    /// <summary>
+    /// Gets path to a temporary file (that does not exist)
+    /// </summary>
+    /// <param name="extension"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
     internal static string GetSimpleTempFileName(string extension)
     {
 

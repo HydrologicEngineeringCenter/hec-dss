@@ -9,16 +9,6 @@ namespace DSSUnitTests
   public class LocationInfoTesting
   {
 
-    [TestMethod]
-    public void ReadLocationFromVersion6File()
-    {
-      using (var r = new DssReader(TestUtility.BasePath + "sample.dss"))
-      {
-        string path = "//SACRAMENTO/TEMP-MAX/01JAN1877/1DAY/OBS/";
-        var L = r.GetLocationInfo(path);
-
-      }
-    }
 
     /// <summary>
     /// how much difference in space to store a string in supplemnetal info
@@ -27,7 +17,7 @@ namespace DSSUnitTests
     [TestMethod]
     public void WhatIsCostOfStringinSupplemental()
     {
-      String fn = "WhatIsCostOfStringinSupplemental.dss";
+      String fn = TestUtility.GetSimpleTempFileName(".dss");
       File.Delete(fn);
       using (var w = new DssWriter(fn))
       {

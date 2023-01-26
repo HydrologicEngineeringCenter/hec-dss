@@ -533,11 +533,9 @@ namespace Hec.Dss
         ts.DataType = type.ToString();
         ts.Units = units.ToString();
         ts.Path = new DssPath(dssPath.FullPath);
-      
-      //ToTimeSeries.Qualities = fromTimeSeries.Quality;
-      
-    //  var locationInfo = new LocationInformation(fromTimeSeries.locationStruct);
-      //ts.LocationInformation = locationInfo;
+
+        ts.LocationInformation = GetLocationInfo(dssPath.FullPath);
+
         if (compression != TimeWindow.ConsecutiveValueCompression.None)
           ts = ts.Compress(compression);
       }
@@ -898,9 +896,30 @@ namespace Hec.Dss
     /// <returns>If successful, the location data in the pathname.  Otherwise returns empty LocationData
     public LocationInformation GetLocationInfo(string pathname)
     {
-      ZStructLocationWrapper w = DSS.ZLocationRetrieve(ref ifltab, pathname);
-      var L = new LocationInformation(w);
-      return L;
+      double x = 0.0, y = 0.0, z = 0.0;
+      int coordinateSystem=0, coordinateID=0,horizontalUnits =0, horizontalDatum=0, verticalUnits=0, verticalDatum= 0;
+      ByteString timeZoneName = new ByteString(128);
+      ByteString supplemental = new ByteString(5000); // TO DO... how big?
+      var locStatus = DssNative.hec_dss_locationRetrieve(dss, pathname, ref x, ref y, ref z,
+                                                      ref coordinateSystem, ref coordinateID,
+                                                      ref horizontalUnits, ref horizontalDatum,
+                                                      ref verticalUnits, ref verticalDatum,
+                                                      timeZoneName.Data, timeZoneName.Data.Length,
+                                                      supplemental.Data, supplemental.Data.Length);
+
+      var rval = new LocationInformation();
+      rval.XOrdinate = x;
+      rval.YOrdinate = y;
+      rval.ZOrdiante = z; 
+      rval.CoordinateSystem = (CoordinateSystem)coordinateSystem;
+      rval.CoordinateID = coordinateID; 
+      rval.HorizontalUnits = horizontalUnits;
+      rval.HorizontalDatum = horizontalDatum; 
+      rval.VerticalUnits = verticalUnits;
+      rval.VerticalDatum = verticalDatum;
+      rval.TimeZoneName = timeZoneName.ToString();
+      rval.Supplemental = supplemental.ToString();
+      return rval;
     }
 
 
