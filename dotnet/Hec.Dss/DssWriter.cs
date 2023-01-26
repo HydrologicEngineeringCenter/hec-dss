@@ -137,6 +137,8 @@ namespace Hec.Dss
     //    else
       //    rval = StoreTimeSeriesIrregular<double>(ts.Path.FullPath, ts.Values, ts.Qualities, times, alwaysReplace, timeGranularitySeconds, startBaseDate, ts.Units, ts.DataType);
       }
+      if (ts.LocationInformation != null)
+        StoreLocation(ts.Path.FullPath, ts.LocationInformation, false);
 
       return rval;
     }
@@ -186,23 +188,15 @@ namespace Hec.Dss
       return rval;
     }
 
-    public void StoreLocation(string dssPath, LocationInformation loc, bool overwrite = false)
+    public int StoreLocation(string dssPath, LocationInformation loc, bool overwrite = false)
     {
-      ZStructLocationWrapper wrapper = DSS.ZStructLocationNew(dssPath);
-      wrapper.CoordinateID = loc.CoordinateID;
-      wrapper.CoordinateSystem = (int)loc.CoordinateSystem;
-      wrapper.HorizontalDatum = loc.HorizontalDatum;
-      wrapper.HorizontalUnits = loc.HorizontalUnits;
-      wrapper.PathName = dssPath;
-      wrapper.Supplemental = loc.Supplemental;
-      wrapper.TimeZoneName = loc.TimeZoneName;
-      wrapper.VerticalDatum = loc.VerticalDatum;
-      wrapper.VerticalUnits = loc.VerticalUnits;
-      wrapper.XOrdinate = loc.XOrdinate;
-      wrapper.YOrdinate = loc.YOrdinate;
-      wrapper.ZOrdinate = loc.ZOrdiante;
-      DSS.ZLocationStore(ref ifltab, ref wrapper, overwrite ? 1 : 0);
 
+      var timeZoneName = new ByteString(loc.TimeZoneName);
+      var supplemental = new ByteString(loc.Supplemental);
+      int status = DssNative.hec_dss_locationStore(dss, dssPath, loc.XOrdinate, loc.YOrdinate, loc.ZOrdiante,
+         (int)loc.CoordinateSystem, loc.CoordinateID, loc.HorizontalUnits, loc.HorizontalDatum,
+         loc.VerticalUnits, loc.VerticalDatum, timeZoneName.Data, supplemental.Data, overwrite? 1:0);
+      return status;
     }
 
 

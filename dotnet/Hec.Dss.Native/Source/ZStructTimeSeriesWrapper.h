@@ -1,6 +1,5 @@
 #pragma once
 #include "managedToUnmanaged.h"
-#include "ZStructLocationWrapper.h"
 #include "ZStruct.h"
 
 namespace Hec {
@@ -468,15 +467,6 @@ namespace Hec {
 				property int UserHeaderNumber {
 					int get() { return theStruct->userHeaderNumber; }
 					void set(int val) { theStruct->userHeaderNumber = val; }
-				}
-				property ZStructLocationWrapper^ locationStruct {
-					ZStructLocationWrapper^ get()
-					{
-						if (theStruct && theStruct->locationStruct)
-							return gcnew ZStructLocationWrapper(theStruct->locationStruct, true);
-						else
-							return nullptr;
-					}
 				}
 				property int DateOfFirstRecFound {
 					int get() { return theStruct->dateOfFirstRecFound; }

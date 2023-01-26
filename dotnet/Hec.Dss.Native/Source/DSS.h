@@ -11,7 +11,6 @@ extern "C"
 #include "DSSGrid.h"
 #include "managedToUnmanaged.h"
 #include "ZStructTimeSeriesWrapper.h"
-#include "ZStructLocationWrapper.h"
 #include "ZStructPairedDataWrapper.h"
 #include "ZStructSpatialGridWrapper.h"
 #include "ZStruct.h"
@@ -146,11 +145,6 @@ namespace Hec {
 				///</summary>
 				static ZStructCatalogWrapper^ zStructCatalogNew();
 
-				static ZStructLocationWrapper^ ZStructLocationNew(String^ pathName);
-
-				static ZStructLocationWrapper^ ZLocationRetrieve(array<long long>^% ifltab, String^ PathName);
-
-				static int ZLocationStore(array<long long>^% ifltab, ZStructLocationWrapper^% zsl, int storageFlag);
 
 				/// <summary>
 				/// Fills in a catalog struct of all pathnames in the DSS file.  If you want the pathnames to be sorted, set boolSorted to 1, otherwise 0.   Returns the number of pathnames in the struct, otherwise a negative for an error.

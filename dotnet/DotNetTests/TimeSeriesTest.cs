@@ -301,7 +301,18 @@ namespace DSSUnitTests
       var t = new DateTime(1965, 1, 1);
       var ts = CreateSampleTimeSeries(t, "cfs", "Inst-Val");
       ts.Path = new DssPath("/dotnet/csharp/values//1Day//");
-
+      ts.LocationInformation = new LocationInformation();
+      ts.LocationInformation.XOrdinate = 9875.12;
+      ts.LocationInformation.YOrdinate = 8764.01;
+      ts.LocationInformation.ZOrdiante = 7653.90;
+      ts.LocationInformation.CoordinateID = 2;
+      ts.LocationInformation.CoordinateSystem = CoordinateSystem.Local;
+      ts.LocationInformation.HorizontalDatum = 1;
+      ts.LocationInformation.HorizontalUnits = 3;
+      ts.LocationInformation.VerticalDatum = 3;
+      ts.LocationInformation.VerticalUnits = 2;
+      ts.LocationInformation.Supplemental = "supplemental info:Jan 26, 2023";
+      ts.LocationInformation.TimeZoneName = "America/Anchorage";
       File.Delete(fn);
       using (DssWriter w = new DssWriter(fn))
       {
@@ -416,6 +427,18 @@ namespace DSSUnitTests
         Assert.AreEqual(ts.Times[i], ts2.Times[i]);
         Assert.AreEqual(ts.Values[i], ts2.Values[i]);
       }
+
+      Assert.AreEqual(ts.LocationInformation.XOrdinate, ts2.LocationInformation.XOrdinate);
+      Assert.AreEqual(ts.LocationInformation.YOrdinate        ,ts2.LocationInformation.YOrdinate);
+      Assert.AreEqual(ts.LocationInformation.ZOrdiante        ,ts2.LocationInformation.ZOrdiante);
+      Assert.AreEqual(ts.LocationInformation.CoordinateID     ,ts2.LocationInformation.CoordinateID);
+      Assert.AreEqual(ts.LocationInformation.CoordinateSystem ,ts2.LocationInformation.CoordinateSystem);
+      Assert.AreEqual(ts.LocationInformation.HorizontalDatum  ,ts2.LocationInformation.HorizontalDatum);
+      Assert.AreEqual(ts.LocationInformation.HorizontalUnits  ,ts2.LocationInformation.HorizontalUnits);
+      Assert.AreEqual(ts.LocationInformation.VerticalDatum    ,ts2.LocationInformation.VerticalDatum);
+      Assert.AreEqual(ts.LocationInformation.VerticalUnits    ,ts2.LocationInformation.VerticalUnits);
+      Assert.AreEqual(ts.LocationInformation.Supplemental     ,ts2.LocationInformation.Supplemental);
+      Assert.AreEqual(ts.LocationInformation.TimeZoneName     ,ts2.LocationInformation.TimeZoneName);
     }
 
     public static TimeSeries CreateSampleTimeSeries(DateTime t, string units = "", string dataType = "", int secondIncrement = 86400, int size = 1000)

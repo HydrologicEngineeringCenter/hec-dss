@@ -343,6 +343,8 @@ HECDSS_API int hec_dss_locationRetrieve(dss_file* dss, const char* fullPath,
     *coordinateID = loc->coordinateID;
     *verticalUnits = loc->verticalUnits;
     *verticalDatum = loc->verticalDatum;
+    *horizontalUnits = loc->horizontalUnits;
+    *horizontalDatum = loc->horizontalDatum;
 
     if(loc->timeZoneName)
       stringCopy(timeZoneName, timeZoneNameLength, loc->timeZoneName, strlen(loc->timeZoneName));
@@ -351,8 +353,57 @@ HECDSS_API int hec_dss_locationRetrieve(dss_file* dss, const char* fullPath,
   }
   zstructFree(loc);
   return status;
- 
 }
+
+/// <summary>
+/// 
+/// </summary>
+/// <param name="dss"></param>
+/// <param name="fullPath"></param>
+/// <param name="x"></param>
+/// <param name="y"></param>
+/// <param name="z"></param>
+/// <param name="coordinateSystem"></param>
+/// <param name="coordinateID"></param>
+/// <param name="horizontalUnits"></param>
+/// <param name="horizontalDatum"></param>
+/// <param name="verticalUnits"></param>
+/// <param name="verticalDatum"></param>
+/// <param name="timeZoneName"></param>
+/// <param name="supplemental"></param>
+/// <param name="replace">set to 1 to overwrite existing data, otherwise use 0</param>
+/// <returns></returns>
+HECDSS_API int hec_dss_locationStore(dss_file* dss, const char* fullPath,
+  const double x, const double y, const double z,
+  const int coordinateSystem, const int coordinateID,
+  const int horizontalUnits, const int horizontalDatum,
+  const int verticalUnits, const int verticalDatum,
+  const char* timeZoneName,
+  const char* supplemental,
+  const int replace) {
+
+  zStructLocation* loc = zstructLocationNew(fullPath);
+  
+  loc->xOrdinate = x;
+  loc->yOrdinate = y;
+  loc->zOrdinate = z;
+  loc->coordinateSystem = coordinateSystem;
+  loc->coordinateID = coordinateID;
+  loc->verticalUnits = verticalUnits;
+  loc->verticalDatum = verticalDatum;
+  loc->horizontalDatum = horizontalDatum;
+  loc->horizontalUnits = horizontalUnits;
+  loc->timeZoneName = mallocAndCopy(timeZoneName);
+  loc->allocated[zSTRUCT_timeZoneName] = 1;
+  loc->supplemental = mallocAndCopy(supplemental);
+  loc->allocated[zSTRUCT_otherInformation] = 1;
+  int status = zlocationStore(dss->ifltab, loc, replace);
+
+  zstructFree(loc);
+  return status;
+}
+
+
 /// <summary>
 /// hec_dss_pdRetrieveInfo is used by client app to determine
 /// required array sizes for calling hec_dss_pdRetrieve.

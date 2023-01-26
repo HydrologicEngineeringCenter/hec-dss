@@ -264,41 +264,6 @@ namespace Hec {
 				return toReturn;
 			}
 
-			ZStructLocationWrapper ^ DSS::ZLocationRetrieve(array<long long> ^% ifltab, String ^ pathName)
-			{
-				int ver = (int)ifltab[0];
-
-				char * ptrToPathName = managedToUnmanagedString(pathName);
-				zStructLocation* loc = zstructLocationNew(ptrToPathName);
-				loc->xOrdinate = -9999;
-				loc->yOrdinate = -9999;
-				loc->zOrdinate = -9999;
-
-				ZStructLocationWrapper ^ toReturn = gcnew ZStructLocationWrapper(loc);
-				pin_ptr<long long> ifltabPinned = &ifltab[0];
-				if( ver >6)
-				  zlocationRetrieve(ifltabPinned, loc);
-				free(ptrToPathName);//all of these were copied using the dss library call
-			
-				return toReturn;
-			}
-
-			ZStructLocationWrapper ^ DSS::ZStructLocationNew(String ^ pathName)
-			{
-				char * ptrToPathName = managedToUnmanagedString(pathName);
-				ZStructLocationWrapper ^ toReturn = gcnew ZStructLocationWrapper(zstructLocationNew(ptrToPathName));
-				free(ptrToPathName);//all of these were copied using the dss library call
-				return toReturn;
-			}
-
-			int DSS::ZLocationStore(array<long long> ^% ifltab, ZStructLocationWrapper ^% zsl, int storageFlag)
-			{
-				pin_ptr<long long> ifltabPinned = &ifltab[0];
-				int status = zlocationStore(ifltabPinned, zsl->theStruct, storageFlag);
-
-				return status;
-
-			}
 
 			/// <summary>
 			/// zstructPdNewFloats is for storing paired data float values.  Pass in the array of float ordinates (independent variable), and the float values array (dependent variable), the number of ordinates and number of curves.  The floatValues array must contain numberOrdinates * numberCurves values.  Since C doesn’t know about doubly dimensioned arrays (very well), the floatValues array is often a single dimensioned array numberOrdinates * numberCurves values long.
