@@ -6,8 +6,6 @@ namespace Hec.Dss
 {
   public class DssWriter : DssReader
   {
-    static DssWriter() => Assembly.Initialize();
-
     public DssWriter(string filename, MethodID messageMethod = MethodID.MESS_METHOD_GENERAL_ID, 
       LevelID messageLevel = LevelID.MESS_LEVEL_GENERAL) : base(filename, messageMethod, messageLevel)
     {
@@ -362,19 +360,8 @@ namespace Hec.Dss
     /// <param name="grid">the grid you want to store</param>
     public void StoreGrid(string pathName, Grid grid)
     {
-      if (versionNumber == 6)
-      {
-        throw new Exception("Cannot write grids to DSS version 6 files");
-      }
-      ZStructSpatialGridWrapper gs;
-      if (grid.DSSObj != null)
-      { //this grid was read in before
-        gs = grid.DSSObj;
-        gs.PathName = pathName;
-      }
-      else
-      {
-        gs = DSS.ZStructSpatialGridNew(pathName);
+      
+      /*
         gs.DataUnits = grid.DataUnits;
         gs.DataType = (int)grid.DataType;
         gs.LowerLeftCellX = grid.LowerLeftCellX;
@@ -388,8 +375,8 @@ namespace Hec.Dss
         gs.NumberOfRanges = grid.NumberOfRanges;
         gs.RangeLimitTable = grid.RangeLimitTable;
         gs.NumberEqualOrExceedingRangeLimit = grid.NumberEqualOrExceedingRangeLimit;
-      }
-      DSS.ZSpatialGridStore(ref ifltab, ref gs);
+      */
+    
     }
 
     /// <summary>

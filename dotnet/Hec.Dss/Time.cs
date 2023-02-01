@@ -7,8 +7,6 @@ namespace Hec.Dss
 {
   public static class Time
   {
-    static Time() => Assembly.Initialize();
-
     const string HecDateFormat = "ddMMMyyyy";
 
     static Regex hecDateRegex = new Regex(@"\d\d\w{3}\d\d\d\d", System.Text.RegularExpressions.RegexOptions.Compiled);

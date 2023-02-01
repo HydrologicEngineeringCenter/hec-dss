@@ -119,5 +119,26 @@ public class DssNative
   byte[] typeDependent, int typeDependentLength,
   byte[] labels, int labelsLength);
 
+
+  [DllImport("hecdss")]
+  public static extern int hec_dss_gridRetrieve(IntPtr dss, string pathname, int boolRetrieveData,
+  ref int type, ref int dataType,
+  ref int lowerLeftCellX, ref int lowerLeftCellY,
+  ref int numberOfCellsX, ref int numberOfCellsY,
+  ref int numberOfRanges, ref int srsDefinitionType,
+  ref int timeZoneRawOffset, ref int isInterval,
+  ref int isTimeStamped, ref int storageDataType,
+  byte[] dataUnits, int dataUnitsLength,
+  byte[] dataSource, int dataSourceLength,
+  byte[] srsName, int srsNameLength,
+  byte[] srsDefinition, int srsDefinitionLength,
+  byte[] timeZoneID, int timeZoneIDLength,
+  ref float cellSize, ref float xCoordOfGridCellZero,
+  ref float yCoordOfGridCellZero, ref float nullValue,
+  ref float maxDataValue, ref float minDataValue,
+  ref float meanDataValue,
+  float[] rangeLimitTable, int rangeTablesLength,
+  float[] numberEqualOrExceedingRangeLimit,
+  float[] data, int dataLength);
 }
 

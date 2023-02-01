@@ -9,8 +9,6 @@ namespace Hec.Dss
 {
   public class DssPathCollection : IList<DssPath>
   {
-    static DssPathCollection() => Assembly.Initialize();
-
     public DataTable ToDataTable()
     {
       var table = new DataTable();

@@ -11,8 +11,6 @@ namespace Hec.Dss
 {
   public class DssReader : IDisposable
   {
-    static DssReader() => Assembly.Initialize();
-
 
     private const double UNDEFINED_DOUBLE = -3.402823466e+38;
     private const double UNDEFINED_DOUBLE_2 = -3.4028234663852886E+38;
@@ -931,12 +929,58 @@ namespace Hec.Dss
     /// <returns>Returns an albers grid if the grid is albers, a specified grid if its a specified grid, or a generic grid otherwise.  Returns null if there is a problem.</returns>
     public Grid GetGrid(string pathname, bool retrieveData)
     {
-      ZStructSpatialGridWrapper grid = DSS.ZStructSpatialGridNew(pathname);
-      int status = DSS.ZSpatialGridRetrieve(ref ifltab, ref grid, retrieveData);
-      if (status != 0)
-        return null;
+      int type;
+      int dataType = 0;
+      int lowerLeftCellX = 0;
+      int lowerLeftCellY = 0;
+      int numberOfCellsX = 0;
+      int numberOfCellsY = 0;
+      int numberOfRanges = 0;
+      int srsDefinitionType = 0;
+      int timeZoneRawOffset = 0;
+      int isInterval = 0;
+      int isTimeStamped = 0;
+      ByteString dataUnits = new ByteString(64);
+      int dataUnitsLength;
+      ByteString dataSource = new ByteString(128); 
+      ByteString srsName = new ByteString(64);
+      ByteString srsDefinition = new ByteString(1024*8);
+      ByteString timeZoneID = new ByteString(64);
+      float cellSize;
+      float xCoordOfGridCellZero;
+      float yCoordOfGridCellZero;
+      float nullValue;
+      float maxDataValue;
+      float minDataValue;
+      float meanDataValue;
+      float[] rangeLimitTable;
+      int rangeTablesLength;
+      float[] numberEqualOrExceedingRangeLimit;
+      float[] data;
+      int dataLength;
 
-      return new Grid(grid, retrieveData);
+      var rval = new Grid();
+/*      DssNative.hec_dss_gridRetrieve(dss, pathname, 0, ref type, ref dataType,
+  ref lowerLeftCellX, ref lowerLeftCellY,
+  ref numberOfCellsX, ref numberOfCellsY,
+  ref numberOfRanges, ref srsDefinitionType,
+  ref timeZoneRawOffset, ref isInterval,
+  ref isTimeStamped, 
+  byte[] dataUnits, int dataUnitsLength,
+  byte[] dataSource, int dataSourceLength,
+  byte[] srsName, int srsNameLength,
+  byte[] srsDefinition, int srsDefinitionLength,
+  byte[] timeZoneID, int timeZoneIDLength,
+  ref float cellSize, ref float xCoordOfGridCellZero,
+  ref float yCoordOfGridCellZero, ref float nullValue,
+  ref float maxDataValue, ref float minDataValue,
+  ref float meanDataValue,
+  float[] rangeLimitTable, int rangeTablesLength,
+  float[] numberEqualOrExceedingRangeLimit,
+  float[] data, int dataLength)
+*/
+      return rval;
+
     }
 
     /// <summary>

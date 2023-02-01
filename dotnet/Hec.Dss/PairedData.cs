@@ -6,8 +6,6 @@ namespace Hec.Dss
 {
   public class PairedData
   {
-    static PairedData() => Assembly.Initialize();
-
     public DssPath Path { get; set; }
 
     public double[] Ordinates { get; set; }

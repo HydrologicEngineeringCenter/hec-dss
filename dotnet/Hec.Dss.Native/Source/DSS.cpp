@@ -395,33 +395,11 @@ namespace Hec {
 				return toReturn;
 			}
 
-			ZStructSpatialGridWrapper ^ DSS::ZStructSpatialGridNew(String ^ filename)
-			{
-				IntPtr marshallToCharStar1 = Marshal::StringToHGlobalAnsi(filename);
-				char * ptrToFirst = static_cast<char*>(marshallToCharStar1.ToPointer());
-				zStructSpatialGrid * newGrid = zstructSpatialGridNew(ptrToFirst);
-				ZStructSpatialGridWrapper ^ ToReturn = gcnew ZStructSpatialGridWrapper(newGrid);
-				Marshal::FreeHGlobal(marshallToCharStar1);
-				return ToReturn;
-			}
-
 			String ^ DSS::AlbersSRS() {
 				String ^ rval = gcnew String( SHG_SRC_DEFINITION);
 				return rval;
 			}
 
-			int DSS::ZSpatialGridStore(array<long long>^% ifltab, ZStructSpatialGridWrapper ^% gs)
-			{
-				pin_ptr<long long> ifltabPinned = &ifltab[0];
-				return zspatialGridStore(ifltabPinned, gs->theStruct);
-			}
-
-			int DSS::ZSpatialGridRetrieve(array<long long>^% ifltab, ZStructSpatialGridWrapper ^% gs, bool retrieveData)
-			{
-				pin_ptr<long long> ifltabPinned = &ifltab[0];
-				int status = DSSGrid::RetrieveGriddedData(ifltabPinned, gs->theStruct, retrieveData ? 1 : 0);
-				return status; 
-			}
 
 			bool DSS::IsTimeDefined(int julianDate, int timeSeconds)
 			{

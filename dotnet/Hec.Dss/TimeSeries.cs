@@ -10,7 +10,6 @@ namespace Hec.Dss
   {
     private bool _compressed = false;
     public bool Compressed { get { return _compressed; } }
-    static TimeSeries() => Assembly.Initialize();
 
     public override string ToString()
     {

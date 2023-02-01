@@ -12,7 +12,6 @@ extern "C"
 #include "managedToUnmanaged.h"
 #include "ZStructTimeSeriesWrapper.h"
 #include "ZStructPairedDataWrapper.h"
-#include "ZStructSpatialGridWrapper.h"
 #include "ZStruct.h"
 #include "ZStructTransferWrapper.h"
 
@@ -23,13 +22,8 @@ namespace Hec {
 			{
 			private:
 			public:
-				static ZStructSpatialGridWrapper^ ZStructSpatialGridNew(String^ filename);
 
 				static String^ AlbersSRS();
-
-				static int ZSpatialGridRetrieve(array<long long>^% ifltab, ZStructSpatialGridWrapper^% gs, bool retrieveData);
-
-				static int ZSpatialGridStore(array<long long>^% ifltab, ZStructSpatialGridWrapper^% gs);
 
 				/// <summary>
 				/// Open a DSS file with the full path of the file.  Will decide for you to open DSS6 or DSS7.  Returns the status.  Call Zclose when you are finished with the file, or deletion/rename.

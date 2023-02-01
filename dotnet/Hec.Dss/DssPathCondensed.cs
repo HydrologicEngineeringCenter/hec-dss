@@ -8,8 +8,6 @@ namespace Hec.Dss
 {
   public class DssPathCondensed : DssPath
   {
-    static DssPathCondensed() => Assembly.Initialize();
-
     private List<string> _comprisedDParts;
     internal readonly string DPartStart;
     internal readonly string DPartEnd;

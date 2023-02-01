@@ -78,7 +78,7 @@ namespace DSSUnitTests
         var catalog = r.GetCatalog(true);
         var path = catalog.GetCondensedPath(new DssPath("//SACRAMENTO/PRECIP-INC/11Jul1877 - 30Jun2009/1Day/OBS/"));
         var recordType = r.GetRecordType(path);
-        Assert.IsTrue(recordType == RecordType.RegularTimeSeries);
+        Assert.AreEqual(RecordType.RegularTimeSeries,recordType);
       }
     }
 

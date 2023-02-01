@@ -10,14 +10,6 @@ namespace Hec.Dss
 {
   public static class PathAssist
   {
-    static PathAssist() => Assembly.Initialize();
-
-    [Obsolete("FormPathName is deprecated, please use DssPath.FullPath instead.")]
-    public static string FormPathName(string aPart, string bPart, string cPart, string dPart, string ePart, string fPart)
-    {
-     var p = new DssPath(aPart,bPart,cPart,dPart,ePart,fPart);
-     return p.FullPath;
-    }
 
     public static List<string> FilterByPart(IList<string> pathList, DssPath pathFilter)
     {

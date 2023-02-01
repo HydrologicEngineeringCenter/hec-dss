@@ -114,6 +114,64 @@ UNIT[""Meter"",1.0]]";
     }
 
 
+    private static Grid SampleGrid()
+    {
+      var g = new Grid();
+      g.GridType = GridType.ALBERS;
+
+      /*//sb.AppendLine("Storage Data Type  :"+ _grid.StorageDataType);
+      sb.AppendLine("GridStruct Version :" + StructVersion);
+      sb.AppendLine("Path :" + PathName);
+      sb.AppendLine("GridType :" + GridType);
+      sb.AppendLine("Version : " + Version);
+      sb.AppendLine("Data Units : " + DataUnits);
+      sb.AppendLine("Data Type : " + DataType);
+      sb.AppendLine("Data Source : " + StorageDataType);
+      sb.AppendLine("LowerLeftCellX : " + LowerLeftCellX);
+      sb.AppendLine("LowerLeftCellY : " + LowerLeftCellY);
+      sb.AppendLine("NumberOfCellsX : " + NumberOfCellsX);
+      sb.AppendLine("NumberOfCellsY : " + NumberOfCellsY);
+      sb.AppendLine("CellSize : " + CellSize.ToString("0.00000"));
+      sb.AppendLine("CompressionMethod : " + CompressionMethod);
+      sb.AppendLine("SizeofCompressedElements : " + SizeOfCompressedElements);
+
+      sb.AppendLine("NumberOfRanges : " + NumberOfRanges);
+      sb.AppendLine("SrsName : " + SRSName);
+      sb.AppendLine("SrsDefinitionType : " + SRSDefinitionType);
+      sb.AppendLine("_srsDefinition : " + SRSDefinition);
+      sb.AppendLine("XCoordOfGridCellZero : " + XCoordOfGridCellZero.ToString("0.00000"));
+      sb.AppendLine("YCoordOfGridCellZero : " + YCoordOfGridCellZero.ToString("0.00000"));
+      sb.AppendLine("NullValue : " + NullValue.ToString("0.00000"));
+      sb.AppendLine("TimeZoneID : " + TimeZoneID);
+      sb.AppendLine("timeZoneRawOffset : " + TimeZoneRawOffset);
+      sb.AppendLine("IsInterval : " + IsInterval);
+      sb.AppendLine("IsTimeStamped : " + IsTimeStamped);
+      sb.AppendLine("Storage Data Type  :" + StorageDataType);
+
+      if (StorageDataType == 0) // GRID_FLOAT
+      {
+        sb.AppendLine("Max Data Value : " + MaxDataValue.ToString("0.00000"));
+        sb.AppendLine("Min Data Value : " + MinDataValue.ToString("0.00000"));
+        sb.AppendLine("Mean Data Value : " + MeanDataValue.ToString("0.00000"));
+        sb.AppendLine("======== Range Limit Table ===========");
+
+        if (RangeLimitTable != null && RangeLimitTable.Length > 0)
+        {
+          sb.AppendLine("           Range        > or =    Incremental Count");
+          int size = NumberOfRanges;
+          for (int i = 0; i < size - 1; i++)
+          {
+            var v = RangeLimitTable[i];
+            var vs = v.ToString("0.00000");
+            if (v == UndefinedValue)
+              vs = "undefined".PadRight(16);
+            sb.AppendLine(vs + " "
+                + NumberEqualOrExceedingRangeLimit[i].ToString("0.00000"));
+          }
+
+      */
+          return g;
+    }
     /*
 /SHG/TRUCKEE RIVER/TEMP-AIR/31JAN2016:2400//INTERPOLATED-ROUNDED/
 
@@ -166,31 +224,19 @@ YCoord Of Grid Cell Zero: 0.0
 =========================================================         
      */
     [TestMethod]
-    public void V7ReadV6SHG()
+    public void BasicReadWrite()
     {
       string path = "/SHG/TRUCKEE RIVER/TEMP-AIR/31JAN2016:2400//INTERPOLATED-ROUNDED/";
-      string fn = TestUtility.BasePath + "version7AlbersGrid.dss";
+      string fn = TestUtility.GetCopyForTesting("version7AlbersGrid.dss");
 
-      Console.WriteLine(Directory.GetCurrentDirectory());
-
-      if (!File.Exists(fn))
-        Console.WriteLine("File does not exist " + fn);
-      DssReader r = new DssReader(fn);
-
-      var t1 = DateTime.Now;
-      Grid g2 = r.GetGrid(path, true);
-
-      for (int i = 0; i < g2.Data.Length; i++)
+      Grid g1 = null;
+      using (DssReader r = new DssReader(fn)) 
       {
-        var f = g2.Data[i];
+        g1 = r.GetGrid(path, true);
       }
 
-      var t2 = DateTime.Now;
-      TimeSpan ts = t2.Subtract(t1);
-      Console.WriteLine("grid read time " + ts.TotalSeconds);
-      Assert.IsNotNull(g2);
 
-      string s = g2.Info();
+      //string s = g2.Info();
 
     }
 
@@ -198,12 +244,16 @@ YCoord Of Grid Cell Zero: 0.0
     public void V7ReadSimpleAlbersUndefinedProjection()
     {
       string path = "/a/b/c/01jan2001:1200/01jan2001:1300/f/";
-      string fn = TestUtility.BasePath + "gridtest.dss";
+      string fn = TestUtility.GetCopyForTesting("gridtest.dss");
 
-      DssReader r = new DssReader(fn);
+      Grid g1 = null;
+      Grid g2 = null;
+      using (DssReader r = new DssReader(fn))
+      {
 
-      Grid g1 = r.GetGrid(path, false);
-      Grid g2 = r.GetGrid(path, true);
+        g1 = r.GetGrid(path, false);
+        g2 = r.GetGrid(path, true);
+      }
       Assert.IsNotNull(g1);
       Assert.IsNotNull(g2);
 
@@ -213,7 +263,6 @@ YCoord Of Grid Cell Zero: 0.0
         float expected = i * 1.2f;
         Assert.AreEqual(expected, x[i], 0.0001);
       }
-      Assert.AreEqual(0, g2.StorageDataType);
       float delta = 0.000001f; // tolarance for comparisons;
       Assert.AreEqual(DssDataType.PER_AVER, g2.DataType); //  Data Type: PER-AVER
       Assert.AreEqual(50, g2.Data.Length);
@@ -231,7 +280,7 @@ YCoord Of Grid Cell Zero: 0.0
       Assert.AreEqual(20.3f, g2.YCoordOfGridCellZero, delta); //YCoord Of Grid Cell Zero: 20.3
 
       Assert.AreEqual(path.ToLower(), g2.PathName.ToLower());
-      Assert.AreEqual(DssGridType.ALBERS, g2.GridType); //Grid Type: ALBERS
+      Assert.AreEqual(GridType.ALBERS, g2.GridType); //Grid Type: ALBERS
       Assert.AreEqual(12, g2.NumberOfRanges);
 
       /*

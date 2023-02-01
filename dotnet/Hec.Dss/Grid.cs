@@ -7,256 +7,98 @@ using Hec.Dss.Native;
 
 namespace Hec.Dss
 {
-  /// <summary>
-  /// DSS Data type (statistic)
-  /// </summary>
-  public enum DssDataType
-  {
-    PER_AVER = 0,
-    PER_CUM = 1,
-    INST_VAL = 2,
-    INST_CUM = 3,
-    FREQ = 4,
-    INVAL = 5
-  }
-
-  /// <summary>
-  /// DSS Record Type
-  /// </summary>
-  public enum DssGridType
-  {
-    UNDEFINED_GRID_TYPE = 400,
-    HRAP = 410,
-    ALBERS = 420,
-    SPECIFIED_GRID_TYPE = 430
-  }
-
+ 
   public class Grid
   {
-    static Grid() => Assembly.Initialize();
+    public string PathName { get; set; }
 
-    protected ZStructSpatialGridWrapper _grid;
+    public GridType GridType { get; set; }
 
-    public string PathName
-    {
-      get { return _grid.PathName; }
-      set { _grid.PathName = value; }
-    }
-
-    public DssGridType GridType
-    {
-      get { return (DssGridType)_grid.GridType; } // readonly. 
-    }
-    public ZStructSpatialGridWrapper DSSObj
-    {
-      get
-      {
-        return _grid;
-      }
-    }
-
-
-    public string DataUnits
-    {
-      get
-      {
-        return _grid.DataUnits;
-      }
-      set
-      {
-        _grid.DataUnits = value;
-      }
-    }
+    public string DataUnits { get; set; }
 
     /// <summary>
     /// DSS data type (statistic type for the data)
     /// PER_AVER = 0, PER_CUM = 1, INST_VAL = 2, INST_CUM = 3, FREQ = 4, INVAL = 5
     /// </summary>
-    public DssDataType DataType
-    {
-      get
-      {
-        return (DssDataType)_grid.DataType;
-      }
-      set
-      {
-        _grid.DataType = (int)value;
-      }
-    }
+    public DssDataType DataType { get; set; }
 
-    public int LowerLeftCellX
-    {
-      get
-      {
-        return _grid.LowerLeftCellX;
-      }
-      set
-      {
-        _grid.LowerLeftCellX = value;
-      }
-    }
+    public int LowerLeftCellX { get; set; }
 
-    public int LowerLeftCellY
-    {
-      get
-      {
-        return _grid.LowerLeftCellY;
-      }
-      set
-      {
-        _grid.LowerLeftCellY = value;
-      }
-    }
+    public int LowerLeftCellY { get; set; }
 
-    public int NumberOfCellsX
-    {
-      get
-      {
-        return _grid.NumberOfCellsX;
-      }
-      set
-      {
-        _grid.NumberOfCellsX = value;
-      }
-    }
+    public int NumberOfCellsX { get; set; }
 
-    public int NumberOfCellsY
-    {
-      get
-      {
-        return _grid.NumberOfCellsY;
-      }
-      set
-      {
-        _grid.NumberOfCellsY = value;
-      }
-    }
+    public int NumberOfCellsY { get; set; }
 
-    public float CellSize
-    {
-      get
-      {
-        return _grid.CellSize;
-      }
-      set
-      {
-        _grid.CellSize = value;
-      }
-    }
+    public float CellSize { get; set; }
 
-    public string SRSName
-    {
-      get
-      {
-        return _grid.SRSName;
-      }
-      set
-      {
-        _grid.SRSName = value;
-      }
-    }
+    public string SRSName { get; set; }
 
-    public int SRSDefinitionType
-    {
-      get
-      {
-        return _grid.SRSDefinitionType;
-      }
-      set
-      {
-        _grid.SRSDefinitionType = value;
-      }
-    }
+    public int SRSDefinitionType { get; set; }
 
-    public string SRSDefinition
-    {
-      get
-      {
-        return _grid.SRSDefinition;
-      }
-      set
-      {
-        _grid.SRSDefinition = value;
-      }
-    }
+    public string SRSDefinition { get; set; }
 
-    public float XCoordOfGridCellZero
-    {
-      get
-      {
-        return _grid.XCoordOfGridCellZero;
-      }
-      set
-      {
-        _grid.XCoordOfGridCellZero = value;
-      }
-    }
+    public float XCoordOfGridCellZero { get; set; }
 
-    public float YCoordOfGridCellZero
-    {
-      get
-      {
-        return _grid.YCoordOfGridCellZero;
-      }
-      set
-      {
-        _grid.YCoordOfGridCellZero = value;
-      }
-    }
+    public float YCoordOfGridCellZero { get; set; }
+
+    private int StructVersion { get; set; } 
+    private int Version { get; set; } 
+    private int CompressionMethod { get; set; } 
+    private int SizeOfCompressedElements { get; set; } 
 
     public string Info()
     {
       StringBuilder sb = new StringBuilder();
 
       sb.AppendLine("******** Printing GRID STRUCT ********");
-      //sb.AppendLine("Storage Data Type  :"+ _grid.StorageDataType);
-      sb.AppendLine("GridStruct Version :" + _grid.StructVersion);
-      sb.AppendLine("Path :" + _grid.PathName);
-      sb.AppendLine("GridType :" + _grid.GridType);
-      sb.AppendLine("Version : " + _grid.Version);
-      sb.AppendLine("Data Units : " + _grid.DataUnits);
-      sb.AppendLine("Data Type : " + _grid.DataType);
-      sb.AppendLine("Data Source : " + _grid.StorageDataType);
-      sb.AppendLine("LowerLeftCellX : " + _grid.LowerLeftCellX);
-      sb.AppendLine("LowerLeftCellY : " + _grid.LowerLeftCellY);
-      sb.AppendLine("NumberOfCellsX : " + _grid.NumberOfCellsX);
-      sb.AppendLine("NumberOfCellsY : " + _grid.NumberOfCellsY);
-      sb.AppendLine("CellSize : " + _grid.CellSize.ToString("0.00000"));
-      sb.AppendLine("CompressionMethod : " + _grid.CompressionMethod);
-      sb.AppendLine("SizeofCompressedElements : " + _grid.SizeOfCompressedElements);
+      sb.AppendLine("GridStruct Version :" + StructVersion);
+      sb.AppendLine("Path :" + PathName);
+      sb.AppendLine("GridType :" + GridType);
+      sb.AppendLine("Version : " + Version);
+      sb.AppendLine("Data Units : " + DataUnits);
+      sb.AppendLine("Data Type : " + DataType);
+      //sb.AppendLine("Data Source : " + StorageDataType);
+      sb.AppendLine("LowerLeftCellX : " + LowerLeftCellX);
+      sb.AppendLine("LowerLeftCellY : " + LowerLeftCellY);
+      sb.AppendLine("NumberOfCellsX : " + NumberOfCellsX);
+      sb.AppendLine("NumberOfCellsY : " + NumberOfCellsY);
+      sb.AppendLine("CellSize : " + CellSize.ToString("0.00000"));
+      sb.AppendLine("CompressionMethod : " + CompressionMethod);
+      sb.AppendLine("SizeofCompressedElements : " + SizeOfCompressedElements);
 
-      sb.AppendLine("NumberOfRanges : " + _grid.NumberOfRanges);
-      sb.AppendLine("SrsName : " + _grid.SRSName);
-      sb.AppendLine("SrsDefinitionType : " + _grid.SRSDefinitionType);
-      sb.AppendLine("_srsDefinition : " + _grid.SRSDefinition);
-      sb.AppendLine("XCoordOfGridCellZero : " + _grid.XCoordOfGridCellZero.ToString("0.00000"));
-      sb.AppendLine("YCoordOfGridCellZero : " + _grid.YCoordOfGridCellZero.ToString("0.00000"));
-      sb.AppendLine("NullValue : " + _grid.NullValue.ToString("0.00000"));
-      sb.AppendLine("TimeZoneID : " + _grid.TimeZoneID);
-      sb.AppendLine("timeZoneRawOffset : " + _grid.TimeZoneRawOffset);
-      sb.AppendLine("IsInterval : " + _grid.IsInterval);
-      sb.AppendLine("IsTimeStamped : " + _grid.IsTimeStamped);
-      sb.AppendLine("Storage Data Type  :" + _grid.StorageDataType);
+      sb.AppendLine("NumberOfRanges : " + NumberOfRanges);
+      sb.AppendLine("SrsName : " + SRSName);
+      sb.AppendLine("SrsDefinitionType : " + SRSDefinitionType);
+      sb.AppendLine("_srsDefinition : " + SRSDefinition);
+      sb.AppendLine("XCoordOfGridCellZero : " + XCoordOfGridCellZero.ToString("0.00000"));
+      sb.AppendLine("YCoordOfGridCellZero : " + YCoordOfGridCellZero.ToString("0.00000"));
+      sb.AppendLine("NullValue : " + NullValue.ToString("0.00000"));
+      sb.AppendLine("TimeZoneID : " + TimeZoneID);
+      sb.AppendLine("timeZoneRawOffset : " + TimeZoneRawOffset);
+      sb.AppendLine("IsInterval : " + IsInterval);
+      sb.AppendLine("IsTimeStamped : " + IsTimeStamped);
+      sb.AppendLine("Storage Data Type  :" + StorageDataType);
 
-      if (_grid.StorageDataType == 0) // GRID_FLOAT
+      if (StorageDataType == 0) // GRID_FLOAT
       {
-        sb.AppendLine("Max Data Value : " + _grid.MaxDataValue.ToString("0.00000"));
-        sb.AppendLine("Min Data Value : " + _grid.MinDataValue.ToString("0.00000"));
-        sb.AppendLine("Mean Data Value : " + _grid.MeanDataValue.ToString("0.00000"));
+        sb.AppendLine("Max Data Value : " + MaxDataValue.ToString("0.00000"));
+        sb.AppendLine("Min Data Value : " + MinDataValue.ToString("0.00000"));
+        sb.AppendLine("Mean Data Value : " + MeanDataValue.ToString("0.00000"));
         sb.AppendLine("======== Range Limit Table ===========");
 
-        if (_grid.RangeLimitTable != null && _grid.RangeLimitTable.Length > 0)
+        if (RangeLimitTable != null && RangeLimitTable.Length > 0)
         {
           sb.AppendLine("           Range        > or =    Incremental Count");
-          int size = _grid.NumberOfRanges;
+          int size = NumberOfRanges;
           for (int i = 0; i < size - 1; i++)
           {
-            var v = _grid.RangeLimitTable[i];
+            var v = RangeLimitTable[i];
             var vs = v.ToString("0.00000");
-            if (v == _grid.UndefinedValue)
+            if (v == UndefinedValue)
               vs = "undefined".PadRight(16);
             sb.AppendLine(vs + " "
-                + _grid.NumberEqualOrExceedingRangeLimit[i].ToString("0.00000"));
+                + NumberEqualOrExceedingRangeLimit[i].ToString("0.00000"));
           }
 
           sb.AppendLine("====================================================");
@@ -265,181 +107,34 @@ namespace Hec.Dss
       return sb.ToString();
     }
 
-    public float NullValue
-    {
-      get
-      {
-        return _grid.NullValue;
-      }
-      set
-      {
-        _grid.NullValue = value;
-      }
-    }
+    public float NullValue { get; set; }
 
-    public float UndefinedValue
-    {
-      get { return _grid.UndefinedValue; }
-    }
+    public float UndefinedValue { get; set; }
 
-    public string TimeZoneID
-    {
-      get
-      {
-        return _grid.TimeZoneID;
-      }
-      set
-      {
-        _grid.TimeZoneID = value;
-      }
-    }
+    public string TimeZoneID { get; set; }
 
-    public int TimeZoneRawOffset
-    {
-      get
-      {
-        return _grid.TimeZoneRawOffset;
-      }
-      set
-      {
-        _grid.TimeZoneRawOffset = value;
-      }
-    }
+    public int TimeZoneRawOffset { get; set; }
 
-    public bool IsInterval
-    {
-      get
-      {
-        return _grid.IsInterval;
-      }
-      set
-      {
-        _grid.IsInterval = value;
-      }
-    }
+    public bool IsInterval { get; set; }
 
-    public bool IsTimeStamped
-    {
-      get
-      {
-        return _grid.IsTimeStamped;
-      }
-      set
-      {
-        _grid.IsTimeStamped = value;
-      }
-    }
+    public bool IsTimeStamped { get; set; }
 
-    public int NumberOfRanges
-    {
-      get
-      {
-        return _grid.NumberOfRanges;
-      }
-      set
-      {
-        _grid.NumberOfRanges = value;
-      }
-    }
+    public int NumberOfRanges { get; set; }
 
-    public int StorageDataType
-    {
-      get
-      {
-        return _grid.StorageDataType;
-      }
-      set
-      {
-        _grid.MinDataValue = value;
-      }
-    }
+    private int StorageDataType { get; set; }  
 
-    public float MinDataValue
-    {
-      get
-      {
-        return _grid.MinDataValue;
-      }
-      set
-      {
-        _grid.MinDataValue = value;
-      }
-    }
+    public float MinDataValue { get; set; } 
 
-    public float MaxDataValue
-    {
-      get
-      {
-        return _grid.MaxDataValue;
-      }
-      set
-      {
-        _grid.MaxDataValue = value;
-      }
-    }
+    public float MaxDataValue { get; set; } 
 
-    public float MeanDataValue
-    {
-      get
-      {
-        return _grid.MeanDataValue;
-      }
-      set
-      {
-        _grid.MeanDataValue = value;
-      }
-    }
+    public float MeanDataValue { get; set; }  
 
-    public float[] RangeLimitTable
-    {
-      get
-      {
-        return _grid.RangeLimitTable;
-      }
-      set
-      {
-        _grid.RangeLimitTable = value;
-      }
-    }
+    public float[] RangeLimitTable { get; set; }  
 
-    public int[] NumberEqualOrExceedingRangeLimit
-    {
-      get
-      {
-        return _grid.NumberEqualOrExceedingRangeLimit;
-      }
-      set
-      {
-        _grid.NumberEqualOrExceedingRangeLimit = value;
-      }
-    }
+    public int[] NumberEqualOrExceedingRangeLimit { get; set; } 
 
+    public float[] Data { get; set; } 
 
-    private float[] _data = null;
-
-    public float[] Data
-    {
-      get
-      {
-        return _data;
-      }
-      set
-      {
-        _grid.Data = value;
-        _data = value;
-      }
-    }
-
-    /// <summary>
-    /// Grid constructor 
-    /// </summary>
-    /// <param name="grid">The DSS grid object that has the information</param>
-    /// <param name="dataRetrieved">Whether you retrieved data in ZgRetrieve or not</param>
-    internal Grid(ZStructSpatialGridWrapper grid, bool dataRetrieved)
-    {
-      _grid = grid;
-      _data = _grid.Data;
-    }
 
     private string ConvertMilitaryTimeTo12Hour(string timeString)
     {

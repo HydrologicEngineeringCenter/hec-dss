@@ -7,7 +7,6 @@ namespace Hec.Dss
   public enum CoordinateSystem { None = 0, LatLong = 1, StatePlaneFIPS = 2, StatePlanADS = 3, UTM = 4, Local = 5 }
   public class LocationInformation
   {
-    static LocationInformation() => Assembly.Initialize();
 
     public const string VERTICAL_DATUM_INFO_KEY = "verticalDatumInfo";
 
