@@ -227,6 +227,26 @@ namespace DSSUnitTests
       File.Delete(dssFile);
     }
 
+    [TestMethod]
+    public void GridTest7PlayWithCase()
+    {
+      var fn = Path.Combine(TestUtility.BasePath, "ras", "forecast7.dss");
+
+      var path = "/Shg/MARFC/precip/20JAN2023:0800/20JAN2023:0900/Q0/";
+      using (DssReader reader = new DssReader(fn))
+      {
+        var dssPath = new DssPath(path);
+        var catalog = reader.GetCatalog().Select(xp =>xp.FullPath).ToList();
+        var list = PathAssist.FilterByPart(catalog, dssPath);
+          Assert.AreEqual(1, list.Count); 
+        DssPath p = new DssPath(path);
+        var grid = reader.GetGrid(p, true);
+
+        Assert.IsNotNull(grid);
+        Assert.IsNotNull(grid.Data);
+      }
+    }
+
 
 
     [TestMethod]
