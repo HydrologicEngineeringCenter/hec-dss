@@ -26,23 +26,6 @@ namespace DSSUnitTests
       }
 
     }
-    [TestMethod]
-    public void GridTest6()
-    {
-      var fn = Path.Combine(TestUtility.BasePath, "SixAndOneHour6.dss");
-      using (DssReader reader = new DssReader(fn))
-      {
-        var cat = reader.GetCatalog();
-        var tbl = cat.ToDataTable();
-        Console.WriteLine(cat);
-        Assert.AreEqual(29, cat.CondensedPaths.Count);
-        Assert.AreEqual(29, cat.Count);
-
-
-      
-      }
-
-    }
 
     [TestMethod]
     public void DssPathBug()
@@ -160,22 +143,6 @@ namespace DSSUnitTests
     }
 
 
-    [TestMethod]
-    public void CondencedCatalogIssuePrecip()
-    {
-
-      var tbl = Catalog(TestUtility.BasePath + "DSSv6_NAB_Active_Precip_Gages.dss", true);
-      Assert.IsTrue(tbl.Rows.Count > 30);
-
-      
-      var s = "RecordType='"+RecordType.RegularTimeSeries.ToString()+"'";
-      Assert.AreEqual(tbl.Rows.Count, tbl.Select(s).Length);
-
-
-
-    }
-
-
     private static DataTable Catalog(string filename, bool extendedInfo = false)
     {
       DataTable rval = new DataTable();
@@ -228,17 +195,6 @@ namespace DSSUnitTests
         Console.WriteLine();
       }
     }
-
-    [TestMethod]
-    public void CondencedCatalog6()
-    {
-     var t = Catalog(TestUtility.BasePath + "sample6.dss", true);
-      Console.WriteLine("sample6.dss catalog has "+t.Rows.Count+" rows ");
-      Assert.IsTrue(t.Rows.Count == 36);
-    }
-
-
-
 
   }
 }

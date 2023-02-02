@@ -134,10 +134,6 @@ namespace Hec {
 				///</summary>
 				static ZStructPairedDataWrapper^ ZStructPdNew(String^ pathName);
 
-				/// <summary>
-				/// Creates and returns a struct to pass data into DSS.  A lower level call often used for retreiving data.  Use ZStructFree when finished.
-				///</summary>
-				static int ZpdRetrieve(array<long long>^% ifltab, ZStructPairedDataWrapper^% pds, int retrieveDoubleFlag);
 
 				static int ZpdStore(array<long long>^% ifltab, ZStructPairedDataWrapper^% pds, int storageFlag);
 

@@ -110,30 +110,32 @@ namespace Hec.Dss
         throw new Exception("Path was not specified");
 
       int rval = -1;
-      int alwaysReplace = 0;
-      float[] floats = null;
-      if (saveAsFloat)
-        floats = Array.ConvertAll(ts.Values, item => (float)item);
+      var units = new ByteString(ts.Units);
+      var type = new ByteString(ts.DataType);
+
       if (ts.IsRegular())
       {// store as Regular times series
-        if (saveAsFloat)
-          rval = StoreTimeSeriesRegular<float>(ts.Path.FullPath, floats, ts.Qualities, alwaysReplace, ts.StartDateTime, ts.Units, ts.DataType);
-        else
-          rval = StoreTimeSeriesRegular<double>(ts.Path.FullPath, ts.Values, ts.Qualities, alwaysReplace, ts.StartDateTime, ts.Units, ts.DataType);
+        Time.DateTimeToHecDateTime(ts.StartDateTime, out string date, out string time);
+        int qualityLength = 0;
+        if( ts.Qualities != null )
+           qualityLength = ts.Qualities.Length;
+        rval = DssNative.hec_dss_tsStoreRegular(dss, ts.Path.FullPath,date, time, ts.Values,
+                   ts.Values.Length,ts.Qualities,qualityLength, saveAsFloat ? 1 : 0, units.Data, type.Data);
 
       }
       else
       {// irregular 
-
+        //var times =Time.ConvertDatesToHecInteger(ts.Times);
+        throw new NotImplementedException("");
         int timeGranularitySeconds = GetIrregularTimeGranularity(ts);
 
         int julianBaseDate = GetIrregularJulianBaseDate(ts, timeGranularitySeconds);
         string startBaseDate = Time.JulianToHecDate(julianBaseDate);
         int[] times = Time.ConvertDatesToHecInteger(ts.Times, julianBaseDate, timeGranularitySeconds);
-        if (saveAsFloat)
-          rval = StoreTimeSeriesIrregular<float>(ts.Path.FullPath, floats, ts.Qualities, times, alwaysReplace, timeGranularitySeconds, startBaseDate, ts.Units, ts.DataType);
-        else
-          rval = StoreTimeSeriesIrregular<double>(ts.Path.FullPath, ts.Values, ts.Qualities, times, alwaysReplace, timeGranularitySeconds, startBaseDate, ts.Units, ts.DataType);
+//        if (saveAsFloat)
+  //        rval = StoreTimeSeriesIrregular<float>(ts.Path.FullPath, floats, ts.Qualities, times, alwaysReplace, timeGranularitySeconds, startBaseDate, ts.Units, ts.DataType);
+    //    else
+      //    rval = StoreTimeSeriesIrregular<double>(ts.Path.FullPath, ts.Values, ts.Qualities, times, alwaysReplace, timeGranularitySeconds, startBaseDate, ts.Units, ts.DataType);
       }
 
       return rval;

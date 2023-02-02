@@ -185,17 +185,6 @@ namespace DSSUnitTests
     }
 
     [TestMethod]
-    public void ReadMinimalTimeSeriesV6()
-    {
-      using (DssReader r = new DssReader(TestUtility.BasePath + "sample6.dss"))
-      {
-        var ts = r.GetEmptyTimeSeries(new DssPath("//SACRAMENTO/PRECIP-INC/01Jan1877/1Day/OBS/"));
-        Assert.AreEqual("INCHES", ts.Units);
-        Assert.AreEqual("PER-CUM", ts.DataType);
-      }
-    }
-
-    [TestMethod]
     public void ReadCondensedPathName()
     {
       using (DssReader r = new DssReader(TestUtility.BasePath + "sample7.dss"))
@@ -307,7 +296,7 @@ namespace DSSUnitTests
     [TestMethod]
     public void ReadWriteDailyRegular()
     {
-      var fn = "dot_net_ReadWriteDailyRegular.dss";
+      var fn = TestUtility.GetSimpleTempFileName(".dss");
 
       var t = new DateTime(1965, 1, 1);
       var ts = CreateSampleTimeSeries(t, "cfs", "Inst-Val");
@@ -317,7 +306,6 @@ namespace DSSUnitTests
       using (DssWriter w = new DssWriter(fn))
       {
         w.Write(ts);
-        t = new DateTime(1965, 1, 1);
         var ts2 = w.GetTimeSeries(ts.Path, ts.StartDateTime, ts.Times[ts.Times.Length - 1]);
         Console.WriteLine(ts2.Path);
         Compare(ts, ts2);
@@ -482,25 +470,26 @@ namespace DSSUnitTests
       Console.WriteLine(ts.Values.Length);
     }
 
-    //  [Ignore]
     [TestMethod]
-    public void ReadTs()
+    public void ReadTsWholeDataSet_D_Part_is_Range()
     {
-      DssPath path = new DssPath("//SACRAMENTO/TEMP-MIN/01Jan1877/1Day/OBS/");
+      DssPath path = new DssPath("//SACRAMENTO/TEMP-MIN/11Jul1877-30Jun2009/1Day/OBS/");
 
       DssReader r = new DssReader(TestUtility.BasePath + "sample7.dss");
       var ts = r.GetTimeSeries(path);
-      
-      for (int i = 0; i < ts.Count; i++)
-      {
-      
-        var d = ts.Values[i];
-         if( DssReader.IsValid(d))
-        {
 
-        }
-      }
+      Assert.AreEqual(48202, ts.Values.Length);
 
+    }
+    [TestMethod]
+    public void ReadTsSingleRecordNoTimeWindow()
+    {
+      DssPath path = new DssPath("//SACRAMENTO/TEMP-MIN/01Jan1877/1Day/OBS/");
+
+      using DssReader r = new DssReader(TestUtility.BasePath + "sample7.dss");
+      var ts = r.GetTimeSeries(path);
+
+      Assert.AreEqual(48202, ts.Count);
       //DateTime 
       //11jul1877 24:00  60 DEG-F
       DateTime t = new DateTime(1877, 7, 12);   // next day because of 24:00
@@ -606,12 +595,6 @@ namespace DSSUnitTests
     }
 
     [TestMethod]
-    public void PathNotFoundIssueV6()
-    {
-      string fn = "path_issue6.dss";
-      ReadWithRange(fn);
-    }
-    [TestMethod]
     public void PathNotFoundIssueV7()
     {
       string fn = "path_issue7.dss";
@@ -664,11 +647,15 @@ namespace DSSUnitTests
     [TestMethod]
     public void ToDataTableWithQuality()
     {
-      DssPath path = new DssPath("/MISSISSIPPI/ST. LOUIS/FLOW//1Day/OBS/");
-      using (DssReader r = new DssReader(TestUtility.BasePath + "sample7.dss"))
+      var pathString = "/regular-time-series/GAPT/FLOW//6Hour/forecast1/";
+
+      DssPath path = new DssPath(pathString);
+      using (DssReader r = new DssReader(TestUtility.BasePath + "examples-all-data-types.dss"))
       {
         var ts = r.GetTimeSeries(path);
         var dt = ts.ToDataTable();
+        var s = dt.Rows[0]["Quality"].ToString().Trim();
+        Assert.AreEqual("OriginalValue, NoRevision", s);
       }
     }
 
@@ -719,17 +706,6 @@ namespace DSSUnitTests
       }
     }
 
-    [TestMethod]
-    public void CreateVersion6FileExplicit()
-    {
-        string fn = TestUtility.BasePath + "newV6.dss";
-        File.Delete(fn);
-        using (DssWriter w = new DssWriter(fn, 6))
-        {
-                Assert.IsTrue(w.GetDSSFileVersion() == 6);
-        }
-
-    }
 
     [TestMethod]
     public void CreateVersion7FileExplicit()
@@ -743,21 +719,6 @@ namespace DSSUnitTests
 
     }
 
-    [TestMethod]
-    public void OpenExistingVersion6FileUsingExplicit6()
-    {
-        DssPath path = new DssPath("//SACRAMENTO/PRECIP-INC/01JAN1877/1DAY/OBS/");
-        using (DssReader r = new DssReader(TestUtility.BasePath + "sample6.dss", 7))
-        {
-            var ts = r.GetTimeSeries(path);
-            var dt = ts.ToDataTable();
-        }
-
-        using (DssReader r = new DssReader(TestUtility.BasePath + "sample6.dss", 6))
-        {
-            Assert.IsTrue(r.GetDSSFileVersion() == 6);
-        }
-    }
 
     [TestMethod]
     public void OpenExistingVersion7FileUsingExplicit7()

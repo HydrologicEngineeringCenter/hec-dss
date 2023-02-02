@@ -17,12 +17,12 @@ namespace DSSUnitTests
       /// 
       /// </summary>
       [TestMethod]
-      public void Squeezev6()
+      public void Squeezev7()
       {
          String fn = TestUtility.GetSimpleTempFileName(".dss");
          Console.WriteLine(fn);
          
-         int dssVersion = 6;
+         int dssVersion = 7;
          //DssGlobals.SetDefaultVersion(version);
          using (DssWriter r = new DssWriter(fn, dssVersion))
          {
