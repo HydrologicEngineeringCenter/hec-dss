@@ -38,7 +38,7 @@ namespace Hec.Dss
       dPart = dPart == "" ? "(.*?)" : Regex.Escape(dPart);
       ePart = ePart == "" ? "(.*?)" : Regex.Escape(ePart);
       fPart = fPart == "" ? "(.*?)" : Regex.Escape(fPart);
-      Regex regex = new Regex("/" + aPart + "/" + bPart + "/" + cPart  + "/" + dPart +  "/" + ePart +  "/" + fPart +  "/");
+      Regex regex = new Regex("/" + aPart + "/" + bPart + "/" + cPart  + "/" + dPart +  "/" + ePart +  "/" + fPart +  "/", RegexOptions.IgnoreCase);
       for (int i = 0; i < ListOfPaths.Count;i++)
       {
         match = regex.Match(ListOfPaths[i]);
@@ -70,7 +70,7 @@ namespace Hec.Dss
       dPart = dPart == "" ? "(.*?)" : Regex.Escape(dPart);
       ePart = ePart == "" ? "(.*?)" : Regex.Escape(ePart);
       fPart = fPart == "" ? "(.*?)" : Regex.Escape(fPart);
-      Regex regex = new Regex("/" + aPart + "/" + bPart + "/" + cPart + "/" + dPart + "/" + ePart + "/" + fPart + "/");
+      Regex regex = new Regex("/" + aPart + "/" + bPart + "/" + cPart + "/" + dPart + "/" + ePart + "/" + fPart + "/", RegexOptions.IgnoreCase);
       for (int i = 0; i < ListOfPaths.Count; i++)
       {
         match = regex.Match(ListOfPaths[i].FullPath);
