@@ -362,7 +362,7 @@ namespace DSSUnitTests
 
 
       File.Delete(fn);
-      using (DssWriter w = new DssWriter(fn, DssReader.MethodID.MESS_METHOD_UTILITY_ID, DssReader.LevelID.MESS_LEVEL_USER_DIAG))
+      using (DssWriter w = new DssWriter(fn))
       {
         w.Write(ts);
         var ts2 = w.GetTimeSeries(ts.Path, ts.StartDateTime, ts.Times[ts.Times.Length - 1]);
@@ -603,7 +603,7 @@ namespace DSSUnitTests
           int m = Convert.ToInt32(dateParts[0]);
           int d = Convert.ToInt32(dateParts[1]);
           int y = Convert.ToInt32(dateParts[2]);
-          int j = Hec.Dss.Native.DSS.YearMonthDayToJulian(y, m, d);
+          int j = Time.YearMonthDayToJulian(y, m, d);
           t.Add(j);
           rt.Add(tokens[0]);
           var x = Convert.ToDouble(tokens[1]);

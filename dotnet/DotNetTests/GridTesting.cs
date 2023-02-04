@@ -378,7 +378,7 @@ YCoord Of Grid Cell Zero: 0.0
       Assert.IsNotNull(g1);
       Assert.IsNotNull(g2);
 
-      string expected = Hec.Dss.Native.DSS.AlbersSRS();
+      string expected = Grid.SHG_SRC_DEFINITION;
 
       Console.WriteLine("expected:\n" + expected);
       Console.WriteLine(g2.SRSDefinition);
@@ -395,7 +395,7 @@ YCoord Of Grid Cell Zero: 0.0
       var targetDSSPath = new DssPath(pathname);
 
       double sum = 0;
-      using (var dssr = new DssReader(fn, DssReader.MethodID.MESS_METHOD_GENERAL_ID, DssReader.LevelID.MESS_LEVEL_CRITICAL))
+      using (var dssr = new DssReader(fn))
       {
         var cat = dssr.GetCatalog(false);
         var paths = cat.Paths.Select(dssPath => dssPath.FullPath).ToArray();

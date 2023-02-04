@@ -4,7 +4,6 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
-using Hec.Dss.Native;
 
 [assembly: InternalsVisibleTo("DotNetTests")]
 namespace Hec.Dss
@@ -40,26 +39,18 @@ namespace Hec.Dss
 
     protected IntPtr dss;
     /// <summary>
-    /// Constructor for DSSREADER object
+    /// Constructor for DssReader 
     /// </summary>
     /// <param name="filename">Location of DSS file</param>
-    public DssReader(string filename, MethodID messageMethod = MethodID.MESS_METHOD_GENERAL_ID, LevelID messageLevel = LevelID.MESS_LEVEL_GENERAL)
+    public DssReader(string filename,int messageLevel=3 )
     {
-      OpenDssFile(filename, messageMethod, messageLevel);
+      OpenDssFile(filename,messageLevel);
     }
 
-    public DssReader(string filename, int version, MethodID messageMethod = MethodID.MESS_METHOD_GENERAL_ID, LevelID messageLevel = LevelID.MESS_LEVEL_GENERAL)
+    
+    private void OpenDssFile(string filename, int messageLevel)
     {
-      DssGlobals.SetDefaultVersion(version);
-      OpenDssFile(filename, messageMethod, messageLevel);
-    }
-
-    private void OpenDssFile(string filename, MethodID messageMethod, LevelID messageLevel)
-    {
-      if (messageMethod != MethodID.MESS_METHOD_GENERAL_ID || messageLevel != LevelID.MESS_LEVEL_GENERAL)
-      {
-        DssGlobals.SetMessageLevel(messageMethod,messageLevel);
-      }
+      DssGlobals.SetMessageLevel(messageLevel);
       int status = DssNative.hec_dss_open(filename,out dss);
 
       this.filename = filename;
@@ -444,21 +435,7 @@ namespace Hec.Dss
       return RecordTypeFromInt(rtInt);
     }
 
-    /// <summary>
-    /// Will tell you if a squeeze for this DSS file is needed
-    /// </summary>
-    /// <returns>True if squeeze needed, false if squeeze not needed</returns>
-    public bool SqueezeNeeded()
-    {
-      int status = DSS.zSqueezeNeeded(ref ifltab);
-      if (status < 0)
-        throw new Exception("zSqueezeNeeded reported a failure");
-      else if (status == 0)
-        return false;
-      else
-        return true;
-    }
-
+    
     /// <summary>
     /// GetTimeSeries reads time series data.
     /// if the time windows (startDateTime, endDateTime) are not defined the whole data set is returned
@@ -605,55 +582,6 @@ namespace Hec.Dss
       return null;
     }
 
-    public static List<ZStructTimeSeriesWrapper> CreateTSWrapperList(DssPath dssPath, DateTime startDateTime, DateTime endDateTime)
-    {
-      List<ZStructTimeSeriesWrapper> listTss = new List<ZStructTimeSeriesWrapper>();
-
-      //TODO: When we figure out TODO in CreateTSWrapper, potentially change && to ||
-      if (dssPath is DssPathCondensed)
-      {//TODO  find contiguous blocks, minimize number of calls.
-        var dssPathCon = dssPath as DssPathCondensed;
-        for (int i = 0; i < dssPathCon.ComprisedDParts.Count; i++)
-        {
-          var comprisedPath = dssPathCon.GetPath(i);
-          listTss.Add(CreateTSWrapper(comprisedPath));
-        }
-      }
-      else
-        listTss.Add(CreateTSWrapper(dssPath, startDateTime, endDateTime));
-      return listTss;
-    }
-
-    private static ZStructTimeSeriesWrapper CreateTSWrapper(DssPath path, DateTime startDateTime = default(DateTime), DateTime endDateTime = default(DateTime))
-    {
-      //TODO: Find out how DSS deals with null start and valid end, OR valid start null end.
-      //If it handles it like we expect then this method needs to change to accomdate that
-      bool datesProvided = startDateTime != default(DateTime) && endDateTime != default(DateTime);
-      if (datesProvided)
-      {
-        string startDate, startTime, endDate, endTime;
-        Time.DateTimeToHecDateTime(startDateTime, out startDate, out startTime);
-        Time.DateTimeToHecDateTime(endDateTime, out endDate, out endTime);
-        return DSS.ZStructTsNewTimes(path.FullPath, startDate, startTime, endDate, endTime);
-      }
-      else
-      {
-        return DSS.ZStructTsNew(path.FullPath);
-      }
-
-    }
-
-    private static double[] GetTsValues(ZStructTimeSeriesWrapper comprisedTimeSeries)
-    {
-      if (comprisedTimeSeries.DoubleValues == null)
-        throw new NullReferenceException("Time Series double values was null.  Something didn't work right in DSS.");
-      double[] values = comprisedTimeSeries.DoubleValues;
-
-      return values;
-    }
-
-    
-
     /// <summary>
     /// GetEmptyTimeSeries returns a time series without the data
     /// used to lookup the units, and data type of a series.
@@ -774,7 +702,8 @@ namespace Hec.Dss
     }
     public TimeSeriesProfile GetTimeSeriesProfile(DssPath pathname, DateTime startDateTime=default, DateTime endDateTime=default)
     {
-      var rval = new TimeSeriesProfile();
+      throw new NotImplementedException("");
+/*      var rval = new TimeSeriesProfile();
       ZStructTimeSeriesWrapper tss = CreateTSWrapper(pathname,startDateTime, endDateTime);
 
       int retrieveDoublesFlag = 2; // get doubles
@@ -790,6 +719,7 @@ namespace Hec.Dss
       rval.Times = Time.DateTimesFromJulianArray(tss.Times,tss.TimeGranularitySeconds,tss.JulianBaseDate);
       rval.Values = DoubleArrayToMatrix(tss.DoubleProfileValues, rval.ColumnValues.Length, tss.NumberValues);
       return rval;
+*/
     }
 
     private static double[,] DoubleArrayToMatrix(double[] values, int numCols, int numRows)
@@ -859,12 +789,11 @@ namespace Hec.Dss
     /// <returns>True if the path exists, false otherwise.</returns>
     public bool ExactPathExists(DssPath path)
     {
-      // can this be replaced with a call to the catalog?
-      int status = DSS.ZCheck(ifltab, path.FullPath);
-      if (status != 0)
+      var p = GetCatalog().FindExactPath(path.FullPath);
+      if(p == DssPath.NotFound )
         return false;
-      else
-        return true;
+
+      return true;
     }
 
     /// <summary>

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Text;
-using Hec.Dss.Native;
 
 namespace Hec.Dss
 {

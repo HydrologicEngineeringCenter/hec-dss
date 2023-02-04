@@ -1,33 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
-using Hec.Dss.Native;
 
 namespace Hec.Dss
 {
   public class DssWriter : DssReader
   {
-    public DssWriter(string filename, MethodID messageMethod = MethodID.MESS_METHOD_GENERAL_ID, 
-      LevelID messageLevel = LevelID.MESS_LEVEL_GENERAL) : base(filename, messageMethod, messageLevel)
+    public DssWriter(string filename, int messageLevel =3) : base(filename,  messageLevel)
     {
 
     }
-
-    public DssWriter(string filename, int version, MethodID messageMethod = MethodID.MESS_METHOD_GENERAL_ID,
-      LevelID messageLevel = LevelID.MESS_LEVEL_GENERAL) : base(filename, version, messageMethod, messageLevel)
-    {
-
-    }
-
 
     public int Write(TimeSeriesProfile profile, bool saveAsFloat = false)
     {
+      throw new NotImplementedException("TimeSeriesProfile profile");
       if (profile.Values.Length <= 0)
         return -1;
 
       int numCols = profile.ColumnValues.Length;
       int numRows = profile.Values.GetLength(0);
       Time.DateTimeToHecDateTime(profile.StartDateTime, out string startDate, out string startTime);
-      var tss = DSS.ZStructTsNewTimes(profile.Path.FullPath, startDate, startTime, "", "");
+/*      var tss = DSS.ZStructTsNewTimes(profile.Path.FullPath, startDate, startTime, "", "");
       tss.UnitsProfileValues = profile.Units;
       tss.UnitsProfileDepths = profile.ColumnUnits;
       tss.NumberValues = numRows;
@@ -51,7 +43,7 @@ namespace Hec.Dss
       }
 
       return DSS.ZTsStore(ref ifltab, ref tss, storageFlagOverwrite);
-
+*/
     }
 
     private static float[] MatrixToFloatArray(double[,] values, int numCols, int numRows)
@@ -210,6 +202,8 @@ namespace Hec.Dss
     /// <param name="type">INST-VAL, INST-CUM, PER-CUM, PER-AVER</param>
     private int StoreTimeSeriesRegular<T>(string pathName, T[] values, int[] qualities, int storageFlag, string startDate, string startTime, string units, string type) where T : struct
     {
+      throw new NotImplementedException();
+      /*
       Type listType = typeof(T);
       if (listType == typeof(double))
       {
@@ -237,6 +231,7 @@ namespace Hec.Dss
       }
       else
         throw new Exception("Cannot store values of type " + listType.Name + " for time series.  Only accepts double and float");
+      */
     }
 
 
@@ -271,8 +266,8 @@ namespace Hec.Dss
     /// <param name="type">INST-VAL, INST-CUM, PER-CUM, PER-AVER</param>
     private int StoreTimeSeriesIrregular<T>(string pathName, T[] values, int[] qualities, int[] itimes, int storageFlag, int timeGranularitySeconds, string startDateBase, string units, string type) where T : struct
     {
-      
-      Type listType = typeof(T);
+      throw new NotImplementedException();
+/*      Type listType = typeof(T);
       if (listType == typeof(double))
       {
         double[] dArray = values as double[];
@@ -299,6 +294,7 @@ namespace Hec.Dss
       }
       else
         throw new Exception("Cannot store values of type " + listType.Name + " for time series.  Only accepts double and float");
+*/
     }
 
     //IF we want multiple curves, we have to change values to be a double array and make that work.
@@ -316,6 +312,8 @@ namespace Hec.Dss
     /// <param name="typeDependent"></param>
     public void StorePairedData<T>(string pathName, T[] ordinates, T[] values, int storageFlag, int numberCurves, string unitsIndependent, string typeIndependent, string unitsDependent, string typeDependent) where T : struct
     {
+      throw new NotImplementedException();
+      /*
       Type listType = typeof(T);
       if (listType == typeof(double))
       {
@@ -333,6 +331,7 @@ namespace Hec.Dss
       }
       else
         throw new Exception("Cannot store values of type " + listType.Name + " for paired data.  Only accepts double and float");
+      */
     }
 
     //IF we want multiple curves, we have to change values to be a double array and make that work.
@@ -399,28 +398,14 @@ namespace Hec.Dss
     /// </summary>  
     public static bool Squeeze(string filename)
     {
-      int status = DSS.ZSqueeze(filename);
+      int status = DssNative.hec_dss_squeeze(filename);
       return status == 0;
     }
 
 
-    [Obsolete("Squeeze(bool,bool) is deprecated, please use static Squeeze(filename) instead.")]
-    public bool Squeeze(bool OnlyIfNeeded, bool InPlaceSqueeze)
+    public void DeleteRecord(string path)
     {
-      int status = -1;
-      if (versionNumber == 7)
-      {
-        status = DSS.zSqueeze7(ref ifltab, OnlyIfNeeded ? 1 : 0, InPlaceSqueeze ? 1 : 0);
-        return status == 0;
-      }
-
-       status = DSS.ZSqueeze(filename);
-      return status == 0;
-    }
-
-    public void DeleteRecord(string pathName)
-    {
-      DSS.ZDelete(ref ifltab, pathName);
+      DssNative.hec_dss_delete(dss, path);
     }
 
     public void DeleteRecord(DssPath path)
@@ -430,6 +415,8 @@ namespace Hec.Dss
 
     public void Write(PairedData pd)
     {
+      throw new NotImplementedException("NotU+0020supportedU+0020yet.");
+      /*
       int storageFlag = 2; // store as doubles
       List<double> d = new List<double>();
       foreach (var col in pd.Values)
@@ -443,6 +430,7 @@ namespace Hec.Dss
       double[] dOrdinates = pd.Ordinates;
       ZStructPairedDataWrapper pds = DSS.ZStructPdNewDoubles(pd.Path.FullPath, ref dOrdinates, ref dValues, pd.Ordinates.Length, pd.Values.Count, pd.UnitsIndependent, pd.TypeIndependent, pd.UnitsDependent, pd.TypeDependent);
       DSS.ZpdStore(ref ifltab, ref pds, storageFlag);
+      */
     }
 
   }

@@ -12,7 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Hec.Dss.Native\Hec.Dss.Native.vcxproj" />
     <ProjectReference Include="..\Hec.Dss\Hec.Dss.csproj" />
   </ItemGroup>
 

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Globalization;
 using System.Text.RegularExpressions;
-using Hec.Dss.Native;
 
 namespace Hec.Dss
 {
@@ -275,11 +274,23 @@ namespace Hec.Dss
       for (int i = 0; i < times.Length; i++)
       {
         int julian = DateToJulian(times[i]);
-        int secs = DSS.TimeStringToSeconds(times[i].ToString("HH:mm:ss"));
+        int secs = TimeStringToSeconds(times[i].ToString("HH:mm:ss"));
         rval[i] = (julian - julianBaseDate) * (86400 / timeGranularitySeconds) + (secs / timeGranularitySeconds);
       }
       return rval;
     }
+
+    public static int TimeStringToSeconds(string time)
+    {
+      //  DSS.TimeStringToSeconds(times[i].ToString("HH:mm:ss"));
+      throw new NotImplementedException();
+    }
+
+    public static int YearMonthDayToJulian(int year, int month, int day)
+    {
+      throw new NotImplementedException();
+    }
+
     internal static DateTime[] DateTimesFromJulianArray(int[] timesJulian, int timeGranularitySeconds, int julianBaseDate)
     {
       if (timesJulian == null)
@@ -297,19 +308,10 @@ namespace Hec.Dss
       return times;
     }
 
-    private static DateTime DateTimeFromJulian_DSSLibrary(int julian, int julianBaseDate = 0, int timeGranularitySeconds = 60)
-    {
-      // This implementation works, but uses string manipulation and is REALLLY slow
-      string d = "".PadRight(20);
-      string h = "".PadRight(20);
-      DSS.GetDateAndTime(julian, timeGranularitySeconds, julianBaseDate,
-          ref d, d.Length, ref h, h.Length);
-      return Time.ConvertFromHecDateTime(d, h);
-    }
-
     internal static int DateToJulian(DateTime t)
     {
-      return DSS.DateToJulian(HecDateToString(t));
+      throw new NotImplementedException();
+      //return DSS.DateToJulian(HecDateToString(t));
     }
 
     internal static void JulianToHecDateTime(int julian, int seconds, out string date, out string time)

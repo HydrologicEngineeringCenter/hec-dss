@@ -36,12 +36,9 @@ namespace DSSUnitTests
         /// </summary>
         [Ignore]
         [TestMethod]
-        public void V6()
-        {
-            string fn = "crash_me6.dss";
-
-            File.Delete(fn);
-            Hec.Dss.Native.DSS.ZSet("DSSV", "", 6);
+        public void Make8GbFile()
+    {
+      var fn = TestUtility.GetSimpleTempFileName(".dss");
 
       using (DssWriter w = new DssWriter(fn))
       {
@@ -51,7 +48,6 @@ namespace DSSUnitTests
 
           string path = "/dss-test/csharp/series" + pn + "//1day/file-size-test/";
           TimeSeries ts = new TimeSeries(path, d, DateTime.Now.Date, "cfs", "INST-VAL");
-          //int status = w.StoreTimeSeriesRegular(path, d, 0, DateTime.Now.Date, "cfs", "INST-VAL");
           w.Write(ts);
 
           if (pn % 10 == 0)

@@ -19,7 +19,21 @@ public class DssNative
    [DllImport("hecdss")]
    internal static extern int hec_dss_version(IntPtr dss);
 
-   [DllImport("hecdss")]
+  [DllImport("hecdss")]
+  internal static extern int hec_dss_set_value(string name, int value);
+
+  [DllImport("hecdss")]
+  internal static extern int hec_dss_set_string(string name, string value);
+
+
+  [DllImport("hecdss")]
+  internal static extern int hec_dss_squeeze(string fileName);
+
+  [DllImport("hecdss")]
+  internal static extern int hec_dss_delete(IntPtr dss, string path);
+
+
+  [DllImport("hecdss")]
    public static extern int hec_dss_record_count(IntPtr dss);
 
    [DllImport("hecdss")]

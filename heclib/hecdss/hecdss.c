@@ -122,6 +122,18 @@ HECDSS_API int hec_dss_version(dss_file* dss) {
     return zgetVersion(dss->ifltab);
 }
 
+
+HECDSS_API int hec_dss_set_value(const char* name, const int value) {
+  // TO DO
+  return -1;
+}
+
+HECDSS_API int hec_dss_set_string(const char* name, const int value) {
+  // TO DO
+  return -1;
+}
+
+
 HECDSS_API int hec_dss_record_count(dss_file* dss) {
     if (!dss)
         return 0;
