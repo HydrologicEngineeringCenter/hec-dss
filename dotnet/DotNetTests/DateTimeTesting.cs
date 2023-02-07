@@ -193,5 +193,26 @@ namespace DSSUnitTests
       Assert.IsFalse(t);
     }
 
+    [TestMethod]
+    public void TimeStringToSeconds()
+    {
+      Assert.AreEqual(86400, Time.TimeStringToSeconds("24:00"));
+      Assert.AreEqual(86400, Time.TimeStringToSeconds("24:00"));
+      Assert.AreEqual(3600, Time.TimeStringToSeconds("01:00"));
+      Assert.AreEqual(60, Time.TimeStringToSeconds("0001"));
+      Assert.AreEqual(86400, Time.TimeStringToSeconds("2400"));
+      Assert.AreEqual(21600, Time.TimeStringToSeconds("06:00"));
+      Assert.AreEqual(43200, Time.TimeStringToSeconds("1200"));
+      Assert.AreEqual(30600, Time.TimeStringToSeconds("0830"));
+      Assert.AreEqual(30600, Time.TimeStringToSeconds("08:30"));
+      Assert.AreEqual(30645, Time.TimeStringToSeconds("08:30:45"));
+      Assert.AreEqual(45240,Time.TimeStringToSeconds("1234"));
+      Assert.AreEqual(25200,Time.TimeStringToSeconds("0700"));
+      Assert.AreEqual(82800,Time.TimeStringToSeconds("2300"));
+      Assert.AreEqual(39600,Time.TimeStringToSeconds("1100"));
+      Assert.AreEqual(28800,Time.TimeStringToSeconds("0800"));
+
+    }
+
   }
 }

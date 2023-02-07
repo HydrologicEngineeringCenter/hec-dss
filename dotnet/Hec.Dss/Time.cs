@@ -167,59 +167,44 @@ namespace Hec.Dss
     /// <param name="min"></param>
     /// <param name="sec"></param>
     /// <returns></returns>
-    private static bool TryParseTimeString(string timeString, out int hr, out int min, out int sec)
+    private static bool TryParseTimeString(string time, out int hr, out int min, out int sec)
     {
-      
       sec = 0;
       hr = 0;
       min = 0;
-      if (timeString.Length == 4)
+
+      var timeString = time.Trim();
+      if (timeString.Length < 4)
+        return false;
+
+      if (timeString.Length == 4) // 2300
       {
-        //hr = Convert.ToInt32(timeString.Substring(0, 2));
-        //min = Convert.ToInt32(timeString.Substring(2, 2));
         if (!Int32.TryParse(timeString.Substring(0, 2), out hr))
           return false;
 
         if (!Int32.TryParse(timeString.Substring(2, 2), out min))
           return false;
-      }
-      else
-      if (timeString.Contains(":"))
-      {
-        var tokens = timeString.Split(':');
-        if (tokens.Length >= 2 && tokens.Length <= 3)
-        {
-          //hr = Convert.ToInt32(tokens[0]);
-          //min = Convert.ToInt32(tokens[1]);
-          if (!Int32.TryParse(tokens[0], out hr))
-            return false;
 
-          if (!Int32.TryParse(tokens[1], out min))
-            return false;
-
-          if (tokens.Length == 3)
-            //sec = Convert.ToInt32(tokens[2]);
-            if (!Int32.TryParse(tokens[2], out sec))
-              return false;
-        }
-        else
-          return false; // throw new FormatException("could not parse " + timeString);
+        return true;
       }
-      else if (timeString.Length == 4)
+
+      var tokens = timeString.Split(':');
+      if (tokens.Length >= 2 && tokens.Length <= 3)
       {
-        //hr = Convert.ToInt32(timeString.Substring(0, 2));
-        //min = Convert.ToInt32(timeString.Substring(2, 2));
-        if (!Int32.TryParse(timeString.Substring(0, 2), out hr))
+        if (!Int32.TryParse(tokens[0], out hr))
           return false;
 
-        if (!Int32.TryParse(timeString.Substring(2, 2), out min))
+        if (!Int32.TryParse(tokens[1], out min))
           return false;
+
+        if (tokens.Length == 3)
+          if (!Int32.TryParse(tokens[2], out sec))
+            return false;
+
+        return true;
       }
-      else
-      {
-        return false;// throw new FormatException("could not parse " + timeString);
-      }
-      return true;
+
+      return false;
       
     }
 
@@ -279,11 +264,20 @@ namespace Hec.Dss
       }
       return rval;
     }
-
+    /// <summary>
+    /// Example				Returns
+    ///   0830               30600
+    ///   08:30              30600
+    ///   08:30:43           30643
+    /// </summary>
+    /// <param name="time">time string</param>
+    /// <returns></returns>
     public static int TimeStringToSeconds(string time)
     {
-      //  DSS.TimeStringToSeconds(times[i].ToString("HH:mm:ss"));
-      throw new NotImplementedException();
+      if (!TryParseTimeString(time, out int hr, out int min, out int sec))
+        return 0;
+      int rval = (hr * 3600) + (min * 60) + sec;
+      return rval;
     }
 
     public static int YearMonthDayToJulian(int year, int month, int day)
