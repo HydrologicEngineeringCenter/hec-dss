@@ -97,7 +97,7 @@ namespace Hec.Dss
 
     }
 
-    
+
     /// <summary>
     /// Converts from HEC style to a .net DateTime
     /// Example inputs:
@@ -205,7 +205,7 @@ namespace Hec.Dss
       }
 
       return false;
-      
+
     }
 
     /// <summary>
@@ -221,13 +221,13 @@ namespace Hec.Dss
     /// <param name="time"></param>
     public static void DateTimeToHecDateTime(DateTime t, out string date, out string time)
     {
-      if( t == default(DateTime))
+      if (t == default(DateTime))
       {
         date = "";
         time = "";
         return;
       }
-      
+
       if (t == t.Date) // 00:00
       {
         t = t.AddDays(-1);
@@ -244,7 +244,7 @@ namespace Hec.Dss
       date = ToHecDateString(t);
     }
 
-    
+
     /// <summary>
     /// 	julian = dateToJulian("20June2015");
     /// 	secs = timeStringToSeconds("11:30");
@@ -287,13 +287,10 @@ namespace Hec.Dss
     /// <param name="month"></param>
     /// <param name="day"></param>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
     public static int YearMonthDayToJulian(int year, int month, int day)
     {
       DateTime date = new DateTime(year, month, day);
-      var oa = date.ToOADate() - 1;
-      int rval = (int)oa;
-      return rval; 
+      return DateToJulian(date);
     }
 
     internal static DateTime[] DateTimesFromJulianArray(int[] timesJulian, int timeGranularitySeconds, int julianBaseDate)
@@ -313,10 +310,14 @@ namespace Hec.Dss
       return times;
     }
 
+    public static int DateToJulian(string date) {
+      return DssNative.hec_dss_dateToJulian(date);
+     }
     internal static int DateToJulian(DateTime t)
     {
-      throw new NotImplementedException();
-      //return DSS.DateToJulian(HecDateToString(t));
+      var oa = t.ToOADate() - 1;
+      int rval = (int)oa;
+      return rval;
     }
 
     internal static void JulianToHecDateTime(int julian, int seconds, out string date, out string time)

@@ -23,7 +23,7 @@ namespace DSSUnitTests
 
     void AssertExtractJulian(string date, int expectedJulian)
     {
-      int j = DssNative.hec_dss_dateToJulian(date);
+      int j = Time.DateToJulian( date);
       Assert.IsTrue(!Time.IsUndefinedTime(j));
       Assert.AreEqual(expectedJulian, j);
     }
