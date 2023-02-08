@@ -24,7 +24,7 @@ namespace Hec.Dss
     /// </summary>
     /// <param name="t">DateTime </param>
     /// <returns></returns>
-    private static string HecDateToString(DateTime t)
+    private static string ToHecDateString(DateTime t)
     {
       return t.ToString(HecDateFormat, s_cultureInfo);
     }
@@ -241,7 +241,7 @@ namespace Hec.Dss
           time = t.ToString("HHmm");
       }
 
-      date = HecDateToString(t);
+      date = ToHecDateString(t);
     }
 
     
@@ -280,9 +280,20 @@ namespace Hec.Dss
       return rval;
     }
 
+    /// <summary>
+    /// Julian day, in days since 01Jan1900, with 01Jan1900 being day 1 (31Dec1899 is day 0)
+    /// </summary>
+    /// <param name="year"></param>
+    /// <param name="month"></param>
+    /// <param name="day"></param>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
     public static int YearMonthDayToJulian(int year, int month, int day)
     {
-      throw new NotImplementedException();
+      DateTime date = new DateTime(year, month, day);
+      var oa = date.ToOADate() - 1;
+      int rval = (int)oa;
+      return rval; 
     }
 
     internal static DateTime[] DateTimesFromJulianArray(int[] timesJulian, int timeGranularitySeconds, int julianBaseDate)

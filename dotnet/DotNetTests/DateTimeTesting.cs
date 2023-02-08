@@ -194,6 +194,25 @@ namespace DSSUnitTests
     }
 
     [TestMethod]
+    public void YearMonthDayToJulian()
+    {
+      Assert.AreEqual(-3994, Time.YearMonthDayToJulian(1889, 1, 23));
+      Assert.AreEqual(0, Time.YearMonthDayToJulian(1899, 12, 31));
+      Assert.AreEqual(1, Time.YearMonthDayToJulian(1900, 1, 1));
+      Assert.AreEqual(3039, Time.YearMonthDayToJulian(1908, 4, 27));
+
+      Assert.AreEqual(39779, Time.YearMonthDayToJulian(2008, 11, 28));
+      Assert.AreEqual(31198, Time.YearMonthDayToJulian(1985, 6, 1));
+      Assert.AreEqual(31199, Time.YearMonthDayToJulian(1985, 6, 2));
+
+      Assert.AreEqual(58850, Time.YearMonthDayToJulian(2061, 2, 14));
+      Assert.AreEqual(-41150, Time.YearMonthDayToJulian(1787, 5, 2));
+      Assert.AreEqual(-641150, Time.YearMonthDayToJulian(144, 8, 3));
+    }
+
+
+
+    [TestMethod]
     public void TimeStringToSeconds()
     {
       Assert.AreEqual(86400, Time.TimeStringToSeconds("24:00"));
