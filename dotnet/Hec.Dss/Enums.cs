@@ -28,7 +28,7 @@ namespace Hec.Dss
   {
     UNDEFINED_GRID_TYPE = 400,
     HRAP = 410,
-    ALBERS = 420,
+    ALBERS = 420, // SHG 
     SPECIFIED_GRID_TYPE = 430
   }
 

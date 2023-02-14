@@ -7,10 +7,24 @@ using System.Linq;
 
 namespace DSSUnitTests
 {
-  [Ignore]
   [TestClass]
   public class GridTesting
   {
+    [TestMethod]
+    public void ReadGrid()
+    {
+      var dssFile = TestUtility.GetCopyForTesting("version7AlbersGridsTimeSeries.dss");
+      string path = @"/SHG/LAKE WINNEBAGO/PRECIP/01JUN2016:0600/01JUN2016:1200/WPC-QPF/";
+      using (DssWriter dss = new DssWriter(dssFile))
+      {
+        Grid grid = dss.GetGrid(path, true);
+        Assert.IsNotNull(grid);
+
+        string s = grid.SRSDefinition;
+        Console.WriteLine(s);
+      }
+    }
+
     [TestMethod]
     public void ReadBugUTM()
     {

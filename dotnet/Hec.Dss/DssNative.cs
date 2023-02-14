@@ -141,7 +141,7 @@ internal class DssNative
   ref int numberOfCellsX, ref int numberOfCellsY,
   ref int numberOfRanges, ref int srsDefinitionType,
   ref int timeZoneRawOffset, ref int isInterval,
-  ref int isTimeStamped, ref int storageDataType,
+  ref int isTimeStamped,
   byte[] dataUnits, int dataUnitsLength,
   byte[] dataSource, int dataSourceLength,
   byte[] srsName, int srsNameLength,
@@ -152,7 +152,8 @@ internal class DssNative
   ref float maxDataValue, ref float minDataValue,
   ref float meanDataValue,
   float[] rangeLimitTable, int rangeTablesLength,
-  float[] numberEqualOrExceedingRangeLimit,
+  int[] numberEqualOrExceedingRangeLimit,
   float[] data, int dataLength);
+
 }
 

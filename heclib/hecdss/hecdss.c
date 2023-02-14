@@ -538,8 +538,8 @@ HECDSS_API int hec_dss_gridRetrieve(dss_file* dss, const char* pathname, int boo
   float* maxDataValue, float* minDataValue,
   float* meanDataValue, 
   float* rangeLimitTable, const int rangeTablesLength,
-  float* numberEqualOrExceedingRangeLimit,
-  float* data, const int dataLength  ) {
+  int* numberEqualOrExceedingRangeLimit,
+  float* data, const int dataLength ) {
 
   zStructSpatialGrid* gridStruct = zstructSpatialGridNew(pathname);
   int status = zspatialGridRetrieve(dss->ifltab, gridStruct, boolRetrieveData);
@@ -568,10 +568,10 @@ HECDSS_API int hec_dss_gridRetrieve(dss_file* dss, const char* pathname, int boo
     if (boolRetrieveData && gridStruct->_storageDataType == GRID_FLOAT)
     {
       *maxDataValue = *((float*)gridStruct->_maxDataValue);
-      minDataValue = gridStruct->_minDataValue;
-      meanDataValue = gridStruct->_meanDataValue;
+      *minDataValue = *((float*)gridStruct->_minDataValue);
+      *meanDataValue = *((float*)gridStruct->_meanDataValue);
 
-      int size = numberOfRanges > rangeTablesLength ? rangeTablesLength : numberOfRanges;
+      int size = *numberOfRanges > rangeTablesLength ? rangeTablesLength : *numberOfRanges;
       float* table = (float*)gridStruct->_rangeLimitTable;
       for (int i = 0; i < size; i++) {
         rangeLimitTable[i] = table[i];
@@ -588,6 +588,7 @@ HECDSS_API int hec_dss_gridRetrieve(dss_file* dss, const char* pathname, int boo
   }
 
   zstructFree(gridStruct);
+  return status;
 }
 
 

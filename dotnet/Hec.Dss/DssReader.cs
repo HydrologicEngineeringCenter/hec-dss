@@ -856,7 +856,7 @@ namespace Hec.Dss
     /// <returns>Returns an albers grid if the grid is albers, a specified grid if its a specified grid, or a generic grid otherwise.  Returns null if there is a problem.</returns>
     public Grid GetGrid(string pathname, bool retrieveData)
     {
-      int type;
+      int type=0;
       int dataType = 0;
       int lowerLeftCellX = 0;
       int lowerLeftCellY = 0;
@@ -868,44 +868,78 @@ namespace Hec.Dss
       int isInterval = 0;
       int isTimeStamped = 0;
       ByteString dataUnits = new ByteString(64);
-      int dataUnitsLength;
       ByteString dataSource = new ByteString(128); 
       ByteString srsName = new ByteString(64);
       ByteString srsDefinition = new ByteString(1024*8);
       ByteString timeZoneID = new ByteString(64);
-      float cellSize;
-      float xCoordOfGridCellZero;
-      float yCoordOfGridCellZero;
-      float nullValue;
-      float maxDataValue;
-      float minDataValue;
-      float meanDataValue;
-      float[] rangeLimitTable;
-      int rangeTablesLength;
-      float[] numberEqualOrExceedingRangeLimit;
-      float[] data;
-      int dataLength;
+      float cellSize = 0;
+      float xCoordOfGridCellZero = 0;
+      float yCoordOfGridCellZero = 0;
+      float nullValue = 0;
+      float maxDataValue = 0;
+      float minDataValue = 0;
+      float meanDataValue = 0;
+      float[] rangeLimitTable = new float[0];
+      int[] numberEqualOrExceedingRangeLimit = new int[0];
+      float[] data= new float[0];
+      // First read to find out the sizes 
+      int metaDataOnly = 0;
+      
+      DssNative.hec_dss_gridRetrieve(dss, pathname, metaDataOnly, ref type, ref dataType,
+      ref lowerLeftCellX, ref lowerLeftCellY,
+      ref numberOfCellsX, ref numberOfCellsY,
+      ref numberOfRanges, ref srsDefinitionType,
+      ref timeZoneRawOffset, ref isInterval,
+      ref isTimeStamped,
+      dataUnits.Data, dataUnits.Length,
+      dataSource.Data, dataSource.Length,
+      srsName.Data, srsName.Length,
+      srsDefinition.Data, srsDefinition.Length,
+      timeZoneID.Data, timeZoneID.Length,
+      ref cellSize, ref xCoordOfGridCellZero,
+      ref yCoordOfGridCellZero, ref nullValue,
+      ref maxDataValue, ref minDataValue,
+      ref meanDataValue,
+      rangeLimitTable, rangeLimitTable.Length,
+      numberEqualOrExceedingRangeLimit,
+      data, data.Length);
 
+
+      // Read again with data Arrays allocated.
+      int readData = 1;
+      rangeLimitTable = new float[numberOfRanges];
+      numberEqualOrExceedingRangeLimit = new int[numberOfRanges];
+      data = new float[numberOfCellsX* numberOfCellsY];
+
+      DssNative.hec_dss_gridRetrieve(dss, pathname, readData, ref type, ref dataType,
+      ref lowerLeftCellX, ref lowerLeftCellY,
+      ref numberOfCellsX, ref numberOfCellsY,
+      ref numberOfRanges, ref srsDefinitionType,
+      ref timeZoneRawOffset, ref isInterval,
+      ref isTimeStamped,
+      dataUnits.Data, dataUnits.Length,
+      dataSource.Data, dataSource.Length,
+      srsName.Data, srsName.Length,
+      srsDefinition.Data, srsDefinition.Length,
+      timeZoneID.Data, timeZoneID.Length,
+      ref cellSize, ref xCoordOfGridCellZero,
+      ref yCoordOfGridCellZero, ref nullValue,
+      ref maxDataValue, ref minDataValue,
+      ref meanDataValue,
+      rangeLimitTable, rangeLimitTable.Length,
+      numberEqualOrExceedingRangeLimit,
+      data, data.Length);
+      
+      // construct Grid
       var rval = new Grid();
-/*      DssNative.hec_dss_gridRetrieve(dss, pathname, 0, ref type, ref dataType,
-  ref lowerLeftCellX, ref lowerLeftCellY,
-  ref numberOfCellsX, ref numberOfCellsY,
-  ref numberOfRanges, ref srsDefinitionType,
-  ref timeZoneRawOffset, ref isInterval,
-  ref isTimeStamped, 
-  byte[] dataUnits, int dataUnitsLength,
-  byte[] dataSource, int dataSourceLength,
-  byte[] srsName, int srsNameLength,
-  byte[] srsDefinition, int srsDefinitionLength,
-  byte[] timeZoneID, int timeZoneIDLength,
-  ref float cellSize, ref float xCoordOfGridCellZero,
-  ref float yCoordOfGridCellZero, ref float nullValue,
-  ref float maxDataValue, ref float minDataValue,
-  ref float meanDataValue,
-  float[] rangeLimitTable, int rangeTablesLength,
-  float[] numberEqualOrExceedingRangeLimit,
-  float[] data, int dataLength)
-*/
+      rval.PathName = pathname;
+      rval.DataType = (DssDataType)type; //DssDataType.INST_VAL;
+      rval.GridType = (GridType)dataType; //GridType.ALBERS;
+      rval.LowerLeftCellX = lowerLeftCellX;
+      rval.LowerLeftCellY = lowerLeftCellY;
+      rval.NumberOfCellsX = numberOfCellsX;
+      rval.NumberOfCellsY = numberOfCellsY;
+
       return rval;
 
     }
