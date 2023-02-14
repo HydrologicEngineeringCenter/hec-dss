@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-public class DssNative
+internal class DssNative
 {
   [DllImport("hecdss")]
   public static extern int hec_dss_CONSTANT_MAX_PATH_SIZE();

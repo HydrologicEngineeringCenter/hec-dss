@@ -689,10 +689,8 @@ namespace Hec.Dss
       List<String> titles = new List<String>();
       titles.AddRange(labels.ToStringArray());
       rval.Labels = titles;
-      // TO DO .. Location Stucture...
-     // var loc = new LocationInformation(pds.LocationStruct);
-      //rval.LocationInformation = loc;
 
+      rval.LocationInformation = GetLocationInfo(pathname);
       return rval;
     }
 
