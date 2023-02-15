@@ -23,3 +23,16 @@ jobs:
           cd ${{ github.workspace }}/heclib
           make
 
+      - name: build and run basic C test programs
+        run: |
+          cd test/C
+          ./unix_test
+      - name: build and run Dss-C test program
+        run: |
+          cd test/Dss-C
+          make test
+      - name: build and run Fortran test program
+        run: |
+          cd test/Fortran
+          make test
+          
