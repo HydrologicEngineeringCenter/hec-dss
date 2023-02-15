@@ -933,12 +933,33 @@ namespace Hec.Dss
       // construct Grid
       var rval = new Grid();
       rval.PathName = pathname;
-      rval.DataType = (DssDataType)type; //DssDataType.INST_VAL;
-      rval.GridType = (GridType)dataType; //GridType.ALBERS;
+      rval.DataType = (DssDataType)dataType; //DssDataType.INST_VAL;
+      rval.GridType = (GridType)type; //GridType.ALBERS;
+
       rval.LowerLeftCellX = lowerLeftCellX;
       rval.LowerLeftCellY = lowerLeftCellY;
       rval.NumberOfCellsX = numberOfCellsX;
       rval.NumberOfCellsY = numberOfCellsY;
+      rval.NumberOfRanges = numberOfRanges;
+      rval.SRSDefinitionType = srsDefinitionType;
+      rval.TimeZoneRawOffset = timeZoneRawOffset;
+      rval.IsInterval = isInterval == 1;
+      rval.IsTimeStamped = isTimeStamped == 1;
+      rval.DataUnits = dataUnits.ToString();
+      //rval.dataSource
+      rval.SRSName = srsName.ToString();
+      rval.SRSDefinition = srsDefinition.ToString();
+      rval.TimeZoneID = timeZoneID.ToString();
+      rval.CellSize = cellSize;
+      rval.XCoordOfGridCellZero = xCoordOfGridCellZero;
+      rval.YCoordOfGridCellZero = yCoordOfGridCellZero;
+      rval.NullValue = nullValue;
+      rval.MaxDataValue = maxDataValue;
+      rval.MinDataValue = minDataValue;
+      rval.MeanDataValue = meanDataValue;
+      rval.RangeLimitTable = rangeLimitTable;
+      rval.NumberEqualOrExceedingRangeLimit = numberEqualOrExceedingRangeLimit;
+      rval.Data = data;
 
       return rval;
 

@@ -28,7 +28,7 @@ namespace DSSUnitTests
     [TestMethod]
     public void ReadBugUTM()
     {
-      string fn = TestUtility.BasePath + "BALDEAGLE.DSS";
+      string fn = TestUtility.GetCopyForTesting("BALDEAGLE7.DSS");
       string path = "/UTM_18N/MARFC/PRECIP/23JUL2003:0000/23JUL2003:0100/NEXRAD (1000 M)/";
       using (DssReader r = new DssReader(fn))
       {
@@ -44,7 +44,7 @@ namespace DSSUnitTests
     {
       string path = "/HRAP/MARFC/PRECIP/23JUL2003:1800/23JUL2003:1900/NEXRAD/";
 
-      string fn = TestUtility.BasePath + "BALDEAGLE.DSS";
+      string fn = TestUtility.GetCopyForTesting( "BALDEAGLE7.DSS");
       using (DssReader r = new DssReader(fn))
       {
         Grid g1 = r.GetGrid(path, false);
@@ -68,7 +68,6 @@ UNIT[""Meter"",1.0]]";
     [TestMethod]
     public void ReadSpecifiedGrid()
     {
-      ReadSpecifiedGrid("radar_utm.dss");
       ReadSpecifiedGrid("radar_utm7.dss");
 
     }
@@ -372,7 +371,7 @@ YCoord Of Grid Cell Zero: 0.0
     {
       // This path doesn't have a  E part.....
       DssPath path = new DssPath("/SHG/CONNECTICUT/AIRTEMP/07MAY2019:1400//GAGEINTERP/");
-      string fn = TestUtility.BasePath + "ConnecticutGrids.dss";
+      string fn = TestUtility.GetCopyForTesting("ConnecticutGrids7.dss");
 
       DssReader r = new DssReader(fn);
 
@@ -404,7 +403,7 @@ YCoord Of Grid Cell Zero: 0.0
     [TestMethod]
     public void ReadAllGrids()
     {
-      string fn = TestUtility.BasePath + "precip.2018.09.dss";
+      string fn = TestUtility.GetCopyForTesting( "precip.2018.09v7.dss");
       string pathname = "/SHG/MARFC/PRECIP///NEXRAD/";
       var targetDSSPath = new DssPath(pathname);
 
@@ -432,7 +431,7 @@ YCoord Of Grid Cell Zero: 0.0
     [TestMethod]
     public void FilterGridByParts()
     {
-      string fn = TestUtility.BasePath + "NDFD_Wind.dss";
+      string fn = TestUtility.BasePath + "NDFD_Wind7.dss";
       using (DssReader dssr = new DssReader(fn))
       {
         var cat = dssr.GetCatalog(false);
@@ -443,7 +442,22 @@ YCoord Of Grid Cell Zero: 0.0
         var filterPaths = PathAssist.FilterByPart(paths, targetDSSPath);
       }
     }
+    [TestMethod]
+    public void GetHeaderInformationGrid()
+    {
+      string dssFile = TestUtility.GetCopyForTesting("containsGrids7.dss");
+      string path = @"/SHG/LAKE WINNEBAGO/PRECIP/01JUN2016:0600/01JUN2016:1200/WPC-QPF/";
+      using (DssReader dss = new DssReader(dssFile))
+      {
+        DssPathCollection paths = dss.GetCatalog();
+        var dsspath = paths.FindExactPath(path);
+        var grid = dss.GetGrid(dsspath, false);
+        Console.WriteLine("");
+        Assert.IsTrue(grid.DataUnits == "mm");
+        Assert.IsTrue(grid.DataType.ToString() == "PER_CUM");
+      }
+    }
 
   }
-  
+
 }

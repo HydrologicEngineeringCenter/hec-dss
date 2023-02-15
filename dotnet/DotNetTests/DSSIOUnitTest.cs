@@ -184,22 +184,6 @@ namespace DSSUnitTests
         Assert.AreEqual(1, pd.CurveCount);
       }
     }
-      [TestMethod]
-    public void GetHeaderInformationGrid()
-    {
-      Assert.IsTrue(false, "Grid Not implemented");
-      string dssFile = TestUtility.GetCopyForTesting("containsGrids7.dss");
-      string path = @"/SHG/LAKE WINNEBAGO/PRECIP/01JUN2016:0600/01JUN2016:1200/WPC-QPF/";
-      using (DssReader dss = new DssReader(dssFile))
-      {
-        DssPathCollection paths = dss.GetCatalog();
-        var dsspath = paths.FindExactPath(path);
-        var grid = dss.GetGrid(dsspath, false);
-        Console.WriteLine("");
-        Assert.IsTrue(grid.DataUnits == "mm");
-        Assert.IsTrue(grid.DataType.ToString() == "PER_CUM");
-      }
-    }
 
     [TestMethod]
     public void CheckIfComparisonWorks()
