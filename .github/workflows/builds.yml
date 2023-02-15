@@ -13,10 +13,14 @@ jobs:
         os: [ubuntu-20.04, macos-11]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v3
-        with:
-          submodules: recursive
+      - uses: actions/checkout@v2
 
+      - name: Checkout tools repo
+        uses: actions/checkout@v2
+        with:
+          repository: HydrologicEngineeringCenter/dss-test-data
+          path: dss-test-data
+          
       - name: Build javaHeclib
         run: |
           sudo ln -s /usr/local/bin/gfortran-11 /usr/local/bin/gfortran
