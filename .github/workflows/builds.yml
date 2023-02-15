@@ -7,11 +7,26 @@ env:
   GFORTRAN_PATH: "/usr/local/lib/gcc/11"
 
 jobs:
-  library-Build:
+  build:
     strategy:
       matrix:
         os: [ubuntu-20.04, macos-11]
     runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build javaHeclib
+        run: |
+          sudo ln -s /usr/local/bin/gfortran-11 /usr/local/bin/gfortran
+          cd ${{ github.workspace }}/heclib
+          make
+
+  test:
+    strategy:
+      matrix:
+        os: [ubuntu-20.04, macos-11]
+    runs-on: ${{ matrix.os }}
+    if: startsWith(matrix.os, 'ubuntu')
     steps:
       - uses: actions/checkout@v2
 
@@ -20,13 +35,7 @@ jobs:
         with:
           repository: HydrologicEngineeringCenter/dss-test-data
           path: dss-test-data
-          
-      - name: Build javaHeclib
-        run: |
-          sudo ln -s /usr/local/bin/gfortran-11 /usr/local/bin/gfortran
-          cd ${{ github.workspace }}/heclib
-          make
-          
+
       - name: build main library
         run: |
           cd heclib
@@ -36,12 +45,12 @@ jobs:
         run: |
           cd test/C
           ./unix_test
-          
+
       - name: build and run Dss-C test program
         run: |
           cd test/Dss-C
           make test
-          
+
       - name: build and run Fortran test program
         run: |
           cd test/Fortran
