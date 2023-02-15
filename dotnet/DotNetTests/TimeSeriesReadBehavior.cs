@@ -10,8 +10,7 @@ namespace DSSUnitTests
   [TestClass]
   public class TimeSeriesReadBehavior
   {
-    string filename6 = System.IO.Path.Combine(TestUtility.BasePath, "MoRiverObs_TimeWindowTest6.dss");
-    string filename7 = System.IO.Path.Combine(TestUtility.BasePath, "MoRiverObs_TimeWindowTest7.dss");
+    static string filename7 =TestUtility.GetCopyForTesting("MoRiverObs_TimeWindowTest7.dss");
     string PathNoDpart = "/CHARITON RIVER/PRAIRIE HILL, MO/FLOW//15MIN/USGS/";
     string Path_01Jan2010_Dpart = "/CHARITON RIVER/PRAIRIE HILL, MO/FLOW/01Jan2010/15MIN/USGS/";
 
@@ -34,8 +33,6 @@ namespace DSSUnitTests
     [TestMethod]
     public void EmptyDPart()
     {
-      var ts6 = ReadTs(filename6, PathNoDpart);
-      Console.WriteLine("ts6.count="+ts6.Count);
       var ts7 = ReadTs(filename7, PathNoDpart);
       Console.WriteLine("ts7.count=" + ts7.Count);
 
@@ -49,8 +46,6 @@ namespace DSSUnitTests
       DateTime t1 = new DateTime(2009, 1, 1);
       DateTime t2 = t1.AddYears(1).AddDays(-1);
 
-      var ts6 = ReadTs(filename6, PathNoDpart,t1,t2);
-      Console.WriteLine("ts6.count=" + ts6.Count);
       var ts7 = ReadTs(filename7, PathNoDpart,t1,t2);
       Console.WriteLine("ts7.count=" + ts7.Count);
 
@@ -62,8 +57,6 @@ namespace DSSUnitTests
       DateTime t1 = new DateTime(2009, 1, 1);
       DateTime t2 = t1.AddYears(1).AddDays(-1);
 
-      var ts6 = ReadTs(filename6, Path_01Jan2010_Dpart, t1, t2);
-      Console.WriteLine("ts6.count=" + ts6.Count);
       var ts7 = ReadTs(filename7, Path_01Jan2010_Dpart, t1, t2);
       Console.WriteLine("ts7.count=" + ts7.Count);
 
@@ -72,8 +65,6 @@ namespace DSSUnitTests
     [TestMethod]
     public void SkipTimeWindow_Path_01Jan2010_Dpart()
     {
-      var ts6 = ReadTs(filename6, Path_01Jan2010_Dpart);
-      Console.WriteLine("ts6.count=" + ts6.Count);
       var ts7 = ReadTs(filename7, Path_01Jan2010_Dpart);
       Console.WriteLine("ts7.count=" + ts7.Count);
 
@@ -85,8 +76,6 @@ namespace DSSUnitTests
       DateTime t1 = new DateTime(2007, 8, 2);
       DateTime t2 = new DateTime(2007, 10, 1);
 
-      var ts6 = ReadTs(filename6, PathNoDpart,t1,t2);
-      Console.WriteLine("ts6.count=" + ts6.Count);
       var ts7 = ReadTs(filename7, PathNoDpart,t1,t2);
       Console.WriteLine("ts7.count=" + ts7.Count);
 
@@ -98,8 +87,6 @@ namespace DSSUnitTests
       DateTime t1 = new DateTime(2007, 8, 2);
       DateTime t2 = new DateTime(2007, 8, 10);
 
-      var ts6 = ReadTs(filename6, PathNoDpart, t1, t2);
-      Console.WriteLine("ts6.count=" + ts6.Count);
       var ts7 = ReadTs(filename7, PathNoDpart, t1, t2);
       Console.WriteLine("ts7.count=" + ts7.Count);
 

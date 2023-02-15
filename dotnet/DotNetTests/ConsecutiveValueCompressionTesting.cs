@@ -13,11 +13,13 @@ namespace DSSUnitTests
   [TestClass]
   public class ConsecutiveValueCompressionTesting
   {
+    private static string dssFileName = TestUtility.GetCopyForTesting("sample7.dss");
+    private static DssPath p = new DssPath(@"//SACRAMENTO/PRECIP-INC//1Day/OBS/");
+
     [TestMethod]
     public void ZeroAndNoDataCompression()
     {
-      DssPath p = new DssPath(@"//SACRAMENTO/PRECIP-INC//1Day/OBS/");
-      using (DssReader r = new DssReader(TestUtility.BasePath + "sample7.dss"))
+      using (DssReader r = new DssReader(dssFileName))
       {
         var ts = r.GetTimeSeries(p);
         var ts2 = r.GetTimeSeries(p, compression: TimeWindow.ConsecutiveValueCompression.ZeroAndNoData);
@@ -28,8 +30,7 @@ namespace DSSUnitTests
     [TestMethod]
     public void NoDataCompression()
     {
-      DssPath p = new DssPath(@"//SACRAMENTO/PRECIP-INC//1Day/OBS/");
-      using (DssReader r = new DssReader(TestUtility.BasePath + "sample7.dss"))
+      using (DssReader r = new DssReader(dssFileName))
       {
         var ts = r.GetTimeSeries(p);
         var ts2 = r.GetTimeSeries(p, compression: TimeWindow.ConsecutiveValueCompression.NoData);
@@ -40,8 +41,7 @@ namespace DSSUnitTests
     [TestMethod]
     public void AnyValueCompression()
     {
-      DssPath p = new DssPath(@"//SACRAMENTO/PRECIP-INC//1Day/OBS/");
-      using (DssReader r = new DssReader(TestUtility.BasePath + "sample7.dss"))
+      using (DssReader r = new DssReader(dssFileName))
       {
         var ts = r.GetTimeSeries(p);
         var ts2 = r.GetTimeSeries(p, compression: TimeWindow.ConsecutiveValueCompression.AnyValue);

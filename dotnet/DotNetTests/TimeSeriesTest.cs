@@ -13,7 +13,7 @@ namespace DSSUnitTests
     //[TestMethod]
     public void QueryWithCondensedPath()
     {
-      var filename = System.IO.Path.Combine(TestUtility.BasePath, "MoRiverObs_TimeWindowTest.dss");
+      var filename = TestUtility.GetCopyForTesting("MoRiverObs_TimeWindowTest.dss");
       using (DssReader r = new DssReader(filename))
       {
        var catalog = r.GetCatalog(false);
@@ -29,8 +29,7 @@ namespace DSSUnitTests
     [TestMethod]
     public void QueryTimeWindow()
     {
-   var filename = System.IO.Path.Combine(TestUtility.BasePath, "MoRiverObs_TimeWindowTest.dss");
-    //var filename = @"c:\temp\MoRiverObs.dss";
+      var filename = TestUtility.GetCopyForTesting("MoRiverObs_TimeWindowTest.dss");
 
       using (DssReader r = new DssReader(filename))
       {
@@ -56,7 +55,7 @@ namespace DSSUnitTests
     [TestMethod]
     public void TestOutofRangeTimeWindow7()
     {
-     var filename = System.IO.Path.Combine(TestUtility.BasePath, "rainfall7.dss");
+     var filename = TestUtility.GetCopyForTesting("rainfall7.dss");
 
       ReadWithDates(filename);
 
@@ -82,7 +81,7 @@ namespace DSSUnitTests
     [TestMethod]
     public void TestOutofRangeTimeWindow()
     {
-      var filename = System.IO.Path.Combine(TestUtility.BasePath, "rainfall.dss");
+      var filename = TestUtility.GetCopyForTesting("rainfall.dss");
 
       ReadWithDates(filename);
 
@@ -92,7 +91,7 @@ namespace DSSUnitTests
     [TestMethod]
     public void InvalidRecordType()
     {
-      var filename = System.IO.Path.Combine(TestUtility.BasePath, "MoRiverObs.dss");
+      var filename = TestUtility.GetCopyForTesting("MoRiverObs.dss");
       using (DssReader r = new DssReader(filename))
       {
         var recordType = r.GetRecordType(new DssPath("/MISSOURI RIVER/BOONVILLE, MO/FLOW/01OCT1987/15MIN/USGS/"));
@@ -104,8 +103,7 @@ namespace DSSUnitTests
     [TestMethod]
     public void TestTimeSeriesProfile()
     {
-      string filename = "TestTimeSeriesProfile.dss";
-      File.Delete(filename);
+      string filename = TestUtility.GetSimpleTempFileName(".dss");
       int numRows = 10000;
       DateTime t1 = new DateTime(2022, 1, 1);
       DateTime t2 = new DateTime(2022, 1, 2);
@@ -176,7 +174,7 @@ namespace DSSUnitTests
     [TestMethod]
     public void ReadMinimalTimeSeriesV7()
     {
-      using (DssReader r = new DssReader(TestUtility.BasePath + "sample7.dss"))
+      using (DssReader r = new DssReader(TestUtility.GetCopyForTesting("sample7.dss")))
       {
         var ts = r.GetEmptyTimeSeries(new DssPath("//SACRAMENTO/PRECIP-INC/01Jan1877/1Day/OBS/"));
         Assert.AreEqual("INCHES", ts.Units);
@@ -187,7 +185,7 @@ namespace DSSUnitTests
     [TestMethod]
     public void ReadCondensedPathName()
     {
-      using (DssReader r = new DssReader(TestUtility.BasePath + "sample7.dss"))
+      using (DssReader r = new DssReader(TestUtility.GetCopyForTesting("sample7.dss")))
       {
         var catalog = r.GetCatalog(true);
         var path = catalog.GetCondensedPath(new DssPath("//SACRAMENTO/PRECIP-INC/11Jul1877 - 30Jun2009/1Day/OBS/"));
@@ -199,7 +197,7 @@ namespace DSSUnitTests
     [TestMethod]
     public void ReadCondensedPathNameWithTimeWindow()
     {
-      using (DssReader r = new DssReader(TestUtility.BasePath + "sample7.dss"))
+      using (DssReader r = new DssReader(TestUtility.GetCopyForTesting("sample7.dss")))
       {
         var catalog = r.GetCatalog(true);
         var path = catalog.GetCondensedPath(new DssPath("//SACRAMENTO/PRECIP-INC/11Jul1877 - 30Jun2009/1Day/OBS/"));
@@ -211,7 +209,7 @@ namespace DSSUnitTests
     [TestMethod]
     public void Read1944PathWith1950TimeWindow()
     {
-      using (DssReader r = new DssReader(TestUtility.BasePath + "sample7.dss"))
+      using (DssReader r = new DssReader(TestUtility.GetCopyForTesting("sample7.dss")))
       {
         var path = new DssPath("//SACRAMENTO/PRECIP-INC/01JAN1944/1Day/OBS/");
         var timeSeries = r.GetTimeSeries(path, new DateTime(1950, 11, 1), new DateTime(1952, 10, 31));
@@ -223,7 +221,7 @@ namespace DSSUnitTests
     [TestMethod]
     public void ReadMissingBlocks()
     {
-      using (DssReader r = new DssReader(TestUtility.BasePath + "sample7.dss"))
+      using (DssReader r = new DssReader(TestUtility.GetCopyForTesting("sample7.dss")))
       {
         var path = new DssPath("//SACRAMENTO/PRECIP-INC/01JAN1944/1Day/OBS/");
         var timeSeries = r.GetTimeSeries(path, new DateTime(2009, 11, 1), new DateTime(2025, 10, 31));
@@ -234,7 +232,7 @@ namespace DSSUnitTests
     [TestMethod]
     public void TryReadCondensedPathNameFail()
     {
-      using (DssReader r = new DssReader(TestUtility.BasePath + "sample7.dss"))
+      using (DssReader r = new DssReader(TestUtility.GetCopyForTesting("sample7.dss")))
       {
         var catalog = r.GetCatalog(true);
         bool result = catalog.TryGetCondensedPath(new DssPath("//SACRAMENTO/PRECIP-INC/nothing/1Day/OBS/"), out DssPathCondensed nothing);
@@ -242,40 +240,11 @@ namespace DSSUnitTests
       }
     }
     
-    [Ignore]
-    [TestMethod]
-    public void AppendWithTimeGapRegularTimeSeries7()
-    {
-      DateTime t1 = new DateTime(1965, 1, 1);
-      DateTime t2 = new DateTime(1975, 1, 1);
-      var fn = "dot_net_AppendWithTimeGapRegularTimeSeries.dss";
-      using (DssWriter w = new DssWriter(fn))
-      {
-        var Path = new DssPath("/dotnet/csharp/values//1Day//");
-        var all = w.GetTimeSeries(Path);
-        Assert.AreEqual(22, all.Count);
-      }
-    }
-    [Ignore]
-    [TestMethod]
-    public void AppendWithTimeGapRegularTimeSeries6()
-    {
-      DateTime t1 = new DateTime(1965, 1, 1);
-      DateTime t2 = new DateTime(1975, 1, 1);
-      var fn = "dot_net_AppendWithTimeGapRegularTimeSeries6.dss";
-      using (DssWriter w = new DssWriter(fn))
-      {
-        var Path = new DssPath("/dotnet/csharp/values//1Day//");
-        var all = w.GetTimeSeries(Path,t1,t2);
-        Assert.AreEqual(22, all.Count);
-      }
-    }
-
 
     [TestMethod]
     public void AppendDailyRegular()
     {
-      var fn = "dot_net_AppendDailyRegularr.dss";
+      var fn = TestUtility.GetSimpleTempFileName(".dss");
 
       var t1 = new DateTime(1965, 1, 1);
       var ts = CreateSampleTimeSeries(t1, "cfs", "Inst-Val");
@@ -283,7 +252,7 @@ namespace DSSUnitTests
       var ts2 = CreateSampleTimeSeries(t2, "cfs", "Inst-Val");
       ts.Path = new DssPath("/dotnet/csharp/values//1Day//");
       ts2.Path = ts.Path;
-      File.Delete(fn);
+      
       using (DssWriter w = new DssWriter(fn))
       {
         w.Write(ts);
@@ -326,13 +295,12 @@ namespace DSSUnitTests
     [TestMethod]
     public void ReadWriteExistingDailyRegular()
     {
-      var fn = "dot_net_ReadWriteDailyRegular.dss";
+      var fn = TestUtility.GetSimpleTempFileName(".dss");
 
       var t = new DateTime(1965, 1, 1);
       var ts = CreateSampleTimeSeries(t, "cfs", "Inst-Val");
       ts.Path = new DssPath("/dotnet/csharp/values//1Day//");
 
-      File.Delete(fn);
       using (DssWriter w = new DssWriter(fn))
       {
         w.Write(ts);
@@ -355,13 +323,12 @@ namespace DSSUnitTests
     [TestMethod]
     public void ReadWriteSecondRegular()
     {
-      var fn = "dot_net_ReadWriteSecondRegular.dss";
+      var fn = TestUtility.GetSimpleTempFileName(".dss");
       var t = new DateTime(1965, 1, 1, 1, 1, 1);
       var ts = CreateSampleTimeSeries(t, "cfs", "Inst-Val", 1);
       ts.Path = new DssPath("/dotnet/csharp/values//1Second//");
 
 
-      File.Delete(fn);
       using (DssWriter w = new DssWriter(fn))
       {
         w.Write(ts);
@@ -380,13 +347,12 @@ namespace DSSUnitTests
     [TestMethod]
     public void ReadWriteBasicIrregular()
     {
-      var fn = "dot_net_ReadWriteBasicIrregular.dss";
+      var fn = TestUtility.GetSimpleTempFileName(".dss");
 
       var t = new DateTime(1965, 1, 1);
       var ts = CreateSampleTimeSeries(t, "CFS", "PER-AVER", size: 10000);
       ts.Path = new DssPath("/dotnet/csharp/values//IR-Year//");
 
-      File.Delete(fn);
       using (DssWriter w = new DssWriter(fn))
       {
         w.Write(ts);
@@ -401,14 +367,12 @@ namespace DSSUnitTests
     [TestMethod]
     public void ReadWriteSecondIrregular()
     {
-      var fn = "dot_net_ReadWriteSecondIrregular.dss";
+      var fn = TestUtility.GetSimpleTempFileName(".dss");
 
       var t = new DateTime(1970, 2, 28);
       var ts = CreateSampleTimeSeries(t, "feet", "PER-AVER", 1);
       ts.Path = new DssPath("/dotnet/csharp/values//IR-Day//");
-      // ts.Path = "/dotnet/csharp/values//~1Second//";
 
-      File.Delete(fn);
       using (DssWriter w = new DssWriter(fn))
       {
         w.Write(ts);
@@ -476,10 +440,10 @@ namespace DSSUnitTests
     {
       DssPath path = new DssPath("//SACRAMENTO/TEMP-MIN/01Jan2012/1Day/OBS/");
 
-      DssReader r = new DssReader(TestUtility.BasePath + "sample7.dss");
+      using DssReader r = new DssReader(TestUtility.GetCopyForTesting("sample7.dss"));
       DateTime t1 = new DateTime(1965, 1, 1);
       DateTime t2 = new DateTime(1965, 11, 1);
-      var ts = r.GetTimeSeries(path,t1,t2);
+      var ts = r.GetTimeSeries(path, t1, t2);
 
       //12 Feb 1965, 24:00	36.00
       DateTime t = new DateTime(1965, 2, 13);   // next day because of 24:00
@@ -498,7 +462,7 @@ namespace DSSUnitTests
     {
       DssPath path = new DssPath("//SACRAMENTO/TEMP-MIN/11Jul1877-30Jun2009/1Day/OBS/");
 
-      DssReader r = new DssReader(TestUtility.BasePath + "sample7.dss");
+      using DssReader r = new DssReader(TestUtility.GetCopyForTesting("sample7.dss"));
       var ts = r.GetTimeSeries(path);
 
       Assert.AreEqual(48202, ts.Values.Length);
@@ -509,7 +473,7 @@ namespace DSSUnitTests
     {
       DssPath path = new DssPath("//SACRAMENTO/TEMP-MIN/01Jan1877/1Day/OBS/");
 
-      using DssReader r = new DssReader(TestUtility.BasePath + "sample7.dss");
+      using DssReader r = new DssReader(TestUtility.GetCopyForTesting("sample7.dss"));
       var ts = r.GetTimeSeries(path);
 
       Assert.AreEqual(48202, ts.Count);
@@ -530,44 +494,41 @@ namespace DSSUnitTests
     public void ReadTsWithLocationInfo()
     {
       DssPath path = new DssPath("/MISSISSIPPI/ST. LOUIS/FLOW//1Day/OBS/");
-      using (DssReader r = new DssReader(TestUtility.BasePath + "sample7.dss"))
-      {
-        DateTime t1 = DateTime.Parse("1861-01-02");
-        DateTime t2 = DateTime.Parse("1861-01-18");
+      using DssReader r = new DssReader(TestUtility.GetCopyForTesting("sample7.dss"));
+      DateTime t1 = DateTime.Parse("1861-01-02");
+      DateTime t2 = DateTime.Parse("1861-01-18");
 
-        var s = r.GetTimeSeries(path, t1, t2);
+      var s = r.GetTimeSeries(path, t1, t2);
 
-        var loc = s.LocationInformation;
+      var loc = s.LocationInformation;
 
-        Console.WriteLine(loc.CoordinateID);
-        Console.WriteLine(loc.XOrdinate);
-        Console.WriteLine(loc.YOrdinate);
-        Console.WriteLine(loc.ZOrdiante);
+      Console.WriteLine(loc.CoordinateID);
+      Console.WriteLine(loc.XOrdinate);
+      Console.WriteLine(loc.YOrdinate);
+      Console.WriteLine(loc.ZOrdiante);
 
-        Assert.AreEqual(-901047.2, loc.XOrdinate);
-        Assert.AreEqual(383744.4, loc.YOrdinate);
-        Assert.AreEqual(CoordinateSystem.LatLong, loc.CoordinateSystem);
+      Assert.AreEqual(-901047.2, loc.XOrdinate);
+      Assert.AreEqual(383744.4, loc.YOrdinate);
+      Assert.AreEqual(CoordinateSystem.LatLong, loc.CoordinateSystem);
 
-        var dt = s.ToDataTable();
-        //Assert.AreEqual(15, s.Count);
-        Assert.AreEqual(1861, s[14].DateTime.Year);
-        Assert.AreEqual(39800, s[16].Value);
+      var dt = s.ToDataTable();
+      //Assert.AreEqual(15, s.Count);
+      Assert.AreEqual(1861, s[14].DateTime.Year);
+      Assert.AreEqual(39800, s[16].Value);
 
-        Console.WriteLine(s);
+      Console.WriteLine(s);
 
 
-        // read location standalone.
+      // read location standalone.
 
-        //var loc2 = r.GetLocationInfo("/MISSISSIPPI/ST. LOUIS/Location Info///");
-        var loc2 = r.GetLocationInfo(path.FullPath);
+      //var loc2 = r.GetLocationInfo("/MISSISSIPPI/ST. LOUIS/Location Info///");
+      var loc2 = r.GetLocationInfo(path.FullPath);
 
-        Console.WriteLine(loc2);
+      Console.WriteLine(loc2);
 
-        Assert.AreEqual(-901047.2, loc2.XOrdinate);
-        Assert.AreEqual(383744.4, loc2.YOrdinate);
-        Assert.AreEqual(CoordinateSystem.LatLong, loc2.CoordinateSystem);
-
-      }
+      Assert.AreEqual(-901047.2, loc2.XOrdinate);
+      Assert.AreEqual(383744.4, loc2.YOrdinate);
+      Assert.AreEqual(CoordinateSystem.LatLong, loc2.CoordinateSystem);
 
 
     }
@@ -577,10 +538,8 @@ namespace DSSUnitTests
     public void BogusPathTest()
     {
       DssPath path = new DssPath("/AmazonRiver/ST. LOUIS/FLOW//1Day/OBS/");
-      using (DssReader r = new DssReader(TestUtility.BasePath + "sample7.dss"))
-      {
-        r.GetTimeSeries(path);
-      }
+      using DssReader r = new DssReader(TestUtility.GetCopyForTesting("sample7.dss"));
+      r.GetTimeSeries(path);
     }
 
     private void ReadSampleExtendedDataFile(string filename, out int[] times, out double[] vals, out string[] rawDates)
@@ -620,7 +579,7 @@ namespace DSSUnitTests
     [TestMethod]
     public void PathNotFoundIssueV7()
     {
-      string fn = "path_issue7.dss";
+      string fn = TestUtility.GetCopyForTesting("path_issue7.dss");
       ReadWithRange(fn);
 
     }
@@ -629,7 +588,7 @@ namespace DSSUnitTests
     {
       string path = "/CHARITON RIVER/PRAIRIE HILL, MO/FLOW//15MIN/USGS/";
 
-      DssReader r = new DssReader(TestUtility.BasePath + fn);
+      DssReader r = new DssReader( fn);
 
       var p = new DssPath(path);
       Assert.IsTrue(r.PathExists(p));
@@ -644,42 +603,16 @@ namespace DSSUnitTests
     }
 
     [TestMethod]
-    private static void BasicQuality()
-    {
-      //TimeSeries ts = new TimeSeries();
-      //ts.Times = new DateTime[] { };
-      //ts.Values = new double[] { };
-      //ts.Quality = new int[] { };
-
-      //for (int i = 0; i < ts.Count; i++)
-      //{
-      //  var pt = ts[i];
-      // if( pt.IsRejected)
-      //  {
-      //    Console.WriteLine("rejected");
-      //  }
-
-      //  if( ts.Quality[i].IsMissing )
-
-      //  {
-
-      //  }
-          
-      }
-
-    [TestMethod]
     public void ToDataTableWithQuality()
     {
       var pathString = "/regular-time-series/GAPT/FLOW//6Hour/forecast1/";
 
       DssPath path = new DssPath(pathString);
-      using (DssReader r = new DssReader(TestUtility.BasePath + "examples-all-data-types.dss"))
-      {
-        var ts = r.GetTimeSeries(path);
-        var dt = ts.ToDataTable();
-        var s = dt.Rows[0]["Quality"].ToString().Trim();
-        Assert.AreEqual("OriginalValue, NoRevision", s);
-      }
+      using DssReader r = new DssReader(TestUtility.GetCopyForTesting("examples-all-data-types.dss"));
+      var ts = r.GetTimeSeries(path);
+      var dt = ts.ToDataTable();
+      var s = dt.Rows[0]["Quality"].ToString().Trim();
+      Assert.AreEqual("OriginalValue, NoRevision", s);
     }
 
 
@@ -689,75 +622,48 @@ namespace DSSUnitTests
     [TestMethod]
     public void BlockTest()
     {
-      String fileName = @"C:\temp\block_test.dss";
-      File.Delete(fileName);
-      using (DssWriter dss = new DssWriter(fileName))
-      {
-        DateTime t = new DateTime(2020, 1, 2);
-        
-        var ts_12Min = CreateSampleTimeSeries(t, "cfs", "Inst-VAl", 12 * 60, 14400/12);
-        var ts_1Min = CreateSampleTimeSeries(t, "cfs", "Inst-VAl", 1*60, 14400/1);
-        ts_12Min.Path = new DssPath("/test/block_12/c//12Minute/f/");
-        ts_1Min.Path = new DssPath("/test/block_1/c//1Minute/f/");
+      String fileName = TestUtility.GetSimpleTempFileName(".dss");
+      using DssWriter dss = new DssWriter(fileName);
+      DateTime t = new DateTime(2020, 1, 2);
 
-        dss.Write(ts_12Min);
-        dss.Write(ts_1Min);
+      var ts_12Min = CreateSampleTimeSeries(t, "cfs", "Inst-VAl", 12 * 60, 14400 / 12);
+      var ts_1Min = CreateSampleTimeSeries(t, "cfs", "Inst-VAl", 1 * 60, 14400 / 1);
+      ts_12Min.Path = new DssPath("/test/block_12/c//12Minute/f/");
+      ts_1Min.Path = new DssPath("/test/block_1/c//1Minute/f/");
 
-
-      }
+      dss.Write(ts_12Min);
+      dss.Write(ts_1Min);
     }
 
     [TestMethod]
     public void OverwriteTimeSeriesUsingTimeSeriesPoints()
     {
       DssPath path = new DssPath("//SACRAMENTO/PRECIP-INC//1Day/OBS/");
-      using (DssReader r = new DssReader(TestUtility.BasePath + "sample7.dss"))
-      {
-        var ts = r.GetTimeSeries(path);
-        var dt = ts.ToDataTable();
-      }
+      using DssReader r = new DssReader(TestUtility.GetCopyForTesting("sample7.dss"));
+      var ts = r.GetTimeSeries(path);
+      var dt = ts.ToDataTable();
     }
 
     [TestMethod]
     public void TimeIntervalMethodTest()
     {
       DssPath path = new DssPath("/MISSISSIPPI/ST. LOUIS/FLOW//1Day/OBS/");
-      using (DssReader r = new DssReader(TestUtility.BasePath + "sample7.dss"))
-      {
-        var s = TimeWindow.GetInterval(r.GetTimeSeries(path));
-        Debug.WriteLine(s);
-      }
+      using DssReader r = new DssReader(TestUtility.GetCopyForTesting("sample7.dss"));
+      var s = TimeWindow.GetInterval(r.GetTimeSeries(path));
+      Debug.WriteLine(s);
     }
 
 
     [TestMethod]
     public void CreateVersion7FileExplicit()
     {
-        string fn = TestUtility.BasePath + "newV7.dss";
-        File.Delete(fn);
-        using (DssWriter w = new DssWriter(fn, 7))
-        {
-            Assert.IsTrue(w.GetDSSFileVersion() == 7);
-        }
+      string fn = TestUtility.GetSimpleTempFileName(".dss");
+      using DssWriter w = new DssWriter(fn, 7);
+      Assert.IsTrue(w.GetDSSFileVersion() == 7);
 
     }
 
 
-    [TestMethod]
-    public void OpenExistingVersion7FileUsingExplicit7()
-    {
-        DssPath path = new DssPath("//SACRAMENTO/PRECIP-INC//1Day/OBS/");
-        using (DssReader r = new DssReader(TestUtility.BasePath + "sample7.dss", 6))
-        {
-            var ts = r.GetTimeSeries(path);
-            var dt = ts.ToDataTable();
-        }
-
-        using (DssReader r = new DssReader(TestUtility.BasePath + "sample7.dss", 7))
-        {
-            Assert.IsTrue(r.GetDSSFileVersion() == 7);
-        }
-    }
 
         [TestMethod]
         public void TestTrim()

@@ -18,7 +18,7 @@ namespace DSSUnitTests
       //     get catalog that includs record type
       //     test the DssPath.IsTimeSeries() method
 
-      var files = Directory.GetFiles(TestUtility.BasePath, "*.dss", SearchOption.AllDirectories);
+      var files = TestUtility.GetAllTestDssFiles();
 
       foreach (var file in files)
       {
@@ -95,7 +95,7 @@ namespace DSSUnitTests
     [TestMethod]
     public void FilterTest()
     {
-      string fn = Path.GetFullPath(TestUtility.BasePath + "NDFD_Wind7.dss");
+      string fn = TestUtility.GetCopyForTesting("NDFD_Wind7.dss");
       string pathname = "/SHG/CONUS/WIND DIRECTION///NDFD (YUBZ98) (001-003)/";
 
       /* Catalog.Paths:

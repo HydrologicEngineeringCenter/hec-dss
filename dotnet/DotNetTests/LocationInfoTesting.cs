@@ -37,7 +37,7 @@ namespace DSSUnitTests
     [TestMethod]
     public void SupplementalInfo()
     {
-      using (var r = new DssReader(TestUtility.BasePath + "VerticalDatumTest_v7.dss"))
+      using (var r = new DssReader(TestUtility.GetCopyForTesting("VerticalDatumTest_v7.dss")))
       {
 
         var P = r.GetCatalog();

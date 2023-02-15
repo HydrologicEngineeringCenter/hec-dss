@@ -431,7 +431,7 @@ YCoord Of Grid Cell Zero: 0.0
     [TestMethod]
     public void FilterGridByParts()
     {
-      string fn = TestUtility.BasePath + "NDFD_Wind7.dss";
+      string fn = TestUtility.GetCopyForTesting("NDFD_Wind7.dss");
       using (DssReader dssr = new DssReader(fn))
       {
         var cat = dssr.GetCatalog(false);
@@ -455,6 +455,31 @@ YCoord Of Grid Cell Zero: 0.0
         Console.WriteLine("");
         Assert.IsTrue(grid.DataUnits == "mm");
         Assert.IsTrue(grid.DataType.ToString() == "PER_CUM");
+      }
+    }
+
+    [TestMethod]
+    public void GridTest7PlayWithCase()
+    {
+      var fn = TestUtility.GetCopyForTesting("ras/forecast7.dss");
+      // path in DSS file is all upper case
+      ///SHG/MARFC/PRECIP/20JAN2023:0800/20JAN2023:0900/Q0/
+    // read using parts of path in Lowercase.
+      var path = "/Shg/MARFC/precip/20JAN2023:0800/20JAN2023:0900/Q0/";
+      using (DssReader reader = new DssReader(fn))
+      {
+        DssPath p = new DssPath(path);
+        var grid = reader.GetGrid(p, true);
+        Assert.IsNotNull(grid);
+        Assert.IsNotNull(grid.Data);
+        Assert.AreEqual("mm", grid.DataUnits);
+        Assert.AreEqual(2000.0f, grid.CellSize);
+        Assert.AreEqual(98, grid.NumberOfCellsX);
+        Assert.AreEqual(90, grid.NumberOfCellsY);
+
+        Assert.AreEqual(grid.NumberOfCellsX * grid.NumberOfCellsY, grid.Data.Length);
+
+        
       }
     }
 

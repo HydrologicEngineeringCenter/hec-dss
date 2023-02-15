@@ -10,14 +10,17 @@ namespace DSSUnitTests
   public class TestUtility
   {
 
-    //public const string BasePath = @"M:\_Projects\HEC-DSS\test-data\";
     internal const string BasePath = @"../../../../../../dss-test-data/";
 
 
+    internal static string[] GetAllTestDssFiles()
+    {
+     return  Directory.GetFiles(TestUtility.BasePath, "*.dss", SearchOption.AllDirectories);
+    }
     /// <summary>
     /// Gets path to a temporary file (that does not exist)
     /// </summary>
-    /// <param name="extension"></param>
+    /// <param name="extension">including the .</param>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
     internal static string GetSimpleTempFileName(string extension)
@@ -34,16 +37,18 @@ namespace DSSUnitTests
       return fn;
     }
 
+    [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.Synchronized)]
     internal static string GetCopyForTesting(string fileName)
     {
-       string tempFileName = GetSimpleTempFileName(".dss");
-
-      File.Copy(Path.Combine(BasePath, fileName), tempFileName);
+      string tempFileName = GetSimpleTempFileName(".dss");
+      string fn = Path.Combine(BasePath, fileName);
+      Console.WriteLine("copying "+fn+"  to "+tempFileName);
+      File.Copy(fn, tempFileName);
 
       // Reset the read/write permissions
       System.IO.FileInfo fileInfo = new System.IO.FileInfo(tempFileName);
       fileInfo.IsReadOnly = false;
-
+      
       return tempFileName;
     }
   }

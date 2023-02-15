@@ -13,7 +13,7 @@ namespace DSSUnitTests
     public void ReadPairedData()
     {
       var path = "/MY BASIN/DEER CREEK/STAGE-FLOW///USGS/";
-      using (DssReader r = new DssReader(TestUtility.BasePath + "sample7.dss"))
+      using (DssReader r = new DssReader(TestUtility.GetCopyForTesting( "sample7.dss")))
       {
         var pd = r.GetPairedData(path);
 
@@ -33,7 +33,7 @@ namespace DSSUnitTests
     public void ReadPairedDataWithXY()
     {
       var path = "/FISHKILL CREEK/BEACON NY/FREQ-FLOW///USGS/";
-      using (DssReader r = new DssReader(TestUtility.BasePath + "sample7_units_xyz.dss"))
+      using (DssReader r = new DssReader(TestUtility.GetCopyForTesting("sample7_units_xyz.dss")))
       {
         var pd = r.GetPairedData(path);
         Assert.AreEqual(123, pd.LocationInformation.XOrdinate);
@@ -47,7 +47,7 @@ namespace DSSUnitTests
     public void ReadPairedDataWithMultipleCurves()
     {
       var path = "/a/b/stage-flow//e/f/";
-      using (DssReader r = new DssReader(TestUtility.BasePath + "pdTest1.dss"))
+      using (DssReader r = new DssReader(TestUtility.GetCopyForTesting("pdTest1.dss")))
       {
         var pd = r.GetPairedData(path);
 
@@ -87,7 +87,7 @@ namespace DSSUnitTests
     public void ReadPairedDataWithMultipleCurves2()
     {
       var path = "/a/b/stage-flow//e/f/";
-      using (DssReader r = new DssReader(TestUtility.BasePath + "pdTest1.dss"))
+      using (DssReader r = new DssReader(TestUtility.GetCopyForTesting("pdTest1.dss")))
       {
         var pd = r.GetPairedData(path);
 
@@ -126,7 +126,7 @@ namespace DSSUnitTests
     public void GetPairedDataV7()
     {
       var path = "/a/b/stage-flow//e/f/";
-      using (DssReader r = new DssReader(TestUtility.BasePath + "spd7.dss"))
+      using (DssReader r = new DssReader(TestUtility.GetCopyForTesting("spd7.dss")))
       {
         var pd = r.GetPairedData(path);
 
@@ -145,8 +145,7 @@ namespace DSSUnitTests
     [TestMethod]
     public void WritePairedData()
     {
-      var fn = "test_write_paired_data.dss";
-      File.Delete(fn);
+      var fn = TestUtility.GetSimpleTempFileName(".dss");
       using (var w = new DssWriter(fn))
       {
         var x = new double[] { 1.0, 2.0, 3.0 };
@@ -177,7 +176,7 @@ namespace DSSUnitTests
     [TestMethod]
     public void ReadPairedData2()
     {
-      using (DssReader r = new DssReader(TestUtility.BasePath + "pairedData1.dss"))
+      using (DssReader r = new DssReader(TestUtility.GetCopyForTesting("pairedData1.dss")))
       {
         var p = r.GetPairedData("/excel/import/plugin//e/pairedDataAXD/");
       }
@@ -186,7 +185,7 @@ namespace DSSUnitTests
     [TestMethod]
     public void ReadPairedData3()
     {
-      using (DssReader r = new DssReader(TestUtility.BasePath + "indexedPairedData1.dss"))
+      using (DssReader r = new DssReader(TestUtility.GetCopyForTesting("indexedPairedData1.dss")))
       {
         var p = r.GetPairedData("/excel/import/plugin//e/pairedData3CR/");
       }

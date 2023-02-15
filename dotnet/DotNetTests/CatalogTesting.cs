@@ -13,7 +13,7 @@ namespace DSSUnitTests
     [TestMethod]
     public void GridTest7()
     {
-      var fn = Path.Combine(TestUtility.BasePath, "SixAndOneHour.dss");
+      var fn = TestUtility.GetCopyForTesting("SixAndOneHour.dss");
       using (DssReader reader = new DssReader(fn))
       {
         var cat = reader.GetCatalog();
@@ -36,12 +36,10 @@ namespace DSSUnitTests
      }
 
 
-    ////SACRAMENTO/PRECIP-INC/01Jan1877/1Day/OBS/
-
     [TestMethod]
     public void SortedCatalog()
     {
-      string filename = "test_sorted_catalog.dss";
+      string filename = TestUtility.GetSimpleTempFileName(".dss");
       File.Delete(filename);
       using (DssWriter w = new DssWriter(filename))
       {
@@ -102,8 +100,7 @@ namespace DSSUnitTests
     [TestMethod]
     public void MissingPartF()
     {
-     // var filename = @"C:\project\dotnet\Output\x64\Debug\dot_net_ReadWriteDailyRegular.dss";
-     string filename = TestUtility.BasePath + "sample7.dss";
+     string filename = TestUtility.GetCopyForTesting( "sample7.dss");
       DataTable rval = new DataTable();
       using (DssReader r = new DssReader(filename))
       {
@@ -115,7 +112,7 @@ namespace DSSUnitTests
     [TestMethod]
     public void CondencedCatalog7()
     {
-      var tbl = Catalog(TestUtility.BasePath + "sample7.dss");
+      var tbl = Catalog(TestUtility.GetCopyForTesting("sample7.dss"));
       Assert.IsTrue(tbl.Rows.Count > 30);
 
     }
@@ -123,15 +120,15 @@ namespace DSSUnitTests
     [TestMethod]
     public void CondencedCatalog7a()
     {
-      var r = new DssWriter(TestUtility.BasePath + "sample7a.dss");
+      var r = new DssWriter(TestUtility.GetCopyForTesting("sample7a.dss"));
       var c = r.GetCatalog(true);
-
+      Assert.AreEqual(38,c.Count);
     }
 
     [TestMethod]
     public void CondencedCatalog7Extended()
     {
-      var tbl = Catalog(TestUtility.BasePath + "sample7_units_xyz.dss", true);
+      var tbl = Catalog(TestUtility.GetCopyForTesting("sample7_units_xyz.dss"), true);
       Assert.IsTrue(tbl.Rows.Count > 30);
 
       var s = "A='' and B='SACRAMENTO' and C = 'PRECIP-INC' and E='1Day' and F= 'OBS' and XOrdinate='10'";

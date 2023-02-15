@@ -30,7 +30,8 @@ namespace DSSUnitTests
     public void TestCatalogV7()
     {
       IntPtr dss;
-      var status = DssNative.hec_dss_open(TestUtility.BasePath + "sample7.dss", out dss);
+      var fn = TestUtility.GetCopyForTesting("sample7.dss");
+      var status = DssNative.hec_dss_open(fn, out dss);
 
       var pathNameList = DssReader.GetRawCatalog(dss, out int[] recordTypes);
 
@@ -77,7 +78,8 @@ namespace DSSUnitTests
     [TestMethod]
     public void TestCatalogV7Continued()
     {
-      var status = DssNative.hec_dss_open(TestUtility.BasePath + "sample7.dss", out IntPtr dss);
+      var fn = TestUtility.GetCopyForTesting("sample7.dss");
+      var status = DssNative.hec_dss_open(fn, out IntPtr dss);
 
       var catalog = DssReader.GetRawCatalog(dss,out int[] recordTypes,"/*/*/*Flow*/*/*/*/");
 
