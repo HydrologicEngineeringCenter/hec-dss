@@ -13,7 +13,7 @@ jobs:
         os: [ubuntu-20.04, macos-11]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3.3.0
 
       - name: Build javaHeclib
         run: |
@@ -24,13 +24,9 @@ jobs:
   test:
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
-
-      - name: Checkout tools repo
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v3.3.0
         with:
-          repository: HydrologicEngineeringCenter/dss-test-data
-          path: dss-test-data
+          submodules: "recursive"
 
       - name: build main library
         run: |
