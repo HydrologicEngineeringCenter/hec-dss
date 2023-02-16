@@ -1,11 +1,18 @@
 # based on examples at https://makefiletutorial.com/
 UNAME_S := $(shell uname -s)
+UNAME_M := $(shell uname -m)
 
 ifeq ($(UNAME_S),Linux)
 	CWARNING=-Werror
 	FDEBUG=-fcheck=all,no-recursion
-	CFLAGS=-m64 -fPIC -g -std=gnu99 $(CWARNING) $(INC_DIRS) -D__linux__ -fcommon
-	LDFLAGS=-Wl,-z,defs,--wrap=powf -lz -lrt -lgfortran -lm
+	ifeq ($(UNAME_M),aarch64)
+		LDFLAGS1=-Wl,-z,defs
+	else
+		LDFLAGS1=-Wl,-z,defs,--wrap=powf
+		BITS=-m64
+	endif
+	CFLAGS=$(BITS) -fPIC -g -std=gnu99 $(CWARNING) $(INC_DIRS) -D__linux__ -fcommon
+	LDFLAGS=$(LDFLAGS1) -lz -lrt -lgfortran -lm
 endif
 ifeq ($(UNAME_S),SunOS)
 	CC=cc

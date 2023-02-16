@@ -38,12 +38,12 @@ int ztsRetrieveIrreg6(long long *ifltab, zStructTimeSeries *tss,
 	int nvals;
 	int lgetdob;
 	int lfildob;
-	float *svalues;
-	double *dvalues;
-	int *quality;
+	float *svalues = NULL;
+	double *dvalues = NULL;
+	int *quality = NULL;
 	int lqual;
 	int lqread;
-	int status;
+	int status = STATUS_NOT_OKAY;
 	int i;
 	int baseDateMins;
 
@@ -61,7 +61,7 @@ int ztsRetrieveIrreg6(long long *ifltab, zStructTimeSeries *tss,
 	char cunits[20];
 	char ctype[20];
 	char timezone[30];
-	int itimezone;
+	int itimezone;	
 
 	zStructRecordSize timeSeriesRecordSizes;
 
@@ -75,6 +75,7 @@ int ztsRetrieveIrreg6(long long *ifltab, zStructTimeSeries *tss,
 
 	status = ztsGetSizes6(ifltab, tss, &timeSeriesRecordSizes);
 	if (zisError(status)) {
+
 		return status;
 	}
 
@@ -100,10 +101,8 @@ int ztsRetrieveIrreg6(long long *ifltab, zStructTimeSeries *tss,
 		svalues = (float *)malloc((size_t)kvals * 4);
 	}
 	if (!dvalues || !svalues) {
-		//  error out
-		if (dvalues) free(dvalues);
-		if (svalues) free(svalues);
-		return STATUS_NOT_OKAY;
+		status = STATUS_NOT_OKAY;
+		goto fail;
 	}
 
 	if (boolRetrieveQualityNotes) {
@@ -111,7 +110,8 @@ int ztsRetrieveIrreg6(long long *ifltab, zStructTimeSeries *tss,
 		quality = (int *)malloc((size_t)kvals * 4);
 		if (!quality) {
 			//   error out
-			return STATUS_NOT_OKAY;
+			status = STATUS_NOT_OKAY;
+			goto fail;
 		}
 	}
 	else {
@@ -138,12 +138,11 @@ int ztsRetrieveIrreg6(long long *ifltab, zStructTimeSeries *tss,
 		strlen(zgetInternalPath(tss)), sizeof(cunits), sizeof(ctype));
 
 	//  status == 4 means no data found; > 4 is an error
-	if ((status < 0) || (status >= 4)) {
-		if (dvalues) free(dvalues);
-		if (svalues) free(svalues);
-		if (quality) free(quality);
-		if (status == 4) return STATUS_RECORD_NOT_FOUND;
-		return status;
+	if ((status < 0) || (status >= 4)) {		
+		if (status == 4) {
+			status = STATUS_RECORD_NOT_FOUND;
+		}
+		goto fail;
 	}
 
 	tss->numberValues = nvals;
@@ -195,7 +194,8 @@ int ztsRetrieveIrreg6(long long *ifltab, zStructTimeSeries *tss,
 		tss->userHeader = (int *)calloc((size_t)(nuserHeader + 1), 4);
 		if (!tss->userHeader) {
 			//  error out
-			return STATUS_NOT_OKAY;
+			status = STATUS_NOT_OKAY;
+			goto fail;
 		}
 		for (i=0; i<nuserHeader; i++) {
 			tss->userHeader[i] = userHeader[i];
@@ -233,5 +233,11 @@ int ztsRetrieveIrreg6(long long *ifltab, zStructTimeSeries *tss,
 	}
 
 	return STATUS_RECORD_FOUND;
-}
 
+fail:
+	/** You can call free on NULL on all modern platforms*/
+	free(dvalues);
+	free(svalues);
+	free(quality);
+	return status;
+}

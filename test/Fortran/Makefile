@@ -1,17 +1,22 @@
 .SUFFIXES: .f90
 UNAME_S := $(shell uname -s)
-FOR_VER := $(shell gfortran -dumpversion)
+UNAME_M := $(shell uname -m)
+FOR_VER := $(shell gfortran -dumpversion | cut -c1,2)
+F_GE_10 := $(shell if [ "$(FOR_VER)" -ge "10" ]; then echo 1; else echo 0; fi; )
 
 ifeq ($(UNAME_S),Linux)
+	ifneq ($(UNAME_M),aarch64)
+		BITS=-m64
+	endif
 	CWARNING=-Werror
-	CFLAGS=-m64 -fPIC -g -std=gnu99 -I../../heclib/heclib_c/src/headers -I. $(CWARNING)  -D__linux__
+	CFLAGS=$(BITS) -fPIC -g -std=gnu99 -I../../heclib/heclib_c/src/headers -I. $(CWARNING)  -D__linux__
 	FWARNINGS= -Warray-bounds -Wc-binding-type -Wcharacter-truncation
-	ifeq "$(FOR_VER)" "11"
-       FWARNINGS += -fallow-argument-mismatch
+	ifeq "$(F_GE_10)" "1"
+	        FWARNINGS += -fallow-argument-mismatch
 	endif
 
 	FDEBUG=-fcheck=all,no-recursion
-	FFLAGS=-c -g -cpp -m64 -fPIC $(FWARNINGS) $(FDEBUG) -I../../heclib/heclib_f/src/headers
+	FFLAGS=-c $(BITS) -g -cpp -fPIC $(FWARNINGS) $(FDEBUG) -I../../heclib/heclib_f/src/headers
 	LDFLAGS = -lz -lrt -lgfortran -lm
 	MAKE=make
 endif

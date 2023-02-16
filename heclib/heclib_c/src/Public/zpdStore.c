@@ -293,7 +293,26 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 				pds->typeIndependent = '\0';
 			}
 		}
-		return zpdStore6(ifltab, pds, storageFlag);
+		// copy any VDI from location struct into user header
+		int* origHeader = pds->userHeader;
+		int origHeaderNumber = pds->userHeaderNumber;
+		int* hdr = copyVdiFromLocationStructToUserHeader(pds->locationStruct, pds->userHeader, &pds->userHeaderNumber, FALSE, &status);
+		if (status != STATUS_OKAY) {
+			zstructFree(pds);
+			return zerrorProcessing(ifltab, DSS_FUNCTION_zpdStore_ID,
+				zdssErrorCodes.CANNOT_ALLOCATE_MEMORY, 0, 0,
+				zdssErrorSeverity.MEMORY_ERROR,
+				pds->pathname, "Copying paired data VDI to user header");
+		}
+		pds->userHeader = hdr;
+		status = zpdStore6(ifltab, pds, storageFlag);
+		// restore the original user header
+		if (hdr != origHeader) {
+			pds->userHeader = origHeader;
+			pds->userHeaderNumber = origHeaderNumber;
+			free(hdr);
+		}
+		return status;
 	}
 	//-----------------------------------------------//
 	// convert to native vertical datum if necessary //
@@ -309,18 +328,10 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 	double *origDoubleVals = NULL;
 	int indElev = FALSE;
 	int depElev = FALSE;
-	char cPart[65];
-	char *saveptr;
-	zpathnameGetPart(pds->pathname, 3, cPart, sizeof(cPart));
-	char *cp = strtok_r(cPart, "-", &saveptr);
-	if (!strncasecmp(cp, "ELEV", 4)) {
-		indElev = TRUE;
-	}
-	cp = strtok_r(NULL, "-", &saveptr);
-	if (cp && !strncasecmp(cp, "ELEV", 4)) {
-		depElev = TRUE;
-	}
-	if (indElev || depElev) {
+	int elevParam = pathnameIsElevPd(pds->pathname); // returns 0, 1, 2, or 3
+	indElev = elevParam % 2;
+	depElev = elevParam / 2;
+	if (elevParam) {
 		//-----------------------//
 		// get the current datum //
 		//-----------------------//
