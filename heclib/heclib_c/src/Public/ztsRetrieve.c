@@ -397,7 +397,7 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 		else {
 			char message[2048];
 			sprintf(message, "Error normalizing F-part tags: %s", normalizeFPartErrorMessage(status));
-			status = zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID, zdssErrorCodes.INVALID_PATHNAME,
+			status = zerrorProcessing(ifltab, DSS_FUNCTION_ztsRetrieve_ID, zdssErrorCodes.INVALID_PATHNAME,
 				0, 0, zdssErrorSeverity.MEMORY_ERROR, tss->pathname, message);
 			if (zmessageLevel(ifltab, MESS_METHOD_TS_WRITE_ID, MESS_LEVEL_USER_DIAG)) {
 				zmessage2(ifltab, "Pathname: ", tss->pathname);
