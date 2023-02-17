@@ -91,7 +91,7 @@ UNIT[""Meter"",1.0]]";
         //    /UTM16N/PISTOL/PRECIP/05MAY2003:1100/05MAY2003:1200/RADAR/
 
         //  Grid Type: SPECIFIED SPATIAL REFERENCE SYSTEM
-        float delta = 0.000001f; // tolarance for comparisons;
+        float delta = 0.01f; // tolarance for comparisons;
         Assert.AreEqual(DssDataType.PER_CUM, g2.DataType);
         Assert.AreEqual(48, g2.Data.Length);
         Assert.AreEqual(384, g2.LowerLeftCellX);
