@@ -42,6 +42,84 @@ namespace Hec.Dss
       }
     }
 
+    public TimeSpan EPartAsTimeSpan
+    {
+      get
+      {
+        //source of information: https://www.hec.usace.army.mil/confluence/dssdocs/dssvueum/2020.1/introduction/time-series-conventions
+        var ePartTrimmed = Epart.Trim();
+        if (ePartTrimmed.ToLowerInvariant() == "1year")
+        {
+          return new TimeSpan(365, 0, 0, 0);
+        }
+        else if (ePartTrimmed.ToLowerInvariant().EndsWith("month"))
+        {
+          var startMonth = ePartTrimmed.ToLowerInvariant().Substring(0, ePartTrimmed.Length - "month".Length);
+          if (startMonth == "1")
+          {
+            return new TimeSpan(30, 0, 0, 0);
+          }
+          else if (startMonth == "semi-")
+          {
+            return new TimeSpan(15, 0, 0, 0);
+          }
+          else if (startMonth == "tri-")
+          {
+            return new TimeSpan(10, 0, 0, 0);
+          }
+        }
+        else if (ePartTrimmed.ToLowerInvariant() == "1week")
+        {
+          return new TimeSpan(7, 0, 0, 0);
+        }
+        else if (ePartTrimmed.ToLowerInvariant().EndsWith("hour"))
+        {
+          var startHour = ePartTrimmed.ToLowerInvariant().Substring(0, ePartTrimmed.Length - "hour".Length);
+          int hour;
+          if (int.TryParse(startHour, out hour))
+          {
+            return new TimeSpan(hour, 0, 0);
+          }
+
+        }
+        else if (ePartTrimmed.ToLowerInvariant().EndsWith("minute"))
+        {
+          var startMin = ePartTrimmed.ToLowerInvariant().Substring(0, ePartTrimmed.Length - "minute".Length);
+          int min;
+          if (int.TryParse(startMin, out min))
+          {
+            return new TimeSpan(0, min, 0);
+          }
+        }
+        else if (ePartTrimmed.ToLowerInvariant().EndsWith("second"))
+        {
+          var startSecond = ePartTrimmed.ToLowerInvariant().Substring(0, ePartTrimmed.Length - "second".Length);
+          int second;
+          if (int.TryParse(startSecond, out second))
+          {
+            return new TimeSpan(0, 0, second);
+          }
+        }
+        else if (ePartTrimmed.ToLowerInvariant() == "1mon")
+        {
+          //dss6 only
+          return new TimeSpan(30, 0, 0, 0);
+        }
+        else if (ePartTrimmed.ToLowerInvariant().EndsWith("min"))
+        {
+          //dss6 only
+          var startMin = ePartTrimmed.ToLowerInvariant().Substring(0, ePartTrimmed.Length - "min".Length);
+          int min;
+          if (int.TryParse(startMin, out min))
+          {
+            return new TimeSpan(0, min, 0);
+          }
+        }
+
+        return default(TimeSpan);
+      }
+    }
+
     /// <summary>
     /// Valid for all types of data except for paired data
     /// </summary>
