@@ -115,18 +115,13 @@ namespace Hec.Dss
       }
       else
       {// irregular 
-        //var times =Time.ConvertDatesToHecInteger(ts.Times);
-        throw new NotImplementedException("");
         int timeGranularitySeconds = GetIrregularTimeGranularity(ts);
-
         int julianBaseDate = GetIrregularJulianBaseDate(ts, timeGranularitySeconds);
         string startBaseDate = Time.JulianToHecDate(julianBaseDate);
         int[] times = Time.ConvertDatesToHecInteger(ts.Times, julianBaseDate, timeGranularitySeconds);
-//        if (saveAsFloat)
-  //        rval = StoreTimeSeriesIrregular<float>(ts.Path.FullPath, floats, ts.Qualities, times, alwaysReplace, timeGranularitySeconds, startBaseDate, ts.Units, ts.DataType);
-    //    else
-      //    rval = StoreTimeSeriesIrregular<double>(ts.Path.FullPath, ts.Values, ts.Qualities, times, alwaysReplace, timeGranularitySeconds, startBaseDate, ts.Units, ts.DataType);
-      
+
+        DssNative.hec_dss_tsStoreIregular(dss, ts.Path.FullPath, startBaseDate, times,timeGranularitySeconds,
+           ts.Values, ts.Values.Length, ts.Qualities, ts.Qualities.Length, saveAsFloat ? 1 : 0, units.Data, type.Data);
       }
       if (ts.LocationInformation != null)
         StoreLocation(ts.Path.FullPath, ts.LocationInformation, false);

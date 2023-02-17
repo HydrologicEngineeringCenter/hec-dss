@@ -34,6 +34,7 @@ namespace Hec.Dss
       this.StartDateTime = dateTime;
       this.Units = units;
       this.DataType = dataType;
+      this.Qualities = new int[0];
     }
 
     public TimeSeries()
@@ -42,6 +43,7 @@ namespace Hec.Dss
       DataType = "";
       Values = new double[0];
       Times = new DateTime[0];
+      Qualities = new int[0];
     }
 
     public int IndexOf(DateTime t)
@@ -187,16 +189,20 @@ namespace Hec.Dss
         cols.Add(new DataColumn("Quality", typeof(string)));
       dt.Columns.AddRange(cols.ToArray());
 
-      for (int i = 0; i < Count; i++)
+      for (int i = 0; i < Count; i++) {
+        var qualityStr = "";
+        if (Qualities != null && Qualities.Length > i)
+          qualityStr = Quality.ToString(Qualities[i]);
+
         if (ShowIndex && ShowQuality)
-          dt.Rows.Add(i + 1, Times[i], Values[i], Qualities == null ? "" : Quality.ToString(Qualities[i]));
+          dt.Rows.Add(i + 1, Times[i], Values[i], qualityStr);
         else if (ShowIndex && !ShowQuality)
           dt.Rows.Add(i + 1, Times[i], Values[i]);
         else if (!ShowIndex && ShowQuality)
-          dt.Rows.Add(Times[i], Values[i], Qualities == null ? "" : Quality.ToString(Qualities[i]));
+          dt.Rows.Add(Times[i], Values[i], qualityStr);
         else
           dt.Rows.Add(Times[i], Values[i]);
-
+      }
       return dt;
     }
 

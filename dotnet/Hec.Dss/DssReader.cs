@@ -833,6 +833,9 @@ namespace Hec.Dss
                                                       supplemental.Data, supplemental.Data.Length);
 
       var rval = new LocationInformation();
+      if (locStatus != 0)
+        return rval;
+
       rval.XOrdinate = x;
       rval.YOrdinate = y;
       rval.ZOrdiante = z; 
@@ -978,9 +981,6 @@ namespace Hec.Dss
 
     public void Dispose()
     {
-      if (filename.Contains("dss-test-data"))
-          Console.WriteLine(filename);
-
       DssNative.hec_dss_close(dss);
     }
 

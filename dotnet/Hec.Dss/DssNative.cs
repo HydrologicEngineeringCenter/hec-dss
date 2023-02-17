@@ -54,6 +54,15 @@ internal class DssNative
             int saveAsFloat,
             byte[] units, byte[] type);
 
+  [DllImport("hecdss")]
+  public static extern int hec_dss_tsStoreIregular(IntPtr dss, string pathname,
+  string startDateBase,
+  int[] times, int timeGranularitySeconds,
+  double[] valueArray, int valueArraySize,
+  int[] qualityArray, int qualityArraySize,
+  int saveAsFloat,
+  byte[] units, byte[] type);
+
    [DllImport("hecdss", CharSet = CharSet.Ansi, ExactSpelling = true)]
    public static extern int hec_dss_tsRetrieve(IntPtr dss, string pathname,
                                      string startDate, string startTime,

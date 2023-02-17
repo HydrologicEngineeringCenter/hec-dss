@@ -66,16 +66,6 @@ HECDSS_API int hec_dss_test_list_of_string(char* data, int rows, int columns) {
   return 0;
 }
 
-void hec_dss_array_copy(double* destination, const long destinationSize,
-  double* source, const size_t sourceSize) {
-  size_t numberToCopy = sourceSize < destinationSize ? sourceSize: destinationSize;
-
-  for (size_t i = 0; i < numberToCopy; i++)
-  {
-    destination[i] = source[i];
-  }
-
-}
 
 HECDSS_API int hec_dss_CONSTANT_MAX_PATH_SIZE() {
   return MAX_PATHNAME_SIZE;
@@ -88,6 +78,34 @@ HECDSS_API int hec_dss_log_error(const char* message) {
 HECDSS_API int hec_dss_log_warning(const char* message) {
   printf("\nWarning: %s", message);
   return 0;
+}
+
+float* hec_dss_double_array_to_float(double* values,const int size) {
+  if (size <= 0 || values == 0)
+    return 0;
+
+  float* rval = (float*)malloc((size_t)size * 4);
+  if (rval == 0) {
+    hec_dss_log_error("Error allocating memory in hec_dss_tsStoreRegular ");
+    return rval;
+  }
+
+  for (int i = 0; i < size; i++)
+  {
+    rval[i] = (float)values[i];
+  }
+  return rval;
+}
+
+void hec_dss_array_copy(double* destination, const long destinationSize,
+  double* source, const size_t sourceSize) {
+  size_t numberToCopy = sourceSize < destinationSize ? sourceSize: destinationSize;
+
+  for (size_t i = 0; i < numberToCopy; i++)
+  {
+    destination[i] = source[i];
+  }
+
 }
 
 HECDSS_API int hec_dss_open(const char* filename, dss_file** dss)
@@ -300,7 +318,7 @@ HECDSS_API int hec_dss_tsRetrieve(dss_file* dss, const char *pathname,
 }
 HECDSS_API int hec_dss_tsStoreRegular(dss_file* dss, const char* pathname,
   const char* startDate, const char* startTime,
-  double* valueArray, const int ValueArraySize, 
+  double* valueArray, const int valueArraySize, 
   int* qualityArray, const int qualityArraySize,
   const int saveAsFloat,
   const char* units, const char* type)
@@ -308,23 +326,17 @@ HECDSS_API int hec_dss_tsStoreRegular(dss_file* dss, const char* pathname,
   zStructTimeSeries* tss = 0;
 
   if (saveAsFloat) {
-    float* values = (float*)malloc((size_t)ValueArraySize * 4);
-    if (values == 0) {
-      hec_dss_log_error("Error allocating memory in hec_dss_tsStoreRegular ");
+    float* values = hec_dss_double_array_to_float(valueArray, valueArraySize);
+    if (values == 0)
       return -1;
-    }
 
-    for (int i = 0; i < ValueArraySize; i++)
-    {
-      values[i] = (float)valueArray[i];
-    }
-    tss = zstructTsNewRegFloats(pathname, values, ValueArraySize, startDate, startTime, units, type);
-    tss->allocated[zSTRUCT_TS_floatValues];
-    if (qualityArraySize > 0 && qualityArraySize == ValueArraySize)
+    tss = zstructTsNewRegFloats(pathname, values, valueArraySize, startDate, startTime, units, type);
+    tss->allocated[zSTRUCT_TS_floatValues];// zstructFree will free float array
+    if (qualityArraySize > 0 && qualityArraySize == valueArraySize)
       tss->quality = qualityArray;
   }
   else {
-    tss = zstructTsNewRegDoubles(pathname, valueArray, ValueArraySize, startDate, startTime, units, type);
+    tss = zstructTsNewRegDoubles(pathname, valueArray, valueArraySize, startDate, startTime, units, type);
   }
   
   const int storageFlag = 0;// storageFlag = 0  Always replace data (Regular Interval)
@@ -332,6 +344,42 @@ HECDSS_API int hec_dss_tsStoreRegular(dss_file* dss, const char* pathname,
 
   int status = ztsStore(dss->ifltab, tss, storageFlag);
   
+
+  zstructFree(tss);
+  return status;
+}
+HECDSS_API int hec_dss_tsStoreIregular(dss_file* dss, const char* pathname,
+  const char* startDateBase,
+  int* times,const int timeGranularitySeconds,
+  double* valueArray, const int valueArraySize,
+  int* qualityArray, const int qualityArraySize,
+  const int saveAsFloat,
+  const char* units, const char* type)
+{
+  zStructTimeSeries* tss = 0;
+
+  if (saveAsFloat) {
+    float* values = hec_dss_double_array_to_float(valueArray, valueArraySize);
+    if (values == 0) {
+      return -1;
+    }
+
+    tss = zstructTsNewIrregFloats(pathname,values, valueArraySize,times,
+      timeGranularitySeconds, startDateBase,units, type);
+    tss->allocated[zSTRUCT_TS_floatValues];
+    if (qualityArraySize > 0 && qualityArraySize == valueArraySize)
+      tss->quality = qualityArray;
+  }
+  else {
+    tss = zstructTsNewIrregDoubles(pathname, valueArray, valueArraySize, times,
+      timeGranularitySeconds, startDateBase, units, type);
+  }
+
+  const int storageFlag = 1;// storageFlag = 0  Always replace data (Regular Interval)
+  //	 storageFlag = 1  replace  (Irregular)
+
+  int status = ztsStore(dss->ifltab, tss, storageFlag);
+
 
   zstructFree(tss);
   return status;

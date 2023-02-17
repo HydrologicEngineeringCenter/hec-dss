@@ -371,6 +371,7 @@ namespace DSSUnitTests
 
       var t = new DateTime(1970, 2, 28);
       var ts = CreateSampleTimeSeries(t, "feet", "PER-AVER", 1);
+
       ts.Path = new DssPath("/dotnet/csharp/values//IR-Day//");
 
       using (DssWriter w = new DssWriter(fn))
@@ -425,7 +426,7 @@ namespace DSSUnitTests
       ts.Values = values.ToArray();
       ts.DataType = dataType;
       ts.Units = units;
-
+      ts.LocationInformation = new LocationInformation();
       return ts;
     }
 
