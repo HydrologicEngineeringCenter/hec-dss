@@ -299,8 +299,10 @@ HECDSS_API int hec_dss_tsRetrieve(dss_file* dss, const char *pathname,
         *julianBaseDate = tss->julianBaseDate;
         *timeGranularitySeconds = tss->timeGranularitySeconds;
         
-        stringCopy(units, unitsLength, tss->units, strlen(tss->units));
-        stringCopy(type, typeLength, tss->type, strlen(tss->type));
+        if( tss->units)
+          stringCopy(units, unitsLength, tss->units, strlen(tss->units));
+        if( tss->type)
+          stringCopy(type, typeLength, tss->type, strlen(tss->type));
         int size = min(tss->numberValues, arraySize);
         size = max(0, size);
         *numberValuesRead = size;

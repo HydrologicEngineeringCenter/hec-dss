@@ -43,7 +43,7 @@ namespace DSSUnitTests
     {
       string tempFileName = GetSimpleTempFileName(".dss");
       string fn = Path.Combine(BasePath, fileName);
-      Console.WriteLine("copying "+fn+"  to "+tempFileName);
+      //Console.WriteLine("copying "+fn+"  to "+tempFileName);
       File.Copy(fn, tempFileName);
 
       return tempFileName;

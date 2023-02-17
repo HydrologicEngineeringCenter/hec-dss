@@ -1,11 +1,8 @@
-﻿using System;
-using System.Text;
-using System.Collections.Generic;
+﻿using Hec.Dss;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.IO;
-using System.Diagnostics;
+using System;
+using System.Collections.Generic;
 using System.Linq;
-using Hec.Dss;
 
 namespace DSSUnitTests
 {
@@ -47,25 +44,7 @@ namespace DSSUnitTests
       RunReadTest(dssFile);
     }
 
-    [TestMethod]
-    [Ignore]
-    public void Try1SecondEPart()
-    {
-      string dssFile = TestUtility.GetCopyForTesting("version7AlbersGrid.dss");
-      string path = @"/SHG/TRUCKEE RIVER/TEMP-AIR/31JAN2016:2400//INTERPOLATED-ROUNDED/";
-      using (DssWriter dss = new DssWriter(dssFile))
-      {
-        double[] values = new double[121];
-        for (int i = 0; i < values.Length; i++)
-        {
-          values[i] = 10 + i;
-        }
-        var dssPath = new DssPath(path);
-        dssPath.Epart = "1Second";
-        TimeSeries ts = new TimeSeries(dssPath.FullPath, values, dssPath.GetDPartAsDateTime(), "lol", "INST-VAL");
-        dss.Write(ts, true);
-      }
-    }
+    
 
 
     [TestMethod]
@@ -93,38 +72,8 @@ namespace DSSUnitTests
       }
     }
 
-    [TestMethod]
-    [Ignore]
-    public void WriteGridTest()
-    {
-      Assert.IsTrue(false, "Grid Not implemented");
-      var dssFile = TestUtility.GetCopyForTesting("version7AlbersGridsTimeSeries.dss");
-      RunWriteTest(dssFile);
-    }
-
     
     
-    
-
-    [TestMethod]
-    public void WriteGrid()
-    {
-      Assert.IsTrue(false, "Grid Not implemented");
-      var dssFile = TestUtility.GetCopyForTesting("version7AlbersGrid.dss");
-      string newPath = @"/LOL/MYOWN/TEMP-AIR/31JAN2016:2400//GRID/";
-      using (DssWriter dss = new DssWriter(dssFile))
-      {
-        float[] data = new float[100];
-        Random rng = new Random();
-        for (int i = 0; i < 100; i++)
-        {
-          data[i] = (float)rng.NextDouble();
-        }
-        Assert.Fail();
-        Grid grid = null;// = dss.CreateNewSpecifiedGrid(newPath, data, 0, 0, 10, 10, sizeof(float), Grid.EDataType.INST_CUM, "mm", DateTime.Now, DateTime.Now, Grid.CompressionMethod.ZLIB_DEFLATE, "PROJCS[\"UTM_ZONE_16N_WGS84\",GEOGCS[\"WGS_84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS84\", 6378137.0, 298.257223563]],PRIMEM[\"Greenwich\", 0],UNIT[\"degree\", 0.01745329251994328]],UNIT[\"Meter\", 1.0],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"latitude_of_origin\", 0],PARAMETER[\"central_meridian\", -87],PARAMETER[\"scale_factor\", 0.9996],PARAMETER[\"false_easting\", 500000],PARAMETER[\"false_northing\", 0],AXIS[\"Easting\", EAST],AXIS[\"Northing\", NORTH]]");
-        dss.StoreGrid(newPath, grid);
-      }
-    }
 
     [TestMethod]
     public void GetHeaderInformationTimeSeries()
@@ -334,33 +283,7 @@ namespace DSSUnitTests
         string path = pathsFound[0].FullPath;
       }
     }
-    private static void RunWriteTest(string dssFile)
-    {
-      using (DssWriter dss = new DssWriter(dssFile))
-      {
-        DssPathCollection paths = dss.GetCatalog();
-        var pathsFound = paths.FilterByPart("Basin", "Location", "Flow", "", "1Hour", "C Test");
-        DssPath path = pathsFound[0];
-        //string path = PathBuilder.FormPathName("Basin", "Location", "Flow", "", "1Hour", "C Test");
-        double[] values = new double[300];
 
-        for (int i = 0; i < 300; i++)
-          values[i] = (double)i;
-        DateTime dateTime = new DateTime(2001, 1, 21, 12, 0, 0, 0);
-        TimeSeries ts = new TimeSeries();
-        ts.Path = path;
-        ts.Values = values;
-        ts.StartDateTime = dateTime;
-        ts.Units = "cfs";
-        ts.DataType = "Inst-Val";
-        //dss.StoreTimeSeriesRegular(path, values, 0, dateTime, "cfs", "Inst-Val");
-        dss.Write(ts, true);
-        //dss.StoreTimeSeriesRegular("/Basin/Location/Flow//1Hour/C Test/", values, 0, "21Jan2001", "1200", "cfs", "Inst-Val");
-
-        ts = dss.GetTimeSeries(path);
-        LocationInformation data = dss.GetLocationInfo(path.FullPath);
-        Console.ReadLine();
-      }
-    }
+    
   }
 }

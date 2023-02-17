@@ -483,6 +483,27 @@ YCoord Of Grid Cell Zero: 0.0
       }
     }
 
+    [TestMethod]
+    public void WriteGrid()
+    {
+      Assert.IsTrue(false, "Grid Not implemented");
+      var dssFile = TestUtility.GetCopyForTesting("version7AlbersGrid.dss");
+      string newPath = @"/LOL/MYOWN/TEMP-AIR/31JAN2016:2400//GRID/";
+      using (DssWriter dss = new DssWriter(dssFile))
+      {
+        float[] data = new float[100];
+        Random rng = new Random();
+        for (int i = 0; i < 100; i++)
+        {
+          data[i] = (float)rng.NextDouble();
+        }
+        Grid grid = null;// = dss.CreateNewSpecifiedGrid(newPath, data, 0, 0, 10, 10, sizeof(float), Grid.EDataType.INST_CUM, "mm", DateTime.Now, DateTime.Now, Grid.CompressionMethod.ZLIB_DEFLATE, "PROJCS[\"UTM_ZONE_16N_WGS84\",GEOGCS[\"WGS_84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS84\", 6378137.0, 298.257223563]],PRIMEM[\"Greenwich\", 0],UNIT[\"degree\", 0.01745329251994328]],UNIT[\"Meter\", 1.0],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"latitude_of_origin\", 0],PARAMETER[\"central_meridian\", -87],PARAMETER[\"scale_factor\", 0.9996],PARAMETER[\"false_easting\", 500000],PARAMETER[\"false_northing\", 0],AXIS[\"Easting\", EAST],AXIS[\"Northing\", NORTH]]");
+        dss.StoreGrid(newPath, grid);
+      }
+    }
+
+
+
   }
 
 }

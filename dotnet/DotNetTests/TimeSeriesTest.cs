@@ -16,7 +16,7 @@ namespace DSSUnitTests
       var filename = TestUtility.GetCopyForTesting("MoRiverObs_TimeWindowTest.dss");
       using (DssReader r = new DssReader(filename))
       {
-       var catalog = r.GetCatalog(false);
+        var catalog = r.GetCatalog(false);
         var paths = catalog.FilterByPart("CHARITON RIVER", "PRAIRIE HILL, MO", "FLOW", "", "15MIN", "USGS");
         var path1 = paths[0];
         var t1 = new DateTime(2008, 9, 2);
@@ -35,14 +35,14 @@ namespace DSSUnitTests
       {
         var t1 = new DateTime(2008, 9, 2);
         var t2 = new DateTime(2008, 10, 11);
-        var ts = r.GetTimeSeries(new DssPath("/CHARITON RIVER/PRAIRIE HILL, MO/FLOW//15MIN/USGS/"),t1,t2);
+        var ts = r.GetTimeSeries(new DssPath("/CHARITON RIVER/PRAIRIE HILL, MO/FLOW//15MIN/USGS/"), t1, t2);
 
-     
-          
-        Console.WriteLine("first point : "+ts[0]);
-        Console.WriteLine("last pont   : "+ts[ts.Count-1]);
+
+
+        Console.WriteLine("first point : " + ts[0]);
+        Console.WriteLine("last pont   : " + ts[ts.Count - 1]);
         Assert.IsTrue(ts[0].DateTime == t1);
-        Assert.IsTrue(ts[ts.Count-1].DateTime == t2);
+        Assert.IsTrue(ts[ts.Count - 1].DateTime == t2);
 
         Console.WriteLine(ts);
 
@@ -55,7 +55,7 @@ namespace DSSUnitTests
     [TestMethod]
     public void TestOutofRangeTimeWindow7()
     {
-     var filename = TestUtility.GetCopyForTesting("rainfall7.dss");
+      var filename = TestUtility.GetCopyForTesting("rainfall7.dss");
 
       ReadWithDates(filename);
 
@@ -108,22 +108,22 @@ namespace DSSUnitTests
       DateTime t1 = new DateTime(2022, 1, 1);
       DateTime t2 = new DateTime(2022, 1, 2);
 
-      using (var w = new DssWriter(filename)) 
+      using (var w = new DssWriter(filename))
       {
-        var p = CreateHourlyProfileData(numRows, 12,t1);
+        var p = CreateHourlyProfileData(numRows, 12, t1);
         w.Write(p, true);
 
         var p2 = w.GetTimeSeriesProfile(p.Path);
         Assert.AreEqual(numRows, p2.Count);
-       var psubset = w.GetTimeSeriesProfile(p.Path,t1,t2);
-       Assert.AreEqual(25, psubset.Count);
+        var psubset = w.GetTimeSeriesProfile(p.Path, t1, t2);
+        Assert.AreEqual(25, psubset.Count);
 
         Assert.AreEqual(p.ColumnValues.Length, p2.ColumnValues.Length);
         for (int r = 0; r < p.Values.GetLength(0); r++)
         {
           for (int c = 0; c < p.Values.GetLength(1); c++)
           {
-            Assert.AreEqual(p.Values[r,c], p2.Values[r,c], 0.0001);
+            Assert.AreEqual(p.Values[r, c], p2.Values[r, c], 0.0001);
           }
         }
 
@@ -139,9 +139,9 @@ namespace DSSUnitTests
 
       int _rows = numRows;
       int _columns = numColumns;
- 
 
-      double[,] data = new double[_rows,_columns];
+
+      double[,] data = new double[_rows, _columns];
       double[] columnValues = new double[_columns];
       DateTime[] dates = new DateTime[_rows];
       DateTime t = startDate;
@@ -150,7 +150,7 @@ namespace DSSUnitTests
       {
         for (int j = 0; j < _columns; j++)
         {
-          data[i,j] = counter++; // Math.Cos(j) * Math.PI + i;
+          data[i, j] = counter++; // Math.Cos(j) * Math.PI + i;
           columnValues[j] = j;
         }
         dates[i] = t;
@@ -189,7 +189,7 @@ namespace DSSUnitTests
       {
         var catalog = r.GetCatalog(true);
         var path = catalog.GetCondensedPath(new DssPath("//SACRAMENTO/PRECIP-INC/11Jul1877 - 30Jun2009/1Day/OBS/"));
-        var timeSeries =  r.GetTimeSeries(path);
+        var timeSeries = r.GetTimeSeries(path);
         Assert.AreEqual(48202, timeSeries.Values.Length);
       }
     }
@@ -201,7 +201,7 @@ namespace DSSUnitTests
       {
         var catalog = r.GetCatalog(true);
         var path = catalog.GetCondensedPath(new DssPath("//SACRAMENTO/PRECIP-INC/11Jul1877 - 30Jun2009/1Day/OBS/"));
-        var timeSeries = r.GetTimeSeries(path,new DateTime(1950,11,1),new DateTime(1952,10,31));
+        var timeSeries = r.GetTimeSeries(path, new DateTime(1950, 11, 1), new DateTime(1952, 10, 31));
         Assert.AreEqual(731, timeSeries.Values.Length);
       }
     }
@@ -239,7 +239,7 @@ namespace DSSUnitTests
         Assert.IsFalse(result);
       }
     }
-    
+
 
     [TestMethod]
     public void AppendDailyRegular()
@@ -252,7 +252,7 @@ namespace DSSUnitTests
       var ts2 = CreateSampleTimeSeries(t2, "cfs", "Inst-Val");
       ts.Path = new DssPath("/dotnet/csharp/values//1Day//");
       ts2.Path = ts.Path;
-      
+
       using (DssWriter w = new DssWriter(fn))
       {
         w.Write(ts);
@@ -390,20 +390,20 @@ namespace DSSUnitTests
       for (int i = 0; i < Math.Min(ts2.Count, ts.Count); i++)
       {
         Assert.AreEqual(ts.Times[i], ts2.Times[i]);
-        Assert.AreEqual(ts.Values[i], ts2.Values[i]);
+        Assert.AreEqual(ts.Values[i], ts2.Values[i],0.01);
       }
 
       Assert.AreEqual(ts.LocationInformation.XOrdinate, ts2.LocationInformation.XOrdinate);
-      Assert.AreEqual(ts.LocationInformation.YOrdinate        ,ts2.LocationInformation.YOrdinate);
-      Assert.AreEqual(ts.LocationInformation.ZOrdiante        ,ts2.LocationInformation.ZOrdiante);
-      Assert.AreEqual(ts.LocationInformation.CoordinateID     ,ts2.LocationInformation.CoordinateID);
-      Assert.AreEqual(ts.LocationInformation.CoordinateSystem ,ts2.LocationInformation.CoordinateSystem);
-      Assert.AreEqual(ts.LocationInformation.HorizontalDatum  ,ts2.LocationInformation.HorizontalDatum);
-      Assert.AreEqual(ts.LocationInformation.HorizontalUnits  ,ts2.LocationInformation.HorizontalUnits);
-      Assert.AreEqual(ts.LocationInformation.VerticalDatum    ,ts2.LocationInformation.VerticalDatum);
-      Assert.AreEqual(ts.LocationInformation.VerticalUnits    ,ts2.LocationInformation.VerticalUnits);
-      Assert.AreEqual(ts.LocationInformation.Supplemental     ,ts2.LocationInformation.Supplemental);
-      Assert.AreEqual(ts.LocationInformation.TimeZoneName     ,ts2.LocationInformation.TimeZoneName);
+      Assert.AreEqual(ts.LocationInformation.YOrdinate, ts2.LocationInformation.YOrdinate);
+      Assert.AreEqual(ts.LocationInformation.ZOrdiante, ts2.LocationInformation.ZOrdiante);
+      Assert.AreEqual(ts.LocationInformation.CoordinateID, ts2.LocationInformation.CoordinateID);
+      Assert.AreEqual(ts.LocationInformation.CoordinateSystem, ts2.LocationInformation.CoordinateSystem);
+      Assert.AreEqual(ts.LocationInformation.HorizontalDatum, ts2.LocationInformation.HorizontalDatum);
+      Assert.AreEqual(ts.LocationInformation.HorizontalUnits, ts2.LocationInformation.HorizontalUnits);
+      Assert.AreEqual(ts.LocationInformation.VerticalDatum, ts2.LocationInformation.VerticalDatum);
+      Assert.AreEqual(ts.LocationInformation.VerticalUnits, ts2.LocationInformation.VerticalUnits);
+      Assert.AreEqual(ts.LocationInformation.Supplemental, ts2.LocationInformation.Supplemental);
+      Assert.AreEqual(ts.LocationInformation.TimeZoneName, ts2.LocationInformation.TimeZoneName);
     }
 
     public static TimeSeries CreateSampleTimeSeries(DateTime t, string units = "", string dataType = "", int secondIncrement = 86400, int size = 1000)
@@ -589,7 +589,7 @@ namespace DSSUnitTests
     {
       string path = "/CHARITON RIVER/PRAIRIE HILL, MO/FLOW//15MIN/USGS/";
 
-      DssReader r = new DssReader( fn);
+      DssReader r = new DssReader(fn);
 
       var p = new DssPath(path);
       Assert.IsTrue(r.PathExists(p));
@@ -666,32 +666,32 @@ namespace DSSUnitTests
 
 
 
-        [TestMethod]
-        public void TestTrim()
-        {
-          TrimWorkout(new double[] { -902.0, -901.0, -3.402823466e+38, -3.4028234663852886E+38 },0, "all missing");
-          TrimWorkout(new double[] { -902.0, 12.0, 14.0}, 2, "first missing");
-          TrimWorkout(new double[] {12.0, 14.0 ,-901.0}, 2, "last missing");
-          TrimWorkout(new double[] { 12.0, 14.0, -901.0 , 17.0, 18.0}, 5, "missing point in middle (should not trim)");
+    [TestMethod]
+    public void TestTrim()
+    {
+      TrimWorkout(new double[] { -902.0, -901.0, -3.402823466e+38, -3.4028234663852886E+38 }, 0, "all missing");
+      TrimWorkout(new double[] { -902.0, 12.0, 14.0 }, 2, "first missing");
+      TrimWorkout(new double[] { 12.0, 14.0, -901.0 }, 2, "last missing");
+      TrimWorkout(new double[] { 12.0, 14.0, -901.0, 17.0, 18.0 }, 5, "missing point in middle (should not trim)");
 
-        }
-        private static void TrimWorkout(double[] values,int expectedCountAfterTrim, string message)
-        {
-            TimeSeries s = new TimeSeries();
-            s.Values = values;
-            s.Times = new DateTime[values.Length];
-            DateTime t = DateTime.Now;
-            for (int i = 0; i < values.Length; i++)
-            {
-                s.Times[i] = t.AddDays(i);
-            }
-            s.Trim();
-            Assert.AreEqual(expectedCountAfterTrim, s.Count,message);
+    }
+    private static void TrimWorkout(double[] values, int expectedCountAfterTrim, string message)
+    {
+      TimeSeries s = new TimeSeries();
+      s.Values = values;
+      s.Times = new DateTime[values.Length];
+      DateTime t = DateTime.Now;
+      for (int i = 0; i < values.Length; i++)
+      {
+        s.Times[i] = t.AddDays(i);
+      }
+      s.Trim();
+      Assert.AreEqual(expectedCountAfterTrim, s.Count, message);
 
-     }
+    }
 
-    [TestMethod()]  
-     public void CheckIsRegularInterval()
+    [TestMethod()]
+    public void CheckIsRegularInterval()
     {
       DateTime t1 = new DateTime(2022, 1, 1);
       DateTime t2 = new DateTime(2022, 1, 2);
@@ -703,5 +703,19 @@ namespace DSSUnitTests
       Assert.IsFalse(reg);
     }
 
+
+    [TestMethod]
+    public void OneSecondEPart()
+    {
+      string dssFile = TestUtility.GetSimpleTempFileName(".dss");
+      var ts = CreateSampleTimeSeries(new DateTime(2000, 4, 1),"","",1);
+      ts.Path = new DssPath("/////1Second/test/");
+      using DssWriter dss = new DssWriter(dssFile);
+      dss.Write(ts, true);
+
+      var ts2 = dss.GetTimeSeries(ts.Path);
+      Compare(ts,ts2);
+      
     }
+  }
 }

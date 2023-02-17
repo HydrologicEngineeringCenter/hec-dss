@@ -11,7 +11,7 @@ namespace DSSUnitTests
   {
 
     [TestMethod]
-    public void GridTest7()
+    public void CatalogWith_6Hour_and_1Hour_Grids()
     {
       var fn = TestUtility.GetCopyForTesting("SixAndOneHour.dss");
       using (DssReader reader = new DssReader(fn))
@@ -46,7 +46,7 @@ namespace DSSUnitTests
         TimeSeries s = new TimeSeries();
 
 
-            ///YYYYMMDD-hhmm
+        ///YYYYMMDD-hhmm
         string[] unsorted = new string[] {
 "/Z/csharp/values/31Dec2000/1Day//",
 "/A/csharp/values/31Dec2000/1Day/C:000001|T:20130312-1201|/",
@@ -70,12 +70,12 @@ namespace DSSUnitTests
 "/Z/csharp/values/31Dec2000/1Day//"
         };
 
-            var paths = w.GetCatalog();
-         foreach (var path in paths)
-            {
-               Console.WriteLine(path.FullPath);
-            }
-            Console.WriteLine();
+        var paths = w.GetCatalog();
+        foreach (var path in paths)
+        {
+          Console.WriteLine(path.FullPath);
+        }
+        Console.WriteLine();
 
         for (int i = 0; i < paths.Count; i++)
         {
@@ -92,6 +92,7 @@ namespace DSSUnitTests
     {
       var ts = TimeSeriesTest.CreateSampleTimeSeries(t, "ft", "", 86400, 11);
       ts.Path = new DssPath(path);
+      ts.LocationInformation = null;
       w.Write(ts, true);
 
     }
@@ -206,6 +207,18 @@ namespace DSSUnitTests
         Assert.AreEqual("ACRE-FT", ts.Units);
         Assert.AreEqual("INST-CUM", ts.DataType);
       }
+    }
+
+    [TestMethod]
+    public void FilterByParts()
+    {
+      var dssFile = TestUtility.GetCopyForTesting("version7AlbersGridsTimeSeries.dss");
+
+      using DssWriter dss = new DssWriter(dssFile);
+      DssPathCollection paths = dss.GetCatalog();
+
+      Assert.AreEqual(5, paths.FilterByPart(bPart: "BERLIN").Count);
+      Assert.AreEqual(1, paths.FilterByPart(bPart: "BERLIN", cPart: "FLOW-LOCAL").Count);
     }
   }
 }
