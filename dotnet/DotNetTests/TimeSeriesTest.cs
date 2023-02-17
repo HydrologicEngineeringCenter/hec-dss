@@ -81,7 +81,7 @@ namespace DSSUnitTests
     [TestMethod]
     public void TestOutofRangeTimeWindow()
     {
-      var filename = TestUtility.GetCopyForTesting("rainfall.dss");
+      var filename = TestUtility.GetCopyForTesting("rainfall7.dss");
       ReadWithDates(filename);
     }
 
