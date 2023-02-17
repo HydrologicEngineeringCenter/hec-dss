@@ -126,7 +126,7 @@ namespace Hec.Dss
     public int Count { get { return Values.Length; } }
 
     public LocationInformation LocationInformation { get; set; }
-    public bool HasQuality { get { return Qualities != null; } }
+    public bool HasQuality { get { return Qualities != null && Qualities.Length>0; } }
 
     public string ProgramName { get; internal set; }
 
