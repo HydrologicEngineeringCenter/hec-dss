@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Runtime.InteropServices;
 using static Hec.Dss.TimeWindow;
 
 namespace Hec.Dss
@@ -14,7 +15,7 @@ namespace Hec.Dss
 
     public override string ToString()
     {
-      return Path + " " + Values.Length + " items "; 
+      return Path + " " + Values.Length + " items ";
     }
 
     public TimeSeries(string fullPath, double[] values, DateTime dateTime, string units, string dataType)
@@ -71,7 +72,7 @@ namespace Hec.Dss
     {
       get
       {
-        if ( Times.Length == 0)
+        if (Times.Length == 0)
           throw new NullReferenceException("Error StartDateTime is not defined");
         else return Times[0];
       }
@@ -176,6 +177,106 @@ namespace Hec.Dss
       }
     }
 
+    /// <param name="instantValues">Converted values on success, otherwise Values as they are already.</param>
+    /// <returns>True if successful.  False if failure or don't know how to convert instant values.</returns>
+    public bool TryConvertToInstantValue(out DateTime[] instantTimes, out double[] instantValues)
+    {
+      if (string.IsNullOrEmpty(DataType) || DataType.ToUpperInvariant() == "INST-VAL")
+      {
+        //no conversion needed
+        instantValues = Values;
+        instantTimes = Times;
+        return true;
+      }
+
+      if (DataType.ToUpperInvariant() == "PER-AVER")
+      {
+        //take middle value at each period, using graphable values
+        DateTime[] graphableTimes = null;
+        double[] graphableValues = null;
+        if (TryConvertToGraphable(out graphableTimes, out graphableValues))
+        {
+          List<DateTime> dts = new List<DateTime>();
+          List<double> vals = new List<double>();
+
+          dts.Add(graphableTimes[0]);
+          vals.Add(graphableValues[0]);
+
+          for (int i = 0; i < graphableTimes.Length - 1; i += 2)
+          {
+            //this may overflow.. but I doubt it
+            var averageTicks = (graphableTimes[i].Ticks + graphableTimes[i + 1].Ticks) / 2.0;
+            dts.Add(new DateTime((long)averageTicks));
+            vals.Add(graphableValues[i]);
+          }
+
+          dts.Add(graphableTimes.Last());
+          vals.Add(graphableValues.Last());
+
+          instantTimes = dts.ToArray();
+          instantValues = vals.ToArray();
+
+          return true;
+        }
+
+      }
+
+      //either unsuccessful or we don't know how to do it
+      instantTimes = Times;
+      instantValues = Values;
+      return false;
+    }
+
+    /// <param name="times">Converted times on success, otherwise Times as they are already.</param>
+    /// <param name="values">Converted values on success, otherwise Values as they are already.</param>
+    /// <returns>True if successful.  False if failure or don't know how to convert instant values.</returns>
+    public bool TryConvertToGraphable(out DateTime[] times, out double[] values)
+    {
+      if (string.IsNullOrEmpty(DataType) || DataType.ToUpperInvariant() == "INST-VAL")
+      {
+        //no conversion needed
+        times = Times;
+        values = Values;
+
+        return true;
+      }
+      else if (DataType.ToUpperInvariant() == "PER-AVER")
+      {
+        //Get the period by reading the E part.  E part may not have a time span though.
+        var timeSpan = Path.EPartAsTimeSpan;
+
+        List<DateTime> dts = new List<DateTime>();
+        List<double> vals = new List<double>();
+
+        if (timeSpan != default(TimeSpan))
+        {
+          //regular time series. set first dt to a period before the first value
+          dts.Add(Times[0].Subtract(timeSpan));
+          vals.Add(Values[0]);
+        }
+
+        for (int i = 0; i < Times.Length - 1; i++)
+        {
+          dts.Add(Times[i]);
+          vals.Add(Values[i]);
+          dts.Add(Times[i]);
+          vals.Add(Values[i + 1]);
+        }
+
+        dts.Add(Times.Last());
+        vals.Add(Values.Last());
+
+        times = dts.ToArray();
+        values = vals.ToArray();
+        return true;
+      }
+
+      //Don't know how to convert, so return value as they are.
+      times = Times;
+      values = Values;
+      return false;
+    }
+
     public DataTable ToDataTable(bool ShowIndex = true, bool ShowQuality = true)
     {
       var dt = new DataTable();
@@ -214,7 +315,7 @@ namespace Hec.Dss
         for (int i = 0; i < Count; i++)
           list.Add(new TimeSeriesPoint(Times[i], Values[i]));
       }
-     
+
 
       return list;
     }
@@ -263,7 +364,7 @@ namespace Hec.Dss
         if ((i + 1 != Count && Values[i + 1] != value) || (i == Count - 1 && Values[i] == value)) // Check if next value or last value isnt repeated
         {
           AnyValueCount = 0;
-          if (i != Count - 1) {value = Values[i + 1];}
+          if (i != Count - 1) { value = Values[i + 1]; }
         }
         if (AnyValueCount >= 2) // If current no data/zero count is at 2 or above, skip value
           continue;
@@ -324,7 +425,7 @@ namespace Hec.Dss
 
       int first = Array.FindIndex(Values, val => DssReader.IsValid(val));
 
-      if( first <0)
+      if (first < 0)
       {
         Clear(); // no value data, clear all
         return;
@@ -371,6 +472,6 @@ namespace Hec.Dss
       return new TimeSpan();
     }
 
-    
+
   }
 }
