@@ -16,6 +16,7 @@ namespace DSSUnitTests
     {
       //making up my own time series
       var ts = new TimeSeries();
+      ts.Path = new DssPath("/a/b/c//1Day//");
       ts.Values = new[] { 2749.68, 3437.06, 6725.01, 6843.8, 5761.91, 5470.51 };
       //daily data
       ts.Times = new[] { new DateTime(1996, 1, 1, 17, 0, 0), new DateTime(1996, 1, 2, 17, 0, 0), new DateTime(1996, 1, 3, 17, 0, 0), new DateTime(1996, 1, 4, 17, 0, 0), new DateTime(1996, 1, 5, 17, 0, 0), new DateTime(1996, 1, 6, 17, 0, 0) };
@@ -23,7 +24,7 @@ namespace DSSUnitTests
 
       DateTime[] graphableTimes ;
       double[] graphableValues;
-      var success = ts.TryConvertToGraphable(out graphableTimes, out graphableValues);
+      var success = TimeSeriesUtility.TryConvertToGraphable(ts,out graphableTimes, out graphableValues);
       Assert.IsTrue(success);
 
       DateTime[] expectedTimes = new[] { new DateTime(1995, 12, 31, 17, 0, 0),
@@ -51,6 +52,7 @@ namespace DSSUnitTests
     {
       //making up my own time series
       var ts = new TimeSeries();
+      ts.Path = new DssPath("/a/b/c//1Day//");
       ts.Values = new[] { 2749.68, 3437.06, 6725.01, 6843.8, 5761.91, 5470.51 };
       //daily data
       ts.Times = new[] { new DateTime(1996, 1, 1, 17, 0, 0), new DateTime(1996, 1, 2, 17, 0, 0), new DateTime(1996, 1, 3, 17, 0, 0), new DateTime(1996, 1, 4, 17, 0, 0), new DateTime(1996, 1, 5, 17, 0, 0), new DateTime(1996, 1, 6, 17, 0, 0) };
