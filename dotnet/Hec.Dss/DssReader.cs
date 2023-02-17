@@ -978,8 +978,10 @@ namespace Hec.Dss
 
     public void Dispose()
     {
-      //DSS.ZClose(ifltab);
-      //_iflTabGC.Free();
+      if (filename.Contains("dss-test-data"))
+          Console.WriteLine(filename);
+
+      DssNative.hec_dss_close(dss);
     }
 
     public enum LevelID

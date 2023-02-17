@@ -472,8 +472,8 @@ namespace DSSUnitTests
     public void ReadTsSingleRecordNoTimeWindow()
     {
       DssPath path = new DssPath("//SACRAMENTO/TEMP-MIN/01Jan1877/1Day/OBS/");
-
-      using DssReader r = new DssReader(TestUtility.GetCopyForTesting("sample7.dss"));
+      var fn = TestUtility.GetCopyForTesting("sample7.dss");
+      using DssReader r = new DssReader(fn);
       var ts = r.GetTimeSeries(path);
 
       Assert.AreEqual(48202, ts.Count);

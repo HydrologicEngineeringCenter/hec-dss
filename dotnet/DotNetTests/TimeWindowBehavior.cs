@@ -151,7 +151,6 @@ ConsecutiveValueCompression.AnyValue
 
 
     [TestMethod]
-    [Ignore]
     public void TestCoverIrregular()
     {
       TimeSeries ts = new TimeSeries();
@@ -166,8 +165,7 @@ ConsecutiveValueCompression.AnyValue
       ts.Values = new double[6] {1,2,3,4,5,6 };
       ts.Times = timestamps.ToArray();
 
-      string fn = "TestCoverIrregular.dss";
-      File.Delete(fn);
+      string fn = TestUtility.GetSimpleTempFileName(".dss");
       using (DssWriter w = new DssWriter(fn))
       {
         w.Write(ts);

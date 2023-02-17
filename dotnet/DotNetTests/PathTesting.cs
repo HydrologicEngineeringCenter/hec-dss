@@ -24,7 +24,8 @@ namespace DSSUnitTests
       {
         try
         {
-          using (DssReader dss = new DssReader(file))
+          var fileCopy = TestUtility.GetCopyForTesting(file);
+          using (DssReader dss = new DssReader(fileCopy))
           {
             var version = dss.GetDSSFileVersion();
             if (version == 7)
@@ -53,6 +54,7 @@ namespace DSSUnitTests
             }
 
           }
+          File.Delete(fileCopy);  
         }catch
         { // skip DSS6 files
           Console.WriteLine("skipping "+ file);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -10,7 +11,7 @@ namespace DSSUnitTests
   public class TestUtility
   {
 
-    internal const string BasePath = @"../../../../../../dss-test-data/";
+    private const string BasePath = @"../../../../../../dss-test-data/";
 
 
     internal static string[] GetAllTestDssFiles()
@@ -37,7 +38,7 @@ namespace DSSUnitTests
       return fn;
     }
 
-    [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.Synchronized)]
+   // [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.Synchronized)]
     internal static string GetCopyForTesting(string fileName)
     {
       string tempFileName = GetSimpleTempFileName(".dss");
@@ -45,10 +46,6 @@ namespace DSSUnitTests
       Console.WriteLine("copying "+fn+"  to "+tempFileName);
       File.Copy(fn, tempFileName);
 
-      // Reset the read/write permissions
-      System.IO.FileInfo fileInfo = new System.IO.FileInfo(tempFileName);
-      fileInfo.IsReadOnly = false;
-      
       return tempFileName;
     }
   }
