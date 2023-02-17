@@ -73,10 +73,10 @@
 *														 const char *units, const char *type);
 *
 *		Irregular-interval data
-*				zStructTimeSeries* zstructTsNewIrregFloats(const char* pathname, double *doubleValues, int numberValues,
+*				zStructTimeSeries* zstructTsNewIrregFloats(const char* pathname, float *floatValues, int numberValues,
 *														   int *itimes, int timeGranularitySeconds, const char* startDateBase,
 *														   const char *units, const char *type);
-*				zStructTimeSeries* zstructTsNewIrregDoubles(const char* pathname, float *floatValues, int numberValues,
+*				zStructTimeSeries* zstructTsNewIrregDoubles(const char* pathname, double *doubleValues, int numberValues,
 *														   int *itimes, int timeGranularitySeconds, const char* startDateBase,
 *														   const char *units, const char *type);
 *
