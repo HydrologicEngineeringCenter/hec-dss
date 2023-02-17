@@ -82,20 +82,17 @@ namespace DSSUnitTests
     public void TestOutofRangeTimeWindow()
     {
       var filename = TestUtility.GetCopyForTesting("rainfall.dss");
-
       ReadWithDates(filename);
-
     }
 
 
     [TestMethod]
-    public void InvalidRecordType()
+    public void RegularTSRecordType()
     {
-      var filename = TestUtility.GetCopyForTesting("MoRiverObs.dss");
+      var filename = TestUtility.GetCopyForTesting("MoRiverObs7.dss");
       using (DssReader r = new DssReader(filename))
       {
         var recordType = r.GetRecordType(new DssPath("/MISSOURI RIVER/BOONVILLE, MO/FLOW/01OCT1987/15MIN/USGS/"));
-        Console.WriteLine();
         Assert.IsTrue(recordType == RecordType.RegularTimeSeries);
       }
     }

@@ -558,6 +558,12 @@ namespace Hec.Dss
       DateTime endDateTime = default(DateTime), TimeWindow.TimeWindowBehavior behavior = TimeWindow.TimeWindowBehavior.StrictlyInclusive,
       TimeWindow.ConsecutiveValueCompression compression = TimeWindow.ConsecutiveValueCompression.None)
     {
+      if(startDateTime > endDateTime)
+      {
+        return GetEmptyTimeSeries(dssPath);
+      }
+
+
       if (behavior == TimeWindow.TimeWindowBehavior.StrictlyInclusive)
         return GetTimeSeries(dssPath, compression, startDateTime, endDateTime);
       else if (behavior == TimeWindow.TimeWindowBehavior.Cover)
@@ -573,13 +579,16 @@ namespace Hec.Dss
           return ts;
         }
         else // time series is irregular
-        {
-          var ts = GetTimeSeries(dssPath, compression, startDateTime, endDateTime);
+        { // add 10% buffer
+          TimeSpan diff = endDateTime - startDateTime;
+          DateTime t1 = startDateTime.AddHours(-diff.TotalHours*0.1);
+          DateTime t2 = endDateTime.AddHours(diff.TotalMinutes*0.1);
+          var ts = GetTimeSeries(dssPath, compression, t1, t2);
           return ts;
         }
       }
 
-      return null;
+      return GetEmptyTimeSeries(dssPath);
     }
 
     /// <summary>

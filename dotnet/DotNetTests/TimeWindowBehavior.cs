@@ -156,9 +156,9 @@ ConsecutiveValueCompression.AnyValue
       TimeSeries ts = new TimeSeries();
       ts.Path = new DssPath("/TestCoverIrregular/csharp/flow//IR-Day/v1/");
       var timestamps = new List<DateTime>();
-      timestamps.Add(new DateTime(2000, 1, 21));
+      timestamps.Add(new DateTime(2001, 1, 21));
       timestamps.Add(new DateTime(2002, 1, 1));
-      timestamps.Add(new DateTime(2002, 1, 1));
+      timestamps.Add(new DateTime(2002, 1, 1,1,0,0));
       timestamps.Add(new DateTime(2002, 1, 2));
       timestamps.Add(new DateTime(2002, 1, 3));
       timestamps.Add(new DateTime(2003, 2, 1));
