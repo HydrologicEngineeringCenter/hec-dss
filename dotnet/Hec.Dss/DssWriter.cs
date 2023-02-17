@@ -120,11 +120,11 @@ namespace Hec.Dss
         string startBaseDate = Time.JulianToHecDate(julianBaseDate);
         int[] times = Time.ConvertDatesToHecInteger(ts.Times, julianBaseDate, timeGranularitySeconds);
 
-        DssNative.hec_dss_tsStoreIregular(dss, ts.Path.FullPath, startBaseDate, times,timeGranularitySeconds,
+        rval = DssNative.hec_dss_tsStoreIregular(dss, ts.Path.FullPath, startBaseDate, times,timeGranularitySeconds,
            ts.Values, ts.Values.Length, ts.Qualities, ts.Qualities.Length, saveAsFloat ? 1 : 0, units.Data, type.Data);
       }
       if (ts.LocationInformation != null)
-        StoreLocation(ts.Path.FullPath, ts.LocationInformation, false);
+          StoreLocation(ts.Path.FullPath, ts.LocationInformation, false);
 
       return rval;
     }
