@@ -60,7 +60,7 @@ namespace DSSUnitTests
 
       DateTime[] instTimes;
       double[] instVals;
-      var success = ts.TryConvertToInstantValue(out instTimes, out instVals);
+      var success = TimeSeriesUtility.TryConvertToInstantValue(ts,out instTimes, out instVals);
       Assert.IsTrue(success);
 
       DateTime[] expectedTimes = new[] { new DateTime(1995, 12, 31, 17, 0, 0), new DateTime(1996, 1, 1, 5, 0, 0), new DateTime(1996, 1, 2, 5, 0, 0),
