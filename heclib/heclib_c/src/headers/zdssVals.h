@@ -49,7 +49,7 @@ static int fortranMessageUnit = -1;
 #define MAX_PATHNAME_SIZE   394
 #define MAX_PART_SIZE 129
 
-#define MAX_FILENAME_LENGTH 256
+#define MAX_FILENAME_LENGTH 1024
 
 
 //  Buffer Action
