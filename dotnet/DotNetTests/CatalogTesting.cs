@@ -9,8 +9,22 @@ namespace DSSUnitTests
   [TestClass]
   public class CatalogTesting
   {
-
     [TestMethod]
+    public void GetCatalogAllTypesWithMetaData()
+    {
+      var fn = TestUtility.GetCopyForTesting("examples-all-data-types.dss");
+      using (DssReader reader = new DssReader(fn))
+      {
+        var cat = reader.GetCatalog(true);
+
+        var tbl = cat.ToDataTable();
+        Console.WriteLine(tbl);
+      }
+
+    }
+
+
+      [TestMethod]
     public void CatalogWith_6Hour_and_1Hour_Grids()
     {
       var fn = TestUtility.GetCopyForTesting("SixAndOneHour.dss");

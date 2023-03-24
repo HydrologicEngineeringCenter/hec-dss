@@ -209,7 +209,7 @@ namespace Hec.Dss
     public List<TimeSeriesPoint> ToTimeSeriesPoints()
     {
       List<TimeSeriesPoint> list = new List<TimeSeriesPoint>();
-      if (Qualities != null)
+      if (Qualities != null && Qualities.Length >0)
       {
         for (int i = 0; i < Count; i++)
           list.Add(new TimeSeriesPoint(Times[i], Values[i], Qualities[i]));

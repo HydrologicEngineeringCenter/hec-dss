@@ -1,33 +1,35 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net6.0</TargetFrameworks>
+    <TargetFrameworks>net6.0;net472</TargetFrameworks>
     <Platforms>AnyCPU</Platforms>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <AssemblyName>Hec.Dss</AssemblyName>
-    <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
-    <UserSecretsId>9386b4da-9131-4e8a-a405-dd8b884ef60d</UserSecretsId> 
+    <!--<AllowUnsafeBlocks>true</AllowUnsafeBlocks>-->
+    <LangVersion>Latest</LangVersion>
+    <Authors>Karl Tarbet Anton Rotter-Sieren Neema Nejad</Authors>
+    <Owner>
+      US Army Corps of Engineers
+      Hydrologic Engineering Center
+    </Owner>
+    <Title>Hec.Dss</Title>
+    <Product>Hec.Dss</Product>
+    <PackageDescription>
+      Hec.Dss is a .net API for HEC-DSS  https://www.hec.usace.army.mil/software/hec-dss/documentation.aspx
+    </PackageDescription>
+    <PackageVersion>2.0.0-Beta6</PackageVersion>
   </PropertyGroup>
+
+  
+  <!-- hecdss.dll reference needed because native C and Fortran code -->
+
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
+    <!--if this content doesn't exist on your machine, this content will not be included in the generated NuGet Package-->
+      <Content Include="$(SolutionDir)\\heclib\\hecdss\\x64\\Release\\hecdss.dll">
+      <PackageCopyToOutput>true</PackageCopyToOutput>
+    </Content>
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Update="Properties\Settings.Designer.cs">
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Update="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
+    <Folder Include="build\" />
   </ItemGroup>
   
-  <!-- DSS reference needed because it's managed C++. Postbuild event should move it to the bin32/bin64 subdirectory -->
 </Project>

@@ -144,11 +144,6 @@ namespace Hec.Dss
 
     private void GetMetaDataForCatalog(DssPathCollection collection)
     {
-      if (!collection.HasRecordTypes) // recordTypes is null for V6
-      {
-        SetRecordType(collection);
-      }
-
       HashSet<string> uDataUnits = new HashSet<string>();
       HashSet<string> uDataTypes = new HashSet<string>();
       HashSet<double> uXs = new HashSet<double>();
@@ -247,8 +242,8 @@ namespace Hec.Dss
 
       if (item.RecordType == RecordType.RegularTimeSeries || item.RecordType == RecordType.IrregularTimeSeries)
       {
-        TimeSeries ts = GetEmptyTimeSeries(item);  // 0.1 second 
-                                                   //var ts = GetTimeSeries(item.PathWithoutDate); // 1 second   CondencedCatalog7Extended/test
+        //TimeSeries ts = GetEmptyTimeSeries(item);  // 0.1 second 
+        var ts = GetTimeSeries(new DssPath(item.PathWithoutDate)); // 1 second   CondencedCatalog7Extended/test
         if (ts != null)
         {
           if (dataUnits != null && !dataUnits.Contains(ts.Units))
@@ -363,29 +358,6 @@ namespace Hec.Dss
     }
 
 
-
-    /// <summary>
-    /// Lookup record type for each path,
-    /// required for V6 DSS files
-    /// </summary>
-    /// <param name="condensed"></param>
-    private void SetRecordType(DssPathCollection condensed)
-    {
-      HashSet<RecordType> uRecordTypeNames = new HashSet<RecordType>();
-      foreach (var path in condensed)
-      {
-        RecordType rt = GetRecordType(path);
-        uRecordTypeNames.Add(rt);
-
-        path.RecordType = rt;
-      }
-
-      List<RecordType> recordTypeNames = uRecordTypeNames.ToList();
-      recordTypeNames.Sort();
-
-      condensed.SetUniqueRecordTypeNames(recordTypeNames);
-      condensed.HasRecordTypes = true;
-    }
 
 
     /// <summary>
