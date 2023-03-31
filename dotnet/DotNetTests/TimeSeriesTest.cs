@@ -650,9 +650,15 @@ namespace DSSUnitTests
       var s = TimeWindow.GetInterval(r.GetTimeSeries(path));
       Debug.WriteLine(s);
     }
-
-
     [TestMethod]
+    public void ErrorWithZeroTimeSpan()
+    {
+      TimeSpan span = new TimeSpan();
+      Assert.AreEqual("IR-YEAR", TimeWindow.GetInterval(span));
+    }
+
+
+      [TestMethod]
     public void CreateVersion7FileExplicit()
     {
       string fn = TestUtility.GetSimpleTempFileName(".dss");

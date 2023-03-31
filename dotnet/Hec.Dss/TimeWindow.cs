@@ -127,7 +127,7 @@ namespace Hec.Dss
       {
         return TimeIntervals7[i];
       }
-      catch (ArgumentOutOfRangeException)
+      catch (IndexOutOfRangeException)
       {
         return "IR-YEAR";
       }
@@ -141,9 +141,9 @@ namespace Hec.Dss
       {
         return TimeIntervals7[i];
       }
-      catch (ArgumentOutOfRangeException)
+      catch (IndexOutOfRangeException)
       {
-        return "";
+        return "IR-YEAR";
       }
     }
 
