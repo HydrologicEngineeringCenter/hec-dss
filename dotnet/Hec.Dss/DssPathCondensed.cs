@@ -48,9 +48,8 @@ namespace Hec.Dss
       }
     }
 
-    public DssPathCondensed(string A, string B, string C, List<string> comprisedDParts, string E, string F, RecordType recordTypeName = RecordType.Unknown, 
-      string dataType = "", string dataUnits = "", double xOrdinate = 0, double yOrdinate = 0, double zOrdinate = 0)
-      : base(A, B, C, default(DateTime), E, F, recordTypeName, dataType, dataUnits, xOrdinate, yOrdinate, zOrdinate)
+    public DssPathCondensed(string A, string B, string C, List<string> comprisedDParts, string E, string F,
+        RecordType recordType = RecordType.Unknown) : base(A, B, C, default(DateTime), E, F, recordType)
     {
       _comprisedDParts = comprisedDParts;
       DPartStart = _comprisedDParts[0];
@@ -72,11 +71,6 @@ namespace Hec.Dss
       {
         DssPath p = new DssPath(Apart, Bpart, Cpart, _comprisedDParts[i], Epart, Fpart);
         p.RecordType = RecordType;
-        p.DataType = DataType;
-        p.Units = Units;
-        p.XOrdinate = XOrdinate;
-        p.YOrdinate = YOrdinate;
-        p.ZOrdinate = ZOrdinate;
         toReturn.Add(p);
       }
 
@@ -89,11 +83,6 @@ namespace Hec.Dss
     public DssPath GetPath(int index)
     {
       DssPath p = new DssPath(Apart, Bpart, Cpart, _comprisedDParts[index], Epart, Fpart);
-      p.DataType = DataType;
-      p.Units = Units;
-      p.XOrdinate = XOrdinate;
-      p.YOrdinate = YOrdinate;
-      p.ZOrdinate = ZOrdinate;
 
       return p;
     }

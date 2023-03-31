@@ -110,7 +110,7 @@ namespace DSSUnitTests
         var targetDSSPath = new DssPath(pathname);
 
         // Should cache catalogue in local var?
-        var cat = dssr.GetCatalog(false);
+        var cat = dssr.GetCatalog();
 
         // var paths = cat.Paths.Select(dssPath => dssPath.FullPath).ToArray();
         // var filterPaths = PathAssist.FilterByPart(paths, targetDSSPath);

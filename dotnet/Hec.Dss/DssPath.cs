@@ -16,10 +16,6 @@ namespace Hec.Dss
     private string _Fpart;
 
     public RecordType RecordType { get; internal set; }
-    public double XOrdinate { get; internal set; }
-    public double YOrdinate { get; internal set; }
-    public double ZOrdinate { get; internal set; }
-
     public DateTime DPartAsDateTime 
     { 
       get
@@ -62,21 +58,6 @@ namespace Hec.Dss
       return Time.TryConvertFromHecDateTime(_Epart, out date);
     }
 
-    // header information
-    public string Units { get; internal set; }
-    public string DataType { get; internal set; }
-
-    public bool HasValidCoordinates
-    {
-      get
-      {
-        return
-             this.XOrdinate != Constant.UNDEFINED_LOCATION_INFO_VALUE
-          && this.YOrdinate != Constant.UNDEFINED_LOCATION_INFO_VALUE
-          && this.ZOrdinate != Constant.UNDEFINED_LOCATION_INFO_VALUE;
-
-      }
-    }
 
     /// <summary>
     /// Returns true if this path represents a regular interval time series
@@ -259,48 +240,28 @@ namespace Hec.Dss
 
     public DssPath()
     {
-      _Apart = "";
-      _Bpart = "";
-      _Cpart = "";
-      _Dpart = "";
-      _Epart = "";
-      _Fpart = "";
+      InitPath("", "", "", "", "", "", RecordType.Unknown);
     }
 
-    public DssPath(string A = "", string B = "", string C = "", string D = "", string E = "", string F = "", RecordType recordType = RecordType.Unknown,
-      string dataType = "", string dataUnits = "", double xOrdinate = Constant.UNDEFINED_LOCATION_INFO_VALUE, double yOrdinate = Constant.UNDEFINED_LOCATION_INFO_VALUE, double zOrdinate = Constant.UNDEFINED_LOCATION_INFO_VALUE)
+    public DssPath(string A = "", string B = "", string C = "", string D = "", string E = "", string F = "", RecordType recordType = RecordType.Unknown)
     {
-      _Apart = A;
-      _Bpart = B;
-      _Cpart = C;
-      _Dpart = D;
-      _Epart = E;
-      _Fpart = F;
-
-      RecordType = recordType;
-      DataType = dataType;
-      Units = dataUnits;
-      XOrdinate = xOrdinate;
-      YOrdinate = yOrdinate;
-      ZOrdinate = zOrdinate;
+      InitPath(A, B, C, D, E, F, recordType);
     }
 
-    public DssPath(string A = "", string B = "", string C = "", DateTime D = default(DateTime), string E = "", string F = "", RecordType recordType = RecordType.Unknown,
-      string dataType = "", string dataUnits = "", double xOrdinate = Constant.UNDEFINED_LOCATION_INFO_VALUE, double yOrdinate = Constant.UNDEFINED_LOCATION_INFO_VALUE, double zOrdinate = Constant.UNDEFINED_LOCATION_INFO_VALUE)
+    private void InitPath(string A, string B, string C, string D, string E, string F, RecordType recordType)
     {
-      _Apart = A;
-      _Bpart = B;
-      _Cpart = C;
-      _Dpart = D.ToString("yyyyMMdd");
-      _Epart = E;
-      _Fpart = F;
+      this.Apart= A; 
+      this.Bpart= B;  
+      this.Cpart= C;  
+      this.Dpart= D;  
+      this.Epart= E;  
+      this.Fpart= F;  
+      this.RecordType= recordType;  
+    }
 
-      RecordType = recordType;
-      DataType = dataType;
-      Units = dataUnits;
-      XOrdinate = xOrdinate;
-      YOrdinate = yOrdinate;
-      ZOrdinate = zOrdinate;
+    public DssPath(string A = "", string B = "", string C = "", DateTime D = default(DateTime), string E = "", string F = "", RecordType recordType = RecordType.Unknown)
+    {
+      InitPath(A, B, C, D.ToString("yyyyMMdd"), E, F, recordType);
     }
 
     public bool IsTimeSeries()
@@ -337,16 +298,7 @@ namespace Hec.Dss
       {
         throw new Exception("Invalid path given");
       }
-      _Apart = splitPath[1];
-      _Bpart = splitPath[2];
-      _Cpart = splitPath[3];
-      _Dpart = splitPath[4];
-      _Epart = splitPath[5];
-      _Fpart = splitPath[6];
-
-      RecordType = RecordType.Unknown;
-      DataType = "";
-      Units = "";
+      InitPath(splitPath[1], splitPath[2], splitPath[3], splitPath[4], splitPath[5],splitPath[6], RecordType.Unknown);
     }
 
     public static bool IsValid(string path)

@@ -16,7 +16,7 @@ namespace DSSUnitTests
       var filename = TestUtility.GetCopyForTesting("MoRiverObs_TimeWindowTest.dss");
       using (DssReader r = new DssReader(filename))
       {
-        var catalog = r.GetCatalog(false);
+        var catalog = r.GetCatalog();
         var paths = catalog.FilterByPart("CHARITON RIVER", "PRAIRIE HILL, MO", "FLOW", "", "15MIN", "USGS");
         var path1 = paths[0];
         var t1 = new DateTime(2008, 9, 2);
@@ -184,7 +184,7 @@ namespace DSSUnitTests
     {
       using (DssReader r = new DssReader(TestUtility.GetCopyForTesting("sample7.dss")))
       {
-        var catalog = r.GetCatalog(true);
+        var catalog = r.GetCatalog();
         var path = catalog.GetCondensedPath(new DssPath("//SACRAMENTO/PRECIP-INC/11Jul1877 - 30Jun2009/1Day/OBS/"));
         var timeSeries = r.GetTimeSeries(path);
         Assert.AreEqual(48202, timeSeries.Values.Length);
@@ -196,7 +196,7 @@ namespace DSSUnitTests
     {
       using (DssReader r = new DssReader(TestUtility.GetCopyForTesting("sample7.dss")))
       {
-        var catalog = r.GetCatalog(true);
+        var catalog = r.GetCatalog();
         var path = catalog.GetCondensedPath(new DssPath("//SACRAMENTO/PRECIP-INC/11Jul1877 - 30Jun2009/1Day/OBS/"));
         var timeSeries = r.GetTimeSeries(path, new DateTime(1950, 11, 1), new DateTime(1952, 10, 31));
         Assert.AreEqual(731, timeSeries.Values.Length);
@@ -231,7 +231,7 @@ namespace DSSUnitTests
     {
       using (DssReader r = new DssReader(TestUtility.GetCopyForTesting("sample7.dss")))
       {
-        var catalog = r.GetCatalog(true);
+        var catalog = r.GetCatalog();
         bool result = catalog.TryGetCondensedPath(new DssPath("//SACRAMENTO/PRECIP-INC/nothing/1Day/OBS/"), out DssPathCondensed nothing);
         Assert.IsFalse(result);
       }

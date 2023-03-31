@@ -20,18 +20,19 @@ namespace Hec.Dss
       table.Columns.Add("E");
       table.Columns.Add("F");
       table.Columns.Add("RecordType");
-      table.Columns.Add("DataType");
+/*      table.Columns.Add("DataType");
       table.Columns.Add("Units");
       table.Columns.Add("XOrdinate");
       table.Columns.Add("YOrdinate");
       table.Columns.Add("ZOrdinate");
+*/
       table.PrimaryKey = new DataColumn[] { table.Columns[0] };
 
       for (int i = 0; i < Paths.Count; i++)
       {
         var p = Paths[i];
         table.Rows.Add(i, p.Apart, p.Bpart, p.Cpart, p.Dpart, p.Epart, p.Fpart,
-            p.RecordType.ToString(), p.DataType, p.Units, p.XOrdinate, p.YOrdinate, p.ZOrdinate);
+            p.RecordType.ToString());
       }
       return table;
     }
@@ -331,73 +332,6 @@ namespace Hec.Dss
     {
       _recordTypeNames = uniqueRecordTypes;
     }
-
-    public IList<string> GetUniqueDataTypes()
-    {
-      if (_dataTypes == null)
-        _dataTypes = PathAssist.GetUniqueDataTypes(Paths);
-
-      return _dataTypes;
-    }
-
-    internal void SetUniqueDataTypes(List<string> uniqueDataTypes)
-    {
-      _dataTypes = uniqueDataTypes;
-    }
-
-    public IList<string> GetUniqueDataUnits()
-    {
-      if (_dataUnits == null)
-        _dataUnits = PathAssist.GetUniqueUnits(Paths);
-
-      return _dataUnits;
-    }
-
-    internal void SetUniqueDataUnits(List<string> uniqueDataUnits)
-    {
-      _dataUnits = uniqueDataUnits;
-    }
-
-    public IList<double> GetUniqueXs()
-    {
-      if (_xs == null)
-        _xs = PathAssist.GetUniqueXs(Paths);
-
-      return _xs;
-    }
-
-    internal void SetUniqueXs(List<double> uniqueXs)
-    {
-      _xs = uniqueXs;
-    }
-
-    public IList<double> GetUniqueYs()
-    {
-      if (_ys == null)
-        _ys = PathAssist.GetUniqueYs(Paths);
-
-      return _ys;
-    }
-
-    internal void SetUniqueYs(List<double> uniqueYs)
-    {
-      _ys = uniqueYs;
-    }
-
-    public IList<double> GetUniqueZs()
-    {
-      if (_zs == null)
-        _zs = PathAssist.GetUniqueZs(Paths);
-
-      return _zs;
-    }
-
-    internal void SetUniqueZs(List<double> uniqueZs)
-    {
-      _zs = uniqueZs;
-    }
-
-
 
     public List<DssPath> FilterByPart(string aPart = "", string bPart = "", string cPart = "", string dPart = "", string ePart = "", string fPart = "")
     {

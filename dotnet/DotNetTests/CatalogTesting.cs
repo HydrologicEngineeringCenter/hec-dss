@@ -15,7 +15,7 @@ namespace DSSUnitTests
       var fn = TestUtility.GetCopyForTesting("examples-all-data-types.dss");
       using (DssReader reader = new DssReader(fn))
       {
-        var cat = reader.GetCatalog(true);
+        var cat = reader.GetCatalog();
 
         var tbl = cat.ToDataTable();
         Console.WriteLine(tbl);
@@ -119,7 +119,7 @@ namespace DSSUnitTests
       DataTable rval = new DataTable();
       using (DssReader r = new DssReader(filename))
       {
-        var catalog = r.GetCatalog(true);
+        var catalog = r.GetCatalog();
         rval = catalog.ToDataTable();
 
       }
@@ -136,26 +136,12 @@ namespace DSSUnitTests
     public void CondencedCatalog7a()
     {
       var r = new DssWriter(TestUtility.GetCopyForTesting("sample7a.dss"));
-      var c = r.GetCatalog(true);
+      var c = r.GetCatalog();
       Assert.AreEqual(38,c.Count);
     }
 
-    [TestMethod]
-    public void CondencedCatalog7Extended()
-    {
-      var tbl = Catalog(TestUtility.GetCopyForTesting("sample7_units_xyz.dss"), true);
-      Assert.IsTrue(tbl.Rows.Count > 30);
 
-      var s = "A='' and B='SACRAMENTO' and C = 'PRECIP-INC' and E='1Day' and F= 'OBS' and XOrdinate='10'";
-      Assert.AreEqual(1, tbl.Select(s).Length);
-
-      s = "A='TEST' and B='COWLITZ' and C = 'FREQ-FLOW' and D='EXAMPLE' and F= '' and RecordType='PairedData' and XOrdinate='-123' and YOrdinate='-11151965' and units ='cfs'";
-      Assert.AreEqual(1, tbl.Select(s).Length);
-
-    }
-
-
-    private static DataTable Catalog(string filename, bool extendedInfo = false)
+    private static DataTable Catalog(string filename)
     {
       DataTable rval = new DataTable();
       using (DssReader r = new DssReader(filename))
@@ -163,15 +149,9 @@ namespace DSSUnitTests
         Console.WriteLine(Directory.GetCurrentDirectory());
         Console.WriteLine(System.IO.Path.GetFileName(filename));
 
-        var catalog = r.GetCatalog(extendedInfo);
+        var catalog = r.GetCatalog();
         rval = catalog.ToDataTable();
 
-        //PrintDataTable(rval);
-        //foreach (var item in catalog)
-        //{
-        //  Console.WriteLine(item.FullPath + ",  " + item.RecordTypeName);
-        //}
-        //Console.WriteLine(catalog.Count);
       }
       return rval;
     }
@@ -215,7 +195,7 @@ namespace DSSUnitTests
       string path = @"/BALD EAGLE LOC HAV/105178.6/FLOW-CUM/17FEB1999-23FEB1999/1Minute/DAMBRKSIMBRCH/";
       using (DssReader dss = new DssReader(dssFile))
       {
-        DssPathCollection paths = dss.GetCatalog(true);
+        DssPathCollection paths = dss.GetCatalog();
         var dsspath = paths.FindExactPath(path);
         var ts = dss.GetEmptyTimeSeries(dsspath);
         Assert.AreEqual("ACRE-FT", ts.Units);

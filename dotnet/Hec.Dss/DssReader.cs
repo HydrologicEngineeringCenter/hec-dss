@@ -22,8 +22,6 @@ namespace Hec.Dss
 
     DssPathCollection _catalog = null;
 
-    bool _collectionHasMetaData = false;
-
     public string Filename
     {
       get { return filename; }
@@ -85,22 +83,19 @@ namespace Hec.Dss
     /// Gives condensed path names of the DSS File.  Condensed means that for every path name that has equal everything but D part, merge it into one path. 
     /// Will always give the path names sorted.
     /// </summary>
-    /// <param name="includeMetaData"includeRecordType>set to true to get record type, Units, datatype, and location info</param>
     /// <returns></returns>
-    public DssPathCollection GetCatalog(bool includeMetaData = false)
+    public DssPathCollection GetCatalog()
     {
       if (_catalog == null)
       {
-        _catalog = GetCatalogInternal(includeMetaData);
+        _catalog = GetCatalogInternal();
       }
-      else if (_catalog != null && !_collectionHasMetaData && includeMetaData)
-        GetMetaDataForCatalog(_catalog);
 
       return _catalog;
 
     }
 
-    private DssPathCollection GetCatalogInternal(bool includeMetaData)
+    private DssPathCollection GetCatalogInternal()
     {
 
       var rawCatalog = GetRawCatalog(dss, out int[] intRecordTypes);
@@ -109,9 +104,6 @@ namespace Hec.Dss
       recordTypes = ConvertToRecordType(intRecordTypes);
 
       var condensed = new DssPathCollection(filename, rawCatalog.ToArray(), recordTypes, condensed: true);
-
-      if (includeMetaData)
-        GetMetaDataForCatalog(condensed);
 
       return condensed;
     }
@@ -140,61 +132,6 @@ namespace Hec.Dss
         }
 
       return pathNameList;
-    }
-
-    private void GetMetaDataForCatalog(DssPathCollection collection)
-    {
-      HashSet<string> uDataUnits = new HashSet<string>();
-      HashSet<string> uDataTypes = new HashSet<string>();
-      HashSet<double> uXs = new HashSet<double>();
-      HashSet<double> uYs = new HashSet<double>();
-      HashSet<double> uZs = new HashSet<double>();
-      foreach (var item in collection)
-      {
-        double x=0, y=0, z=0;
-        int coordinateSystem = 0, coordinateID = 0;
-        int horizontalUnits=0,horizontalDatum = 0;
-        int verticalUnits=0, verticalDatum = 0;
-        ByteString timeZoneName = new ByteString(64);
-        ByteString supplemental = new ByteString(64);// could be bigger, but we are ignoring supplemental here.
-        var loc = DssNative.hec_dss_locationRetrieve(dss, item.FullPath, ref x, ref y, ref z,
-         ref coordinateSystem, ref coordinateID,
-         ref horizontalUnits, ref horizontalDatum,
-         ref verticalUnits, ref verticalDatum,
-         timeZoneName.Data, timeZoneName.Data.Length,
-         supplemental.Data, supplemental.Data.Length);
-
-        item.XOrdinate = x;
-        item.YOrdinate = y;
-        item.ZOrdinate = z;
-        uXs.Add(x);
-        uYs.Add(y);
-        uZs.Add(z);
-
-        ReadHeaderInfo(item, collection, uDataUnits, uDataTypes);
-      }
-      List<string> dataUnits = uDataUnits.ToList();
-      dataUnits.Sort();
-
-      List<string> dataTypes = uDataTypes.ToList();
-      dataTypes.Sort();
-
-      List<double> xs = uXs.ToList();
-      xs.Sort();
-
-      List<double> ys = uYs.ToList();
-      ys.Sort();
-
-      List<double> zs = uZs.ToList();
-      zs.Sort();
-
-      collection.SetUniqueDataTypes(dataTypes);
-      collection.SetUniqueDataUnits(dataUnits);
-      collection.SetUniqueXs(xs);
-      collection.SetUniqueYs(ys);
-      collection.SetUniqueZs(zs);
-
-      _collectionHasMetaData = true;
     }
 
     private static RecordType[] ConvertToRecordType(int[] recTypes)
@@ -235,128 +172,6 @@ namespace Hec.Dss
 
       return rval;
     }
-
-
-    internal void ReadHeaderInfo(DssPath item, DssPathCollection paths = null, HashSet<string> dataUnits = null, HashSet<string> dataTypes = null)
-    {
-
-      if (item.RecordType == RecordType.RegularTimeSeries || item.RecordType == RecordType.IrregularTimeSeries)
-      {
-        //TimeSeries ts = GetEmptyTimeSeries(item);  // 0.1 second 
-        var ts = GetTimeSeries(new DssPath(item.PathWithoutDate)); // 1 second   CondencedCatalog7Extended/test
-        if (ts != null)
-        {
-          if (dataUnits != null && !dataUnits.Contains(ts.Units))
-            dataUnits.Add(ts.Units);
-          if (dataTypes != null && !dataTypes.Contains(ts.DataType))
-            dataTypes.Add(ts.DataType);
-
-          if (paths != null && paths._isInterned)
-          {
-            if (dataUnits == null || dataTypes == null)
-              throw new ArgumentException("The paths is interned, but the dataUnits or the dataType hash set is null.  Neither can be null.");
-
-            if (ts.Units == null)
-              ts.Units = "";
-
-            if (ts.DataType == null)
-              ts.DataType = "";
-
-
-            string units = ts.Units;
-            string type = ts.DataType;
-
-            dataUnits.TryGetValue(units, out units);
-            dataTypes.TryGetValue(type, out type);
-
-            item.Units = units;
-            item.DataType = type;
-          }
-          else
-          {
-            item.Units = ts.Units;
-            item.DataType = ts.DataType;
-          }
-        }
-      }
-      if (item.RecordType == RecordType.PairedData)
-      {
-        var pd = GetPairedData(item.FullPath,true);
-
-        if (pd != null)
-        {
-          if (pd.UnitsDependent == null)
-            pd.UnitsDependent = "";
-          if (pd.TypeDependent == null)
-            pd.TypeDependent = "";
-
-          if (paths != null && paths._isInterned)
-          {
-            if (dataUnits == null || dataTypes == null)
-              throw new ArgumentException("The paths is interned, but the dataUnits or the dataType hash set is null.  Neither can be null.");
-
-            if (dataUnits == null || dataTypes == null)
-              throw new ArgumentException("The paths is interned, but the dataUnits or the dataType hash set is null.  Neither can be null.");
-
-            if (!dataUnits.Contains(pd.UnitsDependent))
-              dataUnits.Add(pd.UnitsDependent);
-            if (!dataTypes.Contains(pd.TypeDependent))
-              dataTypes.Add(pd.TypeDependent);
-
-            string units = pd.UnitsDependent;
-            string type = pd.TypeDependent;
-
-            dataUnits.TryGetValue(units, out units);
-            dataTypes.TryGetValue(type, out type);
-
-            item.Units = units;
-            item.DataType = type;
-          }
-          else
-          {
-            item.Units = pd.UnitsDependent;
-            item.DataType = pd.TypeDependent;
-          }
-        }
-      }
-      if (item.RecordType == RecordType.Grid)
-      {
-        var grid = GetGrid(item, false);
-
-        if (grid != null)
-        {
-          if (paths != null && paths._isInterned)
-          {
-            if (dataUnits == null || dataTypes == null)
-              throw new ArgumentException("The paths is interned, but the dataUnits or the dataType hash set is null.  Neither can be null.");
-
-            if (dataUnits == null || dataTypes == null)
-              throw new ArgumentException("The paths is interned, but the dataUnits or the dataType hash set is null.  Neither can be null.");
-
-            if (!dataUnits.Contains(grid.DataUnits))
-              dataUnits.Add(grid.DataUnits);
-            if (!dataTypes.Contains(grid.DataType.ToString()))
-              dataTypes.Add(grid.DataType.ToString());
-
-            string units = grid.DataUnits;
-            string type = grid.DataType.ToString();
-
-            dataUnits.TryGetValue(units, out units);
-            dataTypes.TryGetValue(type, out type);
-
-            item.Units = units;
-            item.DataType = type;
-          }
-          else
-          {
-            item.Units = grid.DataUnits;
-            item.DataType = grid.DataType.ToString();
-          }
-        }
-      }
-
-    }
-
 
 
 

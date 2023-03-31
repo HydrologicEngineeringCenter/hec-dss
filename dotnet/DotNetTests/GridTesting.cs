@@ -410,7 +410,7 @@ YCoord Of Grid Cell Zero: 0.0
       double sum = 0;
       using (var dssr = new DssReader(fn))
       {
-        var cat = dssr.GetCatalog(false);
+        var cat = dssr.GetCatalog();
         var paths = cat.Paths.Select(dssPath => dssPath.FullPath).ToArray();
 
         var filterPaths = PathAssist.FilterByPart(paths, targetDSSPath);
@@ -434,7 +434,7 @@ YCoord Of Grid Cell Zero: 0.0
       string fn = TestUtility.GetCopyForTesting("NDFD_Wind7.dss");
       using (DssReader dssr = new DssReader(fn))
       {
-        var cat = dssr.GetCatalog(false);
+        var cat = dssr.GetCatalog();
         var paths = cat.Paths.Select(dssPath => dssPath.FullPath).ToArray();
 
         string _pathname = "/SHG/CONUS/WIND DIRECTION///NDFD (YUBZ98) (001-003)/";

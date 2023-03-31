@@ -54,7 +54,7 @@ namespace DSSUnitTests
 
       using (DssReader r = new DssReader(dssFileName))
       {
-        var catalog = r.GetCatalog(true);
+        var catalog = r.GetCatalog();
         var path = catalog.GetCondensedPath(new DssPath("//SACRAMENTO/PRECIP-INC/11Jul1877 - 30Jun2009/1Day/OBS/"));
         var recordType = r.GetRecordType(path);
         Assert.AreEqual(RecordType.RegularTimeSeries,recordType);
@@ -82,7 +82,7 @@ namespace DSSUnitTests
       string path = "/BALD EAGLE LOC HAV/105178.6/FLOW-CUM/17Feb1999-23Feb1999/1Minute/DAMBRKSIMBRCH/";
       using (DssReader dss = new DssReader(dssFile))
       {
-        DssPathCollection paths = dss.GetCatalog(true);
+        DssPathCollection paths = dss.GetCatalog();
         var dsspath = paths.FindExactPath(path);
         var ts = dss.GetEmptyTimeSeries(dsspath);
         Assert.IsTrue(ts.Units == "ACRE-FT");
