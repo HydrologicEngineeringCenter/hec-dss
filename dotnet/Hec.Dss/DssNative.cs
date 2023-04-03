@@ -164,5 +164,28 @@ internal class DssNative
   int[] numberEqualOrExceedingRangeLimit,
   float[] data, int dataLength);
 
+
+
+  [DllImport("hecdss")]
+  public static extern int hec_dss_gridStore(IntPtr dss, string pathname,
+  ref int type, ref int dataType,
+  ref int lowerLeftCellX, ref int lowerLeftCellY,
+  ref int numberOfCellsX, ref int numberOfCellsY,
+  ref int numberOfRanges, ref int srsDefinitionType,
+  ref int timeZoneRawOffset, ref int isInterval,
+  ref int isTimeStamped,
+  byte[] dataUnits,
+  byte[] dataSource,
+  byte[] srsName, 
+  byte[] srsDefinition, 
+  byte[] timeZoneID, 
+  ref float cellSize, ref float xCoordOfGridCellZero,
+  ref float yCoordOfGridCellZero, ref float nullValue,
+  ref float maxDataValue, ref float minDataValue,
+  ref float meanDataValue,
+  float[] rangeLimitTable, 
+  int[] numberEqualOrExceedingRangeLimit,
+  float[] data, int dataLength);
+
 }
 

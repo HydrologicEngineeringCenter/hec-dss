@@ -641,6 +641,81 @@ HECDSS_API int hec_dss_gridRetrieve(dss_file* dss, const char* pathname, int boo
   return status;
 }
 
+float* hec_dss_allocate_float(float value) {
+  float* tmp = calloc(1, sizeof(float));
+  *tmp = value;
+  return tmp;
+}
+
+HECDSS_API int hec_dss_gridStore(dss_file* dss, const char* pathname,
+  const int type, const int dataType,
+  const int lowerLeftCellX, const int lowerLeftCellY,
+  const int numberOfCellsX, const int numberOfCellsY,
+  const int numberOfRanges, const int srsDefinitionType,
+  const int timeZoneRawOffset, int isInterval,
+  const int isTimeStamped,
+  const char* dataUnits,
+  const char* dataSource,
+  const char* srsName,
+  const char* srsDefinition,
+  const char* timeZoneID,
+  const float cellSize, const float xCoordOfGridCellZero,
+  const float yCoordOfGridCellZero, const float nullValue,
+  const float maxDataValue, const float minDataValue,
+  const float meanDataValue,
+  float* rangeLimitTable,
+  int* numberEqualOrExceedingRangeLimit,
+  float* data) {
+
+
+  zStructSpatialGrid* gridStruct = zstructSpatialGridNew(pathname);
+  
+  gridStruct->_type = type;
+  gridStruct->_dataType = dataType;
+  gridStruct->_lowerLeftCellX = lowerLeftCellX;
+  gridStruct->_lowerLeftCellY = lowerLeftCellY;
+  gridStruct->_numberOfCellsX = numberOfCellsX;
+  gridStruct->_numberOfCellsY = numberOfCellsY;
+  gridStruct->_numberOfRanges = numberOfRanges;
+  gridStruct->_srsDefinitionType = srsDefinitionType;
+  gridStruct->_timeZoneRawOffset = timeZoneRawOffset;
+  gridStruct->_isInterval = isInterval;
+  gridStruct->_isTimeStamped = isTimeStamped;
+
+  gridStruct->_dataUnits = mallocAndCopy(dataUnits);
+  gridStruct->_dataSource = mallocAndCopy(dataSource);
+  gridStruct->_srsName = mallocAndCopy(srsName);
+  gridStruct->_srsDefinition = mallocAndCopy(srsDefinition);
+  gridStruct->_timeZoneID = mallocAndCopy(timeZoneID);
+
+  gridStruct->_cellSize = cellSize;
+  gridStruct->_xCoordOfGridCellZero = xCoordOfGridCellZero;
+  gridStruct->_yCoordOfGridCellZero = yCoordOfGridCellZero;
+  gridStruct->_nullValue = nullValue;
+
+  gridStruct->_storageDataType = GRID_FLOAT;
+  
+  gridStruct->_minDataValue = hec_dss_allocate_float(minDataValue);
+  gridStruct->_maxDataValue = hec_dss_allocate_float(maxDataValue);
+  gridStruct->_meanDataValue = hec_dss_allocate_float(meanDataValue);
+
+  gridStruct->_rangeLimitTable = rangeLimitTable;
+  gridStruct->_numberEqualOrExceedingRangeLimit = numberEqualOrExceedingRangeLimit;
+  gridStruct->_numberOfRanges = numberOfRanges;
+  gridStruct->_data = data;
+
+  
+  int status = zspatialGridStore(dss->ifltab, gridStruct);
+  // set zero address to prevent zstructFree from freeing items below (they are owned by caller)
+  gridStruct->_rangeLimitTable = 0;
+  gridStruct->_numberEqualOrExceedingRangeLimit = 0;
+  gridStruct->_rangeLimitTable = 0;
+  gridStruct->_data = 0;
+  zstructFree(gridStruct);
+  return status;
+
+
+}
 
 HECDSS_API int hec_dss_dateToYearMonthDay(const char* date,int*year, int* month, int* day) {
   return dateToYearMonthDay(date, year, month, day);

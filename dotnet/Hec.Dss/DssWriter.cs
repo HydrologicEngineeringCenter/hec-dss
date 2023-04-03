@@ -192,7 +192,7 @@ namespace Hec.Dss
     /// </summary>
     /// <param name="pathName">The pathname to store the grid</param>
     /// <param name="grid">the grid you want to store</param>
-    public void StoreGrid(string pathName, Grid grid)
+    public void Write(Grid grid)
     {
       
       /*
@@ -211,16 +211,6 @@ namespace Hec.Dss
         gs.NumberEqualOrExceedingRangeLimit = grid.NumberEqualOrExceedingRangeLimit;
       */
     
-    }
-
-    /// <summary>
-    /// Stores a grid in DSS file
-    /// </summary>
-    /// <param name="path">The pathname to store the grid</param>
-    /// <param name="grid">the grid you want to store</param>
-    public void StoreGrid(DssPath path, Grid grid)
-    {
-      StoreGrid(path.FullPath, grid);
     }
 
     /// <summary>

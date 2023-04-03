@@ -484,26 +484,48 @@ YCoord Of Grid Cell Zero: 0.0
     }
 
     [TestMethod]
-    public void WriteGrid()
+    public void ReadWriteSimpleGrid()
     {
-      Assert.IsTrue(false, "Grid Not implemented");
       var dssFile = TestUtility.GetCopyForTesting("version7AlbersGrid.dss");
+
       string newPath = @"/LOL/MYOWN/TEMP-AIR/31JAN2016:2400//GRID/";
       using (DssWriter dss = new DssWriter(dssFile))
       {
-        float[] data = new float[100];
-        Random rng = new Random();
-        for (int i = 0; i < 100; i++)
-        {
-          data[i] = (float)rng.NextDouble();
-        }
-        Grid grid = null;// = dss.CreateNewSpecifiedGrid(newPath, data, 0, 0, 10, 10, sizeof(float), Grid.EDataType.INST_CUM, "mm", DateTime.Now, DateTime.Now, Grid.CompressionMethod.ZLIB_DEFLATE, "PROJCS[\"UTM_ZONE_16N_WGS84\",GEOGCS[\"WGS_84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS84\", 6378137.0, 298.257223563]],PRIMEM[\"Greenwich\", 0],UNIT[\"degree\", 0.01745329251994328]],UNIT[\"Meter\", 1.0],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"latitude_of_origin\", 0],PARAMETER[\"central_meridian\", -87],PARAMETER[\"scale_factor\", 0.9996],PARAMETER[\"false_easting\", 500000],PARAMETER[\"false_northing\", 0],AXIS[\"Easting\", EAST],AXIS[\"Northing\", NORTH]]");
-        dss.StoreGrid(newPath, grid);
+        string path = "/SHG/TRUCKEE RIVER/TEMP-AIR/31JAN2016:2400//INTERPOLATED-ROUNDED/";
+        var g = dss.GetGrid(path, true);
+
+        VerifyV7AlbersGrid(g,path);
+        dss.Write(g);
       }
     }
 
+    private void VerifyV7AlbersGrid(Grid g, string path)
+    {
+      float delta = 0.000001f; // tolarance for comparisons;
+      Assert.AreEqual(DssDataType.INST_VAL, g.DataType); 
+      Assert.AreEqual(75*75, g.Data.Length);
+      Assert.AreEqual(-1042, g.LowerLeftCellX); 
+      Assert.AreEqual(991, g.LowerLeftCellY);
+      Assert.AreEqual("Deg C", g.DataUnits.ToLower()); 
+      Assert.AreEqual(75, g.NumberOfCellsX);  
+      Assert.AreEqual(75, g.NumberOfCellsY);
+      Assert.AreEqual(2000.0f, g.CellSize, delta);  
+
+      Assert.AreEqual(-2.0f, g.MaxDataValue, delta); 
+      Assert.AreEqual(-15.1, g.MinDataValue, delta); 
+      Assert.AreEqual(-6.5389285f, g.MeanDataValue, delta); 
+      Assert.AreEqual(0.0f, g.XCoordOfGridCellZero, delta);
+      Assert.AreEqual(0.0f, g.YCoordOfGridCellZero, delta);
+
+      Assert.AreEqual(13, g.NumberOfRanges);
+      Assert.AreEqual(4469, g.NumberEqualOrExceedingRangeLimit[0]);
+      
+      Assert.AreEqual(path, g.PathName);
+      Assert.AreEqual(GridType.ALBERS, g.GridType); 
+      Assert.AreEqual(13, g.NumberOfRanges);
 
 
+    }
   }
 
 }
