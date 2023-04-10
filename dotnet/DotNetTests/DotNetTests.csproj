@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="$(SolutionDir)\\heclib\\hecdss\\x64\\Debug\\hecdss.dll" Link="hecdss.dll">
+    <None Include="$(SolutionDir)\heclib\hecdss\x64\Debug\hecdss.dll" Link="hecdss.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

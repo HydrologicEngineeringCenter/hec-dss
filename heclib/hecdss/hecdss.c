@@ -721,6 +721,17 @@ HECDSS_API int hec_dss_dateToYearMonthDay(const char* date,int*year, int* month,
   return dateToYearMonthDay(date, year, month, day);
 }
 
+HECDSS_API int hec_dss_delete(dss_file* dss, const char* pathname) {
+  int status = zdelete(dss->ifltab, pathname);
+  return status;
+}
+
+HECDSS_API int hec_dss_squeeze( const char* pathname) {
+  int status = zsqueeze( pathname);
+  return status;
+}
+
+
 HECDSS_API int hec_dss_dateToJulian(const char* date){
   return dateToJulian(date);
 }

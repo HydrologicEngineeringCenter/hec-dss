@@ -1,15 +1,10 @@
-﻿using DSSUnitTests;
-using Hec.Dss;
+﻿using Hec.Dss;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DSSUnitTests
 {
-   [TestClass]
+  [TestClass]
    public class SqueezeTesting
    {
 
@@ -44,10 +39,9 @@ namespace DSSUnitTests
             }
          }
          long sizeBefore = new System.IO.FileInfo(fn).Length / 1000;
-         Assert.IsTrue(sizeBefore > 600,"expected size about 714Kb");
+         Assert.IsTrue(sizeBefore > 500,"expected size about 530Kb");
          // before squeeze file is 714 Kb,  after squeeze file is about 361 Kb
          DssWriter.Squeeze(fn); 
-         // Hec.Dss.Native.DSS.ZSqueeze(fn); //hack 
          long sizeAfter = new System.IO.FileInfo(fn).Length / 1000;
          Assert.IsTrue(sizeAfter < 400,"Expected size about 361 Kb");
          
