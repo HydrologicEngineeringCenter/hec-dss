@@ -100,8 +100,8 @@ namespace Hec.Dss
         throw new Exception("Path was not specified");
 
       int rval = -1;
-      var units = new ByteString(ts.Units);
-      var type = new ByteString(ts.DataType);
+      //var units = new ByteString(ts.Units);
+      //var type = new ByteString(ts.DataType);
 
       if (ts.IsRegular())
       {// store as Regular times series
@@ -110,7 +110,7 @@ namespace Hec.Dss
         if( ts.Qualities != null )
            qualityLength = ts.Qualities.Length;
         rval = DssNative.hec_dss_tsStoreRegular(dss, ts.Path.FullPath,date, time, ts.Values,
-                   ts.Values.Length,ts.Qualities,qualityLength, saveAsFloat ? 1 : 0, units.Data, type.Data);
+                   ts.Values.Length,ts.Qualities,qualityLength, saveAsFloat ? 1 : 0, ts.Units, ts.DataType);
 
       }
       else
@@ -121,7 +121,7 @@ namespace Hec.Dss
         int[] times = Time.ConvertDatesToHecInteger(ts.Times, julianBaseDate, timeGranularitySeconds);
 
         rval = DssNative.hec_dss_tsStoreIregular(dss, ts.Path.FullPath, startBaseDate, times,timeGranularitySeconds,
-           ts.Values, ts.Values.Length, ts.Qualities, ts.Qualities.Length, saveAsFloat ? 1 : 0, units.Data, type.Data);
+           ts.Values, ts.Values.Length, ts.Qualities, ts.Qualities.Length, saveAsFloat ? 1 : 0, ts.Units, ts.DataType);
       }
       if (ts.LocationInformation != null)
           StoreLocation(ts.Path.FullPath, ts.LocationInformation, false);
@@ -195,6 +195,15 @@ namespace Hec.Dss
     public void Write(Grid grid)
     {
       
+      
+      //DssNative.hec_dss_gridStore(dss,grid.PathName,grid.GridType,grid.DataType,
+      //  grid.LowerLeftCellX, grid.LowerLeftCellY,
+      //  grid.NumberOfCellsX, grid.NumberOfCellsY,
+      //  grid.RangeLimitTable.Length, grid.SRSDefinitionType,
+      //  grid.TimeZoneRawOffset, grid.IsInterval, grid.IsTimeStamped,
+      //  grid.Units, grid.DataSource
+
+
       /*
         gs.DataUnits = grid.DataUnits;
         gs.DataType = (int)grid.DataType;
@@ -210,7 +219,7 @@ namespace Hec.Dss
         gs.RangeLimitTable = grid.RangeLimitTable;
         gs.NumberEqualOrExceedingRangeLimit = grid.NumberEqualOrExceedingRangeLimit;
       */
-    
+
     }
 
     /// <summary>

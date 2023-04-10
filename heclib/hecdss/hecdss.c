@@ -648,7 +648,7 @@ float* hec_dss_allocate_float(float value) {
 }
 
 HECDSS_API int hec_dss_gridStore(dss_file* dss, const char* pathname,
-  const int type, const int dataType,
+  const int gridType, const int dataType,
   const int lowerLeftCellX, const int lowerLeftCellY,
   const int numberOfCellsX, const int numberOfCellsY,
   const int numberOfRanges, const int srsDefinitionType,
@@ -670,7 +670,7 @@ HECDSS_API int hec_dss_gridStore(dss_file* dss, const char* pathname,
 
   zStructSpatialGrid* gridStruct = zstructSpatialGridNew(pathname);
   
-  gridStruct->_type = type;
+  gridStruct->_type = gridType;
   gridStruct->_dataType = dataType;
   gridStruct->_lowerLeftCellX = lowerLeftCellX;
   gridStruct->_lowerLeftCellY = lowerLeftCellY;

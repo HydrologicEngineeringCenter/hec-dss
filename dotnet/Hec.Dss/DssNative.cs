@@ -52,7 +52,7 @@ internal class DssNative
             double[] valueArray, int arraySize,
             int[] qualityArray, int qualityArraySize,
             int saveAsFloat,
-            byte[] units, byte[] type);
+            string units, string type);
 
   [DllImport("hecdss")]
   public static extern int hec_dss_tsStoreIregular(IntPtr dss, string pathname,
@@ -61,7 +61,7 @@ internal class DssNative
   double[] valueArray, int valueArraySize,
   int[] qualityArray, int qualityArraySize,
   int saveAsFloat,
-  byte[] units, byte[] type);
+  string units, string type);
 
    [DllImport("hecdss", CharSet = CharSet.Ansi, ExactSpelling = true)]
    public static extern int hec_dss_tsRetrieve(IntPtr dss, string pathname,
@@ -168,21 +168,21 @@ internal class DssNative
 
   [DllImport("hecdss")]
   public static extern int hec_dss_gridStore(IntPtr dss, string pathname,
-  ref int type, ref int dataType,
-  ref int lowerLeftCellX, ref int lowerLeftCellY,
-  ref int numberOfCellsX, ref int numberOfCellsY,
-  ref int numberOfRanges, ref int srsDefinitionType,
-  ref int timeZoneRawOffset, ref int isInterval,
-  ref int isTimeStamped,
+  int gridType, int dataType,
+  int lowerLeftCellX, int lowerLeftCellY,
+  int numberOfCellsX, int numberOfCellsY,
+  int numberOfRanges, int srsDefinitionType,
+  int timeZoneRawOffset, int isInterval,
+  int isTimeStamped,
   byte[] dataUnits,
   byte[] dataSource,
   byte[] srsName, 
   byte[] srsDefinition, 
   byte[] timeZoneID, 
-  ref float cellSize, ref float xCoordOfGridCellZero,
-  ref float yCoordOfGridCellZero, ref float nullValue,
-  ref float maxDataValue, ref float minDataValue,
-  ref float meanDataValue,
+  float cellSize, float xCoordOfGridCellZero,
+  float yCoordOfGridCellZero, float nullValue,
+  float maxDataValue, float minDataValue,
+  float meanDataValue,
   float[] rangeLimitTable, 
   int[] numberEqualOrExceedingRangeLimit,
   float[] data, int dataLength);

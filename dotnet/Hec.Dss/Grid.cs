@@ -25,7 +25,9 @@ namespace Hec.Dss
 
     public GridType GridType { get; set; }
 
-    public string DataUnits { get; set; }
+    public string Units { get; set; }
+
+    public string DataSource { get; set; }
 
     /// <summary>
     /// DSS data type (statistic type for the data)
@@ -67,7 +69,7 @@ namespace Hec.Dss
       sb.AppendLine("Path :" + PathName);
       sb.AppendLine("GridType :" + GridType);
       sb.AppendLine("Version : " + Version);
-      sb.AppendLine("Data Units : " + DataUnits);
+      sb.AppendLine("Data Units : " + Units);
       sb.AppendLine("Data Type : " + DataType);
       //sb.AppendLine("Data Source : " + StorageDataType);
       sb.AppendLine("LowerLeftCellX : " + LowerLeftCellX);
@@ -78,7 +80,7 @@ namespace Hec.Dss
       sb.AppendLine("CompressionMethod : " + CompressionMethod);
       sb.AppendLine("SizeofCompressedElements : " + SizeOfCompressedElements);
 
-      sb.AppendLine("NumberOfRanges : " + NumberOfRanges);
+      sb.AppendLine("NumberOfRanges : " + RangeLimitTable.Length);
       sb.AppendLine("SrsName : " + SRSName);
       sb.AppendLine("SrsDefinitionType : " + SRSDefinitionType);
       sb.AppendLine("_srsDefinition : " + SRSDefinition);
@@ -101,7 +103,7 @@ namespace Hec.Dss
         if (RangeLimitTable != null && RangeLimitTable.Length > 0)
         {
           sb.AppendLine("           Range        > or =    Incremental Count");
-          int size = NumberOfRanges;
+          int size = RangeLimitTable.Length;
           for (int i = 0; i < size - 1; i++)
           {
             var v = RangeLimitTable[i];
@@ -129,8 +131,6 @@ namespace Hec.Dss
     public bool IsInterval { get; set; }
 
     public bool IsTimeStamped { get; set; }
-
-    public int NumberOfRanges { get; set; }
 
     private int StorageDataType { get; set; }  
 

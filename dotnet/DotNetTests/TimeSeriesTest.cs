@@ -384,6 +384,8 @@ namespace DSSUnitTests
 
     private static void Compare(TimeSeries ts, TimeSeries ts2)
     {
+      Assert.AreEqual(ts.Units, ts2.Units);
+      Assert.AreEqual(ts.DataType, ts2.DataType);
       for (int i = 0; i < Math.Min(ts2.Count, ts.Count); i++)
       {
         Assert.AreEqual(ts.Times[i], ts2.Times[i]);

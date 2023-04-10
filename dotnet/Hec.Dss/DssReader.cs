@@ -739,13 +739,12 @@ namespace Hec.Dss
       rval.LowerLeftCellY = lowerLeftCellY;
       rval.NumberOfCellsX = numberOfCellsX;
       rval.NumberOfCellsY = numberOfCellsY;
-      rval.NumberOfRanges = numberOfRanges;
       rval.SRSDefinitionType = srsDefinitionType;
       rval.TimeZoneRawOffset = timeZoneRawOffset;
       rval.IsInterval = isInterval == 1;
       rval.IsTimeStamped = isTimeStamped == 1;
-      rval.DataUnits = dataUnits.ToString();
-      //rval.dataSource
+      rval.Units = dataUnits.ToString();
+      rval.DataSource = dataSource.ToString();
       rval.SRSName = srsName.ToString();
       rval.SRSDefinition = srsDefinition.ToString();
       rval.TimeZoneID = timeZoneID.ToString();

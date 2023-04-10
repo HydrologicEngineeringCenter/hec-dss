@@ -110,7 +110,7 @@ UNIT[""Meter"",1.0]]";
         Assert.AreEqual(48, g2.Data.Length);
         Assert.AreEqual(384, g2.LowerLeftCellX);
         Assert.AreEqual(1975, g2.LowerLeftCellY);
-        Assert.AreEqual("mm", g2.DataUnits.ToLower());
+        Assert.AreEqual("mm", g2.Units.ToLower());
         Assert.AreEqual(6, g2.NumberOfCellsX);
         Assert.AreEqual(8, g2.NumberOfCellsY);
         Assert.AreEqual(2000.0f, g2.CellSize, delta);
@@ -281,7 +281,7 @@ YCoord Of Grid Cell Zero: 0.0
       Assert.AreEqual(50, g2.Data.Length);
       Assert.AreEqual(0, g2.LowerLeftCellX); //  Lower Left Cell: (0, 0)
       Assert.AreEqual(0, g2.LowerLeftCellY);
-      Assert.AreEqual("mm", g2.DataUnits.ToLower()); // Data Units: mm
+      Assert.AreEqual("mm", g2.Units.ToLower()); // Data Units: mm
       Assert.AreEqual(5, g2.NumberOfCellsX); //Grid Extents: (5, 10)
       Assert.AreEqual(10, g2.NumberOfCellsY);
       Assert.AreEqual(5.0f, g2.CellSize, delta); //Cell Size: 5.0
@@ -294,7 +294,7 @@ YCoord Of Grid Cell Zero: 0.0
 
       Assert.AreEqual(path.ToLower(), g2.PathName.ToLower());
       Assert.AreEqual(GridType.ALBERS, g2.GridType); //Grid Type: ALBERS
-      Assert.AreEqual(12, g2.NumberOfRanges);
+      Assert.AreEqual(12, g2.RangeLimitTable.Length);
 
       /*
 
@@ -453,7 +453,7 @@ YCoord Of Grid Cell Zero: 0.0
         var dsspath = paths.FindExactPath(path);
         var grid = dss.GetGrid(dsspath, false);
         Console.WriteLine("");
-        Assert.IsTrue(grid.DataUnits == "mm");
+        Assert.IsTrue(grid.Units == "mm");
         Assert.IsTrue(grid.DataType.ToString() == "PER_CUM");
       }
     }
@@ -472,7 +472,7 @@ YCoord Of Grid Cell Zero: 0.0
         var grid = reader.GetGrid(p, true);
         Assert.IsNotNull(grid);
         Assert.IsNotNull(grid.Data);
-        Assert.AreEqual("mm", grid.DataUnits);
+        Assert.AreEqual("mm", grid.Units);
         Assert.AreEqual(2000.0f, grid.CellSize);
         Assert.AreEqual(98, grid.NumberOfCellsX);
         Assert.AreEqual(90, grid.NumberOfCellsY);
@@ -488,25 +488,28 @@ YCoord Of Grid Cell Zero: 0.0
     {
       var dssFile = TestUtility.GetCopyForTesting("version7AlbersGrid.dss");
 
-      string newPath = @"/LOL/MYOWN/TEMP-AIR/31JAN2016:2400//GRID/";
       using (DssWriter dss = new DssWriter(dssFile))
       {
-        string path = "/SHG/TRUCKEE RIVER/TEMP-AIR/31JAN2016:2400//INTERPOLATED-ROUNDED/";
+        var path = new DssPath("/SHG/TRUCKEE RIVER/TEMP-AIR/31JAN2016:2400//INTERPOLATED-ROUNDED/");
         var g = dss.GetGrid(path, true);
 
-        VerifyV7AlbersGrid(g,path);
+        VerifyV7AlbersGrid(g,path.FullPath);
+        path.Epart = path.Epart + "v2";
         dss.Write(g);
+        var g2 = dss.GetGrid(path,true);
+        VerifyV7AlbersGrid(g2, path.FullPath);
       }
     }
 
     private void VerifyV7AlbersGrid(Grid g, string path)
     {
       float delta = 0.000001f; // tolarance for comparisons;
+      Assert.AreEqual(GridType.ALBERS, g.GridType);
       Assert.AreEqual(DssDataType.INST_VAL, g.DataType); 
       Assert.AreEqual(75*75, g.Data.Length);
       Assert.AreEqual(-1042, g.LowerLeftCellX); 
       Assert.AreEqual(991, g.LowerLeftCellY);
-      Assert.AreEqual("Deg C", g.DataUnits.ToLower()); 
+      Assert.AreEqual("Deg C", g.Units); 
       Assert.AreEqual(75, g.NumberOfCellsX);  
       Assert.AreEqual(75, g.NumberOfCellsY);
       Assert.AreEqual(2000.0f, g.CellSize, delta);  
@@ -517,12 +520,18 @@ YCoord Of Grid Cell Zero: 0.0
       Assert.AreEqual(0.0f, g.XCoordOfGridCellZero, delta);
       Assert.AreEqual(0.0f, g.YCoordOfGridCellZero, delta);
 
-      Assert.AreEqual(13, g.NumberOfRanges);
-      Assert.AreEqual(4469, g.NumberEqualOrExceedingRangeLimit[0]);
+      Assert.AreEqual(13, g.RangeLimitTable.Length);
+      Assert.AreEqual(5625, g.NumberEqualOrExceedingRangeLimit[0]);
+      Assert.AreEqual(1156, g.NumberEqualOrExceedingRangeLimit[1]);
+      Assert.AreEqual(1156, g.NumberEqualOrExceedingRangeLimit[2]);
+      Assert.AreEqual(1156, g.NumberEqualOrExceedingRangeLimit[3]);
+      Assert.AreEqual(1155, g.NumberEqualOrExceedingRangeLimit[4]);
+      Assert.AreEqual(1059, g.NumberEqualOrExceedingRangeLimit[5]);
+      Assert.AreEqual(305, g.NumberEqualOrExceedingRangeLimit[6]);
+      Assert.AreEqual(0, g.NumberEqualOrExceedingRangeLimit[7]);
       
       Assert.AreEqual(path, g.PathName);
       Assert.AreEqual(GridType.ALBERS, g.GridType); 
-      Assert.AreEqual(13, g.NumberOfRanges);
 
 
     }
