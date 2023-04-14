@@ -2,3 +2,6 @@
 	path = dss-test-data
 	url = https://github.com/HydrologicEngineeringCenter/dss-test-data.git
 	branch = master
+[submodule "dotnet"]
+	path = dotnet
+	url = https://github.com/HydrologicEngineeringCenter/hec-dss-dotnet.git
