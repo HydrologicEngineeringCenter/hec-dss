@@ -1,4 +1,5 @@
 #include <string.h>
+#include <stdio.h>
 #include "hecdss.h"
 #include "heclib.h"
 
@@ -36,19 +37,26 @@ struct dss_file {
 };
 
 
+FILE* log_handle;
+enum log_levels { LOG_NONE, LOG_ERROR, LOG_WARNING };
+enum log_levels log_level = LOG_WARNING;
+
+HECDSS_API int hec_dss_log_error(const char* message) {
+  if (log_level > LOG_NONE)
+    fprintf(log_handle, "\nError: %s", message);
+  return 0;
+}
+HECDSS_API int hec_dss_log_warning(const char* message) {
+  if (log_level > LOG_ERROR)
+    fprintf(log_handle, "\nWarning: %s", message);
+  return 0;
+}
+
 
 HECDSS_API int hec_dss_CONSTANT_MAX_PATH_SIZE() {
   return MAX_PATHNAME_SIZE;
 }
 
-HECDSS_API int hec_dss_log_error(const char* message) {
-  printf("\nError %s", message);
-  return 0;
-}
-HECDSS_API int hec_dss_log_warning(const char* message) {
-  printf("\nWarning: %s", message);
-  return 0;
-}
 
 float* hec_dss_double_array_to_float(double* values,const int size) {
   if (size <= 0 || values == NULL)
@@ -80,7 +88,9 @@ HECDSS_API int hec_dss_open(const char* filename, dss_file** dss)
     dss_file* f = (dss_file*)malloc(sizeof(dss_file));
     if (f == NULL)
         return -1;
-    
+
+    log_handle = stdout;
+
     int status = hec_dss_zopen(f->ifltab,filename);
     if (status != 0)
       return status;
@@ -247,10 +257,9 @@ HECDSS_API int hec_dss_tsRetrieve(dss_file* dss, const char *pathname,
         *julianBaseDate = tss->julianBaseDate;
         *timeGranularitySeconds = tss->timeGranularitySeconds;
         
-        if( tss->units)
-          stringCopy(units, unitsLength, tss->units, strlen(tss->units));
-        if( tss->type)
-          stringCopy(type, typeLength, tss->type, strlen(tss->type));
+        stringCopy(units, unitsLength, tss->units, strlen(tss->units));
+        stringCopy(type, typeLength, tss->type, strlen(tss->type));
+
         int size = min(tss->numberValues, arraySize);
         size = max(0, size);
         *numberValuesRead = size;
@@ -354,10 +363,8 @@ HECDSS_API int hec_dss_locationRetrieve(dss_file* dss, const char* fullPath,
     *horizontalUnits = loc->horizontalUnits;
     *horizontalDatum = loc->horizontalDatum;
 
-    if(loc->timeZoneName)
-      stringCopy(timeZoneName, timeZoneNameLength, loc->timeZoneName, strlen(loc->timeZoneName));
-    if( loc->supplemental)
-      stringCopy(supplemental, supplementalLength, loc->supplemental, strlen(loc->supplemental));
+    stringCopy(timeZoneName, timeZoneNameLength, loc->timeZoneName, strlen(loc->timeZoneName));
+    stringCopy(supplemental, supplementalLength, loc->supplemental, strlen(loc->supplemental));
   }
   zstructFree(loc);
   return status;
@@ -434,13 +441,9 @@ HECDSS_API int hec_dss_pdRetrieveInfo(dss_file* dss, const char* pathname,
 
   *numberOrdinates = pds->numberOrdinates;
   *numberCurves = pds->numberCurves;
-  if (pds->unitsIndependent)
     stringCopy(unitsIndependent, unitsIndependentLength, pds->unitsIndependent, strlen(pds->unitsIndependent));
-  if (pds->unitsDependent)
     stringCopy(unitsDependent, unitsDependentLength, pds->unitsDependent, strlen(pds->unitsDependent));
-  if (pds->typeIndependent)
     stringCopy(typeIndependent, typeIndependentLength, pds->typeIndependent, strlen(pds->typeIndependent));
-  if (pds->typeDependent)
     stringCopy(typeDependent, typeDependentLength, pds->typeDependent, strlen(pds->typeDependent));
   if (pds->labels)
     *labelsLength = pds->labelsLength;
@@ -490,13 +493,9 @@ HECDSS_API int hec_dss_pdRetrieve(dss_file* dss, const char* pathname,
     // *yprecision = pds->yprecision;
 
 
-    if (pds->unitsIndependent)
       stringCopy(unitsIndependent, unitsIndependentLength, pds->unitsIndependent, strlen(pds->unitsIndependent));
-    if (pds->unitsDependent)
       stringCopy(unitsDependent, unitsDependentLength, pds->unitsDependent, strlen(pds->unitsDependent));
-    if (pds->typeIndependent)
       stringCopy(typeIndependent, typeIndependentLength, pds->typeIndependent, strlen(pds->typeIndependent));
-    if (pds->typeDependent)
       stringCopy(typeDependent, typeDependentLength, pds->typeDependent, strlen(pds->typeDependent));
     if (pds->labels) {
       int size = pds->labelsLength > labelsLength ? labelsLength :pds->labelsLength;
