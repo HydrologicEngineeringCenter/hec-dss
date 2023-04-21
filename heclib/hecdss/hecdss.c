@@ -28,6 +28,7 @@ enum regTsRetrFlag { TRIM_NO_TIME_ARR = -3, NO_TRIM_NO_TIME_ARR, TRIM_INCL_TIME_
 enum irrTsRetrFlag { TIME_WINDOW_ONLY, TIME_WINDOW_WITH_NEXT, TIME_WINDOW_WITH_PREV_AND_NEXT };
 enum regTsStorFlag { REPLACE_ALL, REPLACE_MISSING_ONLY, CREATE_MISSING_RECS, NO_CREATE_MISSING_RECS, REPLACE_WITH_NON_MISSING };
 enum irrTsStorFlag { MERGE, DELETE_INSERT };
+enum dssCatalog {UNSORTED, SORTED};
 
 // private definition 
 struct dss_file {
@@ -147,8 +148,7 @@ HECDSS_API int hec_dss_catalog(dss_file* dss, char* pathBuffer, int* recordTypes
                               const int count, const int pathBufferItemSize) {
  
   zStructCatalog* catStruct = zstructCatalogNew();
-  int sorted = 0; // don't sort
-  int status = zcatalog(dss->ifltab,pathFilter, catStruct, sorted);
+  int status = zcatalog(dss->ifltab,pathFilter, catStruct, UNSORTED);
   if (status < 0) {
     printf("Error during catalog.  Error code %d\n", status);
     return status;
@@ -293,11 +293,7 @@ HECDSS_API int hec_dss_tsStoreRegular(dss_file* dss, const char* pathname,
     tss = zstructTsNewRegDoubles(pathname, valueArray, valueArraySize, startDate, startTime, units, type);
   }
   
-  const int storageFlag = 0;// storageFlag = 0  Always replace data (Regular Interval)
-  //	 storageFlag = 1  replace  (Irregular)
-
-  int status = ztsStore(dss->ifltab, tss, storageFlag);
-  
+  int status = ztsStore(dss->ifltab, tss, REPLACE_ALL);
 
   zstructFree(tss);
   return status;
@@ -310,7 +306,7 @@ HECDSS_API int hec_dss_tsStoreIregular(dss_file* dss, const char* pathname,
   const int saveAsFloat,
   const char* units, const char* type)
 {
-  zStructTimeSeries* tss = 0;
+  zStructTimeSeries* tss = NULL;
 
   if (saveAsFloat) {
     float* values = hec_dss_double_array_to_float(valueArray, valueArraySize);
@@ -590,7 +586,8 @@ HECDSS_API int hec_dss_gridRetrieve(dss_file* dss, const char* pathname, int boo
 
 float* hec_dss_allocate_float(float value) {
   float* tmp = calloc(1, sizeof(float));
-  *tmp = value;
+  if( tmp != NULL)
+     *tmp = value;
   return tmp;
 }
 
@@ -653,11 +650,10 @@ HECDSS_API int hec_dss_gridStore(dss_file* dss, const char* pathname,
 
   
   int status = zspatialGridStore(dss->ifltab, gridStruct);
-  // set zero address to prevent zstructFree from freeing items below (they are owned by caller)
-  gridStruct->_rangeLimitTable = 0;
-  gridStruct->_numberEqualOrExceedingRangeLimit = 0;
-  gridStruct->_rangeLimitTable = 0;
-  gridStruct->_data = 0;
+  // set NULL address to prevent zstructFree from freeing items below (they are owned by caller)
+  gridStruct->_numberEqualOrExceedingRangeLimit = NULL;
+  gridStruct->_rangeLimitTable = NULL;
+  gridStruct->_data = NULL;
   zstructFree(gridStruct);
   return status;
 
