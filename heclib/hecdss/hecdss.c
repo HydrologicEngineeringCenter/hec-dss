@@ -21,50 +21,19 @@
 
 */
 
+enum tsRetrieveDataType { RETRIEVE_AS_STORED, RETRIEVE_FLOATS, RETRIEVE_DOUBLES };
+enum qualAndNoteFlag { NO_RETRIEVE_QUAL_AND_NOTES, RETRIEVE_QUAL_AND_NOTES };
+
+enum regTsRetrFlag { TRIM_NO_TIME_ARR = -3, NO_TRIM_NO_TIME_ARR, TRIM_INCL_TIME_ARR, NO_TRIM_INCL_TIME_ARR };
+enum irrTsRetrFlag { TIME_WINDOW_ONLY, TIME_WINDOW_WITH_NEXT, TIME_WINDOW_WITH_PREV_AND_NEXT };
+enum regTsStorFlag { REPLACE_ALL, REPLACE_MISSING_ONLY, CREATE_MISSING_RECS, NO_CREATE_MISSING_RECS, REPLACE_WITH_NON_MISSING };
+enum irrTsStorFlag { MERGE, DELETE_INSERT };
+
 // private definition 
 struct dss_file {
     long long ifltab[250];
 };
 
-HECDSS_API int hec_dss_test_modify_arg(int *value) {
-
-    *value = 123;
-    return 0;
-}
-HECDSS_API int hec_dss_test_string_const(const char* s, int size) {
-
-    printf("string='%s'  length=%d\n", s,(int)strlen(s));
-    return 0;
-}
-
-HECDSS_API int hec_dss_test_string_buffer(char* outStr, int size) {
-    char* tmp = "abc";
-    strcpy(outStr, tmp);
-    return 0;
-}
-
-HECDSS_API int hec_dss_test_string_char(char* outStr, int size) {
-    char* tmp = "DEF\0";
-    
-    strcpy(outStr, tmp);
-    printf("outStr = '%s'\n", outStr);
-    return 0;
-}
-
-HECDSS_API int hec_dss_test_list_of_string(char* data, int rows, int columns) {
-
-  char buff[1024];
-  for (int i = 0; i < rows; i++)
-  {
-    sprintf(buff, "/Basin/River/Flow//1Day/item %d", i);
-    printf("buff='%s'", buff);
-    char* s = data+i*columns;
-    stringCopy(s, columns, buff, strlen(buff));
-    printf("s='%s'", s);
-  }
-  
-  return 0;
-}
 
 
 HECDSS_API int hec_dss_CONSTANT_MAX_PATH_SIZE() {
@@ -82,17 +51,14 @@ HECDSS_API int hec_dss_log_warning(const char* message) {
 
 float* hec_dss_double_array_to_float(double* values,const int size) {
   if (size <= 0 || values == 0)
-    return 0;
+    return NULL;
 
   float* rval = (float*)malloc((size_t)size * 4);
-  if (rval == 0) {
-    hec_dss_log_error("Error allocating memory in hec_dss_tsStoreRegular ");
-    return rval;
-  }
-
-  for (int i = 0; i < size; i++)
-  {
-    rval[i] = (float)values[i];
+  if (rval != NULL) {
+    for (int i = 0; i < size; i++)
+    {
+      rval[i] = (float)values[i];
+    }
   }
   return rval;
 }
@@ -111,7 +77,7 @@ void hec_dss_array_copy(double* destination, const long destinationSize,
 HECDSS_API int hec_dss_open(const char* filename, dss_file** dss)
 {
     dss_file* f = (dss_file*)malloc(sizeof(dss_file));
-    if (f == 0)
+    if (f == NULL)
         return -1;
     
     int status = hec_dss_zopen(f->ifltab,filename);
@@ -130,7 +96,7 @@ HECDSS_API int hec_dss_open(const char* filename, dss_file** dss)
 HECDSS_API int hec_dss_close(dss_file *dss){
     int status = zclose(dss->ifltab);
     free(dss);
-    dss = 0;
+    dss = NULL;
     return status;
 }
 
@@ -155,8 +121,9 @@ HECDSS_API int hec_dss_set_string(const char* name, const int value) {
 HECDSS_API int hec_dss_record_count(dss_file* dss) {
     if (!dss)
         return 0;
-
-    long long nrec = zinquire(dss->ifltab, "nrec");// does this include aliases?
+    
+    // Use "npri" for primary only or "nali" for aliases only.
+    long long nrec = zinquire(dss->ifltab, "nrec");// includes aliases
     
     return (int)nrec;
     }
@@ -275,26 +242,7 @@ HECDSS_API int hec_dss_tsRetrieve(dss_file* dss, const char *pathname,
     tss->endJulianDate = dateToJulian(endDate);
     tss->endTimeSeconds = timeStringToSeconds(endTime);
     
-    const int retrieveDoublesFlag = 2; // get doubles
-    const int boolRetrieveAnyQualityNotes = 1;
-    /*int retrieveFlag
-      * A flag indicating how to readand trim data.
-      * For regular interval data :
-    *retrieveFlag = 0 : Adhere to time window provided and generate the time array.
-      * retrieveFlag = -1 : Trim data.Remove missing values at the beginning and end of data set(not inside),
-      *andgenerate the time array.
-      * retrieveFlag = -2 : Adhere to time window provided but do not include time array.
-      * retrieveFlag = -3 : Trim data.Remove missing values at the beginning and end of data set(not inside),
-      * no time array.
-      * For irregular interval data :
-    *retrieveFlag = 0 : Adhere to time window provided.
-      * retrieveFlag = 1 : Retrieve one value previous to start of time window
-      * retrieveFlag = 2 : Retrieve one value after end of time window
-      * retrieveFlag = 3 : Retrieve one value before and one value after time window
-      */
-    const int retrieveUsingTimeWindowFlag = 0; // Adhere to time window provided and generate the time array
-
-    int status = ztsRetrieve(dss->ifltab, tss, retrieveUsingTimeWindowFlag,retrieveDoublesFlag, boolRetrieveAnyQualityNotes);
+    int status = ztsRetrieve(dss->ifltab, tss, NO_TRIM_INCL_TIME_ARR, RETRIEVE_DOUBLES, RETRIEVE_QUAL_AND_NOTES);
     if (status == 0) {
         *julianBaseDate = tss->julianBaseDate;
         *timeGranularitySeconds = tss->timeGranularitySeconds;
@@ -329,8 +277,12 @@ HECDSS_API int hec_dss_tsStoreRegular(dss_file* dss, const char* pathname,
 
   if (saveAsFloat) {
     float* values = hec_dss_double_array_to_float(valueArray, valueArraySize);
-    if (values == 0)
+    if (values == NULL)
+    {
+      hec_dss_log_error("Error allocating memory in hec_dss_tsStoreRegular ");
       return -1;
+    }
+      
 
     tss = zstructTsNewRegFloats(pathname, values, valueArraySize, startDate, startTime, units, type);
     tss->allocated[zSTRUCT_TS_floatValues];// zstructFree will free float array
@@ -362,7 +314,8 @@ HECDSS_API int hec_dss_tsStoreIregular(dss_file* dss, const char* pathname,
 
   if (saveAsFloat) {
     float* values = hec_dss_double_array_to_float(valueArray, valueArraySize);
-    if (values == 0) {
+    if (values == NULL) {
+      hec_dss_log_error("Error allocating memory in hec_dss_tsStoreIregular ");
       return -1;
     }
 
@@ -377,10 +330,7 @@ HECDSS_API int hec_dss_tsStoreIregular(dss_file* dss, const char* pathname,
       timeGranularitySeconds, startDateBase, units, type);
   }
 
-  const int storageFlag = 1;// storageFlag = 0  Always replace data (Regular Interval)
-  //	 storageFlag = 1  replace  (Irregular)
-
-  int status = ztsStore(dss->ifltab, tss, storageFlag);
+  int status = ztsStore(dss->ifltab, tss, DELETE_INSERT);
 
 
   zstructFree(tss);
@@ -484,9 +434,7 @@ HECDSS_API int hec_dss_pdRetrieveInfo(dss_file* dss, const char* pathname,
                                     char* typeDependent, const int typeDependentLength,
                                     int* labelsLength){
   zStructPairedData* pds = zstructPdNew(pathname);
-  //pds->endingOrdinate = 1;// hack to retrive meta data, with minimal actual data.
-  int returnDoubles = 2;
-  int status = zpdRetrieve(dss->ifltab, pds, returnDoubles);
+  int status = zpdRetrieve(dss->ifltab, pds, RETRIEVE_DOUBLES);
 
   *numberOrdinates = pds->numberOrdinates;
   *numberCurves = pds->numberCurves;
@@ -523,8 +471,7 @@ HECDSS_API int hec_dss_pdRetrieve(dss_file* dss, const char* pathname,
   char* labels, const int labelsLength)
 {
   zStructPairedData* pds = zstructPdNew(pathname);
-  int returnDoubles = 2;
-  int status = zpdRetrieve(dss->ifltab, pds, returnDoubles);
+  int status = zpdRetrieve(dss->ifltab, pds, RETRIEVE_DOUBLES);
 
   if (pds->numberOrdinates != doubleOrdinatesLength && status == 0)
   {
