@@ -50,7 +50,7 @@ HECDSS_API int hec_dss_log_warning(const char* message) {
 }
 
 float* hec_dss_double_array_to_float(double* values,const int size) {
-  if (size <= 0 || values == 0)
+  if (size <= 0 || values == NULL)
     return NULL;
 
   float* rval = (float*)malloc((size_t)size * 4);
