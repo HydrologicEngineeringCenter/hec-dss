@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>hecdss</id>
+    <version>7.0.1</version>
+    <authors>Karl Tarbet, Chris Havens</authors>
+    <projectUrl>https://github.com/HydrologicEngineeringCenter/hec-dss</projectUrl>
+    <description>Native DSS API</description>
+    <contentFiles>
+      <files include="any/net472/hecdss.dll" buildAction="Content" copyToOutput="true" />
+      <files include="any/net6.0/hecdss.dll" buildAction="Content" copyToOutput="true" />
+    </contentFiles>
+  </metadata>
+</package>
