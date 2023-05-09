@@ -168,7 +168,9 @@ HECDSS_API int hec_dss_catalog(dss_file* dss, char* pathBuffer, int* recordTypes
   {
     recordTypes[i] = catStruct->recordType[i];
     char* s = pathBuffer + i * pathBufferItemSize;
-    stringCopy(s, pathBufferItemSize, catStruct->pathnameList[i], strlen(catStruct->pathnameList[i]));
+    if (catStruct->pathnameList[i] != NULL) {
+      stringCopy(s, pathBufferItemSize, catStruct->pathnameList[i], strlen(catStruct->pathnameList[i]));
+    }
   }
   zstructFree(catStruct);
   return maxPaths;
@@ -227,8 +229,13 @@ HECDSS_API int hec_dss_tsRetrieveInfo(dss_file* pdss, const char* pathname,char*
     {
       int intervalType = ztsProcessTimes(pdss->ifltab, tss, 0);
       status = ztsInternalHeaderUnpack(tss, transfer->internalHeader, transfer->internalHeaderNumber);
-      stringCopy(units, unitsLength, tss->units, strlen(tss->units));
-      stringCopy(type, typeLength, tss->type, strlen(tss->type));
+
+      if (tss->units != NULL) {
+        stringCopy(units, unitsLength, tss->units, strlen(tss->units));
+      }
+      if (tss->type != NULL) {
+        stringCopy(type, typeLength, tss->type, strlen(tss->type));
+      }
     }
     zstructFree(tss);
     zstructFree(transfer);
@@ -257,8 +264,12 @@ HECDSS_API int hec_dss_tsRetrieve(dss_file* dss, const char *pathname,
         *julianBaseDate = tss->julianBaseDate;
         *timeGranularitySeconds = tss->timeGranularitySeconds;
         
-        stringCopy(units, unitsLength, tss->units, strlen(tss->units));
-        stringCopy(type, typeLength, tss->type, strlen(tss->type));
+        if (tss->units != NULL) {
+          stringCopy(units, unitsLength, tss->units, strlen(tss->units));
+        }
+        if (tss->type != NULL) {
+          stringCopy(type, typeLength, tss->type, strlen(tss->type));
+        }
 
         int size = min(tss->numberValues, arraySize);
         size = max(0, size);
@@ -363,8 +374,13 @@ HECDSS_API int hec_dss_locationRetrieve(dss_file* dss, const char* fullPath,
     *horizontalUnits = loc->horizontalUnits;
     *horizontalDatum = loc->horizontalDatum;
 
-    stringCopy(timeZoneName, timeZoneNameLength, loc->timeZoneName, strlen(loc->timeZoneName));
-    stringCopy(supplemental, supplementalLength, loc->supplemental, strlen(loc->supplemental));
+    if (loc->timeZoneName != NULL) {
+      stringCopy(timeZoneName, timeZoneNameLength, loc->timeZoneName, strlen(loc->timeZoneName));
+    }
+
+    if (loc->supplemental != NULL) {
+      stringCopy(supplemental, supplementalLength, loc->supplemental, strlen(loc->supplemental));
+    }
   }
   zstructFree(loc);
   return status;
@@ -430,21 +446,31 @@ HECDSS_API int hec_dss_locationStore(dss_file* dss, const char* fullPath,
 /// <param name="numberCurves">number of columns in the curve dataset</param>
 /// <returns></returns>
 HECDSS_API int hec_dss_pdRetrieveInfo(dss_file* dss, const char* pathname,
-                                    int* numberOrdinates, int* numberCurves, 
-                                    char* unitsIndependent, const int unitsIndependentLength,
-                                    char* unitsDependent, const int unitsDependentLength,
-                                    char* typeIndependent, const int typeIndependentLength,
-                                    char* typeDependent, const int typeDependentLength,
-                                    int* labelsLength){
+  int* numberOrdinates, int* numberCurves,
+  char* unitsIndependent, const int unitsIndependentLength,
+  char* unitsDependent, const int unitsDependentLength,
+  char* typeIndependent, const int typeIndependentLength,
+  char* typeDependent, const int typeDependentLength,
+  int* labelsLength) {
   zStructPairedData* pds = zstructPdNew(pathname);
   int status = zpdRetrieve(dss->ifltab, pds, RETRIEVE_DOUBLES);
 
   *numberOrdinates = pds->numberOrdinates;
   *numberCurves = pds->numberCurves;
+
+  if (pds->unitsIndependent != NULL) {
     stringCopy(unitsIndependent, unitsIndependentLength, pds->unitsIndependent, strlen(pds->unitsIndependent));
+  }
+  if (pds->unitsDependent != NULL) {
     stringCopy(unitsDependent, unitsDependentLength, pds->unitsDependent, strlen(pds->unitsDependent));
+  }
+  if (pds->typeIndependent != NULL) {
     stringCopy(typeIndependent, typeIndependentLength, pds->typeIndependent, strlen(pds->typeIndependent));
+  }
+
+  if (pds->typeDependent != NULL) {
     stringCopy(typeDependent, typeDependentLength, pds->typeDependent, strlen(pds->typeDependent));
+  }
   if (pds->labels)
     *labelsLength = pds->labelsLength;
 
@@ -493,10 +519,19 @@ HECDSS_API int hec_dss_pdRetrieve(dss_file* dss, const char* pathname,
     // *yprecision = pds->yprecision;
 
 
-      stringCopy(unitsIndependent, unitsIndependentLength, pds->unitsIndependent, strlen(pds->unitsIndependent));
-      stringCopy(unitsDependent, unitsDependentLength, pds->unitsDependent, strlen(pds->unitsDependent));
-      stringCopy(typeIndependent, typeIndependentLength, pds->typeIndependent, strlen(pds->typeIndependent));
-      stringCopy(typeDependent, typeDependentLength, pds->typeDependent, strlen(pds->typeDependent));
+      if (pds->unitsIndependent != NULL) {
+        stringCopy(unitsIndependent, unitsIndependentLength, pds->unitsIndependent, strlen(pds->unitsIndependent));
+      }
+      if (pds->unitsDependent != NULL) {
+        stringCopy(unitsDependent, unitsDependentLength, pds->unitsDependent, strlen(pds->unitsDependent));
+      }
+      if (pds->typeIndependent != NULL) {
+        stringCopy(typeIndependent, typeIndependentLength, pds->typeIndependent, strlen(pds->typeIndependent));
+      }
+
+      if (pds->typeDependent != NULL) {
+        stringCopy(typeDependent, typeDependentLength, pds->typeDependent, strlen(pds->typeDependent));
+      }
     if (pds->labels) {
       int size = pds->labelsLength > labelsLength ? labelsLength :pds->labelsLength;
       for (int i = 0; i < size; i++)
@@ -547,11 +582,21 @@ HECDSS_API int hec_dss_gridRetrieve(dss_file* dss, const char* pathname, int boo
     *timeZoneRawOffset = gridStruct->_timeZoneRawOffset;
     *isInterval = gridStruct->_isInterval;
     *isTimeStamped = gridStruct->_isTimeStamped;
-    stringCopy(dataUnits, dataUnitsLength, gridStruct->_dataUnits, strlen(gridStruct->_dataUnits));
-    stringCopy(dataSource, dataSourceLength, gridStruct->_dataSource, strlen(gridStruct->_dataSource));
-    stringCopy(srsName, srsNameLength, gridStruct->_srsName, strlen(gridStruct->_srsName));
-    stringCopy(srsDefinition, srsDefinitionLength, gridStruct->_srsDefinition, strlen(gridStruct->_srsDefinition));
-    stringCopy(timeZoneID, timeZoneIDLength, gridStruct->_timeZoneID, strlen(gridStruct->_timeZoneID));
+    if (gridStruct->_dataUnits != NULL) {
+      stringCopy(dataUnits, dataUnitsLength, gridStruct->_dataUnits, strlen(gridStruct->_dataUnits));
+    }
+    if (gridStruct->_dataSource != NULL) {
+      stringCopy(dataSource, dataSourceLength, gridStruct->_dataSource, strlen(gridStruct->_dataSource));
+    }
+    if (gridStruct->_srsName != NULL) {
+      stringCopy(srsName, srsNameLength, gridStruct->_srsName, strlen(gridStruct->_srsName));
+    }
+    if (gridStruct->_srsDefinition != NULL) {
+      stringCopy(srsDefinition, srsDefinitionLength, gridStruct->_srsDefinition, strlen(gridStruct->_srsDefinition));
+    }
+    if (gridStruct->_timeZoneID != NULL) {
+      stringCopy(timeZoneID, timeZoneIDLength, gridStruct->_timeZoneID, strlen(gridStruct->_timeZoneID));
+    }
     *cellSize = gridStruct->_cellSize;
     *xCoordOfGridCellZero = gridStruct->_xCoordOfGridCellZero;
     *yCoordOfGridCellZero = gridStruct->_yCoordOfGridCellZero;
