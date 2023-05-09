@@ -4,10 +4,14 @@
 // that uses this DLL. This way any other project whose source files include this file see
 // HECDSS_API functions as being imported from a DLL, whereas this DLL sees symbols
 // defined with this macro as being exported.
+#if defined(_MSC_VER)
 #ifdef HECDSS_EXPORTS
 #define HECDSS_API __declspec(dllexport)
 #else
 #define HECDSS_API __declspec(dllimport)
+#endif
+#else
+#define HECDSS_API __attribute__((visibility("default")))
 #endif
 
 // public declaration

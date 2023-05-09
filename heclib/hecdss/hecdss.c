@@ -21,6 +21,22 @@
  
 
 */
+#if defined(__GNUC__) || defined(__sun__)
+    #define MIN(a, b) ({         \
+        __typeof__ (a) _a = (a); \
+        __typeof__ (b) _b = (b); \
+        _a < _b ? _a : _b;       \
+    })
+    #define MAX(a, b) ({         \
+        __typeof__ (a) _a = (a); \
+        __typeof__ (b) _b = (b); \
+        _a > _b ? _a : _b;       \
+    })
+
+#else
+    #define MIN(a, b) min(a,b)
+    #define MAX(a, b) max(a,b)
+#endif
 
 enum tsRetrieveDataType { RETRIEVE_AS_STORED, RETRIEVE_FLOATS, RETRIEVE_DOUBLES };
 enum qualAndNoteFlag { NO_RETRIEVE_QUAL_AND_NOTES, RETRIEVE_QUAL_AND_NOTES };
@@ -271,8 +287,8 @@ HECDSS_API int hec_dss_tsRetrieve(dss_file* dss, const char *pathname,
           stringCopy(type, typeLength, tss->type, strlen(tss->type));
         }
 
-        int size = min(tss->numberValues, arraySize);
-        size = max(0, size);
+        int size = MIN(tss->numberValues, arraySize);
+        size = MAX(0, size);
         *numberValuesRead = size;
         for (int i = 0; i < size; i++) {
             timeArray[i] = tss->times[i];
