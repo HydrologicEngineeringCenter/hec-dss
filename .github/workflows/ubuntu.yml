@@ -7,15 +7,15 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Checkout tools repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: HydrologicEngineeringCenter/dss-test-data
           path: dss-test-data
 
-      - uses: actions/setup-java@v2
+      - uses: actions/setup-java@v3
         with:
           distribution: 'adopt'
           java-version: '8'
@@ -40,7 +40,15 @@ jobs:
           cd test/Fortran
           make test
 
-      # Runs a single command using the runners shell
       - name: Run a one-line script
-        run: java -version
+        run:  ls -l       #java -version
 
+      # Save some artifacts
+      - name: upload-artifacts hecdss.dll and javaHeclib.dll
+        uses: actions/upload-artifact@v3
+        with:
+          name: dss
+          path: |
+             ${{ github.workspace }}/heclib/javaHeclib/Output/libjavaHeclib.so
+             ${{ github.workspace }}/heclib/hecdss/libhecdss.so
+           
