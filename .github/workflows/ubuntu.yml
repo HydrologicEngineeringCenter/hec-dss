@@ -40,7 +40,15 @@ jobs:
           cd test/Fortran
           make test
 
-      # Runs a single command using the runners shell
       - name: Run a one-line script
-        run: java -version
+        run:  ls -l       #java -version
 
+      # Save some artifacts
+      - name: Save hecdss.dll and javaHeclib.dll
+        uses: actions/upload-artifact@v2
+        with:
+          name: hecdss-dll
+          path: |
+             ${{ github.workspace }}/heclib/javaHeclib/Output/javaHeclib.so
+             ${{ github.workspace }}/heclib/hecdss/libhecdss.so
+           
