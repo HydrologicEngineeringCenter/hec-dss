@@ -7,10 +7,10 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Checkout tools repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: HydrologicEngineeringCenter/dss-test-data
           path: dss-test-data
@@ -45,7 +45,7 @@ jobs:
 
       # Save some artifacts
       - name: Save hecdss.dll and javaHeclib.dll
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: dss
           path: |
