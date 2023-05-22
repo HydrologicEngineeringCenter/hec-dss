@@ -1693,6 +1693,10 @@ char* processStorageVdis(
     char* dataNativeDatum = !strcmp(dataVdi.nativeDatum, "") ? CVERTICAL_DATUM_UNSET : dataVdi.nativeDatum;
     char* currentDatum = !strcmp((char*)_currentDatum, "") ? CVERTICAL_DATUM_UNSET : (char*)_currentDatum;
     char  errorMessage[1024];
+    double epsilon = 1e-5; // feet
+    if (unitIsMeters(fileVdi.unit)) {
+        epsilon *= METERS_PER_FOOT;
+    }
     //---------------------------------------------------------------------//
     // test whether data native datum is compatible with file native datum //
     //---------------------------------------------------------------------//
@@ -1766,7 +1770,7 @@ char* processStorageVdis(
             return strdup(errorMessage);
         }
         if (!isUndefinedVertDatumValue(dataVdi.offsetToNavd88)) {
-            if (!areEqual(getOffset(dataVdi.offsetToNavd88, dataVdi.unit, fileVdi.unit), fileVdi.offsetToNavd88, FLT_EPSILON)) {
+            if (!areEqual(getOffset(dataVdi.offsetToNavd88, dataVdi.unit, fileVdi.unit), fileVdi.offsetToNavd88, epsilon)) {
                 sprintf(
                     errorMessage,
                     " VERTICAL DATUM ERROR\n"
@@ -1807,7 +1811,7 @@ char* processStorageVdis(
             return strdup(errorMessage);
         }
         if (!isUndefinedVertDatumValue(dataVdi.offsetToNgvd29)) {
-            if (!areEqual(getOffset(dataVdi.offsetToNgvd29, dataVdi.unit, fileVdi.unit), fileVdi.offsetToNgvd29, FLT_EPSILON)) {
+            if (!areEqual(getOffset(dataVdi.offsetToNgvd29, dataVdi.unit, fileVdi.unit), fileVdi.offsetToNgvd29, epsilon)) {
                 sprintf(
                     errorMessage,
                     " VERTICAL DATUM ERROR\n"
