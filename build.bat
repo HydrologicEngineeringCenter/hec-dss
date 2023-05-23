@@ -27,7 +27,10 @@ nmake -f Makefile.win  clean all
 
 cd %~dp0
 msbuild dss.sln /p:Configuration=Release /p:Platform=x64
+if NOT %ERRORLEVEL% == 0  exit /b -1
+
 msbuild dss.sln /p:Configuration=Debug /p:Platform=x64
+if NOT %ERRORLEVEL% == 0  exit /b -1
 
 cd %~dp0\test\Fortran
 call build.bat
