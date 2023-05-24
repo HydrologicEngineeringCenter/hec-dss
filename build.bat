@@ -32,4 +32,27 @@ cd %~dp0\test\Fortran
 call build.bat
 
 cd %~dp0
+del heclib.zip
+del javaHeclib.zip
 
+mkdir release64
+cd release64
+del /f *.dll *.lib
+copy ..\heclib\javaHeclib\x64\Release\javaHeclib.dll
+copy ..\heclib\hecdss\x64\Release\hecdss.dll
+copy ..\heclib\heclib_c\x64\Release\heclib_c.lib 
+copy ..\heclib\heclib_f\x64\Release\heclib_f.lib
+7z a ..\javaHeclib.zip javaHeclib.dll
+cd ..
+7z a -tzip heclib.zip release64
+
+mkdir debug64
+cd debug64
+del /f *.dll *.lib
+copy ..\heclib\javaHeclib\x64\Debug\javaHeclib.dll 
+copy ..\heclib\hecdss\x64\Debug\hecdss.dll 
+copy ..\heclib\heclib_c\x64\Debug\heclib_c.lib 
+copy ..\heclib\heclib_f\x64\Debug\heclib_f.lib 
+cd ..
+7z a -tzip heclib.zip debug64
+cd %~dp0
