@@ -43,6 +43,7 @@ copy ..\heclib\hecdss\x64\Release\hecdss.dll
 copy ..\heclib\heclib_c\x64\Release\heclib_c.lib 
 copy ..\heclib\heclib_f\x64\Release\heclib_f.lib
 7z a ..\javaHeclib.zip javaHeclib.dll
+7z a ..\hecdss.zip hecdss.dll
 cd ..
 7z a -tzip heclib.zip release64
 
