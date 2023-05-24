@@ -5,10 +5,6 @@ echo on
 
 SET DSS_PLATFORM_DIR=x64
 
-dotnet restore dss.sln
-dotnet restore dotnet\Hec.Dss\Hec.Dss.csproj
-dotnet restore dotnet\DotNetTests\DotNetTests.csproj
-
 :: set version and build_number for javaheclib.dll
 set build_number=9999
 if not "%1" == "" (set build_number=%1)
