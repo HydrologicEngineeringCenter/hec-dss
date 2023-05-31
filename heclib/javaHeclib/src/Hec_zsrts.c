@@ -34,7 +34,7 @@ JNIEXPORT void JNICALL Java_hec_heclib_util_Heclib_Hec_1zsrts
 	if (zmessageLevel((long long*)ifltab, MESS_METHOD_JNI_ID, MESS_LEVEL_INTERNAL_DIAG_1)) {
 		zmessageDebug((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "Enter Heclib_Hec_zsrts, pathname: ", pathname);
 	}
-	zmessageDebug((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "Enter Heclib_Hec_zsrts, pathname: ", pathname);
+
     zsrts_ ((long long*)ifltab, pathname, startDate, startTime, &number, data,
             units, type, offset, status,
             strlen (pathname), strlen (startDate), strlen (startTime),
