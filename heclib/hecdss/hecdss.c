@@ -60,11 +60,16 @@ enum log_levels { LOG_NONE, LOG_ERROR, LOG_WARNING };
 enum log_levels log_level = LOG_WARNING;
 
 HECDSS_API int hec_dss_log_error(const char* message) {
+  if (log_handle == NULL)
+    log_handle = stdout;
+
   if (log_level > LOG_NONE)
     fprintf(log_handle, "\nError: %s", message);
   return 0;
 }
 HECDSS_API int hec_dss_log_warning(const char* message) {
+  if (log_handle == NULL)
+    log_handle = stdout;
   if (log_level > LOG_ERROR)
     fprintf(log_handle, "\nWarning: %s", message);
   return 0;
@@ -114,7 +119,7 @@ HECDSS_API int hec_dss_open(const char* filename, dss_file** dss)
       return status;
     int version = zgetVersion(f->ifltab);
     if (version != 7) {
-        hec_dss_log_error("version %d is not supported.\nOnly version 7 DSS files are supported");
+        hec_dss_log_error("version is not supported.\nOnly version 7 DSS files are supported");
         zclose(f->ifltab);
         return -700;
     }
@@ -799,4 +804,30 @@ HECDSS_API int hec_dss_dateToJulian(const char* date){
 HECDSS_API void hec_dss_julianToYearMonthDay(const int julian, int* year, int* month,int* day){
 
   julianToYearMonthDay(julian, year, month, day);
+}
+
+/// <summary>
+/// Converts from DSS 6 to DSS7
+/// Warning: DSS6 grids will not be converted. (Java libraries are necessary for version 6 grids)
+/// </summary>
+/// <param name="dssFilename"></param>
+/// <param name="filenameVersion6"></param>
+/// <returns></returns>
+HECDSS_API int hec_dss_convertToVersion7(const char* filenameVersion6, const char* filenameVersion7) {
+    long long ifltab[250];
+    int status = hec_dss_zopen(ifltab, filenameVersion6);
+    if (status != 0)
+      return status;
+    int version = zgetVersion(ifltab);
+    if (version != 6) {
+      char msg[256];
+      sprintf(msg, "conversion is only supported from version 6 to version 7.\nversion input was %d", version);
+      hec_dss_log_error(msg);
+      zclose(ifltab);
+      return -67;
+    }
+    zclose(ifltab);
+    status = zconvertVersion(filenameVersion6, filenameVersion7);
+    return status;
+
 }
