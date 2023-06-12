@@ -45,6 +45,8 @@ enum regTsRetrFlag { TRIM_NO_TIME_ARR = -3, NO_TRIM_NO_TIME_ARR, TRIM_INCL_TIME_
 enum irrTsRetrFlag { TIME_WINDOW_ONLY, TIME_WINDOW_WITH_NEXT, TIME_WINDOW_WITH_PREV_AND_NEXT };
 enum regTsStorFlag { REPLACE_ALL, REPLACE_MISSING_ONLY, CREATE_MISSING_RECS, NO_CREATE_MISSING_RECS, REPLACE_WITH_NON_MISSING };
 enum irrTsStorFlag { MERGE, DELETE_INSERT };
+enum pdStorFlag { PD_STORE_AUTOMATIC, PD_STORE_FLOAT, PD_STORE_DOUBLE};
+
 enum dssCatalog {UNSORTED, SORTED};
 
 // private definition 
@@ -562,6 +564,61 @@ HECDSS_API int hec_dss_pdRetrieve(dss_file* dss, const char* pathname,
 
     zstructFree(pds);
     return status;
+}
+
+HECDSS_API int hec_dss_pdStore(dss_file* dss, const char* pathname,
+  double* doubleOrdinates, const int  doubleOrdinatesLength,
+  double* doubleValues, const int doubleValuesLength,
+  const int numberOrdinates, const int numberCurves,
+  char* unitsIndependent,
+  char* typeIndependent, 
+  char* unitsDependent, 
+  char* typeDependent, 
+  char* labels)
+{
+  zStructPairedData* pds = zstructPdNew(pathname);
+  
+
+
+  //  pds->numberOrdinates = num
+    //  .... 
+   // *numberCurves = pds->numberCurves;
+    /// -- leaving these meta-data below out for initial version.
+    //*boolIndependentIsXaxis = pds->boolIndependentIsXaxis; 
+    //*xprecision = pds->xprecision;
+    // *yprecision = pds->yprecision;
+
+  /*
+    if (pds->unitsIndependent != NULL) {
+      stringCopy(unitsIndependent, unitsIndependentLength, pds->unitsIndependent, strlen(pds->unitsIndependent));
+    }
+    if (pds->unitsDependent != NULL) {
+      stringCopy(unitsDependent, unitsDependentLength, pds->unitsDependent, strlen(pds->unitsDependent));
+    }
+    if (pds->typeIndependent != NULL) {
+      stringCopy(typeIndependent, typeIndependentLength, pds->typeIndependent, strlen(pds->typeIndependent));
+    }
+
+    if (pds->typeDependent != NULL) {
+      stringCopy(typeDependent, typeDependentLength, pds->typeDependent, strlen(pds->typeDependent));
+    }
+    if (pds->labels) {
+      int size = pds->labelsLength > labelsLength ? labelsLength : pds->labelsLength;
+      for (int i = 0; i < size; i++)
+        labels[i] = pds->labels[i];
+    }
+
+    hec_dss_array_copy(doubleOrdinates, doubleOrdinatesLength, pds->doubleOrdinates, pds->numberOrdinates);
+    hec_dss_array_copy(doubleValues, doubleValuesLength, pds->doubleValues, pds->numberOrdinates * pds->numberCurves);
+
+  
+  int status = zpdStore(dss->ifltab, pds, PD_STORE_DOUBLE);
+
+  zstructFree(pds);
+  
+  return status;
+  */
+  return -1;
 }
 
 HECDSS_API int hec_dss_gridRetrieve(dss_file* dss, const char* pathname, int boolRetrieveData,
