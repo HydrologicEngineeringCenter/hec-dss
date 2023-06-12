@@ -45,6 +45,8 @@ enum regTsRetrFlag { TRIM_NO_TIME_ARR = -3, NO_TRIM_NO_TIME_ARR, TRIM_INCL_TIME_
 enum irrTsRetrFlag { TIME_WINDOW_ONLY, TIME_WINDOW_WITH_NEXT, TIME_WINDOW_WITH_PREV_AND_NEXT };
 enum regTsStorFlag { REPLACE_ALL, REPLACE_MISSING_ONLY, CREATE_MISSING_RECS, NO_CREATE_MISSING_RECS, REPLACE_WITH_NON_MISSING };
 enum irrTsStorFlag { MERGE, DELETE_INSERT };
+enum pdStorFlag { PD_STORE_AUTOMATIC, PD_STORE_FLOAT, PD_STORE_DOUBLE};
+
 enum dssCatalog {UNSORTED, SORTED};
 
 // private definition 
@@ -58,11 +60,16 @@ enum log_levels { LOG_NONE, LOG_ERROR, LOG_WARNING };
 enum log_levels log_level = LOG_WARNING;
 
 HECDSS_API int hec_dss_log_error(const char* message) {
+  if (log_handle == NULL)
+    log_handle = stdout;
+
   if (log_level > LOG_NONE)
     fprintf(log_handle, "\nError: %s", message);
   return 0;
 }
 HECDSS_API int hec_dss_log_warning(const char* message) {
+  if (log_handle == NULL)
+    log_handle = stdout;
   if (log_level > LOG_ERROR)
     fprintf(log_handle, "\nWarning: %s", message);
   return 0;
@@ -112,7 +119,7 @@ HECDSS_API int hec_dss_open(const char* filename, dss_file** dss)
       return status;
     int version = zgetVersion(f->ifltab);
     if (version != 7) {
-        hec_dss_log_error("version %d is not supported.\nOnly version 7 DSS files are supported");
+        hec_dss_log_error("version is not supported.\nOnly version 7 DSS files are supported");
         zclose(f->ifltab);
         return -700;
     }
@@ -564,6 +571,61 @@ HECDSS_API int hec_dss_pdRetrieve(dss_file* dss, const char* pathname,
     return status;
 }
 
+HECDSS_API int hec_dss_pdStore(dss_file* dss, const char* pathname,
+  double* doubleOrdinates, const int  doubleOrdinatesLength,
+  double* doubleValues, const int doubleValuesLength,
+  const int numberOrdinates, const int numberCurves,
+  char* unitsIndependent,
+  char* typeIndependent, 
+  char* unitsDependent, 
+  char* typeDependent, 
+  char* labels)
+{
+  zStructPairedData* pds = zstructPdNew(pathname);
+  
+
+
+  //  pds->numberOrdinates = num
+    //  .... 
+   // *numberCurves = pds->numberCurves;
+    /// -- leaving these meta-data below out for initial version.
+    //*boolIndependentIsXaxis = pds->boolIndependentIsXaxis; 
+    //*xprecision = pds->xprecision;
+    // *yprecision = pds->yprecision;
+
+  /*
+    if (pds->unitsIndependent != NULL) {
+      stringCopy(unitsIndependent, unitsIndependentLength, pds->unitsIndependent, strlen(pds->unitsIndependent));
+    }
+    if (pds->unitsDependent != NULL) {
+      stringCopy(unitsDependent, unitsDependentLength, pds->unitsDependent, strlen(pds->unitsDependent));
+    }
+    if (pds->typeIndependent != NULL) {
+      stringCopy(typeIndependent, typeIndependentLength, pds->typeIndependent, strlen(pds->typeIndependent));
+    }
+
+    if (pds->typeDependent != NULL) {
+      stringCopy(typeDependent, typeDependentLength, pds->typeDependent, strlen(pds->typeDependent));
+    }
+    if (pds->labels) {
+      int size = pds->labelsLength > labelsLength ? labelsLength : pds->labelsLength;
+      for (int i = 0; i < size; i++)
+        labels[i] = pds->labels[i];
+    }
+
+    hec_dss_array_copy(doubleOrdinates, doubleOrdinatesLength, pds->doubleOrdinates, pds->numberOrdinates);
+    hec_dss_array_copy(doubleValues, doubleValuesLength, pds->doubleValues, pds->numberOrdinates * pds->numberCurves);
+
+  
+  int status = zpdStore(dss->ifltab, pds, PD_STORE_DOUBLE);
+
+  zstructFree(pds);
+  
+  return status;
+  */
+  return -1;
+}
+
 HECDSS_API int hec_dss_gridRetrieve(dss_file* dss, const char* pathname, int boolRetrieveData,
   int* type, int* dataType,
   int* lowerLeftCellX, int* lowerLeftCellY,
@@ -742,4 +804,30 @@ HECDSS_API int hec_dss_dateToJulian(const char* date){
 HECDSS_API void hec_dss_julianToYearMonthDay(const int julian, int* year, int* month,int* day){
 
   julianToYearMonthDay(julian, year, month, day);
+}
+
+/// <summary>
+/// Converts from DSS 6 to DSS7
+/// Warning: DSS6 grids will not be converted. (Java libraries are necessary for version 6 grids)
+/// </summary>
+/// <param name="dssFilename"></param>
+/// <param name="filenameVersion6"></param>
+/// <returns></returns>
+HECDSS_API int hec_dss_convertToVersion7(const char* filenameVersion6, const char* filenameVersion7) {
+    long long ifltab[250];
+    int status = hec_dss_zopen(ifltab, filenameVersion6);
+    if (status != 0)
+      return status;
+    int version = zgetVersion(ifltab);
+    if (version != 6) {
+      char msg[256];
+      sprintf(msg, "conversion is only supported from version 6 to version 7.\nversion input was %d", version);
+      hec_dss_log_error(msg);
+      zclose(ifltab);
+      return -67;
+    }
+    zclose(ifltab);
+    status = zconvertVersion(filenameVersion6, filenameVersion7);
+    return status;
+
 }
