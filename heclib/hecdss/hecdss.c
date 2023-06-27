@@ -140,15 +140,22 @@ HECDSS_API int hec_dss_version(dss_file* dss) {
     return zgetVersion(dss->ifltab);
 }
 
-
+/// <summary>
+/// Sets internal number values inside DSS
+/// for example calling hec_dss_set_value("mlvl",10) sets the DSS output level to 10
+/// </summary>
+/// <returns>zero on sucess</returns>
 HECDSS_API int hec_dss_set_value(const char* name, const int value) {
-  // TO DO
-  return -1;
+ return zset(name, "", value);
 }
 
-HECDSS_API int hec_dss_set_string(const char* name, const int value) {
-  // TO DO
-  return -1;
+/// <summary>
+/// Sets an internal character value inside DSS
+/// for example calling hec_dss_set_string("PROG","DSSVue") sets the program name 
+/// </summary>
+/// <returns>zero on sucess</returns>
+HECDSS_API int hec_dss_set_string(const char* name, const char* value) {
+  return zset(name, value, 0);
 }
 
 
