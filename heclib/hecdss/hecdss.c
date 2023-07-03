@@ -742,6 +742,7 @@ HECDSS_API int hec_dss_gridStore(dss_file* dss, const char* pathname,
   gridStruct->_timeZoneRawOffset = timeZoneRawOffset;
   gridStruct->_isInterval = isInterval;
   gridStruct->_isTimeStamped = isTimeStamped;
+  gridStruct->_compressionMethod = ZLIB_COMPRESSION;
 
   gridStruct->_dataUnits = mallocAndCopy(dataUnits);
   gridStruct->_dataSource = mallocAndCopy(dataSource);
