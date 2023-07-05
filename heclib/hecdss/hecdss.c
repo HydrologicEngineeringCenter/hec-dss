@@ -140,15 +140,22 @@ HECDSS_API int hec_dss_version(dss_file* dss) {
     return zgetVersion(dss->ifltab);
 }
 
-
+/// <summary>
+/// Sets internal number values inside DSS
+/// for example calling hec_dss_set_value("mlvl",10) sets the DSS output level to 10
+/// </summary>
+/// <returns>zero on sucess</returns>
 HECDSS_API int hec_dss_set_value(const char* name, const int value) {
-  // TO DO
-  return -1;
+ return zset(name, "", value);
 }
 
-HECDSS_API int hec_dss_set_string(const char* name, const int value) {
-  // TO DO
-  return -1;
+/// <summary>
+/// Sets an internal character value inside DSS
+/// for example calling hec_dss_set_string("PROG","DSSVue") sets the program name 
+/// </summary>
+/// <returns>zero on sucess</returns>
+HECDSS_API int hec_dss_set_string(const char* name, const char* value) {
+  return zset(name, value, 0);
 }
 
 
@@ -507,7 +514,12 @@ HECDSS_API int hec_dss_dataType(dss_file* dss, const char* pathname) {
   return zdataType(dss->ifltab, pathname);
 }
 
+/*
+  hec_dss_pdRetrieve reads paired-data from a DSS file
 
+  *labels is multiple labels separated with \0
+   labelsLength is the total length
+*/
 HECDSS_API int hec_dss_pdRetrieve(dss_file* dss, const char* pathname,
   double* doubleOrdinates, const int  doubleOrdinatesLength,
   double* doubleValues, const int doubleValuesLength,
@@ -571,59 +583,42 @@ HECDSS_API int hec_dss_pdRetrieve(dss_file* dss, const char* pathname,
     return status;
 }
 
+/*
+  hec_dss_pdRetrieve reads paired-data from a DSS file
+
+*/
 HECDSS_API int hec_dss_pdStore(dss_file* dss, const char* pathname,
   double* doubleOrdinates, const int  doubleOrdinatesLength,
   double* doubleValues, const int doubleValuesLength,
   const int numberOrdinates, const int numberCurves,
-  char* unitsIndependent,
-  char* typeIndependent, 
-  char* unitsDependent, 
-  char* typeDependent, 
-  char* labels)
+  const char* unitsIndependent,
+  const char* typeIndependent, 
+  const char* unitsDependent, 
+  const char* typeDependent, 
+  const char* labels, const int labelsLength)
 {
-  zStructPairedData* pds = zstructPdNew(pathname);
-  
+  zStructPairedData* pds = zstructPdNewDoubles(pathname, doubleOrdinates, doubleValues,
+    numberOrdinates, numberCurves, unitsIndependent, typeIndependent, unitsDependent, typeDependent);
 
-
-  //  pds->numberOrdinates = num
-    //  .... 
-   // *numberCurves = pds->numberCurves;
     /// -- leaving these meta-data below out for initial version.
     //*boolIndependentIsXaxis = pds->boolIndependentIsXaxis; 
     //*xprecision = pds->xprecision;
     // *yprecision = pds->yprecision;
 
-  /*
-    if (pds->unitsIndependent != NULL) {
-      stringCopy(unitsIndependent, unitsIndependentLength, pds->unitsIndependent, strlen(pds->unitsIndependent));
-    }
-    if (pds->unitsDependent != NULL) {
-      stringCopy(unitsDependent, unitsDependentLength, pds->unitsDependent, strlen(pds->unitsDependent));
-    }
-    if (pds->typeIndependent != NULL) {
-      stringCopy(typeIndependent, typeIndependentLength, pds->typeIndependent, strlen(pds->typeIndependent));
-    }
+  if (labels != NULL) {
+    pds->labels = malloc(labelsLength);
+    pds->allocated[zSTRUCT_PD_labels] = 1;
 
-    if (pds->typeDependent != NULL) {
-      stringCopy(typeDependent, typeDependentLength, pds->typeDependent, strlen(pds->typeDependent));
-    }
-    if (pds->labels) {
-      int size = pds->labelsLength > labelsLength ? labelsLength : pds->labelsLength;
-      for (int i = 0; i < size; i++)
-        labels[i] = pds->labels[i];
-    }
-
-    hec_dss_array_copy(doubleOrdinates, doubleOrdinatesLength, pds->doubleOrdinates, pds->numberOrdinates);
-    hec_dss_array_copy(doubleValues, doubleValuesLength, pds->doubleValues, pds->numberOrdinates * pds->numberCurves);
-
-  
+    if (pds->labels == NULL)
+      return -1;
+    memcpy(pds->labels, labels, labelsLength);
+  }
+    
   int status = zpdStore(dss->ifltab, pds, PD_STORE_DOUBLE);
 
   zstructFree(pds);
   
   return status;
-  */
-  return -1;
 }
 
 HECDSS_API int hec_dss_gridRetrieve(dss_file* dss, const char* pathname, int boolRetrieveData,
@@ -747,6 +742,7 @@ HECDSS_API int hec_dss_gridStore(dss_file* dss, const char* pathname,
   gridStruct->_timeZoneRawOffset = timeZoneRawOffset;
   gridStruct->_isInterval = isInterval;
   gridStruct->_isTimeStamped = isTimeStamped;
+  gridStruct->_compressionMethod = ZLIB_COMPRESSION;
 
   gridStruct->_dataUnits = mallocAndCopy(dataUnits);
   gridStruct->_dataSource = mallocAndCopy(dataSource);
