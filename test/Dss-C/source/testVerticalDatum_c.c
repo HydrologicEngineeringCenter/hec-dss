@@ -677,7 +677,7 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                             ifltab,           // file table
                             tss,              // time series struct
                             0,                // retrieve flag (0=adhere to time window and [for reg] create times array)
-                            0,                // retrieve doubles flag (0=as stored, 1=floats, 2=doubles)
+                            2,                // retrieve doubles flag (0=as stored, 1=floats, 2=doubles)
                             1);               // retrieve quality flag (0/1)
                         assert(status == STATUS_OKAY);
                         headerBuf = userHeaderToString(tss->userHeader, tss->userHeaderNumber);

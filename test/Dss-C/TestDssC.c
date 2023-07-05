@@ -180,6 +180,10 @@ int runTheTests() {
 	char fileName6[80];
 	int status;
 
+	status = test_jira_dss_163_weekly_time_series_fails();
+	if (status != STATUS_OKAY)
+		return status;
+
 	status = testLargeCopy();
 	if (status != STATUS_OKAY)
 		return status;
@@ -627,6 +631,150 @@ int units_issue_126()
 	zstructFree(tss2);
 	zclose(ifltab2);
 	free(fvalues);
+	return status;
+}
+
+int test_jira_dss_163_weekly_time_series_fails()
+{
+	const char* filename = "jira_dss-163.dss";
+	const char* pathnameTemplate = "//TestLoc/Elev//1Week/%4.4d-%2.2d-%2.2d/";
+	char pathname[MAX_PATHNAME_SIZE];
+	char fpart[MAX_PART_SIZE];
+	const char* unit = "ft";
+	const char* dataType = "INST-VAL";
+	char startdate[16];
+	char enddate[16];
+	char datestr[16];
+	char timestr[8];
+	const char* starttime = "0100";
+	const char* endtime = "0100";
+	const int NUM_VALUES = 26;
+	zStructTimeSeries* tss1;
+	zStructTimeSeries* tss2;
+	int msgLevel;
+	double dvalues[52];
+	for (int i = 0; i < NUM_VALUES; ++i) {
+		dvalues[i] = 1000. + i;
+	}
+	long long ifltab[250];
+	memset(ifltab, 0, sizeof(ifltab));
+	memset(fpart, 0, sizeof(fpart));
+
+	unlink(filename);
+	int status = hec_dss_zopen(ifltab, filename);
+
+
+	for (int year = 2000; year < 2021; ++year) {
+		for (int month = 1; month < 2; ++month) {
+			for (int day = 1; day < 8; ++day) {
+				sprintf(pathname, pathnameTemplate, year, month, day);
+				int jul = yearMonthDayToJulian(year, month, day);
+				julianToDate(jul, -13, startdate, sizeof(startdate));
+				julianToDate(jul+(NUM_VALUES-1)*7, -13, enddate, sizeof(enddate));
+				//----------------------//
+				// store by time window //
+				//----------------------//
+				tss1 = zstructTsNewTimes(pathname, startdate, starttime, enddate, endtime);
+				tss1->numberValues = NUM_VALUES;
+				tss1->doubleValues = dvalues;
+				tss1->units = unit;
+				tss1->type = dataType;
+				status = ztsStore(ifltab, tss1, 0);
+				zstructFree(tss1);
+				if (status != STATUS_OKAY) {
+					printf("Status = %d\n", status);
+					zclose(ifltab);
+					return status;
+				}
+				//-------------------------//
+				// retrieve by time window //
+				//-------------------------//
+				tss2 = zstructTsNewTimes(pathname, startdate, starttime, enddate, endtime);
+				status = ztsRetrieve(ifltab, tss2, -1, 2, 1);
+				if (status != STATUS_OKAY) {
+					printf("Status = %d\n", status);
+					zstructFree(tss2);
+					zclose(ifltab);
+					return status;
+				}
+				if (status == 0) {
+					int jul = tss2->startJulianDate;
+					int sec = tss2->startTimeSeconds;
+					status = tss2->numberValues == NUM_VALUES ? STATUS_OKAY : STATUS_NOT_OKAY;
+					for (int i = 0; i < tss2->numberValues; ++i) {
+						getDateTimeString(jul, &datestr, sizeof(datestr), -13, sec, timestr, sizeof(timestr), 0);
+						//printf("\t%s %s %.2f\n", datestr, timestr, tss2->doubleValues[i]);
+						incrementTime(tss2->timeIntervalSeconds, 1, jul, sec, &jul, &sec);
+						if (i == 0) {
+							status |= strcmp(datestr, startdate) || strcmp(timestr, starttime);
+						}
+						status |= tss2->doubleValues[i] != 1000. + i;
+						if (status != STATUS_OKAY) {
+							zstructFree(tss2);
+							zclose(ifltab);
+							return status;
+						}
+					}
+				}
+				zstructFree(tss2);
+			}
+		}
+	}
+	//------------------//
+	// catalog the file //
+	//------------------//
+	zset("MLVL", "", 0);
+	zStructCatalog* cs = zstructCatalogNew();
+	zcatalog(ifltab, "/*/*/*/*/*/*/", cs, 1);
+	//----------------------//
+	// retrieve by pathname //
+	//----------------------//
+	for (int i = 0; i < cs->numberPathnames; ++i) {
+		printf("%d\t%s\n", i, cs->pathnameList[i]);
+		zpathnameGetPart(cs->pathnameList[i], 6, fpart, sizeof(fpart));
+		tss2 = zstructTsNew(cs->pathnameList[i]);
+		status = ztsRetrieve(ifltab, tss2, -1, 2, 1);
+		if (status != STATUS_OKAY) {
+			printf("\terror %d retrieving %s\n", status, cs->pathnameList[i]);
+			zstructFree(tss2);
+			zclose(ifltab);
+			return status;
+		}
+		if (status == 0) {
+			int jul = tss2->startJulianDate;
+			int sec = tss2->startTimeSeconds;
+			for (int j = 0; j < tss2->numberValues; ++j) {
+				getDateTimeString(jul, &datestr, sizeof(datestr), -13, sec, timestr, sizeof(timestr), 0);
+				//printf("\t%s %s %.2f\n", datestr, timestr, tss2->doubleValues[j]);
+				incrementTime(tss2->timeIntervalSeconds, 1, jul, sec, &jul, &sec);
+				if (j == 0) {
+					status |= strcmp(datestr, fpart) || strcmp(timestr, starttime);
+					if (status) {
+						printf(
+							"%d\t%s\t%d (%d)\t%s\t%d (%d)\t%d (%d)\n",
+							i,
+							cs->pathnameList[i],
+							dateToJulian(fpart),
+							dayOfWeek(dateToJulian(fpart)),
+							datestr,
+							dateToJulian(datestr),
+							dayOfWeek(dateToJulian(datestr)),
+							tss2->startJulianDate,
+							dayOfWeek(tss2->startJulianDate));
+					}
+				}
+				status |= tss2->doubleValues[j] != 1000. + j;
+				if (status != STATUS_OKAY) {
+					zstructFree(tss2);
+					zclose(ifltab);
+					return status;
+				}
+			}
+		}
+		zstructFree(tss2);
+	}
+	zstructFree(cs);
+	zclose(ifltab);
 	return status;
 }
 

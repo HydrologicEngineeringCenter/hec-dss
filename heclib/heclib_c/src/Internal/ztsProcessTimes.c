@@ -312,6 +312,9 @@ int ztsProcessTimes(long long *ifltab, zStructTimeSeries *tss, int boolStore)
 					}
 				}
 			}
+			else {
+				tss->boolAdjustTimeWindow = 1;
+			}
 		}
 	}
 	else {  //  if (boolStore) {

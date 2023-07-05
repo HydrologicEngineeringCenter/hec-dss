@@ -107,16 +107,14 @@ int ztsRegGetBlockStart(int julianDate, int intervalSeconds, int *blockSize)
 			//  Decade block; use start of decade
 			day = 1;
 			month = 1;
-			year /= 10;
-			year *= 10;
+			year -= year % 10;
 			*blockSize = 4;
 		}
 		else  {
 			//  Century block; use start of century
 			day = 1;
 			month = 1;
-			year /= 100;
-			year *= 100;
+			year -= year % 100;
 			*blockSize = 5;
 		}
 

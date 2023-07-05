@@ -147,6 +147,8 @@ int ztsRetrieveReg7(long long *ifltab, zStructTimeSeries *tss,
 	bufferControl[BUFF_ADDRESS] = 0;
 	bufferControl[BUFF_INTS_USED] = 0;
 
+	const int MONTHLY_SECONDS = 604800;
+
 
 	//  Check for correct DSS Version
 	if (zgetVersion(ifltab) != 7) {
@@ -255,9 +257,14 @@ int ztsRetrieveReg7(long long *ifltab, zStructTimeSeries *tss,
 		//  (what we have already read)
 		blockStartPosition = blockPositionRelativeToStart + currentPosition;
 		if (blockStartPosition < 0) {
-			//  Error - should not occur
-			return zerrorProcessing(ifltab, DSS_FUNCTION_ztsRetrieveReg_ID, zdssErrorCodes.INVALID_DATE_TIME,
-								    blockStartPosition, 0, zdssErrorSeverity.WARNING, tss->pathname, "");
+			if (tss->timeWindow->intervalSeconds == MONTHLY_SECONDS && blockStartPosition == -1) {
+				blockStartPosition = 0;
+			}
+			else {
+				//  Error - should not occur
+				return zerrorProcessing(ifltab, DSS_FUNCTION_ztsRetrieveReg_ID, zdssErrorCodes.INVALID_DATE_TIME,
+					blockStartPosition, 0, zdssErrorSeverity.WARNING, tss->pathname, "");
+			}
 		}
 
 		//  Determine how many values we will read from this block
@@ -657,7 +664,7 @@ int ztsRetrieveReg7(long long *ifltab, zStructTimeSeries *tss,
 
 		}
 	}
-
+	
 	if (zmessageLevel(ifltab, MESS_METHOD_TS_READ_ID, MESS_LEVEL_USER_DIAG)) {
 		if (foundOne) {
 			zmessageDebug(ifltab, DSS_FUNCTION_ztsRetrieveReg_ID, "Data set read: ", tss->pathname);

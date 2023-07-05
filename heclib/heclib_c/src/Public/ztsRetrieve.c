@@ -631,6 +631,25 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 			if (tss->timeOffsetSeconds < 0) tss->timeOffsetSeconds = 0;
 			ztsOffsetAdjustToOffset(tss->timeOffsetSeconds, tss->timeIntervalSeconds, &tss->startJulianDate, &tss->startTimeSeconds);
 			ztsOffsetAdjustToOffset(tss->timeOffsetSeconds, tss->timeIntervalSeconds, &tss->endJulianDate, &tss->endTimeSeconds);
+			if (tss->boolAdjustTimeWindow) {
+				// get the start of the interval
+				int startIntervalJulian = tss->startJulianDate;
+				int sec = tss->startTimeSeconds;
+				ztsOffsetAdjustToStandard(tss->timeIntervalSeconds, &startIntervalJulian, &sec);
+				// determine whether we acually need to adjust the time window
+				int twStartToIntervalStartDayOffset = startIntervalJulian - tss->startJulianDate;
+				int blockStartToIntervalStartDayOffset = startIntervalJulian - tss->timeWindow->startBlockJulian;
+				if (twStartToIntervalStartDayOffset != 0 || blockStartToIntervalStartDayOffset != 0) {
+					int intervalDayOffsetDiff = blockStartToIntervalStartDayOffset - twStartToIntervalStartDayOffset;
+					int timeIntervalDays = tss->timeIntervalSeconds / 86400;
+					int skip = blockStartToIntervalStartDayOffset < timeIntervalDays&& intervalDayOffsetDiff >= 0 && intervalDayOffsetDiff < timeIntervalDays;
+					if (!skip) {
+						// move the time window forward one interval
+						incrementTime(tss->timeIntervalSeconds, 1, tss->startJulianDate, tss->startTimeSeconds, &tss->startJulianDate, &tss->startTimeSeconds);
+						incrementTime(tss->timeIntervalSeconds, 1, tss->endJulianDate, tss->endTimeSeconds, &tss->endJulianDate, &tss->endTimeSeconds);
+					}
+				}
+			}
 			if ((retrieveFlag == 0) || (retrieveFlag == -1)) {
 				ztsRegAddTimes(tss);
 			}
