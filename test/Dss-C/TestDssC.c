@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <string.h>
-
+#if defined(__linux__) || defined(__APPLE__)
+	#include <unistd.h>
+#endif
 #include "heclib.h"
 #include "hecdss7.h"
 #include "TestDssC.h"
@@ -677,8 +679,8 @@ int test_jira_dss_163_weekly_time_series_fails()
 				tss1 = zstructTsNewTimes(pathname, startdate, starttime, enddate, endtime);
 				tss1->numberValues = NUM_VALUES;
 				tss1->doubleValues = dvalues;
-				tss1->units = unit;
-				tss1->type = dataType;
+				tss1->units = (char *)unit;
+				tss1->type = (char *)dataType;
 				status = ztsStore(ifltab, tss1, 0);
 				zstructFree(tss1);
 				if (status != STATUS_OKAY) {
@@ -702,7 +704,7 @@ int test_jira_dss_163_weekly_time_series_fails()
 					int sec = tss2->startTimeSeconds;
 					status = tss2->numberValues == NUM_VALUES ? STATUS_OKAY : STATUS_NOT_OKAY;
 					for (int i = 0; i < tss2->numberValues; ++i) {
-						getDateTimeString(jul, &datestr, sizeof(datestr), -13, sec, timestr, sizeof(timestr), 0);
+						getDateTimeString(jul, datestr, sizeof(datestr), -13, sec, timestr, sizeof(timestr), 0);
 						//printf("\t%s %s %.2f\n", datestr, timestr, tss2->doubleValues[i]);
 						incrementTime(tss2->timeIntervalSeconds, 1, jul, sec, &jul, &sec);
 						if (i == 0) {
@@ -744,7 +746,7 @@ int test_jira_dss_163_weekly_time_series_fails()
 			int jul = tss2->startJulianDate;
 			int sec = tss2->startTimeSeconds;
 			for (int j = 0; j < tss2->numberValues; ++j) {
-				getDateTimeString(jul, &datestr, sizeof(datestr), -13, sec, timestr, sizeof(timestr), 0);
+				getDateTimeString(jul, datestr, sizeof(datestr), -13, sec, timestr, sizeof(timestr), 0);
 				//printf("\t%s %s %.2f\n", datestr, timestr, tss2->doubleValues[j]);
 				incrementTime(tss2->timeIntervalSeconds, 1, jul, sec, &jul, &sec);
 				if (j == 0) {
