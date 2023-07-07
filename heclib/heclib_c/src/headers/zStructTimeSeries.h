@@ -94,9 +94,6 @@ typedef struct {
 
 	int processedAlready;	//  0 = not processed yet; 1 = processed for retrieve; 2 = processed for storage
 	ztsTimeWindow *timeWindow;
-	int boolAdjustTimeWindow;	// flag set when reading regular time series and time window is set
-								// set from pathname using ztsGetPathTimeWindow(). used in ztsRetrieve()
-								// to move the entire time window forward by one interval if necessary.
 	//  knowing which variables were allocated by the ztsNew functions,
 	//  instead of the calling program
 	char allocated[zSTRUCT_length];

@@ -104,6 +104,7 @@ int ztsRetrieveReg7(long long *ifltab, zStructTimeSeries *tss,
 	int numberLeft;
 	int boolFound;
 	int blockPositionRelativeToStart;
+	int boolAdjustTimeWindow = 0;
 	int i;
 	int one = 1;
 
@@ -259,6 +260,7 @@ int ztsRetrieveReg7(long long *ifltab, zStructTimeSeries *tss,
 		if (blockStartPosition < 0) {
 			if (tss->timeWindow->intervalSeconds == MONTHLY_SECONDS && blockStartPosition == -1) {
 				blockStartPosition = 0;
+				boolAdjustTimeWindow = 1;
 			}
 			else {
 				//  Error - should not occur
@@ -658,6 +660,19 @@ int ztsRetrieveReg7(long long *ifltab, zStructTimeSeries *tss,
 			tss->numberValues = currentPosition;
 		}
 		tss->timeIntervalSeconds = tss->timeWindow->intervalSeconds;
+		if (boolAdjustTimeWindow) {
+			int startIntervalJulian = tss->startJulianDate;
+			int sec = tss->startTimeSeconds;
+			ztsOffsetAdjustToOffset(tss->timeOffsetSeconds, tss->timeIntervalSeconds, &startIntervalJulian, &sec);
+			if (startIntervalJulian >= tss->timeWindow->startBlockJulian) {
+				boolAdjustTimeWindow = 0;
+			}
+		}
+		if (boolAdjustTimeWindow) {
+			// move the time window forward one interval
+			incrementTime(tss->timeIntervalSeconds, 1, tss->startJulianDate, tss->startTimeSeconds, &tss->startJulianDate, &tss->startTimeSeconds);
+			incrementTime(tss->timeIntervalSeconds, 1, tss->endJulianDate, tss->endTimeSeconds, &tss->endJulianDate, &tss->endTimeSeconds);
+		}
 		//  Take care of julian base date, if too large (1,400,000, or MAX_INT / 1440)
 		if ((tss->startJulianDate > 1400000) || (tss->endJulianDate > 1400000)) {
 			tss->julianBaseDate = tss->startJulianDate;

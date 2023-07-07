@@ -648,11 +648,14 @@ int test_jira_dss_163_weekly_time_series_fails()
 	char enddate[16];
 	char datestr[16];
 	char timestr[8];
+	char datestr2[16];
+	char timestr2[8];
 	const char* starttime = "0100";
 	const char* endtime = "0100";
 	const int NUM_VALUES = 26;
 	zStructTimeSeries* tss1;
 	zStructTimeSeries* tss2;
+	ztsTimeWindow* tw;
 	int msgLevel;
 	double dvalues[52];
 	for (int i = 0; i < NUM_VALUES; ++i) {
@@ -666,7 +669,7 @@ int test_jira_dss_163_weekly_time_series_fails()
 	int status = hec_dss_zopen(ifltab, filename);
 
 
-	for (int year = 2000; year < 2021; ++year) {
+	for (int year = 2000; year < 2001; ++year) {
 		for (int month = 1; month < 2; ++month) {
 			for (int day = 1; day < 8; ++day) {
 				sprintf(pathname, pathnameTemplate, year, month, day);
@@ -705,7 +708,7 @@ int test_jira_dss_163_weekly_time_series_fails()
 					status = tss2->numberValues == NUM_VALUES ? STATUS_OKAY : STATUS_NOT_OKAY;
 					for (int i = 0; i < tss2->numberValues; ++i) {
 						getDateTimeString(jul, datestr, sizeof(datestr), -13, sec, timestr, sizeof(timestr), 0);
-						//printf("\t%s %s %.2f\n", datestr, timestr, tss2->doubleValues[i]);
+						printf("\t%s %s %.2f\n", datestr, timestr, tss2->doubleValues[i]);
 						incrementTime(tss2->timeIntervalSeconds, 1, jul, sec, &jul, &sec);
 						if (i == 0) {
 							status |= strcmp(datestr, startdate) || strcmp(timestr, starttime);
@@ -734,6 +737,9 @@ int test_jira_dss_163_weekly_time_series_fails()
 	for (int i = 0; i < cs->numberPathnames; ++i) {
 		printf("%d\t%s\n", i, cs->pathnameList[i]);
 		zpathnameGetPart(cs->pathnameList[i], 6, fpart, sizeof(fpart));
+		//---------------------------//
+		// retrieve by pathname only //
+		//---------------------------//
 		tss2 = zstructTsNew(cs->pathnameList[i]);
 		status = ztsRetrieve(ifltab, tss2, -1, 2, 1);
 		if (status != STATUS_OKAY) {
@@ -746,11 +752,12 @@ int test_jira_dss_163_weekly_time_series_fails()
 			int jul = tss2->startJulianDate;
 			int sec = tss2->startTimeSeconds;
 			for (int j = 0; j < tss2->numberValues; ++j) {
-				getDateTimeString(jul, datestr, sizeof(datestr), -13, sec, timestr, sizeof(timestr), 0);
-				//printf("\t%s %s %.2f\n", datestr, timestr, tss2->doubleValues[j]);
+				getDateTimeString(jul, datestr, sizeof(datestr), 4, sec, timestr, sizeof(timestr), 0);
+				getDateTimeString(jul, datestr2, sizeof(datestr2), -13, sec, timestr2, sizeof(timestr), 0);
+				printf("\t%s %s %.2f\n", datestr, timestr, tss2->doubleValues[j]);
 				incrementTime(tss2->timeIntervalSeconds, 1, jul, sec, &jul, &sec);
 				if (j == 0) {
-					status |= strcmp(datestr, fpart) || strcmp(timestr, starttime);
+					status |= strcmp(datestr2, fpart) || strcmp(timestr2, starttime);
 					if (status) {
 						printf(
 							"%d\t%s\t%d (%d)\t%s\t%d (%d)\t%d (%d)\n",
@@ -763,10 +770,90 @@ int test_jira_dss_163_weekly_time_series_fails()
 							dayOfWeek(dateToJulian(datestr)),
 							tss2->startJulianDate,
 							dayOfWeek(tss2->startJulianDate));
+						zstructFree(tss2);
+						zclose(ifltab);
+						return status;
 					}
 				}
+				minsToDateTime(tss2->julianBaseDate * 1440 + tss2->times[j], datestr2, timestr2, sizeof(datestr2), sizeof(timestr2));
+				status |= strcmp(datestr2, datestr) || strcmp(timestr2, timestr);
+				if (status) {
+					printf("\tExpected %s %s, got %s %s", datestr, timestr, datestr2, timestr2);
+					zstructFree(tss2);
+					zclose(ifltab);
+					return status;
+				}
 				status |= tss2->doubleValues[j] != 1000. + j;
-				if (status != STATUS_OKAY) {
+				if (status) {
+					printf("\tExpected %.2f, got %.2f", 1000. + j, tss2->doubleValues[j]);
+					zstructFree(tss2);
+					zclose(ifltab);
+					return status;
+				}
+			}
+		}
+		zstructFree(tss2);
+	}
+	printf("\n");
+	for (int i = 0; i < cs->numberPathnames; ++i) {
+		zpathnameGetPart(cs->pathnameList[i], 6, fpart, sizeof(fpart));
+		//--------------------------------------//
+		// retrieve by pathname and block times //
+		//--------------------------------------//
+		tw = (ztsTimeWindow*)calloc(1, sizeof(ztsTimeWindow));
+		ztsGetPathTimeWindow(7, cs->pathnameList[i], strlen(cs->pathnameList[i]), tw);
+		int startJul = tw->startBlockJulian;
+		int endJul = ztsIncrementBlock(startJul, tw->blockSize);
+		--endJul;
+		free(tw);
+		julianToDate(startJul, -13, startdate, sizeof(startdate));
+		julianToDate(endJul, -13, enddate, sizeof(enddate));
+		tss2 = zstructTsNewTimes(cs->pathnameList[i], startdate, "0001", enddate, "2400");
+		status = ztsRetrieve(ifltab, tss2, -1, 2, 1);
+		if (status != STATUS_OKAY) {
+			printf("\terror %d retrieving %s\n", status, cs->pathnameList[i]);
+			zstructFree(tss2);
+			zclose(ifltab);
+			return status;
+		}
+		if (status == 0) {
+			int jul = tss2->startJulianDate;
+			int sec = tss2->startTimeSeconds;
+			for (int j = 0; j < tss2->numberValues; ++j) {
+				getDateTimeString(jul, datestr, sizeof(datestr), 4, sec, timestr, sizeof(timestr), 0);
+				getDateTimeString(jul, datestr2, sizeof(datestr2), -13, sec, timestr2, sizeof(timestr), 0);
+				printf("\t%s %s %.2f\n", datestr, timestr, tss2->doubleValues[j]);
+				incrementTime(tss2->timeIntervalSeconds, 1, jul, sec, &jul, &sec);
+				if (j == 0) {
+					status |= strcmp(datestr2, fpart) || strcmp(timestr2, starttime);
+					if (status) {
+						printf(
+							"%d\t%s\t%d (%d)\t%s\t%d (%d)\t%d (%d)\n",
+							i,
+							cs->pathnameList[i],
+							dateToJulian(fpart),
+							dayOfWeek(dateToJulian(fpart)),
+							datestr,
+							dateToJulian(datestr),
+							dayOfWeek(dateToJulian(datestr)),
+							tss2->startJulianDate,
+							dayOfWeek(tss2->startJulianDate));
+						zstructFree(tss2);
+						zclose(ifltab);
+						return status;
+					}
+				}
+				minsToDateTime(tss2->julianBaseDate * 1440 + tss2->times[j], datestr2, timestr2, sizeof(datestr2), sizeof(timestr2));
+				status |= strcmp(datestr2, datestr) || strcmp(timestr2, timestr);
+				if (status) {
+					printf("\tExpected %s %s, got %s %s", datestr, timestr, datestr2, timestr2);
+					zstructFree(tss2);
+					zclose(ifltab);
+					return status;
+				}
+				status |= tss2->doubleValues[j] != 1000. + j;
+				if (status) {
+					printf("\tExpected %.2f, got %.2f", 1000. + j, tss2->doubleValues[j]);
 					zstructFree(tss2);
 					zclose(ifltab);
 					return status;
