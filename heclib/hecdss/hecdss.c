@@ -139,7 +139,7 @@ HECDSS_API int hec_dss_close(dss_file *dss){
 /// </summary>
 /// <param name="dss"></param>
 /// <returns></returns>
-HECDSS_API int hec_dss_version(dss_file* dss) {
+HECDSS_API int hec_dss_getVersion(dss_file* dss) {
     if (!dss)
         return 0;
     return zgetVersion(dss->ifltab);
