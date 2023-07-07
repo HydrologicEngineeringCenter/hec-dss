@@ -134,11 +134,37 @@ HECDSS_API int hec_dss_close(dss_file *dss){
     return status;
 }
 
+/// <summary>
+/// Gets version of DSS file that has already been opened.
+/// </summary>
+/// <param name="dss"></param>
+/// <returns></returns>
 HECDSS_API int hec_dss_version(dss_file* dss) { 
     if (!dss)
         return 0;
     return zgetVersion(dss->ifltab);
 }
+
+
+/// <summary>
+/// Gets the version of a DSS file based on filename
+/// Returns:
+///    7:  A DSS version 7 file
+///    6:  A DSS version 6 file
+///    0 : File does not exist
+///   -1 : Not a DSS file(but file exists)
+///   -2 : Invalid file name
+///   -3 : Open error(undefined)
+/// < -3 : abs(error) is system open or read error
+/// </summary>
+/// <param name="filename"></param>
+/// <returns></returns>
+HECDSS_API int hec_dss_getFileVersion(const char* filename) {
+    return zgetFileVersion(filename);
+}
+
+
+
 
 /// <summary>
 /// Sets internal number values inside DSS
