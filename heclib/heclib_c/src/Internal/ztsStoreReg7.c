@@ -93,6 +93,7 @@ int ztsStoreReg7(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 	char path[MAX_PATHNAME_LENGTH];
 	char blockDate[20];
 
+	const int MONTHLY_SECONDS = 604800;
 
 
 	//  Check for correct DSS Version
@@ -292,10 +293,15 @@ int ztsStoreReg7(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 		//  (what we have already written)
 		blockStartPosition = blockPositionRelativeToStart + currentPosition;
 		if (blockStartPosition < 0) {
-			//  Error (should be detected way earlier than this!)
-			zlockActive(ifltab, LOCKING_LEVEL_HIGH, LOCKING_LOCK_OFF, LOCKING_FLUSH_ON);
-			return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStoreReg_ID, zdssErrorCodes.INVALID_DATE_TIME,
-								    blockStartPosition, 0, zdssErrorSeverity.WARNING, tss->pathname, "");
+			if (tss->timeWindow->intervalSeconds == MONTHLY_SECONDS && blockStartPosition == -1) {
+				blockStartPosition = 0;
+			}
+			else {
+				//  Error (should be detected way earlier than this!)
+				zlockActive(ifltab, LOCKING_LEVEL_HIGH, LOCKING_LOCK_OFF, LOCKING_FLUSH_ON);
+				return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStoreReg_ID, zdssErrorCodes.INVALID_DATE_TIME,
+					blockStartPosition, 0, zdssErrorSeverity.WARNING, tss->pathname, "");
+			}
 		}
 
 		//  Determine how many values we will write to this block
