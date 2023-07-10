@@ -93,7 +93,7 @@ int ztsStoreReg7(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 	char path[MAX_PATHNAME_LENGTH];
 	char blockDate[20];
 
-	const int MONTHLY_SECONDS = 604800;
+	const int WEEKLY_INTERVAL_SECONDS = 604800;
 
 
 	//  Check for correct DSS Version
@@ -293,7 +293,7 @@ int ztsStoreReg7(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 		//  (what we have already written)
 		blockStartPosition = blockPositionRelativeToStart + currentPosition;
 		if (blockStartPosition < 0) {
-			if (tss->timeWindow->intervalSeconds == MONTHLY_SECONDS && blockStartPosition == -1) {
+			if (tss->timeWindow->intervalSeconds == WEEKLY_INTERVAL_SECONDS && blockStartPosition == -1) {
 				blockStartPosition = 0;
 			}
 			else {

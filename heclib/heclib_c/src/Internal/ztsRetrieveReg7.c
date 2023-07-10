@@ -148,7 +148,7 @@ int ztsRetrieveReg7(long long *ifltab, zStructTimeSeries *tss,
 	bufferControl[BUFF_ADDRESS] = 0;
 	bufferControl[BUFF_INTS_USED] = 0;
 
-	const int MONTHLY_SECONDS = 604800;
+	const int WEEKLY_INTERVAL_SECONDS = 604800;
 
 
 	//  Check for correct DSS Version
@@ -258,7 +258,7 @@ int ztsRetrieveReg7(long long *ifltab, zStructTimeSeries *tss,
 		//  (what we have already read)
 		blockStartPosition = blockPositionRelativeToStart + currentPosition;
 		if (blockStartPosition < 0) {
-			if (tss->timeWindow->intervalSeconds == MONTHLY_SECONDS && blockStartPosition == -1) {
+			if (tss->timeWindow->intervalSeconds == WEEKLY_INTERVAL_SECONDS && blockStartPosition == -1) {
 				blockStartPosition = 0;
 				maybeIncrementTimes = 1;
 			}
