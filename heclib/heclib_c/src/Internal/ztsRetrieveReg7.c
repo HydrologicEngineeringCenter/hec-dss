@@ -104,7 +104,7 @@ int ztsRetrieveReg7(long long *ifltab, zStructTimeSeries *tss,
 	int numberLeft;
 	int boolFound;
 	int blockPositionRelativeToStart;
-	int maybeIncrementTimes = 0;
+	int intervalStartsBeforeBlock = 0;
 	int i;
 	int one = 1;
 
@@ -259,7 +259,7 @@ int ztsRetrieveReg7(long long *ifltab, zStructTimeSeries *tss,
 		blockStartPosition = blockPositionRelativeToStart + currentPosition;
 		if (tss->timeWindow->intervalSeconds == WEEKLY_INTERVAL_SECONDS && blockStartPosition == -1) {
 			blockStartPosition = 0;
-			maybeIncrementTimes = 1;
+			intervalStartsBeforeBlock = 1;
 		}
 		if (blockStartPosition < 0) {
 			//  Error - should not occur
@@ -658,11 +658,13 @@ int ztsRetrieveReg7(long long *ifltab, zStructTimeSeries *tss,
 			tss->numberValues = currentPosition;
 		}
 		tss->timeIntervalSeconds = tss->timeWindow->intervalSeconds;
-		if (maybeIncrementTimes) {
+		if (intervalStartsBeforeBlock) {
+			// Weekly interval only
 			int firstDataTimeJulian = tss->startJulianDate;
 			int sec = tss->startTimeSeconds;
 			ztsOffsetAdjustToOffset(tss->timeOffsetSeconds, tss->timeIntervalSeconds, &firstDataTimeJulian, &sec);
-			if (firstDataTimeJulian < tss->timeWindow->startBlockJulian) {
+			int dataStartsBeforeBlock = firstDataTimeJulian < tss->timeWindow->startBlockJulian;
+			if (dataStartsBeforeBlock) {
 				// move the time window forward one interval
 				incrementTime(tss->timeIntervalSeconds, 1, tss->startJulianDate, tss->startTimeSeconds, &tss->startJulianDate, &tss->startTimeSeconds);
 				incrementTime(tss->timeIntervalSeconds, 1, tss->endJulianDate, tss->endTimeSeconds, &tss->endJulianDate, &tss->endTimeSeconds);
