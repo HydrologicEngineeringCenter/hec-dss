@@ -669,7 +669,7 @@ int test_jira_dss_163_weekly_time_series_fails()
 	int status = hec_dss_zopen(ifltab, filename);
 
 
-	for (int year = 2000; year < 2001; ++year) {
+	for (int year = 1900; year <= 2100; year += 10) {
 		for (int month = 1; month < 2; ++month) {
 			for (int day = 1; day < 8; ++day) {
 				sprintf(pathname, pathnameTemplate, year, month, day);
