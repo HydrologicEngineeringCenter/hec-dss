@@ -869,6 +869,6 @@ int test_jira_dss_163_weekly_time_series_fails()
 	}
 	zstructFree(cs);
 	zclose(ifltab);
-	return -1;
+	return status;
 }
 
