@@ -104,6 +104,7 @@ int ztsRetrieveReg7(long long *ifltab, zStructTimeSeries *tss,
 	int numberLeft;
 	int boolFound;
 	int blockPositionRelativeToStart;
+	int intervalStartsBeforeBlock = 0;
 	int i;
 	int one = 1;
 
@@ -146,6 +147,8 @@ int ztsRetrieveReg7(long long *ifltab, zStructTimeSeries *tss,
 	bufferControl[BUFF_STAT] = 0;
 	bufferControl[BUFF_ADDRESS] = 0;
 	bufferControl[BUFF_INTS_USED] = 0;
+
+	const int WEEKLY_INTERVAL_SECONDS = 604800;
 
 
 	//  Check for correct DSS Version
@@ -254,10 +257,14 @@ int ztsRetrieveReg7(long long *ifltab, zStructTimeSeries *tss,
 		//  Now determine the position relative to the current position in the data array
 		//  (what we have already read)
 		blockStartPosition = blockPositionRelativeToStart + currentPosition;
+		if (tss->timeWindow->intervalSeconds == WEEKLY_INTERVAL_SECONDS && blockStartPosition == -1) {
+			blockStartPosition = 0;
+			intervalStartsBeforeBlock = 1;
+		}
 		if (blockStartPosition < 0) {
 			//  Error - should not occur
 			return zerrorProcessing(ifltab, DSS_FUNCTION_ztsRetrieveReg_ID, zdssErrorCodes.INVALID_DATE_TIME,
-								    blockStartPosition, 0, zdssErrorSeverity.WARNING, tss->pathname, "");
+				blockStartPosition, 0, zdssErrorSeverity.WARNING, tss->pathname, "");
 		}
 
 		//  Determine how many values we will read from this block
@@ -651,13 +658,25 @@ int ztsRetrieveReg7(long long *ifltab, zStructTimeSeries *tss,
 			tss->numberValues = currentPosition;
 		}
 		tss->timeIntervalSeconds = tss->timeWindow->intervalSeconds;
+		if (intervalStartsBeforeBlock) {
+			// Weekly interval only
+			int firstDataTimeJulian = tss->startJulianDate;
+			int sec = tss->startTimeSeconds;
+			ztsOffsetAdjustToOffset(tss->timeOffsetSeconds, tss->timeIntervalSeconds, &firstDataTimeJulian, &sec);
+			int dataStartsBeforeBlock = firstDataTimeJulian < tss->timeWindow->startBlockJulian;
+			if (dataStartsBeforeBlock) {
+				// move the time window forward one interval
+				incrementTime(tss->timeIntervalSeconds, 1, tss->startJulianDate, tss->startTimeSeconds, &tss->startJulianDate, &tss->startTimeSeconds);
+				incrementTime(tss->timeIntervalSeconds, 1, tss->endJulianDate, tss->endTimeSeconds, &tss->endJulianDate, &tss->endTimeSeconds);
+			}
+		}
 		//  Take care of julian base date, if too large (1,400,000, or MAX_INT / 1440)
 		if ((tss->startJulianDate > 1400000) || (tss->endJulianDate > 1400000)) {
 			tss->julianBaseDate = tss->startJulianDate;
 
 		}
 	}
-
+	
 	if (zmessageLevel(ifltab, MESS_METHOD_TS_READ_ID, MESS_LEVEL_USER_DIAG)) {
 		if (foundOne) {
 			zmessageDebug(ifltab, DSS_FUNCTION_ztsRetrieveReg_ID, "Data set read: ", tss->pathname);
