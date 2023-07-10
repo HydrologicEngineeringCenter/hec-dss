@@ -629,8 +629,6 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 		if (tss->timeIntervalSeconds > 0) {
 			//  Be sure start time reflects actual data
 			if (tss->timeOffsetSeconds < 0) tss->timeOffsetSeconds = 0;
-			int startJulBeforeOffset = tss->startJulianDate;
-			int startTimeBeforeOffset = tss->startTimeSeconds;
 			ztsOffsetAdjustToOffset(tss->timeOffsetSeconds, tss->timeIntervalSeconds, &tss->startJulianDate, &tss->startTimeSeconds);
 			ztsOffsetAdjustToOffset(tss->timeOffsetSeconds, tss->timeIntervalSeconds, &tss->endJulianDate, &tss->endTimeSeconds);
 			if ((retrieveFlag == 0) || (retrieveFlag == -1)) {

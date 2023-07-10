@@ -40,18 +40,18 @@
 int ztsIncrementBlock(int julianBlockDate, int blockSize)
 {
 	int julianNextBlockDate = 0;
-	int multiplier;  //  -1 to decrement, +1 to increment
+	int step;  //  -1 to decrement, +1 to increment
 
 	if (blockSize < 0) {
-		multiplier = -1;
+		step = -1;
 		blockSize = -blockSize;
 	}
 	else {
-		multiplier = 1;
+		step = 1;
 	}
 	if (blockSize == DAILY_BLOCK) {
 		//  Increment by one day
-		julianNextBlockDate = julianBlockDate + multiplier;
+		julianNextBlockDate = julianBlockDate + step;
 	}
 	else {
 		int yr, mon, day;
@@ -59,7 +59,7 @@ int ztsIncrementBlock(int julianBlockDate, int blockSize)
 		switch (blockSize) {
 		case MONTHLY_BLOCK:
 			//  Increment by one month
-			mon += multiplier;
+			mon += step;
 			switch (mon) {
 			case 0:
 				mon = 12;
@@ -73,15 +73,15 @@ int ztsIncrementBlock(int julianBlockDate, int blockSize)
 			break;
 		case YEARLY_BLOCK:
 			//  Increment by one year
-			yr += multiplier;
+			yr += step;
 			break;
 		case DECADE_BLOCK:
 			//  Increment by one decade
-			yr += 10 * multiplier;
+			yr += 10 * step;
 			break;
 		case CENTURY_BLOCK:
 			//  Increment by one century
-			yr += 100 * multiplier;
+			yr += 100 * step;
 		}
 		julianNextBlockDate = yearMonthDayToJulian(yr, mon, day);
 	}
