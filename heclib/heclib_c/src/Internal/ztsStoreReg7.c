@@ -292,16 +292,14 @@ int ztsStoreReg7(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 		//  Now determine the position relative to the current position in the data array
 		//  (what we have already written)
 		blockStartPosition = blockPositionRelativeToStart + currentPosition;
+		if (tss->timeWindow->intervalSeconds == WEEKLY_INTERVAL_SECONDS && blockStartPosition == -1) {
+			blockStartPosition = 0;
+		}
 		if (blockStartPosition < 0) {
-			if (tss->timeWindow->intervalSeconds == WEEKLY_INTERVAL_SECONDS && blockStartPosition == -1) {
-				blockStartPosition = 0;
-			}
-			else {
-				//  Error (should be detected way earlier than this!)
-				zlockActive(ifltab, LOCKING_LEVEL_HIGH, LOCKING_LOCK_OFF, LOCKING_FLUSH_ON);
-				return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStoreReg_ID, zdssErrorCodes.INVALID_DATE_TIME,
-					blockStartPosition, 0, zdssErrorSeverity.WARNING, tss->pathname, "");
-			}
+			//  Error (should be detected way earlier than this!)
+			zlockActive(ifltab, LOCKING_LEVEL_HIGH, LOCKING_LOCK_OFF, LOCKING_FLUSH_ON);
+			return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStoreReg_ID, zdssErrorCodes.INVALID_DATE_TIME,
+				blockStartPosition, 0, zdssErrorSeverity.WARNING, tss->pathname, "");
 		}
 
 		//  Determine how many values we will write to this block

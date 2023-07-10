@@ -257,16 +257,14 @@ int ztsRetrieveReg7(long long *ifltab, zStructTimeSeries *tss,
 		//  Now determine the position relative to the current position in the data array
 		//  (what we have already read)
 		blockStartPosition = blockPositionRelativeToStart + currentPosition;
+		if (tss->timeWindow->intervalSeconds == WEEKLY_INTERVAL_SECONDS && blockStartPosition == -1) {
+			blockStartPosition = 0;
+			maybeIncrementTimes = 1;
+		}
 		if (blockStartPosition < 0) {
-			if (tss->timeWindow->intervalSeconds == WEEKLY_INTERVAL_SECONDS && blockStartPosition == -1) {
-				blockStartPosition = 0;
-				maybeIncrementTimes = 1;
-			}
-			else {
-				//  Error - should not occur
-				return zerrorProcessing(ifltab, DSS_FUNCTION_ztsRetrieveReg_ID, zdssErrorCodes.INVALID_DATE_TIME,
-					blockStartPosition, 0, zdssErrorSeverity.WARNING, tss->pathname, "");
-			}
+			//  Error - should not occur
+			return zerrorProcessing(ifltab, DSS_FUNCTION_ztsRetrieveReg_ID, zdssErrorCodes.INVALID_DATE_TIME,
+				blockStartPosition, 0, zdssErrorSeverity.WARNING, tss->pathname, "");
 		}
 
 		//  Determine how many values we will read from this block
