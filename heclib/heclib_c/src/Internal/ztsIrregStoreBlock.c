@@ -573,11 +573,11 @@ int ztsIrregStoreBlock(long long *ifltab, zStructTimeSeries *tss, const char *pa
 				//  and timeGranularitySeconds refers to the user set granularity for the time array.
 				if (blockSize < 5) {
 					//  Times are in seconds
-					timeArrayUnits = 1;
+					timeArrayUnits = SECS_IN_1_SECOND;
 				}
 				else {
 					//  Times are in minutes
-					timeArrayUnits = 60;
+					timeArrayUnits = SECS_IN_1_MINUTE;
 				}
 				//  Merge the read and to be stored blocks
 				//  the next function does not return a status
@@ -628,29 +628,29 @@ int ztsIrregStoreBlock(long long *ifltab, zStructTimeSeries *tss, const char *pa
 		// --------------   Main Write ------------------
 		if (blockSize < 5) {
 			//  Times are in seconds
-			days = times[0]/86400;
-			secondsFirstValue = times[0] - (days * 86400);
+			days = times[0]/ SECS_IN_1_DAY;
+			secondsFirstValue = times[0] - (days * SECS_IN_1_DAY);
 			julianFirstValue = julianStartBlockDate + days;
-			days = times[totalToStore-1]/86400;
-			secondsLastValue = times[totalToStore-1] - (days * 86400);
+			days = times[totalToStore-1]/ SECS_IN_1_DAY;
+			secondsLastValue = times[totalToStore-1] - (days * SECS_IN_1_DAY);
 			julianLastValue = julianStartBlockDate + days;
 		}
 		else {
 			//  Times are in minutes
-			days = times[0]/1440;
-			secondsFirstValue = (times[0] - (days * 1440)) * 60;
+			days = times[0]/ MINS_IN_1_DAY;
+			secondsFirstValue = (times[0] - (days * MINS_IN_1_DAY)) * SECS_IN_1_MINUTE;
 			julianFirstValue = julianStartBlockDate + days;
-			days = times[totalToStore-1]/1440;
-			secondsLastValue = (times[totalToStore-1] - (days * 1440)) * 60;
+			days = times[totalToStore-1]/ MINS_IN_1_DAY;
+			secondsLastValue = (times[totalToStore-1] - (days * MINS_IN_1_DAY)) * SECS_IN_1_MINUTE;
 			julianLastValue = julianStartBlockDate + days;
 		}
 		if (secondsFirstValue < 1) {
 			julianFirstValue--;
-			secondsFirstValue += 86400;
+			secondsFirstValue += SECS_IN_1_DAY;
 		}
 		if (secondsLastValue < 1) {
 			julianLastValue--;
-			secondsLastValue += 86400;
+			secondsLastValue += SECS_IN_1_DAY;
 		}
 		ifltab[zdssKeys.kdataFirstDate] = i4toi8(julianFirstValue, secondsFirstValue);
 		ifltab[zdssKeys.kdataLastDate]  = i4toi8(julianLastValue, secondsLastValue);
@@ -668,10 +668,10 @@ int ztsIrregStoreBlock(long long *ifltab, zStructTimeSeries *tss, const char *pa
 		//  Now the average interval between values
 		if (days < 370) {
 			//  In seconds
-			span = ((julianLastValue - julianFirstValue + 1) * 86400) + (secondsLastValue - secondsFirstValue);
+			span = ((julianLastValue - julianFirstValue + 1) * SECS_IN_1_DAY) + (secondsLastValue - secondsFirstValue);
 			averageInterval = span/totalToStore;    //  in seconds  (both span and averageInterval > 0)
 			if (averageInterval > 0) {
-				logcialNumberData = (days * 86400) / averageInterval;
+				logcialNumberData = (days * SECS_IN_1_DAY) / averageInterval;
 			}
 			else {
 				logcialNumberData = 1;
@@ -679,10 +679,10 @@ int ztsIrregStoreBlock(long long *ifltab, zStructTimeSeries *tss, const char *pa
 		}
 		else {
 			//  In minutes, for larger blocks (so that we don't over run int)
-			span = ((julianLastValue - julianFirstValue + 1) * 1440) + ((secondsLastValue - secondsFirstValue)/60);
+			span = ((julianLastValue - julianFirstValue + 1) * MINS_IN_1_DAY) + ((secondsLastValue - secondsFirstValue)/SECS_IN_1_MINUTE);
 			averageInterval = span/totalToStore;
 			if (averageInterval > 0) {
-				logcialNumberData = (days * 1440) / averageInterval;
+				logcialNumberData = (days * MINS_IN_1_DAY) / averageInterval;
 			}
 			else {
 				logcialNumberData = 1;

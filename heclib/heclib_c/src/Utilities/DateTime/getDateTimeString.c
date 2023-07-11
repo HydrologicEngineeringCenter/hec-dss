@@ -33,8 +33,8 @@
 *				int secondsPastMidnight
 *					The current time of day in seconds past midnight.
 *					"1" is one second past midnight.  "0" doesn't exist, as midnight belongs to the end
-*					of the day, by convention, and midnight is the number "86400".
-*					secondsPastMidnight varies from 1 to 86400.
+*					of the day, by convention, and midnight is the number SECS_IN_1_DAY.
+*					secondsPastMidnight varies from 1 to SECS_IN_1_DAY.
 *
 *				char *timeString (output)
 *					A string to contain the complete current time.  Must be dimensioned to hold string with null term.

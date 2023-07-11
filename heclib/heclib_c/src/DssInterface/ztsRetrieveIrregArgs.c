@@ -68,7 +68,7 @@ int  ztsRetrieveIrregArgs(long long *ifltab, const char *pathname,
 	convertIntArray(tss->times, itimes, tss->numberValues, 1, 1);
 	if (tss->timeGranularitySeconds == SECOND_GRANULARITY) {
 		for (i=0; i<tss->numberValues; i++) {
-			itimes[i] /= 60;
+			itimes[i] /= SECS_IN_1_MINUTE;
 		}
 	}
 

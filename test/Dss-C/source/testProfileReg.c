@@ -86,7 +86,7 @@ int testProfileReg(long long *ifltab)
 
 	//  We have 16 months of daily 8:00 am readings
 	for (i=0; i<1000; i++) {
-		times[i] = (25000 * 1440) + (i * 1440) + (8 * 60);
+		times[i] = (25000 * MINS_IN_1_DAY) + (i * MINS_IN_1_DAY) + MINS_IN_8_HOUR;
 		for (j=0; j<20; j++) {
 			//values[i][j] = (20. - (float)j) + 35.0 + sin((float)i);
 			values[i][j] = (float)(i * 1000) + j;
@@ -185,8 +185,8 @@ int testProfileReg(long long *ifltab)
 		}
 	}
 
-	minsToDateTime(times[0]-(5*1440), startDate, startTime, sizeof(startDate), sizeof(startTime));
-	minsToDateTime(times[0]+(4*1440), endDate, endTime, sizeof(endDate), sizeof(endTime));
+	minsToDateTime(times[0]-(5*MINS_IN_1_DAY), startDate, startTime, sizeof(startDate), sizeof(startTime));
+	minsToDateTime(times[0]+(4*MINS_IN_1_DAY), endDate, endTime, sizeof(endDate), sizeof(endTime));
 
 	tssIn4 = zstructTsNewTimes(pathname2, startDate, startTime,"", "");
 	
@@ -198,8 +198,8 @@ int testProfileReg(long long *ifltab)
 	tssIn4->unitsProfileDepths = "feet";
 	tssIn4->unitsProfileValues = "deg F";
 
-	minsToDateTime(times[0]-(5*1440), startDate, startTime, sizeof(startDate), sizeof(startTime));
-	minsToDateTime(times[0]+(4*1440), endDate, endTime, sizeof(endDate), sizeof(endTime));
+	minsToDateTime(times[0]-(5*MINS_IN_1_DAY), startDate, startTime, sizeof(startDate), sizeof(startTime));
+	minsToDateTime(times[0]+(4*MINS_IN_1_DAY), endDate, endTime, sizeof(endDate), sizeof(endTime));
 	status = ztsStore(ifltab, tssIn4, 0);
 	stringCopy(mess, sizeof(mess), "testProfileReg Loc 21, regular double store status ", sizeof(mess)); 
 	checknumbers_(&zero, &status, mess, &status, strlen(mess));
@@ -250,11 +250,11 @@ int testProfileReg(long long *ifltab)
 
 
 	//   Now restore original data set
-	minsToDateTime(times[0]-(5*1440), startDate, startTime, sizeof(startDate), sizeof(startTime));
+	minsToDateTime(times[0]-(5*MINS_IN_1_DAY), startDate, startTime, sizeof(startDate), sizeof(startTime));
 	zstructFree(tssIn4);
 	tssIn4 = zstructTsNewTimes(pathname2, startDate, startTime,"", "");
 	
-	minsToDateTime(times[0] -1440, endDate, endTime, sizeof(endDate), sizeof(endTime));
+	minsToDateTime(times[0] - MINS_IN_1_DAY, endDate, endTime, sizeof(endDate), sizeof(endTime));
 	for (i=0; i<5; i++) {
 		for (j=0; j<20; j++) {
 			dvalues3[i][j] = zmissingFlagDouble();
@@ -280,7 +280,7 @@ int testProfileReg(long long *ifltab)
 
 	//   Check
 
-	minsToDateTime(times[0]-(5*1440), startDate, startTime, sizeof(startDate), sizeof(startTime));
+	minsToDateTime(times[0]-(5*MINS_IN_1_DAY), startDate, startTime, sizeof(startDate), sizeof(startTime));
 	minsToDateTime(times[tssIn1->numberValues-1], endDate, endTime, sizeof(endDate), sizeof(endTime));
 
 	//  Write doubles, read doubles
@@ -315,9 +315,9 @@ int testProfileReg(long long *ifltab)
 		}
 	}
 
-	itime = times[0] - (500 * 1440);
+	itime = times[0] - (500 * MINS_IN_1_DAY);
 	minsToDateTime(itime, startDate, startTime, sizeof(startDate), sizeof(startTime));
-	itime = times[tssIn1->numberValues-1] - (500 * 1440);
+	itime = times[tssIn1->numberValues-1] - (500 * MINS_IN_1_DAY);
 	minsToDateTime(itime, endDate, endTime, sizeof(endDate), sizeof(endTime));
 
 	tss3 = zstructTsNewTimes(pathname2, startDate, startTime, "", "");
@@ -365,9 +365,9 @@ int testProfileReg(long long *ifltab)
 		}
 	}
 
-	itime = times[0] + (500 * 1440);
+	itime = times[0] + (500 * MINS_IN_1_DAY);
 	minsToDateTime(itime, startDate, startTime, sizeof(startDate), sizeof(startTime));
-	itime = times[tssIn1->numberValues-1] + (500 * 1440);
+	itime = times[tssIn1->numberValues-1] + (500 * MINS_IN_1_DAY);
 	minsToDateTime(itime, endDate, endTime, sizeof(endDate), sizeof(endTime));
 
 	tss3 = zstructTsNewTimes(pathname2, startDate, startTime, "", "");
@@ -447,9 +447,9 @@ int testProfileReg(long long *ifltab)
 
 	//  Now try different times - no trim
 	
-	itime = times[0] - (365 * 1440);
+	itime = times[0] - (365 * MINS_IN_1_DAY);
 	minsToDateTime(itime, startDate, startTime, sizeof(startDate), sizeof(startTime));
-	itime = times[tssIn1->numberValues-1] + (365 * 1440);
+	itime = times[tssIn1->numberValues-1] + (365 * MINS_IN_1_DAY);
 	minsToDateTime(itime, endDate, endTime, sizeof(endDate), sizeof(endTime));
 	
 	//  We have 16 months of daily 8:00 am readings
@@ -501,9 +501,9 @@ int testProfileReg(long long *ifltab)
 
 	//  Now try different times - trim
 		
-	itime = times[0] - (365 * 1440);
+	itime = times[0] - (365 * MINS_IN_1_DAY);
 	minsToDateTime(itime, startDate, startTime, sizeof(startDate), sizeof(startTime));
-	itime = times[tssIn1->numberValues-1] + (365 * 1440);
+	itime = times[tssIn1->numberValues-1] + (365 * MINS_IN_1_DAY);
 	minsToDateTime(itime, endDate, endTime, sizeof(endDate), sizeof(endTime));
 
 	//  Write doubles, read doubles
@@ -527,9 +527,9 @@ int testProfileReg(long long *ifltab)
 	//   Now write a data set so 
 	//  values ...   missing ... values
 	//  and read similar to above
-	itime = times[0] + (2000 * 1440);
+	itime = times[0] + (2000 * MINS_IN_1_DAY);
 	minsToDateTime(itime, startDate, startTime, sizeof(startDate), sizeof(startTime));
-	itime = times[0] + (2999 * 1440);
+	itime = times[0] + (2999 * MINS_IN_1_DAY);
 	minsToDateTime(itime, endDate, endTime, sizeof(endDate), sizeof(endTime));
 
 	tssIn3 = zstructTsNewTimes(pathname2, startDate, startTime, "", "");
@@ -549,9 +549,9 @@ int testProfileReg(long long *ifltab)
 	if (status != STATUS_OKAY) return status;
 
 
-	itime = times[0] - (365 * 1440);
+	itime = times[0] - (365 * MINS_IN_1_DAY);
 	minsToDateTime(itime, startDate, startTime, sizeof(startDate), sizeof(startTime));
-	itime = times[0] + (3500 * 1440);
+	itime = times[0] + (3500 * MINS_IN_1_DAY);
 	minsToDateTime(itime, endDate, endTime, sizeof(endDate), sizeof(endTime));
 
 	//  Write doubles, read doubles
@@ -563,7 +563,7 @@ int testProfileReg(long long *ifltab)
 
 
 	minsToDateTime(times[0], startDate, startTime, sizeof(startDate), sizeof(startTime));
-	itime = times[0] + (2999 * 1440);
+	itime = times[0] + (2999 * MINS_IN_1_DAY);
 	minsToDateTime(itime, endDate, endTime, sizeof(endDate), sizeof(endTime));
 	
 	// 

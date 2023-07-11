@@ -35,7 +35,7 @@ int testztsStruct14(long long *ifltab)
 	tss2->startJulianDate = tss1->startJulianDate;
 	tss2->startTimeSeconds = 1;
 	tss2->endJulianDate = tss1->endJulianDate;
-	tss2->endTimeSeconds = 24 * 60 * 60;
+	tss2->endTimeSeconds = SECS_IN_1_DAY;
 	status = ztsRetrieve(ifltab, tss2, -1, 1, 0);
 	if (zcheckStatus(ifltab, status, 1, "Fail in testztsStruct14 Loc 2, retrieve status ")) return status;
 
@@ -75,10 +75,10 @@ int testztsStruct14(long long *ifltab)
 	for (i = 0; i < 300; i++) {
 		dvalues[i] = (double)i;
 		if (i % 2 == 0) {
-			itimes[i] = i * 60 + 10;
+			itimes[i] = i * SECS_IN_1_MINUTE + 10;
 		}
 		else {
-			itimes[i] = i * 60 - 10;
+			itimes[i] = i * SECS_IN_1_MINUTE - 10;
 		}
 	}
 

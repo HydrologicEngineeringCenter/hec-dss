@@ -8,7 +8,7 @@
 *  Use:			Public
 *
 *  Description:	Takes a date / time string in the form 01DEC2016:0000 and returns the Julian
-*					date and time in seconds.  Note "0000" is returned as zero and "2400" as 86400
+*					date and time in seconds.  Note "0000" is returned as zero and "2400" as SECS_IN_1_DAY
 *
 *  Declaration: int spatialDateTime(char *dateTimeString, int *julian, int *seconds);
 *
@@ -21,7 +21,7 @@
 *
 *				int *seconds
 *					Returns the time portion in seconds, or < 0 if cannot be determined
-*					The time will range from 0 to 86400, inclusive
+*					The time will range from 0 to SECS_IN_1_DAY, inclusive
 *
 *
 *	Returns:	STATUS_OKAY if correctly parsed

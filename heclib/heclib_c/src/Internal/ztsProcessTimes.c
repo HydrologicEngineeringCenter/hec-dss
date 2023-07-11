@@ -74,7 +74,7 @@ int ztsProcessTimes(long long *ifltab, zStructTimeSeries *tss, int boolStore)
 {
 
 	int timeWindowDefined;
-	int flag;
+	int operation;
 	int len;
 	size_t pathSize;
 	int status;
@@ -197,9 +197,9 @@ int ztsProcessTimes(long long *ifltab, zStructTimeSeries *tss, int boolStore)
 		return STATUS_NOT_OKAY;
 	}
 	//  Get the time interval 
-	flag = 0;
+	operation = EPART_TO_SECONDS_TO_EPART;
 	version = zgetVersion(ifltab);
-	status = ztsGetStandardInterval(version, &tss->timeWindow->intervalSeconds, ePart, sizeof(ePart), &flag);
+	status = ztsGetStandardInterval(version, &tss->timeWindow->intervalSeconds, ePart, sizeof(ePart), &operation);
 	 if (status == 0) {		
 		 boolIrreg = 0;
 		 tss->timeIntervalSeconds = tss->timeWindow->intervalSeconds;
@@ -235,13 +235,13 @@ int ztsProcessTimes(long long *ifltab, zStructTimeSeries *tss, int boolStore)
 			return zerrorUpdate(ifltab, status, DSS_FUNCTION_ztsProcessTimes_ID);
 		}
 		if (status == STATUS_RECORD_FOUND) {
-			if (tss->timeIntervalSeconds >= 60) {
-				tss->startTimeSeconds = 60;
+			if (tss->timeIntervalSeconds >= SECS_IN_1_MINUTE) {
+				tss->startTimeSeconds = SECS_IN_1_MINUTE;
 			}
 			else {
 				tss->startTimeSeconds = 1;
 			}
-			tss->endTimeSeconds = (1440 * 60);
+			tss->endTimeSeconds = (SECS_IN_1_DAY);
 			tss->numberValues = 0;
 			if (tss->timeIntervalSeconds > 0) {
 				ztsOffsetAdjustToStandard(tss->timeIntervalSeconds, &tss->startJulianDate, &tss->startTimeSeconds);
@@ -272,8 +272,8 @@ int ztsProcessTimes(long long *ifltab, zStructTimeSeries *tss, int boolStore)
 			tss->pathnameInternal = mallocAndCopy(path);
 			tss->allocated[zSTRUCT_pathnameInternal] = 1;
 			if ((tss->timeGranularitySeconds == 0) && boolStore) {
-				if ((tss->timeWindow->intervalSeconds > 0) && (tss->timeWindow->intervalSeconds < 60)) {
-					tss->timeGranularitySeconds = SECOND_GRANULARITY;  //  Max days = LONG_MAX / 86400 = 24,855
+				if ((tss->timeWindow->intervalSeconds > 0) && (tss->timeWindow->intervalSeconds < SECS_IN_1_MINUTE)) {
+					tss->timeGranularitySeconds = SECOND_GRANULARITY;  //  Max days = LONG_MAX / SECS_IN_1_DAY = 24,855
 				}
 				else {
 					tss->timeGranularitySeconds = MINUTE_GRANULARITY;  //  Should have been set by user
@@ -302,13 +302,13 @@ int ztsProcessTimes(long long *ifltab, zStructTimeSeries *tss, int boolStore)
 				if (status == STATUS_OKAY) {
 					if (tss->timeIntervalSeconds > 0) {
 						tss->timeWindow->startTimeSeconds = tss->timeWindow->intervalSeconds;
-						tss->timeWindow->endTimeSeconds = 1440 * 60;
+						tss->timeWindow->endTimeSeconds = SECS_IN_1_DAY;
 						ztsOffsetAdjustToStandard(tss->timeIntervalSeconds, &tss->timeWindow->startJulian, &tss->timeWindow->startTimeSeconds);
 						ztsOffsetAdjustToStandard(tss->timeIntervalSeconds, &tss->timeWindow->endJulian, &tss->timeWindow->endTimeSeconds);
 					}
 					else {
 						tss->timeWindow->startTimeSeconds = 1;
-						tss->timeWindow->endTimeSeconds = 1440 * 60;
+						tss->timeWindow->endTimeSeconds = SECS_IN_1_DAY;
 					}
 				}
 			}
@@ -325,7 +325,7 @@ int ztsProcessTimes(long long *ifltab, zStructTimeSeries *tss, int boolStore)
 					tss->timeWindow->startTimeSeconds *= tss->timeGranularitySeconds;
 				}
 				else {
-					tss->timeWindow->startTimeSeconds *= 60;  //  Default is one minute
+					tss->timeWindow->startTimeSeconds *= SECS_IN_1_MINUTE;  //  Default is one minute
 				}
 				startDefined = 1;
 				if (!isTimeDefined(tss->startJulianDate, tss->startTimeSeconds)) {
@@ -341,7 +341,7 @@ int ztsProcessTimes(long long *ifltab, zStructTimeSeries *tss, int boolStore)
 					tss->timeWindow->endTimeSeconds *= tss->timeGranularitySeconds;
 				}
 				else {
-					tss->timeWindow->endTimeSeconds *= 60;  //  Default is one minute
+					tss->timeWindow->endTimeSeconds *= SECS_IN_1_MINUTE;  //  Default is one minute
 				}
 				endDefined = 1;
 				if (!isTimeDefined(tss->endJulianDate, tss->endTimeSeconds)) {
@@ -449,18 +449,18 @@ int ztsProcessTimes(long long *ifltab, zStructTimeSeries *tss, int boolStore)
 	//  That's 4085 years, or 1,491,308 days or 2,147,483,647 minutes
 	//  timeGranularitySeconds should always be specified when storing data
 	if (timeWindowDefined && !tss->timeGranularitySeconds) {
-		if ((tss->timeWindow->intervalSeconds > 0) && (tss->timeWindow->intervalSeconds < 60)) {
-			tss->timeGranularitySeconds = SECOND_GRANULARITY;  //  Max days = LONG_MAX / 86400 = 24,855
+		if ((tss->timeWindow->intervalSeconds > 0) && (tss->timeWindow->intervalSeconds < SECS_IN_1_MINUTE)) {
+			tss->timeGranularitySeconds = SECOND_GRANULARITY;  //  Max days = LONG_MAX / SECS_IN_1_DAY = 24,855
 		}
 		else if (boolIrreg && boolStore)  {
 			tss->timeGranularitySeconds = MINUTE_GRANULARITY;  //  Should have been set by user
 		}
 		else {
 			days = tss->timeWindow->endJulian - tss->timeWindow->startJulian;
-			if (days < 1000000) {			//  1,000,000 Max days = LONG_MAX / 1440 = 1,491,308
+			if (days < 1000000) {			//  1,000,000 Max days = LONG_MAX / MINS_IN_1_DAY = 1,491,308
 				tss->timeGranularitySeconds = MINUTE_GRANULARITY;   // 99.9% of the time
 			}
-			else if  (days < 30000000) {		//   30,000,000	Max days = LONG_MAX / 60 = 35,791,394
+			else if  (days < 30000000) {		//   30,000,000	Max days = LONG_MAX / SECS_IN_1_MINUTE = 35,791,394
 				tss->timeGranularitySeconds = HOUR_GRANULARITY;   // .1% of the time
 			}
 			else {						//  Max days = LONG_MAX / 1

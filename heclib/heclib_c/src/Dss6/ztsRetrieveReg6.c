@@ -97,7 +97,7 @@ int ztsRetrieveReg6(long long *ifltab, zStructTimeSeries *tss,
 
 
 	julianToDate(tss->startJulianDate, 104, cdate, sizeof(cdate));
-	mins = tss->startTimeSeconds / 60;
+	mins = tss->startTimeSeconds / SECS_IN_1_MINUTE;
 	minutesToHourMin(mins, ctime, sizeof(ctime));
 
 	kvals = tss->numberValues;
@@ -232,7 +232,7 @@ int ztsRetrieveReg6(long long *ifltab, zStructTimeSeries *tss,
 	}
 
 	//  Convert from minutes to seconds
-	ioffset *= 60;
+	ioffset *= SECS_IN_1_MINUTE;
 	tss->timeOffsetSeconds = ioffset;
 	if (tss->timeWindow) tss->timeWindow->timeOffsetSeconds = ioffset;
 

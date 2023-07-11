@@ -24,7 +24,7 @@ int testztsStruct4(long long *ifltab)
 	char *cnull=0;
 
 	julian = dateToJulian("21Jan2001");
-	mins = julian * 1440 + 720;
+	mins = julian * MINS_IN_1_DAY + MINS_IN_12_HOUR;
 	for (i=0; i<200; i++) {
 		dvalues[i] = (double)i;
 		itimes[i] = mins +(i * 60);

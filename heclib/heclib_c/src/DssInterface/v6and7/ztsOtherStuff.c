@@ -353,7 +353,7 @@ void zrrtsi7_(long long *ifltab, const char *path,
 			*numberUserHeaderRead = 0;
 		}
 
-		*offset = tss->timeOffsetSeconds / 60;
+		*offset = tss->timeOffsetSeconds / SECS_IN_1_MINUTE;
 		*compressionNotUsed = 0;
 
 

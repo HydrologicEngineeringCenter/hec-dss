@@ -99,7 +99,7 @@ int ztsOffsetAdjustToStandard(int intervalSeconds, int *julian, int *seconds)
 	cleanTime(julian, seconds, SECOND_GRANULARITY);
 	offsetSeconds = ztsOffset(intervalSeconds, *julian, *seconds);
 
-	if (intervalSeconds <= 604800) {
+	if (intervalSeconds <= SECS_IN_1_WEEK) {
 		// Weekly or less (most common case)
 		//  A direct computation
 		if (offsetSeconds > 0) {
@@ -117,9 +117,9 @@ int ztsOffsetAdjustToStandard(int intervalSeconds, int *julian, int *seconds)
 	//  Convert to year, month, day
 	julianToYearMonthDay (*julian, &year, &month, &day);
 
-	if (intervalSeconds <= 2592000) {
+	if (intervalSeconds <= SECS_IN_1_MONTH) {
 		//  Monthly or monthly divisible interval
-		if (intervalSeconds == 864000) {
+		if (intervalSeconds == SECS_IN_TRI_MONTH) {
 			//  Tri-monthly
 			//  Generally reported for 10th, 20th and 30th
 			if (day <= 10) {
@@ -132,7 +132,7 @@ int ztsOffsetAdjustToStandard(int intervalSeconds, int *julian, int *seconds)
 				day = 28;
 			}
 		}
-		else if (intervalSeconds == 1296000) {
+		else if (intervalSeconds == SECS_IN_SEMI_MONTH) {
 			//  Semi-monthly
 			if (day <= 15) {
 				day = 15;
@@ -141,7 +141,7 @@ int ztsOffsetAdjustToStandard(int intervalSeconds, int *julian, int *seconds)
 				day = 28;
 			}
 		}
-		else if (intervalSeconds == 2592000) {
+		else if (intervalSeconds == SECS_IN_1_MONTH) {
 			//  Monthly
 			day = 28;
 		}
@@ -156,7 +156,7 @@ int ztsOffsetAdjustToStandard(int intervalSeconds, int *julian, int *seconds)
 			*julian = yearMonthDayToJulian(year, month, day);
 		}
 	}
-	else if (intervalSeconds == 31536000) {
+	else if (intervalSeconds == SECS_IN_1_YEAR) {
 		//  Yearly
 		*julian = yearMonthDayToJulian(year, 12, 31);
 	}
@@ -164,7 +164,7 @@ int ztsOffsetAdjustToStandard(int intervalSeconds, int *julian, int *seconds)
 		//  Unrecognized interval
 		return STATUS_NOT_OKAY;
 	}
-	*seconds = 86400;
+	*seconds = SECS_IN_1_DAY;
 	return offsetSeconds;
 }
 

@@ -234,8 +234,8 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1ztsStore(
 
 
 	//  timeGranularitySeconds
-	//  Number of seconds each unit in times array has, normally 60 (for one minute)
-	//  Can be 1, 60, 3600, 86400
+	//  Number of seconds each unit in times array has, normally SECS_IN_1_MINUTE (for one minute)
+	//  Can be 1, SECS_IN_1_MINUTE, SECS_IN_1_HOUR, SECS_IN_1_DAY
 	fid = (*env)->GetFieldID (env, cls, "timeGranularitySeconds", "I");
 	if ((*env)->ExceptionOccurred(env)) {
 			(*env)->ExceptionClear(env);			
@@ -244,20 +244,20 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1ztsStore(
 		number = (int)(*env)->GetIntField(env, j_timeSeriesContainer, fid);
 		tss->timeGranularitySeconds = number;
 	}
-	if (tss->timeGranularitySeconds == 0) tss->timeGranularitySeconds = 60;
+	if (tss->timeGranularitySeconds == 0) tss->timeGranularitySeconds = SECS_IN_1_MINUTE;
 	
 	if (startTime != 0) {
-		if (tss->timeGranularitySeconds == 60) {
+		if (tss->timeGranularitySeconds == SECS_IN_1_MINUTE) {
 			//  Times in minutes (most common)
-			tss->startJulianDate = startTime / 1440;
-			tss->startTimeSeconds = startTime - (tss->startJulianDate * 1440);
-			tss->startTimeSeconds *= 60;
-			tss->endJulianDate = endTime / 1440;
-			tss->endTimeSeconds = endTime - (tss->endJulianDate * 1440);
-			tss->endTimeSeconds *= 60;
+			tss->startJulianDate = startTime / MINS_IN_1_DAY;
+			tss->startTimeSeconds = startTime - (tss->startJulianDate * MINS_IN_1_DAY);
+			tss->startTimeSeconds *= SECS_IN_1_MINUTE;
+			tss->endJulianDate = endTime / MINS_IN_1_DAY;
+			tss->endTimeSeconds = endTime - (tss->endJulianDate * MINS_IN_1_DAY);
+			tss->endTimeSeconds *= SECS_IN_1_MINUTE;
 		}
 		else {
-			timeMultiplier = 86400 / tss->timeGranularitySeconds;
+			timeMultiplier = SECS_IN_1_DAY / tss->timeGranularitySeconds;
 			tss->startJulianDate = startTime / timeMultiplier;
 			tss->startTimeSeconds = startTime - (tss->startJulianDate * timeMultiplier);
 			tss->endJulianDate = endTime / timeMultiplier;

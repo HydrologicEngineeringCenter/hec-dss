@@ -88,14 +88,14 @@ int ztsGetInterval(int dssVersion, const char *pathname)
 {
 	int istat;
 	int len;
-	int flagSecondsToChar;
+	int operation;
 	int interval;
 	char ePart[MAX_PART_SIZE];
 
 	len = zpathnameGetPart (pathname, 5, ePart, sizeof(ePart));
 	if (len > 3) {
-		flagSecondsToChar = 1;
-		istat = ztsGetStandardInterval(dssVersion, &interval, ePart, sizeof(ePart), &flagSecondsToChar);
+		operation = EPART_TO_SECONDS;
+		istat = ztsGetStandardInterval(dssVersion, &interval, ePart, sizeof(ePart), &operation);
 		if ((istat == 0) || (istat == 1)) {
 			return interval;
 		}

@@ -112,15 +112,15 @@ int numberPeriods(int intervalSeconds,
 
 	//  If the interval is less than tri-monthly, then it is a simple calculation
 	//  Check for less than 10 days
-	if (intervalSeconds < 864000) {
+	if (intervalSeconds < SECS_IN_TRI_MONTH) {
 		days = julianEnd - julianStart;
 		seconds = secondsEnd - secondsStart;
 		//  This is what we'd like to do:
-		//  numberPeriods = ((days * 86400) + seconds) / intervalSeconds;
+		//  numberPeriods = ((days * SECS_IN_1_DAY) + seconds) / intervalSeconds;
 
 		//  For daily or less intervals, the interval is evenly divisible
-/*		if (intervalSeconds <= 86400) {
-			numberPeriods = (int)((long long)days * (86400L / (long long)intervalSeconds));
+/*		if (intervalSeconds <= SECS_IN_1_DAY) {
+			numberPeriods = (int)((long long)days * (SECS_IN_1_DAY / (long long)intervalSeconds));
 			numberPeriods += (seconds / intervalSeconds);
 			if (seconds < 0) {
 				//  If less than zero and not evenly divisible, we need to subtract one
@@ -130,24 +130,24 @@ int numberPeriods(int intervalSeconds,
 		else { */
 			//  Weekly, may not be evenly divisble 
 			// Do computations in 64 bit math in case we end up with very large numbers
-			lseconds = ((long long)days * 86400L) + (long long)seconds;
+			lseconds = ((long long)days * SECS_IN_1_DAY) + (long long)seconds;
 			numberPeriods = (int)(lseconds / (long long)intervalSeconds);
 	//	}
 	}
 	else {
 		//  Tri-monthly or larger.  We have to compute on an interval
 		//  basis, since intervals are un-even.  Seconds don't count.
-		intervalMinutes = intervalSeconds / 60;
+		intervalMinutes = intervalSeconds / SECS_IN_1_MINUTE;
 		julianToYearMonthDay (julianStart, &yearStart, &monthStart, &dayStart);
 		julianToYearMonthDay (julianEnd, &yearEnd, &monthEnd, &dayEnd);
 
-		if (intervalMinutes == 14400) {
+		if (intervalMinutes == SECS_IN_4_HOUR) {
 			//  Tri-monthly (nominal 10 days)
 			numberPeriods = ((yearEnd - yearStart) * 36) +
 							((monthEnd - monthStart) * 3) +
 							((dayEnd - dayStart) / 8);
 		}
-		else if (intervalMinutes == 21600) {
+		else if (intervalMinutes == SECS_IN_6_HOUR) {
 			//  Semi-monthly
 			numberPeriods = ((yearEnd - yearStart) * 24) +
 							((monthEnd - monthStart) * 2) +
@@ -169,7 +169,7 @@ int numberPeriods(int intervalSeconds,
 			//  Unknown - just do straight day computation 
 			days = julianEnd - julianStart;
 			seconds = secondsEnd - secondsStart;
-			lseconds = ((long long)days * 86400L) + (long long)seconds;
+			lseconds = ((long long)days * SECS_IN_1_DAY) + (long long)seconds;
 			numberPeriods = (int)(lseconds / (long long)intervalSeconds);
 		}
 	}

@@ -6,7 +6,7 @@ C     TIME IN MINS PAST MIDNIGHT WHEN CALLED
       INTEGER secondsPastMidnight, mills
 
       CALL getCurrentDateTime (JUL, secondsPastMidnight, mills)
-      MIN = secondsPastMidnight / 60
+      MIN = secondsPastMidnight / INTVL_1_MINUTE
 C
 
       RETURN

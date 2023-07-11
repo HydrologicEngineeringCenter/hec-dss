@@ -13,8 +13,8 @@ void minutesToHourMin(int minutes, char *hoursMins, size_t lenHoursMins)
 	int ihr, imin;
 
 
-	ihr = minutes / 60;
-	imin = minutes - (ihr * 60);
+	ihr = minutes / SECS_IN_1_MINUTE;
+	imin = minutes - (ihr * SECS_IN_1_MINUTE);
 
 	if (lenHoursMins < 5) {
 		return;

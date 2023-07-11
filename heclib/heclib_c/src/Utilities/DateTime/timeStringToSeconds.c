@@ -15,7 +15,7 @@
 *					The time string to parse.  Examples of what can be parsed are provided in the table below
 *
 *
-*	Returns:	secondsPastMidnight.  secondsPastMidnight varies from 0 to 86400. A time of zero is allowed
+*	Returns:	secondsPastMidnight.  secondsPastMidnight varies from 0 to SECS_IN_1_DAY. A time of zero is allowed
 *
 *
 * Time Styles:

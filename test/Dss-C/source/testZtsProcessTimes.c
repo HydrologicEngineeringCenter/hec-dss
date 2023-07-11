@@ -40,10 +40,10 @@ int testZtsProcessTimes(long long *ifltab)
 	timeWindow1 = tss1->timeWindow;
 	
 	timeWindow2.startJulian = 40178;
-	timeWindow2.startTimeSeconds = 1440*60;
+	timeWindow2.startTimeSeconds = SECS_IN_1_DAY;
 	timeWindow2.endJulian = 40542;
-	timeWindow2.endTimeSeconds = 1440*60;
-	timeWindow2.intervalSeconds = 1440*60;
+	timeWindow2.endTimeSeconds = SECS_IN_1_DAY;
+	timeWindow2.intervalSeconds = SECS_IN_1_DAY;
 	timeWindow2.numberValues = 365;
 	timeWindow2.blockSize = 3;
 	timeWindow2.startBlockJulian = 40178;
@@ -69,10 +69,10 @@ int testZtsProcessTimes(long long *ifltab)
 	timeWindow1 = tss1->timeWindow;
 
 	timeWindow2.startJulian = 40225;
-	timeWindow2.startTimeSeconds = 1440*60;
+	timeWindow2.startTimeSeconds = SECS_IN_1_DAY;
 	timeWindow2.endJulian = 42087;
-	timeWindow2.endTimeSeconds = 1440*60;
-	timeWindow2.intervalSeconds = 1440*60;
+	timeWindow2.endTimeSeconds = SECS_IN_1_DAY;
+	timeWindow2.intervalSeconds = SECS_IN_1_DAY;
 	timeWindow2.numberValues = 1863;
 	timeWindow2.blockSize = 3;
 	timeWindow2.startBlockJulian = 40178;
@@ -87,7 +87,7 @@ int testZtsProcessTimes(long long *ifltab)
 	tss1 = zstructTsNew(path1);
 	//////////////////////////
 	//tss1->startJulianDate = -8399;
-	//tss1->startTimeSeconds = 60;
+	//tss1->startTimeSeconds = SECS_IN_1_MINUTE;
 //	ztsMessTimeWindow(ifltab, 0, tss1);
 	///////////////////////////
 	ztsProcessTimes(ifltab, tss1, 0);
@@ -95,10 +95,10 @@ int testZtsProcessTimes(long long *ifltab)
 //	ztsMessTimeWindow(ifltab, 0, tss1);
 
 	timeWindow2.startJulian = -8399;
-	timeWindow2.startTimeSeconds = 1440*60;
+	timeWindow2.startTimeSeconds = SECS_IN_1_DAY;
 	timeWindow2.endJulian = 40177;
-	timeWindow2.endTimeSeconds = 1440*60;
-	timeWindow2.intervalSeconds = 1440*60;
+	timeWindow2.endTimeSeconds = SECS_IN_1_DAY;
+	timeWindow2.intervalSeconds = SECS_IN_1_DAY;
 	timeWindow2.numberValues = 48577;
 	timeWindow2.blockSize = 3;
 	timeWindow2.startBlockJulian = -8399;
@@ -118,10 +118,10 @@ int testZtsProcessTimes(long long *ifltab)
 	timeWindow1 = tss1->timeWindow;
 
 	timeWindow2.startJulian = 40225;
-	timeWindow2.startTimeSeconds = 1440*60;
+	timeWindow2.startTimeSeconds = SECS_IN_1_DAY;
 	timeWindow2.endJulian = 42087;
-	timeWindow2.endTimeSeconds = 1440*60;
-	timeWindow2.intervalSeconds = 1440*60;
+	timeWindow2.endTimeSeconds = SECS_IN_1_DAY;
+	timeWindow2.intervalSeconds = SECS_IN_1_DAY;
 	timeWindow2.numberValues = 1863;
 	timeWindow2.blockSize = 3;
 	timeWindow2.startBlockJulian = 40178;
@@ -143,12 +143,12 @@ int testZtsProcessTimes(long long *ifltab)
 
 	//  Note - should return with standard times, not offset times supplied
 	timeWindow2.startJulian = 40225;
-	timeWindow2.startTimeSeconds = 1440*60;
+	timeWindow2.startTimeSeconds = SECS_IN_1_DAY;
 	timeWindow2.endJulian = 42087;
-	timeWindow2.endTimeSeconds = 1440*60;
-	timeWindow2.intervalSeconds = 1440*60;
+	timeWindow2.endTimeSeconds = SECS_IN_1_DAY;
+	timeWindow2.intervalSeconds = SECS_IN_1_DAY;
 	//  Offset is seconds after the standard time
-	timeWindow2.timeOffsetSeconds = 7*60*60;
+	timeWindow2.timeOffsetSeconds = 7*SECS_IN_1_HOUR;
 	timeWindow2.numberValues = 1863;
 	timeWindow2.blockSize = 3;
 	timeWindow2.startBlockJulian = 40178;
@@ -168,10 +168,10 @@ int testZtsProcessTimes(long long *ifltab)
 	timeWindow1 = tss1->timeWindow;
 
 	timeWindow2.startJulian = 40225;
-	timeWindow2.startTimeSeconds = 1440*60;
+	timeWindow2.startTimeSeconds = SECS_IN_1_DAY;
 	timeWindow2.endJulian = 40274;
-	timeWindow2.endTimeSeconds = 1440*60;
-	timeWindow2.intervalSeconds = 1440*60;
+	timeWindow2.endTimeSeconds = SECS_IN_1_DAY;
+	timeWindow2.intervalSeconds = SECS_IN_1_DAY;
 	timeWindow2.numberValues = 50;
 	timeWindow2.blockSize = 3;
 	timeWindow2.startBlockJulian = 40178;
@@ -192,10 +192,10 @@ int testZtsProcessTimes(long long *ifltab)
 	timeWindow1 = tss1->timeWindow;
 
 	timeWindow2.startJulian = 40225;
-	timeWindow2.startTimeSeconds = 1440*60;
+	timeWindow2.startTimeSeconds = SECS_IN_1_DAY;
 	timeWindow2.endJulian = 40274;
-	timeWindow2.endTimeSeconds = 1440*60;
-	timeWindow2.intervalSeconds = 1440*60;
+	timeWindow2.endTimeSeconds = SECS_IN_1_DAY;
+	timeWindow2.intervalSeconds = SECS_IN_1_DAY;
 	timeWindow2.numberValues = 50;
 	timeWindow2.blockSize = 3;
 	timeWindow2.startBlockJulian = 40178;
@@ -215,10 +215,10 @@ int testZtsProcessTimes(long long *ifltab)
 	timeWindow1 = tss1->timeWindow;
 
 	timeWindow2.startJulian = 40225;
-	timeWindow2.startTimeSeconds = 1440*60;
+	timeWindow2.startTimeSeconds = SECS_IN_1_DAY;
 	timeWindow2.endJulian = 40274;
-	timeWindow2.endTimeSeconds = 1440*60;
-	timeWindow2.intervalSeconds = 1440*60;
+	timeWindow2.endTimeSeconds = SECS_IN_1_DAY;
+	timeWindow2.intervalSeconds = SECS_IN_1_DAY;
 	timeWindow2.numberValues = 50;
 	timeWindow2.blockSize = 3;
 	timeWindow2.startBlockJulian = 40178;
@@ -241,7 +241,7 @@ int testZtsProcessTimes(long long *ifltab)
 	timeWindow2.startJulian = 40178;
 	timeWindow2.startTimeSeconds = 1;
 	timeWindow2.endJulian = 40542;
-	timeWindow2.endTimeSeconds = 1440*60;
+	timeWindow2.endTimeSeconds = SECS_IN_1_DAY;
 	timeWindow2.intervalSeconds = -3;
 	timeWindow2.numberValues = 0;
 	timeWindow2.blockSize = 3;
@@ -261,7 +261,7 @@ int testZtsProcessTimes(long long *ifltab)
 	timeWindow2.startJulian = 40225;
 	timeWindow2.startTimeSeconds = 1;
 	timeWindow2.endJulian = 42087;
-	timeWindow2.endTimeSeconds = 1440*60;
+	timeWindow2.endTimeSeconds = SECS_IN_1_DAY;
 	timeWindow2.intervalSeconds = -3;
 	timeWindow2.numberValues = 0;
 	timeWindow2.blockSize = 3;
@@ -282,9 +282,9 @@ int testZtsProcessTimes(long long *ifltab)
 	timeWindow1 = tss1->timeWindow;
 
 	timeWindow2.startJulian = 40225;
-	timeWindow2.startTimeSeconds = 1440*60;
+	timeWindow2.startTimeSeconds = SECS_IN_1_DAY;
 	timeWindow2.endJulian = 42087;
-	timeWindow2.endTimeSeconds = 1440*60;
+	timeWindow2.endTimeSeconds = SECS_IN_1_DAY;
 	timeWindow2.intervalSeconds = -3;
 	timeWindow2.numberValues = 0;
 	timeWindow2.blockSize = 3;
@@ -304,9 +304,9 @@ int testZtsProcessTimes(long long *ifltab)
 	timeWindow1 = tss1->timeWindow;
 
 	timeWindow2.startJulian = 40225;
-	timeWindow2.startTimeSeconds = 1440*60;
+	timeWindow2.startTimeSeconds = SECS_IN_1_DAY;
 	timeWindow2.endJulian = 42087;
-	timeWindow2.endTimeSeconds = 1440*60;
+	timeWindow2.endTimeSeconds = SECS_IN_1_DAY;
 	timeWindow2.intervalSeconds = -3;
 	timeWindow2.numberValues = 0;
 	timeWindow2.blockSize = 3;

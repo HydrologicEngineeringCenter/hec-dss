@@ -24,7 +24,7 @@ JNIEXPORT void JNICALL Java_hec_heclib_util_Heclib_Hec_1zbegdt
     day            = (*env)->GetIntArrayElements (env, j_day, 0);
     block          = (*env)->GetIntArrayElements (env, j_block, 0);
     dssVersion     = j_dssVersion;
-	interval *= 60;
+	interval *= SECS_IN_1_MINUTE;
 
 	jul = ztsRegGetBlockStart(julian, interval, block);
 	julianToYearMonthDay(jul, year, month, day);

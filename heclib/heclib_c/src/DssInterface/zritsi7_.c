@@ -59,9 +59,9 @@ void zritsi7_(long long *ifltab, const char *path,
 	}
 	else {
 		tss->startJulianDate = *startJulian;
-		tss->startTimeSeconds = *startTimeMinutes * 60;
+		tss->startTimeSeconds = *startTimeMinutes * SECS_IN_1_MINUTE;
 		tss->endJulianDate = *endJulian;
-		tss->endTimeSeconds = *endTimeMinutes * 60;
+		tss->endTimeSeconds = *endTimeMinutes * SECS_IN_1_MINUTE;
 	}
 	retrieveDoublesFlag = 1;
 	if (*boolGetDoubles) retrieveDoublesFlag = 2;
@@ -80,7 +80,7 @@ void zritsi7_(long long *ifltab, const char *path,
 		*julianBaseDate = tss->julianBaseDate;
 		/* if (tss->julianBaseDate != 0) {
 			//  Accomidates old Java code, which ignores this
-			baseDateMins = tss->julianBaseDate * 1440;
+			baseDateMins = tss->julianBaseDate * MINS_IN_1_DAY;
 			for (i=0; i<tss->numberValues; i++) {
 				timeArray[i] =- baseDateMins;
 			}

@@ -75,9 +75,9 @@ int ztsinfo7_(long long *ifltab, const char *path,  int *firstJulian, int *first
 	stringCToFort(ctype, lenctype,  tss->type);
 
 	*firstJulian = tss->startJulianDate;
-	*firstMins = tss->startTimeSeconds / 60;
+	*firstMins = tss->startTimeSeconds / SECS_IN_1_MINUTE;
 	*lastJulian = tss->endJulianDate;
-	*lastMins = tss->endTimeSeconds / 60;
+	*lastMins = tss->endTimeSeconds / SECS_IN_1_MINUTE;
 	*lquality = 0;
 	zstructFree(tss);
 	return 0;

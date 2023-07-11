@@ -25,8 +25,8 @@ void ztsends_(long long *ifltab, const char* pathname, int *isearch,
 		status = ztsGetDateTimeRange(ifltab, pathname, 1, juls, &startSeconds, jule, &endSeconds);
 		if (status == STATUS_RECORD_FOUND) {
 			*boolFound = 1;
-			*istime = startSeconds/60;
-			*ietime = endSeconds/60;
+			*istime = startSeconds / SECS_IN_1_MINUTE;
+			*ietime = endSeconds / SECS_IN_1_MINUTE;
 		}
 		else {
 			*boolFound = 0;

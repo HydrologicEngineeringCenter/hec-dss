@@ -64,15 +64,15 @@ void ztsIrregMessage(long long *ifltab, int functionID, const char *message, int
 	long long dayLength;
 
 	//  Figure out the julian day and seconds after midnight
-	dayLength = 86400L / timeGranularitySeconds;
+	dayLength = SECS_IN_1_DAY / timeGranularitySeconds;
 	julian = (itime / (int)dayLength);
 	seconds = itime - (julian * (int)dayLength);
 	if (seconds == 0) {
-		seconds = 86400;
+		seconds = SECS_IN_1_DAY;
 		julian--;
 	}
 	else {
-		seconds *= 60;
+		seconds *= SECS_IN_1_MINUTE;
 	}
 	julian += baseDate;
 

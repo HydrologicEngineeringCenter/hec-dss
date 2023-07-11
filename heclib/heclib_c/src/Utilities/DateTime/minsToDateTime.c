@@ -1,4 +1,5 @@
 #include "heclibDate.h"
+#include "standardIntervals.h"
 
 void minsToDateTime(int minsSince1900, char *dateString, char *timeString, size_t sizeofDateString, size_t sizeofTimeString)
 {
@@ -8,8 +9,8 @@ void minsToDateTime(int minsSince1900, char *dateString, char *timeString, size_
 	int minsSinceMidnight;
 	
 
-	julian = minsSince1900 / 1440;
-	minsSinceMidnight = minsSince1900 - (julian * 1440);
+	julian = minsSince1900 / MINS_IN_1_DAY;
+	minsSinceMidnight = minsSince1900 - (julian * MINS_IN_1_DAY);
 	julianToDate(julian, 4, dateString, sizeofDateString);
 	minutesToHourMin(minsSinceMidnight, timeString, sizeofTimeString);
 

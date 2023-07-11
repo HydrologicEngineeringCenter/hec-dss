@@ -96,7 +96,7 @@
     cpath1 = '/Full Char Notes Irregular/several/Flow/date/~1Day/F/'
     nvals = 1000
     
-    timeGranularitySeconds = 60
+    timeGranularitySeconds = INTVL_1_MINUTE
     call ztsIrregStoreFull (ifltab1, cpath1, '', timeGranularitySeconds, itimes1, nvals, &
     data1, 2, quality1, 2, notes, 0, cnotes1, 1, userHeader, 0, &  
     'CFS', 'PER-AVER', 1,  '',  0, status)
@@ -170,7 +170,7 @@
     cpath1 = '/Full Char Notes Irregular/several/Flow/date/~1Day/F/'
     nvals = 1000
     baseDate = 0
-    timeGranularitySeconds = 60
+    timeGranularitySeconds = INTVL_1_MINUTE
     call ztsIrregStoreFull (ifltab1, cpath1, '', timeGranularitySeconds, itimes1, nvals, &
     data1, 2, quality1, 2, notes, 0, cnotes1, 1, userHeader, 0, &  
     'CFS', 'PER-AVER', 2, '', 0, status)
@@ -536,7 +536,7 @@
      !  write 1000 values and check
     cpath1 = '/Full Char Notes Irregular/Replaced/Flow/date/~1Day/F/'
     nvals = 1000
-    timeGranularitySeconds = 60
+    timeGranularitySeconds = INTVL_1_MINUTE
     
     call ztsIrregStoreFull (ifltab1, cpath1, '', timeGranularitySeconds, itimes1, nvals, &
     data1, 2, quality1, 2, notes, 0, cnotes1, 1, userHeader, 0, &  
@@ -601,7 +601,7 @@
     end do
     
     baseDate = 0    
-    timeGranularitySeconds = 60
+    timeGranularitySeconds = INTVL_1_MINUTE
     call ztsIrregStoreFull (ifltab1, cpath1, '', timeGranularitySeconds, itimes1, nvals, &
     data1, 2, quality1, 2, notes, 0, cnotes1, 1, userHeader, 0, &  
     'CFS', 'PER-AVER', 4, '', 1, status)
@@ -663,7 +663,7 @@
         data1(i) = data4(i)
     end do
     
-    timeGranularitySeconds = 60
+    timeGranularitySeconds = INTVL_1_MINUTE
     call ztsIrregStoreFull (ifltab1, cpath1, '', timeGranularitySeconds, itimes1, nvals, &
     data1, 2, quality1, 2, notes, 0, cnotes1, 1, userHeader, 0, &  
     'CFS', 'PER-AVER', 0, '',  0, status)
@@ -727,7 +727,7 @@
     end do
     
     baseDate = 0    
-    timeGranularitySeconds = 60
+    timeGranularitySeconds = INTVL_1_MINUTE
     call ztsIrregStoreFull (ifltab1, cpath1, '', timeGranularitySeconds, itimes1, nvals, &
     data1, 2, quality1, 2, notes, 0, cnotes1, 1, userHeader, 0, &  
     'CFS', 'PER-AVER', 1,  '',  0, status)

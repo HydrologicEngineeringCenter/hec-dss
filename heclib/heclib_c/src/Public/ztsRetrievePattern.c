@@ -279,7 +279,7 @@ int ztsRetrievePattern(long long *ifltab, zStructTimeSeries *tss, int retrieveDo
 	if (version == 6) {
 		tss->numberValues = ztransfer->values1Number;
 		if (ztransfer->internalHeaderNumber >= 5) {
-			tss->timeOffsetSeconds = ztransfer->internalHeader[0] * 60;
+			tss->timeOffsetSeconds = ztransfer->internalHeader[0] * SECS_IN_1_MINUTE;
 			tss->units = stringFortToC((const char *)&ztransfer->internalHeader[1], 8);
 			tss->type  = stringFortToC((const char *)&ztransfer->internalHeader[3], 8);
 			tss->allocated[zSTRUCT_TS_units] = 1;

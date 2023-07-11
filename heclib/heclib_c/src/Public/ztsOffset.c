@@ -108,17 +108,17 @@ int ztsOffset(int intervalSeconds, int julian, int seconds)
 	cleanTime(&jul, &secs, SECOND_GRANULARITY);
 
 
-	if (intervalSeconds <= 86400) {
+	if (intervalSeconds <= SECS_IN_1_DAY) {
 		// Daily or less (most common case)
 		number = secs / intervalSeconds;
 		offsetSeconds = secs - (number * intervalSeconds);
 		return offsetSeconds;
 	}
 
-	if (intervalSeconds == 604800) {
+	if (intervalSeconds == SECS_IN_1_WEEK) {
 		// Weekly (EOP is Saturday night at midnight)
 		day = dayOfWeek(jul);
-		offsetSeconds = ((day - 1) * 86400) + secs;
+		offsetSeconds = ((day - 1) * SECS_IN_1_DAY) + secs;
 		if (offsetSeconds == 604800) offsetSeconds = 0;
 		return offsetSeconds;
 	}
@@ -130,7 +130,7 @@ int ztsOffset(int intervalSeconds, int julian, int seconds)
 	//  Convert to year, month, day
 	julianToYearMonthDay (jul, &year, &month, &day);
 
-	if (intervalSeconds <= 2592000) {
+	if (intervalSeconds <= SECS_IN_1_MONTH) {
 		//  Monthly or monthly divisible interval
 		//  If we are at (or near) end of month, offset is zero.
 		//  "Close" to the end of month is not supported
@@ -148,7 +148,7 @@ int ztsOffset(int intervalSeconds, int julian, int seconds)
 				return 0;
 			}
 		}
-		if (intervalSeconds == 864000) {
+		if (intervalSeconds == SECS_IN_TRI_MONTH) {
 			//  Tri-monthly
 			//  Generally reported for 10th, 20th and 30th
 			//  But allow 2400 hrs on 9th, etc.
@@ -166,7 +166,7 @@ int ztsOffset(int intervalSeconds, int julian, int seconds)
 			}
 			jul = yearMonthDayToJulian(year, month, day);
 		}
-		else if (intervalSeconds == 1296000) {
+		else if (intervalSeconds == SECS_IN_SEMI_MONTH) {
 			//  Semi-monthly
 			//  Generally reported for 15th and 30th
 			if ((day == 14) || (day == 15)) {
@@ -177,7 +177,7 @@ int ztsOffset(int intervalSeconds, int julian, int seconds)
 			}
 			jul = yearMonthDayToJulian(year, month, day);
 		}
-		else if (intervalSeconds == 2592000) {
+		else if (intervalSeconds == SECS_IN_1_MONTH) {
 			//  Monthly - computation done below
 		}
 		else {
@@ -186,9 +186,9 @@ int ztsOffset(int intervalSeconds, int julian, int seconds)
 		//  Go to first day of month and compute value
 		julBeg = yearMonthDayToJulian(year, month, 1);
 		//  Note - clean at start ensures that we are not BOP
-		offsetSeconds = ((jul - julBeg) * 86400) + secs;
+		offsetSeconds = ((jul - julBeg) * SECS_IN_1_DAY) + secs;
 	}
-	else if (intervalSeconds == 31536000) {
+	else if (intervalSeconds == SECS_IN_1_YEAR) {
 		//  Yearly (disregard time if on last day)
 		if ((month == 12) && (day == 31)) {
 			return 0;
@@ -211,7 +211,7 @@ int ztsOffset(int intervalSeconds, int julian, int seconds)
 			}
 		}
 
-		offsetSeconds = ((jul - julBeg - leap) * 86400) + secs;
+		offsetSeconds = ((jul - julBeg - leap) * SECS_IN_1_DAY) + secs;
 	}
 	else {
 		//  Unrecognized interval

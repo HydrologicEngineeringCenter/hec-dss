@@ -47,7 +47,7 @@
 			return -1;
 		}
 
-		valueTime += 3600;  //  Increment to next hour
+		valueTime += SECS_IN_1_HOUR;  //  Increment to next hour
 	}
 
 	zstructFree(tss1);

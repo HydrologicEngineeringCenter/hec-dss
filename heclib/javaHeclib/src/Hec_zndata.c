@@ -7,8 +7,6 @@
 #endif
 #include "heclib.h"
 
-#define _1900_to_1970_ 25568 /* days */
-
 #define RELEASE() {                                                                     \
 	if (ifltab != NULL) (*env)->ReleaseIntArrayElements (env, j_ifltab, ifltab, 0); \
 }
@@ -154,12 +152,12 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1zndata(
 	else {
 		seconds = (time_t)(startTime / 1000L);
 		ptm = localtime(&seconds);
-		seconds -= (ptm->tm_isdst ? timezone - 3600 : timezone);
-		juls = (int)(seconds / 86400) + _1900_to_1970_;
-		isecs = seconds % 86400;
+		seconds -= (ptm->tm_isdst ? timezone - SECS_IN_1_HOUR : timezone);
+		juls = (int)(seconds / SECS_IN_1_DAY) + JUL_01JAN1970;
+		isecs = seconds % SECS_IN_1_DAY;
 		if (isecs == 0) {
 			--juls;
-			isecs = 86400;
+			isecs = SECS_IN_1_DAY;
 		}
 	}
 
@@ -180,9 +178,9 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1zndata(
 				CHECK_EXCEPTION();
 			}
 			if (updateTimesVec != NULL) {
-				seconds = (time_t)((jlong)(juld[0] - _1900_to_1970_) * 86400 + isecd[0]);
+				seconds = (time_t)((jlong)(juld[0] - JUL_01JAN1970) * SECS_IN_1_DAY + isecd[0]);
 				ptm = localtime(&seconds);
-				seconds += (ptm->tm_isdst ? timezone - 3600 : timezone);
+				seconds += (ptm->tm_isdst ? timezone - SECS_IN_1_HOUR : timezone);
 				updateTime = (jlong)seconds * (jlong)1000;
 				(*env)->CallBooleanMethod(env, updateTimesVec, appendVector, (*env)->NewObject(env, longClass, longConstructor, updateTime));
 				CHECK_EXCEPTION();

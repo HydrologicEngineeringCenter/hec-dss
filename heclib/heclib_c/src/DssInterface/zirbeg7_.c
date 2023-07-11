@@ -13,14 +13,14 @@
 void zirbeg7_ (int *julianStart, char *ePart, int *iyear, int *imonth,
 			   int *iday, int *blockSize, int *minblk, int *incblk, size_t lenEpart)
 {
-	int flag;
+	int operation;
 	int ierror;
 	int julian;
 
 	//  Get the block length
 
-	flag = 1;
-	ierror = ztsGetStandardInterval(7, blockSize, ePart, strlen(ePart), &flag);
+	operation = EPART_TO_SECONDS;
+	ierror = ztsGetStandardInterval(7, blockSize, ePart, strlen(ePart), &operation);
 	if (ierror == -1) {
 		*blockSize = 0;
 		return;

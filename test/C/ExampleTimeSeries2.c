@@ -58,7 +58,7 @@ int main()
 						cdate, sizeof(cdate), ctime, sizeof(ctime));
 		printf ("Oridnate %d, for %s, %s, value is %f, quality %d, notes ->%s<-\n",i, cdate, ctime, tss2->floatValues[i], tss2->quality[i], &tss2->cnotes[noteCount]);
 		noteCount += (int)strlen(&tss2->cnotes[noteCount]) + 1;
-		valueTime += 3600;  //  Increment to next hour
+		valueTime += SECS_IN_1_HOUR;  //  Increment to next hour
 	}
 
 	zstructFree(tss2);

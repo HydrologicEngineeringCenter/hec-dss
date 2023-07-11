@@ -62,7 +62,7 @@ int ztsGetDateRange(long long *ifltab, const char *pathname, int boolFullSet,
 	int dummy;
 	char dPart[MAX_PART_SIZE];
 	char ePart[MAX_PART_SIZE];
-	int flagSecondsToChar;
+	int operation;
 	int intervalSeconds;
 	int len;
 	int blockSize;
@@ -116,8 +116,8 @@ int ztsGetDateRange(long long *ifltab, const char *pathname, int boolFullSet,
 					//  Not a valid length for a time series interval
 					return STATUS_NOT_OKAY;
 				}
-				flagSecondsToChar = 0;
-				ztsGetStandardInterval(zgetVersion(ifltab), &intervalSeconds, ePart, sizeof(ePart), &flagSecondsToChar);
+				operation = EPART_TO_SECONDS_TO_EPART;
+				ztsGetStandardInterval(zgetVersion(ifltab), &intervalSeconds, ePart, sizeof(ePart), &operation);
 				ztsRegGetBlockStart(*lastValidJulian, intervalSeconds, &blockSize);
 				*lastValidJulian = ztsIncrementBlock(*lastValidJulian, blockSize) - 1;
 				status = STATUS_RECORD_FOUND;
@@ -140,8 +140,8 @@ int ztsGetDateRange(long long *ifltab, const char *pathname, int boolFullSet,
 					//  Not a valid length for a time series interval
 					return STATUS_NOT_OKAY;
 				}
-				flagSecondsToChar = 0;
-				ztsGetStandardInterval(zgetVersion(ifltab), &intervalSeconds, ePart, sizeof(ePart), &flagSecondsToChar);
+				operation = EPART_TO_SECONDS_TO_EPART;
+				ztsGetStandardInterval(zgetVersion(ifltab), &intervalSeconds, ePart, sizeof(ePart), &operation);
 				ztsRegGetBlockStart(*firstValidJulian, intervalSeconds, &blockSize);
 				*lastValidJulian = ztsIncrementBlock(*firstValidJulian, blockSize) - 1;
 				status = STATUS_RECORD_FOUND;

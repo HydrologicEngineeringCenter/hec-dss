@@ -1,5 +1,6 @@
 
 #include "hecdssInternal.h"
+#include "standardIntervals.h"
 
 
 /**
@@ -40,45 +41,38 @@
 int ztsIncrementBlock(int julianBlockDate, int blockSize)
 {
 	int julianNextBlockDate = 0;
-	int multiplier;  //  -1 to decrement, +1 to increment
+	int step;  //  -1 to decrement, +1 to increment
 	int itime;
-	int interval;
-	int istime = 86400;
+	int istime = SECS_IN_1_DAY;
 	int zero = 0;
 
 	if (blockSize < 0) {
-		multiplier = -1;
+		step = -1;
 		blockSize = -blockSize;
 	}
 	else {
-		multiplier = 1;
+		step = 1;
 	}
 
 	if (blockSize == DAILY_BLOCK) {
 		//  Increment by one day
-		julianNextBlockDate = julianBlockDate + multiplier;
+		julianNextBlockDate = julianBlockDate + step;
 	}
 	else if (blockSize == MONTHLY_BLOCK) {
 		//  Increment by one month
-		interval = 43200*60;
-		incrementTime(interval, multiplier, julianBlockDate, istime, &julianNextBlockDate, &itime);
+		incrementTime(SECS_IN_1_MONTH, step, julianBlockDate, istime, &julianNextBlockDate, &itime);
 	}
 	else if (blockSize == YEARLY_BLOCK) {
 		//  Increment by one year
-		interval = 525600*60;
-		incrementTime(interval, multiplier, julianBlockDate, istime, &julianNextBlockDate, &itime);
+		incrementTime(SECS_IN_1_YEAR, step, julianBlockDate, istime, &julianNextBlockDate, &itime);
 	}
 	else if (blockSize == DECADE_BLOCK) {
 		//  Increment by one decade
-		multiplier *= 10;
-		interval = 525600*60;
-		incrementTime(interval, multiplier, julianBlockDate, istime, &julianNextBlockDate, &itime);
+		incrementTime(SECS_IN_1_YEAR, step * 10, julianBlockDate, istime, &julianNextBlockDate, &itime);
 	}
 	else if (blockSize == CENTURY_BLOCK) {
 		//  Increment by one century
-		multiplier *= 100;
-		interval = 525600*60;
-		incrementTime(interval, multiplier, julianBlockDate, istime, &julianNextBlockDate, &itime);
+		incrementTime(SECS_IN_1_YEAR, step * 100, julianBlockDate, istime, &julianNextBlockDate, &itime);
 	}
 	return julianNextBlockDate;
 }

@@ -6,7 +6,7 @@
 *  Use:			Semi-public 
 *
 *  Description:	 Adjusts a date and time passed to be within valid range.  Adjusts time so that
-*					0 <= minutes < 1440 or 0 <= seconds < 86400.
+*					0 <= minutes < MINS_IN_1_DAY or 0 <= seconds < SECS_IN_1_DAY.
 *
 *  Declaration: int cleanTime(int *julianDate, int *itime, int timeGranularitySeconds)
 *
@@ -59,23 +59,23 @@ int cleanTime(int *julianDate, int *itime, int timeGranularitySeconds)
 
 	//  Test the 99% case, for speed mainly
 	if (timeGranularitySeconds == MINUTE_GRANULARITY) {
-		if ((*itime > 0) && (*itime <= 1440)) return 1;
+		if ((*itime > 0) && (*itime <= MINS_IN_1_DAY)) return 1;
 	}
 	else if (timeGranularitySeconds == SECOND_GRANULARITY) {
-		if ((*itime > 0) && (*itime <= 86400)) return 1;
+		if ((*itime > 0) && (*itime <= SECS_IN_1_DAY)) return 1;
 	}
 
 	granularity = (long long)timeGranularitySeconds;
 	if (granularity < 1) granularity = MINUTE_GRANULARITY;  //  default, but this should be set anyway  
 
 	if (granularity == MINUTE_GRANULARITY) {
-		dayLength = 1440L;
+		dayLength = MINS_IN_1_DAY;
 	}
 	else if (granularity == SECOND_GRANULARITY) {
-		dayLength = 86400L;
+		dayLength = SECS_IN_1_DAY;
 	}
 	else {
-		dayLength = 86400L / granularity;
+		dayLength = SECS_IN_1_DAY / granularity;
 	}
 
 	ltime = (long long)*itime;

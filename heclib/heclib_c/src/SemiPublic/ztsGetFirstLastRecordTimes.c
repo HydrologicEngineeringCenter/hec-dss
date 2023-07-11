@@ -89,8 +89,8 @@ int ztsGetFirstLastRecordTimes(long long *ifltab, const char *pathname,
 		ztsinfo_(ifltab, pathname, firstJulian, firstSeconds,
 			lastJulian, lastSeconds, cdum, cdum, &idum1, &idum2, &found, strlen(pathname), 0, 0);
 		if (found) {
-			*firstSeconds *= 60;
-			*lastSeconds *= 60;
+			*firstSeconds *= SECS_IN_1_MINUTE;
+			*lastSeconds *= SECS_IN_1_MINUTE;
 			return STATUS_RECORD_FOUND;
 		}
 		return STATUS_RECORD_NOT_FOUND;
@@ -116,11 +116,11 @@ int ztsGetFirstLastRecordTimes(long long *ifltab, const char *pathname,
 		i8toi4(info[zdssInfoKeys.kinfoLastDate], lastJulian, lastSeconds);
 		if (*firstSeconds == 0) {
 			*firstJulian -= 1;
-			*firstSeconds = 86400;
+			*firstSeconds = SECS_IN_1_DAY;
 		}
 		if (*lastSeconds == 0) {
 			*lastJulian -= 1;
-			*lastSeconds = 86400;
+			*lastSeconds = SECS_IN_1_DAY;
 		}
 	}
 	else {

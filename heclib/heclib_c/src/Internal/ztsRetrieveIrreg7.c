@@ -627,25 +627,25 @@ int ztsRetrieveIrreg7(long long *ifltab, zStructTimeSeries *tss,
 
 			if (tss->timeGranularitySeconds == SECOND_GRANULARITY) {
 				//  Seconds
-				timeBaseToStart *= 86400;
+				timeBaseToStart *= SECS_IN_1_DAY;
 			}
 			else if (tss->timeGranularitySeconds == MINUTE_GRANULARITY) {
-				timeBaseToStart *= 1440;
+				timeBaseToStart *= MINS_IN_1_DAY;
 			}
 			else if (tss->timeGranularitySeconds == HOUR_GRANULARITY) {
-				timeBaseToStart *= 24;
+				timeBaseToStart *= HOURS_IN_1_DAY;
 			}
 			else {   // if (tss->timeGranularitySeconds == DAY_GRANULARITY) {
-				// timeBaseToStart *= 1;
+				// timeBaseToStart *= DAYS_IN_1_DAY;
 			}
 
 			//  This should have been set by ztsProcessTimes, but we need to make sure not zero
 			timeGranularity = (long long)tss->timeGranularitySeconds;
-			if (timeGranularity == 0) timeGranularity = 60L;
+			if (timeGranularity == 0) timeGranularity = SECS_IN_1_MINUTE;
 
 			for (i=0; i<numberRead; i++) {
 				if (blockSize == 5) {
-					tss->times[i+currentPosition] = (int)(((long long)tss->times[i+currentPosition] * 60L) / timeGranularity);
+					tss->times[i+currentPosition] = (int)(((long long)tss->times[i+currentPosition] * SECS_IN_1_MINUTE) / timeGranularity);
 				}
 				else {
 					tss->times[i+currentPosition] = (int)((long long)tss->times[i+currentPosition] / timeGranularity);

@@ -219,7 +219,7 @@ int testAdHoc2()
 	*										 const char *units, const char *type);
 	*/
 
-/*	tss1 = zstructTsNewIrregDoubles(path, vals, 3, times, 60, "", "cfs", "inst-val");
+/*	tss1 = zstructTsNewIrregDoubles(path, vals, 3, times, SECS_IN_1_MINUTE, "", "cfs", "inst-val");
 	status = ztsStore(ifltab7, tss1, 1);
 
 	tss1 = zstructTsNew(path);
@@ -233,7 +233,7 @@ int testAdHoc2()
 		printf("Oridnate %d, for %s, %s, value is %f\n", i, cdate, ctime1, tss1->doubleValues[i]);
 	}
 */
-	tss2 = zstructTsNewIrregDoubles(path, values1, 2, times1, 60, "", "cfs", "inst-val");
+	tss2 = zstructTsNewIrregDoubles(path, values1, 2, times1, SECS_IN_1_MINUTE, "", "cfs", "inst-val");
 	tss2->startJulianDate = 40209;
 	tss2->startTimeSeconds = 38400;
 	tss2->endJulianDate = 40904;
@@ -276,7 +276,7 @@ int testAdHoc2()
 
 
 
-	hi = 1;
+	hi = EPART_TO_SECONDS;
 	path = mallocAndCopy("30MINUTES");
 	ztsGetStandardInterval(7, &low, path, strlen(path), &hi);
 
@@ -712,12 +712,12 @@ int testAdHoc()
 	//julianNextBlockDate = ztsIncrementBlock(julianBlockDate, 5);
 	julian = -693961;
 	julian = -693595;
-	seconds = 86400;
+	seconds = SECS_IN_1_DAY;
 	julian = 1;
 	julianToDate(julian, 0, c, sizeof(c));
 	printf("Loc a, julian = %d,  date = %s\n",julian, c);
-	//ztsOffsetAdjustToStandard(31536000, &julian, &seconds);
-	status = incrementTime(31536000, -1, julian, seconds, &julian, &seconds);
+	//ztsOffsetAdjustToStandard(SECS_IN_1_YEAR, &julian, &seconds);
+	status = incrementTime(SECS_IN_1_YEAR, -1, julian, seconds, &julian, &seconds);
 	julianToDate(julian, 0, c, sizeof(c));
 	printf("Loc b, julian = %d,  date = %s\n",julian, c);
 
@@ -1533,10 +1533,10 @@ return -1;
 		}
 
 	julian = dateToJulian("10Jan1862");
-	mins = julian * 1440 + 720;
+	mins = julian * MINS_IN_1_DAY + MINS_IN_12_HOUR;
 	for (i=0; i<200; i++) {
 		dvalues[i] = (double)i;
-		itimes[i] = mins +(i * 60);
+		itimes[i] = mins +(i * SECS_IN_1_MINUTE);
 	}
 
 	//tss1 = zstructTsNewIrregDoubles("/COLUMBIA RIVER/THE DALLES, OR/FLOW-ANNUAL PEAK/01JAN1800/IR-CENTURY/test/", dvalues, 1, itimes, MINUTE_GRANULARITY, cnull, "cfs", "Inst-Val");
@@ -1551,7 +1551,7 @@ return -1;
 
 	for (i=0; i<2; i++) {
 		dvalues[i] = (float)(i + 123);
-		itimes[i] = i * 1440 * 365;
+		itimes[i] = i * MINS_IN_1_YEAR;
 	}
 	tss2 = zstructTsNewIrregFloats("/LAKE HAVASU/PARKER DAM, AZ-CA/FLOW-ANNUAL PEAK/01Jan1900/IR-Century/TEST/", fvalues, MINUTE_GRANULARITY, 
 		itimes, MINUTE_GRANULARITY, "20April1943", "cfs", "Inst-Val");

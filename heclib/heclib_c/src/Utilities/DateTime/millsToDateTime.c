@@ -1,4 +1,5 @@
 #include "heclibDate.h"
+#include "standardIntervals.h"
 
 void millsToDateTime(long long mills, char *dateString, char *timeString, size_t sizeofDateString, size_t sizeofTimeString)
 {
@@ -12,9 +13,9 @@ void millsToDateTime(long long mills, char *dateString, char *timeString, size_t
 	
 	secs = mills / 1000L;
 	millsPastSecond = (int)(mills - (secs * 1000L));
-	jul = secs / 86400L;  // Since 01Jan1970
-	secondsPastMidnight = (int)(secs - (jul * 86400L));
-	julian = (int)jul + 25568;  //  Since 01Jan1900
+	jul = secs / SECS_IN_1_DAY;  // Since 01Jan1970
+	secondsPastMidnight = (int)(secs - (jul * SECS_IN_1_DAY));
+	julian = (int)jul + JUL_01JAN1970;  //  Since 01Jan1900
 
 	julianToDate(julian, 4, dateString, sizeofDateString);
 	secondsToTimeString(secondsPastMidnight, millsPastSecond, 3, timeString, sizeofTimeString);

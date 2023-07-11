@@ -16,13 +16,13 @@
 *  Parameters:	int time
 *					The time value to convert to character, given in timeGranularitySeconds since baseDate.
 *					"1" is one second past midnight.  "0" doesn't exist, as midnight belongs to the end
-*					of the day, by convention, and midnight is the number "86400".
-*					secondsPastMidnight varies from 1 to 86400.
+*					of the day, by convention, and midnight is the number SECS_IN_1_DAY.
+*					secondsPastMidnight varies from 1 to SECS_IN_1_DAY.
 *
 *				int timeGranularitySeconds
 *					The number of seconds each unit in time represents,
 *					MINUTE_GRANULARITY (60) or SECOND_GRANULARITY (1) or 
-*					HOUR_GRANULARITY (3600) or DAY_GRANULARITY (86400)
+*					HOUR_GRANULARITY (SECS_IN_1_HOUR) or DAY_GRANULARITY (SECS_IN_1_DAY)
 *
 *				int julianBaseDate
 *					The Julian base date, which when appropriatly aded to the time, give the full correct
@@ -63,7 +63,7 @@ int getDateAndTime(int time, int timeGranularitySeconds, int julianBaseDate,
 	//  Convert minutes or seconds to days and seconds
 	granularity = (long long)timeGranularitySeconds;
 	if (granularity < 1) granularity = MINUTE_GRANULARITY;
-	numberInDay = (int)(86400L / granularity);
+	numberInDay = (int)(SECS_IN_1_DAY / granularity);
 	days = time / numberInDay;
 	julian = julianBaseDate + days;
 
@@ -82,7 +82,7 @@ int getDateAndTime(int time, int timeGranularitySeconds, int julianBaseDate,
 	}
 	else {
 		//  Get minutes
-		timeOfDay *= (timeGranularitySeconds / 60);
+		timeOfDay *= (timeGranularitySeconds / SECS_IN_1_MINUTE);
 		minutesToHourMin(timeOfDay, hoursMins, sizeofHoursMins);
 	}
 	julianToDate(julian, 4, dateString, sizeOfDateString);

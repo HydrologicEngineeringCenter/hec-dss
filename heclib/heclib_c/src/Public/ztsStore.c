@@ -438,7 +438,7 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 					recordJul = ztsIrregGetBlockStart(tss->startJulianDate, blockSize);
 				}
 				else {
-					int operation = 1;
+					int operation = EPART_TO_SECONDS;
 					ztsGetStandardInterval(7, &intervalSeconds, ePart, sizeof(ePart), &operation);
 					recordJul = ztsRegGetBlockStart(tss->startJulianDate, intervalSeconds, &blockSize);
 				}

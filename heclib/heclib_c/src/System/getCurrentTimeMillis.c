@@ -36,13 +36,13 @@ long long getCurrentTimeMillis()
 	struct _timeb timebuffer;
 
 	_ftime64_s( &timebuffer );
-	ltime = (timebuffer.time - (long long)(timebuffer.timezone * 60));
-	ltime *= 1000L;
+	ltime = (timebuffer.time - (long long)(timebuffer.timezone * SECS_IN_1_MINUTE));
 	ltime += (long long)timebuffer.millitm;
 	if (timebuffer.dstflag) {
 		//  Only do USA DST (60 minutes)
-		ltime += 3600000;
+		ltime += SECS_IN_1_HOUR;
 	}
+	ltime *= 1000L;
 #else
 	struct timespec spec;
 

@@ -82,10 +82,10 @@
 int ztsGetEPartFromInterval(int intervalSeconds, char *ePart, size_t sizeofEpart)
 {
 	int status;
-	int flag;
+	int operation;
 
-	flag = 2;
-	status = ztsGetStandardInterval(7, &intervalSeconds, ePart, sizeofEpart, &flag);
+	operation = SECONDS_TO_EPART;
+	status = ztsGetStandardInterval(7, &intervalSeconds, ePart, sizeofEpart, &operation);
 	return status;
 }
 
