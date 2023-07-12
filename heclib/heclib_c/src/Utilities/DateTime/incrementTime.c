@@ -1,4 +1,5 @@
 #include <string.h>
+#include <stdlib.h>
 
 #include "heclib7.h"
 #include "hecdssInternal.h"
