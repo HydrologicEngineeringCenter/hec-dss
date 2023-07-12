@@ -83,7 +83,7 @@ int ztsRegGetBlockStart(int julianDate, int intervalSeconds, int *blockSize)
 	int day, month, year;
 	int startBlockJulian;
 
-	if (intervalSeconds < SECS_IN_15_MINUTE) {  //  < 15 minutes
+	if (intervalSeconds < SECS_IN_15_MINUTES) {  //  < 15 minutes
 		//  Daily block; use start of day
 		startBlockJulian = julianDate;
 		*blockSize = BLOCK_1_DAY;

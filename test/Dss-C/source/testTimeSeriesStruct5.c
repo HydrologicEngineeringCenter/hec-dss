@@ -164,7 +164,7 @@ int testztsStruct5(long long *ifltab)
 	if (zcheckStatus(ifltab, status, 1, "Fail in testztsStruct5 Loc 21, store status ")) return status; 
 
 	juls = dateToJulian("21Jan2001");
-	incrementTime(SECS_IN_1_HOUR, (SECS_IN_20_MINUTE -1), juls, SECS_IN_12_HOUR, &jule, &secondsEnd);
+	incrementTime(SECS_IN_1_HOUR, (SECS_IN_20_MINUTES -1), juls, SECS_IN_12_HOUR, &jule, &secondsEnd);
 	julianToDate(jule, 4, cdate, sizeof(cdate));
 	secondsToTimeString(secondsEnd, 0, 0, ctime, sizeof(ctime));
 	tss2 = zstructTsNewTimes(path, "21Jan2001", "1200", cdate, ctime); 

@@ -23,7 +23,7 @@ int testztsStruct3(long long *ifltab)
 	char *cnull=0;
 
 	julian = dateToJulian("21Jan2001");
-	mins = julian * MINS_IN_1_DAY + MINS_IN_12_HOUR;
+	mins = julian * MINS_IN_1_DAY + MINS_IN_12_HOURS;
 	for (i=0; i<200; i++) {
 		fvalues[i] = (float)i;
 		itimes[i] = mins +(i * 60);

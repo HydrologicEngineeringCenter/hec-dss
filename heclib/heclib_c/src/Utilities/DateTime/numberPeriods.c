@@ -141,13 +141,13 @@ int numberPeriods(int intervalSeconds,
 		julianToYearMonthDay (julianStart, &yearStart, &monthStart, &dayStart);
 		julianToYearMonthDay (julianEnd, &yearEnd, &monthEnd, &dayEnd);
 
-		if (intervalMinutes == SECS_IN_4_HOUR) {
+		if (intervalMinutes == SECS_IN_4_HOURS) {
 			//  Tri-monthly (nominal 10 days)
 			numberPeriods = ((yearEnd - yearStart) * 36) +
 							((monthEnd - monthStart) * 3) +
 							((dayEnd - dayStart) / 8);
 		}
-		else if (intervalMinutes == SECS_IN_6_HOUR) {
+		else if (intervalMinutes == SECS_IN_6_HOURS) {
 			//  Semi-monthly
 			numberPeriods = ((yearEnd - yearStart) * 24) +
 							((monthEnd - monthStart) * 2) +

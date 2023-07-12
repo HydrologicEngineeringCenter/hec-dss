@@ -90,7 +90,7 @@ int testProfileIrreg(long long *ifltab)
 
 	//  We have 16 months of daily 8:00 am readings
 	for (i=0; i<1000; i++) {
-		times[i] = (25000 * MINS_IN_1_DAY) + (i * MINS_IN_1_DAY) + MINS_IN_8_HOUR;
+		times[i] = (25000 * MINS_IN_1_DAY) + (i * MINS_IN_1_DAY) + MINS_IN_8_HOURS;
 		for (j=0; j<20; j++) {
 			//values[i][j] = (20. - (float)j) + 35.0 + sin((float)i);
 			values[i][j] = (float)(i * 1000) + j;

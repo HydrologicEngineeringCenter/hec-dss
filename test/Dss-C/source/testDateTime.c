@@ -67,7 +67,7 @@ int testDateTime()
 
 	
 
-	secondsPastMidnight = SECS_IN_8_HOUR + SECS_IN_30_MINUTE + 45;  // 08:30:45
+	secondsPastMidnight = SECS_IN_8_HOURS + SECS_IN_30_MINUTES + 45;  // 08:30:45
 	millsPastSecond = 987;
 
 	timeStyle = 0;

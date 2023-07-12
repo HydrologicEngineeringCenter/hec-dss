@@ -169,8 +169,8 @@ int ztsGetStandardInterval(int dssVersion, int *intervalSeconds, char *Epart, si
 				if (pseudoRegular) {
 					//  If quasi-regular interval (i.e., irregular), return the block size
 					if (dssVersion == 6) {
-						if (secondsInInterval[i] < SECS_IN_30_MINUTE) {  //  e.g., minute data
-							//  Less than 30 minutes (SECS_IN_30_MINUTE seconds) goes in to blocks of 1 day
+						if (secondsInInterval[i] < SECS_IN_30_MINUTES) {  //  e.g., minute data
+							//  Less than 30 minutes (SECS_IN_30_MINUTES seconds) goes in to blocks of 1 day
 							*intervalSeconds = -BLOCK_1_DAY;
 						}
 						else if (secondsInInterval[i] < SECS_IN_1_DAY) {  //  e.g., hourly data
@@ -191,11 +191,11 @@ int ztsGetStandardInterval(int dssVersion, int *intervalSeconds, char *Epart, si
 						}
 					}
 					else {
-						if (secondsInInterval[i] < SECS_IN_30_MINUTE) {  //  e.g., minute data
+						if (secondsInInterval[i] < SECS_IN_30_MINUTES) {  //  e.g., minute data
 							//  Less than 30 minutes INTVL_30_MINUTEseconds) goes in to blocks of 1 day
 							*intervalSeconds = -BLOCK_1_DAY;
 						}
-						else if (secondsInInterval[i] < SECS_IN_6_HOUR) {  //  e.g., hourly data
+						else if (secondsInInterval[i] < SECS_IN_6_HOURS) {  //  e.g., hourly data
 							//  DSS-7 change, 6, 8, 12 hours goes into blocks of a year
 							//  DSS-6 had 6, 8, 12 hours going into blocks of a month
 							//  Less than 6 hours (21,600 seconds) goes in to blocks of 1 month

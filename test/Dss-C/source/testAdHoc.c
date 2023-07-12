@@ -1533,7 +1533,7 @@ return -1;
 		}
 
 	julian = dateToJulian("10Jan1862");
-	mins = julian * MINS_IN_1_DAY + MINS_IN_12_HOUR;
+	mins = julian * MINS_IN_1_DAY + MINS_IN_12_HOURS;
 	for (i=0; i<200; i++) {
 		dvalues[i] = (double)i;
 		itimes[i] = mins +(i * SECS_IN_1_MINUTE);
