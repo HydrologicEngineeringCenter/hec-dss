@@ -56,7 +56,8 @@ void printGridStruct(long long *ifltab, int fid, zStructSpatialGrid *gridStruct)
 	char *messageString, *arrayString;
 	arrayString = 0;
 
-	messageString = (char *)calloc(16, 1);
+
+	messageString = (char *)calloc(160, 1);
 
 	zmessageDebug(ifltab, fid, "******** Printing GRID STRUCT ********", "");
 	zmessageDebugInt(ifltab, fid, "Struct Type :", gridStruct->structType);
