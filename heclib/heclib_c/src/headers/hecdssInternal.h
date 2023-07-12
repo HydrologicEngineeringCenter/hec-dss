@@ -38,7 +38,7 @@
 
 
 #define DSS_VERSION "7-IR"
-#define DSS_VERSION_DATE "10 Jul 2023" 
+#define DSS_VERSION_DATE "12 Jul 2023"
 
 
 
