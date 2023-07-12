@@ -103,7 +103,7 @@
     end do
     
     nvals = 100
-    timeGranularitySeconds = INTVL_1_MINUTE
+    timeGranularitySeconds = 60
     call ztsIrregStoreFull (ifltab1, cpath1, '', timeGranularitySeconds, itimes1, nvals, &
     data1, 2, quality1, 2, notes, 0, cnotes1, 1, userHeader, 0, &  
     'CFS', 'PER-AVER', 2, '', 0, status)
@@ -160,7 +160,7 @@
     
     !  Now merge with 1000 values   
     nvals = 1000  
-    timeGranularitySeconds = INTVL_1_MINUTE
+    timeGranularitySeconds = 60
     call ztsIrregStoreFull (ifltab1, cpath1, '', timeGranularitySeconds, itimes1, nvals, &
     data1, 2, quality1, 2, notes, 0, cnotes1, 1, userHeader, 0, &  
     'CFS', 'PER-AVER', 2, '', 0, status)
@@ -218,7 +218,7 @@
     end do
 
     nvals = 1000    
-    timeGranularitySeconds = INTVL_1_MINUTE
+    timeGranularitySeconds = 60
     call ztsIrregStoreFull (ifltab1, cpath1, '', timeGranularitySeconds, itimes1, nvals, &
     data1, 2, quality1, 2, notes, 0, cnotes1, 1, userHeader, 0, &  
     'CFS', 'PER-AVER', 3, '', 0, status)
@@ -304,7 +304,7 @@
 
     !  Now REPLACE with 1000 values   
     nvals = 1000    
-    timeGranularitySeconds = INTVL_1_MINUTE
+    timeGranularitySeconds = 60
     call ztsIrregStoreFull (ifltab1, cpath1, '', timeGranularitySeconds, itimes1, nvals, &
     data1, 2, quality1, 2, notes, 0, cnotes1, 1, userHeader, 0, &  
     'CFS', 'PER-AVER', 4, '', 1, status)
@@ -394,7 +394,7 @@
     cpath1 = '/Time Series With Notes/Basic 2/Flow/date/IR-year//'
     
     nvals = 365
-    timeGranularitySeconds = INTVL_1_MINUTE
+    timeGranularitySeconds = 60
     call ztsIrregStoreFull (ifltab1, cpath1, '', timeGranularitySeconds, itimes1, nvals, &
     data1, 2, quality1, 2, notes, 0, cnotes1, 1, userHeader, 0, &  
     'CFS', 'PER-AVER', 2, '', 0, status)
@@ -458,7 +458,7 @@
     'CFS', 'PER-AVER', 3, '', 0, status)
     
     if (status.ne.0) go to 900
-    timeGranularitySeconds = INTVL_1_MINUTE
+    timeGranularitySeconds = 60
     call zinqir(ifltab1, 'error', ctemp, status)
     if (status.ne.0) go to 900
     
@@ -513,7 +513,7 @@
     cnotes3(25) = cnotes1(25)
     cnotes3(26) = cnotes1(26)
     cnotes3(27) = cnotes1(27)
-    timeGranularitySeconds = INTVL_1_MINUTE
+    timeGranularitySeconds = 60
     call ztsIrregStoreFull (ifltab1, cpath1, '', timeGranularitySeconds, itimes1(25), nvals, &
     data1(25), 2, quality1(1,25), 2, notes, 0, cnotes1(25), 5, userHeader, 0, &  
     'CFS', 'PER-AVER', 4, '', 0, status)
@@ -572,7 +572,7 @@
     !  Under this case, the notes should be deleted on the second write
     nvals = 100
     cpath1 = '/Time Series With Notes/Basic 3/Flow/date/IR-year//'
-    timeGranularitySeconds = INTVL_1_MINUTE
+    timeGranularitySeconds = 60
     call ztsIrregStoreFull (ifltab1, cpath1, '', timeGranularitySeconds, itimes1, nvals, &
     data1, 2, quality1, 2, notes, 0, cnotes1, 1, userHeader, 0, &  
     'CFS', 'PER-AVER', 1,  '',  0, status)
@@ -634,7 +634,7 @@
     !  Now write without notes
     nvals = 100
     cpath1 = '/Time Series With Notes/Basic 3/Flow/date/IR-year//'
-    timeGranularitySeconds = INTVL_1_MINUTE
+    timeGranularitySeconds = 60
     call ztsIrregStoreFull (ifltab1, cpath1, '', timeGranularitySeconds, itimes1, nvals, &
     data1, 2, quality1, 2, notes, 0, cnotes1, 0, userHeader, 0, &  
     'CFS', 'PER-AVER', 2, '', 0, status)
@@ -699,7 +699,7 @@
     !  Now store the full array
     nvals = 1000
     cpath1 = '/Time Series With Notes/Basic 4/Flow/date/IR-year//'
-    timeGranularitySeconds = INTVL_1_MINUTE
+    timeGranularitySeconds = 60
     call ztsIrregStoreFull (ifltab1, cpath1, '', timeGranularitySeconds, itimes1, nvals, &
     data1, 2, quality1, 2, notes, 0, cnotes1, 1, userHeader, 0, &  
     'CFS', 'PER-AVER', 1,  '',  0, status)
