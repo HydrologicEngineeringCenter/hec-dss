@@ -10,15 +10,15 @@
 *  Description:	 Get a standard DSS time interval in seconds from the E part, or the E part from the interval in seconds.
 *				 Also will return a list of standard intervals.
 *
-*  Declaration: int ztsGetStandardInterval(int dssVersion, int *intervalSeconds, char *Epart, size_t sizeofEpart, int *flagDirection);
+*  Declaration: int ztsGetStandardInterval(int dssVersion, int *intervalSeconds, char *Epart, size_t sizeofEpart, int *operation);
 *
 *  Parameters:	int dssVersion
 *					The DSS Version the results are for.  Must either be 6 or 7.  (Versions have different intervals)
 *
 *				int *intervalSeconds (input or output)
-*					If flagDirection is 0 or 1, this is returned with the time interval, in seconds from the E part.
-*					If flagDirection is 2, the E part is returned using this time interval.
-*					If flagDirection is 3 or 4, this is returned with the a time interval from the list.
+*					If operation is EPART_TO_SECONDS_TO_EPART or EPART_TO_SECONDS, this is returned with the time interval, in seconds from the E part.
+*					If operation is SECONDS_TO_EPART, the E part is returned using this time interval.
+*					If operation is BEGIN_ENUMERATION or CONTINUE_ENUMERATION, this is returned with the a time interval from the list.
 *
 *				char *Epart (input or output)
 *					The E part of the pathname, either determined from the interval, or used to determine the interval
@@ -26,25 +26,26 @@
 *				size_t sizeofEpart (input)
 *					The size of the E part, used when returning the E part from the interval.
 *
-*				int *flagDirection
-*					A flag telling ztsGetStandardInterval7 what to do, set flagDirection to:
-*						0 to go from char Epart to intervalSeconds AND change the E part to the standard for that interval.
-*						1 to go from char Epart to intervalSeconds
-*						2 to go from intervalSeconds to char Epart
-*						3 to begin a list of valid E parts (intervals used to keep track)
-*						4 In a list of valid E parts (returns -1 at end)
+*				int *operation
+*					A flag telling ztsGetStandardInterval7 what to do, set operation to:
+*						EPART_TO_SECONDS_TO_EPART (0) to go from char Epart to intervalSeconds AND change the E part to the standard for that interval.
+*						EPART_TO_SECONDS          (1) to go from char Epart to intervalSeconds
+*						SECONDS_TO_EPART          (2) to go from intervalSeconds to char Epart
+*						BEGIN_ENUMERATION         (3) to begin a list of valid E parts (intervals used to keep track)
+*						CONTINUE_ENUMERATION      (4) In a list of valid E parts (returns -1 at end)
 *
 *
 *	Returns:	0 for regular interval
 *				1 for irregular interval
 *				STATUS_NOT_OKAY for error or end of list
 *
-*	Remarks:	For a flagDirection set to 0 or 1, the function tries to recognized the E part to get the interval.
-*				When flagDirection is set to 0, the standard E part is returned in Epart.  For example, if you pass
+*	Remarks:	For a operation set to EPART_TO_SECONDS_TO_EPART or EPART_TO_SECONDS, the function tries to recognized the E part to get the interval.
+*				When operation is set to EPART_TO_SECONDS_TO_EPART, the standard E part is returned in Epart.  For example, if you pass
 *				an E part of "1MON", the E part will be returned with "1Month".
-*				To get a list of intervals, begin flagDirection with 3.  ztsGetStandardInterval7 will return
-*				the interval in seconds and the E part for each valid interval, including irregular interval and pseudo-regular.
-*				At the end of the list, a STATUS_NOT_OKAY is returned (see example)
+*				To get a list of intervals, begin operation with BEGIN_ENUMERATION.  ztsGetStandardInterval7 will return
+*				the interval in seconds and the E part for the first valid interval, as well as change operation to CONTINUE_ENUMERATION. Subsequent
+*               calls (without changing operation), will enumerate the valid intervals, including irregular interval and pseudo-regular, returning
+*               the interval in seconds and E part for each one. When the enumeration is exhausted,  STATUS_NOT_OKAY is returned (see example).
 *
 *
 *  Standard Intervals:
@@ -92,12 +93,12 @@
 *
 *	Example - print a list of standard intervals:
 *
-*		int intervalSeconds, flagDirection, version;
+*		int intervalSeconds, operation, version;
 *		char Epart[20];
 *
-*		flagDirection = 3;
+*		operation = BEGIN_ENUMERATION;
 *		version = zgetVersion(ifltab);
-*		while (ztsGetStandardInterval(version, &intervalSeconds, Epart, sizeof(Epart), &flagDirection) == STATUS_OKAY) {
+*		while (ztsGetStandardInterval(version, &intervalSeconds, Epart, sizeof(Epart), &operation) == STATUS_OKAY) {
 *			if (intervalSeconds > 0) {
 *				printf("Regual Interval = %s,  intervalSeconds = %d\n", Epart, intervalSeconds);
 *			}
@@ -115,56 +116,8 @@
 *
 **/
 
-int ztsGetStandardInterval(int dssVersion, int *intervalSeconds, char *Epart, size_t sizeofEpart, int *flagDirection)
+int ztsGetStandardInterval(int dssVersion, int *intervalSeconds, char *Epart, size_t sizeofEpart, int *operation)
 {
-	static const char eParts7[][12] = {
-		"1Year",      "1Month",    "Semi-Month", "Tri-Month",
-		"1Week",      "1Day",      "12Hour",     "8Hour",
-		"6Hour",      "4Hour",     "3Hour",      "2Hour",
-		"1Hour",      "30Minute",  "20Minute",   "15Minute",
-		"12Minute",   "10Minute",  "6Minute",    "5Minute",
-		"4Minute",    "3Minute",   "2Minute",    "1Minute",
-		"30Second",   "20Second",  "15Second",   "10Second",
-		"6Second",    "5Second",   "4Second",    "3Second",
-		"2Second",    "1Second",
-		"IR-Century", "IR-Decade", "IR-Year",	"IR-Month",  "IR-Day"};
-
-	//  Longest time interval allowed for regular interval = 1Year
-	//  1Year = 365 Days = 8760 hours = 525600 minutes = 31536000 seconds
-	static int secondsInInterval7[39] = {
-		31536000,     2592000,     1296000,      864000,
-		604800,       86400,       43200,        28800,
-		21600,        14400,       10800,        7200,
-		3600,         1800,        1200,         900,
-		720,          600,         360,          300,
-		240,          180,         120,          60,
-		30,           20,          15,           10,
-		6,            5,           4,            3,
-		2,            1,
-		-5,          -4,          -3,           -2,      -1};
-
-	static const char eParts6[][12] = {
-		"1YEAR",      "1MON",    "SEMI-MONTH", "TRI-MONTH",
-		"1WEEK",      "1DAY",        "12HOUR",     "8HOUR",
-		"6HOUR",     "4HOUR",         "3HOUR",     "2HOUR",
-		"1HOUR",     "30MIN",         "20MIN",     "15MIN",
-		"12MIN",	 "10MIN",          "6MIN",      "5MIN",
-		"4MIN",       "3MIN",          "2MIN",      "1MIN",
-		"IR-CENTURY", "IR-DECADE",  "IR-YEAR",	"IR-MONTH",  "IR-DAY"};
-
-	//  Longest time interval allowed for regular interval = 1Year
-	//  1Year = 365Days = 8760 hour = 525600 minutes = 31536000 seconds
-	static int secondsInInterval6[39] = {
-		31536000,     2592000,     1296000,      864000,
-		604800,       86400,       43200,        28800,
-		21600,        14400,       10800,        7200,
-		3600,         1800,        1200,         900,
-		720,          600,         360,          300,
-		240,          180,         120,          60,
-		-5,          -4,          -3,           -2,      -1};
-
-
-
 	int *secondsInInterval;
 
 	int i;
@@ -177,17 +130,17 @@ int ztsGetStandardInterval(int dssVersion, int *intervalSeconds, char *Epart, si
 
 	if (dssVersion == 6) {
 		secondsInInterval = secondsInInterval6;
-		dim=29;
+		dim = sizeof(secondsInInterval6) / sizeof(secondsInInterval6[0]);
 	}
 	else {
 		secondsInInterval = secondsInInterval7;
-		dim=39;
+		dim = sizeof(secondsInInterval7) / sizeof(secondsInInterval6[7]);
 	}
 
-	if ((*flagDirection == 1) || (*flagDirection == 0)) {
-		//  set flagDirection = 0 to go from char Epart to intervalSeconds AND return
+	if ((*operation == EPART_TO_SECONDS) || (*operation == EPART_TO_SECONDS_TO_EPART)) {
+		//  set operation = EPART_TO_SECONDS_TO_EPART to go from char Epart to intervalSeconds AND return
 		//  the standard E part for that interval.
-		//  set flagDirection = 1 To go from char Epart to intervalSeconds
+		//  set operation = EPART_TO_SECONDS To go from char Epart to intervalSeconds
 		len2 = (int)strlen(Epart);
 		if (Epart[0] == '~') {
 			pseudoRegular = 1;
@@ -216,56 +169,56 @@ int ztsGetStandardInterval(int dssVersion, int *intervalSeconds, char *Epart, si
 				if (pseudoRegular) {
 					//  If quasi-regular interval (i.e., irregular), return the block size
 					if (dssVersion == 6) {
-						if (secondsInInterval[i] < 1800) {  //  e.g., minute data
-							//  Less than 30 minutes (1800 seconds) goes in to blocks of 1 day
-							*intervalSeconds = -1;
+						if (secondsInInterval[i] < SECS_IN_30_MINUTES) {  //  e.g., minute data
+							//  Less than 30 minutes (SECS_IN_30_MINUTES seconds) goes in to blocks of 1 day
+							*intervalSeconds = -BLOCK_1_DAY;
 						}
-						else if (secondsInInterval[i] < 86400) {  //  e.g., hourly data
-							//  Less than 6 hours (86400 seconds) goes in to blocks of 1 month
-							*intervalSeconds = -2;
+						else if (secondsInInterval[i] < SECS_IN_1_DAY) {  //  e.g., hourly data
+							//  Less than 6 hours (SECS_IN_1_DAY seconds) goes in to blocks of 1 month
+							*intervalSeconds = -BLOCK_1_MONTH;
 						}
-						else if (secondsInInterval[i] < 604800) {   //  e.g., daily data
-							//  Less than 1 week (604800 seconds) goes in to blocks of 1 year
-							*intervalSeconds = -3;
+						else if (secondsInInterval[i] < SECS_IN_1_WEEK) {   //  e.g., daily data
+							//  Less than 1 week goes in to blocks of 1 year
+							*intervalSeconds = -BLOCK_1_YEAR;
 						}
-						else if (secondsInInterval[i] < 2592000) {  //  e.g., monthly data
+						else if (secondsInInterval[i] < SECS_IN_1_MONTH) {  //  e.g., monthly data
 							//  1 month and less (2,592,000 seconds) goes in to blocks of 1 decade
-							*intervalSeconds = -4;
+							*intervalSeconds = -BLOCK_1_DECADE;
 						}
-						else { //if (secondsInInterval[i] <= 31536000) {  //  e.g., yearly
+						else { //if (secondsInInterval[i] <= SECS_IN_1_YEAR) {  //  e.g., yearly
 							//  Above one month goes into blocks of 1 century
-							*intervalSeconds = -5;
+							*intervalSeconds = -BLOCK_1_CENTURY;
 						}
 					}
 					else {
-						if (secondsInInterval[i] < 1800) {  //  e.g., minute data
-							//  Less than 30 minutes (1800 seconds) goes in to blocks of 1 day
-							*intervalSeconds = -1;
+						if (secondsInInterval[i] < SECS_IN_30_MINUTES) {  //  e.g., minute data
+							//  Less than 30 minutes INTVL_30_MINUTEseconds) goes in to blocks of 1 day
+							*intervalSeconds = -BLOCK_1_DAY;
 						}
-						else if (secondsInInterval[i] < 21600) {  //  e.g., hourly data
+						else if (secondsInInterval[i] < SECS_IN_6_HOURS) {  //  e.g., hourly data
 							//  DSS-7 change, 6, 8, 12 hours goes into blocks of a year
 							//  DSS-6 had 6, 8, 12 hours going into blocks of a month
 							//  Less than 6 hours (21,600 seconds) goes in to blocks of 1 month
-							*intervalSeconds = -2;
+							*intervalSeconds = -BLOCK_1_MONTH;
 						}
-						else if (secondsInInterval[i] < 604800) {   //  e.g., daily data
-							//  Less than 1 week (604800 seconds) goes in to blocks of 1 year
-							*intervalSeconds = -3;
+						else if (secondsInInterval[i] < SECS_IN_1_WEEK) {   //  e.g., daily data
+							//  Less than 1 week goes in to blocks of 1 year
+							*intervalSeconds = -BLOCK_1_YEAR;
 						}
-						else if (secondsInInterval[i] < 2592000) {  //  e.g., monthly data
+						else if (secondsInInterval[i] < SECS_IN_1_MONTH) {  //  e.g., monthly data
 							//  1 month and less (2,592,000 seconds) goes in to blocks of 1 decade
-							*intervalSeconds = -4;
+							*intervalSeconds = -BLOCK_1_DECADE;
 						}
-						else { //if (secondsInInterval[i] <= 31536000) {  //  e.g., yearly
+						else { //if (secondsInInterval[i] <= SECS_IN_1_YEAR) {  //  e.g., yearly
 							   //  Above one month goes into blocks of 1 century
-							*intervalSeconds = -5;
+							*intervalSeconds = -BLOCK_1_CENTURY;
 						}
 					}
 				}
 				else {
 					*intervalSeconds = secondsInInterval[i];
 				}
-				if (*flagDirection == 0) {
+				if (*operation == EPART_TO_SECONDS_TO_EPART) {
 					if (dssVersion == 6) {
 						stringCopy(&Epart[pseudoRegular], sizeofEpart, eParts6[i], strlen(eParts6[i]));
 					}
@@ -282,8 +235,8 @@ int ztsGetStandardInterval(int dssVersion, int *intervalSeconds, char *Epart, si
 			}
 		}
 	}
-	else if (*flagDirection == 2) {
-		//  set flagDirection = 2 To go from intervalSeconds to char Epart
+	else if (*operation == SECONDS_TO_EPART) {
+		//  set operation = SECONDS_TO_EPART To go from intervalSeconds to char Epart
 		//  Note, quasi-interval is not returned here for irregular, only block size
 		for (i=0; i<dim; i++) {
 			if (*intervalSeconds == secondsInInterval[i]) {
@@ -297,8 +250,8 @@ int ztsGetStandardInterval(int dssVersion, int *intervalSeconds, char *Epart, si
 			}
 		}
 	}
-	else if (*flagDirection == 3) {
-		//  set flagDirection = 3 to begin a list of valid E parts (intervals used to keep track)
+	else if (*operation == BEGIN_ENUMERATION) {
+		//  set operation = BEGIN_ENUMERATION to begin a list of valid E parts (intervals used to keep track)
 		*intervalSeconds = secondsInInterval[0];
 		if (dssVersion == 6) {
 			stringCopy(Epart, sizeofEpart, eParts6[0], strlen(eParts6[0]));
@@ -306,16 +259,16 @@ int ztsGetStandardInterval(int dssVersion, int *intervalSeconds, char *Epart, si
 		else {
 			stringCopy(Epart, sizeofEpart, eParts7[0], strlen(eParts7[0]));
 		}
-		*flagDirection = 4;
+		*operation = CONTINUE_ENUMERATION;
 		return 0;
 	}
-	else if (*flagDirection == 4) {
-		//  set flagDirection = 4 In a list of valid E parts (returns -1 at end)
+	else if (*operation == CONTINUE_ENUMERATION) {
+		//  set operation = CONTINUE_ENUMERATION In a list of valid E parts (returns -1 at end)
 		for (i=0; i<dim; i++) {
 			if (*intervalSeconds == secondsInInterval[i]) {
 				if (i == (dim-1)) {
 					*intervalSeconds = 0;
-					*flagDirection = -1;
+					*operation = -1;
 					return STATUS_NOT_OKAY;
 				}
 				if (dssVersion == 6) {

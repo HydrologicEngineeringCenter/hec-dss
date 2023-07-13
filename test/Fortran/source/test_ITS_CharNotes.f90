@@ -160,7 +160,7 @@
     
     !  Now merge with 1000 values   
     nvals = 1000  
-    timeGranularitySeconds = 60  
+    timeGranularitySeconds = 60
     call ztsIrregStoreFull (ifltab1, cpath1, '', timeGranularitySeconds, itimes1, nvals, &
     data1, 2, quality1, 2, notes, 0, cnotes1, 1, userHeader, 0, &  
     'CFS', 'PER-AVER', 2, '', 0, status)

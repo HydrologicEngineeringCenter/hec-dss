@@ -52,9 +52,9 @@ int zgetInfo7(long long *ifltab, const char *pathname, int *ibuff)
 		//  Time in mills (since 01Jan1970)
 		ilarge = info[zdssInfoKeys.kinfoLastWriteTime];
 		ilarge = (ilarge/1000);
-		jul = (int)(ilarge/86400);
-		isecs = (int)(ilarge - (((long long)jul) * 86400));
-		ibuff[6] = jul + 25568;
+		jul = (int)(ilarge/ SECS_IN_1_DAY);
+		isecs = (int)(ilarge - (((long long)jul) * SECS_IN_1_DAY));
+		ibuff[6] = jul + JULIAN_01JAN1970;
 		ibuff[7] = isecs;
 		charLong(&info[zdssInfoKeys.kinfoProgram], &ibuff[8], zdssVals.numberProgram, zdssVals.numberProgram, 0, 0);
 	}

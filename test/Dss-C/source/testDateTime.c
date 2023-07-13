@@ -4,6 +4,7 @@
 #include "heclib.h"
 #include "hecdss7.h"
 #include "hecdssInternal.h"
+#include "standardIntervals.h"
 #include "TestDssC.h"
 
 
@@ -45,7 +46,7 @@ int testDateTime()
 
 	int intervalSeconds;
 	char Epart[30];
-	int flagSecondsToChar;
+	int operation;
 	int julianStart;
 	int secondsStart; 
 	int julianEnd; 
@@ -66,7 +67,7 @@ int testDateTime()
 
 	
 
-	secondsPastMidnight = (8 * 60 * 60) + (30 * 60) + 45;  //  08:30:45  08:30:43.076
+	secondsPastMidnight = SECS_IN_8_HOURS + SECS_IN_30_MINUTES + 45;  // 08:30:45
 	millsPastSecond = 987;
 
 	timeStyle = 0;
@@ -231,8 +232,8 @@ int testDateTime()
 	}
 
 	//  Print all intervals
-	flagSecondsToChar = 3;
-	while (ztsGetStandardInterval(7,&intervalSeconds, Epart, sizeof(Epart), &flagSecondsToChar) == STATUS_OKAY) {
+	operation = BEGIN_ENUMERATION;
+	while (ztsGetStandardInterval(7,&intervalSeconds, Epart, sizeof(Epart), &operation) == STATUS_OKAY) {
 		if (intervalSeconds > 0) {
 			printf("Regular Interval = %s,  intervalSeconds = %d\n", Epart, intervalSeconds);
 		}
@@ -240,8 +241,8 @@ int testDateTime()
 			printf("Irregular Interval = %s\n", Epart);
 		}
 	}
-	flagSecondsToChar = 3;
-	while (ztsGetStandardInterval(6,&intervalSeconds, Epart, sizeof(Epart), &flagSecondsToChar) == STATUS_OKAY) {
+	operation = BEGIN_ENUMERATION;
+	while (ztsGetStandardInterval(6,&intervalSeconds, Epart, sizeof(Epart), &operation) == STATUS_OKAY) {
 		if (intervalSeconds > 0) {
 			printf("Regular Interval = %s,  intervalSeconds = %d\n", Epart, intervalSeconds);
 		}
@@ -284,9 +285,9 @@ int testDateTime()
 			
 			prtDate = 1;
 
-			flagSecondsToChar = 3;
-			while (ztsGetStandardInterval(7, &intervalSeconds, Epart, sizeof(Epart), &flagSecondsToChar) == STATUS_OKAY) {
-				if (flagSecondsToChar < 0) break;
+			operation = BEGIN_ENUMERATION;
+			while (ztsGetStandardInterval(7, &intervalSeconds, Epart, sizeof(Epart), &operation) == STATUS_OKAY) {
+				if (operation < 0) break;
 				if (intervalSeconds <= 0) break;
 
 				if (j == 0) {

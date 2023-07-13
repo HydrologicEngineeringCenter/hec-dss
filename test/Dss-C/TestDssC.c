@@ -774,7 +774,7 @@ int test_jira_dss_163_weekly_time_series_fails()
 						return status;
 					}
 				}
-				minsToDateTime(tss2->julianBaseDate * 1440 + tss2->times[j], datestr2, timestr2, sizeof(datestr2), sizeof(timestr2));
+				minsToDateTime(tss2->julianBaseDate * MINS_IN_1_DAY + tss2->times[j], datestr2, timestr2, sizeof(datestr2), sizeof(timestr2));
 				status |= strcmp(datestr2, datestr) || strcmp(timestr2, timestr);
 				if (status) {
 					printf("\tExpected %s %s, got %s %s", datestr, timestr, datestr2, timestr2);
@@ -848,7 +848,7 @@ int test_jira_dss_163_weekly_time_series_fails()
 						return status;
 					}
 				}
-				minsToDateTime(tss2->julianBaseDate * 1440 + tss2->times[j], datestr2, timestr2, sizeof(datestr2), sizeof(timestr2));
+				minsToDateTime(tss2->julianBaseDate * MINS_IN_1_DAY + tss2->times[j], datestr2, timestr2, sizeof(datestr2), sizeof(timestr2));
 				status |= strcmp(datestr2, datestr) || strcmp(timestr2, timestr);
 				if (status) {
 					printf("\tExpected %s %s, got %s %s", datestr, timestr, datestr2, timestr2);

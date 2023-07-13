@@ -1,6 +1,7 @@
 #include <string.h>
 
 #include "heclibDate.h"
+#include "standardIntervals.h"
 
 /**
 *  Function:	secondsToTimeString
@@ -14,9 +15,9 @@
 *
 *  Parameters:	int secondsPastMidnight
 *					The time of day in seconds past midnight.
-*					"1" is one second past midnight.  Midnight is the number "86400".
+*					"1" is one second past midnight.  Midnight is the number SECS_IN_1_DAY.
 *					0 (zero) is allowed for Beginning of Period items.
-*					secondsPastMidnight varies from 0 to 86400.
+*					secondsPastMidnight varies from 0 to SECS_IN_1_DAY.
 *
 *				int millsPastSecond
 *					The time second fraction in mills past the secondsPastMidnight
@@ -77,14 +78,14 @@ void secondsToTimeString(int secondsPastMidnight, int millsPastSecond, int timeS
 	//  Check for valid style and seconds
 	//  Even though 0 seconds is not valid, we'll let it ride.
 	if ((timeStyle < 0) || (timeStyle > 3) ||
-	  (secondsPastMidnight < 0) || (secondsPastMidnight > 86400)) {
+	  (secondsPastMidnight < 0) || (secondsPastMidnight > SECS_IN_1_DAY)) {
 		timeString[0] = '\0';
 		return;
 	}
 
-	ihr = secondsPastMidnight / 3600;
-	imin = (secondsPastMidnight - (ihr * 3600)) / 60;
-	isec = secondsPastMidnight - (ihr * 3600) - (imin * 60);
+	ihr = secondsPastMidnight / SECS_IN_1_HOUR;
+	imin = (secondsPastMidnight - (ihr * SECS_IN_1_HOUR)) / SECS_IN_1_MINUTE;
+	isec = secondsPastMidnight - (ihr * SECS_IN_1_HOUR) - (imin * SECS_IN_1_MINUTE);
 	icount = 0;
 
 	//  Hour portion

@@ -45,7 +45,7 @@
 *					For IR-Century, the int size would be exceeded, so the granularity is limited to minutes.
 *					Times are stored relative to the base date, the date in the "D" part of the pathname.
 *					The time associated with the end of of the first day (e.g., 01Jan2000)
-*					would be 86400 (24 hours * 60 mins/hr * 60 seconds/min)
+*					would be SECS_IN_1_DAY (24 hours * 60 mins/hr * 60 seconds/min)
 *
 *
 *
@@ -146,7 +146,7 @@ int ztsStoreIrreg7(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 		}
 	}
 	timeGranularity = tss->timeGranularitySeconds;
-	if (timeGranularity == 0) timeGranularity = 60;
+	if (timeGranularity == 0) timeGranularity = MINUTE_GRANULARITY;
 
 	//  We'll be changing the pathname to have correct date and interval part, so make a copy
 	stringCopy(path, sizeof(path), zgetInternalPath(tss), strlen(zgetInternalPath(tss)));
@@ -265,11 +265,11 @@ int ztsStoreIrreg7(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 					i, tss->times[i-1], tss->times[i]);
 				zmessage2(ifltab, "Ordinate: ", messageString);
 				time = tss->times[i-1];
-				if (tss->timeGranularitySeconds == MINUTE_GRANULARITY) time *= 60;
+				if (tss->timeGranularitySeconds == MINUTE_GRANULARITY) time *= SECS_IN_1_MINUTE;
 				ztsIrregMessage(ifltab, DSS_FUNCTION_ztsStoreIrreg_ID, "First value:  ", time, tss->timeGranularitySeconds, tss->julianBaseDate,
 					&values[i-1], valueSize, 0);
 				time = tss->times[i];
-				if (tss->timeGranularitySeconds == MINUTE_GRANULARITY) time *= 60;
+				if (tss->timeGranularitySeconds == MINUTE_GRANULARITY) time *= SECS_IN_1_MINUTE;
 				ztsIrregMessage(ifltab, DSS_FUNCTION_ztsStoreIrreg_ID, "Next value:   ", time, tss->timeGranularitySeconds, tss->julianBaseDate,
 					&values[i], valueSize, 0);
 			}
@@ -376,16 +376,16 @@ int ztsStoreIrreg7(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 
 		if (timeGranularity == SECOND_GRANULARITY) {
 			//  Seconds
-			timeBaseToStart *= 86400;
-			timeBaseToEnd *= 86400;
+			timeBaseToStart *= SECS_IN_1_DAY;
+			timeBaseToEnd *= SECS_IN_1_DAY;
 		}
 		else if (timeGranularity == MINUTE_GRANULARITY) {
-			timeBaseToStart *= 1440;
-			timeBaseToEnd *= 1440;
+			timeBaseToStart *= MINS_IN_1_DAY;
+			timeBaseToEnd *= MINS_IN_1_DAY;
 		}
 		else if (timeGranularity == HOUR_GRANULARITY) {
-			timeBaseToStart *= 24;
-			timeBaseToEnd *= 24;
+			timeBaseToStart *= HOURS_IN_1_DAY;
+			timeBaseToEnd *= HOURS_IN_1_DAY;
 		}
 		else {   // if (timeGranularity == DAY_GRANULARITY) {
 			// timeBaseToStart *= 1;
@@ -422,7 +422,7 @@ int ztsStoreIrreg7(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 				//  itimes[icount++] can only be seconds or minutes (usual)
 				if (blockSize == 5) {
 					ltime = (long long)(tss->times[i] - timeBaseToStart) * (long long)timeGranularity;
-					itimes[icount++] = (int)(ltime / 60L);	 //  Convert seconds to minutes
+					itimes[icount++] = (int)(ltime / SECS_IN_1_MINUTE);	 //  Convert seconds to minutes
 				}
 				else {
 					itimes[icount++] = (tss->times[i] - timeBaseToStart) * timeGranularity;
@@ -437,10 +437,10 @@ int ztsStoreIrreg7(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 			}
 			if (zmessageLevel(ifltab, MESS_METHOD_TS_WRITE_ID, MESS_LEVEL_INTERNAL_DIAG_1)) {
 				if (blockSize == 5) {
-					julian = (itimes[0] / 1440);
-					seconds = (itimes[0] - (julian * 1440)) * 60;
+					julian = (itimes[0] / MINS_IN_1_DAY);
+					seconds = (itimes[0] - (julian * MINS_IN_1_DAY)) * SECS_IN_1_MINUTE;
 					if (seconds == 0) {
-						seconds = 86400;
+						seconds = SECS_IN_1_DAY;
 						julian--;
 					}
 					zmessageDebugInt(ifltab, DSS_FUNCTION_ztsStoreIrreg_ID, "First value raw time:  ", itimes[0]);
@@ -448,10 +448,10 @@ int ztsStoreIrreg7(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 					zmessageDebugInt(ifltab, DSS_FUNCTION_ztsStoreIrreg_ID, "julianBlockDate:  ", julianBlockDate);
 					julian += julianBlockDate;
 					ztsDateMessage(ifltab, DSS_FUNCTION_ztsStoreIrreg_ID, "First value date and time for block:  ", julian, seconds);
-					julian = (itimes[icount - 1] / 1440);
-					seconds = (itimes[icount - 1] - (julian * 1440)) * 60;
+					julian = (itimes[icount - 1] / MINS_IN_1_DAY);
+					seconds = (itimes[icount - 1] - (julian * MINS_IN_1_DAY)) * SECS_IN_1_MINUTE;
 					if (seconds == 0) {
-						seconds = 86400;
+						seconds = SECS_IN_1_DAY;
 						julian--;
 					}
 					julian += julianBlockDate;

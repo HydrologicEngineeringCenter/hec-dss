@@ -397,7 +397,7 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                         errmsg = stringToVerticalDatumInfo(&vdi, xml[yearIndex]);
                         for (int i = 0; i < numberValues; ++i) {
                             values[i] = (double)(i + 1) - (errmsg == NULL ? vdi.offsetToNgvd29 : 0);
-                            times[i] = jan_01_2021_0100 + (365 * yearIndex + i) * 1440;
+                            times[i] = jan_01_2021_0100 + (365 * yearIndex + i) * MINS_IN_1_DAY;
                             quality[i] = 3;
                         }
                         //-------------------------------------------------//
@@ -479,7 +479,7 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                             else {
                                 startJul = dateToJulian(startDate[yearIndex]);
                                 for (int i = 0; i < numberValues; ++i) {
-                                    times[i] -= startJul * 1440;
+                                    times[i] -= startJul * MINS_IN_1_DAY;
                                 }
                                 zsitsxd_(
                                     ifltab,                         // <-> file table
@@ -530,7 +530,7 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                                     values,                     // values
                                     numberValues,               // number of values
                                     times,                      // times
-                                    60,                         // time granularity in seconds
+                                    SECS_IN_1_MINUTE,             // time granularity in seconds
                                     NULL,                       // base date (if other than 01Jan1900)
                                     unit,                       // data unit
                                     dataType);                  // data type
@@ -612,14 +612,14 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                             //  - the offset                                                   //
                             //-----------------------------------------------------------------//
                             for (int i = 0; i < numberValues; ++i) {
-                                times[i] = jan_01_2021_0000 + offsetMinutes + i * 1440;
+                                times[i] = jan_01_2021_0000 + offsetMinutes + i * MINS_IN_1_DAY;
                             }
                         }
                         else {
                             startJul     = dateToJulian(startDate[yearIndex]);
                             startMinutes = 1;
                             endJul       = dateToJulian(endDate[yearIndex]);
-                            endMinutes   = 1440;
+                            endMinutes   = MINS_IN_1_DAY;
                             zritsxd_(
                                 ifltab,                         // <-> file table
                                 pathnames[api][tsType],         //  -> dataset name
@@ -650,7 +650,7 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                             // add the base date (in minutes) to each value in the times array //
                             //-----------------------------------------------------------------//
                             for (int i = 0; i < numberValues; ++i) {
-                                times[i] += basedate * 1440;
+                                times[i] += basedate * MINS_IN_1_DAY;
                             }
                         }
                         headerBuf = userHeaderToString(userHeader, userHeaderNumber);
@@ -805,14 +805,14 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                         //  - the offset                                                   //
                         //-----------------------------------------------------------------//
                         for (int i = 0; i < numberValues; ++i) {
-                            times[i] = dec_21_2021_0000 + offsetMinutes + i * 1440;
+                            times[i] = dec_21_2021_0000 + offsetMinutes + i * MINS_IN_1_DAY;
                         }
                     }
                     else {
                         startJul     = dateToJulian("21Dec2021");
                         startMinutes = 1;
                         endJul       = dateToJulian("10Jan2022");
-                        endMinutes = 1440;
+                        endMinutes = MINS_IN_1_DAY;
                         zritsxd_(
                             ifltab,                         // <-> file table
                             pathnames[api][tsType],         //  -> dataset name
@@ -843,7 +843,7 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                         // add the base date (in minutes) to each value in the times array //
                         //-----------------------------------------------------------------//
                         for (int i = 0; i < numberValues; ++i) {
-                            times[i] += basedate * 1440;
+                            times[i] += basedate * MINS_IN_1_DAY;
                         }
                     }
                     headerBuf = userHeaderToString(userHeader, userHeaderNumber);
@@ -914,17 +914,17 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                     switch (workingVerticalDatum) {
                     case IVERTICAL_DATUM_UNSET:
                         if (t[i] < jan_01_2022_0001) {
-                            expectedValue = ((t[i] / 1440 - 1) - jan_01_2021) % 365 + 1;
+                            expectedValue = ((t[i] / MINS_IN_1_DAY - 1) - jan_01_2021) % 365 + 1;
                         }
                         else {
-                            expectedValue = ((t[i] / 1440 - 1) - jan_01_2021) % 365 + 1.5;
+                            expectedValue = ((t[i] / MINS_IN_1_DAY - 1) - jan_01_2021) % 365 + 1.5;
                         }
                         break;
                     case IVERTICAL_DATUM_NGVD29:
-                        expectedValue = ((t[i] / 1440 - 1) - jan_01_2021) % 365 + 1;
+                        expectedValue = ((t[i] / MINS_IN_1_DAY - 1) - jan_01_2021) % 365 + 1;
                         break;
                     case IVERTICAL_DATUM_NAVD88:
-                        expectedValue = ((t[i] / 1440 - 1) - jan_01_2021) % 365 + 1.5;
+                        expectedValue = ((t[i] / MINS_IN_1_DAY - 1) - jan_01_2021) % 365 + 1.5;
                         break;
                     }
                     assert(dv[i] == expectedValue);
@@ -984,7 +984,7 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                     else {
                         startJul = dateToJulian("21Dec2021");
                         for (int i = 0; i < numberValues; ++i) {
-                            times[i] -= startJul * 1440;
+                            times[i] -= startJul * MINS_IN_1_DAY;
                         }
                         zsitsxd_(
                             ifltab,                         // <-> file table
@@ -1026,7 +1026,7 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                             values,                     // values
                             numberValues,               // number of values
                             times,                      // times
-                            60,                         // time granularity in seconds
+                            SECS_IN_1_MINUTE,             // time granularity in seconds
                             NULL,                       // base date (if other than 01Jan1900)
                             unit,                       // data unit
                             dataType);                  // data type
@@ -1075,7 +1075,7 @@ void deleteTimeSeriesRecords(
         recordJul = ztsIrregGetBlockStart(startJul, blockSize);
     }
     else {
-        int operation = 1;
+        int operation = EPART_TO_SECONDS;
         int blksize = blockSize;
         ztsGetStandardInterval(7, &intervalSeconds, ePart, sizeof(ePart), &operation);
         recordJul = ztsRegGetBlockStart(startJul, intervalSeconds, &blksize);
@@ -1419,7 +1419,7 @@ void testStoreRetrieveTimeSeries() {
                                                     dvalues[l],
                                                     numberValues,
                                                     itimes,
-                                                    60,
+                                                    SECS_IN_1_MINUTE,
                                                     NULL,
                                                     unit[l],
                                                     type);
@@ -1430,7 +1430,7 @@ void testStoreRetrieveTimeSeries() {
                                                     fvalues[l],
                                                     numberValues,
                                                     itimes,
-                                                    60,
+                                                    SECS_IN_1_MINUTE,
                                                     NULL,
                                                     unit[l],
                                                     type);
@@ -2190,9 +2190,9 @@ void retrieveAndCompareVdi(long long *ifltab, const char* pathname, const void *
             // retrieve the destination time series //
             //--------------------------------------//
             julianToDate(tss[SRC]->timeWindow->startJulian, 4, startDate, sizeof(startDate));
-            sprintf(startTime, "%2.2d:%2.2d", tss[SRC]->timeWindow->startTimeSeconds / 3600, tss[SRC]->timeWindow->startTimeSeconds % 3600);
+            sprintf(startTime, "%2.2d:%2.2d", tss[SRC]->timeWindow->startTimeSeconds / SECS_IN_1_HOUR, tss[SRC]->timeWindow->startTimeSeconds % SECS_IN_1_HOUR);
             julianToDate(tss[SRC]->timeWindow->endJulian, 4, endDate, sizeof(endDate));
-            sprintf(endTime, "%2.2d:%2.2d", tss[SRC]->timeWindow->endTimeSeconds / 3600, tss[SRC]->timeWindow->endTimeSeconds % 3600);
+            sprintf(endTime, "%2.2d:%2.2d", tss[SRC]->timeWindow->endTimeSeconds / SECS_IN_1_HOUR, tss[SRC]->timeWindow->endTimeSeconds % SECS_IN_1_HOUR);
             tss[DST] = zstructTsNewTimes(
                 pathname,
                 startDate,

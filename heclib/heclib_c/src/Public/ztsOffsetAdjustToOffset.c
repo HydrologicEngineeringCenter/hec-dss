@@ -114,7 +114,7 @@ int ztsOffsetAdjustToOffset(int offsetSeconds, int intervalSeconds, int *julian,
 	cleanTime(julian, seconds, SECOND_GRANULARITY);
 
 	//  If yearly and in a leap year, need to adjust
-	if (intervalSeconds == 31536000) {
+	if (intervalSeconds == SECS_IN_1_YEAR) {
 		julianToYearMonthDay (*julian, &year, &month, &day);
 		if (isLeapYear(year)) {
 			if (year > 0) {

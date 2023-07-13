@@ -129,7 +129,7 @@ int ztsStorePattern(long long *ifltab, zStructTimeSeries *tss)
 	if (version == 6) {
 	//	tss->numberValues = ztransfer->values1Number;
 		ztransfer->internalHeaderNumber = 5;
-		ztransfer->internalHeader[0] = tss->timeOffsetSeconds / 60;
+		ztransfer->internalHeader[0] = tss->timeOffsetSeconds / SECS_IN_1_MINUTE;
 		stringCToFort((char *)&ztransfer->internalHeader[1], 8, tss->units);
 		stringCToFort((char *)&ztransfer->internalHeader[3], 8, tss->type);
 	}

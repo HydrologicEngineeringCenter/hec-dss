@@ -5,6 +5,8 @@
 
 #define UNDEFINED_TIME -2147483647
 #define JULIAN_BASE_DATE 693960
+#define JULIAN_01JAN1970 25568 // julian date of start of epoch (01-01-1970)
+
 
 #ifndef _TRUNCATE
 #define _TRUNCATE ((size_t)-1)

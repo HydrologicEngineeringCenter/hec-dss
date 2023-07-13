@@ -3,6 +3,7 @@
 
 #include "assert.h"
 #include "heclibDate.h"
+#include "standardIntervals.h"
 #include "zdssVals.h"
 
 #include "zStructTimeSeries.h"
@@ -37,7 +38,7 @@
 
 
 #define DSS_VERSION "7-IR"
-#define DSS_VERSION_DATE "10 Jul 2023" 
+#define DSS_VERSION_DATE "13 Jul 2023"
 
 
 
@@ -424,9 +425,9 @@ int zcompare_zStructArray(long long *ifltab, zStructArray *struct1, zStructArray
 //  Data sets (multiple records) time granularities can be any of the following.
 //  (default is minute for compatibility).  For very large date expanses, hour or day is used.
 #define SECOND_GRANULARITY 1
-#define MINUTE_GRANULARITY 60
-#define HOUR_GRANULARITY 3600
-#define DAY_GRANULARITY 86400
+#define MINUTE_GRANULARITY SECS_IN_1_MINUTE
+#define HOUR_GRANULARITY SECS_IN_1_HOUR
+#define DAY_GRANULARITY SECS_IN_1_DAY
 
 #define DAILY_BLOCK		1
 #define MONTHLY_BLOCK	2

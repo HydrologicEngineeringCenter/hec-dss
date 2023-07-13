@@ -83,33 +83,33 @@ int ztsRegGetBlockStart(int julianDate, int intervalSeconds, int *blockSize)
 	int day, month, year;
 	int startBlockJulian;
 
-	if (intervalSeconds < 900) {  //  < 15 minutes
+	if (intervalSeconds < SECS_IN_15_MINUTES) {  //  < 15 minutes
 		//  Daily block; use start of day
 		startBlockJulian = julianDate;
-		*blockSize = 1;
+		*blockSize = BLOCK_1_DAY;
 	}
 	else {
 		//  Larger than daily.  We'll need to get the specific values
 		julianToYearMonthDay(julianDate, &year, &month, &day);
 
-		if (intervalSeconds < 86400) {  //  < 1 day
+		if (intervalSeconds < SECS_IN_1_DAY) {  //  < 1 day
 			//  Monthly block; use start of month
 			day = 1;
-			*blockSize = 2;
+			*blockSize = BLOCK_1_MONTH;
 		}
-		else if (intervalSeconds < 604800) { //  < 1 week
+		else if (intervalSeconds < SECS_IN_1_WEEK) { //  < 1 week
 			//  Yearly block; use start of year
 			day = 1;
 			month = 1;
-			*blockSize = 3;
+			*blockSize = BLOCK_1_YEAR;
 		}
-		else if (intervalSeconds < 31536000) {  //  < 1 year
+		else if (intervalSeconds < SECS_IN_1_YEAR) {  //  < 1 year
 			//  Decade block; use start of decade
 			day = 1;
 			month = 1;
 			year /= 10;
 			year *= 10;
-			*blockSize = 4;
+			*blockSize = BLOCK_1_DECADE;
 		}
 		else  {
 			//  Century block; use start of century
@@ -117,7 +117,7 @@ int ztsRegGetBlockStart(int julianDate, int intervalSeconds, int *blockSize)
 			month = 1;
 			year /= 100;
 			year *= 100;
-			*blockSize = 5;
+			*blockSize = BLOCK_1_CENTURY;
 		}
 
 		//  Now, put the dates back together

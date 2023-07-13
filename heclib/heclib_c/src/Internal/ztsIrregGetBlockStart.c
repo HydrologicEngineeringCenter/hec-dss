@@ -47,25 +47,25 @@ int ztsIrregGetBlockStart(int julianDate, int blockSize)
 	julianToYearMonthDay(julianDate, &iyear, &imonth, &iday);
 
 	//  Back up to the start of the block
-	if (blockSize == 1) {
+	if (blockSize == BLOCK_1_DAY) {
 		//  Daily
 	}
-	else if (blockSize == 2) {
+	else if (blockSize == BLOCK_1_MONTH) {
 		//  Monthly, back up to the first day of the month
 		iday = 1;
 	}
-	else if (blockSize == 3) {
+	else if (blockSize == BLOCK_1_YEAR) {
 		//  Yearly, back up to the first day of the year
 		iday = 1;
 		imonth = 1;
 	}
-	else if (blockSize == 4) {
+	else if (blockSize == BLOCK_1_DECADE) {
 		//  Decade, back up to the first day of the decade
 		iday = 1;
 		imonth = 1;
 		iyear = (iyear/10) * 10;
 	}
-	else if (blockSize == 5) {
+	else if (blockSize == BLOCK_1_CENTURY) {
 		//  Century, back up to the first day of the century
 		iday = 1;
 		imonth = 1;

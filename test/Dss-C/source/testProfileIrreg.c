@@ -90,7 +90,7 @@ int testProfileIrreg(long long *ifltab)
 
 	//  We have 16 months of daily 8:00 am readings
 	for (i=0; i<1000; i++) {
-		times[i] = (25000 * 1440) + (i * 1440) + (8 * 60);
+		times[i] = (25000 * MINS_IN_1_DAY) + (i * MINS_IN_1_DAY) + MINS_IN_8_HOURS;
 		for (j=0; j<20; j++) {
 			//values[i][j] = (20. - (float)j) + 35.0 + sin((float)i);
 			values[i][j] = (float)(i * 1000) + j;
@@ -214,7 +214,7 @@ int testProfileIrreg(long long *ifltab)
 	//  write a little bit of new data into the existing record
 
 	for (i=0; i<10; i++) {
-		times3[i] = times[0] + ((i-5)*1440);
+		times3[i] = times[0] + ((i-5)* MINS_IN_1_DAY);
 		for (j=0; j<20; j++) {
 			//values[i][j] = (20. - (float)j) + 35.0 + sin((float)i);
 			//values[i][j] = (float)(i * 1000) + j;
@@ -297,7 +297,7 @@ int testProfileIrreg(long long *ifltab)
 	// -------------------------------------------------------------------
 
 	//  Delete those values to restore original data set
-	minsToDateTime(times[0] -1440, endDate, endTime, sizeof(endDate), sizeof(endTime));
+	minsToDateTime(times[0] - MINS_IN_1_DAY, endDate, endTime, sizeof(endDate), sizeof(endTime));
 	tssIn3->doubleProfileValues = (double *)dvalues3;
 	tssIn3->numberValues = 0;
 
@@ -312,7 +312,7 @@ int testProfileIrreg(long long *ifltab)
 
 	//   Check
 	
-	minsToDateTime(times[0]-(5*1440), startDate, startTime, sizeof(startDate), sizeof(startTime));
+	minsToDateTime(times[0]-(5 * MINS_IN_1_DAY), startDate, startTime, sizeof(startDate), sizeof(startTime));
 	minsToDateTime(times[tssIn1->numberValues-1], endDate, endTime, sizeof(endDate), sizeof(endTime));
 
 	//  Write doubles, read doubles
@@ -365,9 +365,9 @@ int testProfileIrreg(long long *ifltab)
 	tss3->unitsProfileDepths = "feet";
 	tss3->unitsProfileValues = "deg F";
 	
-	itime = times[0] - (500 * 1440);
+	itime = times[0] - (500 * MINS_IN_1_DAY);
 	minsToDateTime(itime, startDate, startTime, sizeof(startDate), sizeof(startTime));
-	itime = times[tssIn1->numberValues-1] - (500 * 1440);
+	itime = times[tssIn1->numberValues-1] - (500 * MINS_IN_1_DAY);
 	minsToDateTime(itime, endDate, endTime, sizeof(endDate), sizeof(endTime));
 
 	//  read before into data
@@ -407,9 +407,9 @@ int testProfileIrreg(long long *ifltab)
 
 
 	
-	itime = times[0] + (500 * 1440);
+	itime = times[0] + (500 * MINS_IN_1_DAY);
 	minsToDateTime(itime, startDate, startTime, sizeof(startDate), sizeof(startTime));
-	itime = times[tssIn1->numberValues-1] + (500 * 1440);
+	itime = times[tssIn1->numberValues-1] + (500 * MINS_IN_1_DAY);
 	minsToDateTime(itime, endDate, endTime, sizeof(endDate), sizeof(endTime));
 
 	tss3 = zstructTsNewTimes(pathname2, startDate, startTime, endDate, endTime);

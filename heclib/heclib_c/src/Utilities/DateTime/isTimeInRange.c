@@ -42,7 +42,8 @@
 *					within the requested time window, for irregular interval date.
 *					timeGranularitySeconds is usually 60 for minutes,
 *					but often 1 for seconds, and also can be larger
-*					for very long time spans (3600 for hours, etc.)
+*					for very long time spans - HOUR_GRANULARITY (3600) for hours
+*                   ory DAY_GRANULARITY (86400) for days
 *
 *
 *	Author:			Bill Charley
@@ -66,7 +67,7 @@ int isTimeInRange(int timeValue, int *lastValueStatus, int timeGranularitySecond
 	if (*lastValueStatus < 0) {
 		// Is it before?
 		jul = timeWindow->startJulian - baseDate;
-		ltime = (jul * (long long)(86400/timeGranularitySeconds)) + (timeWindow->startTimeSeconds / timeGranularitySeconds);
+		ltime = (jul * (long long)(SECS_IN_1_DAY /timeGranularitySeconds)) + (timeWindow->startTimeSeconds / timeGranularitySeconds);
 		if ((long long)timeValue < ltime) {
 			return 0;
 		}
@@ -74,7 +75,7 @@ int isTimeInRange(int timeValue, int *lastValueStatus, int timeGranularitySecond
 
 	// Is it after?
 	jul = (long long)(timeWindow->endJulian - baseDate);
-	ltime = (jul * (long long)(86400/timeGranularitySeconds)) + (timeWindow->endTimeSeconds / timeGranularitySeconds);
+	ltime = (jul * (long long)(SECS_IN_1_DAY /timeGranularitySeconds)) + (timeWindow->endTimeSeconds / timeGranularitySeconds);
 	if ((long long)timeValue > ltime) {
 		*lastValueStatus = 1;
 		return 0;

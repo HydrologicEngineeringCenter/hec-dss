@@ -62,7 +62,7 @@ int testztsStruct13(long long *ifltab)
 	  cnotesLengthTotal = 0;
 	  for (i=0; i<numb; i++) {
 		  //  Noon times
-		  times[i] = (jul + i) * 1440 + 720; 
+		  times[i] = (jul + i) * MINS_IN_1_DAY + MINS_IN_12_HOURS;
 		data1[i] = (double)i;
 		data3[i] = data1[i];
 		n = i/25;

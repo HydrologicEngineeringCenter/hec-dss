@@ -148,8 +148,6 @@ int ztsRetrieveReg7(long long *ifltab, zStructTimeSeries *tss,
 	bufferControl[BUFF_ADDRESS] = 0;
 	bufferControl[BUFF_INTS_USED] = 0;
 
-	const int WEEKLY_INTERVAL_SECONDS = 604800;
-
 
 	//  Check for correct DSS Version
 	if (zgetVersion(ifltab) != 7) {
@@ -244,7 +242,7 @@ int ztsRetrieveReg7(long long *ifltab, zStructTimeSeries *tss,
 		julianNextBlockDate = ztsIncrementBlock(julianBlockDate, blockSize);
 
 		//  Calculate the number of values in this block
-		numberInBlock = numberPeriods(intervalSeconds, julianBlockDate-1, 86400, julianNextBlockDate-1, 86400);
+		numberInBlock = numberPeriods(intervalSeconds, julianBlockDate-1, SECS_IN_1_DAY, julianNextBlockDate-1, SECS_IN_1_DAY);
 
 
 		//  Get the position (number of periods) from the start of the block to the current position in the block.
@@ -252,12 +250,12 @@ int ztsRetrieveReg7(long long *ifltab, zStructTimeSeries *tss,
 		//  If we are in the middle of a read, this will be 1.
 
 		//  First get the block position relative to the original start time
-		blockPositionRelativeToStart = numberPeriods(intervalSeconds, julianBlockDate-1, 86400, startJulian, startSeconds) -1;
+		blockPositionRelativeToStart = numberPeriods(intervalSeconds, julianBlockDate-1, SECS_IN_1_DAY, startJulian, startSeconds) -1;
 
 		//  Now determine the position relative to the current position in the data array
 		//  (what we have already read)
 		blockStartPosition = blockPositionRelativeToStart + currentPosition;
-		if (tss->timeWindow->intervalSeconds == WEEKLY_INTERVAL_SECONDS && blockStartPosition == -1) {
+		if (tss->timeWindow->intervalSeconds == SECS_IN_1_WEEK && blockStartPosition == -1) {
 			blockStartPosition = 0;
 			intervalStartsBeforeBlock = 1;
 		}
@@ -670,7 +668,7 @@ int ztsRetrieveReg7(long long *ifltab, zStructTimeSeries *tss,
 				incrementTime(tss->timeIntervalSeconds, 1, tss->endJulianDate, tss->endTimeSeconds, &tss->endJulianDate, &tss->endTimeSeconds);
 			}
 		}
-		//  Take care of julian base date, if too large (1,400,000, or MAX_INT / 1440)
+		//  Take care of julian base date, if too large (1,400,000, or MAX_INT / MINS_IN_1_DAY)
 		if ((tss->startJulianDate > 1400000) || (tss->endJulianDate > 1400000)) {
 			tss->julianBaseDate = tss->startJulianDate;
 

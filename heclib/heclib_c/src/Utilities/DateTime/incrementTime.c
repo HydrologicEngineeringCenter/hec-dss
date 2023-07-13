@@ -1,4 +1,5 @@
 #include <string.h>
+#include <stdlib.h>
 
 #include "heclib7.h"
 #include "hecdssInternal.h"
@@ -31,7 +32,7 @@
 *
 *				int *secondsEnd (output)
 *					The time, in seconds, of the day after incrementing.
-*					Will be   0 < secondsEnd <= 86400
+*					Will be   0 < secondsEnd <= SECS_IN_1_DAY
 *
 *	Returns:	STATUS_OKAY:  Successful
 *				STATUS_NOT_OKAY:  Invalid interval
@@ -119,15 +120,15 @@ int incrementTime(int intervalSeconds, int numberPeriods,
 
 	//  If the interval is less than tri-monthly, then it is a simple addition
 	//  Check for less than 10 days
-	if (intervalSeconds < 864000) {
+	if (intervalSeconds < SECS_IN_TRI_MONTH) {
 		// Do computations in 64 bit math in case we end up with very large numbers
 		lseconds = ((long long)intervalSeconds * (long long)numberPeriods) + (long long)*secondsEnd;
-		if ((lseconds < -86400L) || (lseconds > 86400L)) {
-			day = (int)(lseconds / 86400L);
-			iremain = (int)(lseconds - ((long long)day * 86400L));
+		if ((lseconds < -SECS_IN_1_DAY) || (lseconds > SECS_IN_1_DAY)) {
+			day = (int)(lseconds / SECS_IN_1_DAY);
+			iremain = (int)(lseconds - ((long long)day * SECS_IN_1_DAY));
 			if (iremain < 1) {
 				day--;
-				iremain += 86400;
+				iremain += SECS_IN_1_DAY;
 			}
 			*julianEnd += day;
 			*secondsEnd = iremain;
@@ -144,7 +145,7 @@ int incrementTime(int intervalSeconds, int numberPeriods,
 	//  Tri-monthly and above is when we have to start dealing with the
 	//  odd end of period dates
 	//  For example, the end of the month may be the 29, 30 or 31st.
-	intervalMinutes = intervalSeconds / 60;
+	intervalMinutes = intervalSeconds / SECS_IN_1_MINUTE;
 
 	//  Compute any offset.  EOP rules.  We will adjust for this later
 	//  (e.g., if yearly and date is 25Dec1950, a 60 year increment needs to be 25Dec2010)
@@ -154,7 +155,7 @@ int incrementTime(int intervalSeconds, int numberPeriods,
 	julianToYearMonthDay (*julianEnd, &year, &month, &day);
 
 	//  Adjust dates, using standard times; offset holds the time within the period.
-	if (intervalMinutes == 14400) {
+	if (intervalMinutes == MINS_IN_TRI_MONTH) {
 		//  Tri-monthly (nominal 10 days)
 		imonth = numberPeriods / 3;
 		iremain = numberPeriods - (imonth * 3);
@@ -185,7 +186,7 @@ int incrementTime(int intervalSeconds, int numberPeriods,
 			day = 10;
 		}
 	}
-	else if (intervalMinutes == 21600) {
+	else if (intervalMinutes == MINS_IN_SEMI_MONTH) {
 		//  Semi-monthly
 		imonth = numberPeriods / 2;
 		iremain = numberPeriods - (imonth * 2);
@@ -213,13 +214,13 @@ int incrementTime(int intervalSeconds, int numberPeriods,
 			day = 15;
 		}
 	}
-	else if ((intervalMinutes > 40000) && (intervalMinutes < 45000)) {
+	else if (abs(intervalMinutes - MINS_IN_1_MONTH) <= 2 * MINS_IN_1_DAY) {
 		//  Monthly
 		month += numberPeriods;
 		//  Day is always end of month for standard
 		day = 28;
 	}
-	else if ((intervalMinutes > 520000) && (intervalMinutes < 530000)) {
+	else if (abs(intervalMinutes > MINS_IN_1_YEAR) <= MINS_IN_1_DAY) {
 		//  Yearly
 		year += numberPeriods;
 		//  Always new year's eve for standard
@@ -229,7 +230,7 @@ int incrementTime(int intervalSeconds, int numberPeriods,
 	else {
 		//  Unknown - just do straight day computation
 		//  Need to use long long math for large increments
-		longNumber = (((long long)intervalMinutes / 1440L) * (long long)numberPeriods);
+		longNumber = (((long long)intervalMinutes / MINS_IN_1_DAY) * (long long)numberPeriods);
 		day += (int)longNumber;
 	}
 

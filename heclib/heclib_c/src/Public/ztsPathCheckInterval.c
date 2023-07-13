@@ -43,7 +43,7 @@ int ztsPathCheckInterval(long long *ifltab, char *pathname, size_t sizeofPathnam
 
 	int istat;
 	int len;
-	int flagSecondsToChar;
+	int operation;
 	int interval;
 	int version;
 	char ePart[MAX_PART_SIZE];
@@ -51,9 +51,9 @@ int ztsPathCheckInterval(long long *ifltab, char *pathname, size_t sizeofPathnam
 	istat = -1;
 	len = zpathnameGetPart (pathname, 5, ePart, sizeof(ePart));
 	if (len > 3) {
-		flagSecondsToChar = 0;
+		operation = EPART_TO_SECONDS_TO_EPART;
 		version = zgetVersion(ifltab);
-		istat = ztsGetStandardInterval(version, &interval, ePart, sizeof(ePart), &flagSecondsToChar);
+		istat = ztsGetStandardInterval(version, &interval, ePart, sizeof(ePart), &operation);
 		if ((istat == 0) || (istat == 1)) {
 			zpathnameSetPart (pathname, (size_t)sizeofPathname, (const char*)ePart, 5);
 		}

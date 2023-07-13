@@ -109,7 +109,7 @@ float timeStringToSecondsMills(const char *timeString)
 			isec = 0;
 		}
 	}
-	itime = (ihr * 3600) + (imin * 60) + isec;
+	itime = (ihr * SECS_IN_1_HOUR) + (imin * SECS_IN_1_MINUTE) + isec;
 	ftime = (float)itime + ((float)mills * (float)0.001);
 	return ftime;
 }

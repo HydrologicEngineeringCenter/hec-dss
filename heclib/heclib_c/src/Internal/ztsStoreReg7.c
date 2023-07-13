@@ -93,8 +93,6 @@ int ztsStoreReg7(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 	char path[MAX_PATHNAME_LENGTH];
 	char blockDate[20];
 
-	const int WEEKLY_INTERVAL_SECONDS = 604800;
-
 
 	//  Check for correct DSS Version
 	if (zgetVersion(ifltab) != 7) {
@@ -264,7 +262,7 @@ int ztsStoreReg7(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 		julianNextBlockDate = ztsIncrementBlock(julianBlockDate, tss->timeWindow->blockSize);
 
 		//  Calculate the number of values in this block
-		numberInBlock = numberPeriods(tss->timeWindow->intervalSeconds, julianBlockDate-1, 86400, julianNextBlockDate-1, 86400);
+		numberInBlock = numberPeriods(tss->timeWindow->intervalSeconds, julianBlockDate-1, SECS_IN_1_DAY, julianNextBlockDate-1, SECS_IN_1_DAY);
 
 		//  If the block we are writing to exists, determine if we have to read it.
 		//  If the writing block dates encompass the entire block, we won't
@@ -286,13 +284,13 @@ int ztsStoreReg7(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 		//  If we are in the middle of a write, this will be 1.
 
 		//  First get the block position relative to the original start time
-		blockPositionRelativeToStart = numberPeriods(tss->timeWindow->intervalSeconds, julianBlockDate-1, 86400, tss->timeWindow->startJulian, tss->timeWindow->startTimeSeconds) -1;
+		blockPositionRelativeToStart = numberPeriods(tss->timeWindow->intervalSeconds, julianBlockDate-1, SECS_IN_1_DAY, tss->timeWindow->startJulian, tss->timeWindow->startTimeSeconds) -1;
 
 
 		//  Now determine the position relative to the current position in the data array
 		//  (what we have already written)
 		blockStartPosition = blockPositionRelativeToStart + currentPosition;
-		if (tss->timeWindow->intervalSeconds == WEEKLY_INTERVAL_SECONDS && blockStartPosition == -1) {
+		if (tss->timeWindow->intervalSeconds == SECS_IN_1_WEEK && blockStartPosition == -1) {
 			blockStartPosition = 0;
 		}
 		if (blockStartPosition < 0) {

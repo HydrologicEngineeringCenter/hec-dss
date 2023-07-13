@@ -46,7 +46,7 @@ int main()
 		getDateAndTime(valueTime, SECOND_GRANULARITY, tss3->startJulianDate, 
 						cdate, sizeof(cdate), ctime, sizeof(ctime));
 		printf ("Oridnate %d, for %s, %s, value is %f\n",i, cdate, ctime, tss3->floatValues[i]);
-		valueTime += 3600;  //  Increment to next hour
+		valueTime += SECS_IN_1_HOUR;  //  Increment to next hour
 	}
 
 	tss4 = zstructTsNewTimes("/Basin/Location/Flow//~1Day/C Example/", "19April2012", "2400", "01July2013", "2400"); 

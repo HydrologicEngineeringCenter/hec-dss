@@ -59,7 +59,7 @@ int zcatSortPath(int handle, const char *pathname, size_t pathnameLen, int dataT
 
 	int i;
 	int number;
-	int flagDirection;
+	int operation;
 	int status;
 
 	char cindex[12];
@@ -119,8 +119,8 @@ int zcatSortPath(int handle, const char *pathname, size_t pathnameLen, int dataT
 			partLen[3] = (int)strlen(cdate);
 		}
 		len = stringCopy (cinterval, sizeof(cinterval), cpart[4], (size_t)partLen[4]);
-		flagDirection = 1;
-		status = ztsGetStandardInterval(7, &interval, cinterval, sizeof(cinterval), &flagDirection);
+		operation = EPART_TO_SECONDS;
+		status = ztsGetStandardInterval(7, &interval, cinterval, sizeof(cinterval), &operation);
 		if (status != STATUS_NOT_OKAY) {
 			_snprintf_s(cinterval, sizeof(cinterval), _TRUNCATE, " %.10d", interval);
 			cpart[4] = cinterval;
@@ -134,7 +134,7 @@ int zcatSortPath(int handle, const char *pathname, size_t pathnameLen, int dataT
 		status = spatialDateTime(cpart[3], &jdate, &mins);
 		if (status == STATUS_OKAY) {
 			jdate += 100000;
-			mins /= 60;
+			mins /= SECS_IN_1_MINUTE;
 			_snprintf_s(cdate, sizeof(cdate), _TRUNCATE, " %.10d %d", jdate, mins);
 			cpart[3] = cdate;
 			partLen[3] = (int)strlen(cdate);

@@ -3,6 +3,7 @@
 #include <stdlib.h>
 
 #include "heclib.h"
+#include "standardIntervals.h"
 #include "TestDssC.h"
 
 
@@ -33,7 +34,7 @@ int testTimeSeries5(long long *ifltab)
 	for (i=0; i<5000; i++) {
 
 		min++;
-		if (min > 1440) {
+		if (min > MINS_IN_1_DAY) {
 			min = 1;
 			jul++;
 		}

@@ -85,13 +85,13 @@ int ztsRegAddTimes(zStructTimeSeries *tss)
 	ztsOffsetAdjustToOffset(tss->timeOffsetSeconds, tss->timeIntervalSeconds, &julianStart, &startTimeSeconds);
 
 	if (timeGranularity < 1) timeGranularity = MINUTE_GRANULARITY;
-	if (tss->timeIntervalSeconds <= 86400) {
+	if (tss->timeIntervalSeconds <= SECS_IN_1_DAY) {
 		//  Time interval a day or less.  We can just add times
 		incrementTime(tss->timeIntervalSeconds, 0, julianStart, startTimeSeconds, &julianEnd, &secondsEnd);
 		if (tss->timeOffsetSeconds != 0) {
 			ztsOffsetAdjustToOffset(tss->timeOffsetSeconds, tss->timeIntervalSeconds, &julianEnd, &secondsEnd);
 		}
-		tss->times[0] = ((julianEnd - tss->julianBaseDate) * (86400 / timeGranularity)) + (secondsEnd / timeGranularity);
+		tss->times[0] = ((julianEnd - tss->julianBaseDate) * (SECS_IN_1_DAY / timeGranularity)) + (secondsEnd / timeGranularity);
 		interval = tss->timeIntervalSeconds / timeGranularity;
 		for (i = 1; i < tss->timeWindow->numberValues; i++) {
 			tss->times[i] = tss->times[i - 1] + interval;
@@ -103,7 +103,7 @@ int ztsRegAddTimes(zStructTimeSeries *tss)
 			if (tss->timeOffsetSeconds != 0) {
 				ztsOffsetAdjustToOffset(tss->timeOffsetSeconds, tss->timeIntervalSeconds, &julianEnd, &secondsEnd);
 			}
-			tss->times[i] = ((julianEnd - tss->julianBaseDate) * (86400 / timeGranularity)) + (secondsEnd / timeGranularity);
+			tss->times[i] = ((julianEnd - tss->julianBaseDate) * (SECS_IN_1_DAY / timeGranularity)) + (secondsEnd / timeGranularity);
 		}
 	}
 	return STATUS_OKAY;

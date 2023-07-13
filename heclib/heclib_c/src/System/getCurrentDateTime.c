@@ -2,6 +2,7 @@
 #include <time.h>
 
 #include "heclibDate.h"
+#include "standardIntervals.h"
 
 /**
 *  Function:	getCurrentDateTime
@@ -21,8 +22,8 @@
 *				int *secondsPastMidnight (output)
 *					The current time of day in seconds past midnight.
 *					"1" is one second past midnight.  "0" doesn't exist, as midnight belongs to the end
-*					of the day, by convention, and midnight is the number "86400".
-*					secondsPastMidnight varies from 1 to 86400.
+*					of the day, by convention, and midnight is the number SECS_IN_1_DAY.
+*					secondsPastMidnight varies from 1 to SECS_IN_1_DAY.
 *
 *				int *millsPastSecond (output)
 *					The current time second fraction in mills past the secondsPastMidnight
@@ -51,10 +52,10 @@ void getCurrentDateTime (int *julian, int *secondsPastMidnight, int *millsPastSe
 	struct _timeb timebuffer;
 
     _ftime64_s( &timebuffer );
-	seconds = timebuffer.time - (long long)(timebuffer.timezone * 60);
+	seconds = timebuffer.time - (long long)(timebuffer.timezone * SECS_IN_1_MINUTE);
 	if (timebuffer.dstflag) {
 		//  Only do USA DST (60 minutes)
-		seconds += 3600;
+		seconds += SECS_IN_1_HOUR;
 	}
 	*millsPastSecond = timebuffer.millitm;
 
@@ -66,9 +67,9 @@ void getCurrentDateTime (int *julian, int *secondsPastMidnight, int *millsPastSe
 	*millsPastSecond = spec.tv_nsec / 1.0e6; // Convert nanoseconds to milliseconds
 #endif
 
-	days = seconds/86400;
-	*julian = (int)days + 25568;   //  25568 is julian day for 01Jan1970
-	*secondsPastMidnight = (int)(seconds - (days * 86400));
+	days = seconds/ SECS_IN_1_DAY;
+	*julian = (int)days + JULIAN_01JAN1970;
+	*secondsPastMidnight = (int)(seconds - (days * SECS_IN_1_DAY));
 
 
 }

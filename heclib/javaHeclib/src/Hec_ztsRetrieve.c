@@ -175,8 +175,8 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1ztsRetrieve(
 		fid = (*env)->GetFieldID (env, cls, "interval", "I");
 		if (fid) {
 			 jnumber = (jint)tss->timeIntervalSeconds;
-			if (jnumber > 59) {
-				jnumber /= 60;
+			if (jnumber >= SECS_IN_1_MINUTE) {
+				jnumber /= SECS_IN_1_MINUTE;
 				if (zmessageLevel((long long*)ifltab, MESS_METHOD_JNI_ID, MESS_LEVEL_INTERNAL_DIAG_1)) {		
 					zmessageDebugInt((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "ztsRetrieve.  interval in minutes: ", (int)jnumber);
 				}
@@ -199,7 +199,7 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1ztsRetrieve(
 		fid = (*env)->GetFieldID (env, cls, "timeGranularitySeconds", "I");
 		if (fid) {
 			jnumber = (jint)tss->timeGranularitySeconds;
-			if (jnumber == 0) jnumber = 60;
+			if (jnumber == 0) jnumber = SECS_IN_1_MINUTE;
 			(*env)->SetIntField(env, j_timeSeriesContainer, fid, jnumber);
 			if (zmessageLevel((long long*)ifltab, MESS_METHOD_JNI_ID, MESS_LEVEL_INTERNAL_DIAG_1)) {
 				zmessageDebugInt((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "ztsRetrieve.  timeGranularitySeconds: ", (int)jnumber);
@@ -267,12 +267,12 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1ztsRetrieve(
 		if (fid) {
 			idate = tss->startJulianDate - tss->julianBaseDate;
 			itime = tss->startTimeSeconds;
-			if (tss->timeGranularitySeconds == 60) {
-				itime /= 60;
-				jnumber = (jint)((idate * 1440) + itime);
+			if (tss->timeGranularitySeconds == MINUTE_GRANULARITY) {
+				itime /= SECS_IN_1_MINUTE;
+				jnumber = (jint)((idate * MINS_IN_1_DAY) + itime);
 			}
 			else {
-				jnumber = (jint)((idate * 1440 * 60) + itime);
+				jnumber = (jint)((idate * SECS_IN_1_DAY) + itime);
 			}
 			(*env)->SetIntField(env, j_timeSeriesContainer, fid, jnumber);
 			if (zmessageLevel((long long*)ifltab, MESS_METHOD_JNI_ID, MESS_LEVEL_INTERNAL_DIAG_1)) {
@@ -311,12 +311,12 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1ztsRetrieve(
 		if (fid) {
 			idate = tss->endJulianDate - tss->julianBaseDate;
 			itime = tss->endTimeSeconds;
-			if (tss->timeGranularitySeconds == 60) {
-				itime /= 60;
-				jnumber = (jint)((idate * 1440) + itime);
+			if (tss->timeGranularitySeconds == MINUTE_GRANULARITY) {
+				itime /= SECS_IN_1_MINUTE;
+				jnumber = (jint)((idate * MINS_IN_1_DAY) + itime);
 			}
 			else {
-				jnumber = (jint)((idate * 1440 * 60) + itime);
+				jnumber = (jint)((idate * SECS_IN_1_DAY) + itime);
 			}
 			(*env)->SetIntField(env, j_timeSeriesContainer, fid, jnumber);
 			if (zmessageLevel((long long*)ifltab, MESS_METHOD_JNI_ID, MESS_LEVEL_INTERNAL_DIAG_1)) {

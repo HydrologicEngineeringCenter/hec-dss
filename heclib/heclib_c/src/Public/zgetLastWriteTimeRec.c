@@ -93,7 +93,7 @@ long long zgetLastWriteTime6(long long *ifltab, const char *pathname)
 	}
 
 	//  Seconds since Jan 01, 1970
-	millis = (long long)(ibuff[6] - 25568) * 86400L;
+	millis = (long long)(ibuff[6] - JULIAN_01JAN1970) * SECS_IN_1_DAY;
 
 	//  Add seconds after midnight
 	millis += (long long)ibuff[7];

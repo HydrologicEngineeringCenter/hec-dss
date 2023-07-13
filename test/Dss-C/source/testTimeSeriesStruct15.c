@@ -17,7 +17,7 @@ int testztsStruct15(long long *ifltab)
 
 	for (i=0; i<2000; i++) {
 		fvalues[i] = (float)i;
-		itimes[i] = (23 * 3600) + (i * 10); 
+		itimes[i] = (23 * SECS_IN_1_HOUR) + (i * 10);
 	}
 
 	//  This function tests features not supported in DSS-6
@@ -34,7 +34,7 @@ int testztsStruct15(long long *ifltab)
 	tss2->startJulianDate = tss1->startJulianDate;
 	tss2->startTimeSeconds = 1;
 	tss2->endJulianDate = tss1->endJulianDate;
-	tss2->endTimeSeconds = 24 * 60 * 60;
+	tss2->endTimeSeconds = SECS_IN_1_DAY;
 	tss2->timeGranularitySeconds = MINUTE_GRANULARITY;
 	status = ztsRetrieve(ifltab, tss2, -1, 1, 0);
 	if (zcheckStatus(ifltab, status, 1, "Fail in testztsStruct15 Loc 2, retrieve status ")) return status; 

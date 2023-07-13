@@ -3,6 +3,7 @@
 #include <stdlib.h>
 
 #include "heclib.h"
+#include "standardIntervals.h"
 #include "TestDssC.h"
 
 
@@ -27,7 +28,7 @@ int testExpandedTimes(long long *ifltab)
 	tss1 = zstructTsNewRegFloats("/Basin/Location/Flow//1Hour/ExpandedTimes/", fvalues, 20000, "01Jan50000", "1200", "cfs", "Inst-Val");
 	tss1->julianBaseDate = tss1->startJulianDate;
 	tss1->startJulianDate = 0;
-	tss1->startTimeSeconds = 43200;
+	tss1->startTimeSeconds = SECS_IN_12_HOUR;
 	tss1->endJulianDate = 0;
 	tss1->endTimeSeconds = 0;
 	//zset("MLVL", "", 10);

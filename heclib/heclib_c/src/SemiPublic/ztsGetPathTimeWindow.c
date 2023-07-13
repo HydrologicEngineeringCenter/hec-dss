@@ -51,7 +51,7 @@ int ztsGetPathTimeWindow(int version, char* pathname, size_t sizeofPathname, zts
 	int numberValues;
 	int len;
 	int boolIrreg;
-	int flagSecondsToChar;	
+	int operation;
 	int startBlockJulian;
 	int blockSize;
 	int boolAdjustEnd;
@@ -79,16 +79,16 @@ int ztsGetPathTimeWindow(int version, char* pathname, size_t sizeofPathname, zts
 	}
 
 	//  Get the time interval 
-	flagSecondsToChar = 0;
-	boolIrreg = ztsGetStandardInterval(version, &intervalSeconds, ePart, sizeof(ePart), &flagSecondsToChar);
+	operation = EPART_TO_SECONDS_TO_EPART;
+	boolIrreg = ztsGetStandardInterval(version, &intervalSeconds, ePart, sizeof(ePart), &operation);
 	timeWindow->intervalSeconds = intervalSeconds;
 	 if (boolIrreg == 0) {
 		 //  Regular Interval	
-		 if (intervalSeconds < 86400) {
+		 if (intervalSeconds < SECS_IN_1_DAY) {
 			 startSecondsAfterMidnight = intervalSeconds;
 		 }
 		 else {
-			 startSecondsAfterMidnight = 86400;
+			 startSecondsAfterMidnight = SECS_IN_1_DAY;
 		 }
 		//  Put the standardized E part (back) into the pathname
 		zpathnameSetPart (pathname, sizeofPathname, ePart, 5);
@@ -199,7 +199,7 @@ int ztsGetPathTimeWindow(int version, char* pathname, size_t sizeofPathname, zts
 	timeWindow->startJulian = startJulian;	
 	timeWindow->startTimeSeconds = startSecondsAfterMidnight;	
 	timeWindow->endJulian = endJulian;	
-	timeWindow->endTimeSeconds = 86400;  //  End of day 
+	timeWindow->endTimeSeconds = SECS_IN_1_DAY;  //  End of day
 
 	
 	

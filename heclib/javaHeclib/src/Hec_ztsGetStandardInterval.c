@@ -43,9 +43,9 @@ JNIEXPORT void JNICALL Java_hec_heclib_util_Heclib_Hec_1ztsGetStandardInterval7
 
 	stringCopy(cEpart, MAX_PART_SIZE, ePart, strlen(ePart));
 
-	*interval *= 60;
+	*interval *= SECS_IN_1_MINUTE;
 	ztsGetStandardInterval(7, interval, cEpart, sizeof(cEpart)-1, status);
-	*interval /= 60;
+	*interval /= SECS_IN_1_MINUTE;
 
     (*env)->ReleaseIntArrayElements (env, j_interval, interval, 0);
     (*env)->ReleaseStringUTFChars (env, j_ePart, ePart);

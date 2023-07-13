@@ -74,7 +74,7 @@ int ztsGetFirstLastPathnames(long long *ifltab, const char *pathnameSeed,
 	int blockSize;
 	int version;
 	int boolIrreg;
-	int flag;
+	int operation;
 	int originalJulian;
 	int firstJulian;
 	int lastJulian;
@@ -228,9 +228,9 @@ int ztsGetFirstLastPathnames(long long *ifltab, const char *pathnameSeed,
 
 	//  Get the block size (for the interval)
 	zpathnameGetPart (path, 5, ePart, sizeof(ePart));
-	flag = 0;
+	operation = EPART_TO_SECONDS_TO_EPART;
 	version = zgetVersion(ifltab);
-	status = ztsGetStandardInterval(version, &intervalSeconds, ePart, sizeof(ePart), &flag);
+	status = ztsGetStandardInterval(version, &intervalSeconds, ePart, sizeof(ePart), &operation);
 	 if (status == 0) {
 		 boolIrreg = 0;
 		 ztsRegGetBlockStart(originalJulian, intervalSeconds, &blockSize);

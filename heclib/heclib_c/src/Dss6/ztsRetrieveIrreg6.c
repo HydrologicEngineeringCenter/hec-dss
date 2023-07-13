@@ -125,8 +125,8 @@ int ztsRetrieveIrreg6(long long *ifltab, zStructTimeSeries *tss,
 	kuserHeader = sizeof(userHeader) / sizeof(userHeader[0]);
 	boolCoordinates = 1;
 
-	minsStart = tss->timeWindow->startTimeSeconds / 60;
-	minsEnd = tss->timeWindow->endTimeSeconds / 60;
+	minsStart = tss->timeWindow->startTimeSeconds / SECS_IN_1_MINUTE;
+	minsEnd = tss->timeWindow->endTimeSeconds / SECS_IN_1_MINUTE;
 
 	zritsi6_(ifltab, zgetInternalPath(tss), &tss->timeWindow->startJulian, &minsStart,
 		&tss->timeWindow->endJulian, &minsEnd, &lgetdob, &lfildob, tss->times,
@@ -208,7 +208,7 @@ int ztsRetrieveIrreg6(long long *ifltab, zStructTimeSeries *tss,
 
 	if (tss->julianBaseDate != 0) {
 		//  Accomidates old Java code, which ignores this
-		baseDateMins = tss->julianBaseDate * 1440;
+		baseDateMins = tss->julianBaseDate * MINS_IN_1_DAY;
 		for (i=0; i<tss->numberValues; i++) {
 			tss->times[i] += baseDateMins;
 		}
