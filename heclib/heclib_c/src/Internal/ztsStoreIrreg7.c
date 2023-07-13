@@ -146,7 +146,7 @@ int ztsStoreIrreg7(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 		}
 	}
 	timeGranularity = tss->timeGranularitySeconds;
-	if (timeGranularity == 0) timeGranularity = SECS_IN_1_MINUTE;
+	if (timeGranularity == 0) timeGranularity = MINUTE_GRANULARITY;
 
 	//  We'll be changing the pathname to have correct date and interval part, so make a copy
 	stringCopy(path, sizeof(path), zgetInternalPath(tss), strlen(zgetInternalPath(tss)));
@@ -388,8 +388,8 @@ int ztsStoreIrreg7(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 			timeBaseToEnd *= HOURS_IN_1_DAY;
 		}
 		else {   // if (timeGranularity == DAY_GRANULARITY) {
-			// timeBaseToStart *= DAYS_IN_1_DAY;
-			// timeBaseToEnd *= DAYS_IN_1_DAY;
+			// timeBaseToStart *= 1;
+			// timeBaseToEnd *= 1;
 		}
 
 		ipos = currentPosition;

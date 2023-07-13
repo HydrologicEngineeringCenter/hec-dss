@@ -267,7 +267,7 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1ztsRetrieve(
 		if (fid) {
 			idate = tss->startJulianDate - tss->julianBaseDate;
 			itime = tss->startTimeSeconds;
-			if (tss->timeGranularitySeconds == SECS_IN_1_MINUTE) {
+			if (tss->timeGranularitySeconds == MINUTE_GRANULARITY) {
 				itime /= SECS_IN_1_MINUTE;
 				jnumber = (jint)((idate * MINS_IN_1_DAY) + itime);
 			}
@@ -311,7 +311,7 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1ztsRetrieve(
 		if (fid) {
 			idate = tss->endJulianDate - tss->julianBaseDate;
 			itime = tss->endTimeSeconds;
-			if (tss->timeGranularitySeconds == SECS_IN_1_MINUTE) {
+			if (tss->timeGranularitySeconds == MINUTE_GRANULARITY) {
 				itime /= SECS_IN_1_MINUTE;
 				jnumber = (jint)((idate * MINS_IN_1_DAY) + itime);
 			}

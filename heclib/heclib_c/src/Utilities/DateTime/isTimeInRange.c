@@ -42,7 +42,8 @@
 *					within the requested time window, for irregular interval date.
 *					timeGranularitySeconds is usually 60 for minutes,
 *					but often 1 for seconds, and also can be larger
-*					for very long time spans (SECS_IN_1_HOUR for hours, etc.)
+*					for very long time spans - HOUR_GRANULARITY (3600) for hours
+*                   ory DAY_GRANULARITY (86400) for days
 *
 *
 *	Author:			Bill Charley

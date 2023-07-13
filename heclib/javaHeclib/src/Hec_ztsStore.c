@@ -234,8 +234,8 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1ztsStore(
 
 
 	//  timeGranularitySeconds
-	//  Number of seconds each unit in times array has, normally SECS_IN_1_MINUTE (for one minute)
-	//  Can be 1, SECS_IN_1_MINUTE, SECS_IN_1_HOUR, SECS_IN_1_DAY
+	//  Number of seconds each unit in times array has, normally MINUTE_GRANULARITY (for one minute)
+	//  Can be SECOND_GRANULARITY, MINUTE_GRANULARITY, HOUR_GRANULARITY, DAY_GRANULARITY
 	fid = (*env)->GetFieldID (env, cls, "timeGranularitySeconds", "I");
 	if ((*env)->ExceptionOccurred(env)) {
 			(*env)->ExceptionClear(env);			
@@ -244,10 +244,10 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1ztsStore(
 		number = (int)(*env)->GetIntField(env, j_timeSeriesContainer, fid);
 		tss->timeGranularitySeconds = number;
 	}
-	if (tss->timeGranularitySeconds == 0) tss->timeGranularitySeconds = SECS_IN_1_MINUTE;
+	if (tss->timeGranularitySeconds == 0) tss->timeGranularitySeconds = MINUTE_GRANULARITY;
 	
 	if (startTime != 0) {
-		if (tss->timeGranularitySeconds == SECS_IN_1_MINUTE) {
+		if (tss->timeGranularitySeconds == MINUTE_GRANULARITY) {
 			//  Times in minutes (most common)
 			tss->startJulianDate = startTime / MINS_IN_1_DAY;
 			tss->startTimeSeconds = startTime - (tss->startJulianDate * MINS_IN_1_DAY);

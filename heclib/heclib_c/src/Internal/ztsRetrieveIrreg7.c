@@ -577,7 +577,7 @@ int ztsRetrieveIrreg7(long long *ifltab, zStructTimeSeries *tss,
 				if (tss->julianBaseDate < 0) {
 					tss->julianBaseDate = julianBlockDate;
 				}
-				else if ((tss->timeGranularitySeconds == 1) && (tss->julianBaseDate == 0)) {
+				else if ((tss->timeGranularitySeconds == SECOND_GRANULARITY) && (tss->julianBaseDate == 0)) {
 					tss->julianBaseDate = julianBlockDate;
 				}
 				tss->sizeEachValueRead = valueElementSizeRead;
@@ -636,12 +636,12 @@ int ztsRetrieveIrreg7(long long *ifltab, zStructTimeSeries *tss,
 				timeBaseToStart *= HOURS_IN_1_DAY;
 			}
 			else {   // if (tss->timeGranularitySeconds == DAY_GRANULARITY) {
-				// timeBaseToStart *= DAYS_IN_1_DAY;
+				// timeBaseToStart *= 1;
 			}
 
 			//  This should have been set by ztsProcessTimes, but we need to make sure not zero
 			timeGranularity = (long long)tss->timeGranularitySeconds;
-			if (timeGranularity == 0) timeGranularity = SECS_IN_1_MINUTE;
+			if (timeGranularity == 0) timeGranularity = MINUTE_GRANULARITY;
 
 			for (i=0; i<numberRead; i++) {
 				if (blockSize == 5) {

@@ -21,7 +21,11 @@ typedef struct {
 	int endTimeSeconds;		//    
 	//  Number of seconds each unit in times array has.
 	//  Set to zero on read for default (usually minutes).  Returns with actual value
-	//  On write, zero (default) is minutes, or set to actual value
+	//  On write, zero (default) is minutes, or set to actual value:
+	//    * SECOND_GRANULARITY (    1)
+	//    * MINUTE_GRANULARITY (   60)
+	//    * HOUR_GRANULARITY   ( 3600)
+	//    * DAY_GRANULARITY    (86400)
 	//  Note - how the times are stored is independent of this; always seconds except for ir-century
 	int timeGranularitySeconds;  
 	int timeIntervalSeconds;  //  Informational (on return only)

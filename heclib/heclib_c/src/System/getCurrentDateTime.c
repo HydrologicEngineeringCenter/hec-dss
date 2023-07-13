@@ -68,7 +68,7 @@ void getCurrentDateTime (int *julian, int *secondsPastMidnight, int *millsPastSe
 #endif
 
 	days = seconds/ SECS_IN_1_DAY;
-	*julian = (int)days + JUL_01JAN1970;
+	*julian = (int)days + JULIAN_01JAN1970;
 	*secondsPastMidnight = (int)(seconds - (days * SECS_IN_1_DAY));
 
 

@@ -86,8 +86,7 @@ enum INTERVAL_DAYS {
     DAYS_IN_1_MONTH = 30,    // representative, not actual
     DAYS_IN_SEMI_MONTH = 15, // representative, not actual
     DAYS_IN_TRI_MONTH = 10,  // representative, not actual
-    DAYS_IN_1_WEEK = 7,
-    DAYS_IN_1_DAY = 1
+    DAYS_IN_1_WEEK = 7
 };
 
 enum BLOCK_SIZE {

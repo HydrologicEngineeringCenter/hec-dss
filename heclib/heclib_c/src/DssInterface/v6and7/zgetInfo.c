@@ -54,7 +54,7 @@ int zgetInfo7(long long *ifltab, const char *pathname, int *ibuff)
 		ilarge = (ilarge/1000);
 		jul = (int)(ilarge/ SECS_IN_1_DAY);
 		isecs = (int)(ilarge - (((long long)jul) * SECS_IN_1_DAY));
-		ibuff[6] = jul + JUL_01JAN1970;
+		ibuff[6] = jul + JULIAN_01JAN1970;
 		ibuff[7] = isecs;
 		charLong(&info[zdssInfoKeys.kinfoProgram], &ibuff[8], zdssVals.numberProgram, zdssVals.numberProgram, 0, 0);
 	}

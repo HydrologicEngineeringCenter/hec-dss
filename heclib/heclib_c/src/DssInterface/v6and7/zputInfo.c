@@ -57,7 +57,7 @@ int zputInfo (long long *ifltab, const char *pathname, int *ibuff)
 			ibuff[2] = itemp;
 		}
 		info[zdssInfoKeys.kinfoExpansion] = i4toi8(ibuff[2], ibuff[3]);
-		info[zdssInfoKeys.kinfoLastWriteTime] = ((long long)(ibuff[6] - JUL_01JAN1970) * SECS_IN_1_DAY) + (long long)ibuff[7];
+		info[zdssInfoKeys.kinfoLastWriteTime] = ((long long)(ibuff[6] - JULIAN_01JAN1970) * SECS_IN_1_DAY) + (long long)ibuff[7];
 		charLong(&ibuff[8], &info[zdssInfoKeys.kinfoProgram], zdssVals.numberProgram, zdssVals.numberProgram, 0, 0);
 
 		status = zput(ifltab, ifltab[zdssKeys.kaddInfoLastPath], (int *)info, numberInfo, 2);

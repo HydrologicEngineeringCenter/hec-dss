@@ -153,7 +153,7 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1zndata(
 		seconds = (time_t)(startTime / 1000L);
 		ptm = localtime(&seconds);
 		seconds -= (ptm->tm_isdst ? timezone - SECS_IN_1_HOUR : timezone);
-		juls = (int)(seconds / SECS_IN_1_DAY) + JUL_01JAN1970;
+		juls = (int)(seconds / SECS_IN_1_DAY) + JULIAN_01JAN1970;
 		isecs = seconds % SECS_IN_1_DAY;
 		if (isecs == 0) {
 			--juls;
@@ -178,7 +178,7 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1zndata(
 				CHECK_EXCEPTION();
 			}
 			if (updateTimesVec != NULL) {
-				seconds = (time_t)((jlong)(juld[0] - JUL_01JAN1970) * SECS_IN_1_DAY + isecd[0]);
+				seconds = (time_t)((jlong)(juld[0] - JULIAN_01JAN1970) * SECS_IN_1_DAY + isecd[0]);
 				ptm = localtime(&seconds);
 				seconds += (ptm->tm_isdst ? timezone - SECS_IN_1_HOUR : timezone);
 				updateTime = (jlong)seconds * (jlong)1000;

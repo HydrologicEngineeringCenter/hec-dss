@@ -15,7 +15,7 @@ void millsToDateTime(long long mills, char *dateString, char *timeString, size_t
 	millsPastSecond = (int)(mills - (secs * 1000L));
 	jul = secs / SECS_IN_1_DAY;  // Since 01Jan1970
 	secondsPastMidnight = (int)(secs - (jul * SECS_IN_1_DAY));
-	julian = (int)jul + JUL_01JAN1970;  //  Since 01Jan1900
+	julian = (int)jul + JULIAN_01JAN1970;  //  Since 01Jan1900
 
 	julianToDate(julian, 4, dateString, sizeofDateString);
 	secondsToTimeString(secondsPastMidnight, millsPastSecond, 3, timeString, sizeofTimeString);

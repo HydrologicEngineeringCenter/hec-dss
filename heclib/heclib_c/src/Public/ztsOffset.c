@@ -119,7 +119,7 @@ int ztsOffset(int intervalSeconds, int julian, int seconds)
 		// Weekly (EOP is Saturday night at midnight)
 		day = dayOfWeek(jul);
 		offsetSeconds = ((day - 1) * SECS_IN_1_DAY) + secs;
-		if (offsetSeconds == 604800) offsetSeconds = 0;
+		if (offsetSeconds == SECS_IN_1_WEEK) offsetSeconds = 0;
 		return offsetSeconds;
 	}
 

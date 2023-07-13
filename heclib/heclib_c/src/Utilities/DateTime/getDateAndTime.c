@@ -22,7 +22,7 @@
 *				int timeGranularitySeconds
 *					The number of seconds each unit in time represents,
 *					MINUTE_GRANULARITY (60) or SECOND_GRANULARITY (1) or 
-*					HOUR_GRANULARITY (SECS_IN_1_HOUR) or DAY_GRANULARITY (SECS_IN_1_DAY)
+*					HOUR_GRANULARITY (3600) or DAY_GRANULARITY (86400)
 *
 *				int julianBaseDate
 *					The Julian base date, which when appropriatly aded to the time, give the full correct
