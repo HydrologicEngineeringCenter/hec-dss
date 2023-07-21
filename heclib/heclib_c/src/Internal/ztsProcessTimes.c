@@ -315,41 +315,39 @@ int ztsProcessTimes(long long *ifltab, zStructTimeSeries *tss, int boolStore)
 		}
 	}
 	else {  //  if (boolStore) {
-		//  If dates not defined, use the time array and base date to define.
-		if (tss->times) {
-			if (!startDefined && (tss->numberValues > 0)) {
-				tss->timeWindow->startJulian = tss->julianBaseDate;
-				tss->timeWindow->startTimeSeconds = tss->times[0];
-				cleanTime(&tss->timeWindow->startJulian, &tss->timeWindow->startTimeSeconds, tss->timeGranularitySeconds);
-				if (tss->timeGranularitySeconds > 0) {
-					tss->timeWindow->startTimeSeconds *= tss->timeGranularitySeconds;
-				}
-				else {
-					tss->timeWindow->startTimeSeconds *= SECS_IN_1_MINUTE;  //  Default is one minute
-				}
-				startDefined = 1;
-				if (!isTimeDefined(tss->startJulianDate, tss->startTimeSeconds)) {
-					tss->startJulianDate = tss->timeWindow->startJulian;
-					tss->startTimeSeconds = tss->timeWindow->startTimeSeconds;
-				}	
+		//  Use the time array and base date to define.
+		if (tss->times && tss->numberValues > 0) {
+			// set the start time
+			tss->timeWindow->startJulian = tss->julianBaseDate;
+			tss->timeWindow->startTimeSeconds = tss->times[0];
+			cleanTime(&tss->timeWindow->startJulian, &tss->timeWindow->startTimeSeconds, tss->timeGranularitySeconds);
+			if (tss->timeGranularitySeconds > 0) {
+				tss->timeWindow->startTimeSeconds *= tss->timeGranularitySeconds;
 			}
-			if (!endDefined && (tss->numberValues > 0)) {
-				tss->timeWindow->endJulian = tss->julianBaseDate;
-				tss->timeWindow->endTimeSeconds = tss->times[tss->numberValues-1];
-				cleanTime(&tss->timeWindow->endJulian, &tss->timeWindow->endTimeSeconds, tss->timeGranularitySeconds);
-				if (tss->timeGranularitySeconds > 0) {
-					tss->timeWindow->endTimeSeconds *= tss->timeGranularitySeconds;
-				}
-				else {
-					tss->timeWindow->endTimeSeconds *= SECS_IN_1_MINUTE;  //  Default is one minute
-				}
-				endDefined = 1;
-				if (!isTimeDefined(tss->endJulianDate, tss->endTimeSeconds)) {
-					tss->endJulianDate = tss->timeWindow->endJulian;
-					tss->endTimeSeconds = tss->timeWindow->endTimeSeconds;
-				}		
-			}		
-			if (startDefined && endDefined) timeWindowDefined = 1;
+			else {
+				tss->timeWindow->startTimeSeconds *= SECS_IN_1_MINUTE;  //  Default is one minute
+			}
+			startDefined = 1;
+			// set the end time
+			if (!isTimeDefined(tss->startJulianDate, tss->startTimeSeconds)) {
+				tss->startJulianDate = tss->timeWindow->startJulian;
+				tss->startTimeSeconds = tss->timeWindow->startTimeSeconds;
+			}
+			tss->timeWindow->endJulian = tss->julianBaseDate;
+			tss->timeWindow->endTimeSeconds = tss->times[tss->numberValues - 1];
+			cleanTime(&tss->timeWindow->endJulian, &tss->timeWindow->endTimeSeconds, tss->timeGranularitySeconds);
+			if (tss->timeGranularitySeconds > 0) {
+				tss->timeWindow->endTimeSeconds *= tss->timeGranularitySeconds;
+			}
+			else {
+				tss->timeWindow->endTimeSeconds *= SECS_IN_1_MINUTE;  //  Default is one minute
+			}
+			endDefined = 1;
+			if (!isTimeDefined(tss->endJulianDate, tss->endTimeSeconds)) {
+				tss->endJulianDate = tss->timeWindow->endJulian;
+				tss->endTimeSeconds = tss->timeWindow->endTimeSeconds;
+			}
+			timeWindowDefined = 1;
 		}
 	}
 
