@@ -11,8 +11,6 @@
 #include "hecdss7.h"
 #include "hecdssInternal.h"
 
-void zswap6_(int*, int*);
-
 int zinquireChar(long long *ifltab, const char *request, char *creturn, size_t creturnSize, int *number)
 {
 	int len;
@@ -94,9 +92,6 @@ int zinquireChar(long long *ifltab, const char *request, char *creturn, size_t c
 		number[0] = 10000 * (ctemp[0] - '0') +
 		              100 * (ctemp[2] - (ctemp[2] < '[' ? '@' : '`')) +
 		                    (ctemp[3] - (ctemp[3] < '[' ? '@' : '`'));
-		if (bigEndian()) {
-			zswap6_(&number[0], &number[0]);
-		}
 	}
 	else if (!strcmp(requestlc, "name")) {
 		charLong((void *)ifltab[zdssKeys.kfullFilename], creturn, 0, (int)creturnSize, 0, 1);

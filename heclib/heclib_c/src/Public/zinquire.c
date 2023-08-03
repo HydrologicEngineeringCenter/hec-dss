@@ -14,8 +14,6 @@
 #include "hecdssInternal.h"
 #include "zprogress.h"
 
-void zswap6_(int*, int*);
-
 long long zinquire(long long *ifltab, const char *request)
 {
 	int len;
@@ -136,11 +134,6 @@ long long zinquire(long long *ifltab, const char *request)
 		longNumber = 10000 * (ctemp[0] - '0') +
 		               100 * (ctemp[2] - (ctemp[2] < '[' ? '@' : '`')) +
 		                     (ctemp[3] - (ctemp[3] < '[' ? '@' : '`'));
-		if (bigEndian()) {
-			int iswap = (int)longNumber;
-			zswap6_(&iswap, &iswap);
-			longNumber = iswap;
-		}
 	}
 	else if (!strcmp(requestlc, "size")) {
 		//  Size in KB

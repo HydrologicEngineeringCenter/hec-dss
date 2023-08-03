@@ -47,6 +47,7 @@ int testReclaim(const char *dssFilename);
 int testRecordInfo6(const char *filename);
 int testRecordInfo7(const char* filename);
 int test_jira_dss_163_weekly_time_series_fails();
+int fver_test();
 
 
 

@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-#if defined(__linux__) || defined(__APPLE__)
+#if defined(__linux__) || defined(__APPLE__) || defined(__sparc)
 	#include <unistd.h>
 #endif
 #include "heclib.h"
@@ -181,6 +181,10 @@ int runTheTests() {
 	char fileName7a[80];
 	char fileName6[80];
 	int status;
+
+	status = fver_test();
+	if (status != STATUS_OKAY)
+		return status;
 
 	status = test_jira_dss_163_weekly_time_series_fails();
 	if (status != STATUS_OKAY)
@@ -870,5 +874,44 @@ int test_jira_dss_163_weekly_time_series_fails()
 	zstructFree(cs);
 	zclose(ifltab);
 	return status;
+}
+
+int fver_test() {
+	const char *filename = "fvers-test.dss";
+	long long ifltab[250] = {0};
+	char alpha[80];
+	int  number;
+	int  status;
+	int  major, minor, patch;
+	int  expected;
+
+	zquery("VERS", alpha, sizeof(alpha), &number);
+	major = alpha[0] - '0';
+	minor = alpha[2] - '@';
+	patch = alpha[3] - '@';
+	expected = major * 10000 + minor * 100 + patch;
+
+	remove(filename);
+	status = hec_dss_zopen(ifltab, filename);
+	if (status != 0) {
+		printf("Could not open DSS file %s\n", filename);
+	}
+	else {
+		zinquireChar(ifltab, "FVER", alpha, sizeof(alpha), &number);
+		if (number != expected) {
+			printf("Expected numeric output from zinquireChar(ifltab, \"FVER\", alpha, number) to equal %d, but got %d\n", expected, number);
+			status = -1;
+		}
+
+		number = zinquire(ifltab, "FVER");
+		if (number != expected) {
+			printf("Expected return from zinquire(ifltab, \"FVER\") to equal %d, but got %d\n", expected, number);
+			status = -1;
+		}
+
+		zclose(ifltab);
+		remove(filename);
+		return status;
+	}
 }
 
