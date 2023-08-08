@@ -343,7 +343,7 @@ int zspatialGridRetrieve(long long *ifltab, zStructSpatialGrid *gridStruct, int 
 						free(buffer);
 						free(values);
 						zstructFree(ztransfer);
-						return zerrorProcessing(ifltab, DSS_FUNCTION_zspatialGridStore_ID, zdssErrorCodes.READ_ERROR,
+						return zerrorProcessing(ifltab, DSS_FUNCTION_zspatialGridRetrieve_ID, zdssErrorCodes.READ_ERROR,
 							0, 0, zdssErrorSeverity.READ_ERROR, "", "gridStruct error in decompression");
 					}
 					else {
