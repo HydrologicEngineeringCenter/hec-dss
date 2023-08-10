@@ -340,9 +340,13 @@ goes to:
 #define DSS_FUNCTION_javaNativeInterface_ID	86
 #define DSS_FUNCTION_javaNativeInterface	"javaNativeInterface"
 
+#define NUMBER_FUNCTION_IDS 87
 
+struct hec_zfunctionmap {
+	int message_group[NUMBER_FUNCTION_IDS];
+};
 
-
+extern struct hec_zfunctionmap zfunctionmap;
 
 //  General User Log Messages
 
