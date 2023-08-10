@@ -394,27 +394,29 @@ int zerrorProcessing(long long *ifltab, int functionID, int errorNumber, int sta
 		}
 	}
 
-	//  If an error, set global and local error flags
-	if (severity >= zdssErrorSeverity.WARNING_NO_FILE_ACCESS) {
-		if (severity > zdssVals.globalErrorFlag)  {
-			zdssVals.globalErrorFlag = severity;
-			zmessConcat1(zdssVals.globalErrorMess, MAX_LEN_ERROR_MESS, errorMessage);
-		}
-		if (severity > zdssKeys.kerrorCondition)  {
-			ifltab[zdssKeys.kerrorCondition] = severity;
-			ifltab[zdssKeys.kerrorCode] = errorCode;
-		}
+	if (zmessageLevel(ifltab, zfunctionmap.message_group[functionID], severity)) {
+		//  If an error, set global and local error flags
+		if (severity >= zdssErrorSeverity.WARNING_NO_FILE_ACCESS) {
+			if (severity > zdssVals.globalErrorFlag)  {
+				zdssVals.globalErrorFlag = severity;
+				zmessConcat1(zdssVals.globalErrorMess, MAX_LEN_ERROR_MESS, errorMessage);
+			}
+			if (severity > zdssKeys.kerrorCondition)  {
+				ifltab[zdssKeys.kerrorCondition] = severity;
+				ifltab[zdssKeys.kerrorCode] = errorCode;
+			}
 
-		if ((ifltab[zdssKeys.kerrorCondition]> 1) && (ifltab[zdssKeys.kwritingNow] != 0)) {
-			//  If the file is locked, unlock it - but don't save buffers in error condition
-			zlockActive(ifltab, LOCKING_LEVEL_HIGH, LOCKING_LOCK_OFF, LOCKING_FLUSH_OFF);
+			if ((ifltab[zdssKeys.kerrorCondition]> 1) && (ifltab[zdssKeys.kwritingNow] != 0)) {
+				//  If the file is locked, unlock it - but don't save buffers in error condition
+				zlockActive(ifltab, LOCKING_LEVEL_HIGH, LOCKING_LOCK_OFF, LOCKING_FLUSH_OFF);
+			}
+			//  Write message to both log and to program buffer
+			zmessageInterface(ifltab, errorMessage, 0);
 		}
-		//  Write message to both log and to program buffer
-		zmessageInterface(ifltab, errorMessage, 0);
-	}
-	else {
-		//  Write the error message to the log file
-		zmessage(ifltab, errorMessage);
+		else {
+			//  Write the error message to the log file
+			zmessage(ifltab, errorMessage);
+		}
 	}
 
 #ifdef _MSC_VER

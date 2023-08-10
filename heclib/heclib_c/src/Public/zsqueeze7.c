@@ -87,12 +87,12 @@ int zsqueeze7(long long *ifltab, int boolOnlyIfNeeded, int boolInPlace)
 	int ihandle = 0;
 	int access = 0;
 	int status = 0;
-	int boolMessageLevelSet = 0;
 	int numberPathnames = 0;
 	int boolNeedSqueeze = 0;
 	int version = 0;
 	int i = 0;
 	long long *fileHeader = NULL;
+	int originalMessageLevels[NUMBER_METHOD_NAMES] = { 0 };
 
 
 
@@ -166,15 +166,11 @@ int zsqueeze7(long long *ifltab, int boolOnlyIfNeeded, int boolInPlace)
 	}
 
 	//  Unless we are in debug mode, turn down trace to avoid large, unnecessary output
-	boolMessageLevelSet = 1;
 	for (i=1; i<NUMBER_METHOD_NAMES; i++) {
-		if (zmessaging.methodLevel[i] != MESS_LEVEL_GENERAL) {
-			boolMessageLevelSet = 0;
-			break;
+		originalMessageLevels[i] = zmessaging.methodLevel[i];
+		if (originalMessageLevels[i] > MESS_LEVEL_CRITICAL && originalMessageLevels[i] < MESS_LEVEL_INTERNAL_DIAG_1) {
+			zsetMessageLevel(zmessaging.methodLevel[i], MESS_LEVEL_CRITICAL);
 		}
-	}
-	if (boolMessageLevelSet) {
-		zsetMessageLevel(MESS_METHOD_GENERAL_ID, MESS_LEVEL_CRITICAL);
 	}
 
 
@@ -187,7 +183,9 @@ int zsqueeze7(long long *ifltab, int boolOnlyIfNeeded, int boolInPlace)
 #ifdef _MSC_VER
 		status = GetTempPath(MAX_PATH, tempDirW);  // includes backslash.
 		if ((status <= 0) || (tempDirW[0] == 0)) {
-			if (boolMessageLevelSet) zresetMessageLevel();
+			for (i = 1; i < NUMBER_METHOD_NAMES; ++i) {
+				zsetMessageLevel(zmessaging.methodLevel[i], originalMessageLevels[i]);
+			}
 			return zerrorProcessing(ifltab, DSS_FUNCTION_zsqueeze_ID, zdssErrorCodes.CANNOT_SQUEEZE,
 				status, 0, zdssErrorSeverity.WARNING_NO_FILE_ACCESS, "",
 				"Cannot access temporary directory.");
@@ -200,8 +198,10 @@ int zsqueeze7(long long *ifltab, int boolOnlyIfNeeded, int boolInPlace)
 		stringCat(tempName, sizeof(tempName), filename, strlen(filename));
 		len = (int)strlen(tempName);
 	    if (len < 5) {
-			if (boolMessageLevelSet) zresetMessageLevel();
-		   printf("File does not exsit or cannot access. name: %s\n", fullFilename);
+			for (i = 1; i < NUMBER_METHOD_NAMES; ++i) {
+				zsetMessageLevel(zmessaging.methodLevel[i], originalMessageLevels[i]);
+			}
+			printf("File does not exsit or cannot access. name: %s\n", fullFilename);
 			return zerrorProcessing(ifltab, DSS_FUNCTION_zsqueeze_ID,
 				zdssErrorCodes.UNABLE_TO_CREATE_FILE, 0, 0,
 				zdssErrorSeverity.WARNING_NO_WRITE_ACCESS, "", tempName);
@@ -222,8 +222,10 @@ int zsqueeze7(long long *ifltab, int boolOnlyIfNeeded, int boolInPlace)
 		stringCopy(tempName, sizeof(tempName), fullFilename, strlen(fullFilename));
 	    len = (int)strlen(tempName);
 	    if (len < 5) {
-			if (boolMessageLevelSet) zresetMessageLevel();
-		   printf("File does not exsit or cannot access. name: %s\n", fullFilename);
+			for (i = 1; i < NUMBER_METHOD_NAMES; ++i) {
+				zsetMessageLevel(zmessaging.methodLevel[i], originalMessageLevels[i]);
+			}
+			printf("File does not exsit or cannot access. name: %s\n", fullFilename);
 			return zerrorProcessing(ifltab, DSS_FUNCTION_zsqueeze_ID,
 				zdssErrorCodes.UNABLE_TO_CREATE_FILE, 0, 0,
 				zdssErrorSeverity.WARNING_NO_WRITE_ACCESS, "", tempName);
@@ -243,7 +245,9 @@ int zsqueeze7(long long *ifltab, int boolOnlyIfNeeded, int boolInPlace)
 		status = zclose(ifltab);
 		if (zisError(status)) {
 			status = zerrorUpdate(ifltab, status, DSS_FUNCTION_zsqueeze_ID);
-			if (boolMessageLevelSet) zresetMessageLevel();
+			for (i = 1; i < NUMBER_METHOD_NAMES; ++i) {
+				zsetMessageLevel(zmessaging.methodLevel[i], originalMessageLevels[i]);
+			}
 			return status;
 		}
 
@@ -251,7 +255,9 @@ int zsqueeze7(long long *ifltab, int boolOnlyIfNeeded, int boolInPlace)
 		//  (This is a common failure point, mainly due to permission or similar)
 		status = rename(fullFilename, tempName);
 		if (zisError(status)) {
-			if (boolMessageLevelSet) zresetMessageLevel();
+			for (i = 1; i < NUMBER_METHOD_NAMES; ++i) {
+				zsetMessageLevel(zmessaging.methodLevel[i], originalMessageLevels[i]);
+			}
 			//  Print a nice message, as this may happen often
 			printf("Unable to rename file for squeezing, file: %s\n", fullFilename);
 		    return zerrorProcessing(ifltab, DSS_FUNCTION_zsqueeze_ID,
@@ -262,7 +268,9 @@ int zsqueeze7(long long *ifltab, int boolOnlyIfNeeded, int boolInPlace)
 	   //  Almost always able to rename back
 	   status = rename(tempName, fullFilename);
 	   if (zisError(status)) {
-		   if (boolMessageLevelSet) zresetMessageLevel();
+		   for (i = 1; i < NUMBER_METHOD_NAMES; ++i) {
+			   zsetMessageLevel(zmessaging.methodLevel[i], originalMessageLevels[i]);
+		   }
 		   //  Print a nice message, as this may happen often
 		   printf("Unable to rename back file for squeezing, file: %s\n", tempName);
 		   return zerrorProcessing(ifltab, DSS_FUNCTION_zsqueeze_ID,
@@ -273,8 +281,10 @@ int zsqueeze7(long long *ifltab, int boolOnlyIfNeeded, int boolInPlace)
 	   //  Reopen the DSS file
 	   status = zopenInternal(ifltab, fullFilename, EXCLUSIVE_ACCESS, 0, 0, 0, 0);
 	   if (zisError(status)) {
-		   if (boolMessageLevelSet) zresetMessageLevel();
-			status = zerrorProcessing(ifltab, DSS_FUNCTION_zsqueeze_ID, zdssErrorCodes.CANNOT_SQUEEZE,
+		   for (i = 1; i < NUMBER_METHOD_NAMES; ++i) {
+			   zsetMessageLevel(zmessaging.methodLevel[i], originalMessageLevels[i]);
+		   }
+		   status = zerrorProcessing(ifltab, DSS_FUNCTION_zsqueeze_ID, zdssErrorCodes.CANNOT_SQUEEZE,
 								status, 0, zdssErrorSeverity.WARNING_NO_FILE_ACCESS, "", fullFilename);
 			return status;
 		}
@@ -285,7 +295,9 @@ int zsqueeze7(long long *ifltab, int boolOnlyIfNeeded, int boolInPlace)
 	//  Now open the temporary DSS file
 	status = zopenInternal(ifltabTemp, tempName, EXCLUSIVE_ACCESS, numberPathnames, 0, 0, 0);
 	if (zisError(status)) {
-		if (boolMessageLevelSet) zresetMessageLevel();
+		for (i = 1; i < NUMBER_METHOD_NAMES; ++i) {
+			zsetMessageLevel(zmessaging.methodLevel[i], originalMessageLevels[i]);
+		}
 		status = zerrorProcessing(ifltab, DSS_FUNCTION_zsqueeze_ID, zdssErrorCodes.CANNOT_SQUEEZE,
 							status, 0, zdssErrorSeverity.WARNING_NO_FILE_ACCESS, "",
 							"Cannot create temporary file");
@@ -318,7 +330,9 @@ int zsqueeze7(long long *ifltab, int boolOnlyIfNeeded, int boolInPlace)
 		return 0;
 	}
 	if (zisError(status)) {
-		if (boolMessageLevelSet) zresetMessageLevel();
+		for (i = 1; i < NUMBER_METHOD_NAMES; ++i) {
+			zsetMessageLevel(zmessaging.methodLevel[i], originalMessageLevels[i]);
+		}
 		printf("Error during squeeze. name: %s\n", fullFilename);
 		zclose(ifltabTemp);
 #ifdef _MSC_VER
@@ -337,7 +351,9 @@ int zsqueeze7(long long *ifltab, int boolOnlyIfNeeded, int boolInPlace)
 	}
 	status = zpermRead(ifltabTemp);
 	if (zisError(status)) {
-		if (boolMessageLevelSet) zresetMessageLevel();
+		for (i = 1; i < NUMBER_METHOD_NAMES; ++i) {
+			zsetMessageLevel(zmessaging.methodLevel[i], originalMessageLevels[i]);
+		}
 		status = zerrorUpdate(ifltabTemp, status, DSS_FUNCTION_zsqueeze_ID);
 		zclose(ifltabTemp);
 #ifdef _MSC_VER
@@ -352,7 +368,9 @@ int zsqueeze7(long long *ifltab, int boolOnlyIfNeeded, int boolInPlace)
 	//  Make sure the squeezed file is good
 	status = zcheckPathnameBins(ifltabTemp);
 	if (zisError(status)) {
-		if (boolMessageLevelSet) zresetMessageLevel();
+		for (i = 1; i < NUMBER_METHOD_NAMES; ++i) {
+			zsetMessageLevel(zmessaging.methodLevel[i], originalMessageLevels[i]);
+		}
 		status = zerrorProcessing(ifltab, DSS_FUNCTION_zsqueeze_ID, zdssErrorCodes.CANNOT_SQUEEZE,
 							status, 0, zdssErrorSeverity.WARNING_NO_FILE_ACCESS, "",
 							"Incomplete update, file not squeezed.");
@@ -380,7 +398,9 @@ int zsqueeze7(long long *ifltab, int boolOnlyIfNeeded, int boolInPlace)
 		zpidUpdate(ifltab);
 		status =  zlockActive(ifltab, LOCKING_LEVEL_SUPER, LOCKING_LOCK_OFF, LOCKING_FLUSH_OFF);
 		if (status != 0) {
-			if (boolMessageLevelSet) zresetMessageLevel();
+			for (i = 1; i < NUMBER_METHOD_NAMES; ++i) {
+				zsetMessageLevel(zmessaging.methodLevel[i], originalMessageLevels[i]);
+			}
 			status = zerrorUpdate(ifltabTemp, status, DSS_FUNCTION_zsqueeze_ID);
 			zclose(ifltabTemp);
 #ifdef _MSC_VER
@@ -407,7 +427,9 @@ int zsqueeze7(long long *ifltab, int boolOnlyIfNeeded, int boolInPlace)
 #else
 			unlink(tempName);
 #endif
-			if (boolMessageLevelSet) zresetMessageLevel();
+			for (i = 1; i < NUMBER_METHOD_NAMES; ++i) {
+				zsetMessageLevel(zmessaging.methodLevel[i], originalMessageLevels[i]);
+			}
 			return zerrorProcessing(ifltab, DSS_FUNCTION_zsqueeze_ID, zdssErrorCodes.CANNOT_SQUEEZE,
 								status, 0, zdssErrorSeverity.WARNING_NO_FILE_ACCESS, "",
 								"Incomplete update, file not squeezed.");
@@ -423,7 +445,9 @@ int zsqueeze7(long long *ifltab, int boolOnlyIfNeeded, int boolInPlace)
 		}
 		if (status != 0) {
 			zclose(ifltabTemp);
-			if (boolMessageLevelSet) zresetMessageLevel();
+			for (i = 1; i < NUMBER_METHOD_NAMES; ++i) {
+				zsetMessageLevel(zmessaging.methodLevel[i], originalMessageLevels[i]);
+			}
 			return zerrorProcessing(ifltab, DSS_FUNCTION_zsqueeze_ID, zdssErrorCodes.CANNOT_SQUEEZE,
 								status, 0, zdssErrorSeverity.WRITE_ERROR, "",
 								"File copied failed, file is in temp directory.");
@@ -442,7 +466,9 @@ int zsqueeze7(long long *ifltab, int boolOnlyIfNeeded, int boolInPlace)
 		//  Check that the copied file is good
 		status = zpermRead(ifltab);
 		if (status != 0) {
-			if (boolMessageLevelSet) zresetMessageLevel();
+			for (i = 1; i < NUMBER_METHOD_NAMES; ++i) {
+				zsetMessageLevel(zmessaging.methodLevel[i], originalMessageLevels[i]);
+			}
 			return zerrorUpdate(ifltab, status, DSS_FUNCTION_zsqueeze_ID);
 		}
 
@@ -452,7 +478,9 @@ int zsqueeze7(long long *ifltab, int boolOnlyIfNeeded, int boolInPlace)
 			zmessageDebugInt(ifltab, DSS_FUNCTION_zsqueeze_ID, "Final validation complete, status ", status);
 		}
 		if (status != 0) {
-			if (boolMessageLevelSet) zresetMessageLevel();
+			for (i = 1; i < NUMBER_METHOD_NAMES; ++i) {
+				zsetMessageLevel(zmessaging.methodLevel[i], originalMessageLevels[i]);
+			}
 			return zerrorProcessing(ifltab, DSS_FUNCTION_zsqueeze_ID, zdssErrorCodes.CANNOT_SQUEEZE,
 									status, 0, zdssErrorSeverity.WARNING_NO_FILE_ACCESS, "",
 									"Incomplete update, file failed check.");
@@ -477,13 +505,17 @@ int zsqueeze7(long long *ifltab, int boolOnlyIfNeeded, int boolInPlace)
 		//  close both files
 		status = zclose(ifltab);
 		if (zisError(status)) {
-			if (boolMessageLevelSet) zresetMessageLevel();
+			for (i = 1; i < NUMBER_METHOD_NAMES; ++i) {
+				zsetMessageLevel(zmessaging.methodLevel[i], originalMessageLevels[i]);
+			}
 			status = zerrorUpdate(ifltab, status, DSS_FUNCTION_zsqueeze_ID);
 			return status;
 		}
 		status = zclose(ifltabTemp);
 		if (zisError(status)) {
-			if (boolMessageLevelSet) zresetMessageLevel();
+			for (i = 1; i < NUMBER_METHOD_NAMES; ++i) {
+				zsetMessageLevel(zmessaging.methodLevel[i], originalMessageLevels[i]);
+			}
 			status = zerrorUpdate(ifltab, status, DSS_FUNCTION_zsqueeze_ID);
 			return status;
 		}
@@ -495,8 +527,10 @@ int zsqueeze7(long long *ifltab, int boolOnlyIfNeeded, int boolInPlace)
 		status = unlink(fullFilename);
 #endif
 	    if (zisError(status)) {
-			if (boolMessageLevelSet) zresetMessageLevel();
-		   printf("Error during squeeze. Unable to delete file.  name: %s\n", fullFilename);
+			for (i = 1; i < NUMBER_METHOD_NAMES; ++i) {
+				zsetMessageLevel(zmessaging.methodLevel[i], originalMessageLevels[i]);
+			}
+			printf("Error during squeeze. Unable to delete file.  name: %s\n", fullFilename);
 		   return zerrorProcessing(ifltab, DSS_FUNCTION_zsqueeze_ID,
 				zdssErrorCodes.UNABLE_TO_CREATE_FILE, 0, 0,
 				zdssErrorSeverity.WARNING_NO_WRITE_ACCESS, "", fullFilename);
@@ -505,7 +539,9 @@ int zsqueeze7(long long *ifltab, int boolOnlyIfNeeded, int boolInPlace)
 	   //  Rename temp to old file
 	   status = rename(tempName, fullFilename);
 	   if (zisError(status)) {
-		   if (boolMessageLevelSet) zresetMessageLevel();
+		   for (i = 1; i < NUMBER_METHOD_NAMES; ++i) {
+			   zsetMessageLevel(zmessaging.methodLevel[i], originalMessageLevels[i]);
+		   }
 		   //  Print a nice message, as this may happen often
 		   printf("Unable to rename back file after squeezing, file: %s\n", tempName);
 		   return zerrorProcessing(ifltab, DSS_FUNCTION_zsqueeze_ID,
@@ -516,7 +552,9 @@ int zsqueeze7(long long *ifltab, int boolOnlyIfNeeded, int boolInPlace)
 	   //  Reopen file
 		status = zopenInternal(ifltab, fullFilename, access, 0, 0, 0, 0);
 		if (zisError(status)) {
-			if (boolMessageLevelSet) zresetMessageLevel();
+			for (i = 1; i < NUMBER_METHOD_NAMES; ++i) {
+				zsetMessageLevel(zmessaging.methodLevel[i], originalMessageLevels[i]);
+			}
 			status = zerrorUpdate(ifltab, status, DSS_FUNCTION_zsqueeze_ID);
 			return status;
 		}
@@ -527,8 +565,11 @@ int zsqueeze7(long long *ifltab, int boolOnlyIfNeeded, int boolInPlace)
 	}
 
 	//  Reset the message level
-	if (boolMessageLevelSet) zresetMessageLevel();
+	for (i = 1; i < NUMBER_METHOD_NAMES; ++i) {
+		zsetMessageLevel(zmessaging.methodLevel[i], originalMessageLevels[i]);
+	}
 
 	return status;
 }
+
 

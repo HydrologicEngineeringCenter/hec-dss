@@ -62,7 +62,7 @@ C
       if (munit.gt.0) then
       write (munit, *)'Entered zsqueeze for file ', cname(1:ILAST)
       endif
-      IF (MLVL.LE.4) THEN
+      IF (MLVL.GT.1.AND.MLVL.LE.4) THEN
          CALL zset('MLEVEL', ' ', 1)
       ENDIF
 C

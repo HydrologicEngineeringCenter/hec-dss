@@ -432,7 +432,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 				if (vdiPd != &_vdiPd) {
 					free(vdiPd);
 				}
-				return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID,
+				return zerrorProcessing(ifltab, DSS_FUNCTION_zpdStore_ID,
 					zdssErrorCodes.VERTICAL_DATUM_ERROR, 0,
 					0, zdssErrorSeverity.WARNING, pds->pathname,
 					errMsgChars);
@@ -447,7 +447,7 @@ int zpdStore(long long *ifltab, zStructPairedData *pds, int storageFlag)
 				if (vdiPd != &_vdiPd) {
 					free(vdiPd);
 				}
-				return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStore_ID,
+				return zerrorProcessing(ifltab, DSS_FUNCTION_zpdStore_ID,
 					zdssErrorCodes.VERTICAL_DATUM_ERROR, 0,
 					0, zdssErrorSeverity.WARNING, pds->pathname,
 					errMsgChars);

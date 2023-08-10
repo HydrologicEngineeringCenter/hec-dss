@@ -35,13 +35,6 @@ JNIEXPORT int JNICALL Java_hec_heclib_util_Heclib_Hec_1zopen
         {
             *status = 7;
         }
-        else {
-            // solaris only.. default to DSS6
-#ifdef __sun__
-            * status = 6;
-#endif // __sun__
-
-        }
     }
 
 
