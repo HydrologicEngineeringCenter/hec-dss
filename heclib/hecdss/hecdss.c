@@ -2,8 +2,9 @@
 #include <stdio.h>
 #include "hecdss.h"
 #include "heclib.h"
-
+#include "dss_file.h"
 #include "zdssKeys.h"
+#include "export.h"
 
 /*
  hecdss.c contains code for a shared object/dll, providing an API to work with DSS files.
@@ -49,10 +50,6 @@ enum pdStorFlag { PD_STORE_AUTOMATIC, PD_STORE_FLOAT, PD_STORE_DOUBLE};
 
 enum dssCatalog {UNSORTED, SORTED};
 
-// private definition 
-struct dss_file {
-    long long ifltab[250];
-};
 
 
 FILE* log_handle;
@@ -850,4 +847,53 @@ HECDSS_API int hec_dss_convertToVersion7(const char* filenameVersion6, const cha
     status = zconvertVersion(filenameVersion6, filenameVersion7);
     return status;
 
+}
+/// <summary>
+/// 
+/// </summary>
+
+
+
+/// <returns></returns>
+
+
+
+/// <summary>
+/// Exports DSS data to a text file
+/// Note the Date/Time arguments are optional, and ignored if the path is not time-series data
+/// </summary>
+/// <param name="dss">dss handle</param>
+/// <param name="pathname">path to object to export</param>
+/// <param name="outputFile">textfile for output (will be overwritten if it exists)</param>
+/// <param name="startDate">optional start date, example: '04JUL1776' </param>
+/// <param name="startTime">optional start time 2400 clock. example: 0100 </param>
+/// <param name="endDate">optional end date, example: '04JUL1976'</param>
+/// <param name="endTime">optional end time (2400 clock) example: '2400'</param>
+/// <returns></returns>
+HECDSS_API int hec_dss_export_to_file(dss_file* dss, 
+                                      const char* path, 
+                                      const char* outputFile,
+                                      const char* startDate, const char* startTime,
+                                      const char* endDate, const char* endTime){
+
+  
+  zStructRecordSize* rs = zstructRecordSizeNew(path);
+
+  int status = zgetRecordSize(dss->ifltab, rs);
+  if (status != 0)
+  {
+    printf("\n Error:  Could not find path:' %s'", path);
+  }
+
+  if ((rs->dataType >= DATA_TYPE_RTS) && (rs->dataType < DATA_TYPE_PD))
+  { 
+    exportTimeSeries(dss, path, outputFile, startDate, startTime, endDate, endTime);
+  }
+  if ((rs->dataType >= DATA_TYPE_UGT) && (rs->dataType < DATA_TYPE_SG))
+  {
+    // exportGrid
+  }
+
+  zstructFree(rs);
+  return 0;
 }

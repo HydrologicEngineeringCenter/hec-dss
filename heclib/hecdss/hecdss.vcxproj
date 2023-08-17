@@ -173,9 +173,12 @@
     <None Include="cpp.hint" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="dss_file.h" />
+    <ClInclude Include="export.h" />
     <ClInclude Include="hecdss.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="export.c" />
     <ClCompile Include="hecdss.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

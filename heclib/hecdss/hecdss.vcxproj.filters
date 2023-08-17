@@ -21,9 +21,18 @@
     <ClInclude Include="hecdss.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="export.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dss_file.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="hecdss.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="export.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
