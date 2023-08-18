@@ -39,7 +39,7 @@ int testztsStruct14(long long *ifltab)
 	status = ztsRetrieve(ifltab, tss2, -1, 1, 0);
 	if (zcheckStatus(ifltab, status, 1, "Fail in testztsStruct14 Loc 2, retrieve status ")) return status;
 
-	status = zcompareDataSets(ifltab, tss1, tss2, 1, 0, tss1->pathname, "Fail in testztsStruct1, Location 3");
+	status = zcompareDataSets(ifltab, tss1, tss2, 1, 0, tss1->pathname, "Fail in testztsStruct14, Location 3");
 	if (status) return status;
 
 	zstructFree(tss1);

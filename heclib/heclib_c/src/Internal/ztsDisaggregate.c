@@ -221,13 +221,12 @@ int ztsDisaggregate(long long *ifltab, int numberToRead, int numberStored,
 	*/
 
 	//  Before 7-HA?
-
 	if (zmessageLevel(ifltab, MESS_METHOD_TS_READ_ID, MESS_LEVEL_INTERNAL_DIAG_1)) {
 		zmessageDebugInt(ifltab, DSS_FUNCTION_ztsDisaggregate_ID, "Enter ztsDisaggregate numberToRead: ", numberToRead);
 		zmessageDebugInt(ifltab, DSS_FUNCTION_ztsDisaggregate_ID, "numberStored: ", numberStored);
 	}
 
-	if (zinquire(ifltab, "fver") < 77265) {
+	if (zinquire(ifltab, "fver") < 70801) {
 		return ztsDisaggregateDep(ifltab, numberToRead, numberStored,
 			numberExpanded, blockStartPosition,
 			positionRelativeFirstValid, positionRelativeLastValid,
