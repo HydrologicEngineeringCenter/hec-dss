@@ -74,8 +74,8 @@ void zswap(long long *iarray, int numberInts)
 	numberLongs = ((numberInts - 1) / 2) + 1;
 	for (i = 0; i < numberLongs; i++) {
 		itemp = iarray[i];
-		c1 = (unsigned long*)&itemp;
-		c2 = (unsigned long*)&iarray[i];
+		c1 = (unsigned char*)&itemp;
+		c2 = (unsigned char*)&iarray[i];
 		c2[0] = c1[7];
 		c2[1] = c1[6];
 		c2[2] = c1[5];
