@@ -233,11 +233,13 @@ int ztextStore(long long *ifltab, zStructText *textStruct)
 	internalHeader[2] = textStruct->numberLabelChars;
 	internalHeader[3] = textStruct->numberRows;
 	internalHeader[4] = textStruct->numberColumns;
+	internalHeader[5] = 0; // to hold swapped value on big endian systems
 
 	ztransfer->internalHeader = internalHeader;
-	ztransfer->internalHeaderNumber = 5;
+	ztransfer->internalHeaderNumber = 6;
 	ztransfer->userHeader = textStruct->userHeader;
 	ztransfer->userHeaderNumber = textStruct->userHeaderNumber;
+
 
 	status = zwrite(ifltab, ztransfer);
 

@@ -50,6 +50,7 @@ int test_jira_dss_163_weekly_time_series_fails();
 int fver_test();
 int testPseudoEightHourIrregular();
 int testOddNumberValues();
+int testTextTableIssue135();
 
 
 

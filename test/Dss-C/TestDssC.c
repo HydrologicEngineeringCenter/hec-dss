@@ -184,6 +184,11 @@ int runTheTests() {
 	char fileName6[80];
 	int status;
 
+	printf("test text tables issue 135\n");
+	status = testTextTableIssue135();
+	if (status != STATUS_OKAY)
+		return status;
+
 	printf("\ntest odd number values\n");
 	status = testOddNumberValues();
 	if (status != STATUS_OKAY)
@@ -1135,5 +1140,182 @@ int testOddNumberValues() {
 		free(dirname);
 		status = 1;
 	}
+	return status;
+}
+
+int testTextTableIssue135() {
+	long long ifltab[250] = { 0 };
+	int status = 0;
+	const char* filename = "TextTableIssue135.dss";
+	const char* pathname = "/a/b/Table/d/e/f/";
+	const char* labelData[2] = { "alpha", "numeric" };
+	const char* tableData[3][2] = { {"cat", "1"}, {"dog", "2"}, {"horse", "3"} };
+	int numberLabelChars = 0;
+	int numberTableChars = 0;
+	int numberColumns = sizeof(labelData) / sizeof(labelData[0]);
+	int numberRows = sizeof(tableData) / sizeof(tableData[0]);;
+	char* cp;
+
+	zStructText* ts = zstructTextNew(pathname);
+	ts->numberColumns = numberColumns;
+	ts->numberRows = numberRows;
+	for (int i = 0; i < numberColumns; ++i) {
+		ts->numberLabelChars += strlen(labelData[i]) + 1;
+	}
+	numberLabelChars = ts->numberLabelChars;
+	for (int i = 0; i < numberRows; ++i) {
+		for (int j = 0; j < numberColumns; ++j) {
+			ts->numberTableChars += strlen(tableData[i][j]) + 1;
+		}
+	}
+	numberTableChars = ts->numberTableChars;
+	ts->labels = calloc(ts->numberLabelChars, sizeof(char));
+	if (!ts->labels) {
+		printf("Cannot allocate memory!\n");
+		zstructFree(ts);
+		return -1;
+	}
+	ts->allocated[zSTRUCT_TX_labels] = 1;
+	cp = ts->labels;
+	for (int i = 0; i < numberColumns; ++i) {
+		strcpy(cp, labelData[i]);
+		cp += strlen(cp) + 1;
+	}
+	ts->textTable = calloc(ts->numberTableChars, sizeof(char));
+	if (!ts->textTable) {
+		printf("Cannot allocate memory!\n");
+		zstructFree(ts);
+		return -1;
+	}
+	ts->allocated[zSTRUCT_TX_textTable] = 1;
+	cp = ts->textTable;
+	for (int i = 0; i < numberRows; ++i) {
+		for (int j = 0; j < numberColumns; ++j) {
+			strcpy(cp, tableData[i][j]);
+			cp += strlen(cp) + 1;
+		}
+	}
+	remove(filename);
+	status = hec_dss_zopen(ifltab, filename);
+	if (status != STATUS_OKAY) {
+		printf("Error opening file %s\n", filename);
+		zstructFree(ts);
+		return status;
+	}
+	printf("STORING DATA:\n");
+
+	printf("\tSPECIFIED TABLE\n\t");
+	for (int i = 0; i < numberColumns; ++i) printf("\t%s", labelData[i]);
+	printf("\n\t");
+	for (int i = 0; i < numberColumns; ++i) printf("\t----");
+	printf("\n");
+	for (int i = 0; i < numberRows; ++i) {
+		printf("\t");
+		for (int j = 0; j < numberColumns; ++j) printf("\t%s", tableData[i][j]);
+		printf("\n");
+	}
+	printf("\tENCODED TABLE\n");
+	printf("\t\tnumber columns     = %d\n", ts->numberColumns);
+	printf("\t\tnumber rows        = %d\n", ts->numberRows);
+	printf("\t\tnumber label chars = %d\n", ts->numberLabelChars);
+	printf("\t\tnumber table chars = %d\n", ts->numberTableChars);
+	printf("\t");
+	if (ts->numberLabelChars) {
+		cp = ts->labels;
+		int col = 0;
+		while (cp - ts->labels < ts->numberLabelChars) {
+			if (strcmp(cp, labelData[col++])) status = -1;
+			printf("\t%s", cp);
+			cp += strlen(cp) + 1;
+		}
+	}
+	printf("\n\t");
+	for (int i = 0; i < ts->numberColumns; ++i) printf("\t----");
+	printf("\n\t");
+	if (ts->numberTableChars) {
+		cp = ts->textTable;
+		int col = 0;
+		int row = 0;
+		while (cp - ts->textTable < ts->numberTableChars) {
+			if (strcmp(cp, tableData[row][col])) status = -1;
+			printf("\t%s", cp);
+			cp += strlen(cp) + 1;
+			if (++col % ts->numberColumns == 0) {
+				col = 0;
+				++row;
+				printf("\n\t");
+			}
+		}
+	}
+	if (status != 0) {
+		printf("Error encoding text table\n");
+		zstructFree(ts);
+		zclose(ifltab);
+		remove(filename);
+		return -1;
+	}
+
+	status = ztextStore(ifltab, ts);
+	if (status != STATUS_OKAY) {
+		printf("Error saving text table\n");
+		zstructFree(ts);
+		zclose(ifltab);
+		remove(filename);
+		return -1;
+	}
+	zstructFree(ts);
+	ts = zstructTextNew(pathname);
+	status = ztextRetrieve(ifltab, ts);
+	if (status != STATUS_OKAY) {
+		printf("Error retrieving text table\n");
+		zstructFree(ts);
+		zclose(ifltab);
+		remove(filename);
+		return -1;
+	}
+	printf("RETRIEVED DATA:\n");
+
+	if (ts->numberColumns    != numberColumns) status = -1;
+	if (ts->numberRows       != numberRows) status = -1;
+	if (ts->numberLabelChars != numberLabelChars) status = -1;
+	if (ts->numberTableChars != numberTableChars) status = -1;
+
+	printf("\tENCODED TABLE\n");
+	printf("\t\tnumber columns     = %d\n", ts->numberColumns);
+	printf("\t\tnumber rows        = %d\n", ts->numberRows);
+	printf("\t\tnumber label chars = %d\n", ts->numberLabelChars);
+	printf("\t\tnumber table chars = %d\n", ts->numberTableChars);
+	printf("\t");
+	if (ts->numberLabelChars) {
+		cp = ts->labels;
+		int col = 0;
+		while (cp - ts->labels < ts->numberLabelChars) {
+			if (strcmp(cp, labelData[col++])) status = -1;
+			printf("\t%s", cp);
+			cp += strlen(cp) + 1;
+		}
+	}
+	printf("\n\t");
+	for (int i = 0; i < ts->numberColumns; ++i) printf("\t----");
+	printf("\n\t");
+	if (ts->numberTableChars) {
+		cp = ts->textTable;
+		int col = 0;
+		int row = 0;
+		while (cp - ts->textTable < ts->numberTableChars) {
+			if (strcmp(cp, tableData[row][col])) status = -1;
+			printf("\t%s", cp);
+			cp += strlen(cp) + 1;
+			if (++col % ts->numberColumns == 0) {
+				col = 0;
+				++row;
+				printf("\n\t");
+			}
+		}
+	}
+
+	zstructFree(ts);
+	zclose(ifltab);
+	remove(filename);
 	return status;
 }
