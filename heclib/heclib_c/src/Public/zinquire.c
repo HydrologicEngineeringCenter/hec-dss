@@ -265,7 +265,9 @@ long long zinquire(long long *ifltab, const char *request)
 		longNumber = (long)-1;
 	}
 	else {
-		zmessage2(ifltab, "Request not recognized: ", request);
+		if (zmessaging.methodLevel[MESS_METHOD_GENERAL_ID] > 0) {
+			zmessage2(ifltab, "Request not recognized: ", request);
+		}
 		longNumber = 0;
 		return -1;
 	}

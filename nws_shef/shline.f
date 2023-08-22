@@ -33,6 +33,9 @@ C  =====================================================================
       INTEGER        KHPOS,LBEG,LEND,LNUM,LSTAT,INITZ,MAXEND,JJ,LEN
       INTEGER        LUNC,LUNE,LUNI,LLC,LLE,LLEX
 
+      character alpha(16)
+      integer   mlvl
+
       SAVE           INITZ,MAXEND,LBEG,LEND,LNUM,LINE
       SAVE           LUNI,LUNE,LUNC,LLC,LLE,LLEX
 C
@@ -131,7 +134,8 @@ C
           ENDIF
 
       ELSEIF (CMD.EQ.'WRITE_NUM_LINES ') THEN
-          IF (LUNE .GE. 0) THEN
+          call zquery("MLVL", alpha, mlvl)
+          IF (LUNE .GE. 0 .and. mlvl .gt. 0) THEN
            WRITE(LUNE,'(''    TOTAL NUMBER OF LINES ..'',I8)',
      $      IOSTAT=LSTAT) LNUM
           ENDIF

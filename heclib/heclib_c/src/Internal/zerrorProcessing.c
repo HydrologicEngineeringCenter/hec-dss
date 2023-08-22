@@ -136,7 +136,7 @@ int zerrorProcessing(long long *ifltab, int functionID, int errorNumber, int sta
 
 
 	//  Two blank lines on a significant error
-	if (severity > zdssErrorSeverity.WARNING) {
+	if (zmessaging.methodLevel[MESS_METHOD_GENERAL_ID] > 0 && severity > zdssErrorSeverity.WARNING) {
 		zmessage(ifltab, " ");
 		zmessage(ifltab, " ");
 	}

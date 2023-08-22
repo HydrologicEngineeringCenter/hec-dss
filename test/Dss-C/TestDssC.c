@@ -1200,6 +1200,7 @@ int testTextTableIssue135() {
 	if (status != STATUS_OKAY) {
 		printf("Error opening file %s\n", filename);
 		zstructFree(ts);
+		remove(filename);
 		return status;
 	}
 	printf("STORING DATA:\n");

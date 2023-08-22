@@ -22,13 +22,16 @@ C     LOCAL VARIABLES
       CHARACTER CPATH*80,CD*32,CE*32
       DIMENSION BUFFER(2*MAXBLK+100),ZDATA(MAXBLK),ZTIME(MAXBLK)
       LOGICAL LPOPT,DEBUG
+      character alpha(16)
+      integer   mlvl
 C
 C
 C ****************************************************************************
 C INITIALIZATION
 C ****************************************************************************
 C
-      DEBUG = LPOPT('D')
+      call zquery("MLVL", alpha, mlvl)
+      DEBUG = (LPOPT('D').and.(mlvl.gt.0))
 C
 C     COMMON PATHNAME PARTS
       CALL LFLNB( GROUP,1,LEN(GROUP),IBEG,NA )

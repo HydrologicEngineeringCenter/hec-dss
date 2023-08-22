@@ -29,6 +29,9 @@ C  =====================================================================
       INTEGER        INITZ,LUNE,LSTAT,LENC,LENV,IEND,NEXT,LEN
       PARAMETER      ( BLANK=' ' )
 
+      character alpha(16)
+      integer   mlvl
+
       SAVE           INITZ,LUNE,VERNUM,IEND
 C
 C    ================================= RCS keyword statements ==========
@@ -62,7 +65,8 @@ C
       ENDIF
 
       IF (XCMD.EQ.'WRITE_VERSION') THEN
-          IF (LUNE .GE. 0) THEN
+          call zquery("MLVL", alpha, mlvl)
+          IF (LUNE .GE. 0 .and. mlvl .gt. 0) THEN
            WRITE(LUNE,'(''    (parsing routines: '',A,'')'')',
      $           IOSTAT=LSTAT) VERNUM(1:IEND)
           ENDIF
