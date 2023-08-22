@@ -22,6 +22,9 @@ C  =====================================================================
       CHARACTER*16   CMD
       INTEGER        NWAR,NERR,INITZ,LUNE,LSTAT
 
+      character alpha(16)
+      integer   mlvl
+
       SAVE           INITZ,LUNE
 C
 C    ================================= RCS keyword statements ==========
@@ -42,7 +45,8 @@ C
       ENDIF
 
       IF (CMD.EQ.'WRITE_SUMMARY   ') THEN
-          IF (LUNE .GE. 0) THEN
+          call zquery("MLVL", alpha, mlvl)
+          IF (LUNE .GE. 0 .and. mlvl .gt. 0) THEN
            WRITE(LUNE,'(/,''    NUMBER OF WARNINGS  ....'',I8  )',
      $           IOSTAT=LSTAT) NWAR
            WRITE(LUNE,'(  ''    NUMBER OF ERRORS  ......'',I8,/)',

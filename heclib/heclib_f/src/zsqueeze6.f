@@ -59,7 +59,7 @@ C
 
       CALL ZQUERY('MLVL', CSCRAT, MLVL)
       CALL ZQUERY('MUNIT', CSCRAT, MUNIT)
-      if (munit.gt.0) then
+      if (munit.gt.0.and.mlvl.gt.0) then
       write (munit, *)'Entered zsqueeze for file ', cname(1:ILAST)
       endif
       IF (MLVL.GT.1.AND.MLVL.LE.4) THEN
@@ -224,8 +224,7 @@ C     IF (IST.EQ.0) CALL CHMODF (CTEMP, IPERM, IST)                     u
 C
 C
  800  CONTINUE
-      write(*, *)'Exit zsqueeze, status = ', ISTAT
-      if (munit.gt.0) then
+      if (munit.gt.0.and.mlvl.gt.0) then
       write(MUNIT, *)'Exit zsqueeze, status = ', ISTAT
       endif
       CALL zset6 ('MLEVEL', ' ', MLVL)

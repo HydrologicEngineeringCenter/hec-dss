@@ -60,26 +60,22 @@ int zerrorUpdate(long long *ifltab, int errorCodeIn, int functionID)
 		return errorCodeIn;
 	}
 
-	if (zmessageLevel(ifltab, MESS_METHOD_GENERAL_ID, MESS_LEVEL_CRITICAL)) {
-		zmessageDebugInt(ifltab, DSS_FUNCTION_other_ID, "ZerrorUpdate.  Error code: ", errorCodeIn);
-		zmessageDebug(ifltab, DSS_FUNCTION_other_ID, "Called from function: ", zgetFunctionName(functionID));
-	}
-
 	errorCode = zerrorEncodeHigh(errorCodeIn, functionID);
-/*
-	if (errorCodeIn == zdssLastError.errorCode) {
-		zdssLastError.calledByFunction = functionID;
-		zdssLastError.errorCode = errorCode;
-	}
-	*/
-	//  Don't write out function names if this is just a warning
-	if (zerrorSeverity(errorCodeIn) > zdssErrorSeverity.WARNING_NO_FILE_ACCESS) {
-		errorMessage[0] = '\0';
-		function_name = zgetFunctionName(functionID);
-		zmessConcat2(errorMessage, MAX_LEN_ERROR_MESS, ERROR_CALLED_BY, function_name);
-		zmessageInterface(ifltab, errorMessage, 1);
-		//  Make sure the error message is flushed to disk or output
-		zmessageFlush(ifltab);
+
+	if (zmessaging.methodLevel[MESS_METHOD_GENERAL_ID] > 0) {
+		if (zmessageLevel(ifltab, MESS_METHOD_GENERAL_ID, MESS_LEVEL_CRITICAL)) {
+			zmessageDebugInt(ifltab, DSS_FUNCTION_other_ID, "ZerrorUpdate.  Error code: ", errorCodeIn);
+			zmessageDebug(ifltab, DSS_FUNCTION_other_ID, "Called from function: ", zgetFunctionName(functionID));
+		}
+		//  Don't write out function names if this is just a warning
+		if (zerrorSeverity(errorCodeIn) > zdssErrorSeverity.WARNING_NO_FILE_ACCESS) {
+			errorMessage[0] = '\0';
+			function_name = zgetFunctionName(functionID);
+			zmessConcat2(errorMessage, MAX_LEN_ERROR_MESS, ERROR_CALLED_BY, function_name);
+			zmessageInterface(ifltab, errorMessage, 1);
+			//  Make sure the error message is flushed to disk or output
+			zmessageFlush(ifltab);
+		}
 	}
 	return errorCode;
 }

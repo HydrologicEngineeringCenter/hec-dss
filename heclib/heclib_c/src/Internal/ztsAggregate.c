@@ -220,7 +220,7 @@ int ztsAggregate(long long *ifltab, int numberIn, int *internalHeader,
 	}
 
 	//  Before 7-HA?
-	if (zinquire(ifltab, "fver") < 77265) {
+	if (zinquire(ifltab, "fver") < 70801) {
 		return ztsAggregateDep(ifltab, numberIn, internalHeader,
 			timeArray, boolUseTimes,
 			values, valueElementSize,

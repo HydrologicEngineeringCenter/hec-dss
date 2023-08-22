@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <string.h>
 #if defined(__linux__) || defined(__APPLE__) || defined(__sparc)
-	#include <unistd.h>
+#include <unistd.h>
+#else
+#include <direct.h>
 #endif
 #include "heclib.h"
 #include "hecdss7.h"
@@ -13,7 +15,7 @@ int runTheTests();
 
 int gridMemoryTest() {
 
-	long long ifltab[250] = {0};
+	long long ifltab[250] = { 0 };
 	int status = hec_dss_zopen(ifltab, "2017-06-28_event.dss");
 	if (status != 0) {
 		printf("Error during open.  status= %d\n", status);
@@ -45,8 +47,8 @@ int gridMemoryTest() {
 
 void usage(char* exeName)
 {
-	printf("Version: %s %s\n",__DATE__,__TIME__);
-	
+	printf("Version: %s %s\n", __DATE__, __TIME__);
+
 	printf("\nUsage:\n %s command [options] [dssfilename]  ", exeName);
 	printf("\ncommands: test|catalog|zqueeze|lock seconds|check-lock|zcheck(File|Links|Pathnames) |workout version timeSeriesCount timeSeriesLength");
 	printf("\nWhere:");
@@ -66,7 +68,7 @@ void usage(char* exeName)
 	printf("\nimport-profile input.csv output.dss path date time units datatype");
 
 	printf("\n%s pathnameTesting 6|7,  tests large fparts such as when using collections", exeName);
-	
+
 
 	printf("\n\nExamples:\n%s workout 7 2000 5000 test.dss", exeName);
 	printf("\n%s test", exeName);
@@ -80,7 +82,7 @@ void usage(char* exeName)
 	printf("\n%s zcheckPathnames myfile.dss", exeName);
 	printf("\n%s export myfile.dss /SHG/EFRUSSIAN20/PRECIPITATION/01OCT2004:2400/02OCT2004:0100/GAGEINTERP/ 1", exeName);
 	printf("\n%s pathnameTesting file.dss 7", exeName);
-	printf("\n%s import-profile input.csv output.dss //location1/id-depth//10Second/ADCIRC-run12/ 2022-05-04 10:12:30 feet INST-VAL",exeName);
+	printf("\n%s import-profile input.csv output.dss //location1/id-depth//10Second/ADCIRC-run12/ 2022-05-04 10:12:30 feet INST-VAL", exeName);
 	printf("\n");
 
 	printf("\nSupported Environmnet variable examples:");
@@ -90,7 +92,7 @@ void usage(char* exeName)
 
 int main(int argc, char* argv[])
 {
-	
+
 	int status = 0;
 	long long start_time = getCurrentTimeMillis();
 
@@ -107,7 +109,7 @@ int main(int argc, char* argv[])
 	}
 	else if (argc == 2 && strcmp(argv[1], "test") == 0) { // test
 		status = runTheTests();
-		
+
 	}
 
 	else if ((argc == 3 || argc == 4) && strcmp(argv[1], "catalog") == 0)
@@ -141,26 +143,26 @@ int main(int argc, char* argv[])
 	else if (argc == 3 && strcmp(argv[1], "check-lock") == 0)
 	{// example:  check-lock test.dss
 		status = CheckLocking(argv[2]);
-	
+
 	}
 	else if (argc == 4 && strcmp(argv[1], "lock") == 0)
 	{// example:  lock 12 test.dss
 		status = Lock(argv[3], atoi(argv[2]));
 	}
-	else if (strcmp(argv[1], "export") == 0 && ( argc == 4 || argc == 5)) { // export file.dss path metaDataOnly(0|1)
+	else if (strcmp(argv[1], "export") == 0 && (argc == 4 || argc == 5)) { // export file.dss path metaDataOnly(0|1)
 		int metaDataOnly = 0;
-		if (argc == 5) metaDataOnly = strcmp(argv[4],"1")? 0:1;
-		status= Export(argv[2], argv[3],metaDataOnly);
+		if (argc == 5) metaDataOnly = strcmp(argv[4], "1") ? 0 : 1;
+		status = Export(argv[2], argv[3], metaDataOnly);
 	}
 	else if (argc == 3 && strcmp(argv[1], "recordinfo") == 0) {
 		testRecordInfo6(argv[2]);
 	}
 	else if (argc == 4 && strcmp(argv[1], "pathnameTesting") == 0) {
-		status = PathnameTesting(argv[2],atoi(argv[3]));
+		status = PathnameTesting(argv[2], atoi(argv[3]));
 	}
-	else if (argc == 9 && strcmp(argv[1], "import-profile") == 0){
+	else if (argc == 9 && strcmp(argv[1], "import-profile") == 0) {
 		//int ImportProfile(const char* csvFilename, const char* dssFilename, const char* path, const char* date, const char* time, const char* units, const char* datatype);
-		status = ImportProfile(argv[2], argv[3], argv[4], argv[5], argv[6], argv[7],argv[8]);
+		status = ImportProfile(argv[2], argv[3], argv[4], argv[5], argv[6], argv[7], argv[8]);
 	}
 	else
 	{
@@ -172,37 +174,58 @@ int main(int argc, char* argv[])
 
 	printf("\nSeconds elapsed: %f", elapsed);
 
-   return status;
+	return status;
 }
 int runTheTests() {
-	long long ifltab7[250] = {0};
-	long long ifltab6[250] = {0};
+	long long ifltab7[250] = { 0 };
+	long long ifltab6[250] = { 0 };
 	char fileName7[80];
 	char fileName7a[80];
 	char fileName6[80];
 	int status;
 
+	printf("test text tables issue 135\n");
+	status = testTextTableIssue135();
+	if (status != STATUS_OKAY)
+		return status;
+
+	printf("\ntest odd number values\n");
+	status = testOddNumberValues();
+	if (status != STATUS_OKAY)
+		return status;
+	
+	printf("\ntest pseudo-regular 8Minute data\n");
+	status = testPseudoEightHourIrregular();
+	if (status != STATUS_OKAY)
+		return status;
+
+	printf("\ntest zinquire return value for FVER\n");
 	status = fver_test();
 	if (status != STATUS_OKAY)
 		return status;
 
+	printf("\ntest Jira DSS-163 weekly time series issue\n");
 	status = test_jira_dss_163_weekly_time_series_fails();
 	if (status != STATUS_OKAY)
 		return status;
 
+	printf("\ntest copy large record\n");
 	status = testLargeCopy();
 	if (status != STATUS_OKAY)
 		return status;
 
+	printf("\ntest miscellaneous stuff\n");
 	status = miscTests();
 	if (status != STATUS_OKAY)
 		return status;
 
 
+	printf("\ntest grid memory\n");
 	status = gridMemoryTest();
 	if (status != STATUS_OKAY)
 		return status;
 
+	printf("\ntest units issue 126\n");
 	status = units_issue_126();
 	if (status != STATUS_OKAY)
 		return status;
@@ -279,7 +302,7 @@ int runTheTests() {
 	//bc1();
 	//ExampleOpenx();
 	//return;
-	//if (status != STATUS_OKAY) return status;
+//	if (status != STATUS_OKAY) return status;
 
 	status = testMisc();
 	if (status != STATUS_OKAY) return status;
@@ -606,7 +629,7 @@ int units_issue_126()
 	tss1->type = "INST-VAL";
 
 	long long ifltab[250];
-	memset(ifltab,0,sizeof(ifltab));
+	memset(ifltab, 0, sizeof(ifltab));
 	int status = zopen6(ifltab, dssFileName);
 	if (status) return status;
 
@@ -616,7 +639,7 @@ int units_issue_126()
 
 	zStructTimeSeries* tss2 = zstructTsNew(path);
 	long long ifltab2[250];
-	memset(ifltab2,0,sizeof(ifltab2));
+	memset(ifltab2, 0, sizeof(ifltab2));
 	hec_dss_zopen(ifltab2, dssFileName);
 	status = ztsRetrieve(ifltab2, tss2, -1, 1, 0);
 
@@ -679,15 +702,15 @@ int test_jira_dss_163_weekly_time_series_fails()
 				sprintf(pathname, pathnameTemplate, year, month, day);
 				int jul = yearMonthDayToJulian(year, month, day);
 				julianToDate(jul, -13, startdate, sizeof(startdate));
-				julianToDate(jul+(NUM_VALUES-1)*7, -13, enddate, sizeof(enddate));
+				julianToDate(jul + (NUM_VALUES - 1) * 7, -13, enddate, sizeof(enddate));
 				//----------------------//
 				// store by time window //
 				//----------------------//
 				tss1 = zstructTsNewTimes(pathname, startdate, starttime, enddate, endtime);
 				tss1->numberValues = NUM_VALUES;
 				tss1->doubleValues = dvalues;
-				tss1->units = (char *)unit;
-				tss1->type = (char *)dataType;
+				tss1->units = (char*)unit;
+				tss1->type = (char*)dataType;
 				status = ztsStore(ifltab, tss1, 0);
 				zstructFree(tss1);
 				if (status != STATUS_OKAY) {
@@ -877,8 +900,8 @@ int test_jira_dss_163_weekly_time_series_fails()
 }
 
 int fver_test() {
-	const char *filename = "fvers-test.dss";
-	long long ifltab[250] = {0};
+	const char* filename = "fvers-test.dss";
+	long long ifltab[250] = { 0 };
 	char alpha[80];
 	int  number;
 	int  status;
@@ -915,3 +938,385 @@ int fver_test() {
 	}
 }
 
+int testPseudoEightHourIrregular() {
+	const char* filenames[] = { "PseudoEightHourIrregular.dss", "Output/PseudoEightHourIrregular.dss", "../bin/PseudoEightHourIrregular.dss" };
+	char const* filename;
+	const char* pathname = "//AARK/Flow/01Jan2018/~8Hour/KS2/";
+	const char* expectedDateTimes[] = {
+		"09Aug2018 0800",
+		"09Aug2018 1600",
+		"10Aug2018 0000",
+		"10Aug2018 0800",
+		"10Aug2018 1600",
+		"11Aug2018 0000",
+		"11Aug2018 0800",
+		"11Aug2018 1600"
+	};
+	const float expectedValues[] = {100, 200, 300, 400, 500, 600, 700, 800};
+	const int expectedValueCount = sizeof(expectedValues) / sizeof(expectedValues[0]);
+	char dateStr[24];
+	char timeStr[16];
+	char dateTimeStr[40];
+	long long ifltab[250] = { 0 };
+	int status = 0;
+	zStructTimeSeries* tss;
+	FILE* f;
+	for (int i = 0; i < sizeof(filenames) / sizeof(filenames[0]); ++i) {
+		f = fopen(filenames[i], "r");
+		if (f) {
+			filename = filenames[i];
+			break;
+		}
+	}
+	if (f) {
+		fclose(f);
+		status = hec_dss_zopen(ifltab, filename);
+		if (status != STATUS_OKAY) {
+			fprintf(stderr, "Error opening file %s\n", filename);
+			return status;
+		}
+		tss = zstructTsNew(pathname);
+		status = ztsRetrieve(ifltab, tss, -1, 1, 0); // Floats
+		if (status != STATUS_OKAY) {
+			fprintf(stderr, "Error reading record %s\n", pathname);
+			zclose(ifltab);
+			return status;
+		}
+		printf("\nData as floats:\n");
+		if (tss->numberValues != expectedValueCount) {
+			fprintf(stderr, "Expected %d floats, but got %d\n", expectedValueCount, tss->numberValues);
+			status = -1;
+		}
+		for (int i = 0; i < tss->numberValues; ++i) {
+			minsToDateTime(tss->julianBaseDate * 1440 + tss->times[i], dateStr, timeStr, sizeof(dateStr), sizeof(timeStr));
+			sprintf(dateTimeStr, "%s %s", dateStr, timeStr);
+			if (strcmp(expectedDateTimes[i], dateTimeStr)) {
+				fprintf(stderr, "Expected date/time of %s, but got %s\n", expectedDateTimes[i], dateTimeStr);
+				status = -1;
+			}
+			if (tss->floatValues[i] != expectedValues[i]) {
+				fprintf(stderr, "Expected value of %f, but got %f\n", expectedValues[i], tss->floatValues[i]);
+				status = -1;
+			}
+			printf("\t%2d: %s %s\t%f\n", i, dateStr, timeStr, tss->floatValues[i]);
+		}
+		zstructFree(tss);
+		tss = zstructTsNew(pathname);
+		status = ztsRetrieve(ifltab, tss, -1, 2, 0); // Doubles
+		if (status != STATUS_OKAY) {
+			fprintf(stderr, "Error reading record %s\n", pathname);
+			zclose(ifltab);
+			return status;
+		}
+		printf("\nData as doubles:\n");
+		if (tss->numberValues != expectedValueCount) {
+			fprintf(stderr, "Expected %d doubles, but got %d\n", expectedValueCount, tss->numberValues);
+			status = -1;
+		}
+		for (int i = 0; i < tss->numberValues; ++i) {
+			minsToDateTime(tss->julianBaseDate * 1440 + tss->times[i], dateStr, timeStr, sizeof(dateStr), sizeof(timeStr));
+			sprintf(dateTimeStr, "%s %s", dateStr, timeStr);
+			if (strcmp(expectedDateTimes[i], dateTimeStr)) {
+				fprintf(stderr, "Expected date/time of %s, but got %s\n", expectedDateTimes[i], dateTimeStr);
+				status = -1;
+			}
+			if (tss->doubleValues[i] != expectedValues[i]) {
+				fprintf(stderr, "Expected value of %f, but got %lf\n", expectedValues[i], tss->doubleValues[i]);
+				status = -1;
+			}
+			printf("\t%2d: %s %s\t%f\n", i, dateStr, timeStr, tss->doubleValues[i]);
+		}
+		zstructFree(tss);
+		zclose(ifltab);
+	}
+	else {
+		char* dirname = getcwd(NULL, 0);
+		for (int i = 0; i < sizeof(filenames) / sizeof(filenames[0]); ++i) {
+			fprintf(stderr, "File %s does not exist in directory %s.\n", filenames[i], dirname);
+		}
+		free(dirname);
+		status = 1;
+	}
+	return status;
+}
+
+int testOddNumberValues() {
+	const char* filenames[] = { "OddNumberValues.dss", "Output/OddNumberValues.dss", "../bin/OddNumberValues.dss" };
+	char const* filename;
+	const char* pathnames[] = { "//AARK/Flow/01Jan2018/~8Hour/KS2/", "//AARK/Flow/01Aug2018/8Hour/KS2/" };
+	const char* expectedDateTimes[] = {
+		"09Aug2018 0800",
+		"09Aug2018 1600",
+		"10Aug2018 0000",
+		"10Aug2018 0800",
+		"10Aug2018 1600",
+		"11Aug2018 0000",
+		"11Aug2018 0800"
+	};
+	const float expectedValues[] = {100, 200, 300, 400, 500, 600, 700};
+	const int expectedValueCount = sizeof(expectedValues) / sizeof(expectedValues[0]);
+	char dateStr[24];
+	char timeStr[16];
+	char dateTimeStr[40];
+	long long ifltab[250] = { 0 };
+	int status = 0;
+	zStructTimeSeries* tss;
+	FILE* f;
+	for (int i = 0; i < sizeof(filenames) / sizeof(filenames[0]); ++i) {
+		f = fopen(filenames[i], "r");
+		if (f) {
+			filename = filenames[i];
+			break;
+		}
+	}
+	if (f) {
+		fclose(f);
+		status = hec_dss_zopen(ifltab, filename);
+		if (status != STATUS_OKAY) {
+			fprintf(stderr, "Error opening file %s\n", filename);
+			return status;
+		}
+		for (int j = 0 ; j < sizeof(pathnames) / sizeof(pathnames[0]); ++j) {
+			tss = zstructTsNew(pathnames[j]);
+			status = ztsRetrieve(ifltab, tss, -1, 1, 0); // Floats
+			if (status != STATUS_OKAY) {
+				fprintf(stderr, "Error reading record %s\n", pathnames[j]);
+				zclose(ifltab);
+				return status;
+			}
+			printf("\nData as floats:\n");
+			if (tss->numberValues != expectedValueCount) {
+				fprintf(stderr, "Expected %d floats, but got %d\n", expectedValueCount, tss->numberValues);
+				status = -1;
+			}
+			for (int i = 0; i < tss->numberValues; ++i) {
+				minsToDateTime(tss->julianBaseDate * 1440 + tss->times[i], dateStr, timeStr, sizeof(dateStr), sizeof(timeStr));
+				sprintf(dateTimeStr, "%s %s", dateStr, timeStr);
+				if (strcmp(expectedDateTimes[i], dateTimeStr)) {
+					fprintf(stderr, "Expected date/time of %s, but got %s\n", expectedDateTimes[i], dateTimeStr);
+					status = -1;
+				}
+				if (tss->floatValues[i] != expectedValues[i]) {
+					fprintf(stderr, "Expected value of %f, but got %f\n", expectedValues[i], tss->floatValues[i]);
+					status = -1;
+				}
+				printf("\t%2d: %s %s\t%f\n", i, dateStr, timeStr, tss->floatValues[i]);
+			}
+			zstructFree(tss);
+			tss = zstructTsNew(pathnames[j]);
+			status = ztsRetrieve(ifltab, tss, -1, 2, 0); // Doubles
+			if (status != STATUS_OKAY) {
+				fprintf(stderr, "Error reading record %s\n", pathnames[j]);
+				zclose(ifltab);
+				return status;
+			}
+			printf("\nData as doubles:\n");
+			if (tss->numberValues != expectedValueCount) {
+				fprintf(stderr, "Expected %d doubles, but got %d\n", expectedValueCount, tss->numberValues);
+				status = -1;
+			}
+			for (int i = 0; i < tss->numberValues; ++i) {
+				minsToDateTime(tss->julianBaseDate * 1440 + tss->times[i], dateStr, timeStr, sizeof(dateStr), sizeof(timeStr));
+				sprintf(dateTimeStr, "%s %s", dateStr, timeStr);
+				if (strcmp(expectedDateTimes[i], dateTimeStr)) {
+					fprintf(stderr, "Expected date/time of %s, but got %s\n", expectedDateTimes[i], dateTimeStr);
+					status = -1;
+				}
+				if (tss->doubleValues[i] != expectedValues[i]) {
+					fprintf(stderr, "Expected value of %f, but got %lf\n", expectedValues[i], tss->doubleValues[i]);
+					status = -1;
+				}
+				printf("\t%2d: %s %s\t%f\n", i, dateStr, timeStr, tss->doubleValues[i]);
+			}
+			zstructFree(tss);
+		}
+		zclose(ifltab);
+	}
+	else {
+		char* dirname = getcwd(NULL, 0);
+		for (int i = 0; i < sizeof(filenames) / sizeof(filenames[0]); ++i) {
+			fprintf(stderr, "File %s does not exist in directory %s.\n", filenames[i], dirname);
+		}
+		free(dirname);
+		status = 1;
+	}
+	return status;
+}
+
+int testTextTableIssue135() {
+	long long ifltab[250] = { 0 };
+	int status = 0;
+	const char* filename = "TextTableIssue135.dss";
+	const char* pathname = "/a/b/Table/d/e/f/";
+	const char* labelData[2] = { "alpha", "numeric" };
+	const char* tableData[3][2] = { {"cat", "1"}, {"dog", "2"}, {"horse", "3"} };
+	int numberLabelChars = 0;
+	int numberTableChars = 0;
+	int numberColumns = sizeof(labelData) / sizeof(labelData[0]);
+	int numberRows = sizeof(tableData) / sizeof(tableData[0]);;
+	char* cp;
+
+	zStructText* ts = zstructTextNew(pathname);
+	ts->numberColumns = numberColumns;
+	ts->numberRows = numberRows;
+	for (int i = 0; i < numberColumns; ++i) {
+		ts->numberLabelChars += strlen(labelData[i]) + 1;
+	}
+	numberLabelChars = ts->numberLabelChars;
+	for (int i = 0; i < numberRows; ++i) {
+		for (int j = 0; j < numberColumns; ++j) {
+			ts->numberTableChars += strlen(tableData[i][j]) + 1;
+		}
+	}
+	numberTableChars = ts->numberTableChars;
+	ts->labels = calloc(ts->numberLabelChars, sizeof(char));
+	if (!ts->labels) {
+		printf("Cannot allocate memory!\n");
+		zstructFree(ts);
+		return -1;
+	}
+	ts->allocated[zSTRUCT_TX_labels] = 1;
+	cp = ts->labels;
+	for (int i = 0; i < numberColumns; ++i) {
+		strcpy(cp, labelData[i]);
+		cp += strlen(cp) + 1;
+	}
+	ts->textTable = calloc(ts->numberTableChars, sizeof(char));
+	if (!ts->textTable) {
+		printf("Cannot allocate memory!\n");
+		zstructFree(ts);
+		return -1;
+	}
+	ts->allocated[zSTRUCT_TX_textTable] = 1;
+	cp = ts->textTable;
+	for (int i = 0; i < numberRows; ++i) {
+		for (int j = 0; j < numberColumns; ++j) {
+			strcpy(cp, tableData[i][j]);
+			cp += strlen(cp) + 1;
+		}
+	}
+	remove(filename);
+	status = hec_dss_zopen(ifltab, filename);
+	if (status != STATUS_OKAY) {
+		printf("Error opening file %s\n", filename);
+		zstructFree(ts);
+		remove(filename);
+		return status;
+	}
+	printf("STORING DATA:\n");
+
+	printf("\tSPECIFIED TABLE\n\t");
+	for (int i = 0; i < numberColumns; ++i) printf("\t%s", labelData[i]);
+	printf("\n\t");
+	for (int i = 0; i < numberColumns; ++i) printf("\t----");
+	printf("\n");
+	for (int i = 0; i < numberRows; ++i) {
+		printf("\t");
+		for (int j = 0; j < numberColumns; ++j) printf("\t%s", tableData[i][j]);
+		printf("\n");
+	}
+	printf("\tENCODED TABLE\n");
+	printf("\t\tnumber columns     = %d\n", ts->numberColumns);
+	printf("\t\tnumber rows        = %d\n", ts->numberRows);
+	printf("\t\tnumber label chars = %d\n", ts->numberLabelChars);
+	printf("\t\tnumber table chars = %d\n", ts->numberTableChars);
+	printf("\t");
+	if (ts->numberLabelChars) {
+		cp = ts->labels;
+		int col = 0;
+		while (cp - ts->labels < ts->numberLabelChars) {
+			if (strcmp(cp, labelData[col++])) status = -1;
+			printf("\t%s", cp);
+			cp += strlen(cp) + 1;
+		}
+	}
+	printf("\n\t");
+	for (int i = 0; i < ts->numberColumns; ++i) printf("\t----");
+	printf("\n\t");
+	if (ts->numberTableChars) {
+		cp = ts->textTable;
+		int col = 0;
+		int row = 0;
+		while (cp - ts->textTable < ts->numberTableChars) {
+			if (strcmp(cp, tableData[row][col])) status = -1;
+			printf("\t%s", cp);
+			cp += strlen(cp) + 1;
+			if (++col % ts->numberColumns == 0) {
+				col = 0;
+				++row;
+				printf("\n\t");
+			}
+		}
+	}
+	if (status != 0) {
+		printf("Error encoding text table\n");
+		zstructFree(ts);
+		zclose(ifltab);
+		remove(filename);
+		return -1;
+	}
+
+	status = ztextStore(ifltab, ts);
+	if (status != STATUS_OKAY) {
+		printf("Error saving text table\n");
+		zstructFree(ts);
+		zclose(ifltab);
+		remove(filename);
+		return -1;
+	}
+	zstructFree(ts);
+	ts = zstructTextNew(pathname);
+	status = ztextRetrieve(ifltab, ts);
+	if (status != STATUS_OKAY) {
+		printf("Error retrieving text table\n");
+		zstructFree(ts);
+		zclose(ifltab);
+		remove(filename);
+		return -1;
+	}
+	printf("RETRIEVED DATA:\n");
+
+	if (ts->numberColumns    != numberColumns) status = -1;
+	if (ts->numberRows       != numberRows) status = -1;
+	if (ts->numberLabelChars != numberLabelChars) status = -1;
+	if (ts->numberTableChars != numberTableChars) status = -1;
+
+	printf("\tENCODED TABLE\n");
+	printf("\t\tnumber columns     = %d\n", ts->numberColumns);
+	printf("\t\tnumber rows        = %d\n", ts->numberRows);
+	printf("\t\tnumber label chars = %d\n", ts->numberLabelChars);
+	printf("\t\tnumber table chars = %d\n", ts->numberTableChars);
+	printf("\t");
+	if (ts->numberLabelChars) {
+		cp = ts->labels;
+		int col = 0;
+		while (cp - ts->labels < ts->numberLabelChars) {
+			if (strcmp(cp, labelData[col++])) status = -1;
+			printf("\t%s", cp);
+			cp += strlen(cp) + 1;
+		}
+	}
+	printf("\n\t");
+	for (int i = 0; i < ts->numberColumns; ++i) printf("\t----");
+	printf("\n\t");
+	if (ts->numberTableChars) {
+		cp = ts->textTable;
+		int col = 0;
+		int row = 0;
+		while (cp - ts->textTable < ts->numberTableChars) {
+			if (strcmp(cp, tableData[row][col])) status = -1;
+			printf("\t%s", cp);
+			cp += strlen(cp) + 1;
+			if (++col % ts->numberColumns == 0) {
+				col = 0;
+				++row;
+				printf("\n\t");
+			}
+		}
+	}
+
+	zstructFree(ts);
+	zclose(ifltab);
+	remove(filename);
+	return status;
+}

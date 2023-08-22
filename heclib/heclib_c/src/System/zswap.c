@@ -63,27 +63,27 @@ void zswap(long long *iarray, int numberInts)
 {
 	int numberLongs;
 	int i;
-//	long long itemp;
+	long long itemp;
 
 	if (!iarray) return;
 	if (numberInts == 0) return;
 
-	unsigned char c1[8];
-	unsigned char c2[8];
+	unsigned char *c1;
+	unsigned char *c2;
 
 	numberLongs = ((numberInts - 1) / 2) + 1;
 	for (i = 0; i < numberLongs; i++) {
-		//emp = iarray[i];
-		convertDataType((void *)&iarray[i], (void *)c1, 2, 2);
-		*(unsigned char *)c2 = *(unsigned char *)&c1[7];
-		*(unsigned char *)&c2[1] = *(unsigned char *)&c1[6];
-		*(unsigned char *)&c2[2] = *(unsigned char *)&c1[5];
-		*(unsigned char *)&c2[3] = *(unsigned char *)&c1[4];
-		*(unsigned char *)&c2[4] = *(unsigned char *)&c1[3];
-		*(unsigned char *)&c2[5] = *(unsigned char *)&c1[2];
-		*(unsigned char *)&c2[6] = *(unsigned char *)&c1[1];
-		*(unsigned char *)&c2[7] = *(unsigned char *)c1;
-		convertDataType((void *)c2, (void *)&iarray[i], 2, 2);
+		itemp = iarray[i];
+		c1 = (unsigned char*)&itemp;
+		c2 = (unsigned char*)&iarray[i];
+		c2[0] = c1[7];
+		c2[1] = c1[6];
+		c2[2] = c1[5];
+		c2[3] = c1[4];
+		c2[4] = c1[3];
+		c2[5] = c1[2];
+		c2[6] = c1[1];
+		c2[7] = c1[0];
 	}
 
 }

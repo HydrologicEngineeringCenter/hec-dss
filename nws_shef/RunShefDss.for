@@ -43,6 +43,8 @@ c     COMMONT /CCENTURY/ CCENT,LCCENT
 c     CHARACTER CCENT*6
 c     LOGICAL LCCENT
       character fsh*132,cerror*132,CSHEFIT*132,cforce*8
+      character alpha(16)
+      integer   mlvl
       logical exs
 c     DATA LCCENT /.FALSE./
 C
@@ -155,6 +157,8 @@ C
          IOLVL = 0
       ELSE
          IOLVL = 1
+         call zquery("MLVL", alpha, mlvl)
+         if (mlvl.eq.0) iolvl = 0
       ENDIF
 C
       IF (CDTZ.NE.'    ') THEN

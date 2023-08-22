@@ -570,6 +570,12 @@ int ztsRetrieveIrreg7(long long *ifltab, zStructTimeSeries *tss,
 			return zerrorUpdate(ifltab, status, DSS_FUNCTION_ztsRetrieveIrreg_ID);
 		}
 		if (status == STATUS_RECORD_FOUND) {
+			if (bigEndian()) {
+				if (numberRead > 1 && tss->times[currentPosition] > tss->times[currentPosition + 1]) {
+					// swap the times (shouldn't this already be done before we get here?)
+					zswitchInts(&tss->times[currentPosition], numberRead);
+				}
+			}
 
 			//  Save info for first record found
 			if (!foundOne) {
