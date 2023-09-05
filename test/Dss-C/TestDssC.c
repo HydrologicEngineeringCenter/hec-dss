@@ -190,6 +190,11 @@ int runTheTests() {
 	char fileName6[80];
 	int status;
 
+	printf("test issue DSS-178\n");
+	status = testDss178();
+	if (status != STATUS_OKAY)
+		return status;
+
 	printf("test text tables issue 135\n");
 	status = testTextTableIssue135();
 	if (status != STATUS_OKAY)
@@ -1324,5 +1329,24 @@ int testTextTableIssue135() {
 	zstructFree(ts);
 	zclose(ifltab);
 	remove(filename);
+	return status;
+}
+
+int testDss178() {
+	const char* v7Filenames[] = { "DSS-178.dss", "Output/DSS-178.dss", "../bin/DSS-178.dss" };
+	char v6Filename[_MAX_PATH];
+	FILE* fp = NULL;
+	int i;
+	int status = -1;
+	for (i = 0; i < sizeof(v7Filenames) / sizeof(v7Filenames[0]); ++i) {
+		fp = fopen(v7Filenames[i], "r");
+		if (fp) break;
+	}
+	if (fp) {
+		fclose(fp);
+		sprintf(v6Filename, "%s.dss", tmpnam(NULL));
+		status = zconvertVersion(v7Filenames[i], v6Filename);
+		remove(v6Filename);
+	}
 	return status;
 }
