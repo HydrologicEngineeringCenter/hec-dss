@@ -1344,7 +1344,7 @@ int testDss178() {
 	}
 	if (fp) {
 		fclose(fp);
-		sprintf(v6Filename, "%s.dss", tmpnam(NULL));
+		sprintf(v6Filename, "%s-v6.dss", strndup(v7Filenames[i], strlen(v7Filenames[i]-4)));
 		status = zconvertVersion(v7Filenames[i], v6Filename);
 		remove(v6Filename);
 	}
