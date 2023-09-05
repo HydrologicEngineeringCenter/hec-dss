@@ -54,6 +54,7 @@ void usage(char* exeName)
 	printf("\nWhere:");
 	printf("\ntest, runs standard set of DSS tests (needs to run in directory with test files.");
 	printf("\ncatalog, prints the DSS catalog to the console");
+	printf("\nconvert input.dss  converted.dss, converts from dss6 to dss7 (or dss7 to dss6)");
 	printf("\nzqueeze, rebuilds the DSS file, recovering space");
 	printf("\nzcheckFile , runs agressive test of DSS file");
 	printf("\nlock seconds, locks file for seconds seconds");
@@ -73,6 +74,7 @@ void usage(char* exeName)
 	printf("\n\nExamples:\n%s workout 7 2000 5000 test.dss", exeName);
 	printf("\n%s test", exeName);
 	printf("\n%s catalog myfile.dss", exeName);
+	printf("\n%s convert input.dss  converted.dss", exeName);
 	printf("\n%s catalog myfile.dss details     # includes record type in output", exeName);
 	printf("\n%s zsqueeze myfile.dss", exeName);
 	printf("\n%s lock 15 myfile.dss", exeName);
@@ -163,6 +165,10 @@ int main(int argc, char* argv[])
 	else if (argc == 9 && strcmp(argv[1], "import-profile") == 0) {
 		//int ImportProfile(const char* csvFilename, const char* dssFilename, const char* path, const char* date, const char* time, const char* units, const char* datatype);
 		status = ImportProfile(argv[2], argv[3], argv[4], argv[5], argv[6], argv[7], argv[8]);
+	}
+	else if (argc == 4 && strcmp(argv[1],"convert")==0 )
+	{
+		status = zconvertVersion(argv[2], argv[3]);
 	}
 	else
 	{
