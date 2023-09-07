@@ -230,7 +230,7 @@ int ztsDisaggregate(long long *ifltab, int numberToRead, int numberStored,
 	}
 
 	int filever = zinquire(ifltab, "fver");
-	if (filever < 70801 || (bigEndian() && filever < 70918)) {
+	if (filever < DSSVER_7_HA || (bigEndian() && filever < DSSVER_7_IR)) {
 		/*
 		* Up until some dev version of 7-IR, big-endian systems erroneously used
 		* ztsAggregateDep()/ztsDisaggregateDep() even for file versions >= 7-HA
@@ -244,10 +244,6 @@ int ztsDisaggregate(long long *ifltab, int numberToRead, int numberStored,
 			quality, qualityArraySize, qualitySizeRequested,
 			inotes, inotesArraySize, inotesSizeRequested,
 			cnotes, cnotesSize, cnotesLength);
-
-		if (filever < DSSVER_7_HA || status >= 0) {
-			return status;
-		}
 	}
 	
 
