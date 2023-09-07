@@ -1930,11 +1930,14 @@ int* copyVdiFromLocationStructToUserHeader(
         char* compressed = extractFromDelimitedString(&locStruct->supplemental, VERTICAL_DATUM_INFO_USER_HEADER_PARAM, ":", TRUE, FALSE, ';');
         if (compressed) {
             do {
-                char* headerBuf = userHeaderToString(userHeader, *userHeaderNumber);
+                char* headerBuf = NULL;
+                if (*userHeaderNumber > 1) {
+                    headerBuf = userHeaderToString(userHeader, *userHeaderNumber);
+                }
                 int len;
                 if (headerBuf == NULL) {
                     len = VERTICAL_DATUM_INFO_USER_HEADER_PARAM_LEN + strlen(compressed) + 3;
-                    headerBuf == malloc(len);
+                    headerBuf = mallocAndInit(len);
                     if (headerBuf == NULL) {
                         free(compressed);
                         *status = -1;

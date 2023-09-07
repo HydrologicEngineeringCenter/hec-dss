@@ -118,15 +118,6 @@
 *
 **/
 
-int ztsDisaggregateDep(long long *ifltab, int numberToRead, int numberStored,
-	int *numberExpanded, int blockStartPosition,
-	int positionRelativeFirstValid, int positionRelativeLastValid,
-	int *dataIn, int *header2, int *internalHeader,
-	int *values, int valuesArraySize, int valuesSizeRequested,
-	int *quality, int qualityArraySize, int qualitySizeRequested,
-	int *inotes, int inotesArraySize, int inotesSizeRequested,
-	char *cnotes, int cnotesSize, int *cnotesLength);
-
 
 int ztsDisaggregate(long long *ifltab, int numberToRead, int numberStored,
 	int dataInPosition, int *numberExpanded, int blockStartPosition,
@@ -175,7 +166,9 @@ int ztsDisaggregate(long long *ifltab, int numberToRead, int numberStored,
 	char *carray;
 	int status;
 
-	/*
+	const int DSSVER_7_HA = 70801;
+
+		/*
 		Internal Header Definition
 
 		int internalHeader[INT_HEAD_SIZE];
@@ -226,7 +219,15 @@ int ztsDisaggregate(long long *ifltab, int numberToRead, int numberStored,
 		zmessageDebugInt(ifltab, DSS_FUNCTION_ztsDisaggregate_ID, "numberStored: ", numberStored);
 	}
 
-	if (zinquire(ifltab, "fver") < 70801) {
+	int filever = zinquire(ifltab, "fver");
+	int ztsDisaggregateVersion;
+	zquery("disa", "", 0, &ztsDisaggregateVersion);
+	if (ztsDisaggregateVersion < 0 || (ztsDisaggregateVersion == 0 && filever < DSSVER_7_HA)) {
+		/*
+		* Up until some dev version of 7-IR, big-endian systems erroneously used
+		* ztsAggregateDep()/ztsDisaggregateDep() even for file versions >= 7-HA
+		* due to a bug in zinquire(ifltab, "fver").
+		*/
 		return ztsDisaggregateDep(ifltab, numberToRead, numberStored,
 			numberExpanded, blockStartPosition,
 			positionRelativeFirstValid, positionRelativeLastValid,

@@ -440,15 +440,28 @@ int ztsIrregReadBlock(long long *ifltab, const char *pathname, long long *info,
 		*inoteElementSizeRead = internalHeader[INT_HEAD_inotesElementSize];
 		iposData = numberStored;  //  remove the times from the disaggreation
 		
-		status = ztsDisaggregate (ifltab, maxNumberToRead, numberStored, numberStored,
-			&numberExpanded, 0, //////  FIX ME   blockStartPosition,
-			0, 0,
-			ztransfer->values1, ztransfer->values1Number,
-			ztransfer->header2, internalHeader,
-			valuesRead, valuesArraySize, valuesSizeRequested,
-			qualityRead, qualityArraySize, qualitySizeRequested,
-			notesRead, notesArraySize, inotesSizeRequested,
-			cnotesRead, cnotesLength, &sizeCNotesRead);
+		int ztsDisaggregateVersion;
+		zquery("disa", "", 0, &ztsDisaggregateVersion);
+		if (ztsDisaggregateVersion < 0) {
+			status = ztsDisaggregateDep(ifltab, maxNumberToRead, numberStored,
+				&numberExpanded, 0, 0, 0,
+				ztransfer->values1,
+				ztransfer->header2, internalHeader,
+				valuesRead, valuesArraySize, valuesSizeRequested,
+				qualityRead, qualityArraySize, qualitySizeRequested,
+				notesRead, notesArraySize, inotesSizeRequested,
+				cnotesRead, cnotesLength, &sizeCNotesRead);
+		}
+		else {
+			status = ztsDisaggregate(ifltab, maxNumberToRead, numberStored, numberStored,
+				&numberExpanded, 0, 0, 0,
+				ztransfer->values1, ztransfer->values1Number,
+				ztransfer->header2, internalHeader,
+				valuesRead, valuesArraySize, valuesSizeRequested,
+				qualityRead, qualityArraySize, qualitySizeRequested,
+				notesRead, notesArraySize, inotesSizeRequested,
+				cnotesRead, cnotesLength, &sizeCNotesRead);
+		}
 
 		if (zisError(status)) {
 			zstructFree(ztransfer);

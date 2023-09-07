@@ -51,7 +51,7 @@ int fver_test();
 int testPseudoEightHourIrregular();
 int testOddNumberValues();
 int testTextTableIssue135();
-
+int testDss178();
 
 
 void checknumbers_(int* numb1, int* numb2, const char *mess, int *status, size_t strlenmess);

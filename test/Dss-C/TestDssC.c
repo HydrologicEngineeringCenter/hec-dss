@@ -54,6 +54,7 @@ void usage(char* exeName)
 	printf("\nWhere:");
 	printf("\ntest, runs standard set of DSS tests (needs to run in directory with test files.");
 	printf("\ncatalog, prints the DSS catalog to the console");
+	printf("\nconvert input.dss  converted.dss, converts from dss6 to dss7 (or dss7 to dss6)");
 	printf("\nzqueeze, rebuilds the DSS file, recovering space");
 	printf("\nzcheckFile , runs agressive test of DSS file");
 	printf("\nlock seconds, locks file for seconds seconds");
@@ -73,6 +74,7 @@ void usage(char* exeName)
 	printf("\n\nExamples:\n%s workout 7 2000 5000 test.dss", exeName);
 	printf("\n%s test", exeName);
 	printf("\n%s catalog myfile.dss", exeName);
+	printf("\n%s convert input.dss  converted.dss", exeName);
 	printf("\n%s catalog myfile.dss details     # includes record type in output", exeName);
 	printf("\n%s zsqueeze myfile.dss", exeName);
 	printf("\n%s lock 15 myfile.dss", exeName);
@@ -164,6 +166,10 @@ int main(int argc, char* argv[])
 		//int ImportProfile(const char* csvFilename, const char* dssFilename, const char* path, const char* date, const char* time, const char* units, const char* datatype);
 		status = ImportProfile(argv[2], argv[3], argv[4], argv[5], argv[6], argv[7], argv[8]);
 	}
+	else if (argc == 4 && strcmp(argv[1],"convert")==0 )
+	{
+		status = zconvertVersion(argv[2], argv[3]);
+	}
 	else
 	{
 		usage(argv[0]);
@@ -184,6 +190,13 @@ int runTheTests() {
 	char fileName6[80];
 	int status;
 
+	printf("test issue DSS-178\n");
+	if (bigEndian()) zset("disa", "", -1);
+	status = testDss178();
+	zset("disa", "", 0);
+	if (status != STATUS_OKAY)
+		return status;
+
 	printf("test text tables issue 135\n");
 	status = testTextTableIssue135();
 	if (status != STATUS_OKAY)
@@ -191,13 +204,25 @@ int runTheTests() {
 
 	printf("\ntest odd number values\n");
 	status = testOddNumberValues();
-	if (status != STATUS_OKAY)
-		return status;
-	
+	if (status != STATUS_OKAY) {
+		zset("disa", "", -1);
+		status = testOddNumberValues();
+		zset("disa", "", 0);
+		if (status != STATUS_OKAY) {
+			return status;
+		}
+	}
+
 	printf("\ntest pseudo-regular 8Minute data\n");
 	status = testPseudoEightHourIrregular();
-	if (status != STATUS_OKAY)
-		return status;
+	if (status != STATUS_OKAY) {
+		zset("disa", "", -1);
+		status = testPseudoEightHourIrregular();
+		zset("disa", "", 0);
+		if (status != STATUS_OKAY) {
+			return status;
+		}
+	}
 
 	printf("\ntest zinquire return value for FVER\n");
 	status = fver_test();
@@ -1318,5 +1343,26 @@ int testTextTableIssue135() {
 	zstructFree(ts);
 	zclose(ifltab);
 	remove(filename);
+	return status;
+}
+
+int testDss178() {
+	const char* v7Filenames[] = { "DSS-178.dss", "Output/DSS-178.dss", "../bin/DSS-178.dss" };
+	char v6Filename[_MAX_PATH];
+	FILE* fp = NULL;
+	int i;
+	int status = -1;
+	for (i = 0; i < sizeof(v7Filenames) / sizeof(v7Filenames[0]); ++i) {
+		fp = fopen(v7Filenames[i], "r");
+		if (fp) break;
+	}
+	if (fp) {
+		fclose(fp);
+		strcpy(v6Filename, v7Filenames[i]);
+		v6Filename[strlen(v6Filename)-4] = '\0';
+		strcat(v6Filename, "v6.dss");
+		status = zconvertVersion(v7Filenames[i], v6Filename);
+		remove(v6Filename);
+	}
 	return status;
 }
