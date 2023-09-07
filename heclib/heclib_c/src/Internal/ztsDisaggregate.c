@@ -230,7 +230,7 @@ int ztsDisaggregate(long long *ifltab, int numberToRead, int numberStored,
 
 	int filever = zinquire(ifltab, "fver");
 	int ztsDisaggregateVersion;
-	zquery("disa", 0, NULL, &ztsDisaggregateVersion);
+	zquery("disa", 0, "", &ztsDisaggregateVersion);
 	if (ztsDisaggregateVersion < 0 || (ztsDisaggregateVersion == 0 && filever < DSSVER_7_HA)) {
 		/*
 		* Up until some dev version of 7-IR, big-endian systems erroneously used
