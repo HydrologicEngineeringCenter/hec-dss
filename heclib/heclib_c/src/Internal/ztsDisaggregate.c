@@ -118,15 +118,6 @@
 *
 **/
 
-int ztsDisaggregateDep(long long *ifltab, int numberToRead, int numberStored,
-	int *numberExpanded, int blockStartPosition,
-	int positionRelativeFirstValid, int positionRelativeLastValid,
-	int *dataIn, int *header2, int *internalHeader,
-	int *values, int valuesArraySize, int valuesSizeRequested,
-	int *quality, int qualityArraySize, int qualitySizeRequested,
-	int *inotes, int inotesArraySize, int inotesSizeRequested,
-	char *cnotes, int cnotesSize, int *cnotesLength);
-
 
 int ztsDisaggregate(long long *ifltab, int numberToRead, int numberStored,
 	int dataInPosition, int *numberExpanded, int blockStartPosition,
