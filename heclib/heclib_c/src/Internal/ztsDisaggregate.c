@@ -244,6 +244,10 @@ int ztsDisaggregate(long long *ifltab, int numberToRead, int numberStored,
 			quality, qualityArraySize, qualitySizeRequested,
 			inotes, inotesArraySize, inotesSizeRequested,
 			cnotes, cnotesSize, cnotesLength);
+
+		if (filever < DSSVER_7_HA || status >= 0) {
+			return status;
+		}
 	}
 	
 
