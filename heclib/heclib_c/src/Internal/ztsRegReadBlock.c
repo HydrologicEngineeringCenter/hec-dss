@@ -333,9 +333,9 @@ int ztsRegReadBlock(long long *ifltab, const char *pathname, int boolExists,
 		int ztsDisaggregateVersion;
 		zquery("disa", "", 0, &ztsDisaggregateVersion);
 		if (ztsDisaggregateVersion < 0) {
-			status = ztsDisaggregateDep(ifltab, numberToRead, numberStored, 0, &numberExpanded,
+			status = ztsDisaggregateDep(ifltab, numberToRead, numberStored, &numberExpanded,
 				blockStartPosition, positionRelativeFirstValid, positionRelativeLastValid,
-				ztransfer->values1, ztransfer->values1Number,
+				ztransfer->values1,
 				ztransfer->header2, ztransfer->internalHeader,
 				values, valuesArraySize, valuesSizeRequested,
 				quality, qualityArraySize, qualitySizeRequested,
