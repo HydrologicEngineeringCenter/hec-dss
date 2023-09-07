@@ -191,7 +191,9 @@ int runTheTests() {
 	int status;
 
 	printf("test issue DSS-178\n");
+	if (bigEndian()) zset("disa", "", -1);
 	status = testDss178();
+	zset("disa", "", 0);
 	if (status != STATUS_OKAY)
 		return status;
 
