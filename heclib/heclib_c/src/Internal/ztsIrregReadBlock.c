@@ -441,7 +441,7 @@ int ztsIrregReadBlock(long long *ifltab, const char *pathname, long long *info,
 		iposData = numberStored;  //  remove the times from the disaggreation
 		
 		int ztsDisaggregateVersion;
-		zquery("disa", 0, NULL, &ztsDisaggregateVersion);
+		zquery("disa", "", 0, &ztsDisaggregateVersion);
 		if (ztsDisaggregateVersion < 0) {
 			status = ztsDisaggregateDep(ifltab, maxNumberToRead, numberStored, numberStored,
 				&numberExpanded, 0, 0, 0,
