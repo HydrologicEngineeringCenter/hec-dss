@@ -202,13 +202,25 @@ int runTheTests() {
 
 	printf("\ntest odd number values\n");
 	status = testOddNumberValues();
-	if (status != STATUS_OKAY)
-		return status;
-	
+	if (status != STATUS_OKAY) {
+		zset("disa", "", -1);
+		status = testOddNumberValues();
+		zset("disa", "", 0);
+		if (status != STATUS_OKAY) {
+			return status;
+		}
+	}
+
 	printf("\ntest pseudo-regular 8Minute data\n");
 	status = testPseudoEightHourIrregular();
-	if (status != STATUS_OKAY)
-		return status;
+	if (status != STATUS_OKAY) {
+		zset("disa", "", -1);
+		status = testPseudoEightHourIrregular();
+		zset("disa", "", 0);
+		if (status != STATUS_OKAY) {
+			return status;
+		}
+	}
 
 	printf("\ntest zinquire return value for FVER\n");
 	status = fver_test();

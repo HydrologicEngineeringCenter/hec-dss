@@ -176,7 +176,6 @@ int ztsDisaggregate(long long *ifltab, int numberToRead, int numberStored,
 	int status;
 
 	const int DSSVER_7_HA = 70801;
-	const int DSSVER_7_IR = 70918;
 
 		/*
 		Internal Header Definition
@@ -230,7 +229,9 @@ int ztsDisaggregate(long long *ifltab, int numberToRead, int numberStored,
 	}
 
 	int filever = zinquire(ifltab, "fver");
-	if (filever < DSSVER_7_HA || (bigEndian() && filever < DSSVER_7_IR)) {
+	int ztsDisaggregateVersion;
+	zquery("disa", 0, NULL, &ztsDisaggregateVersion);
+	if (ztsDisaggregateVersion < 0 || (ztsDisaggregateVersion == 0 && filever < DSSVER_7_HA)) {
 		/*
 		* Up until some dev version of 7-IR, big-endian systems erroneously used
 		* ztsAggregateDep()/ztsDisaggregateDep() even for file versions >= 7-HA

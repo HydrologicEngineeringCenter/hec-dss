@@ -18,6 +18,7 @@ struct hec_zdssVals {
 	 int iverticalDatum;
 	 int icanOverwriteLocationVerticalDatum;
 	 int copyEmptyRecords;
+	 int ztsDisaggregateVersion; // 0 = by file version, <0 = force old, >0 = force new
 	 char czdss[5];
 	 char czVersion[5];
 	 char czVersionDate[20];

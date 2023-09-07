@@ -330,14 +330,28 @@ int ztsRegReadBlock(long long *ifltab, const char *pathname, int boolExists,
 			zmessageDebug(ifltab, DSS_FUNCTION_ztsRegReadBlock_ID, "Number to read: ", messageString);
 		}
 
-		status = ztsDisaggregate (ifltab, numberToRead, numberStored, 0, &numberExpanded,
-			blockStartPosition, positionRelativeFirstValid, positionRelativeLastValid,
-			ztransfer->values1, ztransfer->values1Number,
-			ztransfer->header2, ztransfer->internalHeader,
-			values, valuesArraySize, valuesSizeRequested,
-			quality, qualityArraySize, qualitySizeRequested,
-			notes, notesArraySize, notesSizeRequested,
-			cnotes, sizeCNotesRemaning, numberCnotes);
+		int ztsDisaggregateVersion;
+		zquery("disa", 0, NULL, &ztsDisaggregateVersion);
+		if (ztsDisaggregateVersion < 0) {
+			status = ztsDisaggregateDep(ifltab, numberToRead, numberStored, 0, &numberExpanded,
+				blockStartPosition, positionRelativeFirstValid, positionRelativeLastValid,
+				ztransfer->values1, ztransfer->values1Number,
+				ztransfer->header2, ztransfer->internalHeader,
+				values, valuesArraySize, valuesSizeRequested,
+				quality, qualityArraySize, qualitySizeRequested,
+				notes, notesArraySize, notesSizeRequested,
+				cnotes, sizeCNotesRemaning, numberCnotes);
+		}
+		else {
+			status = ztsDisaggregate(ifltab, numberToRead, numberStored, 0, &numberExpanded,
+				blockStartPosition, positionRelativeFirstValid, positionRelativeLastValid,
+				ztransfer->values1, ztransfer->values1Number,
+				ztransfer->header2, ztransfer->internalHeader,
+				values, valuesArraySize, valuesSizeRequested,
+				quality, qualityArraySize, qualitySizeRequested,
+				notes, notesArraySize, notesSizeRequested,
+				cnotes, sizeCNotesRemaning, numberCnotes);
+		}
 		if (zisError(status)) {
 			zstructFree(ztransfer);
 			return zerrorUpdate(ifltab, status, DSS_FUNCTION_ztsRegReadBlock_ID);
