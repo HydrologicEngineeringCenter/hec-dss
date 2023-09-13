@@ -37,8 +37,8 @@
 #endif
 
 
-#define DSS_VERSION "7-IR"
-#define DSS_VERSION_DATE "O5 Sep 2023"
+#define DSS_VERSION "7-IS"
+#define DSS_VERSION_DATE "13 Sep 2023"
 
 
 

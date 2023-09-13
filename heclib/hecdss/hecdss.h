@@ -1,9 +1,20 @@
-// The following ifdef block is the standard way of creating macros which make exporting
-// from a DLL simpler. All files within this DLL are compiled with the HECDSS_EXPORTS
-// symbol defined on the command line. This symbol should not be defined on any project
-// that uses this DLL. This way any other project whose source files include this file see
-// HECDSS_API functions as being imported from a DLL, whereas this DLL sees symbols
-// defined with this macro as being exported.
+/*
+ This project (hecdss) contains code for a shared object/dll, providing an API to work with DSS files.
+
+ Only DSS version 7 files are supported.  DSS version 6 files should be converted to DSS version 7
+ using HEC-DSSVue https://www.hec.usace.army.mil/software/hec-dssvue/.  If you don't have any gridded data 
+ is is ok to convert from DSS version 6 to DSS version 7 using the method hec_dss_convertToVersion7(...) in this libraray.
+
+
+ This API is designed with perspective that the calling/client code is in charge of managing memory.
+ The only exception is hec_dss_open(const char* filename, dss_file** dss).   hec_dss_open allocates
+ one internal structure that must be freed by calling hec_dss_close;
+
+ For reading data: The client passes in pre-allocated arrays, with the size, then the API copies data
+ into those arrays
+
+*/
+
 #if defined(_MSC_VER)
 #ifdef HECDSS_EXPORTS
 #define HECDSS_API __declspec(dllexport)
@@ -34,6 +45,108 @@ HECDSS_API int hec_dss_open(const char* filename, dss_file** dss);
 /// <returns>zero if successful</returns>
 HECDSS_API int hec_dss_close(dss_file* dss);
 
+/// <summary>
+/// Gets version of DSS file that has already been opened.
+/// </summary>
+/// <param name="dss"></param>
+/// <returns></returns>
+HECDSS_API int hec_dss_getVersion(dss_file* dss);
+
+/// <summary>
+/// Gets the version of a DSS file based on filename
+/// Returns:
+///    7:  A DSS version 7 file
+///    6:  A DSS version 6 file
+///    0 : File does not exist
+///   -1 : Not a DSS file(but file exists)
+///   -2 : Invalid file name
+///   -3 : Open error(undefined)
+/// < -3 : abs(error) is system open or read error
+/// </summary>
+/// <param name="filename"></param>
+/// <returns></returns>
+HECDSS_API int hec_dss_getFileVersion(const char* filename);
+
+/// <summary>
+/// Sets internal number values inside DSS
+/// for example calling hec_dss_set_value("mlvl",10) sets the DSS output level to 10
+/// </summary>
+/// <returns>zero on sucess</returns>
+HECDSS_API int hec_dss_set_value(const char* name, const int value);
+
+/// <summary>
+/// Sets an internal character value inside DSS
+/// for example calling hec_dss_set_string("PROG","DSSVue") sets the program name 
+/// </summary>
+/// <returns>zero on sucess</returns>
+HECDSS_API int hec_dss_set_string(const char* name, const char* value);
+
+
+/// <summary>
+/// Used to read the catalog of a DSS file
+/// </summary>
+/// <param name="dss">pointer to DSS file</param>
+/// <param name="pathBuffer">allocated buffer that is loaded with pathnames </param>
+/// <param name="recordTypes">output array of record types corresponding to each path</param>
+/// <param name="pathFilter">	Either null (for ignore) or a String that represents a pathname with wild characters represented
+///  by a star(*) to match any string in the pathname part.Wild characters can only be at the beginning or end of a part,
+///  not inside of a string.An example is a C part with "*Flow*", which
+///  will match all pathnames that have "Flow" anywhere in the C part, such as "Flow", "Inflow", "Outflow-Reg", etc.
+///  A part such as "Flow*Reg" is not supported. A null(//) will only match a null, where only a star (*) will match all. </param>
+/// <param name="count">number of paths that can be stored in pathBuffer, and length of recordTypes array</param>
+/// <param name="pathBufferItemSize">max allowable length of each pathname</param>
+/// <returns></returns>
+HECDSS_API int hec_dss_catalog(dss_file* dss, char* pathBuffer, int* recordTypes, const char* pathFilter,
+  const int count, const int pathBufferItemSize);
+
+
+/// <summary>
+/// Used to find the range of DateTime
+/// </summary>
+/// <param name="dss">pointer to DSS file</param>
+/// <param name="pathname">DSS pathname</param>
+/// <param name="boolFullSet">set to 1 to return the dates of the entire dataset (multiple records)</param>
+/// <param name="firstValidJulian">output: Returns the Julian date of the first valid value</param>
+/// <param name="firstSeconds">output: Returns the time of day in seconds (for firstJulian) of the first valid value</param>
+/// <param name="lastValidJulian">output: Returns the Julian date of the last valid value</param>
+/// <param name="lastSeconds">output: Returns the time of day in seconds of the last valid value</param>
+/// <returns></returns>
+HECDSS_API int  hec_dss_tsGetDateTimeRange(dss_file* dss, const char* pathname, const int boolFullSet,
+  int* firstValidJulian, int* firstSeconds,
+  int* lastValidJulian, int* lastSeconds);
+
+
+/// <summary>
+/// Gets size information about a time series record or data set (series of records)
+/// </summary>
+/// <param name="dss">pointer to DSS file</param>
+/// <param name="pathname">DSS pathname</param>
+/// <param name="startDate">start date </param>
+/// <param name="startTime">start time</param>
+/// <param name="endDate">end date</param>
+/// <param name="endTime">end time</param>
+/// <param name="numberValues">output:number of values available </param>
+/// <param name="qualityElementSize">width of quality available for each value</param>
+/// <returns></returns>
+HECDSS_API int hec_dss_tsGetSizes(dss_file* dss, const char* pathname,
+  const char* startDate, const char* startTime,
+  const char* endDate, const char* endTime,
+  int* numberValues, int* qualityElementSize);
+
+
+/// <summary>
+/// Returns basic time series information for a dss pathname
+/// </summary>
+/// <param name="dss">pointer to DSS file</param>
+/// <param name="pathname">DSS pathname</param>
+/// <param name="units">output: units</param>
+/// <param name="unitsLength">size of units buffer</param>
+/// <param name="type">output: type of data: PER-AVER, PER-CUM,INST-VAL,INST-CUM https://www.hec.usace.army.mil/confluence/dssvuedocs/latest/introduction/time-series-conventions</param>
+/// <param name="typeLength">size of type buffer</param>
+/// <returns></returns>
+HECDSS_API int hec_dss_tsRetrieveInfo(dss_file* dss, const char* pathname, char* units,
+  const int unitsLength, char* type, const int typeLength);
+
 
 /// <summary>
 /// Returns number of records (includes aliases)
@@ -61,24 +174,6 @@ HECDSS_API int hec_dss_catalog(dss_file* dss, char* pathBuffer, int* recordTypes
 
 
 /// <summary>
-/// Use hec_dss_tsGetSizes to determine sizes (memory needs) before calling
-/// hec_dss_tsRetrieve
-/// </summary>
-/// <param name="pdss">input: pointer to dss file</param>
-/// <param name="pathname">input: path to read from DSS file</param>
-/// <param name="startDate">input: start date</param>
-/// <param name="startTime">input: end time/param>
-/// <param name="endDate">input: end date</param>
-/// <param name="endTime">input: end time</param>
-/// <param name="numberValues">output: number of values found</param>
-/// <param name="qualityElementSize">number of columns of quality data</param>
-/// <returns>zero on success</returns>
-HECDSS_API int hec_dss_tsGetSizes(dss_file* dss, const char* pathname,
-  const char* startDate, const char* startTime,
-  const char* endDate, const char* endTime,
-  int* numberValues, int* qualityElementSize);
-
-/// <summary>
 /// Retrive an empty time series.
 /// Used to get units and type for a time series
 /// </summary>
@@ -103,11 +198,12 @@ HECDSS_API int hec_dss_tsRetrieveInfo(dss_file* dss, const char* pathname, char*
 HECDSS_API int hec_dss_dataType(dss_file* dss, const char* pathname);
 
 
-  
 /// <summary>
 /// use hec_dss_tsRetrieve to read time series data
+/// usually used in combination with first calling hec_dss_tsGetSizes(..)
+/// to allocate the valueArray
 /// </summary>
-/// <param name="pdss">input: pointer to dss file</param>
+/// <param name="dss">input: pointer to dss file</param>
 /// <param name="pathname">input: path to read from DSS file</param>
 /// <param name="startDate">input: start date</param>
 /// <param name="startTime">input: end time/param>
@@ -118,11 +214,13 @@ HECDSS_API int hec_dss_dataType(dss_file* dss, const char* pathname);
 /// <param name="arraySize">input: length of timeArray and valueArray </param>
 /// <param name="numberValuesRead">output: number of values returned</param>
 /// <param name="julianBaseDate">base integer </param>
-/// <param name="units"></param>
-/// <param name="unitsLength"></param>
-/// <param name="type"></param>
-/// <param name="typeLength"></param>
+/// <param name="timeGranularitySeconds"></param>
+/// <param name="units">output: units</param>
+/// <param name="unitsLength">size of units buffer</param>
+/// <param name="type">output: type of data: PER-AVER, PER-CUM,INST-VAL,INST-CUM https://www.hec.usace.army.mil/confluence/dssvuedocs/latest/introduction/time-series-conventions</param>
+/// <param name="typeLength">size of type buffer</param>
 /// <returns></returns>
+
 HECDSS_API int hec_dss_tsRetrieve(dss_file* dss, const char* pathname,
   const char* startDate, const char* startTime,
   const char* endDate, const char* endTime,
@@ -130,3 +228,317 @@ HECDSS_API int hec_dss_tsRetrieve(dss_file* dss, const char* pathname,
   int* numberValuesRead, int* quality, const int qualityWidth,
   int* julianBaseDate, int* timeGranularitySeconds,
   char* units, const int unitsLength, char* type, const int typeLength);
+
+
+/// <summary>
+/// Stores regular time series to DSS
+/// </summary>
+/// <param name="dss">pointer to dss file</param>
+/// <param name="pathname">path to read from DSS file</param>
+/// <param name="startDate">input: start date</param>
+/// <param name="startTime">input: end time/param>
+/// <param name="valueArray">timeseries point values</param>
+/// <param name="valueArraySize">number of points</param>
+/// <param name="qualityArray">array of quality flags</param>
+/// <param name="qualityArraySize">number of quality values per point</param>
+/// <param name="saveAsFloat">set to true to save disk space</param>
+/// <param name="units">units of data</param>
+/// <param name="type">type of data: PER-AVER, PER-CUM,INST-VAL,INST-CUM https://www.hec.usace.army.mil/confluence/dssvuedocs/latest/introduction/time-series-conventions</param>
+/// <returns></returns>
+HECDSS_API int hec_dss_tsStoreRegular(dss_file* dss, const char* pathname,
+  const char* startDate, const char* startTime,
+  double* valueArray, const int valueArraySize,
+  int* qualityArray, const int qualityArraySize,
+  const int saveAsFloat,
+  const char* units, const char* type);
+
+
+HECDSS_API int hec_dss_tsStoreIregular(dss_file* dss, const char* pathname,
+  const char* startDateBase,
+  int* times, const int timeGranularitySeconds,
+  double* valueArray, const int valueArraySize,
+  int* qualityArray, const int qualityArraySize,
+  const int saveAsFloat,
+  const char* units, const char* type);
+
+HECDSS_API int hec_dss_locationRetrieve(dss_file* dss, const char* fullPath,
+  double* x, double* y, double* z,
+  int* coordinateSystem, int* coordinateID,
+  int* horizontalUnits, int* horizontalDatum,
+  int* verticalUnits, int* verticalDatum,
+  char* timeZoneName, const int timeZoneNameLength,
+  char* supplemental, const int supplementalLength);
+
+/// <summary>
+/// saves location information 
+/// </summary>
+/// <param name="dss"></param>
+/// <param name="fullPath"></param>
+/// <param name="x"></param>
+/// <param name="y"></param>
+/// <param name="z"></param>
+/// <param name="coordinateSystem"></param>
+/// <param name="coordinateID"></param>
+/// <param name="horizontalUnits"></param>
+/// <param name="horizontalDatum"></param>
+/// <param name="verticalUnits"></param>
+/// <param name="verticalDatum"></param>
+/// <param name="timeZoneName"></param>
+/// <param name="supplemental"></param>
+/// <param name="replace">set to 1 to overwrite existing data, otherwise use 0</param>
+/// <returns></returns>
+HECDSS_API int hec_dss_locationStore(dss_file* dss, const char* fullPath,
+  const double x, const double y, const double z,
+  const int coordinateSystem, const int coordinateID,
+  const int horizontalUnits, const int horizontalDatum,
+  const int verticalUnits, const int verticalDatum,
+  const char* timeZoneName,
+  const char* supplemental,
+  const int replace);
+
+/// <summary>
+/// hec_dss_pdRetrieveInfo is used by client app to determine
+/// required array sizes for calling hec_dss_pdRetrieve.
+/// 
+/// </summary>
+/// <param name="dss">pointer to dss_file</param>
+/// <param name="pathname">path of paired data</param>
+/// <param name="numberOrdinates">number of rows for ordinates, and curves</param>
+/// <param name="numberCurves">number of columns in the curve dataset</param>
+/// <returns></returns>
+HECDSS_API int hec_dss_pdRetrieveInfo(dss_file* dss, const char* pathname,
+  int* numberOrdinates, int* numberCurves,
+  char* unitsIndependent, const int unitsIndependentLength,
+  char* unitsDependent, const int unitsDependentLength,
+  char* typeIndependent, const int typeIndependentLength,
+  char* typeDependent, const int typeDependentLength,
+  int* labelsLength);
+
+/// <summary>
+/// Returns the record type.
+/// for eample 100 represents regular-interval time series records
+/// </summary>
+/// <param name="dss"></param>
+/// <param name="pathname"></param>
+/// <returns></returns>
+HECDSS_API int hec_dss_dataType(dss_file* dss, const char* pathname);
+
+
+/// <summary>
+/// Reads paired data from DSS
+/// </summary>
+/// <param name="dss"></param>
+/// <param name="pathname"></param>
+/// <param name="doubleOrdinates"></param>
+/// <param name="doubleOrdinatesLength"></param>
+/// <param name="doubleValues"></param>
+/// <param name="doubleValuesLength"></param>
+/// <param name="numberOrdinates"></param>
+/// <param name="numberCurves"></param>
+/// <param name="unitsIndependent"></param>
+/// <param name="unitsIndependentLength"></param>
+/// <param name="typeIndependent"></param>
+/// <param name="typeIndependentLength"></param>
+/// <param name="unitsDependent"></param>
+/// <param name="unitsDependentLength"></param>
+/// <param name="typeDependent"></param>
+/// <param name="typeDependentLength"></param>
+/// <param name="labels"> contains multiple labels separated with \0</param>
+/// <param name="labelsLength">total length of labels</param>
+/// <returns></returns>
+HECDSS_API int hec_dss_pdRetrieve(dss_file* dss, const char* pathname,
+  double* doubleOrdinates, const int  doubleOrdinatesLength,
+  double* doubleValues, const int doubleValuesLength,
+  int* numberOrdinates, int* numberCurves,
+  char* unitsIndependent, const int unitsIndependentLength,
+  char* typeIndependent, const int typeIndependentLength,
+  char* unitsDependent, const int unitsDependentLength,
+  char* typeDependent, const int typeDependentLength,
+  char* labels, const int labelsLength);
+
+/// <summary>
+/// Stores Paired data to DSS
+/// </summary>
+/// <param name="dss"></param>
+/// <param name="pathname"></param>
+/// <param name="doubleOrdinates"></param>
+/// <param name="doubleOrdinatesLength"></param>
+/// <param name="doubleValues"></param>
+/// <param name="doubleValuesLength"></param>
+/// <param name="numberOrdinates"></param>
+/// <param name="numberCurves"></param>
+/// <param name="unitsIndependent"></param>
+/// <param name="typeIndependent"></param>
+/// <param name="unitsDependent"></param>
+/// <param name="typeDependent"></param>
+/// <param name="labels"></param>
+/// <param name="labelsLength"></param>
+/// <returns></returns>
+HECDSS_API int hec_dss_pdStore(dss_file* dss, const char* pathname,
+  double* doubleOrdinates, const int  doubleOrdinatesLength,
+  double* doubleValues, const int doubleValuesLength,
+  const int numberOrdinates, const int numberCurves,
+  const char* unitsIndependent,
+  const char* typeIndependent,
+  const char* unitsDependent,
+  const char* typeDependent,
+  const char* labels, const int labelsLength);
+
+
+/// <summary>
+/// Reads gridded/spatial data from DSS
+/// </summary>
+/// <param name="dss"></param>
+/// <param name="pathname"></param>
+/// <param name="boolRetrieveData"></param>
+/// <param name="type"></param>
+/// <param name="dataType"></param>
+/// <param name="lowerLeftCellX"></param>
+/// <param name="lowerLeftCellY"></param>
+/// <param name="numberOfCellsX"></param>
+/// <param name="numberOfCellsY"></param>
+/// <param name="numberOfRanges"></param>
+/// <param name="srsDefinitionType"></param>
+/// <param name="timeZoneRawOffset"></param>
+/// <param name="isInterval"></param>
+/// <param name="isTimeStamped"></param>
+/// <param name="dataUnits"></param>
+/// <param name="dataUnitsLength"></param>
+/// <param name="dataSource"></param>
+/// <param name="dataSourceLength"></param>
+/// <param name="srsName"></param>
+/// <param name="srsNameLength"></param>
+/// <param name="srsDefinition"></param>
+/// <param name="srsDefinitionLength"></param>
+/// <param name="timeZoneID"></param>
+/// <param name="timeZoneIDLength"></param>
+/// <param name="cellSize"></param>
+/// <param name="xCoordOfGridCellZero"></param>
+/// <param name="yCoordOfGridCellZero"></param>
+/// <param name="nullValue"></param>
+/// <param name="maxDataValue"></param>
+/// <param name="minDataValue"></param>
+/// <param name="meanDataValue"></param>
+/// <param name="rangeLimitTable"></param>
+/// <param name="rangeTablesLength"></param>
+/// <param name="numberEqualOrExceedingRangeLimit"></param>
+/// <param name="data"></param>
+/// <param name="dataLength"></param>
+/// <returns></returns>
+HECDSS_API int hec_dss_gridRetrieve(dss_file* dss, const char* pathname, int boolRetrieveData,
+  int* type, int* dataType,
+  int* lowerLeftCellX, int* lowerLeftCellY,
+  int* numberOfCellsX, int* numberOfCellsY,
+  int* numberOfRanges, int* srsDefinitionType,
+  int* timeZoneRawOffset, int* isInterval,
+  int* isTimeStamped,
+  char* dataUnits, const int dataUnitsLength,
+  char* dataSource, const int dataSourceLength,
+  char* srsName, const int srsNameLength,
+  char* srsDefinition, const int srsDefinitionLength,
+  char* timeZoneID, const int timeZoneIDLength,
+  float* cellSize, float* xCoordOfGridCellZero,
+  float* yCoordOfGridCellZero, float* nullValue,
+  float* maxDataValue, float* minDataValue,
+  float* meanDataValue,
+  float* rangeLimitTable, const int rangeTablesLength,
+  int* numberEqualOrExceedingRangeLimit,
+  float* data, const int dataLength);
+
+/// <summary>
+/// Stores gridded (spatial) data to DSS
+/// </summary>
+/// <param name="dss"></param>
+/// <param name="pathname"></param>
+/// <param name="gridType"></param>
+/// <param name="dataType"></param>
+/// <param name="lowerLeftCellX"></param>
+/// <param name="lowerLeftCellY"></param>
+/// <param name="numberOfCellsX"></param>
+/// <param name="numberOfCellsY"></param>
+/// <param name="numberOfRanges"></param>
+/// <param name="srsDefinitionType"></param>
+/// <param name="timeZoneRawOffset"></param>
+/// <param name="isInterval"></param>
+/// <param name="isTimeStamped"></param>
+/// <param name="dataUnits"></param>
+/// <param name="dataSource"></param>
+/// <param name="srsName"></param>
+/// <param name="srsDefinition"></param>
+/// <param name="timeZoneID"></param>
+/// <param name="cellSize"></param>
+/// <param name="xCoordOfGridCellZero"></param>
+/// <param name="yCoordOfGridCellZero"></param>
+/// <param name="nullValue"></param>
+/// <param name="maxDataValue"></param>
+/// <param name="minDataValue"></param>
+/// <param name="meanDataValue"></param>
+/// <param name="rangeLimitTable"></param>
+/// <param name="numberEqualOrExceedingRangeLimit"></param>
+/// <param name="data"></param>
+/// <returns></returns>
+HECDSS_API int hec_dss_gridStore(dss_file* dss, const char* pathname,
+  const int gridType, const int dataType,
+  const int lowerLeftCellX, const int lowerLeftCellY,
+  const int numberOfCellsX, const int numberOfCellsY,
+  const int numberOfRanges, const int srsDefinitionType,
+  const int timeZoneRawOffset, int isInterval,
+  const int isTimeStamped,
+  const char* dataUnits,
+  const char* dataSource,
+  const char* srsName,
+  const char* srsDefinition,
+  const char* timeZoneID,
+  const float cellSize, const float xCoordOfGridCellZero,
+  const float yCoordOfGridCellZero, const float nullValue,
+  const float maxDataValue, const float minDataValue,
+  const float meanDataValue,
+  float* rangeLimitTable,
+  int* numberEqualOrExceedingRangeLimit,
+  float* data);
+
+/// <summary>
+/// converts character date to separate year,month, and day
+/// </summary>
+/// <param name="date"></param>
+/// <param name="year"></param>
+/// <param name="month"></param>
+/// <param name="day"></param>
+/// <returns></returns>
+HECDSS_API int hec_dss_dateToYearMonthDay(const char* date, int* year, int* month, int* day);
+
+HECDSS_API int hec_dss_delete(dss_file* dss, const char* pathname);
+
+/// <summary>
+/// squeeze (compress) a DSS file
+/// </summary>
+/// <param name="pathname"></param>
+/// <returns></returns>
+HECDSS_API int hec_dss_squeeze(const char* pathname);
+
+
+/// <summary>
+/// converts character date to integer representation
+/// </summary>
+/// <param name="date"></param>
+/// <returns>julian date</returns>
+HECDSS_API int hec_dss_dateToJulian(const char* date);
+
+/// <summary>
+/// Converts julian date to separate year, month, and day
+/// </summary>
+/// <param name="julian"></param>
+/// <param name="year"></param>
+/// <param name="month"></param>
+/// <param name="day"></param>
+/// <returns></returns>
+HECDSS_API void hec_dss_julianToYearMonthDay(const int julian, int* year, int* month, int* day);
+
+/// <summary>
+/// Converts from DSS 6 to DSS7
+/// Warning: DSS6 grids will not be converted. (Java libraries are necessary for version 6 grids)
+/// </summary>
+/// <param name="dssFilename"></param>
+/// <param name="filenameVersion6"></param>
+/// <returns></returns>
+HECDSS_API int hec_dss_convertToVersion7(const char* filenameVersion6, const char* filenameVersion7);
