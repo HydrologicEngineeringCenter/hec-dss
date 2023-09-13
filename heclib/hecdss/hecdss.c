@@ -5,22 +5,7 @@
 
 #include "zdssKeys.h"
 
-/*
- hecdss.c contains code for a shared object/dll, providing an API to work with DSS files.
 
- Only DSS version 7 files are supported.  DSS version 6 files can be converted to DSS version 7
- using HEC-DSSVue https://www.hec.usace.army.mil/software/hec-dssvue/
-
-
- This API is designed with perspective that the calling/client code is in charge of managing memory.
- The only exception is hec_dss_open(const char* filename, dss_file** dss).   hec_dss_open allocates 
- one internal structure that must be freed by calling hec_dss_close;
-
- For reading data: The client passes in pre-allocated arrays, with the size, then the API copies data 
- into those arrays
- 
-
-*/
 #if defined(__GNUC__) || defined(__sun__)
     #define MIN(a, b) ({         \
         __typeof__ (a) _a = (a); \
@@ -134,11 +119,6 @@ HECDSS_API int hec_dss_close(dss_file *dss){
     return status;
 }
 
-/// <summary>
-/// Gets version of DSS file that has already been opened.
-/// </summary>
-/// <param name="dss"></param>
-/// <returns></returns>
 HECDSS_API int hec_dss_getVersion(dss_file* dss) {
     if (!dss)
         return 0;
@@ -146,38 +126,15 @@ HECDSS_API int hec_dss_getVersion(dss_file* dss) {
 }
 
 
-/// <summary>
-/// Gets the version of a DSS file based on filename
-/// Returns:
-///    7:  A DSS version 7 file
-///    6:  A DSS version 6 file
-///    0 : File does not exist
-///   -1 : Not a DSS file(but file exists)
-///   -2 : Invalid file name
-///   -3 : Open error(undefined)
-/// < -3 : abs(error) is system open or read error
-/// </summary>
-/// <param name="filename"></param>
-/// <returns></returns>
 HECDSS_API int hec_dss_getFileVersion(const char* filename) {
     return zgetFileVersion(filename);
 }
 
 
-/// <summary>
-/// Sets internal number values inside DSS
-/// for example calling hec_dss_set_value("mlvl",10) sets the DSS output level to 10
-/// </summary>
-/// <returns>zero on sucess</returns>
 HECDSS_API int hec_dss_set_value(const char* name, const int value) {
  return zset(name, "", value);
 }
 
-/// <summary>
-/// Sets an internal character value inside DSS
-/// for example calling hec_dss_set_string("PROG","DSSVue") sets the program name 
-/// </summary>
-/// <returns>zero on sucess</returns>
 HECDSS_API int hec_dss_set_string(const char* name, const char* value) {
   return zset(name, value, 0);
 }
@@ -194,20 +151,6 @@ HECDSS_API int hec_dss_record_count(dss_file* dss) {
     }
 
 
-/// <summary>
-/// Used to read the catalog of a DSS file
-/// </summary>
-/// <param name="dss">pointer to DSS file</param>
-/// <param name="pathBuffer">allocated buffer that is loaded with pathnames </param>
-/// <param name="recordTypes">output array of record types corresponding to each path</param>
-/// <param name="pathFilter">	Either null (for ignore) or a String that represents a pathname with wild characters represented
-///  by a star(*) to match any string in the pathname part.Wild characters can only be at the beginning or end of a part,
-///  not inside of a string.An example is a C part with "*Flow*", which
-///  will match all pathnames that have "Flow" anywhere in the C part, such as "Flow", "Inflow", "Outflow-Reg", etc.
-///  A part such as "Flow*Reg" is not supported. A null(//) will only match a null, where only a star (*) will match all. </param>
-/// <param name="count">number of paths that can be stored in pathBuffer, and length of recordTypes array</param>
-/// <param name="pathBufferItemSize">max allowable length of each pathname</param>
-/// <returns></returns>
 HECDSS_API int hec_dss_catalog(dss_file* dss, char* pathBuffer, int* recordTypes, const char* pathFilter,
                               const int count, const int pathBufferItemSize) {
  
@@ -440,24 +383,6 @@ HECDSS_API int hec_dss_locationRetrieve(dss_file* dss, const char* fullPath,
   return status;
 }
 
-/// <summary>
-/// 
-/// </summary>
-/// <param name="dss"></param>
-/// <param name="fullPath"></param>
-/// <param name="x"></param>
-/// <param name="y"></param>
-/// <param name="z"></param>
-/// <param name="coordinateSystem"></param>
-/// <param name="coordinateID"></param>
-/// <param name="horizontalUnits"></param>
-/// <param name="horizontalDatum"></param>
-/// <param name="verticalUnits"></param>
-/// <param name="verticalDatum"></param>
-/// <param name="timeZoneName"></param>
-/// <param name="supplemental"></param>
-/// <param name="replace">set to 1 to overwrite existing data, otherwise use 0</param>
-/// <returns></returns>
 HECDSS_API int hec_dss_locationStore(dss_file* dss, const char* fullPath,
   const double x, const double y, const double z,
   const int coordinateSystem, const int coordinateID,
@@ -538,12 +463,6 @@ HECDSS_API int hec_dss_dataType(dss_file* dss, const char* pathname) {
   return zdataType(dss->ifltab, pathname);
 }
 
-/*
-  hec_dss_pdRetrieve reads paired-data from a DSS file
-
-  *labels is multiple labels separated with \0
-   labelsLength is the total length
-*/
 HECDSS_API int hec_dss_pdRetrieve(dss_file* dss, const char* pathname,
   double* doubleOrdinates, const int  doubleOrdinatesLength,
   double* doubleValues, const int doubleValuesLength,
@@ -607,10 +526,6 @@ HECDSS_API int hec_dss_pdRetrieve(dss_file* dss, const char* pathname,
     return status;
 }
 
-/*
-  hec_dss_pdRetrieve reads paired-data from a DSS file
-
-*/
 HECDSS_API int hec_dss_pdStore(dss_file* dss, const char* pathname,
   double* doubleOrdinates, const int  doubleOrdinatesLength,
   double* doubleValues, const int doubleValuesLength,
@@ -826,13 +741,6 @@ HECDSS_API void hec_dss_julianToYearMonthDay(const int julian, int* year, int* m
   julianToYearMonthDay(julian, year, month, day);
 }
 
-/// <summary>
-/// Converts from DSS 6 to DSS7
-/// Warning: DSS6 grids will not be converted. (Java libraries are necessary for version 6 grids)
-/// </summary>
-/// <param name="dssFilename"></param>
-/// <param name="filenameVersion6"></param>
-/// <returns></returns>
 HECDSS_API int hec_dss_convertToVersion7(const char* filenameVersion6, const char* filenameVersion7) {
     long long ifltab[250];
     int status = hec_dss_zopen(ifltab, filenameVersion6);
