@@ -3,7 +3,7 @@ add_executable(Dss-Fortran  ${F_SRC})
 target_link_libraries(Dss-Fortran heclib)
 target_include_directories(Dss-Fortran PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 if( ${CMAKE_Fortran_COMPILER_ID} MATCHES GNU)
-	target_compile_options(Dss-Fortran PRIVATE -cpp -std=gnu -Werror)   
+	target_compile_options(Dss-Fortran PRIVATE -cpp -fallow-argument-mismatch -Warray-bounds -Wc-binding-type -Wcharacter-truncation)   
 elseif(MSVC)
     
     set_property(TARGET Dss-Fortran PROPERTY VS_SOURCE_SETTINGS_VFFortranCompilerTool 

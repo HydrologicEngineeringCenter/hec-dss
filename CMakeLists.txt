@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.21)
 project(heclib LANGUAGES C Fortran)
 
+set(CMAKE_C_STANDARD 99)
+
 if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
     message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
     file(DOWNLOAD "https://raw.githubusercontent.com/conan-io/cmake-conan/0.18.1/conan.cmake"

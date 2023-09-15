@@ -1,6 +1,7 @@
 file(GLOB C_SRC LIST_DIRECTORIES true source/*.c)
 add_executable(Dss-C TestDssC.c ${C_SRC})
-target_link_libraries(Dss-C heclib)
+target_compile_options(Dss-C PRIVATE -cpp -fPIC -fcommon)
+target_link_libraries(Dss-C PRIVATE heclib)
 target_include_directories(Dss-C PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 add_custom_target(
     copy-test-data-dss-c ALL

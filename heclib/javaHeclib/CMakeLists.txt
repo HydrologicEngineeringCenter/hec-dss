@@ -5,7 +5,7 @@ if(JNI_FOUND)
     add_library(javaHeclib SHARED ${C_SRC})
 
     if( ${CMAKE_C_COMPILER_ID} MATCHES GNU)    
-        target_compile_options(javaHeclib PRIVATE -fPIC -std=gnu99)
+        target_compile_options(javaHeclib PRIVATE -fPIC -std=gnu99 -fcommon)
     elseif(${CMAKE_C_COMPILER_ID} MATCHES SunPro)
         target_compiler_options(javaHecib PRIVATE -m64 -xmemalign=2i -xcode=pic32 -c -Isrc/headers -mt -xcode=abs64 -xstrconst -xc99=all -xCC -g -xs)
     else()
