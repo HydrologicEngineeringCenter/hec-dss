@@ -1,14 +1,24 @@
+cmake_minimum_required(VERSION 3.21)
 project(heclib LANGUAGES C Fortran)
-cmake_minimum_required(VERSION 3.16)
 
-
-
-if(MSVC)
-    set(CMAKE_EXE_LINKER_FLAGS /NODEFAULTLIB:MSVCRTD,LIBCMT)
+if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
+    message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
+    file(DOWNLOAD "https://raw.githubusercontent.com/conan-io/cmake-conan/0.18.1/conan.cmake"
+                  "${CMAKE_BINARY_DIR}/conan.cmake"
+                  TLS_VERIFY ON)
 endif()
-
+  
+include(${CMAKE_BINARY_DIR}/conan.cmake)
+    
+conan_cmake_autodetect(settings)
+  
+conan_cmake_install(PATH_OR_REFERENCE ${CMAKE_CURRENT_SOURCE_DIR}/conanfile.txt
+                    BUILD missing
+                    REMOTE conancenter
+                    SETTINGS ${settings})
+find_package(ZLIB REQUIRED)
 find_package(JNI QUIET)
-add_subdirectory(deps)
+#add_subdirectory(deps)
 add_subdirectory(heclib)
 
 find_package(Git QUIET)
@@ -29,4 +39,3 @@ if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
 else()
     message(STATUS "git not found. Tests require git submodule initialization to build. Please install git if you wish to run the tests.")
 endif()
-
