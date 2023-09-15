@@ -25,6 +25,7 @@ add_subdirectory(heclib)
 
 find_package(Git QUIET)
 if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
+    include(CTest)
     option(RUN_TESTS "Run Tests, requires initializing a git submodule." ON)
     if(RUN_TESTS)
 
