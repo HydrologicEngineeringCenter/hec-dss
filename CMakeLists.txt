@@ -20,7 +20,6 @@ conan_cmake_install(PATH_OR_REFERENCE ${CMAKE_CURRENT_SOURCE_DIR}/conanfile.txt
                     SETTINGS ${settings})
 find_package(ZLIB REQUIRED)
 find_package(JNI QUIET)
-#add_subdirectory(deps)
 add_subdirectory(heclib)
 
 find_package(Git QUIET)

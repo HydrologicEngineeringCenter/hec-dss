@@ -1,0 +1,66 @@
+{
+    "version": 6,
+    "cmakeMinimumRequired": {
+      "major": 3,
+      "minor": 21,
+      "patch": 0
+    },
+
+    "configurePresets": [
+      {
+        "name": "Debug-Unix Makefiles",
+        "displayName": "Default Config",
+        "description": "Default build using Unix Make files",
+        "generator": "Unix Makefiles",
+        "cacheVariables": {
+            "CMAKE_POLICY_DEFAULT_CMP0091": "NEW",
+            "CMAKE_BUILD_TYPE": "Debug"
+        },
+        "binaryDir": "/home/mike/projects/hec-dss/build/Debug",
+        "environment": {
+          "PATH": "$penv{PATH}"
+        }
+      },
+      {
+        "name": "ninja-multi",
+        "inherits": "default",
+        "displayName": "Ninja Multi-Config",
+        "description": "Default build using Ninja Multi-Config generator",
+        "generator": "Ninja Multi-Config"
+      },
+      {
+        "name": "windows-only",
+        "inherits": "default",
+        "displayName": "Windows-only configuration",
+        "description": "This build is only available on Windows",
+        "condition": {
+          "type": "equals",
+          "lhs": "${hostSystemName}",
+          "rhs": "Windows"
+        }
+      },
+      {
+        "name": "x86-64",
+        "hidden": true,
+        "architecture": {
+            "value": "x64"
+        }
+      }
+    ],
+    "buildPresets": [
+      {
+        "name": "default",
+        "configurePreset": "Debug",
+        "inherits": "x86-64"   
+      }
+    ],
+    "testPresets": [
+        {
+            "name": "default",
+            "configurePreset": "default",
+            "inherits": "x86-64",
+            "output": {"outputOnFailure": true},
+            "execution": {"noTestsAction": "error", "stopOnFailure": true}
+        }
+    ]
+}
