@@ -1473,7 +1473,7 @@ int testTsStoreRules() {
 	for (int dssVer = 6; dssVer <= 7; ++dssVer) {
 		printf("DSS Version %d\n", dssVer);
 		long long ifltab[250] = { 0 };
-		char* dssFilename = "testCwms1424_v?.dss";
+		char* dssFilename = strdup("testCwms1424_v?.dss");
 		for (char* cp = dssFilename; *cp; ++cp) {
 			if (*cp == '?') *cp = '0' + dssVer;
 		}
@@ -1487,7 +1487,7 @@ int testTsStoreRules() {
 			// test regular time series store rules //
 			//--------------------------------------//
 			const char* pathname = "//StoreRuleTestLoc/Code//1Hour/StoreRuleTestTest/";
-			const char* missingRecordname = "//StoreRuleTestLoc/Code/01Feb2023/1Hour/StoreRuleTestTest/";
+			char* missingRecordname = strdup("//StoreRuleTestLoc/Code/01Feb2023/1Hour/StoreRuleTestTest/");
 			int storeRules[] = { 0,1,4 };
 			int startJul = dateToJulian(dates[0]);
 			int startSecs = timeStringToSeconds(times[0]);
@@ -1642,6 +1642,7 @@ int testTsStoreRules() {
 			free(oldValues);
 			free(newValues);
 			free(expectedValues);
+			free(missingRecordname);
 		}
 		{
 			printf("\tIrregular time series with gaps for missing\n");
@@ -1827,6 +1828,7 @@ int testTsStoreRules() {
 			free(timeVals);
 		}
 		zclose(ifltab);
+		free(dssFilename);
 	}
 	//----------//
 	// clean up //
