@@ -1,13 +1,17 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #if defined(__linux__) || defined(__APPLE__) || defined(__sparc)
 #include <unistd.h>
 #else
+#define strtok_r strtok_s
+#define strdup _strdup
 #include <direct.h>
 #endif
 #include "heclib.h"
 #include "hecdss7.h"
 #include "TestDssC.h"
+
 
 
 int runTheTests();
@@ -189,6 +193,11 @@ int runTheTests() {
 	char fileName7a[80];
 	char fileName6[80];
 	int status;
+
+	printf("test issue CWMS-1424 (Time Series Store Rule)\n");
+	status = testTsStoreRules();
+	if (status != STATUS_OKAY)
+		return status;
 
 	printf("test issue DSS-178\n");
 	if (bigEndian()) zset("disa", "", -1);
@@ -504,7 +513,7 @@ int multipleWriteDeleteSlowDown() {
 
 	deleteFile("C:/temp/testpd.dss");
 	status = hec_dss_zopen(ifltab, "C:/temp/testpd.dss");
-	//zsetfi_(ifltab,"reclaim", " ", RECLAIM_NONE,&i,&status,7,1);
+	//zsetfi_(ifltab,"reclaim", " ", RECLAIM_NONE,&k,&status,7,1);
 
 	//zsetfi_(ifltab, "FMULT", "ON", &number, &status,
 		//5, 2);
@@ -760,7 +769,7 @@ int test_jira_dss_163_weekly_time_series_fails()
 					status = tss2->numberValues == NUM_VALUES ? STATUS_OKAY : STATUS_NOT_OKAY;
 					for (int i = 0; i < tss2->numberValues; ++i) {
 						getDateTimeString(jul, datestr, sizeof(datestr), -13, sec, timestr, sizeof(timestr), 0);
-						//printf("\t%s %s %.2f\n", datestr, timestr, tss2->doubleValues[i]);
+						//printf("\t%s %s %.2f\n", datestr, timestr, tss2->doubleValues[k]);
 						incrementTime(tss2->timeIntervalSeconds, 1, jul, sec, &jul, &sec);
 						if (i == 0) {
 							status |= strcmp(datestr, startdate) || strcmp(timestr, starttime);
@@ -786,7 +795,7 @@ int test_jira_dss_163_weekly_time_series_fails()
 	// retrieve by pathname //
 	//----------------------//
 	for (int i = 0; i < cs->numberPathnames; ++i) {
-		//printf("%d\t%s\n", i, cs->pathnameList[i]);
+		//printf("%d\t%s\n", k, cs->pathnameList[k]);
 		zpathnameGetPart(cs->pathnameList[i], 6, fpart, sizeof(fpart));
 		//---------------------------//
 		// retrieve by pathname only //
@@ -805,7 +814,7 @@ int test_jira_dss_163_weekly_time_series_fails()
 			for (int j = 0; j < tss2->numberValues; ++j) {
 				getDateTimeString(jul, datestr, sizeof(datestr), 4, sec, timestr, sizeof(timestr), 0);
 				getDateTimeString(jul, datestr2, sizeof(datestr2), -13, sec, timestr2, sizeof(timestr), 0);
-				//printf("\t%s %s %.2f\n", datestr, timestr, tss2->doubleValues[j]);
+				//printf("\t%s %s %.2f\n", datestr, timestr, tss2->doubleValues[k]);
 				incrementTime(tss2->timeIntervalSeconds, 1, jul, sec, &jul, &sec);
 				if (j == 0) {
 					status |= strcmp(datestr2, fpart) || strcmp(timestr2, starttime);
@@ -879,7 +888,7 @@ int test_jira_dss_163_weekly_time_series_fails()
 			for (int j = 0; j < tss2->numberValues; ++j) {
 				getDateTimeString(jul, datestr, sizeof(datestr), 4, sec, timestr, sizeof(timestr), 0);
 				getDateTimeString(jul, datestr2, sizeof(datestr2), -13, sec, timestr2, sizeof(timestr), 0);
-				//printf("\t%s %s %.2f\n", datestr, timestr, tss2->doubleValues[j]);
+				//printf("\t%s %s %.2f\n", datestr, timestr, tss2->doubleValues[k]);
 				incrementTime(tss2->timeIntervalSeconds, 1, jul, sec, &jul, &sec);
 				if (j == 0) {
 					status |= strcmp(datestr2, fpart) || strcmp(timestr2, starttime);
@@ -1364,5 +1373,478 @@ int testDss178() {
 		status = zconvertVersion(v7Filenames[i], v6Filename);
 		remove(v6Filename);
 	}
+	return status;
+}
+
+int testTsStoreRules() {
+            //---------------------//
+            // build the data sets //
+            //---------------------//
+                                   //
+                                   // Irregular store rule 0 doesn't work as the documentation suggests. Documentation indicates
+                                   // that the existing values remain and only incoming values at non-existing times are stored.
+                                   // In actuality, all incoming values are stored (even if UNDEFINED_DOUBLE - e.g., missing) and
+                                   // the only existing values that remain are those with times not in the incoming values.
+                                   //
+                                   //                                                     *** Data Sets ***
+                                   // +-------------------------------------------------- existing values
+                                   // |       +------------------------------------------ incoming values
+                                   // |       |                                           *** Regular TS Store Rules ***
+                                   // |       |       +---------------------------------- replace all values                              (REPLACE ALL)
+                                   // |       |       |       +-------------------------- replace missing values only                     (REPLACE MISSING VALUES ONLY)
+                                   // |       |       |       |       +------------------ don't replace value with missing value          (REPLACE WITH NON MISSING)
+                                   // |       |       |       |       |                   *** Irregular TS Store Rules ***
+                                   // |       |       |       |       |       +---------- don't replace value with missing value          (REPLACE WITH NON MISSING)
+                                   // |       |       |       |       |       |       +-- delete old values in time window before storing (DELETE INSERT)
+            const char* data =     // |       |       |       |       |       |       |
+                "Time               Old     New   Reg:0   Reg:1   Reg:4   Irr:0   Irr:1  \n"
+                "01Jan2023 1:00      1      101     101       1     101     101     101  \n"
+                "01Jan2023 2:00      2      102     102       2     102     102     102  \n"
+                "01Jan2023 3:00      ~      103     103     103     103     103     103  \n"
+                "01Jan2023 4:00      4        ~       ~       4       4       4       ~  \n"
+                "01Jan2023 5:00      5      105     105       5     105     105     105  \n"
+                "01Jan2023 6:00      ~      106     106     106     106     106     106  \n"
+                "01Jan2023 7:00      7      107     107       7     107     107     107  \n"
+                "01Jan2023 8:00      8        ~       ~       8       8       8       ~  \n"
+                "01Jan2023 9:00      ~      109     109     109     109     109     109  \n"
+                "01Jan2023 10:00    10      110     110      10     110     110     110  \n"
+                "01Jan2023 11:00    11      111     111      11     111     111     111  \n"
+                "01Jan2023 12:00     ~        ~       ~       ~       ~       ~       ~  \n"
+                "01Jan2023 13:00    13      113     113      13     113     113     113  \n"
+                "01Jan2023 14:00    14      114     114      14     114     114     114  \n"
+                "01Jan2023 15:00     ~      115     115     115     115     115     115  \n"
+                "01Jan2023 16:00    16        ~       ~      16      16      16       ~  \n"
+                "01Jan2023 17:00    17      117     117      17     117     117     117  \n"
+                "01Jan2023 18:00     ~      118     118     118     118     118     118  \n"
+                "01Jan2023 19:00    19      119     119      19     119     119     119  \n"
+                "01Mar2023 1:00     20      120     120      20     120     120     120  \n";
+	char* line = NULL;
+	char* element = NULL;
+	char* saveptr1 = NULL;
+	char* saveptr2 = NULL;
+	int numData = 0;
+
+	char* dataCopy = strdup(data);
+	line = strtok_r(dataCopy, "\n", &saveptr1);
+	while (line) {
+		if (line && strstr(line, "Time") != line) {
+			++numData;
+		}
+		line = strtok_r(NULL, "\n", &saveptr1);
+	}
+	char** dates = (char**)calloc(numData, sizeof(char*));
+	char** times = (char**)calloc(numData, sizeof(char*));
+	double* oldVals = (double*)calloc(numData, sizeof(double));
+	double* newVals = (double*)calloc(numData, sizeof(double));
+	double* expctedReg0 = (double*)calloc(numData, sizeof(double));
+	double* expctedReg1 = (double*)calloc(numData, sizeof(double));
+	double* expctedReg4 = (double*)calloc(numData, sizeof(double));
+	double* expctedIrr0 = (double*)calloc(numData, sizeof(double));
+	double* expctedIrr1 = (double*)calloc(numData, sizeof(double));
+	int i = 0;
+	dataCopy = strdup(data);
+	line = strtok_r(dataCopy, "\n", &saveptr1);
+	while (line) {
+		if (strstr(line, "Time")  != line) {
+			element = strtok_r(line, " ", &saveptr2);
+			for (int j = 0; j < 9; ++j) {
+				switch (j) {
+				case 0: dates[i] = strdup(element); break;
+				case 1: times[i] = strdup(element); break;
+				case 2: oldVals[i] = element[0] == '~' ? UNDEFINED_DOUBLE : strtod(element, NULL); break;
+				case 3: newVals[i] = element[0] == '~' ? UNDEFINED_DOUBLE : strtod(element, NULL); break;
+				case 4: expctedReg0[i] = element[0] == '~' ? UNDEFINED_DOUBLE : strtod(element, NULL); break;
+				case 5: expctedReg1[i] = element[0] == '~' ? UNDEFINED_DOUBLE : strtod(element, NULL); break;
+				case 6: expctedReg4[i] = element[0] == '~' ? UNDEFINED_DOUBLE : strtod(element, NULL); break;
+				case 7: expctedIrr0[i] = element[0] == '~' ? UNDEFINED_DOUBLE : strtod(element, NULL); break;
+				case 8: expctedIrr1[i] = element[0] == '~' ? UNDEFINED_DOUBLE : strtod(element, NULL); break;
+				}
+				element = strtok_r(NULL, " ", &saveptr2);
+			}
+			++i;
+		}
+		line = strtok_r(NULL, "\n", &saveptr1);
+	}
+	//--------------//
+	// do the tests //
+	//--------------//
+	int status = -1;
+	zset("MLVL", "", 1);
+	for (int dssVer = 6; dssVer <= 7; ++dssVer) {
+		printf("DSS Version %d\n", dssVer);
+		long long ifltab[250] = { 0 };
+		char* dssFilename = strdup("testCwms1424_v?.dss");
+		for (char* cp = dssFilename; *cp; ++cp) {
+			if (*cp == '?') *cp = '0' + dssVer;
+		}
+		remove(dssFilename);
+		status = dssVer == 6 ? zopen6(ifltab, dssFilename) : zopen7(ifltab, dssFilename);
+		assert(status == STATUS_OKAY);
+		zStructTimeSeries * tss = NULL;
+		{
+			printf("\tRegular time series\n");
+			//--------------------------------------//
+			// test regular time series store rules //
+			//--------------------------------------//
+			const char* pathname = "//StoreRuleTestLoc/Code//1Hour/StoreRuleTestTest/";
+			char* missingRecordname = strdup("//StoreRuleTestLoc/Code/01Feb2023/1Hour/StoreRuleTestTest/");
+			int storeRules[] = { 0,1,4 };
+			int startJul = dateToJulian(dates[0]);
+			int startSecs = timeStringToSeconds(times[0]);
+			int endJul = dateToJulian(dates[numData - 1]);
+			int endSecs = timeStringToSeconds(times[numData - 1]);
+			int numVals = numberPeriods(SECS_IN_1_HOUR, startJul, startSecs, endJul, endSecs) + 1;
+			double* oldValues = (double*)calloc(numVals, sizeof(double));
+			double* newValues = (double*)calloc(numVals, sizeof(double));
+			double* expectedValues = (double*)calloc(numVals, sizeof(double));
+			int valJul;
+			int valSecs;
+			int dataJul;
+			int dataSecs;
+			//------------------------//
+			// prepare the old values //
+			//------------------------//
+			valJul = startJul;
+			valSecs = startSecs;
+			dataJul = dateToJulian(dates[1]);
+			dataSecs = timeStringToSeconds(times[1]);
+			oldValues[0] = oldVals[0];
+			for (int i = 1, j = 1; i < numVals; ++i) {
+				incrementTime(SECS_IN_1_HOUR, 1, valJul, valSecs, &valJul, &valSecs);
+				if (valJul < dataJul || (valJul == dataJul && valSecs < dataSecs)) {
+					oldValues[i] = UNDEFINED_DOUBLE;
+				}
+				else {
+					oldValues[i] = oldVals[j++];
+					if (i < numVals - 1) {
+						dataJul = dateToJulian(dates[j]);
+						dataSecs = timeStringToSeconds(times[j]);
+					}
+				}
+			}
+			for (int i = 0; i < sizeof(storeRules) / sizeof(storeRules[0]); ++i) {
+				printf("\t\tStore Rule %d\n", storeRules[i]);
+				//----------------------//
+				// store the old values //
+				//----------------------//
+				tss = zstructTsNewRegDoubles(
+					pathname,
+					oldValues,
+					numVals,
+					dates[0],
+					times[0],
+					"N/A",
+					"INST-VAL");
+				if (storeRules[i] == 0) {
+					//--------------------------------//
+					// test missing record management //
+					//--------------------------------//
+					// should store entire missing record
+					status = ztsStore(ifltab, tss, 2);
+					assert(status == STATUS_OKAY);
+					assert(zcheck(ifltab, missingRecordname) == STATUS_RECORD_FOUND);
+					if (dssVer == 7) {
+						// should remove entire missing record (doesn't work correctly in DSS 6)
+						status = ztsStore(ifltab, tss, 3);
+						assert(status == STATUS_OKAY);
+						assert(zcheck(ifltab, missingRecordname) == STATUS_RECORD_NOT_FOUND);
+					}
+				}
+				status = ztsStore(ifltab, tss, 0);
+				assert(status == STATUS_OKAY);
+				zstructFree(tss);
+				//------------------------//
+				// prepare the new values //
+				//------------------------//
+				valJul = startJul;
+				valSecs = startSecs;
+				dataJul = dateToJulian(dates[1]);
+				dataSecs = timeStringToSeconds(times[1]);
+				newValues[0] = newVals[0];
+				for (int j = 1, k = 1; j < numVals; ++j) {
+					incrementTime(SECS_IN_1_HOUR, 1, valJul, valSecs, &valJul, &valSecs);
+					if (valJul < dataJul || (valJul == dataJul && valSecs < dataSecs)) {
+						newValues[j] = UNDEFINED_DOUBLE;
+					}
+					else {
+						newValues[j] = newVals[k++];
+						if (j < numVals - 1) {
+							dataJul = dateToJulian(dates[k]);
+							dataSecs = timeStringToSeconds(times[k]);
+						}
+					}
+				}
+				//----------------------//
+				// store the new values //
+				//----------------------//
+				tss = zstructTsNewRegDoubles(
+					pathname,
+					newValues,
+					numVals,
+					dates[0],
+					times[0],
+					"N/A",
+					"INST-VAL");
+				status = ztsStore(ifltab, tss, storeRules[i]);
+				assert(status == STATUS_OKAY);
+				zstructFree(tss);
+				//----------------------//
+				// retrieve the results //
+				//----------------------//
+				tss = zstructTsNewTimes(
+					pathname,
+					dates[0],
+					times[0],
+					dates[numData-1],
+					times[numData-1]);
+				status = ztsRetrieve(ifltab, tss, 0, 0, 1);
+				assert(status == STATUS_OKAY);
+				//-----------------------------//
+				// prepare the expected values //
+				//-----------------------------//
+				valJul = startJul;
+				valSecs = startSecs;
+				dataJul = dateToJulian(dates[1]);
+				dataSecs = timeStringToSeconds(times[1]);
+				switch (storeRules[i]) {
+				case 0: expectedValues[0] = expctedReg0[0]; break;
+				case 1: expectedValues[0] = expctedReg1[0]; break;
+				case 4: expectedValues[0] = expctedReg4[0]; break;
+				}
+				for (int j = 1, k = 1; j < numVals; ++j) {
+					incrementTime(SECS_IN_1_HOUR, 1, valJul, valSecs, &valJul, &valSecs);
+					if (valJul < dataJul || (valJul == dataJul && valSecs < dataSecs)) {
+						expectedValues[j] = UNDEFINED_DOUBLE;
+					}
+					else {
+						switch (storeRules[i]) {
+						case 0: expectedValues[j] = expctedReg0[k++]; break;
+						case 1: expectedValues[j] = expctedReg1[k++]; break;
+						case 4: expectedValues[j] = expctedReg4[k++]; break;
+						}
+						if (j < numVals - 1) {
+							dataJul = dateToJulian(dates[k]);
+							dataSecs = timeStringToSeconds(times[k]);
+						}
+					}
+				}
+				//----------------------------------------------//
+				// compare the results with the expected values //
+				//----------------------------------------------//
+				assert(tss->numberValues == numVals);
+				for (int j = 0; j < tss->numberValues; ++j) {
+					if (tss->doubleValues[j] != expectedValues[j]) {
+						printf("\t\t\tValue %4d: Expected %5.0f, got %5.0f\n", j, expectedValues[j], tss->doubleValues[j]);
+					}
+					assert(tss->doubleValues[j] == expectedValues[j]);
+				}
+			}
+			free(oldValues);
+			free(newValues);
+			free(expectedValues);
+			free(missingRecordname);
+		}
+		{
+			printf("\tIrregular time series with gaps for missing\n");
+			//----------------------------------------//
+			// test irregular time series store rules //
+			//----------------------------------------//
+			const char* pathname = "//StoreRuleTestLoc/Code//~1Hour/StoreRuleTestTest/";
+			int* timeVals = (int*)calloc(numData, sizeof(int));
+			double* values = (double*)calloc(numData, sizeof(double));
+			int numVals = 0;
+			int jul;
+			int secs;
+			//-------------------------//
+			// prepoare the old values //
+			//-------------------------//
+			for (int i = 0; i < numData; ++i) {
+				if (oldVals[i] != UNDEFINED_DOUBLE) {
+					jul = dateToJulian(dates[i]);
+					secs = timeStringToSeconds(times[i]);
+					timeVals[numVals] = jul * 1440 + secs / 60;
+					values[numVals] = oldVals[i];
+					++numVals;
+				}
+			}
+			for (int storeRule = 0; storeRule <= 1; ++storeRule) {
+				printf("\t\tStore Rule %d\n", storeRule);
+				//----------------------//
+				// store the old values //
+				//----------------------//
+				tss = zstructTsNewIrregDoubles(
+					pathname,
+					values,
+					numVals,
+					timeVals,
+					SECS_IN_1_MINUTE,
+					NULL,
+					"N/A",
+					"INST-VAL");
+				status = ztsStore(ifltab, tss, 0);
+				assert(status == STATUS_OKAY);
+				zstructFree(tss);
+				//-------------------------//
+				// prepoare the new values //
+				//-------------------------//
+				numVals = 0;
+				for (int i = 0; i < numData; ++i) {
+					if (newVals[i] != UNDEFINED_DOUBLE) {
+						jul = dateToJulian(dates[i]);
+						secs = timeStringToSeconds(times[i]);
+						timeVals[numVals] = jul * 1440 + secs / 60;
+						values[numVals] = newVals[i];
+						++numVals;
+					}
+				}
+				//----------------------//
+				// store the new values //
+				//----------------------//
+				tss = zstructTsNewIrregDoubles(
+					pathname,
+					values,
+					numVals,
+					timeVals,
+					SECS_IN_1_MINUTE,
+					NULL,
+					"N/A",
+					"INST-VAL");
+				status = ztsStore(ifltab, tss, storeRule);
+				assert(status == STATUS_OKAY);
+				zstructFree(tss);
+				//----------------------//
+				// retrieve the results //
+				//----------------------//
+				tss = zstructTsNewTimes(
+					pathname,
+					dates[0],
+					times[0],
+					dates[numData - 1],
+					times[numData - 1]);
+				status = ztsRetrieve(ifltab, tss, 0, 0, 1);
+				assert(status == STATUS_OKAY);
+				//-----------------------------//
+				// prepare the expected values //
+				//-----------------------------//
+				numVals = 0;
+				for (int i = 0; i < numData; ++i) {
+					if ((storeRule == 0 && expctedIrr0[i] != UNDEFINED_DOUBLE) || (storeRule == 1 && expctedIrr1[i] != UNDEFINED_DOUBLE)) {
+						jul = dateToJulian(dates[i]);
+						secs = timeStringToSeconds(times[i]);
+						timeVals[numVals] = jul * 1440 + secs / 60;
+						values[numVals] = storeRule == 0 ? expctedReg4[i] : expctedIrr1[i];
+						++numVals;
+					}
+				}
+				//----------------------------------------------//
+				// compare the results with the expected values //
+				//----------------------------------------------//
+				assert(tss->numberValues == numVals);
+				for (int j = 0; j < tss->numberValues; ++j) {
+					if (tss->doubleValues[j] != values[j]) {
+						printf("\t\t\tValue %4d: Expected %5.0f, got %5.0f\n", j, values[j], tss->doubleValues[j]);
+						zclose(ifltab);
+					}
+					assert(tss->doubleValues[j] == values[j]);
+				}
+				zstructFree(tss);
+			}
+			free(timeVals);
+			free(values);
+		}
+		{
+			printf("\tIrregular time series with UNDEFINED_DOUBLE for missing\n");
+			//----------------------------------------//
+			// test irregular time series store rules //
+			//----------------------------------------//
+			const char* pathname = "//StoreRuleTestLoc/Code//~1Hour/StoreRuleTestTest/";
+			int* timeVals = (int*)calloc(numData, sizeof(int));
+			int jul;
+			int secs;
+			//-------------------------//
+			// prepoare the old values //
+			//-------------------------//
+			for (int i = 0; i < numData; ++i) {
+				jul = dateToJulian(dates[i]);
+				secs = timeStringToSeconds(times[i]);
+				timeVals[i] = jul * 1440 + secs / 60;
+			}
+			for (int storeRule = 0; storeRule <= 1; ++storeRule) {
+				printf("\t\tStore Rule %d\n", storeRule);
+				//----------------------//
+				// store the old values //
+				//----------------------//
+				tss = zstructTsNewIrregDoubles(
+					pathname,
+					oldVals,
+					numData,
+					timeVals,
+					SECS_IN_1_MINUTE,
+					NULL,
+					"N/A",
+					"INST-VAL");
+				status = ztsStore(ifltab, tss, 0);
+				assert(status == STATUS_OKAY);
+				zstructFree(tss);
+				//----------------------//
+				// store the new values //
+				//----------------------//
+				tss = zstructTsNewIrregDoubles(
+					pathname,
+					newVals,
+					numData,
+					timeVals,
+					SECS_IN_1_MINUTE,
+					NULL,
+					"N/A",
+					"INST-VAL");
+				status = ztsStore(ifltab, tss, storeRule);
+				assert(status == STATUS_OKAY);
+				zstructFree(tss);
+				//----------------------//
+				// retrieve the results //
+				//----------------------//
+				tss = zstructTsNewTimes(
+					pathname,
+					dates[0],
+					times[0],
+					dates[numData - 1],
+					times[numData - 1]);
+				status = ztsRetrieve(ifltab, tss, 0, 0, 1);
+				assert(status == STATUS_OKAY);
+				//----------------------------------------------//
+				// compare the results with the expected values //
+				//----------------------------------------------//
+				assert(tss->numberValues == numData);
+				for (int j = 0; j < tss->numberValues; ++j) {
+					if (tss->doubleValues[j] != expctedIrr1[j]) {
+						printf("\t\t\tValue %4d: Expected %5.0f, got %5.0f\n", j, expctedIrr1[j], tss->doubleValues[j]);
+						zclose(ifltab);
+					}
+					assert(tss->doubleValues[j] == expctedIrr1[j]);
+				}
+				zstructFree(tss);
+			}
+			free(timeVals);
+		}
+		zclose(ifltab);
+		free(dssFilename);
+	}
+	//----------//
+	// clean up //
+	//----------//
+	for (int i = 0; i < numData; ++i) {
+		free(dates[i]);
+		free(times[i]);
+	}
+	free(dates);
+	free(times);
+	free(oldVals);
+	free(newVals);
+	free(expctedReg0);
+	free(expctedReg1);
+	free(expctedReg4);
+	free(expctedIrr0);
+	free(expctedIrr1);
 	return status;
 }
