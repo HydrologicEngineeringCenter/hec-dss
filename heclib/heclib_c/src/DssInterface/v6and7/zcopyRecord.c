@@ -212,7 +212,7 @@ int zcopyRecord(long long *ifltabFrom, long long *ifltabTo, const char *pathname
 			}
 			zstructFree(tss);
 			if (zisError(status)) {
-				return zerrorUpdate(ifltabFrom, status, DSS_FUNCTION_zcopyRecord_ID);
+				return zerrorUpdate(ifltabTo, status, DSS_FUNCTION_zcopyRecord_ID);
 			}
 		}
 		else if ((dataType >= DATA_TYPE_PD) && (dataType < DATA_TYPE_TEXT)) {
