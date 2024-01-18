@@ -38,7 +38,7 @@
 
 
 #define DSS_VERSION "7-IS"
-#define DSS_VERSION_DATE "13 Sep 2023"
+#define DSS_VERSION_DATE "17 Jan 2024"
 
 
 
