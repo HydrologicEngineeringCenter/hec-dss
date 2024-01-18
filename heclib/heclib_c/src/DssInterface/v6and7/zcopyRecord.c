@@ -264,7 +264,7 @@ int zcopyRecord(long long *ifltabFrom, long long *ifltabTo, const char *pathname
 			}
 			zstructFree(pds);
 			if (zisError(status)) {
-				return zerrorUpdate(ifltabFrom, status, DSS_FUNCTION_zcopyRecord_ID);
+				return zerrorUpdate(ifltabTo, status, DSS_FUNCTION_zcopyRecord_ID);
 			}
 		}
 		//  Text struct not operational yet for dss-6
