@@ -151,6 +151,7 @@
     <ClCompile Include="source\profileExcel.c" />
     <ClCompile Include="source\runTests.c" />
     <ClCompile Include="source\testLargeCopy.c" />
+    <ClCompile Include="source\testNoDates.c" />
     <ClCompile Include="source\testNormalizeFPart.c" />
     <ClCompile Include="source\TestUtility.c" />
     <ClCompile Include="source\SampleTimeSeries3.c" />

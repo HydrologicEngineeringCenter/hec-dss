@@ -45,7 +45,15 @@ int testNoDates(int version)
 	zStructTimeSeries* tss = zstructTsNew(pathname);
 	status = ztsRetrieve(ifltab, tss, -1, 1, 0);
 	printf("tss->numberValues = %d\n", tss->numberValues);
+	int numValues = tss->numberValues;
+
 	zstructFree(tss);
+
+	if (numValues != 12) {
+		printf("\nExpected 12 values, only found %d", numValues);
+		return -1;
+	}
+
 	if (status != STATUS_OKAY)
 	{
 		printf("\nerror reading %s", pathname);
