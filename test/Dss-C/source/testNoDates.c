@@ -15,7 +15,6 @@ int testNoDates(int version)
 
 	if (status != STATUS_OKAY) return status;
 
-
 	// create simple record with 12 values
 	double data[12];
 	data[0] = 1.0;
@@ -34,12 +33,14 @@ int testNoDates(int version)
 	char pathname[150];
 	sprintf(pathname, "/TEST/TEST/NONE//1Month/TEST/");
 
-	zStructTimeSeries* tss1 = zstructTsNewRegDoubles(pathname, data, 12, "01Oct1921", "0000", "kPa", "PER-AVER");
+//	zStructTimeSeries* tss1 = zstructTsNewRegDoubles(pathname, data, 12, "01Oct1921", "0000", "kPa", "PER-AVER");
+	zStructTimeSeries* tss1 = zstructTsNewRegDoubles(pathname, data, 12, "30Sep1921", "2400", "kPa", "PER-AVER");
 	status = ztsStore(ifltab, tss1, 0);
 	zstructFree(tss1);
 	if (status != STATUS_OKAY)
 	{
 		printf("\nerror saving %s", pathname);
+		zclose(ifltab);
 		return status;
 	}
 	zStructTimeSeries* tss = zstructTsNew(pathname);
@@ -51,13 +52,14 @@ int testNoDates(int version)
 
 	if (numValues != 12) {
 		printf("\nExpected 12 values, only found %d", numValues);
+		zclose(ifltab);
 		return -1;
 	}
 
 	if (status != STATUS_OKAY)
 	{
 		printf("\nerror reading %s", pathname);
-		return status;
 	}
+	zclose(ifltab);
 	return status;
 }
