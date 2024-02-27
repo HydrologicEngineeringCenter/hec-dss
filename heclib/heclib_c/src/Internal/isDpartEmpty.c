@@ -1,4 +1,5 @@
 #include "heclib.h"
+
 /// <summary>
 /// determine if the D part of a dss path is blank
 /// </summary>
@@ -7,6 +8,6 @@
 int isDpartEmpty(char* pathname) {
   char dPart[MAX_PART_SIZE];
   int partNumber = 4; //A=1, B=2, C=3, D=4
-  int length = zpathnameGetPart(pathname, partNumber, dPart, sizof(dPart));
+  int length = zpathnameGetPart(pathname, partNumber, dPart, sizeof(dPart));
   return length == 0;
 }
