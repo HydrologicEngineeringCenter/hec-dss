@@ -194,6 +194,15 @@ int runTheTests() {
 	char fileName6[80];
 	int status;
 
+	printf("test read without dates\n");
+	status = testNoDates(7);
+	if (status != STATUS_OKAY)
+		return status;
+	status = testNoDates(6);
+	if (status != STATUS_OKAY)
+		return status;
+
+
 	printf("test issue CWMS-1424 (Time Series Store Rule)\n");
 	status = testTsStoreRules();
 	if (status != STATUS_OKAY)
