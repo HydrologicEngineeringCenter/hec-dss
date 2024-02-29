@@ -22,7 +22,7 @@
 *					This should be considered as a “handle” array and must be passed to any function that accesses that file.
 *
 *				zStructTimeSeries *tss
-*					The time series struct to process.  This function will file out the timeWindow struct within it.
+*					The time series struct to process.  This function will fill out the timeWindow struct within it.
 *
 *				int boolStore
 *					A flag to indicate if the data set is being stored (or retrieved.)
@@ -227,9 +227,13 @@ int ztsProcessTimes(long long *ifltab, zStructTimeSeries *tss, int boolStore)
 	}
 	//  Put the standardized E part (back) into the pathname
 	zpathnameSetPart (path, pathSize, ePart, 5);
+	
+	int undefinedTimeWindow = tss->startJulianDate == UNDEFINED_TIME && tss->endJulianDate == UNDEFINED_TIME;
+
+	int needPeriodOrRecord = undefinedTimeWindow && isDpartEmpty(tss->pathname);
 
 	//  Should we query the database to retrieve all times?
-	if (tss->boolRetrieveAllTimes && !boolStore) {
+	if (!boolStore &&  ( tss->boolRetrieveAllTimes || needPeriodOrRecord) ) {
 		status = ztsGetDateRange(ifltab, path, 1, &tss->startJulianDate, &tss->endJulianDate);
 		if (zisError(status)) {
 			return zerrorUpdate(ifltab, status, DSS_FUNCTION_ztsProcessTimes_ID);

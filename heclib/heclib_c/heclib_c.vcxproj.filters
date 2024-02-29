@@ -1305,6 +1305,9 @@
     <ClCompile Include="src\Internal\zCopyRecord6Dynamic.c">
       <Filter>src\Internal</Filter>
     </ClCompile>
+    <ClCompile Include="isDpartEmpty.c">
+      <Filter>src\Internal</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\headers\zlib\zconf.h">

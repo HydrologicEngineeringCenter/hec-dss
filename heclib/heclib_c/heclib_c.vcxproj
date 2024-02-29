@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+   
     <ClCompile Include="src\Dss6\closf.c" />
     <ClCompile Include="src\Dss6\deleteFile.c" />
     <ClCompile Include="src\Dss6\filesize.c" />
@@ -107,6 +108,7 @@
     <ClCompile Include="src\DssInterface\ztsStoreRegArgs.c" />
     <ClCompile Include="src\DssInterface\ztsStoreStuff.c" />
     <ClCompile Include="src\DssInterface\zundelete_.c" />
+	<ClCompile Include="src\Internal\isDpartEmpty.c" />
     <ClCompile Include="src\Internal\charInt.c" />
     <ClCompile Include="src\Internal\charLong.c" />
     <ClCompile Include="src\Internal\powf_wrap.c" />

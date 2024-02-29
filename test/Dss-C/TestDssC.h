@@ -11,7 +11,7 @@ int test_vertical_datums_c();
 int test_vertical_datums_f_();
 int test_stringCat();
 int testAdHoc();
-int testMultiUser();
+int testMultiUser(char* filename, int version, int numberDatasets, int accessMode /*2=multi, 3=single, 4=exclusive*/);
 int testZtsProcessTimes(long long *ifltab);
 int testztsStruct1(long long *ifltab);
 int testztsStruct2(long long *ifltab);
@@ -53,6 +53,7 @@ int testOddNumberValues();
 int testTextTableIssue135();
 int testDss178();
 int testTsStoreRules();
+int testNoDates(int version);
 
 
 void checknumbers_(int* numb1, int* numb2, const char *mess, int *status, size_t strlenmess);
