@@ -321,7 +321,7 @@ HECDSS_API int hec_dss_pdRetrieveInfo(dss_file* dss, const char* pathname,
 /// <param name="dss"></param>
 /// <param name="pathname"></param>
 /// <returns></returns>
-HECDSS_API int hec_dss_dataType(dss_file* dss, const char* pathname);
+HECDSS_API int hec_dss_recordType(dss_file* dss, const char* pathname);
 
 
 /// <summary>
