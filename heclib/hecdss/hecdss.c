@@ -568,6 +568,7 @@ HECDSS_API int hec_dss_pdStore(dss_file* dss, const char* pathname,
 
     if (pds->labels == NULL)
       return -1;
+    pds->labelsLength = labelsLength;
     memcpy(pds->labels, labels, labelsLength);
   }
     
