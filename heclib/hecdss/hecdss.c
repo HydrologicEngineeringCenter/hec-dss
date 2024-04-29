@@ -463,6 +463,24 @@ HECDSS_API int hec_dss_dataType(dss_file* dss, const char* pathname) {
   return zdataType(dss->ifltab, pathname);
 }
 
+HECDSS_API int hec_dss_recordType(dss_file* dss, const char* pathname) {
+
+  zStructRecordBasics* recordBasics = zstructRecordBasicsNew(pathname);
+  int status = zgetRecordBasics(dss->ifltab, recordBasics);
+  if (status != 0)
+  {
+    hec_dss_log_error("Error reading record type from path: ");
+    hec_dss_log_error(pathname); // TODO strcat
+
+    zstructFree(recordBasics);
+    return -1;
+  }
+  int rval = recordBasics->recordType;
+  zstructFree(recordBasics);
+  return rval;
+}
+
+
 HECDSS_API int hec_dss_pdRetrieve(dss_file* dss, const char* pathname,
   double* doubleOrdinates, const int  doubleOrdinatesLength,
   double* doubleValues, const int doubleValuesLength,
@@ -550,6 +568,7 @@ HECDSS_API int hec_dss_pdStore(dss_file* dss, const char* pathname,
 
     if (pds->labels == NULL)
       return -1;
+    pds->labelsLength = labelsLength;
     memcpy(pds->labels, labels, labelsLength);
   }
     
