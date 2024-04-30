@@ -153,6 +153,7 @@
     <ClCompile Include="source\testLargeCopy.c" />
     <ClCompile Include="source\testNoDates.c" />
     <ClCompile Include="source\testNormalizeFPart.c" />
+    <ClCompile Include="source\current_time_testing.c" />
     <ClCompile Include="source\TestUtility.c" />
     <ClCompile Include="source\SampleTimeSeries3.c" />
     <ClCompile Include="source\testAdHoc.c" />
