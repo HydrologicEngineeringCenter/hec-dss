@@ -13,6 +13,7 @@ int current_time_testing() {
 #ifdef _MSC_VER
     Sleep(10);
 #else
+    #include <unistd.h>
     usleep(10 * 1000);
 #endif
     t = getCurrentTimeMillis(); 
