@@ -194,7 +194,7 @@ int runTheTests() {
 	char fileName6[80];
 	int status;
 
-	status = testCatalog();
+	status = current_time_testing();
 	if (status != 0)
 		return status;
 
