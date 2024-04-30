@@ -88,7 +88,7 @@ TO DO
 
 
 ## User Interface
-The primary user interface for DSS files is HEC-DssVue.
-https://www.hec.usace.army.mil/confluence/dssvuedocs/latest
+The primary user interface for DSS files is HEC-DSSVue.
+https://www.hec.usace.army.mil/confluence/dssdocs/dssvueum/
 
 
