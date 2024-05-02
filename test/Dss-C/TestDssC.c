@@ -194,6 +194,10 @@ int runTheTests() {
 	char fileName6[80];
 	int status;
 
+	status = current_time_testing();
+	if (status != 0)
+		return status;
+
 	printf("test read without dates\n");
 	status = testNoDates(7);
 	if (status != STATUS_OKAY)

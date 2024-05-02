@@ -107,13 +107,13 @@ int main(int argc, char* argv[])
 				}
 			}
 			printf("%s\n", pathname);
-		
+		}
 		_close(ihandle);
 		//  _unlink(filename);
 		free(tempname);
 
 		zclose(ifltab);
-	}
+	
 
 	return 0;
 }

@@ -17,7 +17,6 @@
 
 int testCatalog()
 {
-	int DEBUG=0;
 	int status;
 	int len;
 
@@ -109,25 +108,31 @@ int testCatalog()
 	if (status < 0) {
 		if (zcheckStatus(ifltab, status, 1, "Fail in testCatalog Loc 3, zcatalog status ")) return status; 
 	}
+	printf("\nfound %d records in catalog ", catStruct->numberPathnames);
+
 	zstructFree(catStruct);
 	
 	catStruct = zstructCatalogNew();
 	catStruct->boolIncludeDates = 1;
+	printf("\nreading catlog with dates catStruct->boolIncludeDates = 1");
 	status = zcatalog(ifltab, (const char *)0, catStruct, 1);	
 	if (status < 0) {
 		if (zcheckStatus(ifltab, status, 1, "Fail in testCatalog Loc 4, zcatalog status ")) return status; 
 	}
+	printf("\nfound %d records in catalog ", catStruct->numberPathnames);
 	zstructFree(catStruct);
 
 	//  Now test for wild characters
 	stringCopy(pathWithWild, sizeof(pathWithWild), "//SACRAMENTO/*/*/*/OBS/", _TRUNCATE);
 	catStruct = zstructCatalogNew();
 	catStruct->boolIncludeDates = 1;
+	printf("\nreading catalog with filter '//SACRAMENTO/*/*/*/OBS/' ");
 	status = zcatalog(ifltab, pathWithWild, catStruct, 1);
 	if (status < 0) {
 		zstructFree(catStruct);
 		if (zcheckStatus(ifltab, status, 1, "Fail in testCatalog Loc 6, zcatalog status ")) return status; 
 	}
+	printf("\nfound %d records in catalog ", catStruct->numberPathnames);
 	zstructFree(catStruct);
 
 	//  Now, a catalog file
@@ -135,14 +140,17 @@ int testCatalog()
 	len = (int)strlen(catFilename);
 	catFilename[len-1] = 'c';
 	remove(catFilename);
+	printf("\nwriting catalog to %s ", catFilename);
 	status = zcatalogFile(ifltab, catFilename, 1, (const char *)0);
 	if (status < 0) {
 		if (zcheckStatus(ifltab, status, 1, "Fail in testCatalog Loc 7, zcatalog status ")) return status; 
 	}
-
+	
 	
 	//  Version 6 code on vers 7 file
+	printf("\nreading catalog with legacy(v6) filter  'B=SACRAMENTO, F=OBS' ");
 	stringCopy(pathWithWild, sizeof(pathWithWild), "B=SACRAMENTO, F=OBS", _TRUNCATE);
+	printf("\n%s", pathWithWild);
 	filePos = 0;
 	count = 0;
 	while (filePos >= 0) {
@@ -163,12 +171,15 @@ int testCatalog()
 		
 		//  Test the data CRC function; assume okay if values > 0
 		catStruct = zstructCatalogNew();
+		printf("\nTesting with catStruct->boolGetCRCvalues = 1");
 		catStruct->boolGetCRCvalues = 1;
 		status = zcatalog(ifltab, (const char*)0, catStruct, 0);
+		
 		if (status < 0) {
 			zstructFree(catStruct);
 			if (zcheckStatus(ifltab, status, 1, "Fail in testCatalog Loc 40, zcatalog CRC ")) return status; 
 		}
+		printf("\nfound %d records ", catStruct->numberPathnames);
 		for (i=0; i<catStruct->numberPathnames; i++) {
 			if (catStruct->crcValues[i] < 1) {
 				zstructFree(catStruct);
