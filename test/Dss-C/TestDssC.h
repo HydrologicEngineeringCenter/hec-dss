@@ -109,5 +109,5 @@ int ImportProfile(const char* csvFilename, const char* dssFilename, const char* 
 int read_profile_from_csv(zStructTimeSeries* tss, const char* csvFilename);
 int units_issue_126();
 int current_time_testing();
-
+int testText();
 #endif

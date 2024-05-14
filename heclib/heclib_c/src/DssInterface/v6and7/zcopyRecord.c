@@ -159,9 +159,9 @@ int zcopyRecord(long long *ifltabFrom, long long *ifltabTo, const char *pathname
 			tss = zstructTsNew(pathnameFrom);
 			if (!tss) {
 				return zerrorProcessing(ifltabFrom, DSS_FUNCTION_zcopyRecord_ID,
-										zdssErrorCodes.CANNOT_ALLOCATE_MEMORY, 0, 0,
-										zdssErrorSeverity.MEMORY_ERROR,
-										pathnameFrom, "Allocating time series struct in zcopyRecord");
+					zdssErrorCodes.CANNOT_ALLOCATE_MEMORY, 0, 0,
+					zdssErrorSeverity.MEMORY_ERROR,
+					pathnameFrom, "Allocating time series struct in zcopyRecord");
 			}
 			status = ztsRetrieve(ifltabFrom, tss, -2, 0, 1);
 			if (zisError(status)) {
@@ -174,9 +174,9 @@ int zcopyRecord(long long *ifltabFrom, long long *ifltabTo, const char *pathname
 			if (!tss->pathname) {
 				zstructFree(tss);
 				return zerrorProcessing(ifltabFrom, DSS_FUNCTION_zcopyRecord_ID,
-										zdssErrorCodes.CANNOT_ALLOCATE_MEMORY, 0, 0,
-										zdssErrorSeverity.MEMORY_ERROR,
-										pathnameTo, "Allocating ts pathname");
+					zdssErrorCodes.CANNOT_ALLOCATE_MEMORY, 0, 0,
+					zdssErrorSeverity.MEMORY_ERROR,
+					pathnameTo, "Allocating ts pathname");
 			}
 			if (tss->pathnameInternal) {
 				free(tss->pathnameInternal);
@@ -219,9 +219,9 @@ int zcopyRecord(long long *ifltabFrom, long long *ifltabTo, const char *pathname
 			pds = zstructPdNew(pathnameFrom);
 			if (!pds) {
 				return zerrorProcessing(ifltabFrom, DSS_FUNCTION_zcopyRecord_ID,
-										zdssErrorCodes.CANNOT_ALLOCATE_MEMORY, 0, 0,
-										zdssErrorSeverity.MEMORY_ERROR,
-										pathnameFrom, "Allocating paired data struct in zcopyRecord");
+					zdssErrorCodes.CANNOT_ALLOCATE_MEMORY, 0, 0,
+					zdssErrorSeverity.MEMORY_ERROR,
+					pathnameFrom, "Allocating paired data struct in zcopyRecord");
 			}
 			status = zpdRetrieve(ifltabFrom, pds, 0);
 			if (zisError(status)) {
@@ -234,9 +234,9 @@ int zcopyRecord(long long *ifltabFrom, long long *ifltabTo, const char *pathname
 			if (!pds->pathname) {
 				zstructFree(pds);
 				return zerrorProcessing(ifltabFrom, DSS_FUNCTION_zcopyRecord_ID,
-										zdssErrorCodes.CANNOT_ALLOCATE_MEMORY, 0, 0,
-										zdssErrorSeverity.MEMORY_ERROR,
-										pathnameTo, "Allocating paired data pathname");
+					zdssErrorCodes.CANNOT_ALLOCATE_MEMORY, 0, 0,
+					zdssErrorSeverity.MEMORY_ERROR,
+					pathnameTo, "Allocating paired data pathname");
 			}
 			if (pds->locationStruct) {
 				if (pds->locationStruct->pathname) {
@@ -268,6 +268,36 @@ int zcopyRecord(long long *ifltabFrom, long long *ifltabTo, const char *pathname
 			}
 		}
 		//  Text struct not operational yet for dss-6
+		else if ( dataType >= DATA_TYPE_TEXT && dataType <= DATA_TYPE_TEXT_TABLE) {
+		zStructText* txts = zstructTextNew(pathnameFrom);
+		if (!txts) {
+			return zerrorProcessing(ifltabFrom, DSS_FUNCTION_zcopyRecord_ID,
+				zdssErrorCodes.CANNOT_ALLOCATE_MEMORY, 0, 0,
+				zdssErrorSeverity.MEMORY_ERROR,
+				pathnameFrom, "Allocating text struct in zcopyRecord");
+		}
+		status = ztextRetrieve(ifltabFrom, txts);
+		if (zisError(status)) {
+			zstructFree(txts);
+			return zerrorUpdate(ifltabFrom, status, DSS_FUNCTION_zcopyRecord_ID);
+		}
+		//  Change the struct pathname to the new one
+		free(txts->pathname);
+		txts->pathname = mallocAndCopyPath(pathnameTo);
+		if (!txts->pathname) {
+			zstructFree(txts);
+			return zerrorProcessing(ifltabFrom, DSS_FUNCTION_zcopyRecord_ID,
+				zdssErrorCodes.CANNOT_ALLOCATE_MEMORY, 0, 0,
+				zdssErrorSeverity.MEMORY_ERROR,
+				pathnameTo, "Allocating text data pathname");
+		}
+		status = ztextStore(ifltabTo, txts);
+		zstructFree(txts);
+
+		if (zisError(status)) {
+			return zerrorUpdate(ifltabTo, status, DSS_FUNCTION_zcopyRecord_ID);
+		}
+		}
 		else {
 			//  All others
 			zcopyrecord6_(ifltabFrom, ifltabTo, pathnameFrom, pathnameTo, &status, pathnameFromLen, pathnameToLen);

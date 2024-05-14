@@ -194,6 +194,11 @@ int runTheTests() {
 	char fileName6[80];
 	int status;
 
+
+	status = testText();
+	if (status != STATUS_OKAY)
+		return status;
+
 	status = current_time_testing();
 	if (status != 0)
 		return status;
@@ -983,6 +988,7 @@ int fver_test() {
 		remove(filename);
 		return status;
 	}
+	return status;
 }
 
 int testPseudoEightHourIrregular() {
