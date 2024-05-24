@@ -111,7 +111,9 @@ int zcatComparePath(const char *cpath, int *partAction, int *lengths,
 					//  If so, and boolCollection is true, then we are looking for all sequences for this collection
 					//  If both are collections, change the collection sequence to "XXXXXX"
 					//  so that both will match, regardless of the sequqnce
-					if ((lengths[i] > 9) && (strlen(pathPart) > 9)) {
+					//  A minimum length of a F-part for collection is 9 characters
+					//  example: C:123456|
+					if ((lengths[i] >= 9) && (strlen(pathPart) >= 9)) {
 						i1 = toupper(stringToFind[0]);
 						i2 = toupper(pathPart[0]);
 						//  Look for "C:"
