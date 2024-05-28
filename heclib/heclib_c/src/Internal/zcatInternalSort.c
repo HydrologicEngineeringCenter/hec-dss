@@ -130,7 +130,6 @@ int zcatInternalSort(long long *ifltab, const char *pathWithWild, zStructCatalog
 
 	if (sortedStruct) {
 		nonSortedStruct->boolIncludeDates = sortedStruct->boolIncludeDates;
-		nonSortedStruct->boolIncludeDates = sortedStruct->boolIncludeDates;
 		nonSortedStruct->statusWanted = sortedStruct->statusWanted;
 		nonSortedStruct->typeWantedStart = sortedStruct->typeWantedStart;
 		nonSortedStruct->typeWantedEnd = sortedStruct->typeWantedEnd;
