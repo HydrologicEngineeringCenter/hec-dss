@@ -142,7 +142,9 @@ int ztextRetrieve(long long *ifltab, zStructText *textStruct)
 		zstructFree(ztransfer);
 		return status;
 	}
-
+	if (bigEndian()) {
+		zswitchInts(ztransfer->internalHeader, INT_HEAD_text_size);
+	}
 	//  Because someone might forget to null terminate their strings,
 	//  we'll allocate one extra character and null it.
 	if (ztransfer->values1Number > 0) {

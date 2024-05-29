@@ -58,15 +58,15 @@ int readText(const char* filename, const char* path, const char* expectedText)
   zStructText* t2 = zstructTextNew(path);
   status = ztextRetrieve(ifltab, t2);
   if (status != 0) {
-    printf("\nError reading text record: %s", path);
+    printf("\nError reading text record: %s\n", path);
     return status;
   }
   int compare = strcmp(expectedText, t2->textString);
   if (compare == 0) {
-    printf("Read '%s'", t2->textString);
+    printf("Read '%s'\n", t2->textString);
   } 
   else {
-    printf("Error expected '%s', found '%s'", expectedText, t2->textString);
+    printf("Error expected '%s', found '%s'\n", expectedText, t2->textString);
   }
   status = zclose(ifltab);
   zstructFree(t2);
@@ -127,23 +127,23 @@ int testConvert6To7_gv_issue() {
 
   status = zconvertVersion(dssFilename6, dssFilename7a);
   if (status != 0) {
-    printf("\nError converting file");
+    printf("\nError converting file\n");
     return status;
   }
 
   status = readText(dssFilename6, path, data);
   if (status != 0) {
-    printf("\nError reading text from dss6");
+    printf("\nError reading text from dss6\n");
     return status;
   }
   status = readText(dssFilename7, path, data);
   if (status != 0) {
-    printf("\nError reading text from dss7");
+    printf("\nError reading text from dss7\n");
     return status;
   }
   status = readText(dssFilename7a, path, data);
   if (status != 0) {
-    printf("\nError reading text from dss7 converted file");
+    printf("\nError reading text from dss7 converted file\n");
     return status;
   }
 
@@ -184,27 +184,33 @@ int testConvert6To7_gv_issue() {
 
   int testText()
   {
-    int status = 0;
+    int status =0;
     char* test_data = "ABCD1234abcd1234";
     const char* path = "//////TEXT/";
 
-    createDssFile("dss6-windows.dss", 6);
-    writeText("dss6-windows.dss",path ,test_data);
-    status = readText("dss6-windows.dss", path,test_data);
+    /*printf("\n-------------------\n");
+    printf("\n----- Reading Existing Files --------------\n");
+    int status = readExistingFiles(path, test_data);
+    if (status != 0)
+      return status;*/
+
+    const char* dssfile6 = "temp-dss-6.dss";
+    const char* dssfile7 = "temp-dss-7.dss";
+
+    createDssFile(dssfile6, 6);
+    writeText(dssfile6,path ,test_data);
+    status = readText(dssfile6, path,test_data);
     if (status != 0)
       return status;
 
-    createDssFile("dss7-windows.dss", 7);
-    writeText("dss7-windows.dss", "//////DSS7-TEXT/", test_data);
-    status = readText("dss7-windows.dss", "//////DSS7-TEXT/", test_data);
+    createDssFile(dssfile7, 7);
+    writeText(dssfile7, path, test_data);
+    status = readText(dssfile7, path, test_data);
     if (status != 0)
       return status;
+    
 
-    //status = readExistingFiles(path, test_data);
-    if (status != 0)
-      return status;
-
-
+    return status;
 
 
     status = readVersion6Text();

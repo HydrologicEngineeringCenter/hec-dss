@@ -248,10 +248,13 @@ int ztextStore(long long *ifltab, zStructText *textStruct)
 	internalHeader[5] = 0; // to hold swapped value on big endian systems
 
 	ztransfer->internalHeader = internalHeader;
-	ztransfer->internalHeaderNumber = 6;
+	ztransfer->internalHeaderNumber = INT_HEAD_text_size;
 	ztransfer->userHeader = textStruct->userHeader;
 	ztransfer->userHeaderNumber = textStruct->userHeaderNumber;
 
+	if (bigEndian()) {
+		zswitchInts(internalHeader, INT_HEAD_text_size);
+	}
 
 	status = zwrite(ifltab, ztransfer);
 

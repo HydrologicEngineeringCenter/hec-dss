@@ -1,4 +1,5 @@
 #include <sys/timeb.h>
+#include <stdlib.h>
 #include <time.h>
 
 #include "heclib7.h"
@@ -31,6 +32,14 @@
 long long getCurrentTimeMillis()
 {
 	long long ltime;
+
+	char* millis = getenv("DSS_CURRENT_TIME_MILLIS");
+	if (millis) // override the time - this can simplify comparing binary DSS files.
+	{
+		ltime = atoi(millis);
+		return ltime;
+	}
+
 
 #ifdef _MSC_VER
 	struct _timeb timebuffer;
