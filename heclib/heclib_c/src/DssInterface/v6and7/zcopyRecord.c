@@ -267,36 +267,35 @@ int zcopyRecord(long long *ifltabFrom, long long *ifltabTo, const char *pathname
 				return zerrorUpdate(ifltabTo, status, DSS_FUNCTION_zcopyRecord_ID);
 			}
 		}
-		//  Text struct not operational yet for dss-6
-		else if ( dataType >= DATA_TYPE_TEXT && dataType <= DATA_TYPE_TEXT_TABLE) {
-		zStructText* txts = zstructTextNew(pathnameFrom);
-		if (!txts) {
-			return zerrorProcessing(ifltabFrom, DSS_FUNCTION_zcopyRecord_ID,
-				zdssErrorCodes.CANNOT_ALLOCATE_MEMORY, 0, 0,
-				zdssErrorSeverity.MEMORY_ERROR,
-				pathnameFrom, "Allocating text struct in zcopyRecord");
-		}
-		status = ztextRetrieve(ifltabFrom, txts);
-		if (zisError(status)) {
+		else if (dataType >= DATA_TYPE_TEXT && dataType <= DATA_TYPE_TEXT_TABLE) {
+			zStructText* txts = zstructTextNew(pathnameFrom);
+			if (!txts) {
+				return zerrorProcessing(ifltabFrom, DSS_FUNCTION_zcopyRecord_ID,
+					zdssErrorCodes.CANNOT_ALLOCATE_MEMORY, 0, 0,
+					zdssErrorSeverity.MEMORY_ERROR,
+					pathnameFrom, "Allocating text struct in zcopyRecord");
+			}
+			status = ztextRetrieve(ifltabFrom, txts);
+			if (zisError(status)) {
+				zstructFree(txts);
+				return zerrorUpdate(ifltabFrom, status, DSS_FUNCTION_zcopyRecord_ID);
+			}
+			//  Change the struct pathname to the new one
+			free(txts->pathname);
+			txts->pathname = mallocAndCopyPath(pathnameTo);
+			if (!txts->pathname) {
+				zstructFree(txts);
+				return zerrorProcessing(ifltabFrom, DSS_FUNCTION_zcopyRecord_ID,
+					zdssErrorCodes.CANNOT_ALLOCATE_MEMORY, 0, 0,
+					zdssErrorSeverity.MEMORY_ERROR,
+					pathnameTo, "Allocating text data pathname");
+			}
+			status = ztextStore(ifltabTo, txts);
 			zstructFree(txts);
-			return zerrorUpdate(ifltabFrom, status, DSS_FUNCTION_zcopyRecord_ID);
-		}
-		//  Change the struct pathname to the new one
-		free(txts->pathname);
-		txts->pathname = mallocAndCopyPath(pathnameTo);
-		if (!txts->pathname) {
-			zstructFree(txts);
-			return zerrorProcessing(ifltabFrom, DSS_FUNCTION_zcopyRecord_ID,
-				zdssErrorCodes.CANNOT_ALLOCATE_MEMORY, 0, 0,
-				zdssErrorSeverity.MEMORY_ERROR,
-				pathnameTo, "Allocating text data pathname");
-		}
-		status = ztextStore(ifltabTo, txts);
-		zstructFree(txts);
 
-		if (zisError(status)) {
-			return zerrorUpdate(ifltabTo, status, DSS_FUNCTION_zcopyRecord_ID);
-		}
+			if (zisError(status)) {
+				return zerrorUpdate(ifltabTo, status, DSS_FUNCTION_zcopyRecord_ID);
+			}
 		}
 		else {
 			//  All others
