@@ -156,28 +156,25 @@ int testConvert6To7_gv_issue() {
     if (status != 0)
       return status;
 
-    //status = readText("dss6-solaris-text.dss", path, test_data);
-    //if (status != 0)
-    //  return status;
+    status = readText("dss6-solaris-text.dss", path, test_data);
+    if (status != 0)
+      return status;
 
-    //status = readText("dss6-linux-text.dss", path, test_data);
-    //if (status != 0)
-    //  return status;
-
+    status = readText("dss6-linux-text.dss", path, test_data);
+    if (status != 0)
+      return status;
 
     status = readText("dss7-windows-text.dss", path, test_data);
     if (status != 0)
       return status;
 
-    //status = readText("dss7-solaris-text.dss", path, test_data);
-    //if (status != 0)
-    //  return status;
+    status = readText("dss7-solaris-text.dss", path, test_data);
+    if (status != 0)
+      return status;
 
-    //status = readText("dss7-linux-text.dss", path, test_data);
-    //if (status != 0)
-    //  return status;
-
-
+    status = readText("dss7-linux-text.dss", path, test_data);
+    if (status != 0)
+      return status;
 
     return status;
   }
@@ -188,11 +185,10 @@ int testConvert6To7_gv_issue() {
     char* test_data = "ABCD1234abcd1234";
     const char* path = "//////TEXT/";
 
-    /*printf("\n-------------------\n");
     printf("\n----- Reading Existing Files --------------\n");
-    int status = readExistingFiles(path, test_data);
+    status = readExistingFiles(path, test_data);
     if (status != 0)
-      return status;*/
+      return status;
 
     const char* dssfile6 = "temp-dss-6.dss";
     const char* dssfile7 = "temp-dss-7.dss";
@@ -209,9 +205,6 @@ int testConvert6To7_gv_issue() {
     if (status != 0)
       return status;
     
-
-    return status;
-
 
     status = readVersion6Text();
     if (status != 0)

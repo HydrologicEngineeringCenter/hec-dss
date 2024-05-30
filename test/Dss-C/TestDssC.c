@@ -199,8 +199,6 @@ int runTheTests() {
 	if (status != STATUS_OKAY)
 		return status;
 
-	return status;
-
 	status = current_time_testing();
 	if (status != 0)
 		return status;
