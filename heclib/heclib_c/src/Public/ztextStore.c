@@ -176,6 +176,18 @@ int ztextStore(long long *ifltab, zStructText *textStruct)
 										 "textStruct->numberLabelChars");
 	}
 
+	if (zgetVersion(ifltab) == 6) {
+		// version 6 only stores text (not text table)
+		int one = 1;
+		int userHeader = { 0 };
+		int nUserHeader = 0;
+		int status = 0;
+
+		zstxta_((long long*)ifltab, textStruct->pathname, textStruct->textString,
+			&one /*dimensions*/, &userHeader, &nUserHeader, &status,
+			strlen(textStruct->pathname), strlen(textStruct->textString));
+		return status;
+	}
 	ztransfer = zstructTransferNew(textStruct->pathname, 0);
 	if (!ztransfer) {
 		return zerrorProcessing(ifltab, DSS_FUNCTION_ztextStore_ID,
@@ -236,10 +248,13 @@ int ztextStore(long long *ifltab, zStructText *textStruct)
 	internalHeader[5] = 0; // to hold swapped value on big endian systems
 
 	ztransfer->internalHeader = internalHeader;
-	ztransfer->internalHeaderNumber = 6;
+	ztransfer->internalHeaderNumber = INT_HEAD_text_size;
 	ztransfer->userHeader = textStruct->userHeader;
 	ztransfer->userHeaderNumber = textStruct->userHeaderNumber;
 
+	if (bigEndian()) {
+		zswitchInts(internalHeader, INT_HEAD_text_size);
+	}
 
 	status = zwrite(ifltab, ztransfer);
 

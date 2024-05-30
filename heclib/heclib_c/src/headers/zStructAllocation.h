@@ -110,6 +110,9 @@
 #define INT_HEAD_pdUnits				5
 
 
+//  Text data internal header
+#define INT_HEAD_text_size 6
+
 #define INT_HEAD_SIZE 200
 
 /*
