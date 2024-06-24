@@ -188,7 +188,6 @@ HECDSS_API int hec_dss_tsGetSizes(dss_file* dss, const char* pathname,
     const char* startDate, const char* startTime,
     const char* endDate, const char* endTime,
     int* numberValues, int* qualityElementSize) {
-  //?? int ztsGetDateTimeRange(long long *ifltab, const char *pathname, int boolFullSet, *int * firstValidJulian, int* firstSeconds,*int * lastValidJulian, int* lastSeconds);
   
     zStructRecordSize* recordSize = zstructRecordSizeNew(pathname);
     zStructTimeSeries* tss = zstructTsNew(pathname);
@@ -198,12 +197,12 @@ HECDSS_API int hec_dss_tsGetSizes(dss_file* dss, const char* pathname,
     tss->endJulianDate = dateToJulian(endDate);
     tss->endTimeSeconds = timeStringToSeconds(endTime);
 
-    ztsProcessTimes(dss->ifltab, tss, 1);
+    ztsProcessTimes(dss->ifltab, tss, 0);
     int status = ztsGetSizes(dss->ifltab, tss, recordSize);
-    if( status ==0 )
-    *numberValues = recordSize->logicalNumberValues;
-    *qualityElementSize = recordSize->tsQualityElementSize;
-    
+    if (status == 0) {
+      *numberValues = recordSize->logicalNumberValues;
+      *qualityElementSize = recordSize->tsQualityElementSize;
+    }
     
 
     if( tss)
