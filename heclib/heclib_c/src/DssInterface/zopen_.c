@@ -18,65 +18,47 @@
 */
 
 
-void zopen_(long long *ifltab, const char *dssFilename, int *status, size_t lenDssFilename)
-{
-	int version;
-	char *cname;
-	char ctemp[1];
+// void zopen_(long long *ifltab, const char *dssFilename, int *status, size_t lenDssFilename)
+// {
+// 	int version;
+// 	char *cname;
+// 	char ctemp[1];
 
-	cname = stringFortToC(dssFilename, lenDssFilename);
-	version = zgetFileVersion(cname);
+// 	cname = stringFortToC(dssFilename, lenDssFilename);
+// 	version = zgetFileVersion(cname);
 
-	//  Check for a specific version set for the next new file
-	if (version == 0) {
-		//  File does not exist
-		zquery_("DSSV", ctemp, &version, (size_t)4, sizeof(ctemp));
-		//  If set, reset to zero
-		if (version > 0) {
-			zset("DSSV", "", 0);
-		}
-	}
+// 	//  Check for a specific version set for the next new file
+// 	if (version == 0) {
+// 		//  File does not exist
+// 		zquery_("DSSV", ctemp, &version, (size_t)4, sizeof(ctemp));
+// 		//  If set, reset to zero
+// 		if (version > 0) {
+// 			zset("DSSV", "", 0);
+// 		}
+// 	}
 
-	if (version == 6) {
-		zopen6int_(ifltab, cname, status, strlen(cname));
-	}
-	else {
-		*status = zopenInternal(ifltab, cname, 0, 0, 0, 0, 0);
-	}
-	free(cname);
-}
+// 	if (version == 6) {
+// 		zopen6int_(ifltab, cname, status, strlen(cname));
+// 	}
+// 	else {
+// 		*status = zopenInternal(ifltab, cname, 0, 0, 0, 0, 0);
+// 	}
+// 	free(cname);
+// }
 
-void zopen7_(long long *ifltab, const char *dssFilename, int *status, size_t lenDssFilename)
-{
-	int version;
-	char *cname;
+// void zopen7_(long long *ifltab, const char *dssFilename, int *status, size_t lenDssFilename)
+// {
+// 	int version;
+// 	char *cname;
 
-	cname = stringFortToC(dssFilename, lenDssFilename);
-	version = zgetFileVersion(cname);
+// 	cname = stringFortToC(dssFilename, lenDssFilename);
+// 	version = zgetFileVersion(cname);
 
-	if (version == 6) {
-		zopen6int_(ifltab, cname, status, strlen(cname));
-	}
-	else {
-		*status = zopenInternal(ifltab, cname, 0, 0, 0, 0, 0);
-	}
-	free(cname);
-}
-
-void zopen6_(long long *ifltab, const char *dssFilename, int *status, size_t lenDssFilename)
-{
-	int version;
-	char *cname;
-
-	cname = stringFortToC(dssFilename, lenDssFilename);
-	version = zgetFileVersion(cname);
-
-	if (version == 7) {
-		*status = zopenInternal(ifltab, cname, 0, 0, 0, 0, 0);
-	}
-	else {
-		zopen6int_(ifltab, cname, status, strlen(cname));
-	}
-	free(cname);
-}
-
+// 	if (version == 6) {
+// 		zopen6int_(ifltab, cname, status, strlen(cname));
+// 	}
+// 	else {
+// 		*status = zopenInternal(ifltab, cname, 0, 0, 0, 0, 0);
+// 	}
+// 	free(cname);
+// }

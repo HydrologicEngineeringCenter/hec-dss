@@ -98,53 +98,47 @@ int zcopyRecord(long long *ifltabFrom, long long *ifltabTo, const char *pathname
 			zdssErrorCodes.RECORD_DOES_NOT_EXIST, 0,
 			0, zdssErrorSeverity.WARNING, pathnameFrom, "");
 	}
-
-	if ((versFileFrom == 7) && (versFileTo == 7)) {
-		//  Be sure both paths are okay with vers 6 and 7 differences
-		boolInternalCopy = 1;
-		if ((dataType >= DATA_TYPE_RTS) && (dataType < DATA_TYPE_PD)) {
-			//  An E part of "MIN" is not compatible with "Minutes" for version 7
-			zpathnamePartPositions(pathnameTo, pathnameToLen, positions, 7);
-			lenPartE = positions[5] - positions[4] - 1;
-			if (lenPartE < 6) {
-				ipos = positions[5] - 4;
-				if (strncmp(&pathnameTo[ipos], "MIN/", 4) == 0) {
+	
+	boolInternalCopy = 1;
+	if ((dataType >= DATA_TYPE_RTS) && (dataType < DATA_TYPE_PD)) {
+		//  An E part of "MIN" is not compatible with "Minutes" for version 7
+		zpathnamePartPositions(pathnameTo, pathnameToLen, positions, 7);
+		lenPartE = positions[5] - positions[4] - 1;
+		if (lenPartE < 6) {
+			ipos = positions[5] - 4;
+			if (strncmp(&pathnameTo[ipos], "MIN/", 4) == 0) {
+				boolInternalCopy = 0;
+			}
+		}
+		//  D and E parts must be identical for time series data to use internal copy
+		//  If not, just do the long way (read and write) instead of internal copy
+		//  Long way should take care of any issues
+		if (boolInternalCopy) {
+			lenPartsFrom = positions[5] - positions[3];
+			startFrom = positions[3];
+			zpathnamePartPositions(pathnameFrom, strlen(pathnameFrom), positions, 7);
+			lenPartsTo = positions[5] - positions[3];
+			if (lenPartsFrom != lenPartsTo) {
+				boolInternalCopy = 0;
+			}
+			else {
+				if (strncmp(&pathnameFrom[startFrom], &pathnameTo[positions[3]], lenPartsFrom) != 0) {
 					boolInternalCopy = 0;
 				}
 			}
-			//  D and E parts must be identical for time series data to use internal copy
-			//  If not, just do the long way (read and write) instead of internal copy
-			//  Long way should take care of any issues
-			if (boolInternalCopy) {
-				lenPartsFrom = positions[5] - positions[3];
-				startFrom = positions[3];
-				zpathnamePartPositions(pathnameFrom, strlen(pathnameFrom), positions, 7);
-				lenPartsTo = positions[5] - positions[3];
-				if (lenPartsFrom != lenPartsTo) {
-					boolInternalCopy = 0;
-				}
-				else {
-					if (strncmp(&pathnameFrom[startFrom], &pathnameTo[positions[3]], lenPartsFrom) != 0) {
-						boolInternalCopy = 0;
-					}
-				}
-			}
-			if (boolInternalCopy && elevCopy) {
-				//----------------------------------------------------------------------------//
-				// force standard copy if source and destination records are Elev time series //
-				//----------------------------------------------------------------------------//
-				boolInternalCopy = 0; // zcopyRecordInternal doesn't copy VDI in location record
-			}
 		}
-		else if ((dataType >= DATA_TYPE_PD) && (dataType < DATA_TYPE_TEXT)) {
-			if (pathnameIsElevPd(pathnameFrom) && pathnameIsElevPd(pathnameTo)) {
-				boolInternalCopy = 0; // zcopyRecordInternal doesn't copy VDI in location record
-			}
+		if (boolInternalCopy && elevCopy) {
+			//----------------------------------------------------------------------------//
+			// force standard copy if source and destination records are Elev time series //
+			//----------------------------------------------------------------------------//
+			boolInternalCopy = 0; // zcopyRecordInternal doesn't copy VDI in location record
 		}
 	}
-	else {
-		boolInternalCopy = 0;
-	}
+	else if ((dataType >= DATA_TYPE_PD) && (dataType < DATA_TYPE_TEXT)) {
+		if (pathnameIsElevPd(pathnameFrom) && pathnameIsElevPd(pathnameTo)) {
+			boolInternalCopy = 0; // zcopyRecordInternal doesn't copy VDI in location record
+		}
+	}	
 
 	if (boolInternalCopy) {
 		status = zreadInfo(ifltabFrom, pathnameFrom, 0);
@@ -297,10 +291,6 @@ int zcopyRecord(long long *ifltabFrom, long long *ifltabTo, const char *pathname
 				return zerrorUpdate(ifltabTo, status, DSS_FUNCTION_zcopyRecord_ID);
 			}
 		}
-		else {
-			//  All others
-			zcopyrecord6_(ifltabFrom, ifltabTo, pathnameFrom, pathnameTo, &status, pathnameFromLen, pathnameToLen);
-		}
 	}
 	return status;
 }
@@ -319,4 +309,3 @@ void zcopyrecord_ (long long *ifltabFrom, long long *ifltabTo, const char *pathn
 	free(pathFrom);
 	free(pathTo);
 }
-

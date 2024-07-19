@@ -146,12 +146,6 @@ int zcatalogInternal (long long *ifltab, const char *pathWithWild, zStructCatalo
 		zmessageDebugLong(ifltab, DSS_FUNCTION_zcatalog_ID, "lastWriteTimeSearch:  ", catStruct->lastWriteTimeSearch);
 	}
 
-
-	if (zgetVersion(ifltab) == 6) {
-		return zcatalog6Internal (ifltab, pathWithWild, catStruct, catalogHandle, ifortUnit,
-			numberWanted, boolCollection, boolForSort);
-	}
-
 	//  Check for correct DSS Version
 	if (zgetVersion(ifltab) < 0) {
 		return zerrorProcessing(ifltab, DSS_FUNCTION_zcatalog_ID, zdssErrorCodes.NOT_OPENED,
@@ -415,10 +409,6 @@ int zcatalogInternal (long long *ifltab, const char *pathWithWild, zStructCatalo
 							}
 							status = writeBytes(catalogHandle, "\n", (size_t)1);
 						}
-						if (ifortUnit > 0) {
-							one = 1;
-							status = fortranwritelc_(&ifortUnit, pathname, &one, (size_t)numberChars);
-						}
 						if (zmessageLevel(ifltab, MESS_METHOD_CATALOG_ID, MESS_LEVEL_INTERNAL_DIAG_2)) {
 							zmessageDebug(ifltab, DSS_FUNCTION_zcatalog_ID, "Pathname: ", pathname);
 							_snprintf_s(cbuff, sizeof(cbuff), _TRUNCATE, " %d, added count: %d", countTotal, countAdded);
@@ -514,4 +504,3 @@ int zcatalogInternal (long long *ifltab, const char *pathWithWild, zStructCatalo
 	}
     return countTotal;
 }
-

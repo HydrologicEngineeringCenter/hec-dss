@@ -96,9 +96,10 @@ void zsetMessageLevel(int group, int level)
 	if ((group < 0) || (group > (NUMBER_METHOD_NAMES-1))) {
 		return;
 	}
+	/* is this 6 only or shared, or just no op in 7?
 	if (group == MESS_METHOD_GLOBAL_ID) {
 		zset6_("MLVL", "", &level, (size_t)4, (size_t)0);
-	}
+	}*/
 
 	zmessaging.methodLevel[group] = level;
 
@@ -217,4 +218,3 @@ void zsetmessagelevel_(int *group, int *level)
 {
 	zsetMessageLevel(*group, *level);
 }
-

@@ -98,12 +98,6 @@ void zloadcache7_(long long *ifltab, int *istat)
 }
 
 void zloadcache_(long long *ifltab, int *istat)
-{
-	if (zgetVersion(ifltab) == 6) {
-		zloadcache6_(ifltab, istat);
-	}
-	else {
-		*istat = zloadCache(ifltab);
-	}
+{	
+	*istat = zloadCache(ifltab);
 }
-

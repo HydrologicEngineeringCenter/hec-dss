@@ -54,7 +54,7 @@
 int zmessHandle(long long *ifltab, int *messHandle, int *fortMessUnit);
 
 
-//  Message wtih new line
+//  Message with new line
 void zmessageLen(long long *ifltab, const char *message, size_t length)
 {
 	int handle;
@@ -64,11 +64,7 @@ void zmessageLen(long long *ifltab, const char *message, size_t length)
 
 //	printf("%s\n", message);
 	zmessHandle(ifltab, &handle, &fortUnit);
-
-	if (fortUnit > 0) {
-		one = 1;
-		status = fortranwritelc_(&fortUnit, message, &one, length);
-	}
+	
 
 	if (handle > 0) {
 		writeBytes(handle, message, (unsigned int)length);
@@ -82,7 +78,7 @@ void zmessageLen(long long *ifltab, const char *message, size_t length)
 
 }
 
-//  Message wtih no new line
+//  Message wihh no new line
 void zmessageNoNlLen(long long *ifltab, const char *message, size_t length)
 {
 	int handle;
@@ -91,12 +87,7 @@ void zmessageNoNlLen(long long *ifltab, const char *message, size_t length)
 	int zero;
 
 	//	printf("%s\n", message);
-	zmessHandle(ifltab, &handle, &fortUnit);
-
-	if (fortUnit > 0) {
-		zero = 0;
-		status = fortranwritelc_(&fortUnit, message, &zero, length);
-	}
+	zmessHandle(ifltab, &handle, &fortUnit);	
 
 	if (handle > 0) {
 		writeBytes(handle, message, (unsigned int)length);
@@ -119,16 +110,9 @@ void zmessage2Len(long long *ifltab, const char *message1, size_t len1, const ch
 
 	zmessHandle(ifltab, &handle, &fortUnit);
 
-	if (fortUnit > 0) {
-		boolval = 0;
-		status = fortranwritelc_(&fortUnit, message1, &boolval, len1);
-		boolval = 1;
-		status = fortranwritelc_(&fortUnit, message2, &boolval, len2);
-	}
-	else {
-		zmessageNoNlLen(ifltab, message1, len1);
-		zmessageLen(ifltab, message2, len2);
-	}
+	
+	zmessageNoNlLen(ifltab, message1, len1);
+	zmessageLen(ifltab, message2, len2);
 }
 
 void zmessageFlush(long long *ifltab)
@@ -137,11 +121,7 @@ void zmessageFlush(long long *ifltab)
 	int handle;
 	int fortUnit;
 
-	zmessHandle(ifltab, &handle, &fortUnit);
-
-	if (fortUnit > 0) {
-		flush_(&fortUnit);
-	}
+	zmessHandle(ifltab, &handle, &fortUnit);	
 
 	if (handle > 0){
 		flushFile(handle);
@@ -178,34 +158,11 @@ int zmessHandle(long long *ifltab, int *messHandle, int *fortMessUnit)
 		*fortMessUnit = (int)ifltab[zdssKeys.kfortMessUnit];
 		boolMessSet = STATUS_OKAY;
 	}
-	else if (zgetVersion(ifltab) == 6) {
-		cval[0] = '\0';
-		zquery6_("MUNIT", cval, &inumb, (size_t)4, (size_t)0);
-		if (inumb > 0) {
-			*fortMessUnit = inumb;
-		}
-		else {
-			*fortMessUnit = zdssVals.fortranMessageUnit;
-		}
-		*messHandle = zdssVals.messageHandle;
-	}
 	else {
 		//  ifltab not initialized (okay)
 		*messHandle = zdssVals.messageHandle;
 		*fortMessUnit = zdssVals.fortranMessageUnit;
 		boolMessSet = STATUS_NOT_OKAY;
-	}
-
-	//  Check if the fortran message unit has been set (will be -1, if not)
-	if ((*fortMessUnit < 0) || (*fortMessUnit > 2000)) {
-		*fortMessUnit = zdssVals.fortranMessageUnit;
-	}
-
-	//  Do we have a valid fortan unit?
-	if ((*fortMessUnit < 0) || (*fortMessUnit > 2000)) {
-		//  No (but might be okay)
-		*fortMessUnit = 0;
-		boolMessSet = STATUS_NOT_OKAY;  //  (Not set)
 	}
 
 	//  Check if the C message handle has been set
@@ -221,5 +178,3 @@ int zmessHandle(long long *ifltab, int *messHandle, int *fortMessUnit)
 	}
 	return boolMessSet;
 }
-
-

@@ -25,55 +25,36 @@ int zwritec(long long *ifltab, const char* pathname,
 	char path[MAX_PATHNAME_LENGTH];
 
 
-	if (zgetVersion(ifltab) == 6) {
-		len = (int)strlen(pathname);
-		stringCToFort(path, sizeof(path),  pathname);
-		zero = 0;
-
-/*     SUBROUTINE zwritex6 ( IFLTAB, CPATH, NPATH, IIHEAD, NIHEAD,
-     * ICHEAD, NCHEAD, IUHEAD, NUHEAD, IDATA, NDATA, JTYPE,
-     * IPLAN, ISTAT, LFOUND)
-*/
-		zwritex6_(ifltab, path, &len,
-				 internalHeader, &internalHeaderNumber,
-				 header2, &header2Number,
-				 userHeader, &userHeaderNumber,
-				 values1, &values1Number, &dataType,
-				 &zero, &status, &recordFound, strlen(pathname));
-
+	ztransfer = zstructTransferNew(pathname, 0);
+	if (!ztransfer) {
+		//  error out
+		return -1;
 	}
-	else {
 
-		ztransfer = zstructTransferNew(pathname, 0);
-		if (!ztransfer) {
-			//  error out
-			return -1;
-		}
+	ztransfer->internalHeader = internalHeader;
+	ztransfer->internalHeaderNumber = internalHeaderNumber;
+	ztransfer->header2 = header2;
+	ztransfer->header2Number = header2Number;
+	ztransfer->values3 = values3;
+	ztransfer->values3Number = values3Number;
+	ztransfer->userHeader = userHeader;
+	ztransfer->userHeaderNumber = userHeaderNumber;
 
-		ztransfer->internalHeader = internalHeader;
-		ztransfer->internalHeaderNumber = internalHeaderNumber;
-		ztransfer->header2 = header2;
-		ztransfer->header2Number = header2Number;
-		ztransfer->values3 = values3;
-		ztransfer->values3Number = values3Number;
-		ztransfer->userHeader = userHeader;
-		ztransfer->userHeaderNumber = userHeaderNumber;
+	ztransfer->values1 = values1;
+	ztransfer->values1Number = values1Number;
+	ztransfer->values2 = values2;
+	ztransfer->values2Number = values2Number;
 
-		ztransfer->values1 = values1;
-		ztransfer->values1Number = values1Number;
-		ztransfer->values2 = values2;
-		ztransfer->values2Number = values2Number;
+	ztransfer->numberValues = numberValues;
+	ztransfer->logicalNumberValues = logicalNumberValues;
+	ztransfer->totalAllocatedSize = totalAllocatedSize;
+	ztransfer->totalExpandedSize = totalExpandedSize;
+	ztransfer->dataType = dataType;
 
-		ztransfer->numberValues = numberValues;
-		ztransfer->logicalNumberValues = logicalNumberValues;
-		ztransfer->totalAllocatedSize = totalAllocatedSize;
-		ztransfer->totalExpandedSize = totalExpandedSize;
-		ztransfer->dataType = dataType;
+	status = zwrite(ifltab, ztransfer);
 
-		status = zwrite(ifltab, ztransfer);
+	zstructFree(ztransfer);
 
-		zstructFree(ztransfer);
-	}
 
 	return status;
 }
@@ -107,4 +88,3 @@ void zwritec_(long long *ifltab, const char* path,
 			 *totalAllocatedSize, *totalExpandedSize,* dataType);
 	free(pathname);
 }
-

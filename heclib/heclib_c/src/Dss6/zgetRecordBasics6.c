@@ -42,37 +42,35 @@
 *
 */
 
-int zgetRecordBasics6(long long *ifltab, zStructRecordBasics *recordBasics)
-{
-	int status;
-	int lastWriteSecs;
-	int dummy[1];
-	char *pathname;
+// int zgetRecordBasics6(long long *ifltab, zStructRecordBasics *recordBasics)
+// {
+// 	int status;
+// 	int lastWriteSecs;
+// 	int dummy[1];
+// 	char *pathname;
 
-	pathname = recordBasics->pathname;
+// 	pathname = recordBasics->pathname;
 
-	//  Check for correct DSS Version
-	if (zgetVersion(ifltab) != 6) {
-		return zerrorProcessing(ifltab, DSS_FUNCTION_zreadInfo_ID, zdssErrorCodes.INCOMPATIBLE_VERSION,
-								zgetVersion(ifltab), 0, zdssErrorSeverity.WARNING, recordBasics->pathname, "");
-	}
+// 	//  Check for correct DSS Version
+// 	if (zgetVersion(ifltab) != 6) {
+// 		return zerrorProcessing(ifltab, DSS_FUNCTION_zreadInfo_ID, zdssErrorCodes.INCOMPATIBLE_VERSION,
+// 								zgetVersion(ifltab), 0, zdssErrorSeverity.WARNING, recordBasics->pathname, "");
+// 	}
 
-	zrecordinfo6_(ifltab, pathname, &recordBasics->recordType, &recordBasics->version,
-		&recordBasics->numberValues, &recordBasics->logicalNumberValues,
-		&recordBasics->values1Number, &recordBasics->internalHeaderNumber, &recordBasics->userHeaderNumber,
-		&recordBasics->allocatedSize, &lastWriteSecs, dummy,
-		dummy, dummy, dummy,
-		dummy, dummy, dummy,
-		dummy, dummy, dummy, &status,
-		strlen(pathname));
+// 	zrecordinfo6_(ifltab, pathname, &recordBasics->recordType, &recordBasics->version,
+// 		&recordBasics->numberValues, &recordBasics->logicalNumberValues,
+// 		&recordBasics->values1Number, &recordBasics->internalHeaderNumber, &recordBasics->userHeaderNumber,
+// 		&recordBasics->allocatedSize, &lastWriteSecs, dummy,
+// 		dummy, dummy, dummy,
+// 		dummy, dummy, dummy,
+// 		dummy, dummy, dummy, &status,
+// 		strlen(pathname));
 
-	recordBasics->recLastWriteTimeMillis = (long long)lastWriteSecs * 1000L;
-	recordBasics->recCreationTimeMillis = 0L;
+// 	recordBasics->recLastWriteTimeMillis = (long long)lastWriteSecs * 1000L;
+// 	recordBasics->recCreationTimeMillis = 0L;
 
-	recordBasics->fileLastWriteTimeMillis = zgetLastWriteTimeFile(ifltab);
-	recordBasics->fileCreationTimeMillis = 0L;
+// 	recordBasics->fileLastWriteTimeMillis = zgetLastWriteTimeFile(ifltab);
+// 	recordBasics->fileCreationTimeMillis = 0L;
 
-	return status;
-}
-
-
+// 	return status;
+// }

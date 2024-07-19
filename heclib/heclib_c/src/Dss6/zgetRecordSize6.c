@@ -38,32 +38,30 @@
 *
 */
 
-int zgetRecordSize6(long long *ifltab, zStructRecordSize *recordSize)
-{
-	int status;
-	int lastWriteSecs;
-	char *pathname;
+// int zgetRecordSize6(long long *ifltab, zStructRecordSize *recordSize)
+// {
+// 	int status;
+// 	int lastWriteSecs;
+// 	char *pathname;
 
-	pathname = recordSize->pathname;
+// 	pathname = recordSize->pathname;
 
-	//  Check for correct DSS Version
-	if (zgetVersion(ifltab) != 6) {
-		return zerrorProcessing(ifltab, DSS_FUNCTION_zreadInfo_ID, zdssErrorCodes.INCOMPATIBLE_VERSION,
-								zgetVersion(ifltab), 0, zdssErrorSeverity.WARNING, recordSize->pathname, "");
-	}
+// 	//  Check for correct DSS Version
+// 	if (zgetVersion(ifltab) != 6) {
+// 		return zerrorProcessing(ifltab, DSS_FUNCTION_zreadInfo_ID, zdssErrorCodes.INCOMPATIBLE_VERSION,
+// 								zgetVersion(ifltab), 0, zdssErrorSeverity.WARNING, recordSize->pathname, "");
+// 	}
 
-	zrecordinfo6_(ifltab, pathname, &recordSize->dataType, &recordSize->version,
-		&recordSize->numberValues, &recordSize->logicalNumberValues,
-		&recordSize->values1Number, &recordSize->internalHeaderNumber, &recordSize->userHeaderNumber,
-		&recordSize->allocatedSize, &lastWriteSecs, &recordSize->tsPrecision,
-		&recordSize->tsTimeOffset, &recordSize->tsValueElementSize, &recordSize->tsQualityElementSize,
-		&recordSize->pdNumberCurves, &recordSize->pdNumberOrdinates, &recordSize->ipdValueSize,
-		&recordSize->pdBoolIndependentIsXaxis, &recordSize->pdLabelsLength, &recordSize->pdPrecision, &status,
-		strlen(pathname));
+// 	zrecordinfo6_(ifltab, pathname, &recordSize->dataType, &recordSize->version,
+// 		&recordSize->numberValues, &recordSize->logicalNumberValues,
+// 		&recordSize->values1Number, &recordSize->internalHeaderNumber, &recordSize->userHeaderNumber,
+// 		&recordSize->allocatedSize, &lastWriteSecs, &recordSize->tsPrecision,
+// 		&recordSize->tsTimeOffset, &recordSize->tsValueElementSize, &recordSize->tsQualityElementSize,
+// 		&recordSize->pdNumberCurves, &recordSize->pdNumberOrdinates, &recordSize->ipdValueSize,
+// 		&recordSize->pdBoolIndependentIsXaxis, &recordSize->pdLabelsLength, &recordSize->pdPrecision, &status,
+// 		strlen(pathname));
 
-	recordSize->lastWriteTimeMillis = (long long)lastWriteSecs * (long long)1000;
+// 	recordSize->lastWriteTimeMillis = (long long)lastWriteSecs * (long long)1000;
 
-	return status;
-}
-
-
+// 	return status;
+// }

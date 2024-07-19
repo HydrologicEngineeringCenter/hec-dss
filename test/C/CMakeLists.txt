@@ -2,11 +2,6 @@
 add_library(getopt OBJECT getopt.c)
 
 
-add_executable(ts_readv6 ts_readv6.c $<TARGET_OBJECTS:getopt>)
-configure_file(${PROJECT_SOURCE_DIR}/dss-test-data/v6-pc.dss v6-pc.dss COPYONLY)
-target_link_libraries(ts_readv6 heclib )
-add_test(NAME ts_readv6 COMMAND ts_readv6)
-
 add_executable(ts_write ts_write.c $<TARGET_OBJECTS:getopt>)
 target_link_libraries(ts_write heclib)
 add_test(NAME ts_write COMMAND ts_write)
@@ -48,4 +43,3 @@ add_test(NAME GridTestVerify COMMAND GridTest -d GridTest.dss -h 100 -w 100 -c 2
 add_executable(zopenExample zopenExample.c $<TARGET_OBJECTS:getopt>)
 target_link_libraries(zopenExample heclib)
 add_test(NAME zopenExample COMMAND zopenExample)
-

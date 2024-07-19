@@ -23,13 +23,8 @@ int CheckPathnames(char* dssFileName)
 		printf("Error opening file.  status = %d\n", status);
 		return status;
 	}
-
-	if (zgetVersion(ifltab) == 6) {
-		zcklnk6_(ifltab, &status);
-	}
-	else {
-		status = zcheckPathnames(ifltab);
-	}
+	
+	status = zcheckPathnames(ifltab);
 	zclose(ifltab);
 	return status;
 }
@@ -87,13 +82,8 @@ int CheckLinks(char* dssFileName)
 		printf("Error opening file.  status = %d\n", status);
 		return status;
 	}
-
-	if (zgetVersion(ifltab) == 6) {
-		zcklnk6_(ifltab, &status);
-	}
-	else {
-		status = zcheckLinks(ifltab);
-	}
+	
+	status = zcheckLinks(ifltab);
 	zclose(ifltab);
 	return status;
 }
@@ -133,11 +123,12 @@ int PrintCatalog(char* dssFileName, int details){
 		  }
  	  }
 			
-zstructFree(catStruct);
+	zstructFree(catStruct);
 	zclose(ifltab);
 	return status;
 
 }
+
 int Zqueeze(char* dssFileName) {
 	long long ifltab[250];
 	int status = hec_dss_zopen(ifltab, dssFileName);
@@ -189,11 +180,8 @@ int WriteTimeSeries2(long long ifltab[250], int timeSeriesCount, int timeSeriesL
 int WriteTimeSeries(char* dssFileName, int version, int timeSeriesCount, int timeSeriesLength)
 {
 	long long ifltab[250];
-	int status;
-	if (version == 6)
-		status = zopen6(ifltab, dssFileName);
-	else
-		status = hec_dss_zopen(ifltab, dssFileName);
+	int status;	
+	status = hec_dss_zopen(ifltab, dssFileName);
 
 	if (status != STATUS_OKAY) return status;
 
@@ -232,7 +220,7 @@ int Workout(char* exe, char* version, char* timeSeriesCount,char* timeSeriesLeng
 	int count = atoi(timeSeriesCount);
 	int length = atoi(timeSeriesLength);
 	//zsetMessageLevel(MESS_METHOD_LOCKING_ID, MESS_LEVEL_INTERNAL_DIAG_1);
-	if (!(ver == 6 || ver == 7))
+	if ((ver != 7))
 	{
 		usage(exe);
 		return -1;

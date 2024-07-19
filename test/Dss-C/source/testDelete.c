@@ -86,7 +86,7 @@ int testDelete(const char *dssFilename7, const char *dssFilename6)
 		printf("Running %s\n", loopName);
 		//  First loop is for DSS-7, second is for DSS-6
 
-		for (i=0; i<2; i++) {
+		for (i=0; i<1; i++) {
 
 
 
@@ -98,13 +98,7 @@ int testDelete(const char *dssFilename7, const char *dssFilename6)
 				sprintf(message, "Fail in %s, zopen Loc 1", loopName);
 				if (zcheckStatus(ifltab, status, 1, message)) return status;
 			}
-			else {			
-				printf("Testing with DSS-6\n");
-				remove(dssFilename6);
-				status = zopen6(ifltab, dssFilename6);
-				sprintf(message, "Fail in %s, zopen Loc 2", loopName);
-				if (zcheckStatus(ifltab, status, 1, message)) return status;
-			}
+			
 
 
 			//  Write some data to the database

@@ -11,8 +11,9 @@ int zset(const char* parameter, const char* charVal, int integerValue)
 	char cval[17];
 
 	ival = integerValue;
-	zset_(parameter, charVal, &ival, strlen(parameter), strlen(charVal));
+	return zset7(parameter, charVal, integerValue);
 
+/* ?
 	cval[0] = '\0';
 	zquery("VERS", cval, sizeof(cval), &ival);
 	if (ival == 7) {
@@ -20,6 +21,7 @@ int zset(const char* parameter, const char* charVal, int integerValue)
 	}
 
 	return status;
+	*/
 }
 
 int zset7_(const char* parameter, const char* charVal, int *integerValue, size_t lenParam, size_t lenCharVal)
@@ -36,6 +38,3 @@ int zset7_(const char* parameter, const char* charVal, int *integerValue, size_t
     return rval;
 
 }
-
-
-

@@ -8,10 +8,13 @@ int testNoDates(int version)
 
 	long long ifltab[250];
 	int status;
-	if (version == 6)
-		status = zopen6(ifltab, dssFileName);
-	else
+	
+	if (version == 7){
 		status = hec_dss_zopen(ifltab, dssFileName);
+	} else {
+		printf("Only version 7 is supported.\n");
+		return -1;
+	}
 
 	if (status != STATUS_OKAY) return status;
 

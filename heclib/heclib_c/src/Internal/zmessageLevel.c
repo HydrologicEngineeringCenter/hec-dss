@@ -88,25 +88,12 @@ int zmessageLevel(long long *ifltab, int callingMethodId, int level)
 
 	char cval[1];
 	int inumb;
+	
 
-	if (zgetVersion(ifltab) == 6) {
-		cval[0] = '\0';
-		zquery6_("MLVL", cval, &inumb, (size_t)4, (size_t)0);
-		if ((level == 1) && (inumb >= 1)) return 1;
-		if ((level == 2) && (inumb >= 2)) return 1;
-		if ((level == 3) && (inumb >= 3)) return 1;
-		if ((level == 3) && (inumb >= 4)) return 1;
-		if ((level == 4) && (inumb >= 9)) return 1;
-		if ((level == 5) && (inumb >= 12)) return 1;
-		if ((level == 6) && (inumb >= 15)) return 1;
-		return 0;
-	}
 
-	if (zgetVersion(ifltab) == 7) {
-		if (ifltab[zdssKeys.kmessLevel] > -1) {
-			if (level <= (int)ifltab[zdssKeys.kmessLevel]) {
-				return 1;
-			}
+	if (ifltab[zdssKeys.kmessLevel] > -1) {
+		if (level <= (int)ifltab[zdssKeys.kmessLevel]) {
+			return 1;
 		}
 	}
 
@@ -139,4 +126,3 @@ int zmessLevel(int level)
 	ift[0] = 0;
 	return zmessageLevel(ift, MESS_METHOD_GLOBAL_ID, level);
 }
-

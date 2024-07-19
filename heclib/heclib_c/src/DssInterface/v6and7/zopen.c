@@ -22,6 +22,7 @@ int hec_dss_zopen(long long *ifltab, const char *dssFilename)
 		zmessageDebugInt(ifltab, DSS_FUNCTION_zopen_ID, "Dss file version ", version);
 	 }
 	//  Check for a specific version set for the next new file
+	/*
 	if (version == 0) {
 		//  File does not exist
 		//zquery("DSSV",  creturn, sizeof(creturn), &version);
@@ -32,16 +33,9 @@ int hec_dss_zopen(long long *ifltab, const char *dssFilename)
 			zero = 0;
 			zset_("DSSV", creturn, &zero, (size_t)4, sizeof(creturn));
 		}
-	}
-
-	//if (version != 7) {
-	if (version == 6) {
-		zopen6int_(ifltab, dssFilename, &status, strlen(dssFilename));
-		return status;
-	}
-	else {
-		return zopenInternal(ifltab, dssFilename, 0, 0, 0, 0, 0);
-	}
+	}*/
+	
+	return zopenInternal(ifltab, dssFilename, 0, 0, 0, 0, 0);
 }
 
 int zopen7(long long *ifltab, const char *dssFilename)
@@ -51,28 +45,5 @@ int zopen7(long long *ifltab, const char *dssFilename)
 
 	version = zgetFileVersion(dssFilename);
 
-	if (version == 6) {
-		zopen6int_(ifltab, dssFilename, &status, strlen(dssFilename));
-		return status;
-	}
-	else {
-		return zopenInternal(ifltab, dssFilename, 0, 0, 0, 0, 0);
-	}
+	return zopenInternal(ifltab, dssFilename, 0, 0, 0, 0, 0);
 }
-
-int zopen6(long long *ifltab, const char *dssFilename)
-{
-	int version;
-	int status;
-
-	version = zgetFileVersion(dssFilename);
-
-	if (version == 7) {
-		return zopenInternal(ifltab, dssFilename, 0, 0, 0, 0, 0);
-	}
-	else {
-		zopen6int_(ifltab, dssFilename, &status, strlen(dssFilename));
-		return status;
-	}
-}
-

@@ -30,19 +30,6 @@ int zinquireChar(long long *ifltab, const char *request, char *creturn, size_t c
 			0, 0, zdssErrorSeverity.INVALID_ARGUMENT, "", "request is null");
 	}
 
-	if (zgetVersion(ifltab) == 6) {
-		stringFill(creturn, ' ', creturnSize);
-		zinqir6_ (ifltab, request, creturn, number, strlen(request), creturnSize);
-		if (*number == -1) {
-			return -1;
-		}
-		else {
-			len = stringLastNonBlank(creturn, creturnSize);
-			creturn[len] = '\0';
-			return 0;
-		}
-	}
-
 	if (zdssVals.integrityKey != DSS_INTEGRITY_KEY) {
 		zinit();
 	 }
@@ -198,4 +185,3 @@ int zinquirechar_ (long long *ifltab, const char *parameter, char *charVal, int 
 	free(cval);
 	return istat;
 }
-

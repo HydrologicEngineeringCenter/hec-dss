@@ -50,74 +50,49 @@ int zreadc (long long *ifltab, const char* pathname,
 	}
 
 
-	if (zgetVersion(ifltab) == 6) {
-		*values3Number = 0;
-		*values2Number = 0;
-		*numberValues = 0;
-		*logicalNumberValues = 0;
-		*totalAllocatedSize = 0;
-		*totalExpandedSize = 0;
-		stringCToFort(path, sizeof(path),  pathname);
-		zero = 0;
-		zreadx6_(ifltab, path,
-				 internalHeader, &internalHeaderArraySize, internalHeaderNumber,
-				 header2, &header2ArraySize, header2Number,
-				 userHeader, &userHeaderArraySize, userHeaderNumber,
-				 values1, &values1Size, values1Number,
-				 &zero, &recordFound, strlen(pathname));
-		if (recordFound) {
-			//  Get the data type
-			zinqir6_(ifltab, "TYPE", messageString, dataType, (size_t)4, (size_t)20);
-			return STATUS_RECORD_FOUND;
-		}
-		else {
-			//  Check for error
-			return STATUS_RECORD_NOT_FOUND;
-		}
+	
+	
+	ztransfer = zstructTransferNew(pathname, 0);
+	if (!ztransfer) {
+		//  error out
+		return -1;
 	}
-	else {
-		ztransfer = zstructTransferNew(pathname, 0);
-		if (!ztransfer) {
-			//  error out
-			return -1;
-		}
 
-		ztransfer->internalHeader = internalHeader;
-		ztransfer->internalHeaderMode = internalHeaderArraySize;
+	ztransfer->internalHeader = internalHeader;
+	ztransfer->internalHeaderMode = internalHeaderArraySize;
 
-		ztransfer->header2 = header2;
-		ztransfer->header2Mode = header2ArraySize;
+	ztransfer->header2 = header2;
+	ztransfer->header2Mode = header2ArraySize;
 
-		ztransfer->values3 = values3;
-		ztransfer->values3Mode = values3ArraySize;
+	ztransfer->values3 = values3;
+	ztransfer->values3Mode = values3ArraySize;
 
-		ztransfer->userHeader = userHeader;
-		ztransfer->userHeaderMode = userHeaderArraySize;
+	ztransfer->userHeader = userHeader;
+	ztransfer->userHeaderMode = userHeaderArraySize;
 
-		ztransfer->values1 = values1;
-		ztransfer->values1Mode = values1Size;
+	ztransfer->values1 = values1;
+	ztransfer->values1Mode = values1Size;
 
-		ztransfer->values2 = values2;
-		ztransfer->values2Mode = values2Size;
+	ztransfer->values2 = values2;
+	ztransfer->values2Mode = values2Size;
 
-		status = zreadInternal(ifltab, ztransfer,
-								bufferControl, buffer, 0);
+	status = zreadInternal(ifltab, ztransfer,
+							bufferControl, buffer, 0);
 
-		if (status == STATUS_RECORD_FOUND) {
-			*internalHeaderNumber = ztransfer->internalHeaderNumber;
-			*header2Number = ztransfer->header2Number;
-			*values3Number = ztransfer->values3Number;
-			*userHeaderNumber = ztransfer->userHeaderNumber;
-			*values1Number = ztransfer->values1Number;
-			*values2Number = ztransfer->values2Number;
-			*numberValues = ztransfer->numberValues;
-			*logicalNumberValues = ztransfer->logicalNumberValues;
-			*totalAllocatedSize = ztransfer->totalAllocatedSize;
-			*totalExpandedSize = ztransfer->totalExpandedSize;
-			*dataType = ztransfer->dataType;
-		}
-		zstructFree(ztransfer);
+	if (status == STATUS_RECORD_FOUND) {
+		*internalHeaderNumber = ztransfer->internalHeaderNumber;
+		*header2Number = ztransfer->header2Number;
+		*values3Number = ztransfer->values3Number;
+		*userHeaderNumber = ztransfer->userHeaderNumber;
+		*values1Number = ztransfer->values1Number;
+		*values2Number = ztransfer->values2Number;
+		*numberValues = ztransfer->numberValues;
+		*logicalNumberValues = ztransfer->logicalNumberValues;
+		*totalAllocatedSize = ztransfer->totalAllocatedSize;
+		*totalExpandedSize = ztransfer->totalExpandedSize;
+		*dataType = ztransfer->dataType;
 	}
+	zstructFree(ztransfer);	
 
 	return status;
 }
@@ -150,4 +125,3 @@ void zreadc_(long long *ifltab, const char* pathname,
 			 numberValues, logicalNumberValues,
 			 totalAllocatedSize, totalExpandedSize, dataType);
 }
-

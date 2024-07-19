@@ -23,32 +23,25 @@ void zwritea(long long *ifltab, const char *path, int *npath,
 	zStructTransfer* ztransfer;
 	char pathname[MAX_PATHNAME_LENGTH];
 
-
-	if (zgetVersion(ifltab) == 6) {
-		stringCToFort(pathname, (int)sizeof(pathname),  path);
-		zwrite6_(ifltab, pathname, npath, userHeader, userHeaderNumber,
-				 values, valuesNumber, flag, recordFound, (size_t)*npath);
+	ztransfer = zstructTransferNew(path, 0);
+	if (!ztransfer) {
+		*recordFound = 0;
+		zstructFree(ztransfer);
+		return;
+	}
+	ztransfer->userHeader = userHeader;
+	ztransfer->userHeaderNumber = *userHeaderNumber;
+	ztransfer->values1 = values;
+	ztransfer->values1Number = *valuesNumber;
+	status = zwrite(ifltab, ztransfer);
+	if (status == STATUS_RECORD_FOUND) {
+		*recordFound = 1;
 	}
 	else {
-		ztransfer = zstructTransferNew(path, 0);
-		if (!ztransfer) {
-			*recordFound = 0;
-			zstructFree(ztransfer);
-			return;
-		}
-		ztransfer->userHeader = userHeader;
-		ztransfer->userHeaderNumber = *userHeaderNumber;
-		ztransfer->values1 = values;
-		ztransfer->values1Number = *valuesNumber;
-		status = zwrite(ifltab, ztransfer);
-		if (status == STATUS_RECORD_FOUND) {
-			*recordFound = 1;
-		}
-		else {
-			*recordFound = 0;
-		}
-		zstructFree(ztransfer);
+		*recordFound = 0;
 	}
+	zstructFree(ztransfer);
+
 
 }
 
@@ -67,4 +60,3 @@ void zwritea_(long long *ifltab, const char *path, int *npath,
 			flag, recordFound);
 	free(pathname);
 }
-

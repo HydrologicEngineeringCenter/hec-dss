@@ -41,39 +41,6 @@ int testCatalog()
 	long long lastWriteTime;
 
 
-/*
-	//  Use c:/temp/sample7.dss, the standard sample.dss file from DSS-Vue 2.0, converted to 7.
-	stringCopy(dssFilename, sizeof(dssFilename), "c:/temp/coll.dss", _TRUNCATE);
-
-	//  Make sure it exists and is version 7
-	if (zgetFileVersion(dssFilename) != 7) {
-		status = zcompareInts(ifltab, zgetFileVersion(dssFilename), 7, 1,  "testCatalog: c:/temp/sample7.dss does not exist or is not version 7 ");
-		if (status != STATUS_OKAY) return status;
-	}
-	
-	//  Open the file
-	status = hec_dss_zopen(ifltab, dssFilename);
-	if (zcheckStatus(ifltab, status, 1, "Fail in testCatalog Loc 2, zopen status ")) return status; 
-
-	//  Get a complete catalog (all pathnames in the DSS file)
-	catStruct = zstructCatalogNew();
-	status = zcollectionCat((long long*)ifltab, "/Without Project Conditions-TimeWindow/FIA-ALT_Grids/Event-Area/Output/Total Acreage Flooded/C:000000|Without Pr:TimeWindow:FIA-ALT_Grids/", catStruct);
-	if (status < 0) {
-		if (zcheckStatus(ifltab, status, 1, "Fail in testCatalog Loc 3, zcatalog status ")) return status; 
-	}
-	zstructFree(catStruct);
-	
-	catStruct = zstructCatalogNew();
-	catStruct->boolIncludeDates = 1;
-	status = zcatalog(ifltab, (const char *)0, catStruct, 1);	
-	if (status < 0) {
-		if (zcheckStatus(ifltab, status, 1, "Fail in testCatalog Loc 4, zcatalog status ")) return status; 
-	}
-	zstructFree(catStruct);
-	*/
-
-	////////////////////////////////////////////////
-
 	stringCopy(dssFilename, sizeof(dssFilename), "sample7.dss", _TRUNCATE);
 	
 
@@ -144,24 +111,6 @@ int testCatalog()
 	status = zcatalogFile(ifltab, catFilename, 1, (const char *)0);
 	if (status < 0) {
 		if (zcheckStatus(ifltab, status, 1, "Fail in testCatalog Loc 7, zcatalog status ")) return status; 
-	}
-	
-	
-	//  Version 6 code on vers 7 file
-	printf("\nreading catalog with legacy(v6) filter  'B=SACRAMENTO, F=OBS' ");
-	stringCopy(pathWithWild, sizeof(pathWithWild), "B=SACRAMENTO, F=OBS", _TRUNCATE);
-	printf("\n%s", pathWithWild);
-	filePos = 0;
-	count = 0;
-	while (filePos >= 0) {
-		zplist_ (ifltab, pathWithWild, &filePos, pathname,
-               &nPathname, &status, strlen(pathWithWild), sizeof(pathname));
-		if (status != STATUS_OKAY) {
-			if (filePos < 0) break;
-			if (zcheckStatus(ifltab, status, 1, "Fail in testCatalog Loc 8, zcatalog status ")) return status; 
-		}
-		//printf(" %d,  -->%s<--\n", count, pathname);
-		count++;
 	}
 
 	//  
@@ -397,82 +346,6 @@ int testCatalog()
 	}
 
 	zclose(ifltab);
-	//printf("***********  CAT 6 not tested ****************\n");
-	//return 0;
-	
-
-	//  Now repeat the tests with DSS-6 (sample6.dss)
-	stringCopy(dssFilename, sizeof(dssFilename), "sample6.dss", _TRUNCATE);
-
-	//  Make sure it exists and is version 7
-	if (zgetFileVersion(dssFilename) != 6) {
-		status = zcompareInts(ifltab, zgetFileVersion(dssFilename), 6, 1,  "testCatalog: c:/temp/sample6.dss does not exist or is not version 6 ");
-		if (status != STATUS_OKAY) return status;
-	}
-	
-	//  Open the file
-	status = hec_dss_zopen(ifltab, dssFilename);
-	if (zcheckStatus(ifltab, status, 1, "Fail in testCatalog Loc 42, zopen status ")) return status; 
-
-	//  Get a complete catalog (all pathnames in the DSS file)
-	catStruct = zstructCatalogNew();
-	status = zcatalog(ifltab, (const char *)0, catStruct, 0);
-	if (status < 0) {
-		if (zcheckStatus(ifltab, status, 1, "Fail in testCatalog Loc 43, zcatalog status ")) return status; 
-	}
-	zstructFree(catStruct);
-
-	catStruct = zstructCatalogNew();
-	catStruct->boolIncludeDates = 1;
-	status = zcatalog(ifltab, (const char *)0, catStruct, 1);
-	if (status < 0) {
-		if (zcheckStatus(ifltab, status, 1, "Fail in testCatalog Loc 44, zcatalog status ")) return status; 
-	}
-	zstructFree(catStruct);
-
-
-	//  Now test for wild characters
-	stringCopy(pathWithWild, sizeof(pathWithWild), "//SACRAMENTO/*/*/*/OBS/", _TRUNCATE);
-	catStruct = zstructCatalogNew();
-	catStruct->boolIncludeDates = 1;
-	status = zcatalog(ifltab, pathWithWild, catStruct, 1);
-	if (status < 0) {
-		if (zcheckStatus(ifltab, status, 1, "Fail in testCatalog Loc 46, zcatalog status ")) return status; 
-	}
-	zstructFree(catStruct);
-
-	//  Now, a catalog file
-	stringCopy(catFilename, sizeof(catFilename), dssFilename, _TRUNCATE);
-	len = (int)strlen(catFilename);
-	catFilename[len-1] = 'c';
-	remove(catFilename);
-	status = zcatalogFile(ifltab, dssFilename, 1, (const char *)0);
-	if (status < 0) {
-		if (zcheckStatus(ifltab, status, 1, "Fail in testCatalog Loc 47, zcatalog status ")) return status; 
-	}
-
-
-	//  Version 6 code
-	stringCopy(pathWithWild, sizeof(pathWithWild), "B=SACRAMENTO, F=OBS", _TRUNCATE);
-	filePos = 0;
-	count = 0;
-	stringFill(pathname, ' ', sizeof(pathname));
-	while (filePos >= 0) {
-		zplist_ (ifltab, pathWithWild, &filePos, pathname,
-               &nPathname, &status, strlen(pathWithWild), sizeof(pathname));
-		if (status == 1) break;
-		if (status != STATUS_OKAY) {
-			if (zcheckStatus(ifltab, status, 1, "Fail in testCatalog Loc 48, zcatalog status ")) return status; 
-		}
-		pathname[nPathname] = '\0';
-		//printf(" %d,  -->%s<--\n", count, pathname);
-		count++;
-	}
-
-
-	zclose(ifltab);
-
-	printf("Catalog testing complete\n");
 
 
 	return 0;

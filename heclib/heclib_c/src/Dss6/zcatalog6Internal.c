@@ -77,148 +77,145 @@
 *
 **/
 
-int zcatalog6Internal(long long *ifltab, const char *pathWithWild, zStructCatalog *catStruct,
-			          int catalogHandle, int ifortUnit, int numberWanted, int boolCollection, int boolForSort)
-{
-	 char pathname[392];
-	 char pathnameColl[392];
-	 int npathname[1];
-	 int filePos[1];
-	 int istat[1];
-	 int numberRecs[1];
-	 int count;
-	 int status;
-	 char cnl[1];
+// int zcatalog6Internal(long long *ifltab, const char *pathWithWild, zStructCatalog *catStruct,
+// 			          int catalogHandle, int ifortUnit, int numberWanted, int boolCollection, int boolForSort)
+// {
+// 	 char pathname[392];
+// 	 char pathnameColl[392];
+// 	 int npathname[1];
+// 	 int filePos[1];
+// 	 int istat[1];
+// 	 int numberRecs[1];
+// 	 int count;
+// 	 int status;
+// 	 char cnl[1];
 
-	 char apart[MAX_PART_SIZE];
-	 char fpart[MAX_PART_SIZE];
-	 char bpart[MAX_PART_SIZE];
-	 char cpart[MAX_PART_SIZE];
-	 char dpart[MAX_PART_SIZE];
-	 char epart[MAX_PART_SIZE];
-	 int partAction[6];
-	 int lengths[6];
-	 int partMax[7];
-	 int boolCompareWild;
-	 int boolFound;
-	 int one;
-	 int temp;
+// 	 char apart[MAX_PART_SIZE];
+// 	 char fpart[MAX_PART_SIZE];
+// 	 char bpart[MAX_PART_SIZE];
+// 	 char cpart[MAX_PART_SIZE];
+// 	 char dpart[MAX_PART_SIZE];
+// 	 char epart[MAX_PART_SIZE];
+// 	 int partAction[6];
+// 	 int lengths[6];
+// 	 int partMax[7];
+// 	 int boolCompareWild;
+// 	 int boolFound;
+// 	 int one;
+// 	 int temp;
 
-	 filePos[0] = 0;
-	 istat[0] = 0;
-
-
-	 if (zmessageLevel(ifltab, MESS_METHOD_CATALOG_ID, MESS_LEVEL_INTERNAL_DIAG_1)) {
-		 zmessageDebugInt(ifltab, DSS_FUNCTION_zcatalog_ID, "zcatalog6Internal: catalog handle ", catalogHandle);
-		 zmessageDebugInt(ifltab, DSS_FUNCTION_zcatalog_ID, "zcatalog6Internal: collection: ", boolCollection);
-		 zmessageDebugInt(ifltab, DSS_FUNCTION_zcatalog_ID, "Sort Catalog:  ", boolForSort);
-		 if (pathWithWild) {
-			zmessageDebug(ifltab, DSS_FUNCTION_zcatalog_ID, "Pathname with wild chars:  ", pathWithWild);
-		 }
-		 else {
-			zmessageDebug(ifltab, DSS_FUNCTION_zcatalog_ID, "No Pathname with wild chars:  ", "");
-		 }
-	}
+// 	 filePos[0] = 0;
+// 	 istat[0] = 0;
 
 
-	 zinqir_(ifltab, "NREC", pathname, numberRecs, (size_t)4, (size_t)0);
-	 if (numberRecs[0] < 1) {
-		 //  Uhoh....
-		 return numberRecs[0];
-	 }
-
-	 zmaxpart6_ (ifltab, partMax);
-	 //  Swap D and F parts
-	 temp = partMax[3];
-	 partMax[3] = partMax[5];
-	 partMax[5] = temp;
-
-	 if (catStruct) {
-		catStruct->listSize = numberRecs[0];
-		catStruct->pathnameList = (char **)calloc((size_t)catStruct->listSize, WORD_SIZE);
-		catStruct->allocated[zSTRUCT_pathname] = 1;
-		/*if (catStruct->boolIncludeDates) {
-			catStruct->startDates = (int *)calloc((size_t)catStruct->listSize, WORD_SIZE);
-			catStruct->endDates   = (int *)calloc((size_t)catStruct->listSize, WORD_SIZE);
-		} */
-	}
-
-	 if (boolCollection) {
-		 stringCopy (pathnameColl, sizeof(pathnameColl), pathWithWild, strlen(pathWithWild));
-		 boolCollection = zcollectionsPath(pathnameColl, strlen(pathnameColl));
-		 boolCompareWild = 0;
-	 }
-	 else if (pathWithWild) {
-		boolCompareWild = zcatParsePath(pathWithWild, partAction, lengths,
-			apart, sizeof(apart),
-			bpart, sizeof(bpart),
-			cpart, sizeof(cpart),
-			dpart, sizeof(dpart),
-			epart, sizeof(epart),
-			fpart, sizeof(fpart));
-	 }
-	 else {
-		boolCompareWild = 0;
-	 }
-
-	 count = 0;
-	 while (1) {
-		 if (boolCollection) {
-			 zcolist6_(ifltab, filePos, pathnameColl, npathname, istat, sizeof(pathname));
-		 }
-		 else {
-			zplist6_(ifltab, " ", filePos, pathname, npathname, istat, 0, sizeof(pathname));
-		 }
-		 if (istat[0]) break;
-		 if (npathname[0] <= 0) break;
-		 pathname[npathname[0]] = '\0';
-
-		 if (boolCompareWild) {
-			boolFound = zcatComparePath(pathname, partAction, lengths, apart, bpart, cpart, dpart, epart, fpart, 0);
-		 }
-		 else {
-			 boolFound = 1;
-		 }
-		 if (boolFound) {
-			 if (catStruct) {
-				catStruct->pathnameList[count] = stringFortToC(pathname,  (size_t)npathname[0]);
-			 }
-			 if (catalogHandle) {
-				 if (boolForSort) {
-					status = zcatSortPath(catalogHandle, pathname, (size_t)npathname[0], 0, partMax, count);
-				 }
-				 else {
-					writf_(&catalogHandle, pathname, &npathname[0], &status, &temp);
-				}
-				if (status < 0) {
-					perror("Attempting to write pathname ");
-				}
-				temp = 1;
-				cnl[0] = '\n';
-				writf_(&catalogHandle, cnl, &temp, &status, &temp);
-			 }
-			 if (ifortUnit > 0) {
-				one = 1;
-				status = fortranwritelc_(&ifortUnit, pathname, &one, (size_t)npathname[0]);
-			 }
-			 count++;
-			 if (count >= numberRecs[0]) {
-				 break;
-			 }
-			 if ((numberWanted > 0) && (count >= numberWanted)) {
-				break;
-			}
-		 }
-	 }
-	 if (catStruct) {
-		catStruct->numberPathnames = count;
-		catStruct->listSize = count;
-	}
-	 if (zmessageLevel(ifltab, MESS_METHOD_CATALOG_ID, MESS_LEVEL_INTERNAL_DIAG_1)) {
-		 zmessageDebugInt(ifltab, DSS_FUNCTION_zcatalog_ID, "Exit zcatalog6Internal, number ", count);
-	 }
-	 return count;
-}
+// 	 if (zmessageLevel(ifltab, MESS_METHOD_CATALOG_ID, MESS_LEVEL_INTERNAL_DIAG_1)) {
+// 		 zmessageDebugInt(ifltab, DSS_FUNCTION_zcatalog_ID, "zcatalog6Internal: catalog handle ", catalogHandle);
+// 		 zmessageDebugInt(ifltab, DSS_FUNCTION_zcatalog_ID, "zcatalog6Internal: collection: ", boolCollection);
+// 		 zmessageDebugInt(ifltab, DSS_FUNCTION_zcatalog_ID, "Sort Catalog:  ", boolForSort);
+// 		 if (pathWithWild) {
+// 			zmessageDebug(ifltab, DSS_FUNCTION_zcatalog_ID, "Pathname with wild chars:  ", pathWithWild);
+// 		 }
+// 		 else {
+// 			zmessageDebug(ifltab, DSS_FUNCTION_zcatalog_ID, "No Pathname with wild chars:  ", "");
+// 		 }
+// 	}
 
 
+// 	 zinqir_(ifltab, "NREC", pathname, numberRecs, (size_t)4, (size_t)0);
+// 	 if (numberRecs[0] < 1) {
+// 		 //  Uhoh....
+// 		 return numberRecs[0];
+// 	 }
 
+// 	 zmaxpart6_ (ifltab, partMax);
+// 	 //  Swap D and F parts
+// 	 temp = partMax[3];
+// 	 partMax[3] = partMax[5];
+// 	 partMax[5] = temp;
+
+// 	 if (catStruct) {
+// 		catStruct->listSize = numberRecs[0];
+// 		catStruct->pathnameList = (char **)calloc((size_t)catStruct->listSize, WORD_SIZE);
+// 		catStruct->allocated[zSTRUCT_pathname] = 1;
+// 		/*if (catStruct->boolIncludeDates) {
+// 			catStruct->startDates = (int *)calloc((size_t)catStruct->listSize, WORD_SIZE);
+// 			catStruct->endDates   = (int *)calloc((size_t)catStruct->listSize, WORD_SIZE);
+// 		} */
+// 	}
+
+// 	 if (boolCollection) {
+// 		 stringCopy (pathnameColl, sizeof(pathnameColl), pathWithWild, strlen(pathWithWild));
+// 		 boolCollection = zcollectionsPath(pathnameColl, strlen(pathnameColl));
+// 		 boolCompareWild = 0;
+// 	 }
+// 	 else if (pathWithWild) {
+// 		boolCompareWild = zcatParsePath(pathWithWild, partAction, lengths,
+// 			apart, sizeof(apart),
+// 			bpart, sizeof(bpart),
+// 			cpart, sizeof(cpart),
+// 			dpart, sizeof(dpart),
+// 			epart, sizeof(epart),
+// 			fpart, sizeof(fpart));
+// 	 }
+// 	 else {
+// 		boolCompareWild = 0;
+// 	 }
+
+// 	 count = 0;
+// 	 while (1) {
+// 		 if (boolCollection) {
+// 			 zcolist6_(ifltab, filePos, pathnameColl, npathname, istat, sizeof(pathname));
+// 		 }
+// 		 else {
+// 			zplist6_(ifltab, " ", filePos, pathname, npathname, istat, 0, sizeof(pathname));
+// 		 }
+// 		 if (istat[0]) break;
+// 		 if (npathname[0] <= 0) break;
+// 		 pathname[npathname[0]] = '\0';
+
+// 		 if (boolCompareWild) {
+// 			boolFound = zcatComparePath(pathname, partAction, lengths, apart, bpart, cpart, dpart, epart, fpart, 0);
+// 		 }
+// 		 else {
+// 			 boolFound = 1;
+// 		 }
+// 		 if (boolFound) {
+// 			 if (catStruct) {
+// 				catStruct->pathnameList[count] = stringFortToC(pathname,  (size_t)npathname[0]);
+// 			 }
+// 			 if (catalogHandle) {
+// 				 if (boolForSort) {
+// 					status = zcatSortPath(catalogHandle, pathname, (size_t)npathname[0], 0, partMax, count);
+// 				 }
+// 				 else {
+// 					writf_(&catalogHandle, pathname, &npathname[0], &status, &temp);
+// 				}
+// 				if (status < 0) {
+// 					perror("Attempting to write pathname ");
+// 				}
+// 				temp = 1;
+// 				cnl[0] = '\n';
+// 				writf_(&catalogHandle, cnl, &temp, &status, &temp);
+// 			 }
+// 			 if (ifortUnit > 0) {
+// 				one = 1;
+// 				status = fortranwritelc_(&ifortUnit, pathname, &one, (size_t)npathname[0]);
+// 			 }
+// 			 count++;
+// 			 if (count >= numberRecs[0]) {
+// 				 break;
+// 			 }
+// 			 if ((numberWanted > 0) && (count >= numberWanted)) {
+// 				break;
+// 			}
+// 		 }
+// 	 }
+// 	 if (catStruct) {
+// 		catStruct->numberPathnames = count;
+// 		catStruct->listSize = count;
+// 	}
+// 	 if (zmessageLevel(ifltab, MESS_METHOD_CATALOG_ID, MESS_LEVEL_INTERNAL_DIAG_1)) {
+// 		 zmessageDebugInt(ifltab, DSS_FUNCTION_zcatalog_ID, "Exit zcatalog6Internal, number ", count);
+// 	 }
+// 	 return count;
+// }

@@ -66,10 +66,6 @@
 *
 */
 
-int ztextRetrieve6(long long* ifltab, zStructText* textStruct);
-
-
-
 int ztextRetrieve(long long *ifltab, zStructText *textStruct)
 {
 	int status;
@@ -91,14 +87,6 @@ int ztextRetrieve(long long *ifltab, zStructText *textStruct)
 		zmessageDebug(ifltab, DSS_FUNCTION_ztextRetrieve_ID, "Enter Pathname: ", textStruct->pathname);
 		zmessageDebugInt(ifltab, DSS_FUNCTION_ztextRetrieve_ID, "  Handle: ",  zhandle(ifltab));
 	}
-	
-	int version = zgetVersion(ifltab);
-	if (version == 6) {
-
-		status = ztextRetrieve6(ifltab, textStruct);
-		return status;
-	}
-
 
 	ztransfer = zstructTransferNew(textStruct->pathname, 1);
 	if (!ztransfer) {
@@ -234,58 +222,6 @@ int ztextRetrieve(long long *ifltab, zStructText *textStruct)
 				zmessageDebugInt(ifltab, DSS_FUNCTION_ztextRetrieve_ID, "  Number Columns: ",  textStruct->numberColumns);
 			}
 		}
-	}
-
-	return status;
-}
-
-
-int ztextRetrieve6(long long* ifltab, zStructText* textStruct) {
-
-	//  Find out how much memory we need for this text record
-	int npath = (int)strlen(textStruct->pathname);
-	int lfound = 0;
-	int nhead, ndata;
-	zcheck_((long long*)ifltab, textStruct->pathname, &npath, &nhead, &ndata, &lfound,
-	strlen(textStruct->pathname));
-
-	if (lfound == 0) {
-		/* If the record does not exist, let zrtxt still try to read
-			 it and generate the correct error message */
-		ndata = 1;
-	}
-	int max_string_size = 10000000;
-	int userHeader[1] = { 0 };
-	int kUserHeader =0; 
-	int nUserHeader = 0;
-	int string_length_to_allocate = (ndata + 1) * 4 + 1;
-	int status =0;
-	int string_length_read = 0;
-	if (max_string_size < string_length_to_allocate)
-		string_length_to_allocate = max_string_size;
-	char* cString = (char*)calloc(string_length_to_allocate, 1);
-	if (cString == NULL) {
-		fprintf(stderr, "Memory allocation failure in Hec_zrtxts\n");
-		return -1;
-	}
-
-	zrtxts_((long long*)ifltab, textStruct->pathname, cString, &string_length_to_allocate, &string_length_read,
-		userHeader, &kUserHeader, &nUserHeader, &status,
-		strlen(textStruct->pathname), (string_length_to_allocate - 1));
-
-	if( cString != 0){
-	textStruct->textString = cString;
-	textStruct->numberTextChars = string_length_read;
-	textStruct->numberTableChars = 0;
-	textStruct->textString[textStruct->numberTextChars] = 0;
-	textStruct->allocated[zSTRUCT_TX_textString] = 1;
-	textStruct->dataType = DATA_TYPE_TEXT;
-	}
-	else {
-		free(cString);
-		textStruct->textString = 0;
-		textStruct->numberTextChars = 0;
-		textStruct->numberTableChars = 0;
 	}
 
 	return status;

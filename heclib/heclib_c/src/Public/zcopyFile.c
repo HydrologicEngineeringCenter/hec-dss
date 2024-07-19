@@ -82,12 +82,6 @@ int zcopyFile(long long *ifltabFrom, long long *ifltabTo, int statusWanted)
 	int pathLength;
 	char fullFilename[256];
 
-
-	if (zgetVersion(ifltabFrom) == 6) {
-		zcopyfile6_(ifltabFrom, ifltabTo, &status);
-		return status;
-	}
-
 	if (zgetVersion(ifltabFrom) == 0) {
 		return zerrorProcessing(ifltabFrom, DSS_FUNCTION_zcopyFile_ID, zdssErrorCodes.NOT_OPENED,
 									0, 0, zdssErrorSeverity.INVALID_ARGUMENT, "", "");
@@ -111,28 +105,18 @@ int zcopyFile(long long *ifltabFrom, long long *ifltabTo, int statusWanted)
 		}
 	}
 
-	//  get enough space to copy largest record in file
-/*	maxRec = numberIntsInLongs(fileHeader[zdssFileKeys.kmaxRecordSize]) + 1;
-	buffer = (int*)calloc((size_t)maxRec, INT_SIZE);
-	if (buffer == 0) {
-		return zerrorProcessing(ifltabFrom, DSS_FUNCTION_zcopyFile_ID, zdssErrorCodes.CANNOT_ALLOCATE_MEMORY,
-									maxRec, 0, zdssErrorSeverity.WARNING_NO_FILE_ACCESS, "",
-									"Unable to allocate buffer.");
-	}
-*/
 	status = zcheckKeys(ifltabFrom);
 	if (status != 0) {
 		status = zerrorEncodeHigh(status, DSS_FUNCTION_zcopyFile_ID);
 		return status;
 	}
-
-	if (zgetVersion(ifltabTo) == 7) {
-		status = zcheckKeys(ifltabTo);
-		if (status != 0) {
-			status = zerrorEncodeHigh(status, DSS_FUNCTION_zcopyFile_ID);
-			return status;
-		}
+	
+	status = zcheckKeys(ifltabTo);
+	if (status != 0) {
+		status = zerrorEncodeHigh(status, DSS_FUNCTION_zcopyFile_ID);
+		return status;
 	}
+
 
 
 	fileHeader = (long long *)ifltabFrom[zdssKeys.kfileHeader];
@@ -250,13 +234,6 @@ void zcopyfile_(long long *ifltabFrom, long long *ifltabTo, int *status)
 	versFileFrom = zgetVersion(ifltabFrom);
 	versFileTo   = zgetVersion(ifltabTo);
 
-	if (versFileFrom == 7) {
-		*status = zcopyFile(ifltabFrom, ifltabTo, 0);
-	}
-	else if (versFileFrom == 6) {
-		zcopyfile6_(ifltabFrom, ifltabTo, status);
-	}
-	else {
-	}
+	
+	*status = zcopyFile(ifltabFrom, ifltabTo, 0);
 }
-

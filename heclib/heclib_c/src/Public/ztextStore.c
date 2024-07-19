@@ -176,18 +176,6 @@ int ztextStore(long long *ifltab, zStructText *textStruct)
 										 "textStruct->numberLabelChars");
 	}
 
-	if (zgetVersion(ifltab) == 6) {
-		// version 6 only stores text (not text table)
-		int one = 1;
-		int userHeader = { 0 };
-		int nUserHeader = 0;
-		int status = 0;
-
-		zstxta_((long long*)ifltab, textStruct->pathname, textStruct->textString,
-			&one /*dimensions*/, &userHeader, &nUserHeader, &status,
-			strlen(textStruct->pathname), strlen(textStruct->textString));
-		return status;
-	}
 	ztransfer = zstructTransferNew(textStruct->pathname, 0);
 	if (!ztransfer) {
 		return zerrorProcessing(ifltab, DSS_FUNCTION_ztextStore_ID,
@@ -284,4 +272,3 @@ int ztextStore(long long *ifltab, zStructText *textStruct)
 
 	return status;
 }
-

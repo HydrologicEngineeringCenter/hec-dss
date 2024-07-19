@@ -51,22 +51,7 @@ int zwrite(long long *ifltab, zStructTransfer* ztransfer)
 		free(headerString);
 	}
 	// do the writing
-	if (zgetVersion(ifltab) == 6) {
-
-		stringCToFort(pathname, sizeof(pathname),  ztransfer->pathname);
-
-		zero = 0;
-		len = (int)strlen(ztransfer->pathname);
-		zwritex6_(ifltab, pathname, &len,
-				 ztransfer->internalHeader, &ztransfer->internalHeaderNumber,
-				 ztransfer->header2, &ztransfer->header2Number,
-				 ztransfer->userHeader, &ztransfer->userHeaderNumber,
-				 ztransfer->values1, &ztransfer->values1Number,
-				 &ztransfer->dataType,
-				 &zero, &status, &recordFound, strlen(ztransfer->pathname));
-
-	}
-	else if (zgetVersion(ifltab) == 7) {
+	if (zgetVersion(ifltab) == 7) {
 		status = zwriteInternal(ifltab, ztransfer, 0, bufferControl, buffer, 0);
 	}
 	else {
@@ -83,4 +68,3 @@ int zwrite(long long *ifltab, zStructTransfer* ztransfer)
 	return status;
 
 }
-

@@ -50,21 +50,7 @@ int zcheckFile(long long *ifltab)
 	zinquireChar(ifltab, "error", ctemp, sizeof(ctemp), &istat);
 	if (istat != 0)
 		return istat;
-
-
-
 	*/
-
-	if (zgetVersion(ifltab) == 6) {
-		istat = STATUS_OKAY;
-		zckpnb6_(ifltab, &istat);
-		if (istat) return istat;
-		zcklnk6_(ifltab, &istat);
-		if (istat) return istat;
-		zckpat6_(ifltab, &istat);
-		return istat;
-	}
-
 
 	fileHeader = (long long *)ifltab[zdssKeys.kfileHeader];
 	zresetProgress(zhandle(ifltab), fileHeader[zdssFileKeys.knumberRecords]);
@@ -114,4 +100,3 @@ void zcheckfile_(long long *ifltab, int *errors)
 {
 	*errors = zcheckFile(ifltab);
 }
-

@@ -84,18 +84,6 @@ int ztsGetFirstLastRecordTimes(long long *ifltab, const char *pathname,
 	*lastJulian = 0;
 	*lastSeconds = 0;
 
-
-	if (zgetVersion(ifltab) == 6) {
-		ztsinfo_(ifltab, pathname, firstJulian, firstSeconds,
-			lastJulian, lastSeconds, cdum, cdum, &idum1, &idum2, &found, strlen(pathname), 0, 0);
-		if (found) {
-			*firstSeconds *= SECS_IN_1_MINUTE;
-			*lastSeconds *= SECS_IN_1_MINUTE;
-			return STATUS_RECORD_FOUND;
-		}
-		return STATUS_RECORD_NOT_FOUND;
-	}
-
 	status = zcheck(ifltab, pathname);
 	if (status != STATUS_RECORD_FOUND) {
 		return status;
@@ -129,4 +117,3 @@ int ztsGetFirstLastRecordTimes(long long *ifltab, const char *pathname,
 
 	return STATUS_OKAY;
 }
-

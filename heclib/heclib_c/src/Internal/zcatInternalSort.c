@@ -180,25 +180,6 @@ int zcatInternalSort(long long *ifltab, const char *pathWithWild, zStructCatalog
 								}
 								status = writeBytes(catalogHandle, "\n", (size_t)1);
 							}
-							if (fortranUnit) {
-								zero = 0;
-								one = 1;
-								_snprintf_s(cline, sizeof(cline), _TRUNCATE, "%5d    ", (i+1));
-								status =  fortranwritelc_(&fortranUnit, cline, &zero, (size_t)9);
-								if (status < 0) {
-									perror("Attempting to write pathname ");
-									if (nonSortedStruct) zstructFree(nonSortedStruct);
-									nonSortedStruct = 0;
-									return status;
-								}
-								status =  fortranwritelc_(&fortranUnit, nonSortedStruct->pathnameList[j], &one, strlen(nonSortedStruct->pathnameList[j]));
-								if (status < 0) {
-									perror("Attempting to write pathname ");
-									if (nonSortedStruct) zstructFree(nonSortedStruct);
-									nonSortedStruct = 0;
-									return status;
-								}
-							}
 							icount++;
 							break;
 						}
@@ -425,25 +406,7 @@ int zcatInternalSort(long long *ifltab, const char *pathWithWild, zStructCatalog
 				}
 				status = writeBytes(catalogHandle, "\n", (size_t)1);
 			}
-			if (fortranUnit) {
-				zero = 0;
-				one = 1;
-				_snprintf_s(cline, sizeof(cline), _TRUNCATE, "%5d    ", (i+1));
-				status =  fortranwritelc_(&fortranUnit, cline, &zero, (size_t)9);
-				if (status < 0) {
-					perror("Attempting to write pathname ");
-					if (nonSortedStruct) zstructFree(nonSortedStruct);
-					nonSortedStruct = 0;
-					return status;
-				}
-				status =  fortranwritelc_(&fortranUnit, nonSortedStruct->pathnameList[sequence], &one, strlen(nonSortedStruct->pathnameList[sequence]));
-				if (status < 0) {
-					perror("Attempting to write pathname ");
-					if (nonSortedStruct) zstructFree(nonSortedStruct);
-					nonSortedStruct = 0;
-					return status;
-				}
-			}
+
 			if (sortedStruct) {
 				sortedStruct->pathnameList[i] = mallocAndCopy(nonSortedStruct->pathnameList[sequence]);
 				if (!sortedStruct->pathnameList[i]) {
@@ -481,4 +444,3 @@ int zcatInternalSort(long long *ifltab, const char *pathWithWild, zStructCatalog
 	nonSortedStruct = 0;
 	return numberPathnames;
 }
-

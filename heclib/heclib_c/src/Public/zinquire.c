@@ -33,12 +33,6 @@ long long zinquire(long long *ifltab, const char *request)
 			0, 0, zdssErrorSeverity.INVALID_ARGUMENT, "", "request is null");
 	}
 
-	if (zgetVersion(ifltab) == 6) {
-		zinqir6_ (ifltab, request, creturn, &number, strlen(request), sizeof(creturn));
-		return (long long) number;
-	}
-
-
 	if (zdssVals.integrityKey != DSS_INTEGRITY_KEY) {
 		zinit();
 	 }
@@ -291,4 +285,3 @@ long long zinquire_ (long long *ifltab, const char *parameter, size_t lenParamet
 	free(param);
 	return longNumber;
 }
-

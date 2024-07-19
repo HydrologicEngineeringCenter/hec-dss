@@ -369,250 +369,237 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 		ztsMessTimeWindow(ifltab, DSS_FUNCTION_ztsRetrieve_ID, tss);
 	}
 
-	version = zgetVersion(ifltab);
-	if (version == 6) {
-		if (intervalType == 0)
-		{
-			status = ztsRetrieveReg6(ifltab, tss,
-									retrieveFlag, retrieveDoublesFlag, boolRetrieveQualityNotes);
+	version = zgetVersion(ifltab);	
+	//--------------------------------------//
+	// normalize tagged F-part (DSS 7 only) //
+	//--------------------------------------//
+	char* normalized = NULL;
+	status = normalizeFPartInPathname(&normalized, tss->pathname);
+	if (status == normalizeFPartStatus.SUCCESS) {
+		if (tss->allocated[zSTRUCT_pathname]) {
+			free(tss->pathname);
 		}
-		else {
-			status = ztsRetrieveIrreg6(ifltab, tss,
-									retrieveFlag, retrieveDoublesFlag, boolRetrieveQualityNotes);
-		}
+		tss->pathname = normalized;
+		tss->allocated[zSTRUCT_pathname] = TRUE;
 	}
 	else {
-		//--------------------------------------//
-		// normalize tagged F-part (DSS 7 only) //
-		//--------------------------------------//
-		char* normalized = NULL;
-		status = normalizeFPartInPathname(&normalized, tss->pathname);
-		if (status == normalizeFPartStatus.SUCCESS) {
-			if (tss->allocated[zSTRUCT_pathname]) {
-				free(tss->pathname);
-			}
-			tss->pathname = normalized;
-			tss->allocated[zSTRUCT_pathname] = TRUE;
+		char message[2048];
+		sprintf(message, "Error normalizing F-part tags: %s", normalizeFPartErrorMessage(status));
+		status = zerrorProcessing(ifltab, DSS_FUNCTION_ztsRetrieve_ID, zdssErrorCodes.INVALID_PATHNAME,
+			0, 0, zdssErrorSeverity.MEMORY_ERROR, tss->pathname, message);
+		if (zmessageLevel(ifltab, MESS_METHOD_TS_WRITE_ID, MESS_LEVEL_USER_DIAG)) {
+			zmessage2(ifltab, "Pathname: ", tss->pathname);
 		}
-		else {
-			char message[2048];
-			sprintf(message, "Error normalizing F-part tags: %s", normalizeFPartErrorMessage(status));
-			status = zerrorProcessing(ifltab, DSS_FUNCTION_ztsRetrieve_ID, zdssErrorCodes.INVALID_PATHNAME,
-				0, 0, zdssErrorSeverity.MEMORY_ERROR, tss->pathname, message);
-			if (zmessageLevel(ifltab, MESS_METHOD_TS_WRITE_ID, MESS_LEVEL_USER_DIAG)) {
-				zmessage2(ifltab, "Pathname: ", tss->pathname);
-			}
-			if (normalized) {
-				free(normalized);
-				normalized = 0;
-			}
-			return status;
+		if (normalized) {
+			free(normalized);
+			normalized = 0;
 		}
-		if (intervalType == 0) {
-			status = ztsRetrieveReg7(ifltab, tss,
-									retrieveFlag, retrieveDoublesFlag, boolRetrieveQualityNotes);
-		}
-		else {
-			status = ztsRetrieveIrreg7(ifltab, tss,
-									retrieveFlag, retrieveDoublesFlag, boolRetrieveQualityNotes);
-		}
-		//  Do we need to get location information?
-		if ((status == STATUS_OKAY) && tss->locationStruct) {
-			zlocationRetrieve(ifltab, tss->locationStruct);
-		}
-		//--------------------------------------------------//
-		// convert to requested vertical datum if necessary //
-		//--------------------------------------------------//
-		if (pathnameIsElevTs(tss->pathname)) {
-			//------------------------//
-			// parameter is elevation //
-			//------------------------//
-			char cvertical_datum[CVERTICAL_DATUM_SIZE];
-			int  ivertical_datum = -1;
-			verticalDatumInfo _vdi;
-			verticalDatumInfo *vdi = NULL;
-			char *vdiStr;
-			char errmsg[1024];
-			zquery("VDTM", cvertical_datum, sizeof(cvertical_datum), &ivertical_datum);
-			if (ivertical_datum != IVERTICAL_DATUM_UNSET) {
-				//-----------------------------------//
-				// specific vertical datum requested //
-				//-----------------------------------//
-				vdi = extractVerticalDatumInfoFromUserHeader(tss->userHeader, tss->userHeaderNumber);
-				if (!vdi) {
-					if (tss->locationStruct && tss->locationStruct->supplemental) {
-						vdiStr = extractFromDelimitedString(
-							&tss->locationStruct->supplemental,
-							VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
-							":",
-							TRUE,
-							FALSE,
-							';');
-						if (vdiStr) {
-							char *msg = stringToVerticalDatumInfo(&_vdi, vdiStr);
-							if(msg == NULL) {
-								vdi = &_vdi;
-							}
-							free(vdiStr);
+		return status;
+	}
+	if (intervalType == 0) {
+		status = ztsRetrieveReg7(ifltab, tss,
+								retrieveFlag, retrieveDoublesFlag, boolRetrieveQualityNotes);
+	}
+	else {
+		status = ztsRetrieveIrreg7(ifltab, tss,
+								retrieveFlag, retrieveDoublesFlag, boolRetrieveQualityNotes);
+	}
+	//  Do we need to get location information?
+	if ((status == STATUS_OKAY) && tss->locationStruct) {
+		zlocationRetrieve(ifltab, tss->locationStruct);
+	}
+	//--------------------------------------------------//
+	// convert to requested vertical datum if necessary //
+	//--------------------------------------------------//
+	if (pathnameIsElevTs(tss->pathname)) {
+		//------------------------//
+		// parameter is elevation //
+		//------------------------//
+		char cvertical_datum[CVERTICAL_DATUM_SIZE];
+		int  ivertical_datum = -1;
+		verticalDatumInfo _vdi;
+		verticalDatumInfo *vdi = NULL;
+		char *vdiStr;
+		char errmsg[1024];
+		zquery("VDTM", cvertical_datum, sizeof(cvertical_datum), &ivertical_datum);
+		if (ivertical_datum != IVERTICAL_DATUM_UNSET) {
+			//-----------------------------------//
+			// specific vertical datum requested //
+			//-----------------------------------//
+			vdi = extractVerticalDatumInfoFromUserHeader(tss->userHeader, tss->userHeaderNumber);
+			if (!vdi) {
+				if (tss->locationStruct && tss->locationStruct->supplemental) {
+					vdiStr = extractFromDelimitedString(
+						&tss->locationStruct->supplemental,
+						VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
+						":",
+						TRUE,
+						FALSE,
+						';');
+					if (vdiStr) {
+						char *msg = stringToVerticalDatumInfo(&_vdi, vdiStr);
+						if(msg == NULL) {
+							vdi = &_vdi;
 						}
+						free(vdiStr);
 					}
 				}
-				if (vdi == NULL) {
-					sprintf(
-						errmsg,
-						"Cannot convert from native vertical datum of '%s' to '%s'.\n"
-						"Record has no conversion information.\n"
-						"No values retrieved.",
-						tss->locationStruct->verticalDatum == 0 ? "UNSET"   :
-						tss->locationStruct->verticalDatum == 1 ? "NAVD-88" :
-						tss->locationStruct->verticalDatum == 2 ? "NGVD-29" : "OTHER",
-						cvertical_datum);
-					status = zerrorProcessing(
-						ifltab,
-						DSS_FUNCTION_ztsRetrieve_ID,
-						zdssErrorCodes.VERTICAL_DATUM_ERROR,
-						0,
-						0,
-						zdssErrorSeverity.WARNING,
-						tss->pathname,
-						errmsg);
-					return status;
-				}
-				else {
-					//---------------------------------------------------------------//
-					// ensure the vertical datum info is returned in the user header //
-					//---------------------------------------------------------------//
-					verticalDatumInfoToString(&vdiStr, vdi, TRUE);
-					char *headerString;
-					if (tss->userHeader) {
-						headerString = userHeaderToString(tss->userHeader, tss->userHeaderNumber);
-						if (!strstr(headerString, VERTICAL_DATUM_INFO_USER_HEADER_PARAM)) {
-							headerString = (char *)realloc(
-								headerString,
-								strlen(headerString)
-								+ VERTICAL_DATUM_INFO_USER_HEADER_PARAM_LEN
-								+ strlen(vdiStr)
-								+ 3);
-							sprintf(
-								headerString+strlen(headerString),
-								"%s:%s;",
-								VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
-								vdiStr);
-							free(tss->userHeader);
-						}
-					}
-					else {
-						headerString = (char *)malloc(
-							VERTICAL_DATUM_INFO_USER_HEADER_PARAM_LEN
+			}
+			if (vdi == NULL) {
+				sprintf(
+					errmsg,
+					"Cannot convert from native vertical datum of '%s' to '%s'.\n"
+					"Record has no conversion information.\n"
+					"No values retrieved.",
+					tss->locationStruct->verticalDatum == 0 ? "UNSET"   :
+					tss->locationStruct->verticalDatum == 1 ? "NAVD-88" :
+					tss->locationStruct->verticalDatum == 2 ? "NGVD-29" : "OTHER",
+					cvertical_datum);
+				status = zerrorProcessing(
+					ifltab,
+					DSS_FUNCTION_ztsRetrieve_ID,
+					zdssErrorCodes.VERTICAL_DATUM_ERROR,
+					0,
+					0,
+					zdssErrorSeverity.WARNING,
+					tss->pathname,
+					errmsg);
+				return status;
+			}
+			else {
+				//---------------------------------------------------------------//
+				// ensure the vertical datum info is returned in the user header //
+				//---------------------------------------------------------------//
+				verticalDatumInfoToString(&vdiStr, vdi, TRUE);
+				char *headerString;
+				if (tss->userHeader) {
+					headerString = userHeaderToString(tss->userHeader, tss->userHeaderNumber);
+					if (!strstr(headerString, VERTICAL_DATUM_INFO_USER_HEADER_PARAM)) {
+						headerString = (char *)realloc(
+							headerString,
+							strlen(headerString)
+							+ VERTICAL_DATUM_INFO_USER_HEADER_PARAM_LEN
 							+ strlen(vdiStr)
 							+ 3);
 						sprintf(
-							headerString,
+							headerString+strlen(headerString),
 							"%s:%s;",
 							VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
 							vdiStr);
+						free(tss->userHeader);
 					}
-					free(vdiStr);
-					//--------------------------------------------//
-					// add the requested datum to the user header //
-					//--------------------------------------------//
-					headerString = (char *)realloc(
-						headerString,
-						strlen(headerString)
-						+ VERTICAL_DATUM_USER_HEADER_PARAM_LEN
-						+ strlen(cvertical_datum)
+				}
+				else {
+					headerString = (char *)malloc(
+						VERTICAL_DATUM_INFO_USER_HEADER_PARAM_LEN
+						+ strlen(vdiStr)
 						+ 3);
 					sprintf(
-						headerString+strlen(headerString),
+						headerString,
 						"%s:%s;",
-						VERTICAL_DATUM_USER_HEADER_PARAM,
-						cvertical_datum);
-					tss->userHeader = stringToUserHeader(headerString, &tss->userHeaderNumber);
-					tss->allocated[zSTRUCT_userHeader] = TRUE;
-					free(headerString);
-					//-----------------------------//
-					// determine the offset to use //
-					//-----------------------------//
-					double offset;
-					switch(ivertical_datum) {
-						case IVERTICAL_DATUM_NAVD88 :
-							offset = vdi->offsetToNavd88;
-							break;
-						case IVERTICAL_DATUM_NGVD29 :
-							offset = vdi->offsetToNgvd29;
-							break;
-						default :
-							if(!strcmp(cvertical_datum, vdi->nativeDatum) || !strcmp(cvertical_datum, CVERTICAL_DATUM_OTHER)) {
-								offset = 0;
-							}
-							else {
-								offset = UNDEFINED_VERTICAL_DATUM_VALUE;
-							}
-							break;
-					}
-					if (offset != 0.) {
-						if (offset == UNDEFINED_VERTICAL_DATUM_VALUE) {
-							sprintf(
-								errmsg,
-								"\nVertical datum offset is undefined for datum '%s'.\n"
-								"Datum conversion could not be performed.\n"
-								"No values retrieved.",
-								cvertical_datum);
-							status = zerrorProcessing(
-								ifltab,
-								DSS_FUNCTION_ztsRetrieve_ID,
-								zdssErrorCodes.VERTICAL_DATUM_ERROR,
-								0,
-								0,
-								zdssErrorSeverity.WARNING,
-								tss->pathname,
-								errmsg);
-							return status;
-						}
-						offset = getOffset(offset, vdi->unit, tss->units);
-						if (offset == UNDEFINED_VERTICAL_DATUM_VALUE) {
-							sprintf(
-								errmsg,
-								"\nData unit (%s) and/or offset unit (%s) is invalid for vertical datum conversion.\n"
-								"Conversion to datum '%s' could not be performed.\n"
-								"No values retrieved.",
-								tss->units,
-								vdi->unit,
-								cvertical_datum);
-							status = zerrorProcessing(
-								ifltab,
-								DSS_FUNCTION_ztsRetrieve_ID,
-								zdssErrorCodes.VERTICAL_DATUM_ERROR,
-								0,
-								0,
-								zdssErrorSeverity.WARNING,
-								tss->pathname,
-								errmsg);
-							return status;
+						VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
+						vdiStr);
+				}
+				free(vdiStr);
+				//--------------------------------------------//
+				// add the requested datum to the user header //
+				//--------------------------------------------//
+				headerString = (char *)realloc(
+					headerString,
+					strlen(headerString)
+					+ VERTICAL_DATUM_USER_HEADER_PARAM_LEN
+					+ strlen(cvertical_datum)
+					+ 3);
+				sprintf(
+					headerString+strlen(headerString),
+					"%s:%s;",
+					VERTICAL_DATUM_USER_HEADER_PARAM,
+					cvertical_datum);
+				tss->userHeader = stringToUserHeader(headerString, &tss->userHeaderNumber);
+				tss->allocated[zSTRUCT_userHeader] = TRUE;
+				free(headerString);
+				//-----------------------------//
+				// determine the offset to use //
+				//-----------------------------//
+				double offset;
+				switch(ivertical_datum) {
+					case IVERTICAL_DATUM_NAVD88 :
+						offset = vdi->offsetToNavd88;
+						break;
+					case IVERTICAL_DATUM_NGVD29 :
+						offset = vdi->offsetToNgvd29;
+						break;
+					default :
+						if(!strcmp(cvertical_datum, vdi->nativeDatum) || !strcmp(cvertical_datum, CVERTICAL_DATUM_OTHER)) {
+							offset = 0;
 						}
 						else {
-							//------------------------------//
-							// add the offset to the values //
-							//------------------------------//
-							for (int i = 0; i < tss->numberValues; ++i) {
-								if (tss->floatValues) {
-									if (tss->floatValues[i] != UNDEFINED_FLOAT) {
-										tss->floatValues[i] += (float)offset;
-									}
+							offset = UNDEFINED_VERTICAL_DATUM_VALUE;
+						}
+						break;
+				}
+				if (offset != 0.) {
+					if (offset == UNDEFINED_VERTICAL_DATUM_VALUE) {
+						sprintf(
+							errmsg,
+							"\nVertical datum offset is undefined for datum '%s'.\n"
+							"Datum conversion could not be performed.\n"
+							"No values retrieved.",
+							cvertical_datum);
+						status = zerrorProcessing(
+							ifltab,
+							DSS_FUNCTION_ztsRetrieve_ID,
+							zdssErrorCodes.VERTICAL_DATUM_ERROR,
+							0,
+							0,
+							zdssErrorSeverity.WARNING,
+							tss->pathname,
+							errmsg);
+						return status;
+					}
+					offset = getOffset(offset, vdi->unit, tss->units);
+					if (offset == UNDEFINED_VERTICAL_DATUM_VALUE) {
+						sprintf(
+							errmsg,
+							"\nData unit (%s) and/or offset unit (%s) is invalid for vertical datum conversion.\n"
+							"Conversion to datum '%s' could not be performed.\n"
+							"No values retrieved.",
+							tss->units,
+							vdi->unit,
+							cvertical_datum);
+						status = zerrorProcessing(
+							ifltab,
+							DSS_FUNCTION_ztsRetrieve_ID,
+							zdssErrorCodes.VERTICAL_DATUM_ERROR,
+							0,
+							0,
+							zdssErrorSeverity.WARNING,
+							tss->pathname,
+							errmsg);
+						return status;
+					}
+					else {
+						//------------------------------//
+						// add the offset to the values //
+						//------------------------------//
+						for (int i = 0; i < tss->numberValues; ++i) {
+							if (tss->floatValues) {
+								if (tss->floatValues[i] != UNDEFINED_FLOAT) {
+									tss->floatValues[i] += (float)offset;
 								}
-								else {
-									if (tss->doubleValues[i] != UNDEFINED_DOUBLE) {
-										tss->doubleValues[i] += offset;
-									}
+							}
+							else {
+								if (tss->doubleValues[i] != UNDEFINED_DOUBLE) {
+									tss->doubleValues[i] += offset;
 								}
 							}
 						}
 					}
 				}
 			}
-			if (vdi && vdi != &_vdi) {
-				free(vdi);
-			}
+		}
+		if (vdi && vdi != &_vdi) {
+			free(vdi);
 		}
 	}
 	//  Do we need to trim the data?

@@ -16,11 +16,9 @@ int PathnameTesting(char* dssFileName, int dssVersion)
 	memset(ifltab,0,sizeof(ifltab));
 	deleteFile(dssFileName);
 	
-	if (dssVersion == 7)
+	if (dssVersion == 7) {
 		status = hec_dss_zopen(ifltab, dssFileName);
-	else if (dssVersion == 6)
-		status = zopen6(ifltab, dssFileName);
-	else {
+	} else {
 		printf("\n invalid DSS version %d PathnameTesting failed", dssVersion);
 		return -1;
 	}
@@ -79,4 +77,3 @@ int PathnameTesting(char* dssFileName, int dssVersion)
 	zclose(ifltab);
 	return 0; 
 }
-

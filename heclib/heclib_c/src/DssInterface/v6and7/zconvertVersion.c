@@ -32,80 +32,79 @@
 *
 **/
 
-int zconvertVersion(const char* fileNameFrom, const char* fileNameTo)
-{
-	long long ifltabFrom[600] = {0};
-	long long ifltabTo[600] = {0};
-	int status = 0;
-	int versionNumber = 0;
-	int nrecs = 0;
-	char cscrat[20] = {0};
+// int zconvertVersion(const char* fileNameFrom, const char* fileNameTo)
+// {
+// 	long long ifltabFrom[600] = {0};
+// 	long long ifltabTo[600] = {0};
+// 	int status = 0;
+// 	int versionNumber = 0;
+// 	int nrecs = 0;
+// 	char cscrat[20] = {0};
 
 
-	if (!fileNameFrom) {
-		return zerrorProcessing(ifltabFrom, DSS_FUNCTION_zcopyFile_ID, zdssErrorCodes.NULL_FILENAME,
-			0, 0, zdssErrorSeverity.INVALID_ARGUMENT, "", "");
-	}
-	if (!fileNameTo) {
-		return zerrorProcessing(ifltabFrom, DSS_FUNCTION_zcopyFile_ID, zdssErrorCodes.NULL_FILENAME,
-			0, 0, zdssErrorSeverity.INVALID_ARGUMENT, "", "");
-	}
+// 	if (!fileNameFrom) {
+// 		return zerrorProcessing(ifltabFrom, DSS_FUNCTION_zcopyFile_ID, zdssErrorCodes.NULL_FILENAME,
+// 			0, 0, zdssErrorSeverity.INVALID_ARGUMENT, "", "");
+// 	}
+// 	if (!fileNameTo) {
+// 		return zerrorProcessing(ifltabFrom, DSS_FUNCTION_zcopyFile_ID, zdssErrorCodes.NULL_FILENAME,
+// 			0, 0, zdssErrorSeverity.INVALID_ARGUMENT, "", "");
+// 	}
 
-	versionNumber = zgetFileVersion(fileNameFrom);
-	if (versionNumber == 0) {
-		return zerrorProcessing(ifltabFrom, DSS_FUNCTION_zcopyFile_ID,
-				zdssErrorCodes.FILE_DOES_NOT_EXIST, 0, 0,
-				zdssErrorSeverity.WARNING_NO_FILE_ACCESS, "", fileNameTo);
-	}
+// 	versionNumber = zgetFileVersion(fileNameFrom);
+// 	if (versionNumber == 0) {
+// 		return zerrorProcessing(ifltabFrom, DSS_FUNCTION_zcopyFile_ID,
+// 				zdssErrorCodes.FILE_DOES_NOT_EXIST, 0, 0,
+// 				zdssErrorSeverity.WARNING_NO_FILE_ACCESS, "", fileNameTo);
+// 	}
 
-	status = hec_dss_zopen(ifltabFrom, fileNameFrom);
-	if (zisError(status)) {
-		printf("Error opening file %s\n", fileNameFrom);
-		return status;
-	}
+// 	status = hec_dss_zopen(ifltabFrom, fileNameFrom);
+// 	if (zisError(status)) {
+// 		printf("Error opening file %s\n", fileNameFrom);
+// 		return status;
+// 	}
 
-	if (zgetFileVersion(fileNameTo) == 0) {
-		if (versionNumber == 6) {
-			zinqir_(ifltabFrom, "NREC", cscrat, &nrecs, (size_t)4, (size_t)0);
-			status = zopenInternal(ifltabTo, fileNameTo, 0, nrecs, 0, 0, 0);
-		}
-		else if (versionNumber == 7) {
-			zopen6_ (ifltabTo, fileNameTo, &status, strlen(fileNameTo));
-		}
-		else {
-			status = -1;
-		}
-	}
-	else {
-		if (versionNumber == zgetFileVersion(fileNameTo)) {
-			return zerrorProcessing(ifltabFrom, DSS_FUNCTION_zcopyFile_ID,
-				zdssErrorCodes.FILE_EXISTS, 0, 0,
-				zdssErrorSeverity.WARNING_NO_FILE_ACCESS, fileNameTo, "");
-		}
-		status = hec_dss_zopen(ifltabTo, fileNameTo);
-	}
+// 	if (zgetFileVersion(fileNameTo) == 0) {
+// 		if (versionNumber == 6) {
+// 			zinqir_(ifltabFrom, "NREC", cscrat, &nrecs, (size_t)4, (size_t)0);
+// 			status = zopenInternal(ifltabTo, fileNameTo, 0, nrecs, 0, 0, 0);
+// 		}
+// 		else if (versionNumber == 7) {
+// 			zopen6_ (ifltabTo, fileNameTo, &status, strlen(fileNameTo));
+// 		}
+// 		else {
+// 			status = -1;
+// 		}
+// 	}
+// 	else {
+// 		if (versionNumber == zgetFileVersion(fileNameTo)) {
+// 			return zerrorProcessing(ifltabFrom, DSS_FUNCTION_zcopyFile_ID,
+// 				zdssErrorCodes.FILE_EXISTS, 0, 0,
+// 				zdssErrorSeverity.WARNING_NO_FILE_ACCESS, fileNameTo, "");
+// 		}
+// 		status = hec_dss_zopen(ifltabTo, fileNameTo);
+// 	}
 
-	if (status == 0) {
-		status = zcopyFile(ifltabFrom, ifltabTo, 0);
-		zclose (ifltabFrom);
-		zclose (ifltabTo);
-	}
+// 	if (status == 0) {
+// 		status = zcopyFile(ifltabFrom, ifltabTo, 0);
+// 		zclose (ifltabFrom);
+// 		zclose (ifltabTo);
+// 	}
 
-	return status;
-}
+// 	return status;
+// }
 
-void zconvertversion_ (const char* fileNameFrom, const char* fileNameTo, int *status,
-					   size_t fileNameFromLen, size_t fileNameToLen)
-{
-	char *fileFrom;
-	char *fileTo;
+// void zconvertversion_ (const char* fileNameFrom, const char* fileNameTo, int *status,
+// 					   size_t fileNameFromLen, size_t fileNameToLen)
+// {
+// 	char *fileFrom;
+// 	char *fileTo;
 
-	fileFrom = stringFortToC(fileNameFrom, fileNameFromLen);
-	fileTo = stringFortToC(fileNameTo, fileNameToLen);
+// 	fileFrom = stringFortToC(fileNameFrom, fileNameFromLen);
+// 	fileTo = stringFortToC(fileNameTo, fileNameToLen);
 
-	*status = zconvertVersion(fileFrom, fileTo);
+// 	*status = zconvertVersion(fileFrom, fileTo);
 
-	free(fileFrom);
-	free(fileTo);
-}
-
+// 	free(fileFrom);
+// 	free(fileTo);
+// }

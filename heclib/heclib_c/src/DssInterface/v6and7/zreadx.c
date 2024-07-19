@@ -35,59 +35,46 @@ void zreadx(long long *ifltab, const char *pathname,
 		zmessageDebug(ifltab, DSS_FUNCTION_zread_ID, " Pathname: ",pathname);
 	}
 
+	ztransfer = zstructTransferNew(pathname, 0);
+	if (!ztransfer) {
+		*recordFound = 0;
+		zstructFree(ztransfer);
+		return;
+	}
+	ztransfer->internalHeader = internalHeader;
+	ztransfer->internalHeaderMode = *internalHeaderArraySize;
 
-	if (zgetVersion(ifltab) == 6) {
-		stringCToFort(path, sizeof(path),  pathname);
-		zreadx6_(ifltab, pathname,
-				 internalHeader, internalHeaderArraySize, internalHeaderNumber,
-				 header2, header2ArraySize, header2Number,
-				 userHeader, userHeaderArraySize, userHeaderNumber,
-				 values, valuesSize, valuesNumber,
-				 readPlan, recordFound, strlen(pathname));
+	ztransfer->header2 = header2;
+	ztransfer->header2Mode = *header2ArraySize;
+
+	ztransfer->userHeader = userHeader;
+	ztransfer->userHeaderMode = *userHeaderArraySize;
+
+	ztransfer->values1 = values;
+	ztransfer->values1Mode = *valuesSize;
+
+	status = zread(ifltab, ztransfer);
+
+	if (status == STATUS_RECORD_FOUND) {
+		*recordFound = 1;
+		*internalHeaderNumber = ztransfer->internalHeaderNumber;
+		*header2Number = ztransfer->header2Number;
+		*userHeaderNumber = ztransfer->userHeaderNumber;
+		*valuesNumber = ztransfer->values1Number;
+		//  For compatibility with DSS-6 (only),
+		//  zreadx reported the number stored, not number returned
+		*internalHeaderNumber =	(int)ztransfer->info[zdssInfoKeys.kinfoInternalHeadNumber];
+		*header2Number =		(int)ztransfer->info[zdssInfoKeys.kinfoHeader2Number];
+		*userHeaderNumber =		(int)ztransfer->info[zdssInfoKeys.kinfoUserHeadNumber];
+		*valuesNumber =			(int)ztransfer->info[zdssInfoKeys.kinfoValues1Number];
 	}
 	else {
-		ztransfer = zstructTransferNew(pathname, 0);
-		if (!ztransfer) {
-			*recordFound = 0;
-			zstructFree(ztransfer);
-			return;
-		}
-		ztransfer->internalHeader = internalHeader;
-		ztransfer->internalHeaderMode = *internalHeaderArraySize;
-
-		ztransfer->header2 = header2;
-		ztransfer->header2Mode = *header2ArraySize;
-
-		ztransfer->userHeader = userHeader;
-		ztransfer->userHeaderMode = *userHeaderArraySize;
-
-		ztransfer->values1 = values;
-		ztransfer->values1Mode = *valuesSize;
-
-		status = zread(ifltab, ztransfer);
-
-		if (status == STATUS_RECORD_FOUND) {
-			*recordFound = 1;
-			*internalHeaderNumber = ztransfer->internalHeaderNumber;
-			*header2Number = ztransfer->header2Number;
-			*userHeaderNumber = ztransfer->userHeaderNumber;
-			*valuesNumber = ztransfer->values1Number;
-			//  For compatibility with DSS-6 (only),
-			//  zreadx reported the number stored, not number returned
-			*internalHeaderNumber =	(int)ztransfer->info[zdssInfoKeys.kinfoInternalHeadNumber];
-			*header2Number =		(int)ztransfer->info[zdssInfoKeys.kinfoHeader2Number];
-			*userHeaderNumber =		(int)ztransfer->info[zdssInfoKeys.kinfoUserHeadNumber];
-			*valuesNumber =			(int)ztransfer->info[zdssInfoKeys.kinfoValues1Number];
-		}
-		else {
-			*recordFound = 0;
-			*userHeaderNumber = 0;
-			*header2Number = 0;
-			*valuesNumber = 0;
-		}
-		zstructFree(ztransfer);
+		*recordFound = 0;
+		*userHeaderNumber = 0;
+		*header2Number = 0;
+		*valuesNumber = 0;
 	}
-
+	zstructFree(ztransfer);
 }
 
 
@@ -110,4 +97,3 @@ void zreadx_(long long *ifltab, const char *pathname,
 			 values, valuesSize, valuesNumber,
 			 readPlan, recordFound);
 }
-

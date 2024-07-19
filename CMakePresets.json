@@ -16,7 +16,6 @@
             "CMAKE_POLICY_DEFAULT_CMP0091": "NEW",
             "CMAKE_BUILD_TYPE": "Debug"
         },
-        "binaryDir": "/home/mike/projects/hec-dss/build/Debug",
         "environment": {
           "PATH": "$penv{PATH}"
         }
