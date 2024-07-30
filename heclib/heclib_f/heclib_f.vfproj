@@ -24,7 +24,7 @@
 				<Tool Name="VFPreBuildEventTool"/>
 				<Tool Name="VFPostBuildEventTool"/>
 				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
-		<Configuration Name="Debug|x64" OutputDirectory="$(ProjectDir)\$(PlatformName)\$(ConfigurationName)" IntermediateDirectory="$(ProjectDir)\$(PlatformName)\$(ConfigurationName)_intermediate" TargetName="heclib_f" ConfigurationType="typeStaticLibrary">
+		<Configuration Name="Debug|x64" UseCompiler="ifxCompiler" OutputDirectory="$(ProjectDir)\$(PlatformName)\$(ConfigurationName)" IntermediateDirectory="$(ProjectDir)\$(PlatformName)\$(ConfigurationName)_intermediate" TargetName="heclib_f" ConfigurationType="typeStaticLibrary">
 				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" MultiProcessorCompilation="true" Optimization="optimizeDisabled" Preprocess="preprocessYes" AdditionalIncludeDirectories="src\headers" ReentrantCode="reentrancyThreaded" WarnUnusedVariables="true" WarnTruncateSource="true" WarnUnalignedData="false" LocalVariableStorage="localStorageSave" LocalSavedScalarsZero="true" ExternalNameInterpretation="extNameLowerCase" CallingConvention="callConventionCRef" ExternalNameUnderscore="true" Traceback="true" RuntimeChecks="rtChecksNone" RuntimeLibrary="rtMultiThreadedDebug" UsePortlib="true"/>
 				<Tool Name="VFLinkerTool" SuppressStartupBanner="true"/>
 				<Tool Name="VFLibrarianTool" OutputFile="$(OutDir)\heclib_f$(TargetExt)"/>
