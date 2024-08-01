@@ -44,7 +44,6 @@ all:
 
 clean:
 	( rm -f Output/*.a)
-	( cd ../nws_shef; $(MAKE) -f Makefile.$(Make_OS) clean)
 	(cd heclib_c; $(MAKE) -f Makefile clean)
 	(cd heclib_f; $(MAKE) -f Makefile clean)
 	(cd javaHeclib; $(MAKE) -f Makefile clean)
