@@ -118,9 +118,9 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>javaShefDssLib.lib;heclib_f.lib;heclib_c.lib;zlibstatic.lib</AdditionalDependencies>
+      <AdditionalDependencies>heclib_f.lib;heclib_c.lib;zlibstatic.lib</AdditionalDependencies>
       <OutputFile>$(ProjectDir)$(Platform)\$(Configuration)\javaHeclib.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\heclib_c\$(PlatformName)\$(ConfigurationName);..\heclib_f\$(PlatformName)\$(ConfigurationName);..\..\lib\$(PlatformName);$(IFORT_COMPILER22)compiler\lib\intel64_win;..\..\nws_shef\$(PlatformName)\$(ConfigurationName)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\heclib_c\$(PlatformName)\$(ConfigurationName);..\heclib_f\$(PlatformName)\$(ConfigurationName);..\..\lib\$(PlatformName);$(IFORT_COMPILER22)compiler\lib\intel64_win</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>MSVCRT</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
@@ -162,9 +162,9 @@
       <PreprocessorDefinitions>WIN32;_WINDOWS;_USRDLL;JAVAHECLIB_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>javaShefDssLib.lib;heclib_f.lib;heclib_c.lib;zlibstatic.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>heclib_f.lib;heclib_c.lib;zlibstatic.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(ProjectDir)$(Platform)\$(Configuration)\javaHeclib.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\heclib_c\$(PlatformName)\$(ConfigurationName);..\heclib_f\$(PlatformName)\$(ConfigurationName);..\..\lib\$(PlatformName);$(IFORT_COMPILER22)compiler\lib\intel64_win;..\..\nws_shef\$(PlatformName)\$(ConfigurationName)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\heclib_c\$(PlatformName)\$(ConfigurationName);..\heclib_f\$(PlatformName)\$(ConfigurationName);..\..\lib\$(PlatformName);$(IFORT_COMPILER22)compiler\lib\intel64_win</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>
@@ -233,7 +233,7 @@
       <AdditionalLibraryDirectories>..\heclib_c\$(PlatformName)\$(ConfigurationName);..\heclib_f\$(PlatformName)\$(ConfigurationName);..\..\lib\$(PlatformName);$(IFORT_COMPILER22)compiler\lib\intel64_win;..\..\nws_shef\$(PlatformName)\$(ConfigurationName)</AdditionalLibraryDirectories>
       <ShowProgress>LinkVerboseLib</ShowProgress>
       <OutputFile>$(OutDir)javaHeclib.dll</OutputFile>
-      <AdditionalDependencies>javaShefDssLib.lib;heclib_f.lib;heclib_c.lib;zlibstatic.lib;ifconsol.lib</AdditionalDependencies>
+      <AdditionalDependencies>heclib_f.lib;heclib_c.lib;zlibstatic.lib;ifconsol.lib</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>MSVCRT</IgnoreSpecificDefaultLibraries>
     </Link>
     <ResourceCompile>
@@ -270,7 +270,6 @@
     <ClCompile Include="src\Hec_iymdjl.c" />
     <ClCompile Include="src\Hec_jliymd.c" />
     <ClCompile Include="src\Hec_juldat.c" />
-    <ClCompile Include="src\Hec_LoadParam.c" />
     <ClCompile Include="src\Hec_m2ihm.c" />
     <ClCompile Include="src\Hec_makedsscatalog.c" />
     <ClCompile Include="src\Hec_nopers.c" />
@@ -288,10 +287,8 @@
     <ClCompile Include="src\Hec_zinquire.c" />
     <ClCompile Include="src\Hec_zmessage.c" />
     <ClCompile Include="src\Hec_zreadRawRecord.c" />
-    <ClCompile Include="src\Hec_RunShefDss.c" />
     <ClCompile Include="src\Hec_StringHol.c" />
     <ClCompile Include="src\Hec_systim.c" />
-    <ClCompile Include="src\Hec_ToShef.c" />
     <ClCompile Include="src\Hec_zwriteRawRecord.c" />
     <ClCompile Include="src\Hec_zarrayRetrieve.c" />
     <ClCompile Include="src\Hec_zarrayStore.c" />

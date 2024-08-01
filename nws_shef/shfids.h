@@ -1,9 +1,0 @@
-C STATION IDENTIFIERS
-C     PARAMETER ( MAXSTA=2000 )                                         H
-      PARAMETER ( MAXSTA=2000 )                                          M
-      COMMON / SHFIDS / DSSID, SHEFID
-      CHARACTER DSSID(MAXSTA)*32, SHEFID(MAXSTA)*10
-C
-C        DSSID   ---  LABEL FOR DSS PATHNAME PART B  FOR STATION
-C        SHEFID  ---  USED TO IDENTIFY STATION IN ACCORDANCE WITH SHEF
-C
