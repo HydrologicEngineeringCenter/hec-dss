@@ -1,1 +1,0 @@
-Output folder is for Linux/Solaris

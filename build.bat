@@ -16,11 +16,6 @@ cd heclib\heclib_f
 nmake -f Makefile.win  DEBUG=1 clean all
 nmake -f Makefile.win  clean all
 
-cd %~dp0\nws_shef
-
-nmake -f Makefile.win  DEBUG=1 clean all
-nmake -f Makefile.win  clean all
-
 cd %~dp0
 msbuild dss.sln /p:Configuration=Release /p:Platform=x64
 if NOT %ERRORLEVEL% == 0  exit /b -1

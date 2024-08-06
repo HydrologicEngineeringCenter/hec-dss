@@ -24,7 +24,7 @@
 				<Tool Name="VFPreBuildEventTool"/>
 				<Tool Name="VFPostBuildEventTool"/>
 				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
-		<Configuration Name="Debug|x64" UseCompiler="ifxCompiler">
+		<Configuration Name="Debug|x64">
 				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" MultiProcessorCompilation="true" Optimization="optimizeDisabled" Preprocess="preprocessYes" WarnDeclarations="true" WarnUnusedVariables="true" WarnUncalled="true" ExternalNameInterpretation="extNameLowerCase" CallingConvention="callConventionCRef" ExternalNameUnderscore="true" Traceback="true" RuntimeChecks="rtChecksAll" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebug" UsePortlib="true"/>
 				<Tool Name="VFLinkerTool" LinkIncremental="linkIncrementalYes" SuppressStartupBanner="true" AdditionalLibraryDirectories="..\..\heclib\heclib_c\$(PlatformName)\$(ConfigurationName);..\..\heclib\heclib_f\$(PlatformName)\$(ConfigurationName);..\..\lib\$(Platform);%(AdditionalLibraryDirectories)" IgnoreDefaultLibraryNames="libcmt;MSVCRT" GenerateDebugInformation="true" SubSystem="subSystemConsole" AdditionalDependencies="heclib_f.lib heclib_c.lib zlibstatic.lib"/>
 				<Tool Name="VFResourceCompilerTool"/>
