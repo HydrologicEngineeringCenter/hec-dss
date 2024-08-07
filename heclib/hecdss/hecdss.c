@@ -80,17 +80,43 @@ float* hec_dss_double_array_to_float(double* values,const int size) {
   return rval;
 }
 
-void hec_dss_array_copy(double* destination, const long destinationSize,
-  double* source, const size_t sourceSize) {
+void hec_dss_array_copy_double(double* destination, const long destinationSize,
+                              double* source, const size_t sourceSize) {
+  if (destination == NULL || destinationSize <= 0 || source == NULL || sourceSize <= 0) {
+    return;
+  }
   size_t numberToCopy = sourceSize < destinationSize ? sourceSize: destinationSize;
 
   for (size_t i = 0; i < numberToCopy; i++)
   {
     destination[i] = source[i];
   }
-
 }
 
+void hec_dss_array_copy_float(float* destination, const long destinationSize,
+                              float* source, const size_t sourceSize) {
+  if (destination == NULL || destinationSize <= 0 || source == NULL || sourceSize <= 0) {
+    return;
+  }
+  size_t numberToCopy = sourceSize < destinationSize ? sourceSize : destinationSize;
+
+  for (size_t i = 0; i < numberToCopy; i++)
+  {
+    destination[i] = source[i];
+  }
+}
+void hec_dss_array_copy_int(int* destination, const long destinationSize,
+                            int* source, const size_t sourceSize) {
+  if (destination == NULL || destinationSize <= 0 || source == NULL || sourceSize <= 0) {
+    return;
+  }
+  size_t numberToCopy = sourceSize < destinationSize ? sourceSize : destinationSize;
+
+  for (size_t i = 0; i < numberToCopy; i++)
+  {
+    destination[i] = source[i];
+  }
+}
 HECDSS_API int hec_dss_open(const char* filename, dss_file** dss)
 {
     dss_file* f = (dss_file*)malloc(sizeof(dss_file));
@@ -533,8 +559,8 @@ HECDSS_API int hec_dss_pdRetrieve(dss_file* dss, const char* pathname,
         labels[i] = pds->labels[i];
     }
       
-    hec_dss_array_copy(doubleOrdinates, doubleOrdinatesLength, pds->doubleOrdinates, pds->numberOrdinates);
-    hec_dss_array_copy(doubleValues, doubleValuesLength, pds->doubleValues, pds->numberOrdinates* pds->numberCurves);
+    hec_dss_array_copy_double(doubleOrdinates, doubleOrdinatesLength, pds->doubleOrdinates, pds->numberOrdinates);
+    hec_dss_array_copy_double(doubleValues, doubleValuesLength, pds->doubleValues, pds->numberOrdinates* pds->numberCurves);
 
   }
 
@@ -776,4 +802,67 @@ HECDSS_API int hec_dss_convertToVersion7(const char* filenameVersion6, const cha
     status = zconvertVersion(filenameVersion6, filenameVersion7);
     return status;
 
+}
+
+HECDSS_API int hec_dss_arrayStore(dss_file* dss, const char* pathname, 
+                                  int* intValues,const int intValuesLength,
+                                  float* floatValues,const int floatValuesLength,
+                                  double* doubleValues,const int doubleValuesLength){
+
+  zStructArray* array;
+  array = zstructArrayNew(pathname);
+  
+  if (intValues != 0 && intValuesLength > 0) {
+    array->intArray = intValues;
+    array->numberIntArray = intValuesLength;
+  }
+  if (floatValues != 0 && floatValuesLength > 0) {
+    array->floatArray = floatValues;
+    array->numberFloatArray = floatValuesLength;
+  }
+  if (doubleValues != 0 && doubleValuesLength > 0) {
+    array->doubleArray = doubleValues;
+    array->numberDoubleArray = doubleValuesLength;
+  }
+  int status = zarrayStore(dss->ifltab, array);
+
+  return status;
+}
+
+HECDSS_API int hec_dss_arrayRetrieveInfo(dss_file* dss, const char* pathname,
+  int* intValuesRead, int* floatValuesRead, int* doubleValuesRead) {
+
+  zStructArray* array;
+  array = zstructArrayNew(pathname);
+  int status = zarrayRetrieve(dss->ifltab, array);
+  if (status == STATUS_OKAY) {
+    *intValuesRead = array->numberIntArray;
+    *floatValuesRead = array->numberFloatArray;
+    *doubleValuesRead = array->numberDoubleArray;
+  }
+  return status;
+}
+
+
+HECDSS_API int hec_dss_arrayRetrieve(dss_file* dss, const char* pathname,
+  int* intValues, const int intValuesLength,
+  float* floatValues, const int floatValuesLength,
+  double* doubleValues, const int doubleValuesLength){
+
+  zStructArray* array = zstructArrayNew(pathname);
+  int status = zarrayRetrieve(dss->ifltab, array);
+
+  if (status == STATUS_OKAY) {
+    if (intValuesLength == array->numberIntArray) {
+      hec_dss_array_copy_int(intValues, intValuesLength, array->intArray, array->numberIntArray);
+    }
+    if (floatValuesLength == array->numberFloatArray) {
+      hec_dss_array_copy_float(floatValues, floatValuesLength, array->floatArray, array->numberFloatArray);
+    }
+    if (doubleValuesLength == array->numberDoubleArray) {
+      hec_dss_array_copy_double(doubleValues, doubleValuesLength, array->doubleArray, array->numberDoubleArray);
+    }
+  }
+
+  return status;
 }

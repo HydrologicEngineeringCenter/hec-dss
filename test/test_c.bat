@@ -6,13 +6,8 @@ set /a counter=0
 set /a fail=0
 
 set A=x64
-
-if  "%1"=="Win32" (
-set A=Win32
-call  ..\vs_env32.bat
-) else (
 call  ..\vs_env.bat
-)
+
 
 call test_setup.bat
 
