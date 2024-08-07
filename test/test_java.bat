@@ -7,11 +7,6 @@ cd ..
 set JAVA_HOME="C:\Programs\Java\jdk1.8.0"
 set PLATFORM=x64
 
-if /i "%1"=="Win32" (
-set PLATFORM=Win32
-set JAVA_HOME="C:\Programs\Java\jdk1.8.0_x86"
-)
-
 set SRC=test/Java/src/test/java
 
 set CP=jar\heclib.jar;jar\hec.jar;jar\hecData.jar;jar\rma.jar;jar\junit-platform-console-standalone-1.3.1.jar;jar\hec-dssvue-v3.0.1.jar;hecClientServer-v1.1-dev.jar
