@@ -47,7 +47,7 @@ void checkfloats_(float* dataOrig, float* dataRead, int* number, char* mess, int
 
 	*status = 0;
 
-	for (i = 0; i < number; i++) {
+	for (i = 0; i < *number; i++) {
 		if (dataOrig[i] != dataRead[i]) {
 			printf("\n");
 			printf("\n");
@@ -72,7 +72,7 @@ void checkints_(int* dataOrig, int* dataRead, int* length, int* number, char* me
 				printf("*****  Data read does not match those written *****\n");
 				printf("At ordinate: %8d Written: %12d Read: %12d\n",
 					i + 1, dataOrig[i * (*length) + j], dataRead[i * (*length) + j]);
-				printf("%.*s\n", mess_len, mess);
+				printf("%s\n", mess);
 				printf("\n\n");
 				*status = -1;
 				return;
