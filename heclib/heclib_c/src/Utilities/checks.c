@@ -39,9 +39,6 @@ void checknumbers_(int* numberOrig, int* numberRead, const char* mess, int* stat
 	}
 }
 
-#include <stdio.h>
-#include <stdlib.h>
-
 void checkfloats_(float* dataOrig, float* dataRead, int* number, const char* mess, int* status, size_t dummy) {
 	int i;
 
@@ -82,9 +79,6 @@ void checkints_(int* dataOrig, int* dataRead, int* length, int* number, const ch
 	*status = 0;
 }
 
-#include <string.h>
-#include <ctype.h>
-#include <stdio.h>
 
 void upcase(char* str) {
 	for (int i = 0; str[i]; i++) {

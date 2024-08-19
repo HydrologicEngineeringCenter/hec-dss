@@ -1,5 +1,9 @@
 #pragma once
 #include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+#include <stdio.h>
+
 // some checks used by testing Code C and Fortran
 // converted from checks.f
 
