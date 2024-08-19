@@ -56,11 +56,6 @@ int testTsStoreRules();
 int testNoDates(int version);
 
 
-void checktimes_(int *times1, int *times2, int *baseDate, int *timeGranularitySeconds, int *numberValues, 
-				   const char *mess, int *status, size_t strlenmess);
-void checkstring_(const char *units1, const char *units2, const char *mess, int *status,
-				  size_t strlenunits1, size_t strlenunits2, size_t strlenmess);
-
 int compareZtwItem(int one, int two, const char *name, char *path, char *mess);
 void clearztw(ztsTimeWindow *timeWindow);
 int compareZtw(ztsTimeWindow *timeWindow1, ztsTimeWindow *timeWindow2, char *path, char *mess);

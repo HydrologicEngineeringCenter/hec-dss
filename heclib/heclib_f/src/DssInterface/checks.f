@@ -1,39 +1,4 @@
      
-      subroutine checkString(stringOrig, stringRead, mess, status)
-     
-      implicit none
-     
-      integer status
-      character*(*) stringOrig, stringRead
-      character mess*(*)
-      character strOrig*200, stringR*200
-
-        if (stringOrig.ne.stringRead) then
-!       Allow different case strings
-        strOrig = stringOrig
-        stringR = stringRead
-        call UPCASE(strOrig)
-        call UPCASE(stringR)
-        if (strOrig.ne.stringR) then
-         write (*,*)' '
-         write (*,*)' '
-         write (*,*)'***  String read does not match that written *****'
-         write (*, 20) stringOrig, stringRead
-20       Format('String Written: ==>', A, '<==  Read: ==>',A, '<==')
-         write (*,*)mess
-         write (*,*)' '
-         write (*,*)' '
-         status = -1
-         return
-        endif
-        endif
- 100  continue
-
-      status = 0
-      return
-      end
-     
-     
      
       subroutine checkTimes(dataOrig, dataRead, baseDate,
      * timeGranularityFlag, number, mess, status)
