@@ -62,7 +62,7 @@ void checkfloats_(float* dataOrig, float* dataRead, int* number, char* mess, int
 	}
 }
 
-void checkints_(int* dataOrig, int* dataRead, int* length, int* number, char* mess, int* status, size_t mess_len)
+void checkints_(int* dataOrig, int* dataRead, int* length, int* number, const char* mess, int* status, size_t mess_len)
 {
 	int i, j;
 	for (i = 0; i < *number; i++) {
