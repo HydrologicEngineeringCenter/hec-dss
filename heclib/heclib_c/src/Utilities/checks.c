@@ -1,6 +1,6 @@
 #include "checks.h"
 
-void checkdoubles_(double* dataOrig, double* dataRead, int* number, char* mess, int* status, size_t dummy) {
+void checkdoubles_(double* dataOrig, double* dataRead, int* number, const char* mess, int* status, size_t dummy) {
 	int i;
 
 	*status = 0;
@@ -42,7 +42,7 @@ void checknumbers_(int* numberOrig, int* numberRead, const char* mess, int* stat
 #include <stdio.h>
 #include <stdlib.h>
 
-void checkfloats_(float* dataOrig, float* dataRead, int* number, char* mess, int* status, size_t dummy) {
+void checkfloats_(float* dataOrig, float* dataRead, int* number, const char* mess, int* status, size_t dummy) {
 	int i;
 
 	*status = 0;
