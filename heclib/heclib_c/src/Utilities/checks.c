@@ -90,6 +90,9 @@ void checkstring_(char* stringOrig, char* stringRead, char* mess, int* status,
 	size_t stringOrigLen, size_t stringReadLen, size_t messLen) {
 	int max_len = 2001;
 	char strOrig[2001], stringR[2001];
+	
+	stringOrig[sizeof stringOrig - 1] = 0;
+	stringRead[sizeof stringRead - 1] = 0;
 
 	if (strlen(stringOrig) >= max_len || strlen(stringRead) >= max_len) {
 		*status = -1;
@@ -99,10 +102,21 @@ void checkstring_(char* stringOrig, char* stringRead, char* mess, int* status,
 
 	if (strncmp(stringOrig, stringRead, stringOrigLen) != 0) {
 		// Allow different case strings
+		strOrig[sizeof strOrig - 1] = 0;
+		stringR[sizeof stringR - 1] = 0;
+
 		strncpy(strOrig, stringOrig, sizeof(strOrig) - 1);
 		strncpy(stringR, stringRead, sizeof(stringR) - 1);
-		strOrig[sizeof(strOrig) - 1] = '\0';
-		stringR[sizeof(stringR) - 1] = '\0';
+
+		if (stringR[sizeof stringR - 1] != 0
+			|| strOrig[sizeof stringR - 1] != 0) {
+
+			printf("\nError in checkstring_. input char* was too long %s ", mess);
+			return;
+		}
+
+		strOrig[sizeof(strOrig) - 1] = 0;
+		stringR[sizeof(stringR) - 1] = 0;
 
 		upcase(strOrig);
 		upcase(stringR);
