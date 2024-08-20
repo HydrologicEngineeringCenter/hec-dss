@@ -1,4 +1,5 @@
 #include "checks.h"
+#include "heclib7.h"
 
 void checkdoubles_(double* dataOrig, double* dataRead, int* number, const char* mess, int* status, size_t dummy) {
 	int i;
@@ -80,46 +81,19 @@ void checkints_(int* dataOrig, int* dataRead, int* length, int* number, const ch
 }
 
 
-void upcase(char* str) {
-	for (int i = 0; str[i]; i++) {
-		str[i] = toupper((unsigned char)str[i]);
-	}
-}
-
 void checkstring_(char* stringOrig, char* stringRead, char* mess, int* status,
 	size_t stringOrigLen, size_t stringReadLen, size_t messLen) {
-	int max_len = 2001;
-	char strOrig[2001], stringR[2001];
+	int max_len = 201;
+	char strOrig[201], stringR[201];
 	
-	stringOrig[sizeof stringOrig - 1] = 0;
-	stringRead[sizeof stringRead - 1] = 0;
-
-	if (strlen(stringOrig) >= max_len || strlen(stringRead) >= max_len) {
-		*status = -1;
-		printf("\nError in checkstring_. Input char* was too long %s ", mess);
-		return;
-	}
 
 	if (strncmp(stringOrig, stringRead, stringOrigLen) != 0) {
 		// Allow different case strings
-		strOrig[sizeof strOrig - 1] = 0;
-		stringR[sizeof stringR - 1] = 0;
+		stringCopy(strOrig, max_len, stringOrig, stringOrigLen);
+		stringCopy(stringR, max_len, stringRead, stringReadLen);
 
-		strncpy(strOrig, stringOrig, sizeof(strOrig) - 1);
-		strncpy(stringR, stringRead, sizeof(stringR) - 1);
-
-		if (stringR[sizeof stringR - 1] != 0
-			|| strOrig[sizeof stringR - 1] != 0) {
-
-			printf("\nError in checkstring_. input char* was too long %s ", mess);
-			return;
-		}
-
-		strOrig[sizeof(strOrig) - 1] = 0;
-		stringR[sizeof(stringR) - 1] = 0;
-
-		upcase(strOrig);
-		upcase(stringR);
+		upperCase(strOrig);
+		upperCase(stringR);
 
 		if (strcmp(strOrig, stringR) != 0) {
 			printf("\n\n");
