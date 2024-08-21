@@ -13,6 +13,7 @@
 #include "zStructArray.h"
 #include "zStructSpatialTin.h"
 #include "zStructSpatialGrid.h"
+#include "checks.h"
 
 
 #define STATUS_OKAY 0

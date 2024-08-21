@@ -1,17 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="Debug|Win32">
-      <Configuration>Debug</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="Debug|x64">
       <Configuration>Debug</Configuration>
       <Platform>x64</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release|Win32">
-      <Configuration>Release</Configuration>
-      <Platform>Win32</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release|x64">
       <Configuration>Release</Configuration>
@@ -19,7 +11,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-   
     <ClCompile Include="src\Dss6\closf.c" />
     <ClCompile Include="src\Dss6\deleteFile.c" />
     <ClCompile Include="src\Dss6\filesize.c" />
@@ -108,7 +99,7 @@
     <ClCompile Include="src\DssInterface\ztsStoreRegArgs.c" />
     <ClCompile Include="src\DssInterface\ztsStoreStuff.c" />
     <ClCompile Include="src\DssInterface\zundelete_.c" />
-	<ClCompile Include="src\Internal\isDpartEmpty.c" />
+    <ClCompile Include="src\Internal\isDpartEmpty.c" />
     <ClCompile Include="src\Internal\charInt.c" />
     <ClCompile Include="src\Internal\charLong.c" />
     <ClCompile Include="src\Internal\powf_wrap.c" />
@@ -443,8 +434,10 @@
     <ClCompile Include="src\Utilities\verticalDatum.c" />
     <ClCompile Include="src\Utilities\zeroFill.c" />
     <ClCompile Include="src\Utilities\zmissingFlag.c" />
+    <ClCompile Include="src\Utilities\checks.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\headers\checks.h" />
     <ClInclude Include="src\headers\hecdss7.h" />
     <ClInclude Include="src\headers\hecdssFort.h" />
     <ClInclude Include="src\headers\hecdssInternal.h" />
