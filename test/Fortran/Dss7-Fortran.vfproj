@@ -1,98 +1,109 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <VisualStudioProject ProjectCreator="Intel Fortran" Keyword="Console Application" Version="11.0" ProjectIdGuid="{F9835160-1A39-4C33-8A49-B78CC668D3DE}">
 	<Platforms>
-		<Platform Name="x64"/></Platforms>
+		<Platform Name="x64"/>
+	</Platforms>
 	<Configurations>
-		<Configuration Name="Debug|x64">
-				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" MultiProcessorCompilation="true" Optimization="optimizeDisabled" Preprocess="preprocessYes" WarnDeclarations="true" WarnUnusedVariables="true" WarnUncalled="true" ExternalNameInterpretation="extNameLowerCase" CallingConvention="callConventionCRef" ExternalNameUnderscore="true" Traceback="true" RuntimeChecks="rtChecksAll" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebug" UsePortlib="true"/>
-				<Tool Name="VFLinkerTool" LinkIncremental="linkIncrementalYes" SuppressStartupBanner="true" AdditionalLibraryDirectories="..\..\heclib\heclib_c\$(PlatformName)\$(ConfigurationName);..\..\heclib\heclib_f\$(PlatformName)\$(ConfigurationName);..\..\lib\$(Platform);%(AdditionalLibraryDirectories)" IgnoreDefaultLibraryNames="libcmt;MSVCRT" GenerateDebugInformation="true" SubSystem="subSystemConsole" AdditionalDependencies="heclib_f.lib heclib_c.lib zlibstatic.lib"/>
-				<Tool Name="VFResourceCompilerTool"/>
-				<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
-				<Tool Name="VFCustomBuildTool"/>
-				<Tool Name="VFPreLinkEventTool"/>
-				<Tool Name="VFPreBuildEventTool"/>
-				<Tool Name="VFPostBuildEventTool"/>
-				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
-		<Configuration Name="Release|x64">
-				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" MultiProcessorCompilation="true" Optimization="optimizeDisabled" Preprocess="preprocessYes" WarnDeclarations="true" WarnUnusedVariables="true" WarnUncalled="true" ExternalNameInterpretation="extNameLowerCase" CallingConvention="callConventionCRef" ExternalNameUnderscore="true" Traceback="true" RuntimeChecks="rtChecksAll" BoundsCheck="true" UsePortlib="true"/>
-				<Tool Name="VFLinkerTool" LinkIncremental="linkIncrementalYes" SuppressStartupBanner="true" AdditionalLibraryDirectories="..\..\heclib\heclib_c\$(PlatformName)\$(ConfigurationName);..\..\heclib\heclib_f\$(PlatformName)\$(ConfigurationName);..\..\lib\$(Platform);%(AdditionalLibraryDirectories)" IgnoreDefaultLibraryNames="libcmt" GenerateDebugInformation="true" SubSystem="subSystemConsole" AdditionalDependencies="heclib_f.lib heclib_c.lib zlibstatic.lib"/>
-				<Tool Name="VFResourceCompilerTool"/>
-				<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
-				<Tool Name="VFCustomBuildTool"/>
-				<Tool Name="VFPreLinkEventTool"/>
-				<Tool Name="VFPreBuildEventTool"/>
-				<Tool Name="VFPostBuildEventTool"/>
-				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration></Configurations>
+		<Configuration Name="Debug|x64" UseCompiler="ifortCompiler">
+			<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" MultiProcessorCompilation="true" Optimization="optimizeDisabled" Preprocess="preprocessYes" WarnDeclarations="true" WarnUnusedVariables="true" WarnUncalled="true" ExternalNameInterpretation="extNameLowerCase" CallingConvention="callConventionCRef" ExternalNameUnderscore="true" Traceback="true" RuntimeChecks="rtChecksAll" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebug" UsePortlib="true"/>
+			<Tool Name="VFLinkerTool" LinkIncremental="linkIncrementalYes" SuppressStartupBanner="true" AdditionalLibraryDirectories="..\..\heclib\heclib_c\$(PlatformName)\$(ConfigurationName);..\..\heclib\heclib_f\$(PlatformName)\$(ConfigurationName);..\..\lib\$(Platform);%(AdditionalLibraryDirectories)" IgnoreDefaultLibraryNames="libcmt;MSVCRT" GenerateDebugInformation="true" SubSystem="subSystemConsole" AdditionalDependencies="heclib_f.lib heclib_c.lib zlibstatic.lib"/>
+			<Tool Name="VFResourceCompilerTool"/>
+			<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
+			<Tool Name="VFCustomBuildTool"/>
+			<Tool Name="VFPreLinkEventTool"/>
+			<Tool Name="VFPreBuildEventTool"/>
+			<Tool Name="VFPostBuildEventTool"/>
+			<Tool Name="VFManifestTool" SuppressStartupBanner="true"/>
+		</Configuration>
+		<Configuration Name="Release|x64" UseCompiler="ifortCompiler">
+			<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" MultiProcessorCompilation="true" Optimization="optimizeDisabled" Preprocess="preprocessYes" WarnDeclarations="true" WarnUnusedVariables="true" WarnUncalled="true" ExternalNameInterpretation="extNameLowerCase" CallingConvention="callConventionCRef" ExternalNameUnderscore="true" Traceback="true" RuntimeChecks="rtChecksAll" BoundsCheck="true" UsePortlib="true"/>
+			<Tool Name="VFLinkerTool" LinkIncremental="linkIncrementalYes" SuppressStartupBanner="true" AdditionalLibraryDirectories="..\..\heclib\heclib_c\$(PlatformName)\$(ConfigurationName);..\..\heclib\heclib_f\$(PlatformName)\$(ConfigurationName);..\..\lib\$(Platform);%(AdditionalLibraryDirectories)" IgnoreDefaultLibraryNames="libcmt" GenerateDebugInformation="true" SubSystem="subSystemConsole" AdditionalDependencies="heclib_f.lib heclib_c.lib zlibstatic.lib"/>
+			<Tool Name="VFResourceCompilerTool"/>
+			<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
+			<Tool Name="VFCustomBuildTool"/>
+			<Tool Name="VFPreLinkEventTool"/>
+			<Tool Name="VFPreBuildEventTool"/>
+			<Tool Name="VFPostBuildEventTool"/>
+			<Tool Name="VFManifestTool" SuppressStartupBanner="true"/>
+		</Configuration>
+	</Configurations>
 	<Files>
 		<Filter Name="Header Files" Filter="fi;fd"/>
 		<Filter Name="Resource Files" Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"/>
 		<Filter Name="Source Files" Filter="f90;for;f;fpp;ftn;def;odl;idl">
-		<File RelativePath="source\DssCodeTest7.f90"/>
-		<File RelativePath="source\miscTests.f90"/>
-		<File RelativePath="source\orderTimes.f90"/>
-		<File RelativePath="source\runTests.f90"/>
-		<File RelativePath=".\source\saveToTextFile.f90">
-			<FileConfiguration Name="Debug|x64">
-				<Tool Name="VFFortranCompilerTool" Diagnostics="diagnosticsShowAll"/></FileConfiguration></File>
-		<File RelativePath="source\test_conversion.f90"/>
-		<File RelativePath="source\test_ITS_CharNotes.f90"/>
-		<File RelativePath="source\test_ITS_CharNotesFull.f90"/>
-		<File RelativePath="source\test_ITS_CharNotesLargerInt.f90"/>
-		<File RelativePath="source\test_ITS_CharNotesSameInt.f90"/>
-		<File RelativePath="source\test_ITS_CharNotesSmallerInt.f90"/>
-		<File RelativePath="source\test_ITS_Expansions.f90"/>
-		<File RelativePath="source\test_ITS_Full.f90"/>
-		<File RelativePath="source\test_ITS_Main.f90"/>
-		<File RelativePath="source\test_ITS_Qual.f90"/>
-		<File RelativePath="source\test_ITS_Support.f90">
-			<FileConfiguration Name="Debug|x64">
-				<Tool Name="VFFortranCompilerTool" Diagnostics="diagnosticsShowAll"/></FileConfiguration></File>
-		<File RelativePath="source\test_ITS_SupportCharNotes.f90"/>
-		<File RelativePath="source\test_RTS_AllSame.f90"/>
-		<File RelativePath="source\test_RTS_AllSameDouble.f90"/>
-		<File RelativePath="source\test_RTS_AllSameDoubleToFloat.f90"/>
-		<File RelativePath="source\test_RTS_AllSameFloatsToDouble.f90"/>
-		<File RelativePath="source\test_RTS_AllSameQual.f90"/>
-		<File RelativePath="source\test_RTS_Basic.f90"/>
-		<File RelativePath="source\test_RTS_CharNotes.f90"/>
-		<File RelativePath="source\test_RTS_CharNotesBasic.f90"/>
-		<File RelativePath="source\test_RTS_CharNotesFull.f90"/>
-		<File RelativePath="source\test_RTS_Double.f90"/>
-		<File RelativePath="source\test_RTS_DoubleQual.f90"/>
-		<File RelativePath="source\test_RTS_Expansions.f90"/>
-		<File RelativePath="source\test_RTS_Main.f90"/>
-		<File RelativePath="source\test_RTS_NoRepeats.f90"/>
-		<File RelativePath="source\test_RTS_NoRepeatsDoubleToFloat.f90"/>
-		<File RelativePath="source\test_RTS_NoRepeatsFloatsToDouble.f90"/>
-		<File RelativePath="source\test_RTS_NoRepeatsQual.f90"/>
-		<File RelativePath="source\test_RTS_Repeats.f90"/>
-		<File RelativePath="source\test_RTS_RepeatsDoubleToFloat.f90"/>
-		<File RelativePath="source\test_RTS_RepeatsFloatsToDouble.f90"/>
-		<File RelativePath="source\test_RTS_RepeatsQual.f90"/>
-		<File RelativePath="source\test_RTS_SecondIntervals.f90"/>
-		<File RelativePath="source\testCatalog.f90"/>
-		<File RelativePath="source\TestDss7.f90"/>
-		<File RelativePath="source\testIrregRetClear.f90"/>
-		<File RelativePath="source\testOpen.f90"/>
-		<File RelativePath="source\testPairedData.f90"/>
-		<File RelativePath="source\testReclaim.f90"/>
-		<File RelativePath="source\testRegRetClear.f90"/>
-		<File RelativePath="source\testUtilities.f90"/>
-		<File RelativePath=".\source\testVerticalDatum_f.f90"/>
-		<File RelativePath="source\testWrite.f90"/>
-		<File RelativePath="source\timeTestCopyRTS.f90"/>
-		<File RelativePath="source\timeTestFileParams.f90"/>
-		<File RelativePath="source\timeTestFileParamsRTS.f90"/>
-		<File RelativePath="source\timeTestRead.f90"/>
-		<File RelativePath="source\timeTestReadFile.f90"/>
-		<File RelativePath="source\timeTestReadFileRTS.f90"/>
-		<File RelativePath="source\timeTestReadingRTS.f90"/>
-		<File RelativePath="source\timeTestWrite.f90"/>
-		<File RelativePath="source\timeTestWriteFile.f90"/>
-		<File RelativePath="source\timeTestWriteFileRTS.f90"/>
-		<File RelativePath="source\timeTestWritingRTS.f90"/>
-		<File RelativePath="source\writeARec.f90"/></Filter>
+			<File RelativePath="source\DssCodeTest7.f90"/>
+			<File RelativePath="source\miscTests.f90"/>
+			<File RelativePath="source\orderTimes.f90"/>
+			<File RelativePath="source\runTests.f90"/>
+			<File RelativePath=".\source\saveToTextFile.f90">
+				<FileConfiguration Name="Debug|x64">
+					<Tool Name="VFFortranCompilerTool" Diagnostics="diagnosticsShowAll"/>
+				</FileConfiguration>
+			</File>
+			<File RelativePath="source\test_conversion.f90"/>
+			<File RelativePath="source\test_ITS_CharNotes.f90"/>
+			<File RelativePath="source\test_ITS_CharNotesFull.f90"/>
+			<File RelativePath="source\test_ITS_CharNotesLargerInt.f90"/>
+			<File RelativePath="source\test_ITS_CharNotesSameInt.f90"/>
+			<File RelativePath="source\test_ITS_CharNotesSmallerInt.f90"/>
+			<File RelativePath="source\test_ITS_Expansions.f90"/>
+			<File RelativePath="source\test_ITS_Full.f90"/>
+			<File RelativePath="source\test_ITS_Main.f90"/>
+			<File RelativePath="source\test_ITS_Qual.f90"/>
+			<File RelativePath="source\test_ITS_Support.f90">
+				<FileConfiguration Name="Debug|x64">
+					<Tool Name="VFFortranCompilerTool" Diagnostics="diagnosticsShowAll"/>
+				</FileConfiguration>
+			</File>
+			<File RelativePath="source\test_ITS_SupportCharNotes.f90"/>
+			<File RelativePath="source\test_RTS_AllSame.f90"/>
+			<File RelativePath="source\test_RTS_AllSameDouble.f90"/>
+			<File RelativePath="source\test_RTS_AllSameDoubleToFloat.f90"/>
+			<File RelativePath="source\test_RTS_AllSameFloatsToDouble.f90"/>
+			<File RelativePath="source\test_RTS_AllSameQual.f90"/>
+			<File RelativePath="source\test_RTS_Basic.f90"/>
+			<File RelativePath="source\test_RTS_CharNotes.f90"/>
+			<File RelativePath="source\test_RTS_CharNotesBasic.f90"/>
+			<File RelativePath="source\test_RTS_CharNotesFull.f90"/>
+			<File RelativePath="source\test_RTS_Double.f90"/>
+			<File RelativePath="source\test_RTS_DoubleQual.f90"/>
+			<File RelativePath="source\test_RTS_Expansions.f90"/>
+			<File RelativePath="source\test_RTS_Main.f90"/>
+			<File RelativePath="source\test_RTS_NoRepeats.f90"/>
+			<File RelativePath="source\test_RTS_NoRepeatsDoubleToFloat.f90"/>
+			<File RelativePath="source\test_RTS_NoRepeatsFloatsToDouble.f90"/>
+			<File RelativePath="source\test_RTS_NoRepeatsQual.f90"/>
+			<File RelativePath="source\test_RTS_Repeats.f90"/>
+			<File RelativePath="source\test_RTS_RepeatsDoubleToFloat.f90"/>
+			<File RelativePath="source\test_RTS_RepeatsFloatsToDouble.f90"/>
+			<File RelativePath="source\test_RTS_RepeatsQual.f90"/>
+			<File RelativePath="source\test_RTS_SecondIntervals.f90"/>
+			<File RelativePath="source\testCatalog.f90"/>
+			<File RelativePath="source\TestDss7.f90"/>
+			<File RelativePath="source\testIrregRetClear.f90"/>
+			<File RelativePath="source\testOpen.f90"/>
+			<File RelativePath="source\testPairedData.f90"/>
+			<File RelativePath="source\testReclaim.f90"/>
+			<File RelativePath="source\testRegRetClear.f90"/>
+			<File RelativePath="source\testUtilities.f90"/>
+			<File RelativePath=".\source\testVerticalDatum_f.f90"/>
+			<File RelativePath="source\testWrite.f90"/>
+			<File RelativePath="source\timeTestCopyRTS.f90"/>
+			<File RelativePath="source\timeTestFileParams.f90"/>
+			<File RelativePath="source\timeTestFileParamsRTS.f90"/>
+			<File RelativePath="source\timeTestRead.f90"/>
+			<File RelativePath="source\timeTestReadFile.f90"/>
+			<File RelativePath="source\timeTestReadFileRTS.f90"/>
+			<File RelativePath="source\timeTestReadingRTS.f90"/>
+			<File RelativePath="source\timeTestWrite.f90"/>
+			<File RelativePath="source\timeTestWriteFile.f90"/>
+			<File RelativePath="source\timeTestWriteFileRTS.f90"/>
+			<File RelativePath="source\timeTestWritingRTS.f90"/>
+			<File RelativePath="source\writeARec.f90"/>
+		</Filter>
 		<File RelativePath=".\build.bat"/>
 		<File RelativePath=".\Makefile"/>
-		<File RelativePath=".\Makefile.Solaris"/></Files>
-	<Globals/></VisualStudioProject>
+		<File RelativePath=".\Makefile.Solaris"/>
+	</Files>
+	<Globals/>
+</VisualStudioProject>
