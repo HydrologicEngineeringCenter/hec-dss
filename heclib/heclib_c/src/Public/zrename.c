@@ -135,7 +135,7 @@ int zrename(long long *ifltab, const char* oldPathname, const char* newPathname)
 	int lenNew= strnlen_hec(newPathname, MAX_PATHNAME_LENGTH);
 
 	if (lenOld == lenNew) {
-		char* tmpPath[MAX_PATHNAME_LENGTH];
+		char tmpPath[MAX_PATHNAME_LENGTH];
 
 		// old pathname needs to exist (ignoring case of requested path to rename)
 
