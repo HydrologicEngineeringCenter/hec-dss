@@ -1874,14 +1874,14 @@ int testTsStoreRules() {
 }
 
 
-zStructTimeSeries* writeTestTimeSeries(long long* ifltab,const char* path, const char* date, const char* time) {
+void writeTestTimeSeries(long long* ifltab,const char* path, const char* date, const char* time) {
 	double dvalues[20];
 	for (int i = 0; i < 20; i++) {
 		dvalues[i] = (double)i;
 	}
 	zStructTimeSeries* tss1 = zstructTsNewRegDoubles(path, dvalues, 20, date,time, "cfs", "Inst-Val");
 	int storageFlagReplace = 0;
-	int status = ztsStore(ifltab, tss1, storageFlagReplace);
+	ztsStore(ifltab, tss1, storageFlagReplace);
 	zstructFree(tss1);
 }
 
@@ -1893,15 +1893,15 @@ int renameTest() {
 	const char* name2 = "//ATWOOD/FLOW-CUMULATIVE/01Sep2024/1Hour/Backup/";
 
 	long long ifltab[250];
-	char* dssFilename = "temp-dss-issue-206.dss";
+	const char* dssFilename = "temp-dss-issue-206.dss";
 	deleteFile(dssFilename);
 
 	int status = hec_dss_zopen(ifltab, dssFilename);
 	if (status != STATUS_OKAY) {
 		return status;
 	}
-	char* date = "01sep2024";
-	char* time = "0100";
+	const char* date = "01sep2024";
+	const char* time = "0100";
 	writeTestTimeSeries(ifltab, name1_disk, date, time);
 
 	status = zrename(ifltab, name1, name2);
