@@ -15,6 +15,7 @@
 
 
 int runTheTests();
+int renameTest();
 
 
 int gridMemoryTest() {
@@ -95,6 +96,7 @@ void usage(char* exeName)
 	printf("\nDSS_DEBUG_LEVEL=17");
 
 }
+
 
 int main(int argc, char* argv[])
 {
@@ -194,6 +196,9 @@ int runTheTests() {
 	char fileName6[80];
 	int status;
 
+	status = renameTest();
+	if (status != STATUS_OKAY)
+		return status;
 
 	status = testText();
 	if (status != STATUS_OKAY)
@@ -1865,5 +1870,49 @@ int testTsStoreRules() {
 	free(expctedReg4);
 	free(expctedIrr0);
 	free(expctedIrr1);
+	return status;
+}
+
+
+void writeTestTimeSeries(long long* ifltab,const char* path, const char* date, const char* time) {
+	double dvalues[20];
+	for (int i = 0; i < 20; i++) {
+		dvalues[i] = (double)i;
+	}
+	zStructTimeSeries* tss1 = zstructTsNewRegDoubles(path, dvalues, 20, date,time, "cfs", "Inst-Val");
+	int storageFlagReplace = 0;
+	ztsStore(ifltab, tss1, storageFlagReplace);
+	zstructFree(tss1);
+}
+
+
+int renameTest() {
+
+	const char* name1_disk = "//aTWOOD/FLOW-CUMULATIVE/01Sep2024/1Hour/backup/";
+	const char* name1 = "//ATWOOD/FLOW-CUMULATIVE/01Sep2024/1Hour/backup/";
+	const char* name2 = "//ATWOOD/FLOW-CUMULATIVE/01Sep2024/1Hour/Backup/";
+
+	long long ifltab[250];
+	const char* dssFilename = "temp-dss-issue-206.dss";
+	deleteFile(dssFilename);
+
+	int status = hec_dss_zopen(ifltab, dssFilename);
+	if (status != STATUS_OKAY) {
+		return status;
+	}
+	const char* date = "01sep2024";
+	const char* time = "0100";
+	writeTestTimeSeries(ifltab, name1_disk, date, time);
+
+	status = zrename(ifltab, name1, name2);
+	printf("status = %d", status);
+	if (status != STATUS_OKAY) {
+		zclose(ifltab);
+		return status;
+	}
+
+	status = zrename(ifltab, name2, name2);
+	printf("status = %d", status);
+	zclose(ifltab);
 	return status;
 }
