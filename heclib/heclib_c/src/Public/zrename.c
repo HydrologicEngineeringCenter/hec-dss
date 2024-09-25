@@ -153,7 +153,7 @@ int zrename(long long *ifltab, const char* oldPathname, const char* newPathname)
 		if (samePathInsensitive) {
 			// if the rename is just chaning case, we need a temporay path, (using unique -Fpart below)
 			long long millis = getCurrentTimeMillis();
-			char* wierd_fpart[MAX_PART_SIZE];
+			char wierd_fpart[MAX_PART_SIZE];
 			sprintf(wierd_fpart, "<<__%lld__>>", millis);
 			status = stringCopy(tmpPath, MAX_PATHNAME_LENGTH, oldPathname, lenOld);
 
