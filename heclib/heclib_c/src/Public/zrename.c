@@ -139,14 +139,8 @@ int zrename(long long *ifltab, const char* oldPathname, const char* newPathname)
 
 		// old pathname needs to exist (ignoring case of requested path to rename)
 
-		if (zstringCompareSensitive(oldPathname, newPathname, lenOld)) {
-			
-			if (zmessageLevel(ifltab, MESS_METHOD_UTILITY_ID, MESS_LEVEL_USER_DIAG)) {
-				zmessageDebug(ifltab, DSS_FUNCTION_zrename_ID, "pathnames are the same: ", newPathname);
-			}
+		// what is the oldpathname representation on disk?
 
-			return STATUS_OKAY;
-		}
 
 		int samePathInsensitive = zstringCompare(oldPathname, newPathname, lenOld);
 

@@ -1888,6 +1888,7 @@ zStructTimeSeries* writeTestTimeSeries(long long* ifltab,const char* path, const
 
 int renameTest() {
 
+	const char* name1_disk = "//aTWOOD/FLOW-CUMULATIVE/01Sep2024/1Hour/backup/";
 	const char* name1 = "//ATWOOD/FLOW-CUMULATIVE/01Sep2024/1Hour/backup/";
 	const char* name2 = "//ATWOOD/FLOW-CUMULATIVE/01Sep2024/1Hour/Backup/";
 
@@ -1901,13 +1902,8 @@ int renameTest() {
 	}
 	char* date = "01sep2024";
 	char* time = "0100";
-	writeTestTimeSeries(ifltab, name1, date, time);
+	writeTestTimeSeries(ifltab, name1_disk, date, time);
 
-
-	/*int level = 15;
-	char* name = "MLVL";
-	zset(name, "", level);
-	*/
 	status = zrename(ifltab, name1, name2);
 	printf("status = %d", status);
 	if (status != STATUS_OKAY) {
