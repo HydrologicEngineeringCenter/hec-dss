@@ -102,6 +102,7 @@ int zwhatChangedCompare(long long *ifltab, zStructCatalog *catStructBefore, zStr
 //  Pathname manipulation
 int zpathnameClean(char *newPathname, size_t sizeofNewPathname, const char *oldPathname);
 int zstringCompare(const char *string1, const char *string2, size_t length);
+int zstringCompareSensitive(const char* string1, const char* string2, size_t length);
 int zpathnameCompare(const char *pathname1, long long *lpathname2, size_t pathnameLength);
 int zpathnameCompareCollection(const char *pathname1, const char *pathname2, size_t pathnameLength);
 int zpathnameGetPart (const char *pathname, int partPosition, char *part, size_t sizeofPart);

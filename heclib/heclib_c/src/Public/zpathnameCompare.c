@@ -49,6 +49,24 @@ int zstringCompare(const char *string1, const char *string2, size_t length)
 	return 1;
 }
 
+/// <summary>
+/// compares two strings (must be same length)
+/// </summary>
+/// <param name="length">length of strings</param>
+/// <returns></returns>
+int zstringCompareSensitive(const char* string1, const char* string2, size_t length)
+{
+	int i;
+
+	for (i = 0; i < (int)length; i++) {
+		if( string1[i] != string2[i])
+		return 0;
+	}
+	//  Made it - same strings
+	return 1;
+}
+
+
 int zpathnameCompare(const char *pathname1, long long *lpathname2, size_t pathnameLength)
 {
 #ifdef _MSC_VER

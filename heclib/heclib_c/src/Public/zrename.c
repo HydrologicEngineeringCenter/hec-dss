@@ -130,7 +130,48 @@ int zrename(long long *ifltab, const char* oldPathname, const char* newPathname)
 			zdssErrorSeverity.MEMORY_ERROR,
 			newPathname, "Allocating space for pathname");
 	}
+	
+	int lenOld = strnlen_hec(oldPathname, MAX_PATHNAME_LENGTH);
+	int lenNew= strnlen_hec(newPathname, MAX_PATHNAME_LENGTH);
 
+	if (lenOld == lenNew) {
+		char* tmpPath[MAX_PATHNAME_LENGTH];
+
+		// old pathname needs to exist (ignoring case of requested path to rename)
+
+		if (zstringCompareSensitive(oldPathname, newPathname, lenOld)) {
+			
+			if (zmessageLevel(ifltab, MESS_METHOD_UTILITY_ID, MESS_LEVEL_USER_DIAG)) {
+				zmessageDebug(ifltab, DSS_FUNCTION_zrename_ID, "pathnames are the same: ", newPathname);
+			}
+
+			return STATUS_OKAY;
+		}
+
+		int samePathInsensitive = zstringCompare(oldPathname, newPathname, lenOld);
+
+		if (samePathInsensitive) {
+			// if the rename is just chaning case, we need a temporay path, (using unique -Fpart below)
+			long long millis = getCurrentTimeMillis();
+			char* wierd_fpart[MAX_PART_SIZE];
+			sprintf(wierd_fpart, "<<__%lld__>>", millis);
+			status = stringCopy(tmpPath, MAX_PATHNAME_LENGTH, oldPathname, lenOld);
+
+			status = zpathnameSetPart(tmpPath, MAX_PATHNAME_LENGTH, wierd_fpart, 6);
+			if (status != STATUS_OKAY) {
+				// error
+				return status;
+			}
+			status = zrename(ifltab, oldPathname, tmpPath);
+			if (status != STATUS_OKAY) {
+				// error
+				return status;
+			}
+			status = zrename(ifltab, tmpPath, newPathname);
+			return status;
+		}
+	}
+	
 	//  Be sure the new pathname does not already exist
 	ifltab[zdssKeys.kaddInfoLastPath] = 0;
 	status = zcheckInternal(ifltab, newPathname, 1);
