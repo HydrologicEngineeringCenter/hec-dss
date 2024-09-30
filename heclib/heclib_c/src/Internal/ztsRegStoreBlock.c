@@ -525,14 +525,14 @@ int ztsRegStoreBlock(long long *ifltab, zStructTimeSeries *tss, const char *path
 			if ((valueSize > 0) && (valuesRead))  {
 				//  storageFlag = 1  Only replace missing data.
 				if (storageFlag == 1) {
-					ipos = blockStartPosition * valueSize;
+					ipos = blockStartPosition * valueSize; //? valuesReadSize, and next line..
 					assert ((ipos + (numberToStore * valueSize)) <= valuesReadLength);
 					for (i=0; i<numberToStore; i++) {					
 						if (zisMissing(&valuesRead[ipos], valueSize)) {
 							boolReplace = 1;
 							break;
 						}												
-						ipos += valueSize;
+						ipos += valueSize; // valuesReadSize?
 					}
 				}
 				else {  //  if (storageFlag == 4) {
