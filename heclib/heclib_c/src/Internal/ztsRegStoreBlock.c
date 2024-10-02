@@ -9,6 +9,8 @@
 #include "heclib.h"
 #include "zerrorCodes.h"
 
+debug_print_values_as_float(int* valuesRead, const int count);
+debug_print_values_as_double(int* valuesRead, const int count);
 /**
 *  Function:	ztsRegStoreBlock
 *
@@ -507,6 +509,12 @@ int ztsRegStoreBlock(long long *ifltab, zStructTimeSeries *tss, const char *path
 			userHeaderRead, userHeaderSize, &userHeaderNumberRead,
 			numberInBlock, 0); 
 
+		if (status == 0 ) {
+			if( valueElementSize == 1)
+			   debug_print_values_as_float(valuesRead, valuesReadLength);
+			if (valueElementSize == 2)
+			  debug_print_values_as_double(valuesRead, valuesReadLength);
+		}
 		
 		if (zisError(status)) {		
 			//  Free any space malloced
@@ -872,4 +880,21 @@ int ztsRegStoreBlock(long long *ifltab, zStructTimeSeries *tss, const char *path
 	if (userHeaderRead) free(userHeaderRead);
 
 	return status;
+}
+
+debug_print_values_as_float(int* valuesRead, const int count) {
+	float* data = (float*)valuesRead;
+	for (int i = 0; i <= count; i++) {
+		float value = data[i];
+		if( !zisMissingFloat(value))
+		  printf("[%d](float)%.2f\n",i, value);
+	}
+}
+debug_print_values_as_double(int* valuesRead, const int count) {
+	double* data = (double*)valuesRead;
+	for (int i = 0; i <= count; i++) {
+		double value = data[i];
+		if( !zisMissingDouble(value))
+		    printf("[%d](double)%.2f \n",i, value);
+	}
 }
