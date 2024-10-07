@@ -206,9 +206,19 @@ int zwriteExisting(long long *ifltab, zStructTransfer* ztransfer,
 	i8toi4(info[zdssInfoKeys.kinfoTypeVersion], &type, &version);
 	
 	if( type != ztransfer->dataType) {
-		return zerrorProcessing(ifltab, DSS_FUNCTION_zwriteExisting_ID,
-			zdssErrorCodes.DIFFERENT_RECORD_TYPE, type, (long long)ztransfer->dataType,
-			zdssErrorSeverity.WRITE_ERROR, ztransfer->pathname, "");
+
+		int isSupported = 0;
+		if (type == 100 && ztransfer->dataType == 105) {
+			isSupported = 1;
+		}
+		if (type == 105 && ztransfer->dataType == 100) {
+			isSupported = 1;
+		}
+		if (!isSupported) {
+			return zerrorProcessing(ifltab, DSS_FUNCTION_zwriteExisting_ID,
+				zdssErrorCodes.DIFFERENT_RECORD_TYPE, type, (long long)ztransfer->dataType,
+				zdssErrorSeverity.WRITE_ERROR, ztransfer->pathname, "");
+		}
 	}
 
 	//  Be sure we don't try to store negative lengths

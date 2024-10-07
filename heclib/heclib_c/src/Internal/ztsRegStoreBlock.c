@@ -834,18 +834,55 @@ int ztsRegStoreBlock(long long *ifltab, zStructTimeSeries *tss, const char *path
 		internalHeader[INT_HEAD_blockStartPosition] = blockStartPosition;
 		internalHeader[INT_HEAD_blockEndPosition] = blockStartPosition + numberToStore - 1;
 		ipos = firstValid * valueSize;
-		status = ztsWriteBlock(ifltab, tss, pathname, 											
-								&ival, 0, numberToStore,  
-								&values[ipos],  valueSize,
-								quality,  qualityElementSize,
-								notes,  inoteElementSize,
-								cnotesToStore, cnotesToStoreLen,
-								profileDepths, profileDepthsSize,
-								internalHeader,  
-								userHeader,  userHeaderNumber,
-								0, numberInBlock,					
-								dataType);
 
+
+		zStructRecordBasics* rb = zstructRecordBasicsNew(pathname);
+		status = zgetRecordBasics(ifltab, rb);
+
+		int recordType = rb->recordType;
+		zstructFree(rb);
+
+		if (status == STATUS_RECORD_FOUND && recordType == DATA_TYPE_RTD 
+			  && dataType == DATA_TYPE_RTS
+			  && tss->floatValues 
+			  && tss->doubleValues == NULL) {
+
+			char start_date[12];
+			julianToDate(startJulian, 4, start_date, sizeof(start_date));
+			char start_time[10];
+			secondsToTimeString(startSeconds, 0, 2, start_time, sizeof(start_time));
+
+			tss->doubleValues = calloc(numberToStore, sizeof(double));
+			if (tss->doubleValues) {
+				convertDataArray((void*)&values[ipos], (void*)tss->doubleValues, numberToStore, 1, 2);
+				float* pinned_float = tss->floatValues;
+				tss->floatValues = NULL;
+
+				status = ztsStore(ifltab, tss, storageFlag);
+				tss->floatValues = pinned_float;
+				free(tss->doubleValues);
+				tss->doubleValues = NULL;
+			}
+			else
+			{
+				if (zmessageLevel(ifltab, MESS_METHOD_TS_WRITE_ID, MESS_LEVEL_INTERNAL_DIAG_1)) {
+					zmessageDebug(ifltab, DSS_FUNCTION_ztsRegStoreBlock_ID, "Memory Error storing ", pathname);
+				}
+			}
+		}
+		else {
+			status = ztsWriteBlock(ifltab, tss, pathname,
+				&ival, 0, numberToStore,
+				&values[ipos], valueSize,
+				quality, qualityElementSize,
+				notes, inoteElementSize,
+				cnotesToStore, cnotesToStoreLen,
+				profileDepths, profileDepthsSize,
+				internalHeader,
+				userHeader, userHeaderNumber,
+				0, numberInBlock,
+				dataType);
+		}
 	}
 	else {
 		//  All missing
