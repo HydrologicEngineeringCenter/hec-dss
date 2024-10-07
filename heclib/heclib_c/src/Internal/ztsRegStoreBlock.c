@@ -842,22 +842,26 @@ int ztsRegStoreBlock(long long *ifltab, zStructTimeSeries *tss, const char *path
 		int recordType = rb->recordType;
 		zstructFree(rb);
 
-		if (status == STATUS_RECORD_FOUND && ((recordType == DATA_TYPE_RTD && dataType == DATA_TYPE_RTS))) {
+		if (status == STATUS_RECORD_FOUND && recordType == DATA_TYPE_RTD 
+			  && dataType == DATA_TYPE_RTS
+			  && tss->floatValues 
+			  && tss->doubleValues == NULL) {
 
 			char start_date[12];
 			julianToDate(startJulian, 4, start_date, sizeof(start_date));
 			char start_time[10];
 			secondsToTimeString(startSeconds, 0, 2, start_time, sizeof(start_time));
 
-			double* values_double = calloc(numberToStore, sizeof(double));
-			if (values_double) {
-				convertDataArray((void*)&values[ipos], (void*)values_double, numberToStore, 1, 2);
+			tss->doubleValues = calloc(numberToStore, sizeof(double));
+			if (tss->doubleValues) {
+				convertDataArray((void*)&values[ipos], (void*)tss->doubleValues, numberToStore, 1, 2);
+				float* pinned_float = tss->floatValues;
+				tss->floatValues = NULL;
 
-				zStructTimeSeries* tss_double = zstructTsNewRegDoubles(pathname, values_double, numberToStore, start_date, start_time, tss->units, tss->type);
-				tss_double->allocated[zSTRUCT_TS_doubleValues] = 1;
-
-				status = ztsStore(ifltab, tss_double, storageFlag);
-				zstructFree(tss_double);
+				status = ztsStore(ifltab, tss, storageFlag);
+				tss->floatValues = pinned_float;
+				free(tss->doubleValues);
+				tss->doubleValues = NULL;
 			}
 			else
 			{
