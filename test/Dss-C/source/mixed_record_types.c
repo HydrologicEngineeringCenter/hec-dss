@@ -43,6 +43,7 @@ int check_values_compare(long long ifltab[], const char* path) {
 			return -1;
 		}
 	}
+	return 0;
 }
 
 
@@ -51,61 +52,57 @@ int check_values_compare(long long ifltab[], const char* path) {
 /// Writes floats to a time-series filling in the missing data.
 /// </summary>
 /// <returns></returns>
-int write_ts_mixed(int dssVersion, int writeDoublesFirst) {
-	long long ifltab[250];
-	const char* dssFileName = "test_create_mixed_record_types.dss";
-
-	deleteFile(dssFileName);
-	int status = 0;
-	if (dssVersion == 7) {
-		status = hec_dss_zopen(ifltab, dssFileName);
-	}
-	else if (dssVersion == 6) {
-		status = zopen6(ifltab, dssFileName);
-	}
-	if (status != STATUS_OKAY) {
-		return status;
-	}
+int write_ts_mixed(long long* ifltab, int writeDoublesFirst) {
+	int status = 1;
 	const char* date = "01Jun2024";
 	const char* time = "1200";
 
-	const char* path = "//GAPT_DAM/FLOW-LOCAL/01Jun2026/1Hour/GAPT_HMS_FORECAST/";
-	
+	const char* path_float = "//GAPT_DAM/FLOW-LOCAL/01Jun2026/1Hour/GAPT_HMS_FORECAST_floats_first/";
+	const char* path_double = "//GAPT_DAM/FLOW-LOCAL/01Jun2026/1Hour/GAPT_HMS_FORECAST_doubles_first/";
+	char* path;
 	if (writeDoublesFirst) {
+		path = path_double;
 		status = writeDoublesTimeSeries(ifltab, path, "01Jun2026", time, 1); // write doubles with gaps
 		if (status != STATUS_OKAY) {
 			return status;
 		}
 		status = writeSingleTimeSeries(ifltab, path, "01Jun2026", time, 0); // write floats without gaps
-		if (status != STATUS_OKAY) {
-			return status;
-		}
 	}
 	else { // write floats first
+		path = path_float;
 		status = writeSingleTimeSeries(ifltab, path, "01Jun2026", time, 1); // write floats with gaps
 		if (status != STATUS_OKAY) {
 			return status;
 		}
-		if (!writeDoublesFirst) {
-			status = writeDoublesTimeSeries(ifltab, path, "01Jun2026", time, 0); // write doubles with gaps
-			if (status != STATUS_OKAY) {
-				return status;
-			}
-		}
+		status = writeDoublesTimeSeries(ifltab, path, "01Jun2026", time, 0); // write doubles without gaps
+		
 	}
 	
 	printf("\n '%s' record type: %d\n", path, get_record_type(ifltab, path));
 	status = check_values_compare(ifltab, path);
-	zclose(ifltab);
+	
 	return status;
 }
 
 int test_mixed_record_types() {
 
-	int status = write_ts_mixed(7,0);
+	long long ifltab[250];
+	const char* dssFileName = "test_create_mixed_record_types.dss";
+	deleteFile(dssFileName);
+
+	int status = hec_dss_zopen(ifltab, dssFileName);
+
 	if (status != STATUS_OKAY) {
 		return status;
 	}
+
+	status = write_ts_mixed(ifltab,0);
+	if (status != STATUS_OKAY) {
+		return status;
+	} 
+	status = write_ts_mixed(ifltab, 1);
+
+	zclose(ifltab);
 
 	return status;
 

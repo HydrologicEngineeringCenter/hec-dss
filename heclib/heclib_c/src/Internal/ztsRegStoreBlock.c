@@ -9,8 +9,6 @@
 #include "heclib.h"
 #include "zerrorCodes.h"
 
-debug_print_values_as_float(int* valuesRead, const int count);
-debug_print_values_as_double(int* valuesRead, const int count);
 /**
 *  Function:	ztsRegStoreBlock
 *
@@ -509,13 +507,6 @@ int ztsRegStoreBlock(long long *ifltab, zStructTimeSeries *tss, const char *path
 			userHeaderRead, userHeaderSize, &userHeaderNumberRead,
 			numberInBlock, 0); 
 
-		if (status == 0 ) {
-			if( valueElementSize == 1)
-			   debug_print_values_as_float(valuesRead, valuesReadLength);
-			if (valueElementSize == 2)
-			  debug_print_values_as_double(valuesRead, valuesReadLength);
-		}
-		
 		if (zisError(status)) {		
 			//  Free any space malloced
 			if (valuesRead)  free(valuesRead);
@@ -533,14 +524,14 @@ int ztsRegStoreBlock(long long *ifltab, zStructTimeSeries *tss, const char *path
 			if ((valueSize > 0) && (valuesRead))  {
 				//  storageFlag = 1  Only replace missing data.
 				if (storageFlag == 1) {
-					ipos = blockStartPosition * valueSize; //? valuesReadSize, and next line..
+					ipos = blockStartPosition * valueSize; 
 					assert ((ipos + (numberToStore * valueSize)) <= valuesReadLength);
 					for (i=0; i<numberToStore; i++) {					
 						if (zisMissing(&valuesRead[ipos], valueSize)) {
 							boolReplace = 1;
 							break;
 						}												
-						ipos += valueSize; // valuesReadSize?
+						ipos += valueSize; 
 					}
 				}
 				else {  //  if (storageFlag == 4) {
@@ -842,17 +833,51 @@ int ztsRegStoreBlock(long long *ifltab, zStructTimeSeries *tss, const char *path
 		internalHeader[INT_HEAD_blockStartPosition] = blockStartPosition;
 		internalHeader[INT_HEAD_blockEndPosition] = blockStartPosition + numberToStore - 1;
 		ipos = firstValid * valueSize;
-		status = ztsWriteBlock(ifltab, tss, pathname, 											
-								&ival, 0, numberToStore,  
-								&values[ipos],  valueSize,
-								quality,  qualityElementSize,
-								notes,  inoteElementSize,
-								cnotesToStore, cnotesToStoreLen,
-								profileDepths, profileDepthsSize,
-								internalHeader,  
-								userHeader,  userHeaderNumber,
-								0, numberInBlock,					
-								dataType);
+
+		
+		zStructRecordBasics* rb = zstructRecordBasicsNew(pathname);
+		status = zgetRecordBasics(ifltab, rb);
+
+		int recordType = rb->recordType;
+		zstructFree(rb);
+
+		if ( status == STATUS_RECORD_FOUND && ( (recordType == DATA_TYPE_RTD && dataType == DATA_TYPE_RTS))) {
+
+			char start_date[12];
+			julianToDate(startJulian, 4, start_date, sizeof(start_date));
+			char start_time[10];
+			secondsToTimeString(startSeconds, 0, 2, start_time, sizeof(start_time));
+
+			double* values_double = calloc(numberToStore, sizeof(double));
+			if (values_double) {
+				convertDataArray((void*)&values[ipos], (void*)values_double, numberToStore, 1, 2);
+
+				zStructTimeSeries* tss_double = zstructTsNewRegDoubles(pathname, values_double, numberToStore, start_date, start_time, tss->units, tss->type);
+				tss_double->allocated[zSTRUCT_TS_doubleValues] = 1;
+
+				status = ztsStore(ifltab, tss_double, storageFlag);
+				zstructFree(tss_double);
+			}
+			else
+			{
+				if (zmessageLevel(ifltab, MESS_METHOD_TS_WRITE_ID, MESS_LEVEL_INTERNAL_DIAG_1)) {
+					zmessageDebug(ifltab, DSS_FUNCTION_ztsRegStoreBlock_ID, "Memory Error storing ", pathname);
+				}
+			}
+		}
+		else {
+			status = ztsWriteBlock(ifltab, tss, pathname,
+				&ival, 0, numberToStore,
+				&values[ipos], valueSize,
+				quality, qualityElementSize,
+				notes, inoteElementSize,
+				cnotesToStore, cnotesToStoreLen,
+				profileDepths, profileDepthsSize,
+				internalHeader,
+				userHeader, userHeaderNumber,
+				0, numberInBlock,
+				dataType);
+		}
 
 	}
 	else {
@@ -882,19 +907,3 @@ int ztsRegStoreBlock(long long *ifltab, zStructTimeSeries *tss, const char *path
 	return status;
 }
 
-debug_print_values_as_float(int* valuesRead, const int count) {
-	float* data = (float*)valuesRead;
-	for (int i = 0; i <= count; i++) {
-		float value = data[i];
-		if( !zisMissingFloat(value))
-		  printf("[%d](float)%.2f\n",i, value);
-	}
-}
-debug_print_values_as_double(int* valuesRead, const int count) {
-	double* data = (double*)valuesRead;
-	for (int i = 0; i <= count; i++) {
-		double value = data[i];
-		if( !zisMissingDouble(value))
-		    printf("[%d](double)%.2f \n",i, value);
-	}
-}
