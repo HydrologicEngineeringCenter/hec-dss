@@ -57,8 +57,8 @@ int write_ts_mixed(long long* ifltab, int writeDoublesFirst) {
 	const char* date = "01Jun2024";
 	const char* time = "1200";
 
-	const char* path_float = "//GAPT_DAM/FLOW-LOCAL/01Jun2026/1Hour/GAPT_HMS_FORECAST_floats_first/";
-	const char* path_double = "//GAPT_DAM/FLOW-LOCAL/01Jun2026/1Hour/GAPT_HMS_FORECAST_doubles_first/";
+	char* path_float = "//GAPT_DAM/FLOW-LOCAL/01Jun2026/1Hour/GAPT_HMS_FORECAST_floats_first/";
+	char* path_double = "//GAPT_DAM/FLOW-LOCAL/01Jun2026/1Hour/GAPT_HMS_FORECAST_doubles_first/";
 	char* path;
 	if (writeDoublesFirst) {
 		path = path_double;
