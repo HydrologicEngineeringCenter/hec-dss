@@ -1,5 +1,5 @@
 #include "heclib.h"
-#include <math.h >
+#include <math.h>
 
 int writeDoublesTimeSeries(long long* ifltab, const char* path, const char* date, const char* time, int some_missing_data);
 int writeSingleTimeSeries(long long* ifltab, const char* path, const char* date, const char* time, int some_missing_data);
