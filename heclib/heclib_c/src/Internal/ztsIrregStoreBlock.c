@@ -710,18 +710,61 @@ int ztsIrregStoreBlock(long long *ifltab, zStructTimeSeries *tss, const char *pa
 			*lengthCNotesRemaining -= cnotesToStoreNumber;
 		}
 
-		status = ztsWriteBlock(ifltab, tss, pathname,
-								times, 1, totalToStore,
-								values, valueSize,
-								quality,  qualityElementSize,
-								notes,  inoteElementSize,
-								cnotesToStore, cnotesToStoreLen,
-								profileDepths, profileDepthsSize,
-								internalHeader,  
-								userHeader,  userHeaderNumber,
-								0, logcialNumberData,
-								dataType);
+		zStructRecordBasics* rb = zstructRecordBasicsNew(pathname);
+		status = zgetRecordBasics(ifltab, rb);
 
+		int recordType = rb->recordType;
+		zstructFree(rb);
+
+		if (status == STATUS_RECORD_FOUND && recordType == DATA_TYPE_ITD
+			&& dataType == DATA_TYPE_ITS
+			&& tss->floatValues
+			&& tss->doubleValues == NULL) {
+			// Support writing floats into a double record (calling ztsStore recursively) 
+			tss->doubleValues = calloc(totalToStore, sizeof(double));
+			if (tss->doubleValues) {
+
+				printf("\n'%s'\n", pathname);
+				printf("floats:\n");
+				for (float* fp = values; fp - values < totalToStore; ++fp) {
+					printf("[%d]%2.f\n", (int)(fp - values), *fp);
+				}
+
+				convertDataArray((void*)values, (void*)tss->doubleValues, totalToStore, 1, 2);
+
+				printf("doubles:\n");
+				for (double* fp = tss->doubleValues; fp - tss->doubleValues < totalToStore; ++fp) {
+					printf("[%d]%2.f\n", (int)(fp - tss->doubleValues), *fp);
+				}
+
+				float* pinned_float = tss->floatValues;
+				tss->floatValues = NULL;
+
+				status = ztsStore(ifltab, tss, storageFlag);
+				tss->floatValues = pinned_float;
+				free(tss->doubleValues);
+				tss->doubleValues = NULL;
+			}
+			else
+			{
+				if (zmessageLevel(ifltab, MESS_METHOD_TS_WRITE_ID, MESS_LEVEL_INTERNAL_DIAG_1)) {
+					zmessageDebug(ifltab, DSS_FUNCTION_ztsRegStoreBlock_ID, "Memory Error storing ", pathname);
+				}
+			}
+		}
+		else {
+			status = ztsWriteBlock(ifltab, tss, pathname,
+				times, 1, totalToStore,
+				values, valueSize,
+				quality, qualityElementSize,
+				notes, inoteElementSize,
+				cnotesToStore, cnotesToStoreLen,
+				profileDepths, profileDepthsSize,
+				internalHeader,
+				userHeader, userHeaderNumber,
+				0, logcialNumberData,
+				dataType);
+		}
 	}
 	else {
 		// All missing
