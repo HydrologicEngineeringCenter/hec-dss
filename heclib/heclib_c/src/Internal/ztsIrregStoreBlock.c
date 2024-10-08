@@ -721,29 +721,37 @@ int ztsIrregStoreBlock(long long *ifltab, zStructTimeSeries *tss, const char *pa
 			&& tss->floatValues
 			&& tss->doubleValues == NULL) {
 			// Support writing floats into a double record (calling ztsStore recursively) 
-			tss->doubleValues = calloc(totalToStore, sizeof(double));
-			if (tss->doubleValues) {
 
+			zStructTimeSeries* tsClone = zstructTsClone(tss, pathname);
+
+			//tsClone->startJulianDate = julianBlockDate + (blockStartPosition / (86400 / tsClone->timeIntervalSeconds));
+			//tsClone->startTimeSeconds = (blockStartPosition + 1) * tsClone->timeIntervalSeconds % 86400;
+
+			free(tsClone->floatValues);
+			tsClone->floatValues = NULL;
+			tsClone->doubleValues = calloc(totalToStore, sizeof(double));
+			
+			if(tsClone->doubleValues) {
+				tsClone->allocated[zSTRUCT_TS_doubleValues] = 1;
+				 
 				printf("\n'%s'\n", pathname);
 				printf("floats:\n");
-				for (float* fp = values; fp - values < totalToStore; ++fp) {
-					printf("[%d]%2.f\n", (int)(fp - values), *fp);
+				float* f = (float*)values;
+				for (float* fp = f; fp - f < totalToStore; ++fp) {
+					printf("[%d]%2.f\n", (int)(fp - f), *fp);
 				}
 
-				convertDataArray((void*)values, (void*)tss->doubleValues, totalToStore, 1, 2);
+				convertDataArray((void*)values, (void*)tsClone->doubleValues, totalToStore, 1, 2);
+				tsClone->numberValues = numberToStore;
 
 				printf("doubles:\n");
-				for (double* fp = tss->doubleValues; fp - tss->doubleValues < totalToStore; ++fp) {
-					printf("[%d]%2.f\n", (int)(fp - tss->doubleValues), *fp);
+				for (double* fp = tsClone->doubleValues; fp - tsClone->doubleValues < totalToStore; ++fp) {
+					printf("[%d]%2.f\n", (int)(fp - tsClone->doubleValues), *fp);
 				}
 
-				float* pinned_float = tss->floatValues;
-				tss->floatValues = NULL;
+				status = ztsStore(ifltab, tsClone, storageFlag);
 
-				status = ztsStore(ifltab, tss, storageFlag);
-				tss->floatValues = pinned_float;
-				free(tss->doubleValues);
-				tss->doubleValues = NULL;
+				zstructFree(tsClone);
 			}
 			else
 			{

@@ -845,38 +845,13 @@ int ztsRegStoreBlock(long long *ifltab, zStructTimeSeries *tss, const char *path
 			&& dataType == DATA_TYPE_RTS
 			&& tss->floatValues
 			&& tss->doubleValues == NULL) {
+			// Support writing floats into a double record (calling ztsStore recursively) 
 
 			zStructTimeSeries* tsClone = zstructTsClone(tss, pathname);
 
-			printf("\ntssClone->julianBaseDate = %d", tsClone->julianBaseDate);
-			printf("\ntsClone->startJulianDate = %d", tsClone->startJulianDate);
-			printf("\ntsClone->startTimeSeconds =		%d", tsClone->startTimeSeconds);
-			printf("\ntsClone->endJulianDate = %d", tsClone->endJulianDate);
-			printf("\ntsClone->endTimeSeconds =	%d", tsClone->endTimeSeconds);
-			printf("\ntsClone->timeGranularitySeconds =	%d", tsClone->timeGranularitySeconds);
-			printf("\ntsClone->timeIntervalSeconds =%d", tsClone->timeIntervalSeconds);
-			
 			tsClone->startJulianDate = julianBlockDate + (blockStartPosition / ( 86400/ tsClone->timeIntervalSeconds));
 			tsClone->startTimeSeconds = (blockStartPosition +1) * tsClone->timeIntervalSeconds % 86400;
-			printf("\n'%s'\n", pathname);
-			printf("startJulian: %d\n", startJulian);
-			printf("startSeconds: %d\n", startSeconds);
-			printf("intervalSeconds: %d\n", intervalSeconds);
-			printf("julianBlockDate: %d\n", julianBlockDate);
-			printf("blockStartPosition: %d\n", blockStartPosition);
-
-			//tsClone->startJulianDate = julianBlockDate;
-//			 julianBlockDate
-
 			
-			printf("floats:\n");
-			float* start = (float*)&values[ipos];
-
-			for (float* fp = start;	fp - start < numberToStore;++fp) {
-				printf("[%d]%2.f\n", (int)(fp - start), *fp);
-			}
-
-
 			free(tsClone->floatValues);
 			tsClone->floatValues = NULL;
 
@@ -885,10 +860,6 @@ int ztsRegStoreBlock(long long *ifltab, zStructTimeSeries *tss, const char *path
 			tsClone->numberValues = numberToStore;
 			if (tsClone->doubleValues) {
 				convertDataArray((void*)&values[ipos], (void*)tsClone->doubleValues, numberToStore, 1, 2);
-				printf("doubles:\n");
-				for (double* fp = tsClone->doubleValues; fp - tsClone->doubleValues < numberToStore; ++fp) {
-					printf("[%d]%2.f\n", (int)(fp - tsClone->doubleValues), *fp);
-				}
 
 				status = ztsStore(ifltab, tsClone, storageFlag);
 				zstructFree(tsClone);
