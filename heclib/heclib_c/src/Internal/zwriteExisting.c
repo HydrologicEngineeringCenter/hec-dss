@@ -208,12 +208,20 @@ int zwriteExisting(long long *ifltab, zStructTransfer* ztransfer,
 	if (type != ztransfer->dataType) {
 
 		int isSupported = 0;
-		if (type == 100 && ztransfer->dataType == 105) {
+		if (type == DATA_TYPE_RTS && ztransfer->dataType == DATA_TYPE_RTD) {
 			isSupported = 1;
 		}
-		if (type == 105 && ztransfer->dataType == 100) {
+		if (type == DATA_TYPE_RTD && ztransfer->dataType == DATA_TYPE_RTS) {
 			isSupported = 1;
 		}
+
+		if (type == DATA_TYPE_ITS && ztransfer->dataType == DATA_TYPE_ITD) {
+			isSupported = 1;
+		}
+		if (type == DATA_TYPE_ITD && ztransfer->dataType == DATA_TYPE_ITS) {
+			isSupported = 1;
+		}
+
 		
 		if (!isSupported) {
 			return zerrorProcessing(ifltab, DSS_FUNCTION_zwriteExisting_ID,
