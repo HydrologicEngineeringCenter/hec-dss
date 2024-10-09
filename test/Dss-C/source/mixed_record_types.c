@@ -138,15 +138,18 @@ int test_mixed_record_types() {
 	}
 	// -- Irregular Interval --
 
-	//status = write_irregular_ts_mixed(ifltab, 0);
-	//if (status != STATUS_OKAY) {
-	//	return status;
-	//}
-	//status = write_irregular_ts_mixed(ifltab, 1);
-	//if (status != STATUS_OKAY) {
-	//	return status;
-	//}
-	//return -1;
+	status = write_irregular_ts_mixed(ifltab, 0);
+	if (status != STATUS_OKAY) {
+		return status;
+	}
+	
+
+
+	status = write_irregular_ts_mixed(ifltab, 1);
+	if (status != STATUS_OKAY) {
+		return status;
+	}
+	
 
 	// -- Regular Interval --
 
@@ -157,7 +160,6 @@ int test_mixed_record_types() {
 	status = write_ts_mixed(ifltab, 1);
 
 	zclose(ifltab);
-
 	return status;
 
 }

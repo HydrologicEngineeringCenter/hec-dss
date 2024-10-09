@@ -709,57 +709,6 @@ int ztsIrregStoreBlock(long long *ifltab, zStructTimeSeries *tss, const char *pa
 		else if (cnotesToStoreNumber > 0) {
 			*lengthCNotesRemaining -= cnotesToStoreNumber;
 		}
-
-		zStructRecordBasics* rb = zstructRecordBasicsNew(pathname);
-		status = zgetRecordBasics(ifltab, rb);
-
-		int recordType = rb->recordType;
-		zstructFree(rb);
-
-		if (status == STATUS_RECORD_FOUND && recordType == DATA_TYPE_ITD
-			&& dataType == DATA_TYPE_ITS
-			&& tss->floatValues
-			&& tss->doubleValues == NULL) {
-			// Support writing floats into a double record (calling ztsStore recursively) 
-
-			zStructTimeSeries* tsClone = zstructTsClone(tss, pathname);
-
-			//tsClone->startJulianDate = julianBlockDate + (blockStartPosition / (86400 / tsClone->timeIntervalSeconds));
-			//tsClone->startTimeSeconds = (blockStartPosition + 1) * tsClone->timeIntervalSeconds % 86400;
-
-			free(tsClone->floatValues);
-			tsClone->floatValues = NULL;
-			tsClone->doubleValues = calloc(totalToStore, sizeof(double));
-			
-			if(tsClone->doubleValues) {
-				tsClone->allocated[zSTRUCT_TS_doubleValues] = 1;
-				 
-				printf("\n'%s'\n", pathname);
-				printf("floats:\n");
-				float* f = (float*)values;
-				for (float* fp = f; fp - f < totalToStore; ++fp) {
-					printf("[%d]%2.f\n", (int)(fp - f), *fp);
-				}
-
-				convertDataArray((void*)values, (void*)tsClone->doubleValues, totalToStore, 1, 2);
-				tsClone->numberValues = numberToStore;
-
-				printf("doubles:\n");
-				for (double* fp = tsClone->doubleValues; fp - tsClone->doubleValues < totalToStore; ++fp) {
-					printf("[%d]%2.f\n", (int)(fp - tsClone->doubleValues), *fp);
-				}
-
-				status = ztsStore(ifltab, tsClone, storageFlag);
-
-				zstructFree(tsClone);
-			}
-			else
-			{
-				if (zmessageLevel(ifltab, MESS_METHOD_TS_WRITE_ID, MESS_LEVEL_INTERNAL_DIAG_1)) {
-					zmessageDebug(ifltab, DSS_FUNCTION_ztsRegStoreBlock_ID, "Memory Error storing ", pathname);
-				}
-			}
-		}
 		else {
 			status = ztsWriteBlock(ifltab, tss, pathname,
 				times, 1, totalToStore,
