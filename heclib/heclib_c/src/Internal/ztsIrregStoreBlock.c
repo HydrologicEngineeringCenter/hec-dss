@@ -709,19 +709,19 @@ int ztsIrregStoreBlock(long long *ifltab, zStructTimeSeries *tss, const char *pa
 		else if (cnotesToStoreNumber > 0) {
 			*lengthCNotesRemaining -= cnotesToStoreNumber;
 		}
-		else {
-			status = ztsWriteBlock(ifltab, tss, pathname,
-				times, 1, totalToStore,
-				values, valueSize,
-				quality, qualityElementSize,
-				notes, inoteElementSize,
-				cnotesToStore, cnotesToStoreLen,
-				profileDepths, profileDepthsSize,
-				internalHeader,
-				userHeader, userHeaderNumber,
-				0, logcialNumberData,
-				dataType);
-		}
+
+		status = ztsWriteBlock(ifltab, tss, pathname,
+								times, 1, totalToStore,
+								values, valueSize,
+								quality,  qualityElementSize,
+								notes,  inoteElementSize,
+								cnotesToStore, cnotesToStoreLen,
+								profileDepths, profileDepthsSize,
+								internalHeader,  
+								userHeader,  userHeaderNumber,
+								0, logcialNumberData,
+								dataType);
+
 	}
 	else {
 		// All missing
