@@ -10,6 +10,32 @@ int writeSingleTimeSeries(long long* ifltab, const char* path, const char* date,
 
 #define NUM_TS_VALUES 20
 
+/// prints out all paths, returns non-zero if any records are floats  (we are expecting doubles)
+int check_catalog_for_doubles(long long* ifltab) {
+	zStructCatalog* catStruct = zstructCatalogNew();
+	int status = zcatalog(ifltab, (const char*)0, catStruct, 1);
+	if (status < 0) {
+		printf("Error during catalog.  Error code %d\n", status);
+		return status;
+	}
+	int rval = 0;
+	for (int i = 0; i < catStruct->numberPathnames; i++)
+	{
+			zStructRecordBasics* recordBasics = zstructRecordBasicsNew(catStruct->pathnameList[i]);
+			// zset("MLEV", "",17 );
+			status = zgetRecordBasics(ifltab, recordBasics);
+
+			printf("[%d] \"%s\" %d\n", i, catStruct->pathnameList[i], recordBasics->recordType);
+			if (recordBasics->recordType == DATA_TYPE_RTS || recordBasics->recordType == DATA_TYPE_ITS) {
+				printf(" <<< ERROR: expected Doubles\n");
+				rval = -105;
+			}
+			zstructFree(recordBasics);
+	}
+
+	zstructFree(catStruct);
+	return rval;
+}
 
 int check_values_compare(long long ifltab[], const char* path, int irregular) {
 	zStructTimeSeries* tss = zstructTsNew(path);
@@ -142,7 +168,6 @@ int test_mixed_record_types() {
 	if (status != STATUS_OKAY) {
 		return status;
 	}
-	
 
 
 	status = write_irregular_ts_mixed(ifltab, 1);
@@ -158,8 +183,16 @@ int test_mixed_record_types() {
 		return status;
 	} 
 	status = write_ts_mixed(ifltab, 1);
+	if (status != STATUS_OKAY) {
+		return status;
+	}
+	// check that all records are doubles.
+	 
+	status = check_catalog_for_doubles(ifltab);
+
 
 	zclose(ifltab);
+
 	return status;
 
 }

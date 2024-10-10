@@ -15,6 +15,8 @@ int main()
    int i;
    float *fp;
    float f;
+   double* dp;
+   double d;
    long l;
    long long ll;
    long long *llp;
@@ -27,6 +29,8 @@ int main()
    printf("\nint*       %zd", sizeof(ip));
    printf("\nfloat      %zd", sizeof(f));
    printf("\nfloat*     %zd", sizeof(fp));
+   printf("\ndouble     %zd", sizeof(d));
+   printf("\ndouble*    %zd", sizeof(dp));
    printf("\nlong       %zd", sizeof(l));
    printf("\nlong long  %zd", sizeof(ll));
    printf("\nlong long* %zd", sizeof(llp));

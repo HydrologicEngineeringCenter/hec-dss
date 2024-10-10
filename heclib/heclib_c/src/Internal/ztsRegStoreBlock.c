@@ -857,6 +857,7 @@ int ztsRegStoreBlock(long long *ifltab, zStructTimeSeries *tss, const char *path
 
 			tsClone->doubleValues = calloc(numberToStore, sizeof(double));
 			tsClone->allocated[zSTRUCT_TS_doubleValues] = 1;
+			tsClone->dataType = DATA_TYPE_RTD;
 			tsClone->numberValues = numberToStore;
 			if (tsClone->doubleValues) {
 				convertDataArray((void*)&values[ipos], (void*)tsClone->doubleValues, numberToStore, 1, 2);
