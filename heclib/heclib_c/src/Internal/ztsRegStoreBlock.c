@@ -507,7 +507,6 @@ int ztsRegStoreBlock(long long *ifltab, zStructTimeSeries *tss, const char *path
 			userHeaderRead, userHeaderSize, &userHeaderNumberRead,
 			numberInBlock, 0); 
 
-		
 		if (zisError(status)) {		
 			//  Free any space malloced
 			if (valuesRead)  free(valuesRead);
@@ -525,14 +524,14 @@ int ztsRegStoreBlock(long long *ifltab, zStructTimeSeries *tss, const char *path
 			if ((valueSize > 0) && (valuesRead))  {
 				//  storageFlag = 1  Only replace missing data.
 				if (storageFlag == 1) {
-					ipos = blockStartPosition * valueSize;
+					ipos = blockStartPosition * valueSize; 
 					assert ((ipos + (numberToStore * valueSize)) <= valuesReadLength);
 					for (i=0; i<numberToStore; i++) {					
 						if (zisMissing(&valuesRead[ipos], valueSize)) {
 							boolReplace = 1;
 							break;
 						}												
-						ipos += valueSize;
+						ipos += valueSize; 
 					}
 				}
 				else {  //  if (storageFlag == 4) {
@@ -834,17 +833,58 @@ int ztsRegStoreBlock(long long *ifltab, zStructTimeSeries *tss, const char *path
 		internalHeader[INT_HEAD_blockStartPosition] = blockStartPosition;
 		internalHeader[INT_HEAD_blockEndPosition] = blockStartPosition + numberToStore - 1;
 		ipos = firstValid * valueSize;
-		status = ztsWriteBlock(ifltab, tss, pathname, 											
-								&ival, 0, numberToStore,  
-								&values[ipos],  valueSize,
-								quality,  qualityElementSize,
-								notes,  inoteElementSize,
-								cnotesToStore, cnotesToStoreLen,
-								profileDepths, profileDepthsSize,
-								internalHeader,  
-								userHeader,  userHeaderNumber,
-								0, numberInBlock,					
-								dataType);
+
+		
+		zStructRecordBasics* rb = zstructRecordBasicsNew(pathname);
+		status = zgetRecordBasics(ifltab, rb);
+
+		int recordType = rb->recordType;
+		zstructFree(rb);
+
+		if (status == STATUS_RECORD_FOUND && recordType == DATA_TYPE_RTD
+			&& dataType == DATA_TYPE_RTS
+			&& tss->floatValues
+			&& tss->doubleValues == NULL) {
+			// Support writing floats into a double record (calling ztsStore recursively) 
+
+			zStructTimeSeries* tsClone = zstructTsClone(tss, pathname);
+
+			tsClone->startJulianDate = julianBlockDate + (blockStartPosition / ( 86400/ tsClone->timeIntervalSeconds));
+			tsClone->startTimeSeconds = (blockStartPosition +1) * tsClone->timeIntervalSeconds % 86400;
+			
+			free(tsClone->floatValues);
+			tsClone->floatValues = NULL;
+
+			tsClone->doubleValues = calloc(numberToStore, sizeof(double));
+			tsClone->allocated[zSTRUCT_TS_doubleValues] = 1;
+			tsClone->dataType = DATA_TYPE_RTD;
+			tsClone->numberValues = numberToStore;
+			if (tsClone->doubleValues) {
+				convertDataArray((void*)&values[ipos], (void*)tsClone->doubleValues, numberToStore, 1, 2);
+
+				status = ztsStore(ifltab, tsClone, storageFlag);
+				zstructFree(tsClone);
+			}
+			else
+			{
+				if (zmessageLevel(ifltab, MESS_METHOD_TS_WRITE_ID, MESS_LEVEL_INTERNAL_DIAG_1)) {
+					zmessageDebug(ifltab, DSS_FUNCTION_ztsRegStoreBlock_ID, "Memory Error storing ", pathname);
+				}
+			}
+		}
+		else {
+			status = ztsWriteBlock(ifltab, tss, pathname,
+				&ival, 0, numberToStore,
+				&values[ipos], valueSize,
+				quality, qualityElementSize,
+				notes, inoteElementSize,
+				cnotesToStore, cnotesToStoreLen,
+				profileDepths, profileDepthsSize,
+				internalHeader,
+				userHeader, userHeaderNumber,
+				0, numberInBlock,
+				dataType);
+		}
 
 	}
 	else {
@@ -873,3 +913,4 @@ int ztsRegStoreBlock(long long *ifltab, zStructTimeSeries *tss, const char *path
 
 	return status;
 }
+

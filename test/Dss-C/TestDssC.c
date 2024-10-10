@@ -7,7 +7,7 @@
 
 
 int runTheTests();
-
+int test_mixed_record_types();
 
 int gridMemoryTest() {
 
@@ -179,6 +179,11 @@ int runTheTests() {
 	char fileName7a[80];
 	char fileName6[80];
 	int status;
+
+
+	status = test_mixed_record_types();
+	if (status != STATUS_OKAY)
+		return status;
 
 	status = testLargeCopy();
 	if (status != STATUS_OKAY)
