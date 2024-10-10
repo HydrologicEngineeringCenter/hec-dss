@@ -82,16 +82,12 @@ int check_values_compare(long long ifltab[], const char* path, int irregular) {
 /// Writes floats to a time-series filling in the missing data.
 /// </summary>
 /// <returns></returns>
-int write_irregular_ts_mixed(long long* ifltab, int writeDoublesFirst) {
+int write_irregular_ts_mixed(long long* ifltab, char* path, int writeDoublesFirst) {
 	int status = 1;
 	const char* date = "30Jun2026";
 	const char* time = "2300";
 
-	char* path_float = "/ResSim//Flow//~1Hour/TSS-Floats/";
-	char* path_double = "/ResSim//Flow//~1Hour/TSS-Doubles/";
-	char* path;
 	if (writeDoublesFirst) {
-		path = path_double;
 		status = writeDoubleIrregularTimeSeries(ifltab, path, date, time, 1); // write doubles with gaps
 		if (status != STATUS_OKAY) {
 			return status;
@@ -99,7 +95,6 @@ int write_irregular_ts_mixed(long long* ifltab, int writeDoublesFirst) {
 		status = writeFloatIrregularTimeSeries(ifltab, path, date, time, 0); // write floats without gaps
 	}
 	else { // write floats first
-		path = path_float;
 		status = writeFloatIrregularTimeSeries(ifltab, path, date, time, 1); // write floats with gaps
 		if (status != STATUS_OKAY) {
 			return status;
@@ -120,16 +115,12 @@ int write_irregular_ts_mixed(long long* ifltab, int writeDoublesFirst) {
 /// Writes floats to a time-series filling in the missing data.
 /// </summary>
 /// <returns></returns>
-int write_ts_mixed(long long* ifltab, int writeDoublesFirst) {
+int write_ts_mixed(long long* ifltab, char* path, int writeDoublesFirst) {
 	int status = 1;
 	const char* date = "30Jun2024";
 	const char* time = "2300";
 
-	char* path_float = "//GAPT_DAM/FLOW-LOCAL//1Hour/GAPT_HMS_FORECAST_floats_first/";
-	char* path_double = "//GAPT_DAM/FLOW-LOCAL//1Hour/GAPT_HMS_FORECAST_doubles_first/";
-	char* path;
 	if (writeDoublesFirst) {
-		path = path_double;
 		status = writeDoublesTimeSeries(ifltab, path, date, time, 1); // write doubles with gaps
 		if (status != STATUS_OKAY) {
 			return status;
@@ -137,7 +128,6 @@ int write_ts_mixed(long long* ifltab, int writeDoublesFirst) {
 		status = writeSingleTimeSeries(ifltab, path, date, time, 0); // write floats without gaps
 	}
 	else { // write floats first
-		path = path_float;
 		status = writeSingleTimeSeries(ifltab, path, date, time, 1); // write floats with gaps
 		if (status != STATUS_OKAY) {
 			return status;
@@ -164,13 +154,13 @@ int test_mixed_record_types() {
 	}
 	// -- Irregular Interval --
 
-	status = write_irregular_ts_mixed(ifltab, 0);
+	status = write_irregular_ts_mixed(ifltab, "/ResSim//Flow//~1Hour/TSS-Floats/", 0);
 	if (status != STATUS_OKAY) {
 		return status;
 	}
 
 
-	status = write_irregular_ts_mixed(ifltab, 1);
+	status = write_irregular_ts_mixed(ifltab,"/ResSim//Flow//~1Hour/TSS-Doubles/", 1);
 	if (status != STATUS_OKAY) {
 		return status;
 	}
@@ -178,11 +168,11 @@ int test_mixed_record_types() {
 
 	// -- Regular Interval --
 
-	status = write_ts_mixed(ifltab, 0);
+	status = write_ts_mixed(ifltab, "//GAPT_DAM/FLOW-LOCAL//1Hour/GAPT_HMS_FORECAST_floats_first/", 0);
 	if (status != STATUS_OKAY) {
 		return status;
 	}
-	status = write_ts_mixed(ifltab, 1);
+	status = write_ts_mixed(ifltab, "//GAPT_DAM/FLOW-LOCAL//1Hour/GAPT_HMS_FORECAST_doubles_first/", 1);
 	if (status != STATUS_OKAY) {
 		return status;
 	}
