@@ -849,8 +849,18 @@ int ztsRegStoreBlock(long long *ifltab, zStructTimeSeries *tss, const char *path
 
 			zStructTimeSeries* tsClone = zstructTsClone(tss, pathname);
 
-			tsClone->startJulianDate = julianBlockDate + (blockStartPosition / (86400 / tsClone->timeIntervalSeconds));
-			tsClone->startTimeSeconds = (blockStartPosition + 1) * tsClone->timeIntervalSeconds % 86400;
+			long divisor = (SECS_IN_1_DAY / tsClone->timeIntervalSeconds);
+			if (tsClone->timeIntervalSeconds > SECS_IN_1_DAY) {
+				divisor = 1;
+			}
+			
+			tsClone->startJulianDate = julianBlockDate + (blockStartPosition / divisor);
+
+
+			tsClone->startTimeSeconds = (blockStartPosition + 1) * tsClone->timeIntervalSeconds % SECS_IN_1_DAY;
+			if (tss->timeIntervalSeconds >= SECS_IN_1_DAY) { 
+				tsClone->startTimeSeconds = tss->startTimeSeconds;
+			}
 
 			free(tsClone->floatValues);
 			tsClone->floatValues = NULL;
