@@ -342,7 +342,6 @@ int writeDoubleIrregularTimeSeries(long long* ifltab, const char* path, const ch
 		}
 	}
 	createTimesArray(path, date, time, itimes);
-	}
 
 	zStructTimeSeries* tss = zstructTsNewIrregDoubles(path, dvalues, NUM_TS_VALUES, itimes, MINUTE_GRANULARITY, cnull, "cfs", "Inst-Val");
 	int status = ztsStore(ifltab, tss, 0);
