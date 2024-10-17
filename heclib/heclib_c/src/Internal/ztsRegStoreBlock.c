@@ -849,7 +849,6 @@ int ztsRegStoreBlock(long long *ifltab, zStructTimeSeries *tss, const char *path
 
 			zStructTimeSeries* tsClone = zstructTsClone(tss, pathname);
 
-		
 			long divisor = (SECS_IN_1_DAY / tsClone->timeIntervalSeconds);
 			if (tsClone->timeIntervalSeconds > SECS_IN_1_DAY) {
 				divisor = 1;

@@ -7,7 +7,6 @@ int writeFloatIrregularTimeSeries(long long* ifltab, const char* path, const cha
 int writeSingleTimeSeries(long long* ifltab, const char* path, const char* date, const char* time, int some_missing_data);
 
 
-
 #define NUM_TS_VALUES 1221
 
 /// prints out all paths, returns non-zero if any records are floats  (we are expecting doubles)
@@ -153,6 +152,7 @@ int test_mixed_record_types() {
 		return status;
 	}
 	// -- Irregular Interval --
+
 	if (1) {
 		status = write_irregular_ts_mixed(ifltab, "/ResSim//Flow//~1Hour/TSS-Floats/", 0);
 		if (status != STATUS_OKAY) {
@@ -303,6 +303,7 @@ int writeSingleTimeSeries(long long* ifltab, const char* path, const char* date,
 	return status;
 }
 
+
 void createTimesArray(const char* path, const char* date, const char* time, int* itimes) {
 	int increment = 1;
 	// get epart determine increment
@@ -341,18 +342,19 @@ int writeDoubleIrregularTimeSeries(long long* ifltab, const char* path, const ch
 		}
 	}
 	createTimesArray(path, date, time, itimes);
+	}
+
 	zStructTimeSeries* tss = zstructTsNewIrregDoubles(path, dvalues, NUM_TS_VALUES, itimes, MINUTE_GRANULARITY, cnull, "cfs", "Inst-Val");
 	int status = ztsStore(ifltab, tss, 0);
 	zstructFree(tss);
 	return status;
 }
 
-
 int writeFloatIrregularTimeSeries(long long* ifltab, const char* path, const char* date, const char* time, int some_missing_data) {
 	int itimes[NUM_TS_VALUES];
 	float fvalues[NUM_TS_VALUES];
 	char* cnull = 0;
-	
+
 	for (int i = 0; i < NUM_TS_VALUES; i++) {
 		if (i % 6 == 0 && some_missing_data) {
 			fvalues[i] = UNDEFINED_FLOAT;
@@ -362,6 +364,7 @@ int writeFloatIrregularTimeSeries(long long* ifltab, const char* path, const cha
 		}
 	}
 	createTimesArray(path, date, time, itimes);
+
 	zStructTimeSeries* tss = zstructTsNewIrregFloats(path, fvalues, NUM_TS_VALUES, itimes, MINUTE_GRANULARITY, cnull, "cfs", "Inst-Val");
 	int status = ztsStore(ifltab, tss, 0);
 	zstructFree(tss);
