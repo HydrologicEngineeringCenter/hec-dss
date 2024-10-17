@@ -8,7 +8,7 @@ int writeSingleTimeSeries(long long* ifltab, const char* path, const char* date,
 
 
 
-#define NUM_TS_VALUES 2221
+#define NUM_TS_VALUES 1221
 
 /// prints out all paths, returns non-zero if any records are floats  (we are expecting doubles)
 int check_catalog_for_doubles(long long* ifltab) {
@@ -233,14 +233,14 @@ int test_mixed_record_types() {
 		return status;
 	}
 
-	//status = write_ts_mixed(ifltab, "//GAPT_DAM/FLOW-LOCAL//1Week/GAPT_HMS_FORECAST_float_first/", 0);
-	//if (status != STATUS_OKAY) {
-	//	return status;
-	//}
-	//status = write_ts_mixed(ifltab, "//GAPT_DAM/FLOW-LOCAL//1Week/GAPT_HMS_FORECAST_doubles_first/", 1);
-	//if (status != STATUS_OKAY) {
-	//	return status;
-	//}
+	status = write_ts_mixed(ifltab, "//GAPT_DAM/FLOW-LOCAL//1Week/GAPT_HMS_FORECAST_float_first/", 0);
+	if (status != STATUS_OKAY) {
+		return status;
+	}
+	status = write_ts_mixed(ifltab, "//GAPT_DAM/FLOW-LOCAL//1Week/GAPT_HMS_FORECAST_doubles_first/", 1);
+	if (status != STATUS_OKAY) {
+		return status;
+	}
 
 	status = write_ts_mixed(ifltab, "//GAPT_DAM/FLOW-LOCAL//1Month/GAPT_HMS_FORECAST_floats_first/", 0);
 	if (status != STATUS_OKAY) {
@@ -266,7 +266,6 @@ int test_mixed_record_types() {
 
 
 	zclose(ifltab);
-	//return -444;
 	return status;
 
 }
