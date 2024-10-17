@@ -841,7 +841,7 @@ int ztsRegStoreBlock(long long *ifltab, zStructTimeSeries *tss, const char *path
 		int recordType = rb->recordType;
 		zstructFree(rb);
 
-		if (status == STATUS_RECORD_FOUND && recordType == DATA_TYPE_RTD
+		if ( status == STATUS_RECORD_FOUND && recordType == DATA_TYPE_RTD
 			&& dataType == DATA_TYPE_RTS
 			&& tss->floatValues
 			&& tss->doubleValues == NULL) {
@@ -849,6 +849,7 @@ int ztsRegStoreBlock(long long *ifltab, zStructTimeSeries *tss, const char *path
 
 			zStructTimeSeries* tsClone = zstructTsClone(tss, pathname);
 
+		
 			long divisor = (SECS_IN_1_DAY / tsClone->timeIntervalSeconds);
 			if (tsClone->timeIntervalSeconds > SECS_IN_1_DAY) {
 				divisor = 1;
@@ -859,7 +860,10 @@ int ztsRegStoreBlock(long long *ifltab, zStructTimeSeries *tss, const char *path
 
 			tsClone->startTimeSeconds = (blockStartPosition + 1) * tsClone->timeIntervalSeconds % SECS_IN_1_DAY;
 			if (tss->timeIntervalSeconds >= SECS_IN_1_DAY) { 
-				tsClone->startTimeSeconds = tss->startTimeSeconds;
+
+				incrementTime(intervalSeconds, 0, julianFirstValue,
+					secondsFirstValue - intervalSeconds + tss->timeOffsetSeconds,
+					&tsClone->startJulianDate, &tsClone->startTimeSeconds);
 			}
 
 			free(tsClone->floatValues);
