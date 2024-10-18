@@ -324,7 +324,12 @@ int ztsIrregStoreBlock(long long *ifltab, zStructTimeSeries *tss, const char *pa
 			if (tsClone->times) {
 				for (size_t i = 0; i < numberToStore; i++)
 				{
-					tsClone->times[i] = (julianStartBlockDate * (86400 / tsClone->timeGranularitySeconds)) + (timesToStore[i] / tsClone->timeGranularitySeconds);
+					if (blockSize == 5) {
+						tsClone->times[i] = timesToStore[i] + julianStartBlockDate * 1440;
+					}
+					else {
+						tsClone->times[i] = (julianStartBlockDate * (86400 / tsClone->timeGranularitySeconds)) + (timesToStore[i] / tsClone->timeGranularitySeconds);
+					}
 				}
 				status = ztsStore(ifltab, tsClone, storageFlag);
 			}
