@@ -7,8 +7,7 @@ int writeFloatIrregularTimeSeries(long long* ifltab, const char* path, const cha
 int writeSingleTimeSeries(long long* ifltab, const char* path, const char* date, const char* time, int some_missing_data);
 
 
-
-#define NUM_TS_VALUES 20
+#define NUM_TS_VALUES 221
 
 /// prints out all paths, returns non-zero if any records are floats  (we are expecting doubles)
 int check_catalog_for_doubles(long long* ifltab) {
@@ -21,16 +20,16 @@ int check_catalog_for_doubles(long long* ifltab) {
 	int rval = 0;
 	for (int i = 0; i < catStruct->numberPathnames; i++)
 	{
-			zStructRecordBasics* recordBasics = zstructRecordBasicsNew(catStruct->pathnameList[i]);
-			// zset("MLEV", "",17 );
-			status = zgetRecordBasics(ifltab, recordBasics);
+		zStructRecordBasics* recordBasics = zstructRecordBasicsNew(catStruct->pathnameList[i]);
+		// zset("MLEV", "",17 );
+		status = zgetRecordBasics(ifltab, recordBasics);
 
-			printf("[%d] \"%s\" %d\n", i, catStruct->pathnameList[i], recordBasics->recordType);
-			if (recordBasics->recordType == DATA_TYPE_RTS || recordBasics->recordType == DATA_TYPE_ITS) {
-				printf(" <<< ERROR: expected Doubles\n");
-				rval = -105;
-			}
-			zstructFree(recordBasics);
+		printf("[%d] \"%s\" %d\n", i, catStruct->pathnameList[i], recordBasics->recordType);
+		if (recordBasics->recordType == DATA_TYPE_RTS || recordBasics->recordType == DATA_TYPE_ITS) {
+			printf(" <<< ERROR: expected Doubles\n");
+			rval = -105;
+		}
+		zstructFree(recordBasics);
 	}
 
 	zstructFree(catStruct);
@@ -39,6 +38,7 @@ int check_catalog_for_doubles(long long* ifltab) {
 
 int check_values_compare(long long ifltab[], const char* path, int irregular) {
 	zStructTimeSeries* tss = zstructTsNew(path);
+	tss->boolRetrieveAllTimes = 1;
 	int retrieveFlag = -1; //
 	int status = ztsRetrieve(ifltab, tss, retrieveFlag, 1, 0);
 	char cdate[13], ctime[10];
@@ -66,10 +66,10 @@ int check_values_compare(long long ifltab[], const char* path, int irregular) {
 
 		double diff = fabs(d - i);
 		if (diff > 0.001) {
-			if( irregular)
-			  printf("expected %d, found   %s %s, %f\n", (int)i,cdate, ctime, d);
+			if (irregular)
+				printf("expected %d, found   %s %s, %f\n", (int)i, cdate, ctime, d);
 			else
-				printf("expected %d, found  %f\n", (int)i,  d);
+				printf("expected %d, found  %f\n", (int)i, d);
 			rval = -2;
 		}
 	}
@@ -82,16 +82,12 @@ int check_values_compare(long long ifltab[], const char* path, int irregular) {
 /// Writes floats to a time-series filling in the missing data.
 /// </summary>
 /// <returns></returns>
-int write_irregular_ts_mixed(long long* ifltab, int writeDoublesFirst) {
+int write_irregular_ts_mixed(long long* ifltab, char* path, int writeDoublesFirst) {
 	int status = 1;
-	const char* date = "30Jun2026";
-	const char* time = "2300";
+	const char* date = "15Jun2026";
+	const char* time = "1200";
 
-	char* path_float = "/ResSim//Flow//~1Hour/TSS-Floats/";
-	char* path_double = "/ResSim//Flow//~1Hour/TSS-Doubles/";
-	char* path;
 	if (writeDoublesFirst) {
-		path = path_double;
 		status = writeDoubleIrregularTimeSeries(ifltab, path, date, time, 1); // write doubles with gaps
 		if (status != STATUS_OKAY) {
 			return status;
@@ -99,7 +95,6 @@ int write_irregular_ts_mixed(long long* ifltab, int writeDoublesFirst) {
 		status = writeFloatIrregularTimeSeries(ifltab, path, date, time, 0); // write floats without gaps
 	}
 	else { // write floats first
-		path = path_float;
 		status = writeFloatIrregularTimeSeries(ifltab, path, date, time, 1); // write floats with gaps
 		if (status != STATUS_OKAY) {
 			return status;
@@ -108,7 +103,7 @@ int write_irregular_ts_mixed(long long* ifltab, int writeDoublesFirst) {
 
 	}
 
-	status = check_values_compare(ifltab, path,1);
+	status = check_values_compare(ifltab, path, 1);
 
 	return status;
 }
@@ -120,16 +115,12 @@ int write_irregular_ts_mixed(long long* ifltab, int writeDoublesFirst) {
 /// Writes floats to a time-series filling in the missing data.
 /// </summary>
 /// <returns></returns>
-int write_ts_mixed(long long* ifltab, int writeDoublesFirst) {
+int write_ts_mixed(long long* ifltab, char* path, int writeDoublesFirst) {
 	int status = 1;
-	const char* date = "30Jun2024";
-	const char* time = "2300";
+	const char* date = "15Jun2024";
+	const char* time = "1200";
 
-	char* path_float = "//GAPT_DAM/FLOW-LOCAL//1Hour/GAPT_HMS_FORECAST_floats_first/";
-	char* path_double = "//GAPT_DAM/FLOW-LOCAL//1Hour/GAPT_HMS_FORECAST_doubles_first/";
-	char* path;
 	if (writeDoublesFirst) {
-		path = path_double;
 		status = writeDoublesTimeSeries(ifltab, path, date, time, 1); // write doubles with gaps
 		if (status != STATUS_OKAY) {
 			return status;
@@ -137,17 +128,16 @@ int write_ts_mixed(long long* ifltab, int writeDoublesFirst) {
 		status = writeSingleTimeSeries(ifltab, path, date, time, 0); // write floats without gaps
 	}
 	else { // write floats first
-		path = path_float;
 		status = writeSingleTimeSeries(ifltab, path, date, time, 1); // write floats with gaps
 		if (status != STATUS_OKAY) {
 			return status;
 		}
 		status = writeDoublesTimeSeries(ifltab, path, date, time, 0); // write doubles without gaps
-		
+
 	}
-	
-	status = check_values_compare(ifltab, path,0);
-	
+
+	status = check_values_compare(ifltab, path, 0);
+
 	return status;
 }
 
@@ -164,35 +154,119 @@ int test_mixed_record_types() {
 	}
 	// -- Irregular Interval --
 
-	status = write_irregular_ts_mixed(ifltab, 0);
+	if (1) {
+		status = write_irregular_ts_mixed(ifltab, "/ResSim//Flow//~1Hour/TSS-Floats/", 0);
+		if (status != STATUS_OKAY) {
+			return status;
+		}
+
+		status = write_irregular_ts_mixed(ifltab, "/ResSim//Flow//~1Hour/TSS-Doubles/", 1);
+		if (status != STATUS_OKAY) {
+			return status;
+		}
+
+		status = write_irregular_ts_mixed(ifltab, "/ResSim//Flow//~1Day/TSS-Floats/", 0);
+		if (status != STATUS_OKAY) {
+			return status;
+		}
+
+		status = write_irregular_ts_mixed(ifltab, "/ResSim//Flow//~1Day/TSS-Doubles/", 1);
+		if (status != STATUS_OKAY) {
+			return status;
+		}
+		status = write_irregular_ts_mixed(ifltab, "/ResSim//Flow//~1Week/TSS-Floats/", 0);
+		if (status != STATUS_OKAY) {
+			return status;
+		}
+
+		status = write_irregular_ts_mixed(ifltab, "/ResSim//Flow//~1Week/TSS-Doubles/", 1);
+		if (status != STATUS_OKAY) {
+			return status;
+		}
+
+		status = write_irregular_ts_mixed(ifltab, "/ResSim//Flow//~1Month/TSS-Floats/", 0);
+		if (status != STATUS_OKAY) {
+			return status;
+		}
+
+		status = write_irregular_ts_mixed(ifltab, "/ResSim//Flow//~1Month/TSS-Doubles/", 1);
+		if (status != STATUS_OKAY) {
+			return status;
+		}
+
+		status = write_irregular_ts_mixed(ifltab, "/ResSim//Flow//~1Year/TSS-Floats/", 0);
+		if (status != STATUS_OKAY) {
+			return status;
+		}
+
+		status = write_irregular_ts_mixed(ifltab, "/ResSim//Flow//~1Year/TSS-Doubles/", 1);
+		if (status != STATUS_OKAY) {
+			return status;
+		}
+	}
+
+	// -- Regular Interval --
+
+	status = write_ts_mixed(ifltab, "//GAPT_DAM/FLOW-LOCAL//1Hour/GAPT_HMS_FORECAST_floats_first/", 0);
+	if (status != STATUS_OKAY) {
+		return status;
+	}
+	status = write_ts_mixed(ifltab, "//GAPT_DAM/FLOW-LOCAL//1Hour/GAPT_HMS_FORECAST_doubles_first/", 1);
 	if (status != STATUS_OKAY) {
 		return status;
 	}
 
-
-	status = write_irregular_ts_mixed(ifltab, 1);
+	status = write_ts_mixed(ifltab, "//GAPT_DAM/FLOW-LOCAL//1Minute/GAPT_HMS_FORECAST_floats_first/", 0);
+	if (status != STATUS_OKAY) {
+		return status;
+	}
+	status = write_ts_mixed(ifltab, "//GAPT_DAM/FLOW-LOCAL//1Minute/GAPT_HMS_FORECAST_doubles_first/", 1);
 	if (status != STATUS_OKAY) {
 		return status;
 	}
 	
-
-	// -- Regular Interval --
-
-	status = write_ts_mixed(ifltab,0);
-	if (status != STATUS_OKAY) {
-		return status;
-	} 
-	status = write_ts_mixed(ifltab, 1);
+	status = write_ts_mixed(ifltab, "//GAPT_DAM/FLOW-LOCAL//1Day/GAPT_HMS_FORECAST_floats_first/", 0);
 	if (status != STATUS_OKAY) {
 		return status;
 	}
+	status = write_ts_mixed(ifltab, "//GAPT_DAM/FLOW-LOCAL//1Day/GAPT_HMS_FORECAST_doubles_first/", 1);
+	if (status != STATUS_OKAY) {
+		return status;
+	}
+
+	status = write_ts_mixed(ifltab, "//GAPT_DAM/FLOW-LOCAL//1Week/GAPT_HMS_FORECAST_float_first/", 0);
+	if (status != STATUS_OKAY) {
+		return status;
+	}
+	status = write_ts_mixed(ifltab, "//GAPT_DAM/FLOW-LOCAL//1Week/GAPT_HMS_FORECAST_doubles_first/", 1);
+	if (status != STATUS_OKAY) {
+		return status;
+	}
+
+	status = write_ts_mixed(ifltab, "//GAPT_DAM/FLOW-LOCAL//1Month/GAPT_HMS_FORECAST_floats_first/", 0);
+	if (status != STATUS_OKAY) {
+		return status;
+	}
+	status = write_ts_mixed(ifltab, "//GAPT_DAM/FLOW-LOCAL//1Month/GAPT_HMS_FORECAST_doubles_first/", 1);
+	if (status != STATUS_OKAY) {
+		return status;
+	}
+
+	status = write_ts_mixed(ifltab, "//GAPT_DAM/FLOW-LOCAL//1Year/GAPT_HMS_FORECAST_float_first/", 0);
+	if (status != STATUS_OKAY) {
+		return status;
+	}
+	status = write_ts_mixed(ifltab, "//GAPT_DAM/FLOW-LOCAL//1Year/GAPT_HMS_FORECAST_doubles_first/", 1);
+	if (status != STATUS_OKAY) {
+		return status;
+	}
+
 	// check that all records are doubles.
-	 
+
 	status = check_catalog_for_doubles(ifltab);
 
 
 	zclose(ifltab);
-
 	return status;
 
 }
@@ -200,7 +274,7 @@ int test_mixed_record_types() {
 int writeDoublesTimeSeries(long long* ifltab, const char* path, const char* date, const char* time, int some_missing_data) {
 	double dvalues[NUM_TS_VALUES];
 	for (int i = 0; i < NUM_TS_VALUES; i++) {
-		if (i % 3 ==0 && some_missing_data) {
+		if (i % 3 == 0 && some_missing_data) {
 			dvalues[i] = UNDEFINED_DOUBLE;
 		}
 		else {
@@ -216,7 +290,7 @@ int writeDoublesTimeSeries(long long* ifltab, const char* path, const char* date
 int writeSingleTimeSeries(long long* ifltab, const char* path, const char* date, const char* time, int some_missing_data) {
 	float dvalues[NUM_TS_VALUES];
 	for (int i = 0; i < NUM_TS_VALUES; i++) {
-		if (i % 3 == 0  && some_missing_data) {
+		if (i % 3 == 0 && some_missing_data) {
 			dvalues[i] = UNDEFINED_FLOAT;
 		}
 		else {
@@ -230,14 +304,40 @@ int writeSingleTimeSeries(long long* ifltab, const char* path, const char* date,
 	return status;
 }
 
+#define SECS_IN_1_DAY 86400
+#define SECS_IN_1_HOUR 3600
+#define SECS_IN_1_MONTH 2592000
+#define SECS_IN_1_YEAR 31536000
+
+void createTimesArray(const char* path, const char* date, const char* time, int* itimes) {
+	int increment = 1;
+	// get epart determine increment
+	if (zfindString(path, strnlen_hec(path, MAX_PATHNAME_LENGTH), "~1Hour", 6) != -1) {
+		increment = SECS_IN_1_HOUR;
+	}
+	else if (zfindString(path, strnlen_hec(path, MAX_PATHNAME_LENGTH), "~1Day", 5) != -1) {
+		increment = SECS_IN_1_DAY;
+	}
+	else if (zfindString(path, strnlen_hec(path, MAX_PATHNAME_LENGTH), "~1Month", 7) != -1) {
+		increment = SECS_IN_1_MONTH;
+	}
+	else if (zfindString(path, strnlen_hec(path, MAX_PATHNAME_LENGTH), "~1Year", 6) != -1) {
+		increment = SECS_IN_1_YEAR;
+	}
+	int julian = dateToJulian(date);
+	int seconds = timeStringToSeconds(time);
+
+	for (int i = 0; i < NUM_TS_VALUES; i++) {
+		itimes[i] = julian * 1440 + seconds / 60;
+		incrementTime(increment, 1, julian, seconds, &julian, &seconds);
+	}
+}
+
 int writeDoubleIrregularTimeSeries(long long* ifltab, const char* path, const char* date, const char* time, int some_missing_data) {
 	double dvalues[NUM_TS_VALUES];
 	int itimes[NUM_TS_VALUES];
 	char* cnull = 0;
 
-	int julian = dateToJulian(date);
-	int seconds = timeStringToSeconds(time);
-	int mins = julian * 1440 + seconds/60;
 	for (int i = 0; i < NUM_TS_VALUES; i++) {
 		if (i % 6 == 0 && some_missing_data) {
 			dvalues[i] = UNDEFINED_DOUBLE;
@@ -245,22 +345,20 @@ int writeDoubleIrregularTimeSeries(long long* ifltab, const char* path, const ch
 		else {
 			dvalues[i] = (double)i;
 		}
-		itimes[i] = mins + (i * 60);
 	}
+	createTimesArray(path, date, time, itimes);
 
 	zStructTimeSeries* tss = zstructTsNewIrregDoubles(path, dvalues, NUM_TS_VALUES, itimes, MINUTE_GRANULARITY, cnull, "cfs", "Inst-Val");
 	int status = ztsStore(ifltab, tss, 0);
 	zstructFree(tss);
 	return status;
 }
+
 int writeFloatIrregularTimeSeries(long long* ifltab, const char* path, const char* date, const char* time, int some_missing_data) {
-	float fvalues[NUM_TS_VALUES];
 	int itimes[NUM_TS_VALUES];
+	float fvalues[NUM_TS_VALUES];
 	char* cnull = 0;
 
-	int julian = dateToJulian(date);
-	int seconds = timeStringToSeconds(time);
-	int mins = julian * 1440 + seconds/60;
 	for (int i = 0; i < NUM_TS_VALUES; i++) {
 		if (i % 6 == 0 && some_missing_data) {
 			fvalues[i] = UNDEFINED_FLOAT;
@@ -268,8 +366,8 @@ int writeFloatIrregularTimeSeries(long long* ifltab, const char* path, const cha
 		else {
 			fvalues[i] = (float)i;
 		}
-		itimes[i] = mins + (i * 60);
 	}
+	createTimesArray(path, date, time, itimes);
 
 	zStructTimeSeries* tss = zstructTsNewIrregFloats(path, fvalues, NUM_TS_VALUES, itimes, MINUTE_GRANULARITY, cnull, "cfs", "Inst-Val");
 	int status = ztsStore(ifltab, tss, 0);
