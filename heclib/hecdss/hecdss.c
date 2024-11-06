@@ -280,6 +280,17 @@ HECDSS_API int hec_dss_tsRetrieve(dss_file* dss, const char *pathname,
     tss->startTimeSeconds = timeStringToSeconds(startTime);
     tss->endJulianDate = dateToJulian(endDate);
     tss->endTimeSeconds = timeStringToSeconds(endTime);
+
+    // if no dates/times are given retrieve all data.
+    if (  
+         (startDate == NULL || startDate == "\0")
+      && (startTime == NULL || startTime == "\0")
+      && (endDate == NULL   || endDate == "\0")
+      && (endTime == NULL   || endTime == "\0")
+         ) 
+    {
+      tss->boolRetrieveAllTimes = 1;
+    }
     
     int status = ztsRetrieve(dss->ifltab, tss, NO_TRIM_INCL_TIME_ARR, RETRIEVE_DOUBLES, RETRIEVE_QUAL_AND_NOTES);
     if (status == 0) {
