@@ -186,7 +186,6 @@
 				<File RelativePath=".\src\Support\chrflb.f"/>
 				<File RelativePath=".\src\Support\chrhol.f"/>
 				<File RelativePath=".\src\Support\chrlnb.f"/>
-				<File RelativePath=".\src\Support\cjchr.f"/>
 				<File RelativePath=".\src\Support\convi4toi8.f"/>
 				<File RelativePath=".\src\Support\convi8toi4.f"/>
 				<File RelativePath=".\src\Support\crack_unit_spec.f"/>
@@ -240,14 +239,12 @@
 				<File RelativePath=".\src\Support\lflnb.f"/>
 				<File RelativePath=".\src\Support\lisfil.f"/>
 				<File RelativePath=".\src\Support\lisnum.f"/>
-				<File RelativePath=".\src\Support\ljstr.f"/>
 				<File RelativePath=".\src\Support\m2ihm.f"/>
 				<File RelativePath=".\src\Support\makedsscatalog.f"/>
 				<File RelativePath=".\src\Support\match.f"/>
 				<File RelativePath=".\src\Support\nindx.f"/>
 				<File RelativePath=".\src\Support\nindxr.f"/>
 				<File RelativePath=".\src\Support\nopers.f"/>
-				<File RelativePath=".\src\Support\nopers2.F"/>
 				<File RelativePath=".\src\Support\nscan.f"/>
 				<File RelativePath=".\src\Support\parseq.f"/>
 				<File RelativePath=".\src\Support\parsli.f"/>
@@ -256,7 +253,6 @@
 				<File RelativePath=".\src\Support\puthol.f"/>
 				<File RelativePath=".\src\Support\r2sd3.f"/>
 				<File RelativePath=".\src\Support\remblk.f"/>
-				<File RelativePath=".\src\Support\rjstr.f"/>
 				<File RelativePath=".\src\Support\sd32r.f"/>
 				<File RelativePath=".\src\Support\set_user_header_param.f"/>
 				<File RelativePath=".\src\Support\setdlm.f"/>
