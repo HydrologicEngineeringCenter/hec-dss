@@ -18,7 +18,7 @@ heclib.dll
 
 
 
-# RedHat/Centos -- Install Build Dependencies
+# RedHat/RockyLinux -- Install Build Dependencies
 
 yum install -y \
      git \
@@ -26,8 +26,11 @@ yum install -y \
      gcc-gfortran \
      make \
      zlib-devel \
-     java-1.8.0-openjdk-devel \
+     java-devel \
 	 gcc-c++
+
+export JAVA_HOME=/etc/alternatives/java_sdk_11_openjdk
+
 
 # Ubuntu -- Install Build Dependencies
 
@@ -47,11 +50,14 @@ zlib, math, quadmath, and gfortran for pydsstools to work in Ubuntu.
 
 ### Linux 
 ```
-1.	git clone -j2 --recurse-submodules https://github.com/HydrologicEngineeringCenter/hec-dss.git
-2.	In the hec-dss/heclib directory, execute make clean ; make
-3.	In the hec-dss/test/C directory, execute ./unix_test
-4.	In the hec-dss/test/Dss-C directory, execute make clean ; make test
-5.	In the hec-dss/test/Fortran directory, execute make clean ; make test
+git clone https://github.com/HydrologicEngineeringCenter/hec-dss.git
+cd hec-dss
+rm -fr ./dss-test-data
+git clone https://github.com/HydrologicEngineeringCenter/dss-test-data.git
+In the hec-dss/heclib directory, execute make clean ; make
+In the hec-dss/test/C directory, execute ./unix_test
+In the hec-dss/test/Dss-C directory, execute make clean ; make test
+In the hec-dss/test/Fortran directory, execute make clean ; make test
 
 ```
 
