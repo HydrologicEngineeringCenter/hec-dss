@@ -7,7 +7,7 @@ ifeq ($(UNAME_S),Linux)
 	ifneq ($(UNAME_M),aarch64)
 		BITS=-m64
 	endif
-	CFLAGS=-c $(BITS) -fPIC -g -std=gnu99 -Isrc/headers $(CWARNING) -D__linux__ -fcommon
+	CFLAGS=-c $(BITS) -fPIC -g -std=gnu99 -Isrc/headers $(CWARNING) -D__linux__ -fcommon -lz -lrt -lgfortran -lm
 endif
 ifeq ($(UNAME_S),SunOS)
 	CFLAGS=-m64 -xmemalign=2i -xcode=pic32 -c -Isrc/headers -mt -xcode=abs64 -xstrconst -xc99=all -xCC -g -xs

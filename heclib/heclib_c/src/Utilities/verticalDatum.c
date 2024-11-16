@@ -39,7 +39,7 @@ const char* meterUnitAliases[] = {"M","METER","METERS","METRE","METRES"};
 const int footUnitAliasCount = sizeof(footUnitAliases) / sizeof(footUnitAliases[0]);
 const int meterUnitAliasCount = sizeof(meterUnitAliases) / sizeof(meterUnitAliases[0]);
 
-#if !defined(__APPLE__) && !defined(__sun__)
+#if !defined(__APPLE__) && !defined(__sun__) && !defined(__linux__)
 const char* strcasestr(const char* haystack, const char* needle) {
     int   haystackLen = strlen(haystack);
     int   needleLen = strlen(needle);
