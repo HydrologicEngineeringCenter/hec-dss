@@ -307,7 +307,7 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1zrecInfo(
 				//  Error out!
 				return -2;
 			}
-			status = zpdRetrieve(ifltab, pd, 0);
+			status = zpdRetrieve((long long*)ifltab, pd, 0);
 			if (status == 0) {
 				hec_dss_jni_setStringField(env, cls, j_recordInfo, "programName", pd->programName);
 				zstructFree(pd);
