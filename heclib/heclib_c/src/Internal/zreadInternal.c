@@ -169,7 +169,7 @@
 *				int totalExpandedSize
 *					The total logical size of values1 and values2 (in 4 byte ints.)
 *
-*				char programName[17]
+*				char programName[PARAMETER_NAME_SIZE]
 *					The name of the program that last wrote this record (if set).
 *
 *				int insufficientSpace

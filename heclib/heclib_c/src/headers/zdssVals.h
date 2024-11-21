@@ -1,6 +1,7 @@
 #ifndef ZDSS_VALS_H
 #define ZDSS_VALS_H
 
+#include "zStructAllocation.h"
 #define MAX_LEN_ERROR_MESS 500
 
 struct hec_zdssVals {
@@ -22,8 +23,8 @@ struct hec_zdssVals {
 	 char czdss[5];
 	 char czVersion[5];
 	 char czVersionDate[20];
-	 char cprogramName[17];
-	 char cverticalDatum[17];
+	 char cprogramName[PARAMETER_NAME_SIZE];
+	 char cverticalDatum[PARAMETER_NAME_SIZE];
 	 char globalErrorMess[MAX_LEN_ERROR_MESS];
 } ;
 

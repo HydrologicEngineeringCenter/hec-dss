@@ -77,7 +77,7 @@ typedef struct {
 	int dataType;
 	long long lastWrittenTime;  //  Seconds since 1970
 	long long fileLastWrittenTime;
-	char programName[17];
+	char programName[PARAMETER_NAME_SIZE];
 
 	//  Private - knowing which variables were allocated by the ztsNew functions,
 	//  instead of the calling program

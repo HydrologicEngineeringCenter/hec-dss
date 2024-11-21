@@ -8,7 +8,7 @@ int zset(const char* parameter, const char* charVal, int integerValue)
 {
 	int  ival;
 	int  status = 0;
-	char cval[17];
+	char cval[PARAMETER_NAME_SIZE];
 
 	ival = integerValue;
 	zset_(parameter, charVal, &ival, strlen(parameter), strlen(charVal));
