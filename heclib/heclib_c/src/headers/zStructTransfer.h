@@ -56,7 +56,7 @@ typedef struct {
 	int insufficientSpace;
 	long long lastWrittenTime;
 	long long fileLastWrittenTime;
-	char programName[17];
+	char programName[PARAMETER_NAME_SIZE];
 
 	long long *info;
 

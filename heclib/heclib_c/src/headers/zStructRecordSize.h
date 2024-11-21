@@ -27,7 +27,7 @@ typedef struct {
 	int allocatedSize;
 	long long lastWriteTimeMillis;
 
-	char programLastWrite[17];
+	char programLastWrite[PARAMETER_NAME_SIZE];
 
 	//  Time Series parameters
 	int numberRecordsFound;

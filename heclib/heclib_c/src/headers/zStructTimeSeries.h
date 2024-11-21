@@ -89,7 +89,7 @@ typedef struct {
 	int dataType; 	
 	long long lastWrittenTime;  //  Milliseconds since 1970
 	long long fileLastWrittenTime;  
-	char programName[17];
+	char programName[PARAMETER_NAME_SIZE];
 
 	
 	//  Private

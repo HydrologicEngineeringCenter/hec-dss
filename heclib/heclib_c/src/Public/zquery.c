@@ -164,6 +164,10 @@ int zquery(const char* parameter,  char* charVal, size_t lenCharVal, int *intege
 		*integerValue = zdssVals.ztsDisaggregateVersion;
 		status = STATUS_OKAY;
 	}
+	else if (!strncmp(cparm, "prog", 4)) {
+		stringCopy(charVal, (size_t)lenCharVal, zdssVals.cprogramName, _TRUNCATE);
+		status = STATUS_OKAY;
+	}
 	else {
 		status = STATUS_NOT_OKAY;;
 	}

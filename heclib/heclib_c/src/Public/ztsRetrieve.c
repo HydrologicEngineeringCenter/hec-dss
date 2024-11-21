@@ -257,7 +257,7 @@
 *				long long lastWrittenTime
 *					The last write time of the first record found, in seconds sine Jan 01, 1970
 *
-*				char programName[17]
+*				char programName[PARAMETER_NAME_SIZE]
 *					The name of the program that last wrote this record.
 *
 *

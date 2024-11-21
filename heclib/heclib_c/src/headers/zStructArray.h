@@ -31,7 +31,7 @@ typedef struct {
 	int dataType;
 	long long lastWrittenTime;  //  Seconds since 1970
 	long long fileLastWrittenTime;
-	char programName[17];
+	char programName[PARAMETER_NAME_SIZE];
 
 	int numberAttributes;
 	char **attributeKeys;

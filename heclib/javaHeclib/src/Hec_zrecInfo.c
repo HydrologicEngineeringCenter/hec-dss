@@ -1,7 +1,7 @@
 #include <jni.h>
 #include <string.h>
 #include "heclib.h"
-
+#include "jni_utility.h"
 
 /*
 	This function is meant to be complete, not efficient
@@ -173,7 +173,7 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1zrecInfo(
 
 		//  If this is time series, get additional time series data also.
 
-		if ((dataType >= 100) && (dataType < 200)) {
+		if ((dataType >= DATA_TYPE_RTS) && (dataType < DATA_TYPE_PD)) {
 
 			tss = zstructTsNewTimes(cpath, startDate, startTime, endDate, endTime);
 			if (!tss) {
@@ -293,9 +293,25 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1zrecInfo(
 					jlongNumber = (jlong)(tss->lastWrittenTime / 1000);
 					(*env)->SetLongField(env, j_recordInfo, fid, jlongNumber);
 				}
+				hec_dss_jni_setStringField(env, cls, j_recordInfo, "programName", tss->programName);
 				//  End of time series data
 				zstructFree(tss);
 				tss = 0;
+			}
+		}
+
+		if (dataType >= DATA_TYPE_PD && dataType < DATA_TYPE_TEXT) {
+			// get program name by reading the paired data.
+			zStructPairedData* pd = zstructPdNew(cpath);
+			if (!pd) {
+				//  Error out!
+				return -2;
+			}
+			status = zpdRetrieve(ifltab, pd, 0);
+			if (status == 0) {
+				hec_dss_jni_setStringField(env, cls, j_recordInfo, "programName", pd->programName);
+				zstructFree(pd);
+				pd = 0;
 			}
 		}
 

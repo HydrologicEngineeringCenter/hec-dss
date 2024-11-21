@@ -173,7 +173,7 @@ void testVerticalDatumInfoSerialization() {
 void testZsetZquery() {
     // test zset() and zquery() for vertical datums
     int   intVal;
-    char  charVal[17];
+    char  charVal[PARAMETER_NAME_SIZE];
     int   status;
 
     charVal[0] = '\0';
@@ -317,7 +317,7 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
     char* headerBuf = NULL;
     int   len = 0;
     int messageLevel;
-    char alpha[17];
+    char alpha[PARAMETER_NAME_SIZE];
     double expectedValue;
     int basedate;
     int* quality = (int*)malloc(numberValues * sizeof(int));
