@@ -114,7 +114,7 @@ void zmaxPart(long long *ifltab, int *maxParts);
 void zmaxPart7(long long *ifltab, int *maxParts);
 int ztsGetEPartFromInterval(int intervalSeconds, char *ePart, size_t sizeofEpart);
 char* zsetCollectionSequence(char* pathname, int sequenceNumber);
-int isDpartEmpty(char* pathname);
+int isDpartEmpty(const char* pathname);
 
 //  Missing data
 float zmissingFlag();											//  Returns float missing flag
