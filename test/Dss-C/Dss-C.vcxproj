@@ -76,7 +76,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\..\heclib\heclib_c\$(PlatformName)\$(ConfigurationName);..\..\heclib\heclib_f\$(PlatformName)\$(ConfigurationName);..\..\lib\$(Platform);$(IFORT_COMPILER22)compiler\lib\intel64_win</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\heclib\heclib_c\$(PlatformName)\$(ConfigurationName);..\..\heclib\heclib_f\$(PlatformName)\$(ConfigurationName);..\..\lib\$(Platform);$(IFORT_COMPILER_LIB)</AdditionalLibraryDirectories>
       <AdditionalDependencies>heclib_f.lib;heclib_c.lib;zlibstatic.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>LIBCMTD;MSVCRT</IgnoreSpecificDefaultLibraries>
       <Profile>true</Profile>
@@ -125,7 +125,7 @@
       <AdditionalIncludeDirectories>..\..\heclib\heclib_c\src\headers;source;.</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>..\..\heclib\heclib_c\$(PlatformName)\$(ConfigurationName);..\..\heclib\heclib_f\$(PlatformName)\$(ConfigurationName);..\..\lib\$(Platform);$(IFORT_COMPILER22)compiler\lib\intel64_win</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\heclib\heclib_c\$(PlatformName)\$(ConfigurationName);..\..\heclib\heclib_f\$(PlatformName)\$(ConfigurationName);..\..\lib\$(Platform);$(IFORT_COMPILER_LIB)</AdditionalLibraryDirectories>
       <AdditionalDependencies>heclib_f.lib;heclib_c.lib;zlibstatic.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>LIBCMT</IgnoreSpecificDefaultLibraries>
     </Link>

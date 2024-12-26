@@ -81,6 +81,13 @@ export LD_LIBRARY_PATH=/usr/gcc/7/lib/sparcv9
 
 ### Windows
 
+IFORT_COMPILER_LIB and JAVA_HOME need to be set
+
+example: 
+
+set IFORT_COMPILER_LIB=C:\Program Files (x86)\Intel\oneAPI\compiler\2024.2\lib
+set JAVA_HOME=c:\bin\jdk1.8.0
+
 ```cmd
 
 build_release.bat 
