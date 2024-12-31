@@ -52,7 +52,6 @@ zlib, math, quadmath, and gfortran for pydsstools to work in Ubuntu.
 ```
 git clone https://github.com/HydrologicEngineeringCenter/hec-dss.git
 cd hec-dss
-rm -fr ./dss-test-data
 git clone https://github.com/HydrologicEngineeringCenter/dss-test-data.git
 In the hec-dss/heclib directory, execute make clean ; make
 In the hec-dss/test/C directory, execute ./unix_test
@@ -70,20 +69,42 @@ export JAVA_HOME=/usr/jdk/instances/jdk1.8.0
 export LD_LIBRARY_PATH=/usr/gcc/7/lib/sparcv9
 
 ```
-1.  bash
-2.	git clone -j2 --recurse-submodules https://github.com/HydrologicEngineeringCenter/hec-dss.git
-3.	In the hec-dss/heclib directory, execute gmake clean ; gmake
-4.	In the hec-dss/test/C directory, execute ./unix_test
-5.	In the hec-dss/test/Dss-C directory, execute gmake clean ; gmake test
-6.	In the hec-dss/test/Fortran directory, execute gmake -f Makefile.Solaris clean ; gmake -f Makefile.Solaris test
+ bash
+ git clone https://github.com/HydrologicEngineeringCenter/hec-dss.git
+ cd hec-dss
+ git clone https://github.com/HydrologicEngineeringCenter/dss-test-data.git
+ In the hec-dss/heclib directory, execute gmake clean ; gmake
+ In the hec-dss/test/C directory, execute ./unix_test
+ In the hec-dss/test/Dss-C directory, execute gmake clean ; gmake test
+ In the hec-dss/test/Fortran directory, execute gmake -f Makefile.Solaris clean ; gmake -f Makefile.Solaris test
 
 ```
 
 ### Windows
 
+For Windows we are using the intel compiler and Visual Studio 2022.
+
+
+The environment variables IFORT_COMPILER_LIB and JAVA_HOME need to be set.
+example: 
+
 ```cmd
+set IFORT_COMPILER_LIB=C:\Program Files (x86)\Intel\oneAPI\compiler\2024.2\lib
+set JAVA_HOME=c:\bin\jdk1.8.0
+
+git clone https://github.com/HydrologicEngineeringCenter/hec-dss.git
+cd hec-dss
+git clone https://github.com/HydrologicEngineeringCenter/dss-test-data.git
 
 build_release.bat 
+
+cd test
+test_c.bat
+cd ..
+test_Dss-C.bat
+test_fortran.bat
+
+
 ```
 
 ## running the java tests
