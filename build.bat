@@ -1,5 +1,7 @@
 :: Windows Build for Heclib/DSS and javaHeclib
 ::
+set startTime=%time%
+
 call vs_env.bat
 echo on
 
@@ -53,3 +55,6 @@ copy ..\heclib\heclib_f\x64\Debug\heclib_f.lib
 cd ..
 7z a -tzip heclib.zip debug64
 cd %~dp0
+
+echo Start Time: %startTime%
+echo Finish Time: %time%
