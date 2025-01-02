@@ -1,1 +1,1 @@
-call "%%ONEAPI_ROOT%%\setvars.bat" intel64 vs2022
+call "%IFORT_COMPILER_LIB%\..\..\..\setvars.bat" intel64 vs2022

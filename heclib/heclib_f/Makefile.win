@@ -1,8 +1,9 @@
 #nmake -f Makefile.win  DEBUG=1 clean all
 #nmake -f Makefile.win  clean all
 
+#$(DSS_FORTRAN_COMPILER) is either 'IFX' or 'IFORT'
 
-FPP=IFORT
+FPP=$(DSS_FORTRAN_COMPILER)
 LINKER=xilib
 
 !IFDEF DEBUG

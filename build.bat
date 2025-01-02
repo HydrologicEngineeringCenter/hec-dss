@@ -4,6 +4,7 @@ call vs_env.bat
 echo on
 
 SET DSS_PLATFORM_DIR=x64
+set DSS_FORTRAN_COMPILER=ifx
 
 :: set version and build_number for javaheclib.dll
 set build_number=9999

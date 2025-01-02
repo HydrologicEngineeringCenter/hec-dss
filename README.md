@@ -86,6 +86,9 @@ For Windows we are using the intel compiler and Visual Studio 2022.
 
 
 The environment variables IFORT_COMPILER_LIB and JAVA_HOME need to be set.
+
+7z.exe needs to be in the path for a command line build.
+
 example: 
 
 ```cmd
