@@ -48,6 +48,31 @@ JNIEXPORT void JNICALL Java_hec_heclib_util_Heclib_Hec_1zspdd
     nord     = (int) j_nord;
     ncurve   = (int) j_ncurve;
     ihorz    = (int) j_ihorz;
+		istat = (*env)->GetIntArrayElements(env, j_istat, 0);
+
+		if (zmessageLevel((long long*)ifltab, MESS_METHOD_JNI_ID, MESS_LEVEL_INTERNAL_DIAG_1)) {
+			zmessageDebug((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "Enter Heclib_Hec_zspdd, pathname: ", pathname);
+		}
+
+		//  Initial error checking....
+		if ((nord <= 0) || (ncurve <= 0)
+			|| j_c1unit == 0
+			|| j_c1type == 0
+			|| j_c2unit == 0
+			|| j_c2type == 0
+
+			) {
+			if (zmessageLevel((long long*)ifltab, MESS_METHOD_WRITE_ID, MESS_LEVEL_TERSE)) {
+				zmessage2((long long*)ifltab, "Heclib_Hec_zspdd: No data; or null units or type. Can't store empty record.  Pathname: ", pathname);
+			}
+			istat[0] = -1;
+			(*env)->ReleaseIntArrayElements(env, j_ifltab, ifltab, 0);
+			(*env)->ReleaseStringUTFChars(env, j_pathname, pathname);
+			(*env)->ReleaseIntArrayElements(env, j_istat, istat, 0);
+			return;
+		}
+
+
     c1unit   = (*env)->GetStringUTFChars (env, j_c1unit, 0);
     c1type   = (*env)->GetStringUTFChars (env, j_c1type, 0);
     c2unit   = (*env)->GetStringUTFChars (env, j_c2unit, 0);
@@ -57,7 +82,7 @@ JNIEXPORT void JNICALL Java_hec_heclib_util_Heclib_Hec_1zspdd
     nheadu   = (int) j_nheadu;
     if(nheadu) headu = (*env)->GetIntArrayElements (env, j_headu, 0);
     iplan    = (int) j_iplan;
-    istat    = (*env)->GetIntArrayElements (env, j_istat, 0);
+    
 
 
 	if (zmessageLevel((long long*)ifltab, MESS_METHOD_JNI_ID, MESS_LEVEL_INTERNAL_DIAG_1)) {		
