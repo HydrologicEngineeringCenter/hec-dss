@@ -504,6 +504,10 @@ C
      *  size(iuhead_copy2),
      *  errMsg)
       iplan_write = 0
+C     IPLAN = 0   Always write
+C     IPLAN = 1   Only write if new record
+C     IPLAN = 2   Only write if old record
+      
       IF (LDOUBLE) THEN
          JTYPE = 205
          N = NVALS * 2
