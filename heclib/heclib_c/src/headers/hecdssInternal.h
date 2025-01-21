@@ -39,7 +39,7 @@
 
 #define DSS_VERSION "7-IU"
 
-#define DSS_VERSION_DATE "21 November 2024"
+#define DSS_VERSION_DATE "17 January 2025"
 
 
 const char *ztypeName(int recordType, int boolAbbreviation);

@@ -503,6 +503,11 @@ C
      *  nuhead_copy2,
      *  size(iuhead_copy2),
      *  errMsg)
+      iplan_write = 0
+C     IPLAN = 0   Always write
+C     IPLAN = 1   Only write if new record
+C     IPLAN = 2   Only write if old record
+      
       IF (LDOUBLE) THEN
          JTYPE = 205
          N = NVALS * 2
@@ -510,14 +515,14 @@ C        Swap words on unix to keep compatitable with PC
          IF (IFLTAB(KDSWAP).NE.0) CALL zdswap6(DVALUES, N)
          CALL zwritex6 (IFLTAB, CPATH, NPATH, IGBUFF, NIHEAD,
      *   ICHEAD, 0, iuhead_copy2, nuhead_copy2, DVALUES, N, JTYPE,
-     *   IPLAN, ISTAT, LFOUND)
+     *   iplan_write, ISTAT, LFOUND)
 C        Swap back so we don't mess up the user's data
          IF (IFLTAB(KDSWAP).NE.0) CALL zdswap6(DVALUES, N)
       ELSE
          JTYPE = 200
          CALL zwritex6 (IFLTAB, CPATH, NPATH, IGBUFF, NIHEAD,
      *   ICHEAD, 0, iuhead_copy2, nuhead_copy2, SVALUES, NVALS,
-     *   JTYPE, IPLAN, ISTAT, LFOUND)
+     *   JTYPE, iplan_write, ISTAT, LFOUND)
       ENDIF
 C
 
