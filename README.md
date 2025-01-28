@@ -109,7 +109,9 @@ test_fortran.bat
 
 ## running the java tests
 
-TO DO
+```bash
+./gradlew test --tests hec.heclib.util.HeclibTest
+```
 
 
 
