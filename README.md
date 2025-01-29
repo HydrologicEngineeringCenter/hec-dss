@@ -109,7 +109,13 @@ test_fortran.bat
 
 ## running the java tests
 
-TO DO
+```bash
+
+./gradlew test --tests hec.heclib.* --info
+# check test results here;
+# hec-monolith/hec-monolith-compat/build/reports/tests/test
+
+```
 
 
 
