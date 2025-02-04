@@ -21,9 +21,7 @@ TARGET=$(OUT_DIR)\heclib_f.lib
 
 FFLAGS=/nologo /debug:$(D_LEVEL) /MP /Od /fpp /I"src\headers" /reentrancy:threaded /warn:noalignments \
  /Qsave /Qinit:zero /names:lowercase /iface:cref /assume:underscore  /traceback \
-  /check:all /libs:static $(DLIB) /threads /4Yportlib /c /object:$(OUT_DIR)\ 
-
-all: $(TARGET)
+  /check:all /libs:static $(DLIB) /threads /c /object:$(OUT_DIR)\ 
 
 $(OUT_DIR)\heclib_f.lib: 
 	echo $(DSS_PLATFORM_DIR)

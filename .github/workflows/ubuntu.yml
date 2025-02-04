@@ -45,7 +45,7 @@ jobs:
 
       # Save some artifacts
       - name: upload-artifacts hecdss.dll and javaHeclib.dll
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: dss
           path: |

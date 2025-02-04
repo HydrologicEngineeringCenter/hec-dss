@@ -13,7 +13,7 @@ if NOT EXIST %OUT_DIR% mkdir %OUT_DIR%
 
 ifort /nologo /debug:Full /MP /Od /fpp /I"src\headers" /reentrancy:threaded /warn:noalignments ^
  /Qsave /Qinit:zero /names:lowercase /iface:cref /assume:underscore ^
- /traceback /check:all /libs:static /dbglibs /threads /4Yportlib ^
+ /traceback /check:all /libs:static /dbglibs /threads  ^
  @source.txt /link ^
  /NODEFAULTLIB:libcmt /NODEFAULTLIB:MSVCRT ^
  ..\..\heclib\heclib_c\%OUT_DIR%\heclib_c.lib ^
@@ -30,7 +30,7 @@ if NOT EXIST %OUT_DIR% mkdir %OUT_DIR%
 
 ifort /nologo /debug:full /MP /Od /fpp /I"src\headers" /reentrancy:threaded /warn:noalignments ^
  /Qsave /Qinit:zero /names:lowercase /iface:cref /assume:underscore ^
- /traceback /check:all /libs:static /threads /4Yportlib ^
+ /traceback /check:all /libs:static /threads  ^
  @source.txt /link /NODEFAULTLIB:libcmt  ^
  ..\..\heclib\heclib_c\%OUT_DIR%\heclib_c.lib ^
  ..\..\heclib\heclib_f\%OUT_DIR%\heclib_f.lib ^
