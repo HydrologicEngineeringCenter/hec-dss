@@ -1,0 +1,32 @@
+name: Windows Build with Intel Fortran
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-2022
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+    
+      - uses: fortran-lang/setup-fortran@v1
+        id: setup-fortran
+        with:
+          compiler: intel
+          version: 2024.1
+
+      - run: |
+          echo "Fortran compiler: ${{ env.FC }}"
+          echo "C compiler: ${{ env.CC }}"
+          echo "C++ compiler: ${{ env.CXX }}"
+                 
+      - name: Run build script
+        env:
+          IFORT_COMPILER_LIB: ${{ env.CMPLR_ROOT }}\lib
+        run: .\build.bat
+        
