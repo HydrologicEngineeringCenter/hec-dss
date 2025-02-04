@@ -28,7 +28,7 @@
 			<Tool Name="VFManifestTool" SuppressStartupBanner="true"/>
 		</Configuration>
 		<Configuration Name="Debug|x64" UseCompiler="ifortCompiler" OutputDirectory="$(ProjectDir)\$(PlatformName)\$(ConfigurationName)" IntermediateDirectory="$(ProjectDir)\$(PlatformName)\$(ConfigurationName)_intermediate" TargetName="heclib_f" ConfigurationType="typeStaticLibrary">
-			<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" MultiProcessorCompilation="true" Optimization="optimizeDisabled" Preprocess="preprocessYes" AdditionalIncludeDirectories="src\headers" ReentrantCode="reentrancyThreaded" WarnUnusedVariables="true" WarnTruncateSource="true" WarnUnalignedData="false" LocalVariableStorage="localStorageSave" LocalSavedScalarsZero="true" ExternalNameInterpretation="extNameLowerCase" CallingConvention="callConventionCRef" ExternalNameUnderscore="true" Traceback="true" RuntimeChecks="rtChecksNone" RuntimeLibrary="rtMultiThreadedDebug" UsePortlib="true"/>
+			<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" MultiProcessorCompilation="true" Optimization="optimizeDisabled" Preprocess="preprocessYes" AdditionalIncludeDirectories="src\headers" ReentrantCode="reentrancyThreaded" WarnUnusedVariables="true" WarnTruncateSource="true" WarnUnalignedData="false" LocalVariableStorage="localStorageSave" LocalSavedScalarsZero="true" ExternalNameInterpretation="extNameLowerCase" CallingConvention="callConventionCRef" ExternalNameUnderscore="true" Traceback="true" RuntimeChecks="rtChecksNone" RuntimeLibrary="rtMultiThreadedDebug"/>
 			<Tool Name="VFLinkerTool" SuppressStartupBanner="true"/>
 			<Tool Name="VFLibrarianTool" OutputFile="$(OutDir)\heclib_f$(TargetExt)"/>
 			<Tool Name="VFResourceCompilerTool"/>
@@ -40,7 +40,7 @@
 			<Tool Name="VFManifestTool" SuppressStartupBanner="true"/>
 		</Configuration>
 		<Configuration Name="Release|x64" UseCompiler="ifortCompiler" OutputDirectory="$(ProjectDir)\$(PlatformName)\$(ConfigurationName)" IntermediateDirectory="$(ProjectDir)\$(PlatformName)\$(ConfigurationName)_intermediate" TargetName="heclib_f" ConfigurationType="typeStaticLibrary">
-			<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" MultiProcessorCompilation="true" Optimization="optimizeDisabled" Preprocess="preprocessYes" AdditionalIncludeDirectories="src\headers" ReentrantCode="reentrancyThreaded" WarnUnalignedData="false" LocalVariableStorage="localStorageSave" LocalSavedScalarsZero="true" ExternalNameInterpretation="extNameLowerCase" CallingConvention="callConventionCRef" ExternalNameUnderscore="true" Traceback="true" RuntimeChecks="rtChecksNone" BoundsCheck="true" UsePortlib="true"/>
+			<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" MultiProcessorCompilation="true" Optimization="optimizeDisabled" Preprocess="preprocessYes" AdditionalIncludeDirectories="src\headers" ReentrantCode="reentrancyThreaded" WarnUnalignedData="false" LocalVariableStorage="localStorageSave" LocalSavedScalarsZero="true" ExternalNameInterpretation="extNameLowerCase" CallingConvention="callConventionCRef" ExternalNameUnderscore="true" Traceback="true" RuntimeChecks="rtChecksNone" BoundsCheck="true"/>
 			<Tool Name="VFLibrarianTool" OutputFile="$(OutDir)\heclib_f$(TargetExt)"/>
 			<Tool Name="VFResourceCompilerTool"/>
 			<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
@@ -404,7 +404,8 @@
 			<File RelativePath=".\src\zsetTimezone.f"/>
 			<File RelativePath=".\src\zsitsc6.f"/>
 			<File RelativePath=".\src\zsitsi6.f"/>
-			<File RelativePath=".\src\zspdi6.f"/>
+			<File RelativePath=".\src\zspdi6.f">
+			</File>
 			<File RelativePath=".\src\zsqprm6.f"/>
 			<File RelativePath=".\src\zsqueeze6.f"/>
 			<File RelativePath=".\src\zsrtpa6.f"/>
