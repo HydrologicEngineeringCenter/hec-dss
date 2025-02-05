@@ -29,4 +29,19 @@ jobs:
         env:
           IFORT_COMPILER_LIB: ${{ env.CMPLR_ROOT }}\lib
         run: .\build.bat
-        
+
+      - name: save artifacts
+        uses: actions/upload-artifact@v4
+        with:
+         name: dss
+         path: |
+             ${{ github.workspace }}hecdss.zip
+             ${{ github.workspace }}heclib.zip
+             ${{ github.workspace }}javaHeclib.zip
+         
+      - name: Elementary C tests
+        run: .\test\test_c.bat
+      - name: Full C tests
+        run: .\test\test_Dss-C.bat
+      - name: Fortran Tests
+        run: .\test\test_fortran.bat
