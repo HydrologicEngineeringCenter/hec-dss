@@ -3,10 +3,11 @@ cd %~dp0
  
 set A=x64
 
-call  ..\vs_env.bat
+::call  ..\vs_env.bat
 
 ::msbuild Dss-C\Dss-C.vcxproj
-msbuild Dss-C\Dss-C.vcxproj /t:Rebuild /p:Configuration=Release
+::msbuild Dss-C\Dss-C.vcxproj /t:Rebuild /p:Configuration=Release
+
 call test_setup.bat
 
 
