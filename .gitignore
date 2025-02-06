@@ -151,3 +151,4 @@ heclib/Output/**
 /javaHeclib.zip
 /heclib.zip
 /hecdss.zip
+test/VB/.vs/*

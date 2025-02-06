@@ -19,7 +19,7 @@ set code=..\C
 set heclib=..\..\heclib
 set HEADERS=%heclib%\heclib_c\src\headers
 set libs=%heclib%\heclib_c\%A%\Release\heclib_c.lib %heclib%\heclib_f\%A%\Release\heclib_f.lib
-set DSS_LINK=/NODEFAULTLIB:LIBCMTD  /LIBPATH:"C:\Program Files (x86)\IntelSWTools\compilers_and_libraries_2019.3.203\windows\compiler\lib\intel64_win\" "kernel32.lib" "user32.lib" "gdi32.lib" "winspool.lib" "comdlg32.lib" "advapi32.lib" "shell32.lib" "ole32.lib" "oleaut32.lib" "uuid.lib" "odbc32.lib" "odbccp32.lib" /DEBUG /MACHINE:X64 /NODEFAULTLIB:LIBCMT
+set DSS_LINK=/NODEFAULTLIB:LIBCMTD "kernel32.lib" "user32.lib" "gdi32.lib" "winspool.lib" "comdlg32.lib" "advapi32.lib" "shell32.lib" "ole32.lib" "oleaut32.lib" "uuid.lib" "odbc32.lib" "odbccp32.lib" /DEBUG /MACHINE:X64 /NODEFAULTLIB:LIBCMT
 
 cl /c -nologo -I%headers%   /Debug /ZI  %code%\getopt.c  
 cl -nologo -I%headers%   /Debug /ZI   %code%\GridTest.c ..\..\lib\%A%\zlibstatic.lib getopt.obj %libs% /link  %DSS_LINK%
