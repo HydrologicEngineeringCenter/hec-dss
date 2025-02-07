@@ -151,7 +151,10 @@ namespace Hec.Dss
       HashSet<double> uZs = new HashSet<double>();
       foreach (var item in collection)
       {
-        var loc = DSS.ZLocationRetrieve(ref ifltab, item.FullPath);
+        ZStructLocationWrapper loc;
+        // check for catalog in Dictionary.  If not there, then read it.
+
+        loc = DSS.ZLocationRetrieve(ref ifltab, item.FullPath);
         item.XOrdinate = loc.XOrdinate;
         item.YOrdinate = loc.YOrdinate;
         item.ZOrdinate = loc.ZOrdinate;

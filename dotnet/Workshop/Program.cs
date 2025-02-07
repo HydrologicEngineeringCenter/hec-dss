@@ -1,6 +1,7 @@
 ﻿using Hec.Dss;
 using System;
 using System.Diagnostics;
+using System.IO;
 
 namespace Workshop
 {
@@ -8,8 +9,26 @@ namespace Workshop
     {
         static void Main(string[] args)
     {
-      ReadEnsembles();
+      ReadBigCatalog();
+      //ReadEnsembles();
      // GetEmptyTimeSeries();
+
+    }
+    static void ReadBigCatalog()
+    {
+      String fileName = @"C:\project\dss-file-collection\FRM_UMR_Model.p01\FRM_UMR_Model.dss";
+
+      if (File.Exists(fileName) == false)
+      {
+        Console.WriteLine("File not found: " + fileName);
+        Console.WriteLine("Skipping ReadBigCatalog test.");
+        return;
+      }
+      using (DssReader r = new DssReader(fileName))
+      {
+        var catalog = r.GetCatalog(); // 2.5 minutes
+        //var catalog = r.GetCatalog(true);  // 64.2 min
+      }
 
     }
 
@@ -17,11 +36,11 @@ namespace Workshop
     {
       //ReadEnsembles();
       string fn = @"c:\temp\sample6.dss";
-      using (Reader r = new Reader(fn, Reader.MethodID.MESS_METHOD_GLOBAL_ID, DSSReader.LevelID.MESS_LEVEL_CRITICAL))
+      using (DssReader r = new DssReader(fn, DssReader.MethodID.MESS_METHOD_GLOBAL_ID, DssReader.LevelID.MESS_LEVEL_CRITICAL))
       {
         //var paths = r.GetCatalog();
 
-        var ts = r.GetEmptyTimeSeries(new Path("//SACRAMENTO/PRECIP-INC/01Jan1877/1Day/OBS/"));
+        var ts = r.GetEmptyTimeSeries(new DssPath("//SACRAMENTO/PRECIP-INC/01Jan1877/1Day/OBS/"));
         // var ts = r.GetTimeSeries(new DSSPath("//SACRAMENTO/PRECIP-INC/01Jan1877/1Day/OBS/"));
 
       }
@@ -34,12 +53,12 @@ namespace Workshop
       int count = 0;
       // initial 6 sec
       //
-      using (DSSReader r = new DSSReader(fn, DSSReader.MethodID.MESS_METHOD_GLOBAL_ID, DSSReader.LevelID.MESS_LEVEL_CRITICAL))
+      using (DssReader r = new DssReader(fn, DssReader.MethodID.MESS_METHOD_GLOBAL_ID, DssReader.LevelID.MESS_LEVEL_CRITICAL))
       {
         var paths = r.GetCatalog();
-        foreach (DSSPath item in paths)
+        foreach (DssPath item in paths)
         {
-          var s = r.GetTimeSeries(item.PathWithoutDate);
+          var s = r.GetTimeSeries(new DssPath(item.PathWithoutDate));
           count++;
           if (count % 100 == 0)
             Console.Write(".");
