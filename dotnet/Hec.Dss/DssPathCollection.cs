@@ -58,6 +58,12 @@ namespace Hec.Dss
     private IList<string> _eParts;
     private IList<string> _fParts;
 
+    /// <summary>
+    ///  locationInfoDict is a dictionary that maps a tuple of aPart and bPart to a LocationInformation object.
+    ///  It is used to quicky determine if 'Location Info' exists for a given aPart and bPart.  
+    ///     If it exists it will initially be a 'null' entry , by constructor - (for later retrieval) 
+    ///     If it doesn't exist it will not be in the dictionary (most common case)
+    /// </summary>
     internal Dictionary<Tuple<string, string>, LocationInformation> locationInfoDict;
 
     //has to be internal since it's possible it won't be constructed correctly on object construction.  It relies on DSSReader to construct it correctly in that case.
@@ -122,9 +128,13 @@ namespace Hec.Dss
         if (!uFParts.Contains(fPart))
           uFParts.Add(fPart);
 
-        if(string.CompareOrdinal(cPart, "Location Info") == 0)
+        
+        if (cPart == "Location Info")
         {
-          locationInfoDict[new Tuple<string,string>(aPart, bPart)] = null;
+          var abKey = new Tuple<string, string>(aPart, bPart);
+          if (!locationInfoDict.ContainsKey(abKey))     {
+              locationInfoDict[abKey] = null;
+          }
         }
 
 

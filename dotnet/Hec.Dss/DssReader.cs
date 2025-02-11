@@ -151,36 +151,33 @@ namespace Hec.Dss
       HashSet<double> uZs = new HashSet<double>();
       foreach (var item in collection)
       {
-        ZStructLocationWrapper loc;
+        ZStructLocationWrapper loc_wrap;
         var key = new Tuple<string, string>(item.Apart, item.Bpart);
         if (collection.locationInfoDict.TryGetValue(key, out LocationInformation value))
         {
           if (value == null) // need to retrieve the location info
           {
-            loc = DSS.ZLocationRetrieve(ref ifltab, item.FullPath);
+            loc_wrap = DSS.ZLocationRetrieve(ref ifltab, item.FullPath);
+            LocationInformation loc = new LocationInformation(loc_wrap);
             item.XOrdinate = loc.XOrdinate;
             item.YOrdinate = loc.YOrdinate;
-            item.ZOrdinate = loc.ZOrdinate;
+            item.ZOrdinate = loc.ZOrdiante;
             uXs.Add(loc.XOrdinate);
             uYs.Add(loc.YOrdinate);
-            uZs.Add(loc.ZOrdinate);
-            collection.locationInfoDict[key] = 
+            uZs.Add(loc.ZOrdiante);
+            collection.locationInfoDict[key] = loc;
           }
           else
           {
-            Console.WriteLine("Found a LocationInfo object.");
+            item.XOrdinate = value.XOrdinate;
+            item.YOrdinate = value.YOrdinate;
+            item.ZOrdinate = value.ZOrdiante;
           }
         }
-        else
-        {
-          Console.WriteLine("Key not found.");
-        }
-      }
-
       
-
         ReadHeaderInfo(item, collection, uDataUnits, uDataTypes);
       }
+
       List<string> dataUnits = uDataUnits.ToList();
       dataUnits.Sort();
 
