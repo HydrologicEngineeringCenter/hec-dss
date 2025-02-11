@@ -240,7 +240,8 @@ namespace DSSUnitTests
     [TestMethod]
     public void ReadBigCatalog()
     {
-      String fileName = @"C:\project\dss-file-collection\FRM_UMR_Model.p01\FRM_UMR_Model.dss";
+      //String fileName = @"C:\project\dss-file-collection\FRM_UMR_Model.p01\FRM_UMR_Model.dss";
+       String fileName = @"C:\Users\ktarb\Desktop\FRM_UMR_Model.dss";
 
       if (File.Exists(fileName) == false)
       {
@@ -250,8 +251,8 @@ namespace DSSUnitTests
       }
       using (DssReader r = new DssReader(fileName))
       {
-        var catalog = r.GetCatalog(); // 2.5 minutes
-        //var catalog = r.GetCatalog(true);  // 64.2 min
+        //var catalog = r.GetCatalog(); // 2.5 minutes
+        var catalog = r.GetCatalog(true);  // 64.2 min,  53.1 min
         Assert.IsTrue(catalog.Count > 1000);
       }
 

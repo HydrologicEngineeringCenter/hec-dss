@@ -9,14 +9,63 @@ namespace Workshop
     {
         static void Main(string[] args)
     {
-      ReadBigCatalog();
+         //String fileName = @"C:\Users\ktarb\Desktop\FRM_UMR_Model.dss";
+         String fileNameOut = @"C:\Users\ktarb\Desktop\FRM_UMR_Model_subset.dss";
+         //GetFirst5000Records(fileName, fileNameOut);
+         ReadBigCatalog(fileNameOut, 10);
       //ReadEnsembles();
      // GetEmptyTimeSeries();
 
     }
-    static void ReadBigCatalog()
+
+      static void GetFirst5000Records(String fileName, String fileNameOut)
+      {
+
+
+         if (File.Exists(fileName) == false)
+         {
+            Console.WriteLine("File not found: " + fileName);
+            Console.WriteLine("Skipping ReadBigCatalog test.");
+            return;
+         }
+
+         Random random = new Random(DateTime.Now.Second); 
+         using (DssWriter w = new DssWriter(fileNameOut))
+         {
+            using (DssReader r = new DssReader(fileName))
+            {
+               var catalog = r.GetCatalog();
+               for (int i = 0; i < 8000; i++)
+               {
+
+                  int index = random.Next(0, catalog.Count - 1);
+                  Console.WriteLine(   "Random index ["+index+"]");
+                  var item = catalog[index];
+
+                  if (item.RecordType == RecordType.RegularTimeSeries || item.RecordType == RecordType.IrregularTimeSeries)
+                  {
+                     var ts = r.GetTimeSeries(item);
+                     w.Write(ts);
+                  }
+                  else if( item.RecordType == RecordType.PairedData)
+                  {
+                     var pd = r.GetPairedData(item.FullPath);
+                     w.Write(pd);
+                  }
+                  else 
+                  {
+                     Console.WriteLine(   item.RecordType);
+                  }
+               }
+            }
+         }
+
+      }
+      
+
+      
+    static void ReadBigCatalog(String fileName,int repeat)
     {
-      String fileName = @"C:\project\dss-file-collection\FRM_UMR_Model.p01\FRM_UMR_Model.dss";
 
       if (File.Exists(fileName) == false)
       {
@@ -24,11 +73,17 @@ namespace Workshop
         Console.WriteLine("Skipping ReadBigCatalog test.");
         return;
       }
-      using (DssReader r = new DssReader(fileName))
-      {
-        var catalog = r.GetCatalog(); // 2.5 minutes
-        //var catalog = r.GetCatalog(true);  // 64.2 min
-      }
+         for (int i = 0; i < repeat; i++)
+         {
+            using (DssReader r = new DssReader(fileName))
+            {
+
+               //var catalog = r.GetCatalog(); // 2.5 minutes
+               var catalog = r.GetCatalog(true);  // 64.2 min
+
+            }
+         }
+
 
     }
 
