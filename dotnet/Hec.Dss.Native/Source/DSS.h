@@ -139,6 +139,11 @@ namespace Hec {
 				///</summary>
 				static int ZpdRetrieve(array<long long>^% ifltab, ZStructPairedDataWrapper^% pds, int retrieveDoubleFlag);
 
+				/// <summary>
+				/// Retrieves meta-data into ZStructPairedDataWrapper, ordinates and curves are not retrieved.  
+				/// </summary>
+				static int ZpdRetrieveMetaData(array<long long>^% ifltab, ZStructPairedDataWrapper^% pds);
+
 				static int ZpdStore(array<long long>^% ifltab, ZStructPairedDataWrapper^% pds, int storageFlag);
 
 				/// <summary>

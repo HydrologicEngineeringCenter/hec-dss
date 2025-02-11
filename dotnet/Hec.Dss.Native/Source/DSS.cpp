@@ -367,6 +367,30 @@ namespace Hec {
 				return zpdRetrieve(ifltabPinned, pds->theStruct, retrieveDoubleFlag);
 			}
 
+			int DSS::ZpdRetrieveMetaData(array<long long>^% ifltab, ZStructPairedDataWrapper^% pds) {
+				pin_ptr<long long> ifltabPinned = &ifltab[0];
+
+				int version = zgetVersion(ifltabPinned);
+				int status = 0;
+				if (version == 7)
+				{
+					zStructTransfer* transfer;
+					transfer = zstructTransferNew(pds->theStruct->pathname, 0);
+					transfer->internalHeaderMode = 1;
+					status = zread(ifltabPinned, transfer);
+					if (status == 0) {
+						pds->theStruct->dataType = transfer->dataType;
+						zpdHeadToUnits(pds->theStruct, transfer->internalHeader, transfer->internalHeaderNumber);
+					}
+					zstructFree(transfer);
+				}
+				//else if (version == 6)  // not implemented.
+
+				
+				return status;
+			}
+
+
 			int DSS::ZpdStore(array<long long>^% ifltab, ZStructPairedDataWrapper ^% pds, int storageFlag)
 			{
 				pin_ptr<long long> ifltabPinned = &ifltab[0];
