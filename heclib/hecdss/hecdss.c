@@ -210,6 +210,18 @@ HECDSS_API int  hec_dss_tsGetDateTimeRange(dss_file* dss, const char* pathname, 
   return status;
 }
 
+
+HECDSS_API int  hec_dss_numberPeriods(const int intervalSeconds, const int julianStart, const int startSeconds,
+    const int julianEnd, const int endSeconds) {
+
+    int num = numberPeriods(intervalSeconds, julianStart, startSeconds, julianEnd, endSeconds);
+    return num;
+}
+
+
+
+
+
 HECDSS_API int hec_dss_tsGetSizes(dss_file* dss, const char* pathname,
     const char* startDate, const char* startTime,
     const char* endDate, const char* endTime,
