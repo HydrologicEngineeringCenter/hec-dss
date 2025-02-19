@@ -117,6 +117,19 @@ HECDSS_API int  hec_dss_tsGetDateTimeRange(dss_file* dss, const char* pathname, 
 
 
 /// <summary>
+/// returns the number of periods between two dates/times for a given interval
+/// </summary>
+/// <param name="intervalSeconds">interval in seconds , for example 3600 would be used for 1Hour data</param>
+/// <param name="julianStart">starting julian date</param>
+/// <param name="startSeconds">staring seconds</param>
+/// <param name="julianEnd">ending julian date</param>
+/// <param name="endSeconds">ending seconds</param>
+/// <returns></returns>
+HECDSS_API int  hec_dss_numberPeriods(const int intervalSeconds, const int julianStart, const int startSeconds,
+    const int julianEnd, const int endSeconds);
+
+
+/// <summary>
 /// Gets size information about a time series record or data set (series of records)
 /// </summary>
 /// <param name="dss">pointer to DSS file</param>
