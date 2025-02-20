@@ -1,0 +1,1 @@
+NuGet.exe pack dotnet\Hec.Dss\Hec.Dss.csproj.nuspec -OutputDirectory dotnet\Hec.Dss -BasePath dotnet\Hec.Dss -Properties Configuration=Release
