@@ -420,70 +420,39 @@ namespace Hec.Dss
 
     public int CompareTo(DssPath y)
     {
-      int res = Apart.CompareTo(y.Apart);
-      if (res != 0)
-        return res;
+      int res;
 
-      res = Bpart.CompareTo(y.Bpart);
-      if (res != 0)
-        return res;
+      // Direct string comparisons using CompareOrdinal for performance
+      // Compare B part first, more likely to be different
+      if ((res = string.CompareOrdinal(Bpart, y.Bpart)) != 0) return res;
+      if ((res = string.CompareOrdinal(Apart, y.Apart)) != 0) return res;
+      if ((res = string.CompareOrdinal(Cpart, y.Cpart)) != 0) return res;
 
-      res = Cpart.CompareTo(y.Cpart);
-      if (res != 0)
-        return res;
-
-      // Dates
-      DateTime xDate = DPartAsDateTime;
-      DateTime yDate = y.DPartAsDateTime;
-      if (xDate == default || yDate == default)
+      // Date comparison optimization
+      DateTime xDate = DPartAsDateTime, yDate = y.DPartAsDateTime;
+      if (xDate != default && yDate != default)
       {
-        // Someone couldn't be parsed as datetime
-        res = Dpart.CompareTo(y.Dpart);
-        if (res != 0)
-          return res;
+        if ((res = xDate.CompareTo(yDate)) != 0) return res;
       }
       else
       {
-        // Just compare datetimes
-        res = xDate.CompareTo(yDate);
-        if (res != 0)
-          return res;
+        if ((res = string.CompareOrdinal(Dpart, y.Dpart)) != 0) return res;
       }
 
-      res = Epart.CompareTo(y.Epart);
-      if (res != 0)
-        return res;
+      if ((res = string.CompareOrdinal(Epart, y.Epart)) != 0) return res;
 
-      // Example collection path
-      // /RUSSIANNAPA/APCC1/FLOW/01SEP2019/1HOUR/C:000002|T:0212019 
+      // Optimize collection handling
       const int ExpectedCollectionLen = 18;
-
-      // F part is special with collections
-      if (!Fpart.StartsWith("C:") || Fpart.Length != ExpectedCollectionLen)
+      if (Fpart.Length == ExpectedCollectionLen && Fpart.StartsWith("C:", StringComparison.Ordinal))
       {
-        // No collection, handle normally
-        return Fpart.CompareTo(y.Fpart);
+        // Compare "T:XXX" token first
+        if ((res = string.CompareOrdinal(Fpart, 11, y.Fpart, 11, 7)) != 0) return res;
+        // Compare "C:XXX" token
+        return string.CompareOrdinal(Fpart, 2, y.Fpart, 2, 6);
       }
-      else
-      {
-        // We may want to make this more robust later, but for now,
-        // starting with C: and being 18 chars is a very good indicator that it's a collection!
 
-        //var tokens = x.Fpart.Split('|');
-
-        //// Isn't a known collection entity, just string compare
-        //if (tokens.Length != 2)
-        //  return x.Fpart.CompareTo(y.Fpart);
-
-        // Sort on the T:XXX token first, then the C:XXX token          
-        // Pretend it will always have the same number of chars
-        res = string.Compare(Fpart, 11, y.Fpart, 11, 7);
-        if (res != 0)
-          return res;
-
-        // Compare the c part last
-        return string.Compare(Fpart, 2, y.Fpart, 2, 6);
-      }
+      // Normal string comparison for Fpart
+      return string.CompareOrdinal(Fpart, y.Fpart);
     }
 
     static string[] minutesV7 ={ "30Minute",  "20Minute",   "15Minute",

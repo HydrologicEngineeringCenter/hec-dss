@@ -17,7 +17,7 @@ namespace DSSUnitTests
       using (DssReader reader = new DssReader(fn))
       {
         var cat = reader.GetCatalog();
-        Assert.AreEqual(29,cat.CondensedPaths.Count);
+        Assert.AreEqual(29, cat.CondensedPaths.Count);
         Assert.AreEqual(29, cat.Count);
 
 
@@ -39,7 +39,7 @@ namespace DSSUnitTests
         Assert.AreEqual(29, cat.Count);
 
 
-      
+
       }
 
     }
@@ -50,7 +50,7 @@ namespace DSSUnitTests
       var p = new DssPath("A", "B", "C", "D", "E", "F");
       var s = p.FullPath;
 
-     }
+    }
 
 
     ////SACRAMENTO/PRECIP-INC/01Jan1877/1Day/OBS/
@@ -65,7 +65,7 @@ namespace DSSUnitTests
         TimeSeries s = new TimeSeries();
 
 
-            ///YYYYMMDD-hhmm
+        ///YYYYMMDD-hhmm
         string[] unsorted = new string[] {
 "/Z/csharp/values/31Dec2000/1Day//",
 "/A/csharp/values/31Dec2000/1Day/C:000001|T:20130312-1201|/",
@@ -89,12 +89,12 @@ namespace DSSUnitTests
 "/Z/csharp/values/31Dec2000/1Day//"
         };
 
-            var paths = w.GetCatalog();
-         foreach (var path in paths)
-            {
-               Console.WriteLine(path.FullPath);
-            }
-            Console.WriteLine();
+        var paths = w.GetCatalog();
+        foreach (var path in paths)
+        {
+          Console.WriteLine(path.FullPath);
+        }
+        Console.WriteLine();
 
         for (int i = 0; i < paths.Count; i++)
         {
@@ -119,8 +119,8 @@ namespace DSSUnitTests
     [TestMethod]
     public void MissingPartF()
     {
-     // var filename = @"C:\project\dotnet\Output\x64\Debug\dot_net_ReadWriteDailyRegular.dss";
-     string filename = TestUtility.BasePath + "sample7.dss";
+      // var filename = @"C:\project\dotnet\Output\x64\Debug\dot_net_ReadWriteDailyRegular.dss";
+      string filename = TestUtility.BasePath + "sample7.dss";
       DataTable rval = new DataTable();
       using (DssReader r = new DssReader(filename))
       {
@@ -167,8 +167,8 @@ namespace DSSUnitTests
       var tbl = Catalog(TestUtility.BasePath + "DSSv6_NAB_Active_Precip_Gages.dss", true);
       Assert.IsTrue(tbl.Rows.Count > 30);
 
-      
-      var s = "RecordType='"+RecordType.RegularTimeSeries.ToString()+"'";
+
+      var s = "RecordType='" + RecordType.RegularTimeSeries.ToString() + "'";
       Assert.AreEqual(tbl.Rows.Count, tbl.Select(s).Length);
 
 
@@ -232,13 +232,30 @@ namespace DSSUnitTests
     [TestMethod]
     public void CondencedCatalog6()
     {
-     var t = Catalog(TestUtility.BasePath + "sample6.dss", true);
-      Console.WriteLine("sample6.dss catalog has "+t.Rows.Count+" rows ");
+      var t = Catalog(TestUtility.BasePath + "sample6.dss", true);
+      Console.WriteLine("sample6.dss catalog has " + t.Rows.Count + " rows ");
       Assert.IsTrue(t.Rows.Count == 36);
     }
 
+    [TestMethod]
+    public void ReadBigCatalog()
+    {
+      //String fileName = @"C:\project\dss-file-collection\FRM_UMR_Model.p01\FRM_UMR_Model.dss";
+       String fileName = @"C:\Users\ktarb\Desktop\FRM_UMR_Model.dss";
 
+      if (File.Exists(fileName) == false)
+      {
+        Console.WriteLine("File not found: " + fileName);
+        Console.WriteLine("Skipping ReadBigCatalog test.");
+        return;
+      }
+      using (DssReader r = new DssReader(fileName))
+      {
+        //var catalog = r.GetCatalog(); // 2.5 minutes
+        var catalog = r.GetCatalog(true);  // 64.2 min,  53.1 min
+        Assert.IsTrue(catalog.Count > 1000);
+      }
 
-
+    }
   }
 }

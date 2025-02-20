@@ -58,6 +58,14 @@ namespace Hec.Dss
     private IList<string> _eParts;
     private IList<string> _fParts;
 
+    /// <summary>
+    ///  locationInfoDict is a dictionary that maps a tuple of aPart and bPart to a LocationInformation object.
+    ///  It is used to quicky determine if 'Location Info' exists for a given aPart and bPart.  
+    ///     If it exists it will initially be a 'null' entry , by constructor - (for later retrieval) 
+    ///     If it doesn't exist it will not be in the dictionary (most common case)
+    /// </summary>
+    internal Dictionary<Tuple<string, string>, LocationInformation> locationInfoDict;
+
     //has to be internal since it's possible it won't be constructed correctly on object construction.  It relies on DSSReader to construct it correctly in that case.
     internal IList<RecordType> _recordTypeNames;
     internal IList<string> _dataUnits;
@@ -90,6 +98,7 @@ namespace Hec.Dss
       HashSet<string> uEParts = new HashSet<string>();
       HashSet<string> uFParts = new HashSet<string>();
       HashSet<RecordType> uRecordTypeNames = new HashSet<RecordType>();
+      locationInfoDict = new Dictionary<Tuple<string, string>, LocationInformation>();
 
       if (recordTypes == null)
         HasRecordTypes = false;
@@ -118,6 +127,16 @@ namespace Hec.Dss
           uEParts.Add(ePart);
         if (!uFParts.Contains(fPart))
           uFParts.Add(fPart);
+
+        
+        if (cPart == "Location Info")
+        {
+          var abKey = new Tuple<string, string>(aPart, bPart);
+          if (!locationInfoDict.ContainsKey(abKey))     {
+              locationInfoDict[abKey] = null;
+          }
+        }
+
 
         uAParts.TryGetValue(aPart, out aPart);
         uBParts.TryGetValue(bPart, out bPart);
@@ -169,8 +188,8 @@ namespace Hec.Dss
 
       // sort each group by date then sort the groups
       // (sorting before grouping is 15x - 20x slower)
-      CondensedPaths = CondensedPaths.OrderBy(q => q).ToList();
-      Paths = Paths.OrderBy(q => q).ToList();
+      (CondensedPaths as List<DssPathCondensed>).Sort();
+      (Paths as List<DssPath>).Sort();
       _isInterned = true;
     }
 

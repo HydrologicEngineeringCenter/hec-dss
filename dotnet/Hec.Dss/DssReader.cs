@@ -151,16 +151,33 @@ namespace Hec.Dss
       HashSet<double> uZs = new HashSet<double>();
       foreach (var item in collection)
       {
-        var loc = DSS.ZLocationRetrieve(ref ifltab, item.FullPath);
-        item.XOrdinate = loc.XOrdinate;
-        item.YOrdinate = loc.YOrdinate;
-        item.ZOrdinate = loc.ZOrdinate;
-        uXs.Add(loc.XOrdinate);
-        uYs.Add(loc.YOrdinate);
-        uZs.Add(loc.ZOrdinate);
-
+        ZStructLocationWrapper loc_wrap;
+        var key = new Tuple<string, string>(item.Apart, item.Bpart);
+        if (collection.locationInfoDict.TryGetValue(key, out LocationInformation value))
+        {
+          if (value == null) // need to retrieve the location info
+          {
+            loc_wrap = DSS.ZLocationRetrieve(ref ifltab, item.FullPath);
+            LocationInformation loc = new LocationInformation(loc_wrap);
+            item.XOrdinate = loc.XOrdinate;
+            item.YOrdinate = loc.YOrdinate;
+            item.ZOrdinate = loc.ZOrdiante;
+            uXs.Add(loc.XOrdinate);
+            uYs.Add(loc.YOrdinate);
+            uZs.Add(loc.ZOrdiante);
+            collection.locationInfoDict[key] = loc;
+          }
+          else
+          {
+            item.XOrdinate = value.XOrdinate;
+            item.YOrdinate = value.YOrdinate;
+            item.ZOrdinate = value.ZOrdiante;
+          }
+        }
+      
         ReadHeaderInfo(item, collection, uDataUnits, uDataTypes);
       }
+
       List<string> dataUnits = uDataUnits.ToList();
       dataUnits.Sort();
 
@@ -269,8 +286,15 @@ namespace Hec.Dss
       }
       if (item.RecordType == RecordType.PairedData)
       {
-        var pd = GetPairedData(item.FullPath);
-
+        PairedData pd;
+        if (GetDSSFileVersion() == 7)
+        {
+          pd = GetEmptyPairedData(item.FullPath);
+        }
+        else
+        {// version 6
+          pd = GetPairedData(item.FullPath); 
+        }
         if (pd != null)
         {
           if (pd.UnitsDependent == null)
@@ -726,6 +750,32 @@ namespace Hec.Dss
 
       return rval;
     }
+
+    /// <summary>
+    /// Gets paired data with data type and units only.
+    /// </summary>
+    /// <param name="pathname"></param>
+    /// <returns></returns>
+    public PairedData GetEmptyPairedData(string pathname)
+    {
+      ZStructPairedDataWrapper pds = DSS.ZStructPdNew(pathname);
+      int status = DSS.ZpdRetrieveMetaData(ref ifltab, ref pds);
+      if (status != 0)
+      {
+        return null;
+      }
+
+      var rval = new PairedData();
+
+      rval.Path = new DssPath(pathname);
+      rval.TypeDependent = pds.TypeDependent;
+      rval.TypeIndependent = pds.TypeIndependent;
+      rval.UnitsDependent = pds.UnitsDependent;
+      rval.UnitsIndependent = pds.UnitsIndependent;
+
+      return rval;
+    }
+
 
     public TimeSeriesProfile GetTimeSeriesProfile(string pathname)
     {
