@@ -232,6 +232,8 @@ HECDSS_API int hec_dss_dataType(dss_file* dss, const char* pathname);
 /// <param name="unitsLength">size of units buffer</param>
 /// <param name="type">output: type of data: PER-AVER, PER-CUM,INST-VAL,INST-CUM https://www.hec.usace.army.mil/confluence/dssvuedocs/latest/introduction/time-series-conventions</param>
 /// <param name="typeLength">size of type buffer</param>
+/// <param name="timeZoneName">output: time zone name (for the time-series), can be different from the location time-zone</param>
+/// <param name="timeZoneNameLength">size of timeZoneName buffer</param>
 /// <returns></returns>
 
 HECDSS_API int hec_dss_tsRetrieve(dss_file* dss, const char* pathname,
@@ -240,7 +242,9 @@ HECDSS_API int hec_dss_tsRetrieve(dss_file* dss, const char* pathname,
   int* timeArray, double* valueArray, const int arraySize,
   int* numberValuesRead, int* quality, const int qualityWidth,
   int* julianBaseDate, int* timeGranularitySeconds,
-  char* units, const int unitsLength, char* type, const int typeLength);
+  char* units, const int unitsLength,
+  char* type, const int typeLength,
+  char* timeZoneName, const int timeZoneNameLength);
 
 
 /// <summary>
@@ -257,22 +261,38 @@ HECDSS_API int hec_dss_tsRetrieve(dss_file* dss, const char* pathname,
 /// <param name="saveAsFloat">set to true to save disk space</param>
 /// <param name="units">units of data</param>
 /// <param name="type">type of data: PER-AVER, PER-CUM,INST-VAL,INST-CUM https://www.hec.usace.army.mil/confluence/dssvuedocs/latest/introduction/time-series-conventions</param>
+/// <param name="timeZoneName">time zone name (for the time-series), can be different from the location time-zone</param>
 /// <returns></returns>
 HECDSS_API int hec_dss_tsStoreRegular(dss_file* dss, const char* pathname,
   const char* startDate, const char* startTime,
   double* valueArray, const int valueArraySize,
   int* qualityArray, const int qualityArraySize,
   const int saveAsFloat,
-  const char* units, const char* type);
+  const char* units, const char* type, const char* timeZoneName);
 
-
+/// <summary>
+/// Stores Irregular interval data to DSS
+/// </summary>
+/// <param name="dss">pointer to dss file</param>
+/// <param name="pathname">pathname to store to</param>
+/// <param name="startDateBase">starting base date,  defaults to 01Jan1990 if empty or null</param>
+/// <param name="times">An integer array of minutes or seconds that correspond to the date/time for each value</param>
+/// <param name="timeGranularitySeconds">The number of seconds a unit in times represents, usually MINUTE_GRANULARITY(60) or SECOND_GRANULARITY(1) </param>
+/// <param name="valueArray">double array containing the data to store.</param>
+/// <param name="valueArraySize">number of values in valueArrary</param>
+/// <param name="qualityArray">The array that contains quality or other additional information.  A single quality value may be an int or multiple of an int.  This API only supports single int per quality.</param>
+/// <param name="qualityArraySize">lenght of quality array, should match valueArraySize</param>
+/// <param name="saveAsFloat">when true saves to disk, with float(4-bytes) otherwise uses 8-bytes per value.</param>
+/// <param name="units">units such as 'cfs'</param>
+/// <param name="type">type of data: PER-AVER, PER-CUM,INST-VAL,INST-CUM https://www.hec.usace.army.mil/confluence/dssvuedocs/latest/introduction/time-series-conventions</param>
+/// <returns>status of zero on success</returns>
 HECDSS_API int hec_dss_tsStoreIregular(dss_file* dss, const char* pathname,
   const char* startDateBase,
   int* times, const int timeGranularitySeconds,
   double* valueArray, const int valueArraySize,
   int* qualityArray, const int qualityArraySize,
   const int saveAsFloat,
-  const char* units, const char* type);
+  const char* units, const char* type, const char* timeZoneName);
 
 HECDSS_API int hec_dss_locationRetrieve(dss_file* dss, const char* fullPath,
   double* x, double* y, double* z,
@@ -329,11 +349,28 @@ HECDSS_API int hec_dss_pdRetrieveInfo(dss_file* dss, const char* pathname,
 
 /// <summary>
 /// Returns the record type.
-/// for eample 100 represents regular-interval time series records
+/// RECORD_TYPE_100  "Regular-interval time series"
+/// RECORD_TYPE_101  "Regular-interval time series pattern"
+/// RECORD_TYPE_105  "Regular-interval time series doubles"
+/// RECORD_TYPE_110  "Irregular-interval time series"
+/// RECORD_TYPE_111  "Irregular-interval time series pattern"
+/// RECORD_TYPE_115  "Irregular-interval time series doubles"
+/// RECORD_TYPE_200  "Paired Data"
+/// RECORD_TYPE_205  "Paired Data doubles"
+/// RECORD_TYPE_300  "Text Data"
+/// RECORD_TYPE_400  "Gridded - Undefined grid with time"
+/// RECORD_TYPE_401  "Gridded - Undefined grid"
+/// RECORD_TYPE_410  "Gridded - HRAP grid with time reference"
+/// RECORD_TYPE_411  "Gridded - HRAP grid"
+/// RECORD_TYPE_420  "Gridded - Albers with time reference"
+/// RECORD_TYPE_421  "Gridded - Albers"
+/// RECORD_TYPE_430  "Gridded - SHG with time reference"
+/// RECORD_TYPE_431  "Gridded - SHG"
+/// 
 /// </summary>
-/// <param name="dss"></param>
-/// <param name="pathname"></param>
-/// <returns></returns>
+/// <param name="dss">pointer to dss_file</param>
+/// <param name="pathname">pathname to check record type</param>
+/// <returns>integer record type</returns>
 HECDSS_API int hec_dss_recordType(dss_file* dss, const char* pathname);
 
 
@@ -358,6 +395,7 @@ HECDSS_API int hec_dss_recordType(dss_file* dss, const char* pathname);
 /// <param name="typeDependentLength"></param>
 /// <param name="labels"> contains multiple labels separated with \0</param>
 /// <param name="labelsLength">total length of labels</param>
+/// <param name="timeZoneName">name of time-zone</param>
 /// <returns></returns>
 HECDSS_API int hec_dss_pdRetrieve(dss_file* dss, const char* pathname,
   double* doubleOrdinates, const int  doubleOrdinatesLength,
@@ -367,7 +405,8 @@ HECDSS_API int hec_dss_pdRetrieve(dss_file* dss, const char* pathname,
   char* typeIndependent, const int typeIndependentLength,
   char* unitsDependent, const int unitsDependentLength,
   char* typeDependent, const int typeDependentLength,
-  char* labels, const int labelsLength);
+  char* labels, const int labelsLength,
+  char* timeZoneName, const int timeZoneNameLength);
 
 /// <summary>
 /// Stores Paired data to DSS
@@ -395,7 +434,8 @@ HECDSS_API int hec_dss_pdStore(dss_file* dss, const char* pathname,
   const char* typeIndependent,
   const char* unitsDependent,
   const char* typeDependent,
-  const char* labels, const int labelsLength);
+  const char* labels, const int labelsLength,
+  const char* timeZoneName);
 
 
 /// <summary>
@@ -513,13 +553,19 @@ HECDSS_API int hec_dss_gridStore(dss_file* dss, const char* pathname,
 /// <summary>
 /// converts character date to separate year,month, and day
 /// </summary>
-/// <param name="date"></param>
-/// <param name="year"></param>
-/// <param name="month"></param>
-/// <param name="day"></param>
+/// <param name="date">date string to parse.  case insensitive</param>
+/// <param name="year">output: integer year</param>
+/// <param name="month">output: integer month</param>
+/// <param name="day">output: integer day</param>
 /// <returns></returns>
 HECDSS_API int hec_dss_dateToYearMonthDay(const char* date, int* year, int* month, int* day);
 
+/// <summary>
+/// Deletes data from DSS
+/// </summary>
+/// <param name="dss">dss_file pointer</param>
+/// <param name="pathname">pathame for data to delete.</param>
+/// <returns></returns>
 HECDSS_API int hec_dss_delete(dss_file* dss, const char* pathname);
 
 /// <summary>
@@ -555,3 +601,19 @@ HECDSS_API void hec_dss_julianToYearMonthDay(const int julian, int* year, int* m
 /// <param name="filenameVersion6"></param>
 /// <returns></returns>
 HECDSS_API int hec_dss_convertToVersion7(const char* filenameVersion6, const char* filenameVersion7);
+
+
+HECDSS_API int hec_dss_arrayStore(dss_file* dss, const char* pathname,
+  int* intValues, const int intValuesLength,
+  float* floatValues, const int floatValuesLength,
+  double* doubleValues, const int doubleValuesLength);
+
+
+HECDSS_API int hec_dss_arrayRetrieveInfo(dss_file* dss, const char* pathname,
+  int* intValuesRead, int* floatValuesRead, int* doubleValuesRead);
+
+HECDSS_API int hec_dss_arrayRetrieve(dss_file* dss, const char* pathname,
+  int* intValues, const int intValuesLength,
+  float* floatValues, const int floatValuesLength,
+  double* doubleValues, const int doubleValuesLength);
+

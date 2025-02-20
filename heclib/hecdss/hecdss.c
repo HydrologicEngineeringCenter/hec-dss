@@ -283,7 +283,9 @@ HECDSS_API int hec_dss_tsRetrieve(dss_file* dss, const char *pathname,
                                   int *timeArray, double *valueArray, const int arraySize,
                                   int *numberValuesRead, int *quality, const int qualityWidth,
                                   int* julianBaseDate,int* timeGranularitySeconds,
-                                  char* units,const int unitsLength, char* type,const int typeLength)
+                                  char* units,const int unitsLength, 
+                                  char* type,const int typeLength,
+                                  char* timeZoneName, const int timeZoneNameLength)
 {
     *numberValuesRead = 0; 
     zStructTimeSeries* tss = zstructTsNew(pathname);
@@ -320,6 +322,9 @@ HECDSS_API int hec_dss_tsRetrieve(dss_file* dss, const char *pathname,
         if (tss->type != NULL) {
           stringCopy(type, typeLength, tss->type, strlen(tss->type));
         }
+        if (tss->timeZoneName != NULL) {
+          stringCopy(timeZoneName, timeZoneNameLength, tss->timeZoneName, strlen(tss->timeZoneName));
+        }
 
         int size = MIN(tss->numberValues, arraySize);
         size = MAX(0, size);
@@ -341,7 +346,7 @@ HECDSS_API int hec_dss_tsStoreRegular(dss_file* dss, const char* pathname,
   double* valueArray, const int valueArraySize, 
   int* qualityArray, const int qualityArraySize,
   const int saveAsFloat,
-  const char* units, const char* type)
+  const char* units, const char* type, const char* timeZoneName)
 {
   zStructTimeSeries* tss = 0;
 
@@ -363,6 +368,8 @@ HECDSS_API int hec_dss_tsStoreRegular(dss_file* dss, const char* pathname,
     tss = zstructTsNewRegDoubles(pathname, valueArray, valueArraySize, startDate, startTime, units, type);
   }
   
+  tss->timeZoneName = mallocAndCopy(timeZoneName);
+  tss->allocated[zSTRUCT_timeZoneName] = 1;
   int status = ztsStore(dss->ifltab, tss, REPLACE_ALL);
 
   zstructFree(tss);
@@ -374,7 +381,7 @@ HECDSS_API int hec_dss_tsStoreIregular(dss_file* dss, const char* pathname,
   double* valueArray, const int valueArraySize,
   int* qualityArray, const int qualityArraySize,
   const int saveAsFloat,
-  const char* units, const char* type)
+  const char* units, const char* type, const char* timeZoneName)
 {
   zStructTimeSeries* tss = NULL;
 
@@ -388,14 +395,19 @@ HECDSS_API int hec_dss_tsStoreIregular(dss_file* dss, const char* pathname,
     tss = zstructTsNewIrregFloats(pathname,values, valueArraySize,times,
       timeGranularitySeconds, startDateBase,units, type);
     tss->allocated[zSTRUCT_TS_floatValues];
-    if (qualityArraySize > 0 && qualityArraySize == valueArraySize)
-      tss->quality = qualityArray;
   }
   else {
     tss = zstructTsNewIrregDoubles(pathname, valueArray, valueArraySize, times,
       timeGranularitySeconds, startDateBase, units, type);
   }
-
+  if  (qualityArraySize > 0 && qualityArraySize == valueArraySize) {
+    // TO DO.. quality can be multi-dimensional (Is that used?)
+    tss->quality = qualityArray;
+    tss->qualityArraySize = qualityArraySize;
+  }
+    
+  tss->timeZoneName = mallocAndCopy(timeZoneName);
+  tss->allocated[zSTRUCT_timeZoneName] = 1;
   int status = ztsStore(dss->ifltab, tss, DELETE_INSERT);
 
 
@@ -542,7 +554,8 @@ HECDSS_API int hec_dss_pdRetrieve(dss_file* dss, const char* pathname,
   char* typeIndependent, const int typeIndependentLength,
   char* unitsDependent, const int unitsDependentLength,
   char* typeDependent, const int typeDependentLength,
-  char* labels, const int labelsLength)
+  char* labels, const int labelsLength,
+  char* timeZoneName, const int timeZoneNameLength)
 {
   zStructPairedData* pds = zstructPdNew(pathname);
   int status = zpdRetrieve(dss->ifltab, pds, RETRIEVE_DOUBLES);
@@ -577,9 +590,11 @@ HECDSS_API int hec_dss_pdRetrieve(dss_file* dss, const char* pathname,
       if (pds->typeIndependent != NULL) {
         stringCopy(typeIndependent, typeIndependentLength, pds->typeIndependent, strlen(pds->typeIndependent));
       }
-
       if (pds->typeDependent != NULL) {
         stringCopy(typeDependent, typeDependentLength, pds->typeDependent, strlen(pds->typeDependent));
+      }
+      if (pds->timeZoneName != NULL) {
+        stringCopy(timeZoneName, timeZoneNameLength, pds->timeZoneName, strlen(pds->timeZoneName));
       }
     if (pds->labels) {
       int size = pds->labelsLength > labelsLength ? labelsLength :pds->labelsLength;
@@ -605,7 +620,8 @@ HECDSS_API int hec_dss_pdStore(dss_file* dss, const char* pathname,
   const char* typeIndependent, 
   const char* unitsDependent, 
   const char* typeDependent, 
-  const char* labels, const int labelsLength)
+  const char* labels, const int labelsLength,
+  const char* timeZoneName)
 {
   zStructPairedData* pds = zstructPdNewDoubles(pathname, doubleOrdinates, doubleValues,
     numberOrdinates, numberCurves, unitsIndependent, typeIndependent, unitsDependent, typeDependent);
@@ -624,6 +640,8 @@ HECDSS_API int hec_dss_pdStore(dss_file* dss, const char* pathname,
     pds->labelsLength = labelsLength;
     memcpy(pds->labels, labels, labelsLength);
   }
+  pds->timeZoneName = mallocAndCopy(timeZoneName);
+  pds->allocated[zSTRUCT_timeZoneName] = 1;
     
   int status = zpdStore(dss->ifltab, pds, PD_STORE_DOUBLE);
 
