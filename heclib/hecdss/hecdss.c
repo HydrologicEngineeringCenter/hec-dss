@@ -5,6 +5,11 @@
 
 #include "zdssKeys.h"
 
+HECDSS_API const char* hec_dss_api_version() {
+  return "0.2.0";
+}
+
+
 
 #if defined(__GNUC__) || defined(__sun__)
     #define MIN(a, b) ({         \

@@ -29,6 +29,13 @@
 typedef struct dss_file dss_file;
 
 /// <summary>
+/// Returns a version string of this API
+/// </summary>
+/// <returns></returns>
+HECDSS_API const char* hec_dss_api_version();
+
+
+/// <summary>
 /// use hec_dss_open to connect to a DSS file.
 /// </summary>
 /// <param name="filename">input: filename to open or create</param>
