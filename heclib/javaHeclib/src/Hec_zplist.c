@@ -47,24 +47,6 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1zplist
 	else {
 		zplist7 ((long long*)ifltab, instr, filePos, pathname, &nPathname, &status,
 		        (int)strlen(instr), (int)sizeof(pathname)-1);
-		if (status == 0) {
-			/////////////////////////////////////////////////
-			//  For compatibility purposes only...
-			//  Make pathname uppercase and change "Minute" to "MIN"
-			upperCase(pathname);
-			pos = strstr(pathname, "MINUTE/");
-			if (pos > 0) {
-				path = pathname;
-				pos += 3;
-				jpos = (int)(pos - path);
-				if (jpos > 0) {
-					pathname[jpos] = '\0';
-					pos += 3;
-					//strcat_s(pathname, sizeof(pathname), pos);
-					stringCat(pathname, sizeof(pathname), pos, _TRUNCATE);
-				}
-			}
-		}
 	}
 
 	if (status) {
