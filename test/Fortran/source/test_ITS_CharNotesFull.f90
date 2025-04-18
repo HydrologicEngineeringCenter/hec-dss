@@ -232,7 +232,7 @@
     call ztsIrregRetClear(ifltab1, cpath1, '01Jan1956', '2400', '01Jan1956', '2400', kvals, nvals, &
     itimes2, granularity, baseDate, data2, 2, lenValuesRead, quality2, lenQuality, lenQualityRead, notes2, 0, lenNotesRead, &
     cnotes2, (50*2100), totalNotesRead, userHeader, zero, length, &
-    cunits, ctype, 3, coordinates, zero, length, &
+    cunits, ctype, coordinates, zero, length, &
     icoord, zero, length, ctemp, status)
 
     call ztsIrregRetrieveFull(ifltab1, cpath1, '01Jan1956', '2400', '01Jan1956', '2400', kvals, nvals, &

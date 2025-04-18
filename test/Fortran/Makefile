@@ -11,9 +11,6 @@ ifeq ($(UNAME_S),Linux)
 	CWARNING=-Werror
 	CFLAGS=$(BITS) -fPIC -g -std=gnu99 -I../../heclib/heclib_c/src/headers -I. $(CWARNING)  -D__linux__
 	FWARNINGS= -Warray-bounds -Wc-binding-type -Wcharacter-truncation
-	ifeq "$(F_GE_10)" "1"
-	        FWARNINGS += -fallow-argument-mismatch
-	endif
 
 	FDEBUG=-fcheck=all,no-recursion
 	FFLAGS=-c $(BITS) -g -cpp -fPIC $(FWARNINGS) $(FDEBUG) -I../../heclib/heclib_f/src/headers
