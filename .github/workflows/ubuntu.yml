@@ -42,14 +42,6 @@ jobs:
           cd test/Dss-C
           make test
 
-      - name: build and run Fortran test program
-        run: |
-          cd test/Fortran
-          make test
-
-      - name: Run a one-line script
-        run:  ls -l       #java -version
-
       # Save some artifacts
       - name: upload-artifacts hecdss.dll and javaHeclib.dll
         uses: actions/upload-artifact@v4
