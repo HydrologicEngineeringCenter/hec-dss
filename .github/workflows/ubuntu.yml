@@ -28,6 +28,7 @@ jobs:
 
       - name: build main library
         run: |
+          gcc --version
           cd heclib
           make
 
