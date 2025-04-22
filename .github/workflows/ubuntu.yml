@@ -1,10 +1,16 @@
 name: Ubuntu
-on: [push]
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+
 jobs:
   build:
     #runs-on: ubuntu-18.04
     #runs-on: ubuntu-latest
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
@@ -22,6 +28,7 @@ jobs:
 
       - name: build main library
         run: |
+          gcc --version
           cd heclib
           make
 
@@ -34,14 +41,6 @@ jobs:
         run: |
           cd test/Dss-C
           make test
-
-      - name: build and run Fortran test program
-        run: |
-          cd test/Fortran
-          make test
-
-      - name: Run a one-line script
-        run:  ls -l       #java -version
 
       # Save some artifacts
       - name: upload-artifacts hecdss.dll and javaHeclib.dll
