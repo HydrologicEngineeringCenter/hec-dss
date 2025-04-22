@@ -407,7 +407,13 @@ int ztsStoreIrreg7(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 		if (zmessageLevel(ifltab, MESS_METHOD_TS_WRITE_ID, MESS_LEVEL_INTERNAL_DIAG_1)) {
 			zmessageDebugInt(ifltab, DSS_FUNCTION_ztsStoreIrreg_ID, "Number to store in this block (record):  ", numberToStore);
 		}
-		if (numberToStore > 0) {
+		// 
+    // If there are no values to store, and the block is not read, then delete the block
+		if (numberToStore == 0 && boolReadBlock == 0 && storageFlag == 1) {
+			// we need to delete this block/record
+			zdelete(ifltab,path);
+		}
+		else if (numberToStore > 0) {
 			itimes = (int *)calloc((size_t)numberToStore, (size_t)4);
 			if (!itimes) {
 				return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStoreIrreg_ID,
