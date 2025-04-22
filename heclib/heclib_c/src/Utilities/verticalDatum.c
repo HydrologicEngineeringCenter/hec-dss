@@ -45,10 +45,9 @@ const int meterUnitAliasCount = sizeof(meterUnitAliases) / sizeof(meterUnitAlias
 #elif defined(__sun)     /* Solaris has it */
   #define HAVE_STRCASESTR 1
 
-#elif defined(__GLIBC__) /* glibc; strcasestr appeared in 2.4 */
-  /* encode version as (major<<16)|minor */
-  #define _GLIBC_VER ((__GLIBC__ << 16) | __GLIBC_MINOR__)
-  #if _GLIBC_VER >= ((2 << 16) | 4)
+#elif defined(__GLIBC__)    /* glibc – strcasestr since 2.4 */
+  #include <features.h>      /* for __GLIBC_PREREQ */
+  #if __GLIBC_PREREQ(2,4)
     #define HAVE_STRCASESTR 1
   #else
     #define HAVE_STRCASESTR 0
