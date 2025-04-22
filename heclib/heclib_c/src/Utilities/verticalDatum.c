@@ -39,7 +39,27 @@ const char* meterUnitAliases[] = {"M","METER","METERS","METRE","METRES"};
 const int footUnitAliasCount = sizeof(footUnitAliases) / sizeof(footUnitAliases[0]);
 const int meterUnitAliasCount = sizeof(meterUnitAliases) / sizeof(meterUnitAliases[0]);
 
-#if !defined(__APPLE__) && !defined(__sun__) && !defined(__linux__)
+#if defined(__APPLE__)   /* macOS always has it */
+  #define HAVE_STRCASESTR 1
+
+#elif defined(__sun)     /* Solaris has it */
+  #define HAVE_STRCASESTR 1
+
+#elif defined(__GLIBC__) /* glibc; strcasestr appeared in 2.4 */
+  /* encode version as (major<<16)|minor */
+  #define _GLIBC_VER ((__GLIBC__ << 16) | __GLIBC_MINOR__)
+  #if _GLIBC_VER >= ((2 << 16) | 4)
+    #define HAVE_STRCASESTR 1
+  #else
+    #define HAVE_STRCASESTR 0
+  #endif
+
+#else
+  /* Unknown libc – you may want to detect it with autoconf or CMake instead */
+  #define HAVE_STRCASESTR 0
+#endif
+
+#if !HAVE_STRCASESTR
 const char* strcasestr(const char* haystack, const char* needle) {
     int   haystackLen = strlen(haystack);
     int   needleLen = strlen(needle);
