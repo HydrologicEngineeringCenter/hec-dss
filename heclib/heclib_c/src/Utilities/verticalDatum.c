@@ -39,8 +39,8 @@ const char* meterUnitAliases[] = {"M","METER","METERS","METRE","METRES"};
 const int footUnitAliasCount = sizeof(footUnitAliases) / sizeof(footUnitAliases[0]);
 const int meterUnitAliasCount = sizeof(meterUnitAliases) / sizeof(meterUnitAliases[0]);
 
-#if !defined(__APPLE__) && !defined(__sun__)
-const char* strcasestr(const char* haystack, const char* needle) {
+
+const char* dss_strcasestr(const char* haystack, const char* needle) {
     int   haystackLen = strlen(haystack);
     int   needleLen = strlen(needle);
     for (int haystackPos = 0; haystackPos < haystackLen - needleLen; ++haystackPos) {
@@ -50,7 +50,7 @@ const char* strcasestr(const char* haystack, const char* needle) {
     }
     return NULL;
 }
-#endif
+
 /**
  * malloc with zero-initialization
  * @param size The number of bytes to allocate
@@ -234,7 +234,7 @@ char* extractFromDelimitedString(
         strcat(param, separator);
     }
     char* value = NULL;
-    char* paramStart = matchCase ? (char*)strstr(*delimitedString, param) : (char*)strcasestr(*delimitedString, param);
+    char* paramStart = matchCase ? (char*)strstr(*delimitedString, param) : (char*)dss_strcasestr(*delimitedString, param);
     if (paramStart) {
         char* valueStart = paramStart + strlen(param);
         char* valueEnd;
