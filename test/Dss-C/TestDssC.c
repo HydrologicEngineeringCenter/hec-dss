@@ -19,11 +19,12 @@ int renameTest();
 int test_mixed_record_types();
 
 
-int is_linux(){
-#ifdef __linux__
-return 1;
-#endif 
-return 0;
+int is_linux(void){
+	#if defined(__linux__)
+	  return 1;
+	#else
+	  return 0;
+	#endif
 }
 
 
