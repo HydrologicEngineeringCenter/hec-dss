@@ -211,7 +211,7 @@ void ztsIrregMergeBlocks(long long *ifltab, int storageFlag,
 	float f;
 	char cdummy[1];
 
-	char messageString[100];
+	char messageString[200];
 
 	icountRead = 0;
 	icountStore = 0;

@@ -36,7 +36,7 @@ void zprintFileInfo(long long *ifltab)
 	long long kbytes;
 	long long mbytes;
 	long long *fileHeader;
-	char messageString[90];
+	char messageString[200];
 
 
 	if (zgetVersion(ifltab) != 7) {

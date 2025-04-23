@@ -30,7 +30,7 @@ int testMultiUser(char *filename, int version, int numberDatasets, int accessMod
 	float *readData;
 	int npaths;
 	zStructTransfer* ztransfer;
-	char pathname[50];
+	char pathname[MAX_PATHNAME_LENGTH];
 	char cbuff1[20], cbuff2[20];
 	//char apart[20];
 
