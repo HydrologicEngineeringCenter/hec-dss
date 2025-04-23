@@ -2142,9 +2142,9 @@ void retrieveAndCompareVdi(long long *ifltab, const char* pathname, const void *
     char* errmsg = NULL;
     char* compressed = NULL;
     char startDate[10];
-    char startTime[6];
+    char startTime[16]; // only using 4, but keeping compiler happy
     char endDate[10];
-    char endTime[6];
+    char endTime[16]; // only using 4, but keeping compiler happy
     char filename[_MAX_PATH];
     memset(filename, 0, sizeof(filename));
     int* structType = (int*)sourceData;
