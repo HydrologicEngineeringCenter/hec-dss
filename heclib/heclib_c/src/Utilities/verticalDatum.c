@@ -50,7 +50,7 @@ const char* dss_strcasestr(const char* haystack, const char* needle) {
     }
     return NULL;
 }
-#endif
+
 /**
  * malloc with zero-initialization
  * @param size The number of bytes to allocate
