@@ -39,27 +39,8 @@ const char* meterUnitAliases[] = {"M","METER","METERS","METRE","METRES"};
 const int footUnitAliasCount = sizeof(footUnitAliases) / sizeof(footUnitAliases[0]);
 const int meterUnitAliasCount = sizeof(meterUnitAliases) / sizeof(meterUnitAliases[0]);
 
-#if defined(__APPLE__)   /* macOS always has it */
-  #define HAVE_STRCASESTR 1
 
-#elif defined(__sun)     /* Solaris has it */
-  #define HAVE_STRCASESTR 1
-
-#elif defined(__GLIBC__)    /* glibc – strcasestr since 2.4 */
-  #include <features.h>      /* for __GLIBC_PREREQ */
-  #if __GLIBC_PREREQ(2,4)
-    #define HAVE_STRCASESTR 1
-  #else
-    #define HAVE_STRCASESTR 0
-  #endif
-
-#else
-  /* Unknown libc – you may want to detect it with autoconf or CMake instead */
-  #define HAVE_STRCASESTR 0
-#endif
-
-#if !HAVE_STRCASESTR
-const char* strcasestr(const char* haystack, const char* needle) {
+const char* dss_strcasestr(const char* haystack, const char* needle) {
     int   haystackLen = strlen(haystack);
     int   needleLen = strlen(needle);
     for (int haystackPos = 0; haystackPos < haystackLen - needleLen; ++haystackPos) {
@@ -253,7 +234,7 @@ char* extractFromDelimitedString(
         strcat(param, separator);
     }
     char* value = NULL;
-    char* paramStart = matchCase ? (char*)strstr(*delimitedString, param) : (char*)strcasestr(*delimitedString, param);
+    char* paramStart = matchCase ? (char*)strstr(*delimitedString, param) : (char*)dss_strcasestr(*delimitedString, param);
     if (paramStart) {
         char* valueStart = paramStart + strlen(param);
         char* valueEnd;
