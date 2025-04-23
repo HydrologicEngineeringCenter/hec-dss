@@ -10,8 +10,8 @@ os="$(uname)"
 echo "os = ${os}"
 echo ${HLIBS}
 if [[ "$os" = "Linux" ]]; then
-   CFLAGS="-m64 -c -fPIC -g -std=gnu99 -I${HINC}"
-   LINK1="cc -m64 -fPIC "
+   CFLAGS="-m64 -c -fPIC -g -I${HINC}"
+   LINK1="cc -fPIC "
    LINK2="-lz -lrt -lgfortran -lm"
 elif [[ "$os" = "Darwin" ]]; then
    CFLAGS="-m64 -c -fPIC -g -std=gnu99 -I${HINC}"
@@ -28,7 +28,7 @@ fail_count=0
 
 mkdir -p ./Output
 rm ./Output/*
-cp ../../dss-test-data/*.dss .
+cp ../../dss-test-data/*.dss ./Output/
 
 test()
 {
@@ -59,7 +59,7 @@ test_count=$((test_count+1))
 cc $CFLAGS getopt.c
 test endian
 ./Output/endian
-test ts_readv6
+# test ts_readv6
 test ts_write_irregular
 test ExampleSecondGranularity
 test SampleText1

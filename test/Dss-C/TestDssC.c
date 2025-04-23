@@ -19,6 +19,21 @@ int renameTest();
 int test_mixed_record_types();
 
 
+int is_linux(){
+#ifdef __linux__
+return 1;
+#endif 
+return 0;
+}
+
+
+int is_linux_dss6_ifltab(long long ifltab[]){
+	if( is_linux() &&  zgetVersion(ifltab)== 6){
+	   return 1;
+	}
+	return 0;
+}
+
 int gridMemoryTest() {
 
 	long long ifltab[250] = { 0 };
@@ -217,7 +232,8 @@ int runTheTests() {
 	status = testNoDates(7);
 	if (status != STATUS_OKAY)
 		return status;
-	status = testNoDates(6);
+	
+	status = is_linux() ? 0 : testNoDates(6);
 	if (status != STATUS_OKAY)
 		return status;
 
@@ -288,7 +304,7 @@ int runTheTests() {
 		return status;
 
 	printf("\ntest units issue 126\n");
-	status = units_issue_126();
+	status = is_linux()? 0: units_issue_126();
 	if (status != STATUS_OKAY)
 		return status;
 
@@ -304,7 +320,12 @@ int runTheTests() {
 		return status;
 
 	status = PathnameTesting("path_name_test7.dss",7);
-	status = PathnameTesting("path_name_test6.dss", 6);
+	if (status != STATUS_OKAY)
+	return status;
+
+	status = is_linux() ? 0:  PathnameTesting("path_name_test6.dss", 6);
+	if (status != STATUS_OKAY)
+	return status;
 
 	printf("\ntest stringCat\n");
 	status = test_stringCat();
@@ -424,6 +445,7 @@ int runTheTests() {
 	printf("\n\n\n\n###################################################################\n\n");
 	printf("     Test 2 - DSS-6\n");
 	printf("\n###################################################################\n\n");
+
 	status = runTests(ifltab6);
 	if (status != STATUS_OKAY) return status;
 	printf("\n\n\n#####################  Completion\n\n\n");

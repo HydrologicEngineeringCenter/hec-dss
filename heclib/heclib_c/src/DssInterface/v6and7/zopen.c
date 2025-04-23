@@ -34,8 +34,17 @@ int hec_dss_zopen(long long *ifltab, const char *dssFilename)
 		}
 	}
 
-	//if (version != 7) {
 	if (version == 6) {
+		// DSS 6 on Linux is not supported..
+#ifdef __linux__
+
+	zmessageDebug(ifltab, DSS_FUNCTION_zopen_ID, "---- ERROR -------", dssFilename);
+	zmessageDebug(ifltab, DSS_FUNCTION_zopen_ID, "------------------", dssFilename);
+    zmessageDebug(ifltab, DSS_FUNCTION_zopen_ID, "DSS version 6 is not supported on Linux ", dssFilename);
+	zmessageDebug(ifltab, DSS_FUNCTION_zopen_ID, "------------------", dssFilename);
+   //  return -123;
+#endif
+
 		zopen6int_(ifltab, dssFilename, &status, strlen(dssFilename));
 		return status;
 	}

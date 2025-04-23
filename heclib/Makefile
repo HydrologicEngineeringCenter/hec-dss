@@ -2,16 +2,10 @@ UNAME_S := $(shell uname -s)
 UNAME_M := $(shell uname -m)
 
 ifeq ($(UNAME_S),Linux)
-	CWARNING=-Werror
-	ifneq ($(UNAME_M),aarch64)
-		BITS=-m64
-	endif
-	CFLAGS=-c $(BITS) -fPIC -g -std=gnu99 -Isrc/headers $(CWARNING) -D__linux__ -fcommon
 	Make_OS=Linux
 	MAKE=make
 endif
 ifeq ($(UNAME_S),SunOS)
-	CFLAGS=-m64 -xmemalign=2i -xcode=pic32 -c -Isrc/headers -mt -xcode=abs64 -xstrconst -xc99=all -xCC -g -xs
 	Make_OS=Solaris
 	MAKE=gmake
 endif

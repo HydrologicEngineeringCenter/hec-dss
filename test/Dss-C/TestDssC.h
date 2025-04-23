@@ -97,4 +97,8 @@ int read_profile_from_csv(zStructTimeSeries* tss, const char* csvFilename);
 int units_issue_126();
 int current_time_testing();
 int testText();
+
+int is_linux_dss6_ifltab(long long *ifltab);
+int is_linux();
+
 #endif
