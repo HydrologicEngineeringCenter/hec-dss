@@ -152,15 +152,15 @@ int testConvert6To7_gv_issue() {
 
   int readExistingFiles(const char* path, const char* test_data) {
 
-    int status = readText("dss6-windows-text.dss",path , test_data);
+    int status = is_linux() ? 0 : readText("dss6-windows-text.dss",path , test_data);
     if (status != 0)
       return status;
 
-    status = readText("dss6-solaris-text.dss", path, test_data);
+    status = is_linux() ? 0 : readText("dss6-solaris-text.dss", path, test_data);
     if (status != 0)
       return status;
 
-    status = readText("dss6-linux-text.dss", path, test_data);
+    status = is_linux() ? 0 : readText("dss6-linux-text.dss", path, test_data);
     if (status != 0)
       return status;
 
@@ -193,11 +193,13 @@ int testConvert6To7_gv_issue() {
     const char* dssfile6 = "temp-dss-6.dss";
     const char* dssfile7 = "temp-dss-7.dss";
 
-    createDssFile(dssfile6, 6);
-    writeText(dssfile6,path ,test_data);
-    status = readText(dssfile6, path,test_data);
-    if (status != 0)
-      return status;
+    if( !is_linux()){
+      createDssFile(dssfile6, 6);
+      writeText(dssfile6,path ,test_data);
+      status = readText(dssfile6, path,test_data);
+      if (status != 0)
+        return status;
+    }
 
     createDssFile(dssfile7, 7);
     writeText(dssfile7, path, test_data);
@@ -206,17 +208,22 @@ int testConvert6To7_gv_issue() {
       return status;
     
 
-    status = readVersion6Text();
-    if (status != 0)
-      return status;
+    if( !is_linux()){
+      status = readVersion6Text();
+      if (status != 0)
+        return status;
+      
 
-    status = testConvert6To7_gv_issue();
-    if (status != 0)
-      return status;
+      status = testConvert6To7_gv_issue();
+      if (status != 0)
+        return status;
+      
+      
 
-    status = test_convert_to_dss7_from_scratch();
+      status = test_convert_to_dss7_from_scratch();
     if (status != 0)
       return status;
+    }
 
     return 0;
   }

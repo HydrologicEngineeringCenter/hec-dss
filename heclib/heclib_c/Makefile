@@ -3,11 +3,7 @@ UNAME_S := $(shell uname -s)
 UNAME_M := $(shell uname -m)
 
 ifeq ($(UNAME_S),Linux)
-	CWARNING=-Werror
-	ifneq ($(UNAME_M),aarch64)
-		BITS=-m64
-	endif
-	CFLAGS=-c $(BITS) -fPIC -g -std=gnu99 -Isrc/headers $(CWARNING) -D__linux__ -fcommon
+	CFLAGS=-c -fPIC -g -Isrc/headers -Werror -D__linux__ -fcommon
 endif
 ifeq ($(UNAME_S),SunOS)
 	CFLAGS=-m64 -xmemalign=2i -xcode=pic32 -c -Isrc/headers -mt -xcode=abs64 -xstrconst -xc99=all -xCC -g -xs

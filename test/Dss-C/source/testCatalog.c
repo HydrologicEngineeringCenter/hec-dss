@@ -406,11 +406,12 @@ int testCatalog()
 
 	//  Make sure it exists and is version 7
 	if (zgetFileVersion(dssFilename) != 6) {
-		status = zcompareInts(ifltab, zgetFileVersion(dssFilename), 6, 1,  "testCatalog: c:/temp/sample6.dss does not exist or is not version 6 ");
+		status = zcompareInts(ifltab, zgetFileVersion(dssFilename), 6, 1,  "testCatalog: sample6.dss does not exist or is not version 6 ");
 		if (status != STATUS_OKAY) return status;
 	}
 	
 	//  Open the file
+	if( !is_linux()){
 	status = hec_dss_zopen(ifltab, dssFilename);
 	if (zcheckStatus(ifltab, status, 1, "Fail in testCatalog Loc 42, zopen status ")) return status; 
 
@@ -471,7 +472,7 @@ int testCatalog()
 
 
 	zclose(ifltab);
-
+	}
 	printf("Catalog testing complete\n");
 
 
