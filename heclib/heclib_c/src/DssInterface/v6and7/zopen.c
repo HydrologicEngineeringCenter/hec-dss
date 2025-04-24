@@ -24,11 +24,9 @@ int hec_dss_zopen(long long *ifltab, const char *dssFilename)
 	//  Check for a specific version set for the next new file
 	if (version == 0) {
 		//  File does not exist
-		//zquery("DSSV",  creturn, sizeof(creturn), &version);
 		zquery_("DSSV",  creturn, &version, (size_t)4, sizeof(creturn));
 		//  If set, reset to zero
 		if (version) {
-			//zset("DSSV", "", 0);
 			zero = 0;
 			zset_("DSSV", creturn, &zero, (size_t)4, sizeof(creturn));
 		}
@@ -43,10 +41,11 @@ int hec_dss_zopen(long long *ifltab, const char *dssFilename)
     zmessageDebug(ifltab, DSS_FUNCTION_zopen_ID, "DSS version 6 is not supported on Linux ", dssFilename);
 	zmessageDebug(ifltab, DSS_FUNCTION_zopen_ID, "------------------", dssFilename);
     return -123;
-#endif
+#else
 
 		zopen6int_(ifltab, dssFilename, &status, strlen(dssFilename));
 		return status;
+#endif
 	}
 	else {
 		return zopenInternal(ifltab, dssFilename, 0, 0, 0, 0, 0);
