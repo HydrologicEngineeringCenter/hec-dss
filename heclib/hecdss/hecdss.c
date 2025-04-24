@@ -351,7 +351,7 @@ HECDSS_API int hec_dss_tsStoreRegular(dss_file* dss, const char* pathname,
   double* valueArray, const int valueArraySize, 
   int* qualityArray, const int qualityArraySize,
   const int saveAsFloat,
-  const char* units, const char* type, const char* timeZoneName)
+  const char* units, const char* type, const char* timeZoneName, int storageFlag)
 {
   zStructTimeSeries* tss = 0;
 
@@ -375,7 +375,7 @@ HECDSS_API int hec_dss_tsStoreRegular(dss_file* dss, const char* pathname,
   
   tss->timeZoneName = mallocAndCopy(timeZoneName);
   tss->allocated[zSTRUCT_timeZoneName] = 1;
-  int status = ztsStore(dss->ifltab, tss, REPLACE_ALL);
+  int status = ztsStore(dss->ifltab, tss, storageFlag);
 
   zstructFree(tss);
   return status;
@@ -386,7 +386,7 @@ HECDSS_API int hec_dss_tsStoreIregular(dss_file* dss, const char* pathname,
   double* valueArray, const int valueArraySize,
   int* qualityArray, const int qualityArraySize,
   const int saveAsFloat,
-  const char* units, const char* type, const char* timeZoneName)
+  const char* units, const char* type, const char* timeZoneName, int storageFlag)
 {
   zStructTimeSeries* tss = NULL;
 
@@ -413,7 +413,7 @@ HECDSS_API int hec_dss_tsStoreIregular(dss_file* dss, const char* pathname,
     
   tss->timeZoneName = mallocAndCopy(timeZoneName);
   tss->allocated[zSTRUCT_timeZoneName] = 1;
-  int status = ztsStore(dss->ifltab, tss, DELETE_INSERT);
+  int status = ztsStore(dss->ifltab, tss, storageFlag);
 
 
   zstructFree(tss);
