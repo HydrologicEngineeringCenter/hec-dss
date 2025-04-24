@@ -278,8 +278,6 @@ HECDSS_API int hec_dss_tsRetrieve(dss_file* dss, const char* pathname,
 ///   2 – Write regardless, even if all data is missing (write a “missing” record).
 ///   3 – If the record is entirely missing, do not write it and delete any existing on‐disk copy.
 ///   4 – Do not allow missing input data to replace valid data.
-/// 
-
 /// </param>
 /// <returns>
 /// True on success, false on failure.  // ← adjust to your actual return semantics
