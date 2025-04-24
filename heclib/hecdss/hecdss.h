@@ -1,4 +1,4 @@
-/*
+﻿/*
  This project (hecdss) contains code for a shared object/dll, providing an API to work with DSS files.
 
  Only DSS version 7 files are supported.  DSS version 6 files should be converted to DSS version 7
@@ -269,13 +269,25 @@ HECDSS_API int hec_dss_tsRetrieve(dss_file* dss, const char* pathname,
 /// <param name="units">units of data</param>
 /// <param name="type">type of data: PER-AVER, PER-CUM,INST-VAL,INST-CUM https://www.hec.usace.army.mil/confluence/dssvuedocs/latest/introduction/time-series-conventions</param>
 /// <param name="timeZoneName">time zone name (for the time-series), can be different from the location time-zone</param>
-/// <returns></returns>
+/// <param name="storageFlag">
+/// A flag indicating how to handle existing data on disk:
+/// 
+/// For regular‐interval data:
+///   0 – Always replace data.
+///   1 – Only replace missing data.
+///   2 – Write regardless, even if all data is missing (write a “missing” record).
+///   3 – If the record is entirely missing, do not write it and delete any existing on‐disk copy.
+///   4 – Do not allow missing input data to replace valid data.
+/// </param>
+/// <returns>
+/// True on success, false on failure.  // ← adjust to your actual return semantics
+/// </returns>
 HECDSS_API int hec_dss_tsStoreRegular(dss_file* dss, const char* pathname,
   const char* startDate, const char* startTime,
   double* valueArray, const int valueArraySize,
   int* qualityArray, const int qualityArraySize,
   const int saveAsFloat,
-  const char* units, const char* type, const char* timeZoneName);
+  const char* units, const char* type, const char* timeZoneName, int storageFlag);
 
 /// <summary>
 /// Stores Irregular interval data to DSS
@@ -292,6 +304,13 @@ HECDSS_API int hec_dss_tsStoreRegular(dss_file* dss, const char* pathname,
 /// <param name="saveAsFloat">when true saves to disk, with float(4-bytes) otherwise uses 8-bytes per value.</param>
 /// <param name="units">units such as 'cfs'</param>
 /// <param name="type">type of data: PER-AVER, PER-CUM,INST-VAL,INST-CUM https://www.hec.usace.army.mil/confluence/dssvuedocs/latest/introduction/time-series-conventions</param>
+/// <param name="storageFlag">
+/// A flag indicating how to handle existing data on disk:
+/// 
+///For irregular‐interval data:
+///   0 – Merge new data with old (for adding data).
+///   1 – Replace old data with new (for editing/changing data).
+/// </param>
 /// <returns>status of zero on success</returns>
 HECDSS_API int hec_dss_tsStoreIregular(dss_file* dss, const char* pathname,
   const char* startDateBase,
@@ -299,7 +318,7 @@ HECDSS_API int hec_dss_tsStoreIregular(dss_file* dss, const char* pathname,
   double* valueArray, const int valueArraySize,
   int* qualityArray, const int qualityArraySize,
   const int saveAsFloat,
-  const char* units, const char* type, const char* timeZoneName);
+  const char* units, const char* type, const char* timeZoneName, int storageFlag);
 
 HECDSS_API int hec_dss_locationRetrieve(dss_file* dss, const char* fullPath,
   double* x, double* y, double* z,
