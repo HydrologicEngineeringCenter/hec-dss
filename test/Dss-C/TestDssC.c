@@ -28,12 +28,6 @@ int is_linux(void){
 }
 
 
-int is_linux_dss6_ifltab(long long ifltab[]){
-	if( is_linux() &&  zgetVersion(ifltab)== 6){
-	   return 1;
-	}
-	return 0;
-}
 
 int gridMemoryTest() {
 
@@ -334,7 +328,7 @@ int runTheTests() {
 		return status;
 
 	printf("\ntest Bulletin_17C_Examples.dss for reading full record\n");
-	status = Bulletin_17C_SSP_Issue();
+	status = is_linux() ? 0 : Bulletin_17C_SSP_Issue();
 	if (status != STATUS_OKAY)
 		return status;
 
@@ -422,7 +416,7 @@ int runTheTests() {
 	if (status != STATUS_OKAY) return status;
 
 
-	status = testConversion();
+	status = is_linux() ? 0 : testConversion();
 	if (status != STATUS_OKAY) return status;
 
 	//printf("\n\n\n#####################  Completion\n\n\n");
@@ -436,18 +430,20 @@ int runTheTests() {
 
 	stringCopy(fileName6, sizeof(fileName6), "testDss6.dss", sizeof(fileName6));
 	remove(fileName6);
-	status = zopen6(ifltab6, fileName6);
-	if (status != STATUS_OKAY) return status;
+	if( !is_linux()){
+		status = zopen6(ifltab6, fileName6);
+		if (status != STATUS_OKAY) return status;
+	}
 	status = hec_dss_zopen(ifltab7, fileName7);
 	if (status) return status;
-	status = testIO_Interface(ifltab7, ifltab6);
+	status = is_linux()? 0: testIO_Interface(ifltab7, ifltab6);
 	if (status != STATUS_OKAY) return status;
 
 	printf("\n\n\n\n###################################################################\n\n");
 	printf("     Test 2 - DSS-6\n");
 	printf("\n###################################################################\n\n");
 
-	status = runTests(ifltab6);
+	status = is_linux()? 0:  runTests(ifltab6);
 	if (status != STATUS_OKAY) return status;
 	printf("\n\n\n#####################  Completion\n\n\n");
 

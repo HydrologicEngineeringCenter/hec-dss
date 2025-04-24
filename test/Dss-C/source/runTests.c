@@ -10,11 +10,6 @@
 int runTests(long long* ifltab)
 {
 
-	if(is_linux_dss6_ifltab(ifltab)){
-		return 0;
-	}
-
-
 	int status;
 
 	zset7("clear", "", 0);
