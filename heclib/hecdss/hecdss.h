@@ -306,7 +306,10 @@ HECDSS_API int hec_dss_tsStoreRegular(dss_file* dss, const char* pathname,
 /// <param name="saveAsFloat">when true saves to disk, with float(4-bytes) otherwise uses 8-bytes per value.</param>
 /// <param name="units">units such as 'cfs'</param>
 /// <param name="type">type of data: PER-AVER, PER-CUM,INST-VAL,INST-CUM https://www.hec.usace.army.mil/confluence/dssvuedocs/latest/introduction/time-series-conventions</param>
-/// <param name="storageFlag">For irregular‐interval data:
+/// <param name="storageFlag">
+/// A flag indicating how to handle existing data on disk:
+/// 
+///For irregular‐interval data:
 ///   0 – Merge new data with old (for adding data).
 ///   1 – Replace old data with new (for editing/changing data).
 /// </param>
