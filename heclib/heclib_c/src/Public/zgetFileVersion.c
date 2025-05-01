@@ -43,14 +43,14 @@
 	 int permission;
 	 int iswap;
 	 int fileExists;
-	 char fullDssFilename[_MAX_PATH];
+	 char fullDssFilename[MAX_FILENAME_LENGTH];
 	 long long iarray[4];
 	 char messageString[25];
 	 char cdss[5];
 	 char cvers[5];	 
 
 	 fullDssFilename[0] = '\0';
-	 fileExists = zfileName (fullDssFilename, _MAX_PATH, dssFilename, &permission);
+	 fileExists = zfileName (fullDssFilename, MAX_FILENAME_LENGTH, dssFilename, &permission);
 	 if (fileExists < 0) {
 		 return -2;
 	 }

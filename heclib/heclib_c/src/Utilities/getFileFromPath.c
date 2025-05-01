@@ -42,18 +42,18 @@
  {
 #ifdef _MSC_VER
    char drive[_MAX_DRIVE];
-   char dir[_MAX_DIR];
+   char dir[MAX_FILENAME_LENGTH];
    char *fname;
    char ext[_MAX_EXT];
    errno_t err;
    size_t len;
 
-	err = _splitpath_s( fullpath, drive, _MAX_DRIVE, dir, _MAX_DIR, filename,
+	err = _splitpath_s( fullpath, drive, _MAX_DRIVE, dir, MAX_FILENAME_LENGTH, filename,
                        sizeOfFilename, ext, (size_t)_MAX_EXT );
 	if (err) return NULL;
 
 	len = strnlen_hec(ext, _MAX_EXT);
-	stringCat(filename, _MAX_FNAME, ext, len);
+	stringCat(filename, MAX_FILENAME_LENGTH, ext, len);
 	fname = filename;
 
 #else

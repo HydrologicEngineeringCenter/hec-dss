@@ -66,7 +66,7 @@ struct stat buf;
 	 struct stat64 buf;
 #endif
 	int result;
-	char name[_MAX_PATH];
+	char name[MAX_FILENAME_LENGTH];
 	char *fullName;
 	char extension[5];
 	int foundExtension;
@@ -102,10 +102,10 @@ struct stat buf;
 		istart = 0;
 	 }
 
-	 stringCopy(name, _MAX_PATH, &dssFileName[istart], len);
+	 stringCopy(name, MAX_FILENAME_LENGTH, &dssFileName[istart], len);
 	 if (!foundExtension) {
 		 //  Add extension ".dss", if needed
-		 stringCat(name, _MAX_PATH, ".dss", 4);
+		 stringCat(name, MAX_FILENAME_LENGTH, ".dss", 4);
 	 }
 
 

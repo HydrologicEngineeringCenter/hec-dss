@@ -80,7 +80,7 @@ int zcopyFile(long long *ifltabFrom, long long *ifltabTo, int statusWanted)
 	long long recHeader[3];
 	char pathname[MAX_PATHNAME_LENGTH];
 	int pathLength;
-	char fullFilename[256];
+	char fullFilename[MAX_FILENAME_LENGTH];
 
 
 	if (zgetVersion(ifltabFrom) == 6) {
