@@ -315,6 +315,8 @@ HECDSS_API int hec_dss_tsRetrieve(dss_file* dss, const char *pathname,
 
       tss->boolRetrieveAllTimes = 1;
     }
+
+    tss->boolPattern = isTsPattern(pathname);
     
     int status = ztsRetrieve(dss->ifltab, tss, NO_TRIM_INCL_TIME_ARR, RETRIEVE_DOUBLES, RETRIEVE_QUAL_AND_NOTES);
     if (status == 0) {
@@ -372,7 +374,8 @@ HECDSS_API int hec_dss_tsStoreRegular(dss_file* dss, const char* pathname,
   else {
     tss = zstructTsNewRegDoubles(pathname, valueArray, valueArraySize, startDate, startTime, units, type);
   }
-  
+  tss->boolPattern = isTsPattern(pathname);
+
   tss->timeZoneName = mallocAndCopy(timeZoneName);
   tss->allocated[zSTRUCT_timeZoneName] = 1;
   int status = ztsStore(dss->ifltab, tss, storageFlag);
@@ -411,6 +414,8 @@ HECDSS_API int hec_dss_tsStoreIregular(dss_file* dss, const char* pathname,
     tss->qualityArraySize = qualityArraySize;
   }
     
+  tss->boolPattern = isTsPattern(pathname);
+
   tss->timeZoneName = mallocAndCopy(timeZoneName);
   tss->allocated[zSTRUCT_timeZoneName] = 1;
   int status = ztsStore(dss->ifltab, tss, storageFlag);
