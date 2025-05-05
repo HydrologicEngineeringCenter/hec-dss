@@ -1307,6 +1307,7 @@
     </ClCompile>
     <ClCompile Include="src\Internal\isDpartEmpty.c" />
     <ClCompile Include="src\Utilities\checks.c" />
+    <ClCompile Include="src\Internal\isTsPattern.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\headers\zlib\zconf.h">
