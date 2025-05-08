@@ -293,19 +293,16 @@ HECDSS_API int hec_dss_tsRetrieve(dss_file* dss, const char *pathname,
                                   char* timeZoneName, const int timeZoneNameLength)
 {
     *numberValuesRead = 0; 
-    zStructTimeSeries* tss = zstructTsNew(pathname);
 
-    tss->startJulianDate = dateToJulian(startDate);
-    tss->startTimeSeconds = timeStringToSeconds(startTime);
-    tss->endJulianDate = dateToJulian(endDate);
-    tss->endTimeSeconds = timeStringToSeconds(endTime);
-
+    zStructTimeSeries* tss = zstructTsNewTimes(pathname, startDate, startTime, endDate, endTime);
+    tss->boolPattern = isTsPattern(pathname);
     // if no dates/times are given retrieve all data.
     if (  
          (startDate == NULL || startDate == "\0")
       && (startTime == NULL || startTime == "\0")
       && (endDate == NULL   || endDate == "\0")
       && (endTime == NULL   || endTime == "\0")
+      && ! tss->boolPattern
          ) 
     {
       if (!isDpartEmpty(pathname)) {
@@ -316,7 +313,7 @@ HECDSS_API int hec_dss_tsRetrieve(dss_file* dss, const char *pathname,
       tss->boolRetrieveAllTimes = 1;
     }
 
-    tss->boolPattern = isTsPattern(pathname);
+    
     
     int status = ztsRetrieve(dss->ifltab, tss, NO_TRIM_INCL_TIME_ARR, RETRIEVE_DOUBLES, RETRIEVE_QUAL_AND_NOTES);
     if (status == 0) {
@@ -337,10 +334,12 @@ HECDSS_API int hec_dss_tsRetrieve(dss_file* dss, const char *pathname,
         size = MAX(0, size);
         *numberValuesRead = size;
         for (int i = 0; i < size; i++) {
-            timeArray[i] = tss->times[i];
+            if (tss->times) {
+              timeArray[i] = tss->times[i];
+            }
             valueArray[i] = tss->doubleValues[i];
             if (qualityWidth > 0) // TO DO.. quality can have multiple columns
-              quality[i] = tss->quality[i];
+               quality[i] = tss->quality[i];
 
         }
     }
