@@ -213,10 +213,10 @@ HECDSS_API int  hec_dss_tsGetDateTimeRange(dss_file* dss, const char* pathname, 
     tss->boolPattern = isTsPattern(pathname);
     status = ztsRetrieve(dss->ifltab, tss, NO_TRIM_INCL_TIME_ARR, RETRIEVE_DOUBLES, RETRIEVE_QUAL_AND_NOTES);
 
-    firstValidJulian = tss->startJulianDate;
-    firstSeconds = tss->startTimeSeconds;
-    lastValidJulian = tss->endJulianDate;
-    lastSeconds = tss->endTimeSeconds;
+    *firstValidJulian = tss->startJulianDate;
+    *firstSeconds = tss->startTimeSeconds;
+    *lastValidJulian = tss->endJulianDate;
+    *lastSeconds = tss->endTimeSeconds;
   }
   else {
       status = ztsGetDateTimeRange(dss->ifltab, pathname, boolFullSet,
