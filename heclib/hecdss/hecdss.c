@@ -205,13 +205,24 @@ HECDSS_API int hec_dss_catalog(dss_file* dss, char* pathBuffer, int* recordTypes
 }
 
 HECDSS_API int  hec_dss_tsGetDateTimeRange(dss_file* dss, const char* pathname, const int boolFullSet,
-                                            int* firstValidJulian, int* firstSeconds,
-                                            int* lastValidJulian, int* lastSeconds) {
+  int* firstValidJulian, int* firstSeconds,
+  int* lastValidJulian, int* lastSeconds) {
+  int status = 0;
+  if (isTsPattern(pathname)) {
+    zStructTimeSeries* tss = zstructTsNewTimes(pathname, "", "", "", "");
+    tss->boolPattern = isTsPattern(pathname);
+    status = ztsRetrieve(dss->ifltab, tss, NO_TRIM_INCL_TIME_ARR, RETRIEVE_DOUBLES, RETRIEVE_QUAL_AND_NOTES);
 
-  int status = ztsGetDateTimeRange(dss->ifltab, pathname, boolFullSet, 
-                                  firstValidJulian, firstSeconds, 
-                                  lastValidJulian, lastSeconds);
-
+    firstValidJulian = tss->startJulianDate;
+    firstSeconds = tss->startTimeSeconds;
+    lastValidJulian = tss->endJulianDate;
+    lastSeconds = tss->endTimeSeconds;
+  }
+  else {
+      status = ztsGetDateTimeRange(dss->ifltab, pathname, boolFullSet,
+      firstValidJulian, firstSeconds,
+      lastValidJulian, lastSeconds);
+  }
   return status;
 }
 
