@@ -2,7 +2,7 @@
 #nmake -f Makefile.win  clean all
 
 
-FPP=IFORT
+FPP=IFX
 LINKER=xilib
 
 !IFDEF DEBUG
