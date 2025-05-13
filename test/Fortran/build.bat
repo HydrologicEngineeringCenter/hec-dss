@@ -6,12 +6,12 @@ call  ..\..\vs_env.bat
 
 set OUT_DIR=x64\Debug
 set TARGET=%OUT_DIR%\Dss7-Fortran.exe
-
+set INTEL_COMPILER=IFX
 dir/b/s *.f90 > source.txt
 
 if NOT EXIST %OUT_DIR% mkdir %OUT_DIR%
 
-ifort /nologo /debug:Full /MP /Od /fpp /I"src\headers" /reentrancy:threaded /warn:noalignments ^
+%INTEL_COMPILER% /nologo /debug:Full /MP /Od /fpp /I"src\headers" /reentrancy:threaded /warn:noalignments ^
  /Qsave /Qinit:zero /names:lowercase /iface:cref /assume:underscore ^
  /traceback /check:all /libs:static /dbglibs /threads  ^
  @source.txt /link ^
@@ -28,7 +28,7 @@ set OUT_DIR=x64\Release
 set TARGET=%OUT_DIR%\Dss7-Fortran.exe
 if NOT EXIST %OUT_DIR% mkdir %OUT_DIR%
 
-ifort /nologo /debug:full /MP /Od /fpp /I"src\headers" /reentrancy:threaded /warn:noalignments ^
+%INTEL_COMPILER% /nologo /debug:full /MP /Od /fpp /I"src\headers" /reentrancy:threaded /warn:noalignments ^
  /Qsave /Qinit:zero /names:lowercase /iface:cref /assume:underscore ^
  /traceback /check:all /libs:static /threads  ^
  @source.txt /link /NODEFAULTLIB:libcmt  ^
