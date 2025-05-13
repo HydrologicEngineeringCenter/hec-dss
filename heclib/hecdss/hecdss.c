@@ -217,6 +217,7 @@ HECDSS_API int  hec_dss_tsGetDateTimeRange(dss_file* dss, const char* pathname, 
     *firstSeconds = tss->startTimeSeconds;
     *lastValidJulian = tss->endJulianDate;
     *lastSeconds = tss->endTimeSeconds;
+    zstructFree(tss);
   }
   else {
       status = ztsGetDateTimeRange(dss->ifltab, pathname, boolFullSet,
