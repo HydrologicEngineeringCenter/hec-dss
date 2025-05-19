@@ -28,11 +28,6 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1zcatalog(
 	int *ifltab;
 	int number;
 	int maxNumber;
-	int i;
-	int len;
-	int jpos;
-	char *pos;
-	char *path;
 
 	jclass cls;
 	jfieldID fid;
