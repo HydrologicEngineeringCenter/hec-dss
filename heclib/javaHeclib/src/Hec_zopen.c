@@ -53,8 +53,9 @@ JNIEXPORT int JNICALL Java_hec_heclib_util_Heclib_Hec_1zopen
     (*env)->ReleaseStringUTFChars (env, j_name, fileName);
     /* Make sure the file table and status are returned! */
     (*env)->ReleaseIntArrayElements (env, j_ifltab, ifltab, 0);
+    int ret = status[0];
     (*env)->ReleaseIntArrayElements (env, j_status, status, 0);
-	return *status;
+	  return ret;
 }
 
 JNIEXPORT int JNICALL Java_hec_heclib_util_Heclib_Hec_1zopen6
@@ -83,8 +84,9 @@ JNIEXPORT int JNICALL Java_hec_heclib_util_Heclib_Hec_1zopen6
     (*env)->ReleaseStringUTFChars (env, j_name, fileName);
     /* Make sure the file table and status are returned! */
     (*env)->ReleaseIntArrayElements (env, j_ifltab, ifltab, 0);
+    int ret = status[0];
     (*env)->ReleaseIntArrayElements (env, j_status, status, 0);
-	return *status;
+    return ret;
 }
 
 
@@ -114,7 +116,8 @@ JNIEXPORT int JNICALL Java_hec_heclib_util_Heclib_Hec_1zopen7
     (*env)->ReleaseStringUTFChars (env, j_name, fileName);
     /* Make sure the file table and status are returned! */
     (*env)->ReleaseIntArrayElements (env, j_ifltab, ifltab, 0);
+    int ret = status[0];
     (*env)->ReleaseIntArrayElements (env, j_status, status, 0);
-	return *status;
+    return ret;
 }
 

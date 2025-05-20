@@ -2,6 +2,7 @@
 
 #include "hecdss7.h"
 #include "javaHeclib.h"
+#include "jni_utility.h"
 
 /**
 
@@ -61,18 +62,9 @@ void C_CatalogToJava(
 	}
 
 	//  Get the pathname with wild characters
-    fid = (*env)->GetFieldID (env, cls, "pathnameWithWild", "Ljava/lang/String;");
-    if (fid != 0) {
-		if (catStruct->pathWithWildChars) {
-			jstr = (*env)->NewStringUTF(env, catStruct->pathWithWildChars);
-		}
-		else {
-			jstr = (*env)->NewStringUTF(env, "");
-		}
-        (*env)->SetObjectField (env, cls, fid, jstr);
-		(*env)->DeleteLocalRef(env, jstr);
-	}
 
+	hec_dss_jni_setStringField(env, cls, j_dssCatalog, "pathnameWithWild", catStruct->pathWithWildChars);
+  
 	if (catStruct->startDates) {
 		size = (jsize)catStruct->numberPathnames;
 		startDates = (*env)->NewIntArray(env, size);
@@ -110,12 +102,6 @@ void C_CatalogToJava(
 	if (fid) {
 		(*env)->SetIntField(env, j_dssCatalog, fid, (jint)catStruct->statusWanted);		
 	}
-	/*
-	fid = (*env)->GetFieldID (env, cls, "statusRead", "I");
-	if (fid) {
-		(*env)->SetIntField(env, j_dssCatalog, fid, (jint)catStruct->statusWanted);		
-	}
-	*/
 	
 	fid = (*env)->GetFieldID (env, cls, "listIsCollection", "Z");
 	if (fid) {
@@ -126,8 +112,6 @@ void C_CatalogToJava(
 	if (fid) {
 		(*env)->SetBooleanField(env, j_dssCatalog, fid, (jboolean)catStruct->boolSorted);
 	}
-
-	//  if (version == 6) return;
 
 	fid = (*env)->GetFieldID (env, cls, "dataTypeStart", "I");
 	if (fid) {
