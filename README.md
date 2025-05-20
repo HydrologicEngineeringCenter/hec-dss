@@ -62,14 +62,15 @@ In the hec-dss/test/Fortran directory, execute make clean ; make test
 
 ### Solaris sparc sun4v  
 
+```txt
 developerstudio12.6 
 #pkg contents system/library/fortran-runtime
 export PATH=$PATH:/opt/developerstudio12.6/bin:/usr/gcc/7/bin
 export JAVA_HOME=/usr/jdk/instances/jdk1.8.0
 export LD_LIBRARY_PATH=/usr/gcc/7/lib/sparcv9
-
 ```
- bash
+
+```bash
  git clone https://github.com/HydrologicEngineeringCenter/hec-dss.git
  cd hec-dss
  git clone https://github.com/HydrologicEngineeringCenter/dss-test-data.git
@@ -78,7 +79,11 @@ export LD_LIBRARY_PATH=/usr/gcc/7/lib/sparcv9
  In the hec-dss/test/Dss-C directory, execute gmake clean ; gmake test
  In the hec-dss/test/Fortran directory, execute gmake -f Makefile.Solaris clean ; gmake -f Makefile.Solaris test
 
+#  maven config:
+   mvn deploy:deploy-file -DgroupId=mil.army.usace.hec -DartifactId=javaHeclib -Dversion=7-IU-15-SunOS-SPARC_64 -DgeneratePom=true -Dfile=C:\temp\javaHeclib.zip -DrepositoryId=nexus -Dpackaging=zip 
 ```
+
+
 
 ### Windows
 
