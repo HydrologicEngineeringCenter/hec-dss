@@ -2,6 +2,7 @@
 
 #include "hecdss7.h"
 #include "javaHeclib.h"
+#include "jni_utility.h"
 
 /**
 
