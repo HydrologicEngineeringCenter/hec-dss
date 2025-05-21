@@ -13,8 +13,7 @@ int isTsPattern(const char* pathname) {
   if (len == STATUS_NOT_OKAY) {
     return 0;
   }
-  
-  if (zstringCompare(dPart, "TS-Pattern", strlen(dPart))) {
+  if (strlen(dPart) == 10 && zstringCompare(dPart, "TS-Pattern", strlen(dPart))) {
     return 1;
   }
     
