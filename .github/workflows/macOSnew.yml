@@ -24,12 +24,12 @@ jobs:
           echo "JAVA_HOME=$JAVA_HOME"
           $JAVA_HOME/bin/java -version
 
-      - name: Set GFORTRAN_PATH from Homebrew
+      - name: Set GFORTRAN_PATH from gfortran-14
         run: |
-          GFORTRAN_PATH=$(brew --prefix gcc-14)/lib/gcc/$(gfortran-14 -dumpversion | cut -d. -f1)
+          GFORTRAN_BIN_PATH=$(dirname "$(which gfortran-14)")
+          GFORTRAN_PATH="$GFORTRAN_BIN_PATH/../lib/gcc/14"
           echo "GFORTRAN_PATH=$GFORTRAN_PATH" >> $GITHUB_ENV
-          echo "GFORTRAN_PATH=$GFORTRAN_PATH"
-          "$GFORTRAN_PATH/../../bin/gfortran" --version
+          "$GFORTRAN_PATH/../../bin/gfortran-14" --version
 
       - name: Build artifacts
         run: |
