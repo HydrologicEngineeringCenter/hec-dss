@@ -17,6 +17,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Verify paths
+        run: |
+          ls -al /usr/local/lib
+          ls -al /usr/local/lib/gcc
+          ls -al /usr/local/lib/gcc/14
+
       - name: Build artifacts
         run: |
           export JAVA_HOME='/Users/runner/hostedtoolcache/Java_Temurin-Hotspot_jdk/21.0.7-6.0/x64/Contents/Home/'
