@@ -41,6 +41,11 @@ jobs:
           repository: 'HydrologicEngineeringCenter/dss-test-data'
           path: 'dss-test-data'
 
+      - name: List directory structure
+        run: |
+          echo "WORKSPACE: $GITHUB_WORKSPACE"
+          ls -R     
+
       #   - name: Save artifacts
       #     uses: actions/upload-artifact@v4
       #     with:
