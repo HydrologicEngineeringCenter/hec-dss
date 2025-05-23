@@ -2,7 +2,7 @@ name: macOS Build with Intel Fortran
 
 on:
   push:
-    branches: [ master ]
+    branches: [ feature/update-macos-github-actions ]
   pull_request:
     branches: [ master ]
   workflow_dispatch:
