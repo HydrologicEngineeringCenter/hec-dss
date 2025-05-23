@@ -15,9 +15,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set GFORTRAN_PATH dynamically
+      - name: Link gfortran-14 to gfortran
         run: |
-          echo "GFORTRAN_PATH=$(gfortran-14 -print-file-name=libgfortran.dylib | xargs dirname)" >> $GITHUB_ENV
+          ln -sfn "$(which gfortran-14)" /usr/local/bin/gfortran
 
       - name: Build artifacts
         env:
