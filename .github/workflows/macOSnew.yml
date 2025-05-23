@@ -12,27 +12,13 @@ jobs:
     # macOS 13 is the latest GitHub action runner with Intel
     # https://docs.github.com/en/actions/using-github-hosted-runners/using-github-hosted-runners/about-github-hosted-runners#standard-github-hosted-runners-for-public-repositories
     runs-on: macos-13
+    env:
+      JAVA_HOME: '/Users/runner/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.15-6/x64/Contents/Home/'
+      GFORTRAN_PATH: '/usr/local/lib/gcc/14'
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
-      - name: Link gfortran-14 to gfortran
-        run: |
-          ln -sfn "$(which gfortran-14)" /usr/local/bin/gfortran
-
-      - name: Set JAVA_HOME to Java 21
-        run: |
-          echo "JAVA_HOME=${{ runner.env.JAVA_HOME_21_X64 }}" >> $GITHUB_ENV
-          echo "JAVA_HOME=$JAVA_HOME"
-          $JAVA_HOME/bin/java -version
-
-      - name: Set GFORTRAN_PATH from gfortran-14
-        run: |
-          echo $(dirname "$(which gfortran-14)")
-          GFORTRAN_BIN_PATH=$(dirname "$(which gfortran-14)")
-          GFORTRAN_PATH="$GFORTRAN_BIN_PATH/../lib/gcc/14"
-          echo "GFORTRAN_PATH=$GFORTRAN_PATH" >> $GITHUB_ENV
-          echo "GFORTRAN_PATH=$GFORTRAN_PATH"
 
       - name: Build artifacts
         run: |
