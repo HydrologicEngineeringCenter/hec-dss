@@ -12,9 +12,6 @@ jobs:
     # macOS 13 is the latest GitHub action runner with Intel
     # https://docs.github.com/en/actions/using-github-hosted-runners/using-github-hosted-runners/about-github-hosted-runners#standard-github-hosted-runners-for-public-repositories
     runs-on: macos-13
-    env:
-      JAVA_HOME: '/Users/runner/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.15-6/x64/Contents/Home/'
-      GFORTRAN_PATH: '/usr/local/lib/gcc/14'
 
     steps:
       - name: Checkout code
@@ -22,6 +19,9 @@ jobs:
 
       - name: Build artifacts
         run: |
+          echo $JAVA_HOME_21_X64
+          export JAVA_HOME='/Users/runner/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.15-6/x64/Contents/Home/'
+          export GFORTRAN_PATH='/usr/local/lib/gcc/14'
           cd heclib
           make
 
