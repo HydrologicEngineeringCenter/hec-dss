@@ -19,9 +19,10 @@ jobs:
 
       - name: Build artifacts
         run: |
-          echo $JAVA_HOME_21_X64
-          export JAVA_HOME='/Users/runner/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.15-6/x64/Contents/Home/'
+          export JAVA_HOME='/Users/runner/hostedtoolcache/Java_Temurin-Hotspot_jdk/21.0.7-6.0/x64/Contents/Home/'
           export GFORTRAN_PATH='/usr/local/lib/gcc/14'
+          echo $JAVA_HOME
+          echo $GFORTRAN_PATH
           cd heclib
           make
 
