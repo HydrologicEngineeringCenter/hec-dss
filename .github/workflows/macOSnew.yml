@@ -9,7 +9,9 @@ on:
 
 jobs:
   build:
-    runs-on: macos-15
+    # macOS 13 is the latest GitHub action runner with Intel
+    # https://docs.github.com/en/actions/using-github-hosted-runners/using-github-hosted-runners/about-github-hosted-runners#standard-github-hosted-runners-for-public-repositories
+    runs-on: macos-13
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -26,6 +28,7 @@ jobs:
 
       - name: Set GFORTRAN_PATH from gfortran-14
         run: |
+          echo $(dirname "$(which gfortran-14)")
           GFORTRAN_BIN_PATH=$(dirname "$(which gfortran-14)")
           GFORTRAN_PATH="$GFORTRAN_BIN_PATH/../lib/gcc/14"
           echo "GFORTRAN_PATH=$GFORTRAN_PATH" >> $GITHUB_ENV
