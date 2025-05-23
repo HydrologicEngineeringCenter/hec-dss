@@ -20,10 +20,16 @@ jobs:
 
       - name: Set JAVA_HOME to Java 21
         run: |
-          echo "Setting JAVA_HOME to JAVA_HOME_21_X64"
-          export JAVA_HOME="${JAVA_HOME_21_X64}"
+          echo "JAVA_HOME=${{ runner.env.JAVA_HOME_21_X64 }}" >> $GITHUB_ENV
           echo "JAVA_HOME=$JAVA_HOME"
-          java -version
+          $JAVA_HOME/bin/java -version
+
+      - name: Set GFORTRAN_PATH from Homebrew
+        run: |
+          GFORTRAN_PATH=$(brew --prefix gcc-14)/lib/gcc/$(gfortran-14 -dumpversion | cut -d. -f1)
+          echo "GFORTRAN_PATH=$GFORTRAN_PATH" >> $GITHUB_ENV
+          echo "GFORTRAN_PATH=$GFORTRAN_PATH"
+          "$GFORTRAN_PATH/../../bin/gfortran" --version
 
       - name: Build artifacts
         run: |
