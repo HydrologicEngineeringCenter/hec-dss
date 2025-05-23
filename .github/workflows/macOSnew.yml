@@ -10,9 +10,6 @@ on:
 jobs:
   build:
     runs-on: macos-15
-    env:
-      JAVA_HOME: ${{ env.JAVA_HOME_21_X64 }}
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -20,6 +17,13 @@ jobs:
       - name: Link gfortran-14 to gfortran
         run: |
           ln -sfn "$(which gfortran-14)" /usr/local/bin/gfortran
+
+      - name: Set JAVA_HOME to Java 21
+        run: |
+          echo "Setting JAVA_HOME to JAVA_HOME_21_X64"
+          export JAVA_HOME="${JAVA_HOME_21_X64}"
+          echo "JAVA_HOME=$JAVA_HOME"
+          java -version
 
       - name: Build artifacts
         run: |
