@@ -10,6 +10,8 @@ on:
 jobs:
   build:
     runs-on: macos-15
+    env:
+      JAVA_HOME: ${{ env.JAVA_HOME_21_X64 }}
 
     steps:
       - name: Checkout code
@@ -20,8 +22,6 @@ jobs:
           ln -sfn "$(which gfortran-14)" /usr/local/bin/gfortran
 
       - name: Build artifacts
-        env:
-          JAVA_HOME: ${{ env.JAVA_HOME_21_X64 }}
         run: |
           cd heclib
           make
