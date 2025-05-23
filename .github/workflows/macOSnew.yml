@@ -32,7 +32,7 @@ jobs:
           GFORTRAN_BIN_PATH=$(dirname "$(which gfortran-14)")
           GFORTRAN_PATH="$GFORTRAN_BIN_PATH/../lib/gcc/14"
           echo "GFORTRAN_PATH=$GFORTRAN_PATH" >> $GITHUB_ENV
-          echo GFORTRAN_PATH=$GFORTRAN_PATH"
+          echo "GFORTRAN_PATH=$GFORTRAN_PATH"
 
       - name: Build artifacts
         run: |
