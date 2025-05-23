@@ -19,9 +19,10 @@ jobs:
 
       - name: Verify paths
         run: |
-          ls -al /usr/local/lib
-          ls -al /usr/local/lib/gcc
+          echo 'ls -al /usr/local/lib/gcc/14'
           ls -al /usr/local/lib/gcc/14
+          echo 'ls -al /usr/local/Cellar/gcc/14.2.0_1/lib/gcc/14'
+          ls -al /usr/local/Cellar/gcc/14.2.0_1/lib/gcc/14
 
       - name: Build artifacts
         run: |
