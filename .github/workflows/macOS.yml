@@ -1,23 +1,69 @@
-name: macOS
-on: [workflow_dispatch]
+name: macOS Intel
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+
 jobs:
   build:
-    runs-on: macos-11
-    env:
-      GFORTRAN_PATH: "/usr/local/opt/gcc/lib/gcc/11"
+    # macOS 13 is the latest GitHub action runner with Intel
+    # https://docs.github.com/en/actions/using-github-hosted-runners/using-github-hosted-runners/about-github-hosted-runners#standard-github-hosted-runners-for-public-repositories
+    runs-on: macos-13
+
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v3
 
       - name: Checkout tools repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: HydrologicEngineeringCenter/dss-test-data
           path: dss-test-data
 
-      - name: build main library
+      # https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/workflow-commands-for-github-actions#setting-an-environment-variable
+      - name: Setup environment variables
         run: |
-          sudo ln -s /usr/local/bin/gfortran-11 /usr/local/bin/gfortran
+          echo "JAVA_HOME=$JAVA_HOME_21_X64" >> "$GITHUB_ENV"
+          
+          GFORTRAN_DYLIB=$(otool -D "$(gfortran-14 -print-file-name=libgfortran.dylib)" | tail -n +2)
+          echo "GFORTRAN_DYLIB=$GFORTRAN_DYLIB" >> "$GITHUB_ENV"
+          
+          GFORTRAN_PATH=$(dirname "$GFORTRAN_DYLIB")
+          echo "GFORTRAN_PATH=$GFORTRAN_PATH" >> "$GITHUB_ENV"
+
+      - name: Build main library
+        run: |
+          ln -sfn "$(which gfortran-14)" /usr/local/bin/gfortran
+          
+          echo JAVA_HOME: $JAVA_HOME
+          echo GFORTRAN_PATH: $GFORTRAN_PATH
+         
+          gfortran --version 
           cd heclib
           make
-          
+
+      - name: Patch javaHeclib
+        run: |
+          cd heclib
+          sh macOS-patch-javaHeclib.sh
+
+      - name: Build and run basic C test programs
+        run: |
+          cd test/C
+          ./unix_test
+
+      - name: Build and run Dss-C test program
+        run: |
+          cd test/Dss-C
+          make test
+
+      # Save some artifacts
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dss
+          path: |
+            ${{ github.workspace }}/heclib/Output/Patched/javaHeclib.zip
