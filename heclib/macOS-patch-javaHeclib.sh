@@ -3,7 +3,6 @@ set -euo pipefail
 
 # Load env variables
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "$SCRIPT_DIR/macOS-env-vars.sh"
 
 # Paths
 OUTPUT_DIR="$SCRIPT_DIR/Output"
