@@ -11,6 +11,7 @@ LIB_DIR="$OUTPUT_DIR/Patched"
 GFORTRAN="$GFORTRAN_PATH"
 
 echo "Copying libjavaHeclib.dylib to $LIB_DIR..."
+mkdir $LIB_DIR
 cp "$OUTPUT_DIR/libjavaHeclib.dylib" "$LIB_DIR/"
 
 echo "Copying dependent dylibs from $GFORTRAN..."

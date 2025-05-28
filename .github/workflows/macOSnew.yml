@@ -45,6 +45,9 @@ jobs:
           gfortran --version 
           cd heclib
           make
+
+      - name: Patch javaHeclib
+        run: |
           sh macOS-patch-javaHeclib.sh
 
       - name: Build and run basic C test programs
