@@ -14,7 +14,7 @@ jobs:
     runs-on: macos-13
 
     env:
-      JAVA_HOME: ${{ env.JAVA_HOME_21_X64 }}
+      JAVA_HOME: $JAVA_HOME_21_X64
       GFORTRAN_PATH: /usr/local/opt/gcc@14/lib/gcc/14
 
     steps:
