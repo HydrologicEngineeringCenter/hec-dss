@@ -27,7 +27,7 @@ jobs:
       - name: Setup environment variables
         run: |
           echo "JAVA_HOME=$JAVA_HOME_21_X64" >> "$GITHUB_ENV"
-          echo "GFORTRAN_PATH=/usr/local/opt/gcc@14/lib/gcc/14" >> "$GITHUB_ENV"
+          echo "GFORTRAN_PATH=/usr/local/opt/gcc/lib/gcc/current" >> "$GITHUB_ENV"
 
       - name: Build main library
         run: |
