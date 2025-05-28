@@ -14,8 +14,8 @@ jobs:
     runs-on: macos-13
 
     env:
-      JAVA_HOME: /Users/runner/hostedtoolcache/Java_Temurin-Hotspot_jdk/21.0.7-6.0/x64/Contents/Home/
-#      GFORTRAN_PATH: /usr/local/Cellar/gcc/14.2.0_1/lib/gcc/14
+      JAVA_HOME: ${{ env.JAVA_HOME_21_X64 }}
+      GFORTRAN_PATH: /usr/local/opt/gcc@14/lib/gcc/14
 
     steps:
       - name: Checkout code
