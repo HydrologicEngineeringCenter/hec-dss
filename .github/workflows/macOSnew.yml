@@ -42,6 +42,7 @@ jobs:
 
       - name: Patch javaHeclib
         run: |
+          cd heclib
           sh macOS-patch-javaHeclib.sh
 
       - name: Build and run basic C test programs
