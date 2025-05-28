@@ -17,12 +17,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Verify paths
+      - name: Checkout tools repo
+        uses: actions/checkout@v3
+        with:
+          repository: HydrologicEngineeringCenter/dss-test-data
+          path: dss-test-data
+
+      - name: Verify GCC library paths
         run: |
           echo 'ls -al /usr/local/Cellar/gcc/14.2.0_1/lib/gcc/14'
           ls -al /usr/local/Cellar/gcc/14.2.0_1/lib/gcc/14
 
-      - name: Build artifacts
+      - name: Build main library
         run: |
           export JAVA_HOME='/Users/runner/hostedtoolcache/Java_Temurin-Hotspot_jdk/21.0.7-6.0/x64/Contents/Home/'
           export GFORTRAN_PATH='/usr/local/Cellar/gcc/14.2.0_1/lib/gcc/14'
@@ -30,36 +36,17 @@ jobs:
           
           echo JAVA_HOME: $JAVA_HOME
           echo GFORTRAN_PATH: $GFORTRAN_PATH
-          gfortran --version
-          
+         
+          gfortran --version 
           cd heclib
           make
 
-      - name: Checkout test data
-        uses: actions/checkout@v3
-        with:
-          repository: 'HydrologicEngineeringCenter/dss-test-data'
-          path: 'dss-test-data'
-
-      - name: List directory structure
+      - name: Build and run basic C test programs
         run: |
-          echo "WORKSPACE: $GITHUB_WORKSPACE"
-          ls -R     
+          cd test/C
+          ./unix_test
 
-      #   - name: Save artifacts
-      #     uses: actions/upload-artifact@v4
-      #     with:
-      #       name: dss
-      #       path: |
-      #         ${{ github.workspace }}/hecdss.zip
-      #         ${{ github.workspace }}/heclib.zip
-      #         ${{ github.workspace }}/javaHeclib.zip
-
-      - name: Elementary C tests
-        run: ./test/test_c.sh
-
-      - name: Full C tests
-        run: ./test/test_Dss-C.sh
-
-      - name: Fortran tests
-        run: ./test/test_fortran.sh
+      - name: Build and run Dss-C test program
+        run: |
+          cd test/Dss-C
+          make test
