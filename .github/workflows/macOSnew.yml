@@ -2,7 +2,7 @@ name: macOS Build with Intel Fortran
 
 on:
   push:
-    branches: [ feature/update-macos-github-actions ]
+    branches: [ master ]
   pull_request:
     branches: [ master ]
   workflow_dispatch:
@@ -12,6 +12,10 @@ jobs:
     # macOS 13 is the latest GitHub action runner with Intel
     # https://docs.github.com/en/actions/using-github-hosted-runners/using-github-hosted-runners/about-github-hosted-runners#standard-github-hosted-runners-for-public-repositories
     runs-on: macos-13
+
+    env:
+      JAVA_HOME: /Users/runner/hostedtoolcache/Java_Temurin-Hotspot_jdk/21.0.7-6.0/x64/Contents/Home/
+      GFORTRAN_PATH: /usr/local/Cellar/gcc/14.2.0_1/lib/gcc/14
 
     steps:
       - name: Checkout code
@@ -30,8 +34,6 @@ jobs:
 
       - name: Build main library
         run: |
-          export JAVA_HOME='/Users/runner/hostedtoolcache/Java_Temurin-Hotspot_jdk/21.0.7-6.0/x64/Contents/Home/'
-          export GFORTRAN_PATH='/usr/local/Cellar/gcc/14.2.0_1/lib/gcc/14'
           ln -sfn "$(which gfortran-14)" /usr/local/bin/gfortran
           
           echo JAVA_HOME: $JAVA_HOME
