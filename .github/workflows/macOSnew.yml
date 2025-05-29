@@ -55,7 +55,7 @@ jobs:
 #          cd test/Fortran
 #          make test
 #
-     - name: Build and run Dss-C test program
+      - name: Build and run Dss-C test program
         run: |
           cd test/Dss-C
           make test
