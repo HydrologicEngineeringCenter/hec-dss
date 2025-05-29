@@ -49,13 +49,13 @@ jobs:
         run: |
           cd test/C
           ./unix_test
-
+#
 #      - name: Build and run Fortran test programs
 #        run: |
 #          cd test/Fortran
 #          make test
 #
-#      - name: Build and run Dss-C test program
-#        run: |
-#          cd test/Dss-C
-#          make test
+     - name: Build and run Dss-C test program
+        run: |
+          cd test/Dss-C
+          make test
