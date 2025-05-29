@@ -33,12 +33,12 @@ int hec_dss_zopen(long long *ifltab, const char *dssFilename)
 	}
 
 	if (version == 6) {
-		// DSS 6 on Linux is not supported..
-#ifdef __linux__
+		// DSS 6 on Linux/MacOS is not supported..
+#if defined(__linux__) || defined(__APPLE__)
 
 	zmessageDebug(ifltab, DSS_FUNCTION_zopen_ID, "---- ERROR -------", dssFilename);
 	zmessageDebug(ifltab, DSS_FUNCTION_zopen_ID, "------------------", dssFilename);
-    zmessageDebug(ifltab, DSS_FUNCTION_zopen_ID, "DSS version 6 is not supported on Linux ", dssFilename);
+  zmessageDebug(ifltab, DSS_FUNCTION_zopen_ID, "DSS version 6 is not supported on Unix(Linux/MacOS) ", dssFilename);
 	zmessageDebug(ifltab, DSS_FUNCTION_zopen_ID, "------------------", dssFilename);
     return -123;
 #else

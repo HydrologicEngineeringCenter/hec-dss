@@ -411,7 +411,7 @@ int testCatalog()
 	}
 	
 	//  Open the file
-	if( !is_linux()){
+	if( !skip_dss6()){
 	status = hec_dss_zopen(ifltab, dssFilename);
 	if (zcheckStatus(ifltab, status, 1, "Fail in testCatalog Loc 42, zopen status ")) return status; 
 
