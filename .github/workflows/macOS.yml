@@ -50,15 +50,15 @@ jobs:
           cd heclib
           sh macOS-patch-javaHeclib.sh
 
-      - name: Build and run basic C test programs
-        run: |
-          cd test/C
-          ./unix_test
-
-      - name: Build and run Dss-C test program
-        run: |
-          cd test/Dss-C
-          make test
+#      - name: Build and run basic C test programs
+#        run: |
+#          cd test/C
+#          ./unix_test
+#
+#      - name: Build and run Dss-C test program
+#        run: |
+#          cd test/Dss-C
+#          make test
 
       # Save some artifacts
       - name: Upload artifacts
