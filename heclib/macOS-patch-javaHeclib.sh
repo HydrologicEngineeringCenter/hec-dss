@@ -51,7 +51,7 @@ cp "$LIB_DIR/libquadmath.0.dylib" "$ZIP_ROOT"
 cp "$LIB_DIR/libgcc_s.1.1.dylib" "$ZIP_ROOT"
 # Create the zip with javaHeclib as the top-level folder
 cd "$LIB_DIR"
-zip -r "javaHeclib.zip" "$ZIP_ROOT"
+zip -r "javaHeclib.zip" "javaHeclib"
 
 # Show contents for confirmation
 pwd && ls -l
