@@ -98,6 +98,6 @@ int units_issue_126();
 int current_time_testing();
 int testText();
 
-int is_linux();
+int skip_dss6();
 
 #endif
