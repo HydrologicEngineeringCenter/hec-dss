@@ -42,7 +42,13 @@ otool -L "$LIB_DIR/libquadmath.0.dylib"
 otool -L "$LIB_DIR/libgcc_s.1.1.dylib"
 
 echo "Zipping javaHeclib..."
-ZIP_PATH="$LIB_DIR/javaHeclib.zip"
+ZIP_ROOT="$LIB_DIR/javaHeclib"
+# Create a folder named javaHeclib and move patched libs into it
+mkdir -p "$ZIP_ROOT"
+mv "$LIB_DIR"/* "$ZIP_ROOT"
+# Create the zip with javaHeclib as the top-level folder
 cd "$LIB_DIR"
-zip -r "$ZIP_PATH" ./*
-pwd && ls
+zip -r "javaHeclib.zip" "javaHeclib"
+
+# Show contents for confirmation
+pwd && ls -l
