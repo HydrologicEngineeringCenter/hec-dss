@@ -19,15 +19,12 @@ cp "$GFORTRAN/libquadmath.0.dylib" "$LIB_DIR/"
 cp "$GFORTRAN/libgcc_s.1.1.dylib" "$LIB_DIR/"
 
 echo "Patching libjavaHeclib.dylib..."
-install_name_tool -id "libjavaHeclib.dylib" "$LIB_DIR/libjavaHeclib.dylib"
-install_name_tool -change "$GFORTRAN/libgfortran.5.dylib" "@loader_path/libgfortran.5.dylib" "$LIB_DIR/libjavaHeclib.dylib"
+install_name_tool -id "@rpath/libjavaHeclib.dylib" "$LIB_DIR/libjavaHeclib.dylib"
+install_name_tool -change "$GFORTRAN/libgfortran.5.dylib" "@rpath/libgfortran.dylib" "$LIB_DIR/libjavaHeclib.dylib"
+install_name_tool -add_rpath "@loader_path" "$LIB_DIR/libjavaHeclib.dylib"
 
 echo "Patching libgfortran.5.dylib..."
-install_name_tool -id "libgfortran.5.dylib" "$LIB_DIR/libgfortran.5.dylib"
-install_name_tool \
-  -change "@rpath/libquadmath.0.dylib" "@loader_path/libquadmath.0.dylib" \
-  -change "@rpath/libgcc_s.1.1.dylib" "@loader_path/libgcc_s.1.1.dylib" \
-  "$LIB_DIR/libgfortran.5.dylib"
+install_name_tool -id "@rpath/libgfortran.5.dylib" "$LIB_DIR/libgfortran.5.dylib"
 
 echo "Patching libquadmath.0.dylib..."
 install_name_tool -id "@rpath/libquadmath.0.dylib" "$LIB_DIR/libquadmath.0.dylib"
