@@ -5,14 +5,13 @@ UNAME_M := $(shell uname -m)
 
 ifeq ($(UNAME_S),Linux)
 	CWARNING=-Werror
-	FDEBUG=-fcheck=all,no-recursion
 	ifeq ($(UNAME_M),aarch64)
 		LDFLAGS1=-Wl,-z,defs
 	else
 		LDFLAGS1=-Wl,-z,defs,--wrap=powf
 		BITS=-m64
 	endif
-	CFLAGS=$(BITS) -fPIC -g -std=gnu99 $(CWARNING) $(INC_DIRS) -D__linux__ -fcommon
+	CFLAGS=$(BITS) -fPIC -O3 -std=gnu99 $(CWARNING) $(INC_DIRS) -D__linux__ -fcommon
 	LDFLAGS=$(LDFLAGS1) -lz -lrt -lgfortran -lm
 endif
 ifeq ($(UNAME_S),SunOS)
