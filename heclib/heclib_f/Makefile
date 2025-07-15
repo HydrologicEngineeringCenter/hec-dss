@@ -14,8 +14,9 @@ ifeq ($(UNAME_S),Linux)
 		FWARNINGS += -fallow-argument-mismatch
 	endif
 	FDEBUG=-fcheck=all,no-recursion
-	FRELEASE=-O3 -march=native -funroll-loops -ftree-vectorize \
-                -flto -ffast-math
+	FRELEASE=-O3
+# -march=native -funroll-loops -ftree-vectorize \
+#            -flto -ffast-math
 	FORTRAN=gfortran
 	ifneq ($(UNAME_M),aarch64)
 		BITS=-m64
