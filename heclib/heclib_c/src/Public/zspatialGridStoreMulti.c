@@ -55,7 +55,6 @@ compressOnly(long long* ifltab, zStructSpatialGrid* gridStruct,
     /* (Everything in zspatialGridStore up to but not including        */
     /*  "status = zwrite( ifltab, ztransfer );" )                      */
 
-	int status;
 	size_t count;
 	size_t len;
 	size_t total;
@@ -65,7 +64,6 @@ compressOnly(long long* ifltab, zStructSpatialGrid* gridStruct,
 	int dateStatus;
 	char dPart[MAX_PART_SIZE];
 	char ePart[MAX_PART_SIZE];
-	zStructTransfer* ztransfer;
 	void* buffer;
 	int bufsize;
 	int* internalHeader;

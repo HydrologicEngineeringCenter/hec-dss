@@ -114,8 +114,8 @@ int gridSpeedTest() {
 	long long ifltab[250] = { 0 };
 	long long ifltab2[250] = { 0 };
 
-	int status = hec_dss_zopen(ifltab, "C:\\Users\\HEC\\Downloads\\cumulusTest.dss");
-	status = hec_dss_zopen(ifltab2, "gridSpeedTest.dss");
+	int status = hec_dss_zopen(ifltab, "/home/hecadmin/code/hec-dss/test/Dss-C/cumulusTest.dss");
+	status = hec_dss_zopen(ifltab2, "gridSpeedTest2.dss");
 	if (status != 0) {
 		printf("Error during open.  status= %d\n", status);
 		return status;
@@ -158,6 +158,61 @@ int gridSpeedTest() {
 	return 0;
 }
 
+int gridSpeedTestPThreads() {
+
+	unlink("gridSpeedTest.dss");
+	long long ifltab[250] = { 0 };
+	long long ifltab2[250] = { 0 };
+
+	int status = hec_dss_zopen(ifltab, "/home/hecadmin/code/hec-dss/test/Dss-C/cumulusTest.dss");
+	status = hec_dss_zopen(ifltab2, "gridSpeedTest.dss");
+	if (status != 0) {
+		printf("Error during open.  status= %d\n", status);
+		return status;
+	}
+	char* path = "/SHG1k/Iowa50km/PRECIPITATION/26JUN2017:2300/26JUN2017:2400/AORC/";
+	if (status < 0) {
+		printf("Error during catalog.  Error code %d\n", status);
+		return status;
+	}
+	zStructSpatialGrid* gridStructRetrieve;
+
+
+	zStructCatalog *catStruct = zstructCatalogNew();
+	catStruct->boolIncludeDates = 1;
+	printf("\nreading catlog with dates catStruct->boolIncludeDates = 1");
+	status = zcatalog(ifltab, (const char*)0, catStruct, 1);
+	if (status < 0) {
+		if (zcheckStatus(ifltab, status, 1, "Fail in testCatalog Loc 4, zcatalog status ")) return status;
+	}
+	printf("\nfound %d records in catalog ", catStruct->numberPathnames);
+
+	zStructSpatialGrid** grids = (zStructSpatialGrid**)calloc(catStruct->numberPathnames, sizeof(zStructSpatialGrid*));
+	for (int i = 0; i < catStruct->numberPathnames; i++)
+	{
+		gridStructRetrieve = zstructSpatialGridNew(catStruct->pathnameList[i]);
+		status = zspatialGridRetrieve(ifltab, gridStructRetrieve, 1);
+		//zspatialGridStructFree(gridStructRetrieve);
+		if (status != STATUS_OKAY) {
+			printf("Error retrieving grid: %d", status);
+			return status;
+		}
+		grids[i] = gridStructRetrieve;
+	}
+
+	status = zspatialGridStoreMulti(ifltab2, grids, catStruct->numberPathnames, 4);
+
+	for (int i = 0; i < catStruct->numberPathnames; i++)
+	{
+		zstructFree(grids[i]);
+	}
+	free(grids);
+	zstructFree(catStruct);
+	zclose(ifltab);
+	zclose(ifltab2);
+	return 0;
+}
+
 
 int main(int argc, char* argv[])
 {
@@ -168,7 +223,16 @@ int main(int argc, char* argv[])
 	status = gridSpeedTest();
 
 	printf("\nStatus = %d", status);
-	double elapsed = (getCurrentTimeMillis() - start_time) / 1000.0;
+	long long firstTime = getCurrentTimeMillis();
+	double elapsed = (firstTime - start_time) / 1000.0;
+
+	printf("\nSeconds elapsed: %f", elapsed);
+
+	status = gridSpeedTestPThreads();
+
+	printf("\nStatus = %d", status);
+
+	elapsed = (getCurrentTimeMillis() - firstTime) / 1000.0;
 
 	printf("\nSeconds elapsed: %f", elapsed);
 

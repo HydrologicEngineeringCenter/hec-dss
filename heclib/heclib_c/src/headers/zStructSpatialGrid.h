@@ -172,6 +172,10 @@ int uncompress_zlib(const void* buffer, int size, void* data, int dataSize);
 int zspatialGridRetrieve(long long *ifltab, zStructSpatialGrid *gdStruct, int boolRetrieveData);
 int zspatialGridRetrieveVersion(long long *ifltab, const char *cpath, int* gridStructVersion);
 int zspatialGridStore(long long *ifltab, zStructSpatialGrid *gdStruct);
+int zspatialGridStoreMulti(long long* ifltab,
+	zStructSpatialGrid** grids,
+	int                  gridCount,
+	int                  maxThreads);
 void printGridStruct(long long *ifltab, int funtion_id, zStructSpatialGrid *gdStruct);
 
 #endif // zSTRUCT_SPATIAL_GRID_H
