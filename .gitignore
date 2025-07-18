@@ -152,3 +152,4 @@ heclib/Output/**
 /heclib.zip
 /hecdss.zip
 test/VB/.vs/*
+/test/Dss-C/Intel® VTune™ Profiler Results/Dss-C

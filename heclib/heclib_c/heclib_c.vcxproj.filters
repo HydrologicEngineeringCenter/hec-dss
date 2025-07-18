@@ -1308,6 +1308,9 @@
     <ClCompile Include="src\Internal\isDpartEmpty.c" />
     <ClCompile Include="src\Utilities\checks.c" />
     <ClCompile Include="src\Internal\isTsPattern.c" />
+    <ClCompile Include="zspatialGridStoreMulti.c">
+      <Filter>src\Public</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\headers\zlib\zconf.h">
@@ -1422,6 +1425,9 @@
       <Filter>src\headers</Filter>
     </ClInclude>
     <ClInclude Include="src\headers\checks.h">
+      <Filter>src\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="zspatialGridStoreMulti.h">
       <Filter>src\headers</Filter>
     </ClInclude>
   </ItemGroup>

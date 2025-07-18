@@ -436,6 +436,7 @@
     <ClCompile Include="src\Utilities\zeroFill.c" />
     <ClCompile Include="src\Utilities\zmissingFlag.c" />
     <ClCompile Include="src\Utilities\checks.c" />
+    <ClCompile Include="zspatialGridStoreMulti.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\headers\checks.h" />
@@ -476,6 +477,7 @@
     <ClInclude Include="src\headers\zStructTimeSeries.h" />
     <ClInclude Include="src\headers\zStructTransfer.h" />
     <ClInclude Include="src\headers\zStructTsTimeWindow.h" />
+    <ClInclude Include="zspatialGridStoreMulti.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{DD025A40-2426-4CCE-B43A-380466B80A9A}</ProjectGuid>
@@ -587,14 +589,14 @@
       <CallingConvention>Cdecl</CallingConvention>
       <CompileAs>CompileAsC</CompileAs>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>src\headers;src\headers\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src\headers;src\headers\zlib;C:\libs\pthreads-w32-2-9-1-release\Pre-built.2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>
       </DisableSpecificWarnings>
     </ClCompile>
     <Lib>
       <OutputFile>$(OutDir)heclib_c.lib</OutputFile>
-      <AdditionalDependencies>zlibstatic.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\..\lib\$(PlatformName)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>zlibstatic.lib;pthreadVC2.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\lib\$(PlatformName);C:\libs\pthreads-w32-2-9-1-release\Pre-built.2\lib\x64</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -633,14 +635,14 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <CompileAs>CompileAsC</CompileAs>
       <WholeProgramOptimization>false</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>src\headers;src\headers\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src\headers;src\headers\zlib;C:\libs\pthreads-w32-2-9-1-release\Pre-built.2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Lib>
       <LinkTimeCodeGeneration>true</LinkTimeCodeGeneration>
       <Verbose>true</Verbose>
-      <AdditionalDependencies>zlibstatic.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\..\lib\$(PlatformName)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>zlibstatic.lib;pthreadVC2.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\lib\$(PlatformName);C:\libs\pthreads-w32-2-9-1-release\Pre-built.2\lib\x64</AdditionalLibraryDirectories>
     </Lib>
     <ProjectReference>
       <LinkLibraryDependencies>false</LinkLibraryDependencies>

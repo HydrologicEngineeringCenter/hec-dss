@@ -1,5 +1,6 @@
 #include <string.h>
 #include <stdio.h>
+//#include <gperftools/profiler.h>
 #include "hecdss.h"
 #include "heclib.h"
 
@@ -779,6 +780,8 @@ HECDSS_API int hec_dss_gridStore(dss_file* dss, const char* pathname,
   float* data) {
 
 
+  /*ProfilerStart("C:/temp/my_grid_store.prof");*/
+
   zStructSpatialGrid* gridStruct = zstructSpatialGridNew(pathname);
   
   gridStruct->_type = gridType;
@@ -823,6 +826,8 @@ HECDSS_API int hec_dss_gridStore(dss_file* dss, const char* pathname,
   gridStruct->_rangeLimitTable = NULL;
   gridStruct->_data = NULL;
   zstructFree(gridStruct);
+
+  /*ProfilerStop();*/
   return status;
 
 

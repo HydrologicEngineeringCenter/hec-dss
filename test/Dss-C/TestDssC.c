@@ -108,12 +108,71 @@ void usage(char* exeName)
 
 }
 
+int gridSpeedTest() {
+
+	unlink("gridSpeedTest.dss");
+	long long ifltab[250] = { 0 };
+	long long ifltab2[250] = { 0 };
+
+	int status = hec_dss_zopen(ifltab, "C:\\Users\\HEC\\Downloads\\cumulusTest.dss");
+	status = hec_dss_zopen(ifltab2, "gridSpeedTest.dss");
+	if (status != 0) {
+		printf("Error during open.  status= %d\n", status);
+		return status;
+	}
+	char* path = "/SHG1k/Iowa50km/PRECIPITATION/26JUN2017:2300/26JUN2017:2400/AORC/";
+	if (status < 0) {
+		printf("Error during catalog.  Error code %d\n", status);
+		return status;
+	}
+	zStructSpatialGrid* gridStructRetrieve;
+
+
+	zStructCatalog *catStruct = zstructCatalogNew();
+	catStruct->boolIncludeDates = 1;
+	printf("\nreading catlog with dates catStruct->boolIncludeDates = 1");
+	status = zcatalog(ifltab, (const char*)0, catStruct, 1);
+	if (status < 0) {
+		if (zcheckStatus(ifltab, status, 1, "Fail in testCatalog Loc 4, zcatalog status ")) return status;
+	}
+	printf("\nfound %d records in catalog ", catStruct->numberPathnames);
+
+	for (int i = 0; i < catStruct->numberPathnames; i++)
+	{
+		gridStructRetrieve = zstructSpatialGridNew(catStruct->pathnameList[i]);
+		status = zspatialGridRetrieve(ifltab, gridStructRetrieve, 1);
+
+		status = zspatialGridStore(ifltab2, gridStructRetrieve);
+
+
+		zstructFree(gridStructRetrieve);
+		//zspatialGridStructFree(gridStructRetrieve);
+		if (status != STATUS_OKAY) {
+			printf("Error retrieving grid: %d", status);
+			return status;
+		}
+	}
+	zstructFree(catStruct);
+	zclose(ifltab);
+	zclose(ifltab2);
+	return 0;
+}
+
 
 int main(int argc, char* argv[])
 {
 
 	int status = 0;
 	long long start_time = getCurrentTimeMillis();
+
+	status = gridSpeedTest();
+
+	printf("\nStatus = %d", status);
+	double elapsed = (getCurrentTimeMillis() - start_time) / 1000.0;
+
+	printf("\nSeconds elapsed: %f", elapsed);
+
+	return status;
 
 	char* debugLevel = getenv("DSS_DEBUG_LEVEL");
 	if (debugLevel && strlen(debugLevel) > 0) {
@@ -193,9 +252,9 @@ int main(int argc, char* argv[])
 	}
 
 	printf("\nStatus = %d", status);
-	double elapsed = (getCurrentTimeMillis() - start_time) / 1000.0;
+	double elapsed2 = (getCurrentTimeMillis() - start_time) / 1000.0;
 
-	printf("\nSeconds elapsed: %f", elapsed);
+	printf("\nSeconds elapsed: %f", elapsed2);
 
 	return status;
 }
