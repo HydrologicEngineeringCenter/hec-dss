@@ -17,6 +17,7 @@
 int runTheTests();
 int renameTest();
 int test_mixed_record_types();
+int test_data_shift_during_save();
 
 
 int skip_dss6(void){
@@ -206,6 +207,11 @@ int runTheTests() {
 	char fileName7a[80];
 	char fileName6[80];
 	int status;
+
+
+	status = test_data_shift_during_save();
+	if (status != STATUS_OKAY)
+		return status;
 
 	status = test_mixed_record_types();
 	if (status != STATUS_OKAY)
@@ -1939,4 +1945,135 @@ int renameTest() {
 	printf("status = %d", status);
 	zclose(ifltab);
 	return status;
+}
+
+/*
+ * Copy a file from `src` to `dst`.  Overwrites dst if it exists.
+ * Returns  0 on success,
+ *        >0 (errno) on failure.
+ */
+int copy_file(const char* src, const char* dst)
+{
+	FILE* fsrc = fopen(src, "rb");
+	if (!fsrc) {
+		perror("fopen(src)");
+		return errno;
+	}
+
+	FILE* fdst = fopen(dst, "wb");
+	if (!fdst) {
+		perror("fopen(dst)");
+		fclose(fsrc);
+		return errno;
+	}
+
+	char buffer[8192];
+	size_t n;
+	while ((n = fread(buffer, 1, sizeof(buffer), fsrc)) > 0) {
+		if (fwrite(buffer, 1, n, fdst) != n) {
+			perror("fwrite");
+			fclose(fsrc);
+			fclose(fdst);
+			return errno;
+		}
+	}
+	if (ferror(fsrc)) {
+		perror("fread");
+	}
+
+	fclose(fsrc);
+	fclose(fdst);
+	return 0;
+}
+
+
+/*
+Builds an array of 735 doubles, each of the form :
+MMDDHH(month * 10000 + day * 100 + hour)
+starting at 2025-06-23 00:00, stepping + 1 hour each entry,
+ending at 2025-07-23 14:00.
+*/
+double* make_doubles_with_dates(int size) {
+	double* a = malloc(sizeof(double) * size);
+	if (!a) return NULL;
+
+	int m = 6, d = 23, h = 0;
+	for (int i = 0; i < size; i++) {
+		a[i] = m * 10000 + d * 100 + h;
+		h++;
+		if (h >= 24) {
+			h = 0;
+			// days in current month
+			int mdays = (m == 6 ? 30
+				: m == 7 ? 31
+				: /*not used*/ 30);
+			d++;
+			if (d > mdays) {
+				d = 1;
+				m++;
+			}
+		}
+	}
+
+	return a;
+}
+
+zStructTimeSeries* create_test_data_mark_twain(const char* pathname) {
+
+	const char* type = "INST-VAL";
+	const char* units = "ft";
+	const char* startDate = "22Jun2025";
+	const char* startTime = "2400";
+	int size = 735;
+	double* doubleValues = make_doubles_with_dates(size);
+	zStructTimeSeries* tss = zstructTsNewRegDoubles(pathname, doubleValues,size,startDate,startTime,units,type);
+	return tss;
+}
+
+
+int test_data_shift_during_save() {
+	const char* pathname = "/Salt/Mark Twain Lake/Elev//1Hour/Comp/";
+	zStructTimeSeries* markTwain = create_test_data_mark_twain(pathname);
+
+	long long ifltab[250];
+	const char* dssFilename = "working_mark_twain.dss";
+	deleteFile(dssFilename);
+
+	int storeFlagReplace = 0;
+
+	hec_dss_zopen(ifltab, dssFilename);
+	ztsStore(ifltab,markTwain, storeFlagReplace);
+
+	const char* startDate = "28Jun2025";
+	const char* startTime = "24:00";
+	const char* endDate = "06Aug2025";
+	const char* endTime = "24:00";
+
+	zStructTimeSeries* tss = zstructTsNewTimes(pathname, startDate, startTime, endDate, endTime);
+	
+	//int retrieveFlagTimeWindow = 0; // :  Adhere to time window provided and generate the time array.
+	int retrieveFlagTrim = -1; // : Trim data.Remove missing values at the beginning and end of data set(not inside),		*and generate the time array.
+
+	int retrieveFloatsFlag = 1; // Return floats
+	int retrieveDoublesFlag = 2; // Return doubles
+
+	int boolRetrieveQualityNotes = 0;
+	ztsRetrieve(ifltab, tss, retrieveFlagTrim, retrieveFloatsFlag, boolRetrieveQualityNotes);
+	
+	zStructTimeSeries* tssWrite = zstructTsClone(tss, pathname);
+	ztsStore(ifltab, tssWrite, storeFlagReplace); // overwrite the same data
+
+	// read data back in.
+	zStructTimeSeries* tssRead = zstructTsNewTimes(pathname, startDate, startTime, endDate, endTime);
+	ztsRetrieve(ifltab, tssRead, retrieveFlagTrim, retrieveDoublesFlag, boolRetrieveQualityNotes);
+	int status = compareTss(ifltab,tss, tssRead, "test_data_shift_during_save ");
+
+	zstructFree(tss);
+	zstructFree(tssWrite);
+	zstructFree(tssRead);
+	zclose(ifltab);
+	printf("Status = %d in test_data_shift_during_save",status);
+	//return status;
+	return -1;
+
 }
