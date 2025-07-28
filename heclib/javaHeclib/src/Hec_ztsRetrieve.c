@@ -73,7 +73,6 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1ztsRetrieve(
 
 
 	
-//	printf("Enter Java_hec_heclib_util_Heclib_Hec_1ztsRetrieve\n ");
 	ifltab		= (*env)->GetIntArrayElements(env, j_ifltab, 0);	
 	startDate	= (*env)->GetStringUTFChars(env, j_startDate,  0);
 	startTime	= (*env)->GetStringUTFChars(env, j_startTime,  0);
@@ -102,7 +101,7 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1ztsRetrieve(
 		//  Error out!
 		return -1;
 	}
-
+	
 	fid = (*env)->GetFieldID (env, cls, "retrieveAllTimes", "Z");
 	if ((*env)->ExceptionOccurred(env)) {
 		(*env)->ExceptionClear(env);
@@ -123,12 +122,6 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1ztsRetrieve(
 
 	//  0 is retrieve as stored; 1 is force floats, 2 force doubles
 	retrieveDoublesFlag = 0;
-	fid = (*env)->GetFieldID(env, cls, "storedAsdoubles", "Z");
-	if (fid) {
-		if (tss->sizeEachValueRead == 2) {
-			retrieveDoublesFlag = 2;
-		}
-	}
 
 	if (zmessageLevel((long long*)ifltab, MESS_METHOD_JNI_ID, MESS_LEVEL_INTERNAL_DIAG_1)) {
 		ztsMessTimeWindow((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, tss);
@@ -329,17 +322,7 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1ztsRetrieve(
 		hec_dss_jni_setStringField(env, cls, j_timeSeriesContainer, "type", tss->type);
 
 		//  Data related
-		//  Data is stored as doubles (not recommended, unless required)
-		fid = (*env)->GetFieldID (env, cls, "storedAsdoubles", "Z");
-		if (fid) {
-			if (tss->sizeEachValueRead == 2) {
-				jnumber = 1;
-			}
-			else {
-				jnumber = 0;
-			}			
-			(*env)->SetBooleanField(env, j_timeSeriesContainer, fid, (jboolean)jnumber);
-		}
+		
 
 		if (tss->numberValues > 0) {
 			//  Quality
@@ -456,6 +439,8 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1ztsRetrieve(
 			//  Data is requested as doubles, regardless of how it was stored (hopefully floats!)
 			if ((tss->floatProfileDepths == 0) && (tss->doubleProfileDepths == 0)) {
 				//  Non-profile (normal) data
+				int storedAsdoubles = tss->doubleValues ? 1 : 0;
+				hec_dss_jni_setBooleanField(env, cls,j_timeSeriesContainer, "storedAsdoubles",storedAsdoubles );
 				if (tss->floatValues) {
 					//  Convert float to doubles
 					if (zmessageLevel((long long*)ifltab, MESS_METHOD_JNI_ID, MESS_LEVEL_INTERNAL_DIAG_1)) {		
