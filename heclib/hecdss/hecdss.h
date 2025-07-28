@@ -1,4 +1,4 @@
-﻿/*
+/*
  This project (hecdss) contains code for a shared object/dll, providing an API to work with DSS files.
 
  Only DSS version 7 files are supported.  DSS version 6 files should be converted to DSS version 7
@@ -34,6 +34,7 @@ typedef struct dss_file dss_file;
 /// <returns></returns>
 HECDSS_API const char* hec_dss_api_version();
 
+HECDSS_API int hec_dss_CONSTANT_MAX_PATH_SIZE();
 
 /// <summary>
 /// use hec_dss_open to connect to a DSS file.
@@ -89,22 +90,6 @@ HECDSS_API int hec_dss_set_value(const char* name, const int value);
 HECDSS_API int hec_dss_set_string(const char* name, const char* value);
 
 
-/// <summary>
-/// Used to read the catalog of a DSS file
-/// </summary>
-/// <param name="dss">pointer to DSS file</param>
-/// <param name="pathBuffer">allocated buffer that is loaded with pathnames </param>
-/// <param name="recordTypes">output array of record types corresponding to each path</param>
-/// <param name="pathFilter">	Either null (for ignore) or a String that represents a pathname with wild characters represented
-///  by a star(*) to match any string in the pathname part.Wild characters can only be at the beginning or end of a part,
-///  not inside of a string.An example is a C part with "*Flow*", which
-///  will match all pathnames that have "Flow" anywhere in the C part, such as "Flow", "Inflow", "Outflow-Reg", etc.
-///  A part such as "Flow*Reg" is not supported. A null(//) will only match a null, where only a star (*) will match all. </param>
-/// <param name="count">number of paths that can be stored in pathBuffer, and length of recordTypes array</param>
-/// <param name="pathBufferItemSize">max allowable length of each pathname</param>
-/// <returns></returns>
-HECDSS_API int hec_dss_catalog(dss_file* dss, char* pathBuffer, int* recordTypes, const char* pathFilter,
-  const int count, const int pathBufferItemSize);
 
 
 /// <summary>
@@ -193,19 +178,6 @@ HECDSS_API int hec_dss_catalog(dss_file* dss, char* pathBuffer, int* recordTypes
   const int count, const int pathBufferItemSize);
 
 
-/// <summary>
-/// Retrive an empty time series.
-/// Used to get units and type for a time series
-/// </summary>
-/// <param name="pdss">input:pointer to dss file</param>
-/// <param name="pathname">input: path to data</param>
-/// <param name="units">output: units of this time series</param>
-/// <param name="unitsLength">input: size of units buffer</param>
-/// <param name="type">output: type of data: PER-AVER, PER-CUM,INST-VAL,INST-CUM https://www.hec.usace.army.mil/confluence/dssvuedocs/latest/introduction/time-series-conventions</param>
-/// <param name="typeLength">input: size of units buffer</param>
-/// <returns>zero on success</returns>
-HECDSS_API int hec_dss_tsRetrieveInfo(dss_file* dss, const char* pathname, char* units,
-  const int unitsLength, char* type, const int typeLength);
 
 
 /// <summary>
