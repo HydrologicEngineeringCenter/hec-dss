@@ -22,7 +22,6 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1ztsRetrieve(
 	                               
 {
 
-	const char *cpath;
 	const char *startDate;
 	const char *startTime;
 	const char *endDate;
@@ -33,7 +32,6 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1ztsRetrieve(
 	jclass cls2;
 	jfieldID fid2;
 
-    jstring j_cpath;
 	jstring jstr;
 	jintArray times;
 	jintArray quality;
@@ -50,7 +48,6 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1ztsRetrieve(
 	jobject hecTime;
 	jint jnumber;
 	jlong jlongNumber;
-	jboolean jbool;
 
 	int i, j;
 	int status;
@@ -59,11 +56,11 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1ztsRetrieve(
 	int ipos;
 	int lencnotesRead;
 	int retrieveFlag;
-	int retrieveDoublesFlag;
 	int len;
 	int boolMalloced;
 	int number;
 	char cpart[MAX_PART_SIZE];
+	char cpath[MAX_PATHNAME_SIZE] = "";
 	zStructTimeSeries *tss;
 	
 	int *ifltab;
@@ -83,16 +80,13 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1ztsRetrieve(
 
 	//  Get the pathname
 	cls = (*env)->GetObjectClass (env, j_timeSeriesContainer);
-    fid = (*env)->GetFieldID (env, cls, "fullName", "Ljava/lang/String;");
-    if (fid != 0) {
-		j_cpath = (*env)->GetObjectField(env, j_timeSeriesContainer, fid); 
-        cpath = (*env)->GetStringUTFChars(env, j_cpath,  0);		
-    }
+
+	hec_dss_jni_getStringField(env, cls, j_timeSeriesContainer, "fullName", cpath,(size_t)MAX_PATHNAME_SIZE);
+    
 	if (zmessageLevel((long long*)ifltab, MESS_METHOD_JNI_ID, MESS_LEVEL_USER_DIAG)) {
 		zmessageDebug((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "Enter Hec_ztsRetrieve; Pathname: ", cpath);
 	}
 	tss = zstructTsNewTimes(cpath, startDate, startTime, endDate, endTime); 
-	(*env)->ReleaseStringUTFChars(env, j_cpath, cpath);
 	(*env)->ReleaseStringUTFChars(env, j_startDate, startDate);
 	(*env)->ReleaseStringUTFChars(env, j_startTime, startTime);
 	(*env)->ReleaseStringUTFChars(env, j_endDate, endDate);
@@ -102,26 +96,14 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1ztsRetrieve(
 		return -1;
 	}
 	
-	fid = (*env)->GetFieldID (env, cls, "retrieveAllTimes", "Z");
-	if ((*env)->ExceptionOccurred(env)) {
-		(*env)->ExceptionClear(env);
-		tss->boolRetrieveAllTimes = 0;
+	tss->boolRetrieveAllTimes = hec_dss_jni_getBooleanField(env,cls,obj,"retrieveAllTimes",0);
+
+	if (zmessageLevel((long long*)ifltab, MESS_METHOD_JNI_ID, MESS_LEVEL_INTERNAL_DIAG_1)) {
+		zmessageDebugInt((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "Hec_ztsRetrieve; Retrieve all times set to: ", tss->boolRetrieveAllTimes);
 	}
-	else if (fid) {
-		jbool = (*env)->GetBooleanField(env, j_timeSeriesContainer, fid);
-		if (jbool) {
-			tss->boolRetrieveAllTimes = 1;			
-		}
-		else {
-			tss->boolRetrieveAllTimes = 0;
-		}
-		if (zmessageLevel((long long*)ifltab, MESS_METHOD_JNI_ID, MESS_LEVEL_INTERNAL_DIAG_1)) {
-			zmessageDebugInt((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "Hec_ztsRetrieve; Retrieve all times set to: ", tss->boolRetrieveAllTimes);
-		}
-	} 	
 
 	//  0 is retrieve as stored; 1 is force floats, 2 force doubles
-	retrieveDoublesFlag = 0;
+	int retrieveDoublesFlag = 0;
 
 	if (zmessageLevel((long long*)ifltab, MESS_METHOD_JNI_ID, MESS_LEVEL_INTERNAL_DIAG_1)) {
 		ztsMessTimeWindow((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, tss);
@@ -152,22 +134,15 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1ztsRetrieve(
 	//  Fill in the time series container with data from the time series struct
 	if (status == 0) {
 		//  Data Type (regular, irregular, profile, float, double...)
-		fid = (*env)->GetFieldID (env, cls, "dataType", "I");
-		if (fid) {
-			jnumber = (jint)tss->dataType;
-			(*env)->SetIntField(env, j_timeSeriesContainer, fid, jnumber);
-		}
+		hec_dss_jni_setIntField(env, cls, j_timeSeriesContainer, "dataType", tss->dataType);
+		
 		//  Number of values (both times, data, quality, notes, etc...)  
-		fid = (*env)->GetFieldID (env, cls, "numberValues", "I");
-		if (fid) {
-			jnumber = (jint)tss->numberValues;
-			(*env)->SetIntField(env, j_timeSeriesContainer, fid, jnumber);
-		}
+		hec_dss_jni_setIntField(env, cls, j_timeSeriesContainer, "numberValues", tss->numberValues);
+		
 		//  Time related varibles
 		//  time interval  
-		fid = (*env)->GetFieldID (env, cls, "interval", "I");
-		if (fid) {
-			 jnumber = (jint)tss->timeIntervalSeconds;
+
+			jnumber = (jint)tss->timeIntervalSeconds;
 			if (jnumber >= SECS_IN_1_MINUTE) {
 				jnumber /= SECS_IN_1_MINUTE;
 				if (zmessageLevel((long long*)ifltab, MESS_METHOD_JNI_ID, MESS_LEVEL_INTERNAL_DIAG_1)) {		
@@ -180,23 +155,15 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1ztsRetrieve(
 					zmessageDebugInt((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "ztsRetrieve.  interval in seconds: ", (int)jnumber);
 				}
 			}
-			(*env)->SetIntField(env, j_timeSeriesContainer, fid, jnumber);
-		}
-
-		if ((*env)->ExceptionOccurred(env)) {
-			(*env)->ExceptionClear(env);
-		}
-
+		hec_dss_jni_setIntField(env, cls, j_timeSeriesContainer, "interval", jnumber);
+		
 		//  timeGranularitySeconds
 		//  Number of seconds each unit in times array has, normally 60 (for one minute)
-		fid = (*env)->GetFieldID (env, cls, "timeGranularitySeconds", "I");
-		if (fid) {
-			jnumber = (jint)tss->timeGranularitySeconds;
-			if (jnumber == 0) jnumber = SECS_IN_1_MINUTE;
-			(*env)->SetIntField(env, j_timeSeriesContainer, fid, jnumber);
-			if (zmessageLevel((long long*)ifltab, MESS_METHOD_JNI_ID, MESS_LEVEL_INTERNAL_DIAG_1)) {
-				zmessageDebugInt((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "ztsRetrieve.  timeGranularitySeconds: ", (int)jnumber);
-			}
+		jnumber = (jint)tss->timeGranularitySeconds;
+		if (jnumber == 0) jnumber = SECS_IN_1_MINUTE;
+		hec_dss_jni_setIntField(env, cls, j_timeSeriesContainer, "timeGranularitySeconds", jnumber);
+		if (zmessageLevel((long long*)ifltab, MESS_METHOD_JNI_ID, MESS_LEVEL_INTERNAL_DIAG_1)) {
+			zmessageDebugInt((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "ztsRetrieve.  timeGranularitySeconds: ", (int)jnumber);
 		}
 
 		//  Set Time Array
@@ -220,13 +187,10 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1ztsRetrieve(
 		}
 
 		//  Julian Base Date (days since 01Jan1900).  Allows seconds to work and
-		fid = (*env)->GetFieldID (env, cls, "julianBaseDate", "I");
-		if (fid) {
-			jnumber = (jint)tss->julianBaseDate;
-			(*env)->SetIntField(env, j_timeSeriesContainer, fid, jnumber);
-			if (zmessageLevel((long long*)ifltab, MESS_METHOD_JNI_ID, MESS_LEVEL_INTERNAL_DIAG_1)) {		
-				zmessageDebugInt((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "ztsRetrieve.  julianBaseDate: ", (int)jnumber);
-			}
+		jnumber = (jint)tss->julianBaseDate;
+		hec_dss_jni_setIntField(env, cls, j_timeSeriesContainer, "julianBaseDate", jnumber);
+		if (zmessageLevel((long long*)ifltab, MESS_METHOD_JNI_ID, MESS_LEVEL_INTERNAL_DIAG_1)) {		
+			zmessageDebugInt((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "ztsRetrieve.  julianBaseDate: ", (int)jnumber);
 		}
 
 		fid = (*env)->GetFieldID(env, cls, "startHecTime", "Lhec/heclib/util/HecTime;");

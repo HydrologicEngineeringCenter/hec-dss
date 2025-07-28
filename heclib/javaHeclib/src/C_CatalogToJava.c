@@ -31,7 +31,6 @@ void C_CatalogToJava(
 	jlongArray lastWriteTimeRecord;
 	jlongArray pathnameHash;
 	jstring jpathname;
-	jstring jstr;
 	jsize size;
 	jobjectArray stringArray;
 	jclass stringClass;
