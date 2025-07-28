@@ -28,9 +28,7 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1ztsRetrieve(
 	const char *endTime;
 
 	jclass cls;
-    jfieldID fid;
-	jclass cls2;
-	jfieldID fid2;
+  jfieldID fid;
 
 	jstring jstr;
 	jintArray times;
@@ -45,7 +43,6 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1ztsRetrieve(
 	jobjectArray doubleDim;	
 	jobjectArray doubleIntDim;
 	jobjectArray stringArray;
-	jobject hecTime;
 	jint jnumber;
 	jlong jlongNumber;
 
@@ -177,48 +174,14 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1ztsRetrieve(
 			}
 			(*env)->DeleteLocalRef(env, times);
 		}
-		else {
-			//  Java stuff always wants times!
-//			size = (jsize)tss->numberValues;
-//			times = (*env)->NewIntArray(env, size);
-//			for (i=0; i<tss->numberValues; i++) {
-//				times[i] = (jint)tss->startTimeSeconds;
-//			}
-		}
 
 		//  Julian Base Date (days since 01Jan1900).  Allows seconds to work and
-		jnumber = (jint)tss->julianBaseDate;
-		hec_dss_jni_setIntField(env, cls, j_timeSeriesContainer, "julianBaseDate", jnumber);
+		hec_dss_jni_setIntField(env, cls, j_timeSeriesContainer, "julianBaseDate", tss->julianBaseDate);
 		if (zmessageLevel((long long*)ifltab, MESS_METHOD_JNI_ID, MESS_LEVEL_INTERNAL_DIAG_1)) {		
-			zmessageDebugInt((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "ztsRetrieve.  julianBaseDate: ", (int)jnumber);
+			zmessageDebugInt((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "ztsRetrieve.  julianBaseDate: ", tss->julianBaseDate);
 		}
 
-		fid = (*env)->GetFieldID(env, cls, "startHecTime", "Lhec/heclib/util/HecTime;");
-		if ((*env)->ExceptionOccurred(env)) {
-			(*env)->ExceptionClear(env);
-			fid = 0;
-		}
-		if (fid) {
-			hecTime = (*env)->GetObjectField(env, j_timeSeriesContainer, fid);
-			if (hecTime) {
-				cls2 = (*env)->GetObjectClass(env, hecTime);
-				if (cls2) {
-					fid2 = (*env)->GetFieldID(env, cls2, "_julian", "I");
-					if (fid2) {
-						jnumber = (jint)tss->startJulianDate;
-						(*env)->SetIntField(env, hecTime, fid2, jnumber);
-					}
-					fid2 = (*env)->GetFieldID(env, cls2, "_secondsSinceMidnight", "I");
-					if (fid2) {
-						jnumber = (jint)tss->startTimeSeconds;
-						(*env)->SetIntField(env, hecTime, fid2, jnumber);
-					}					
-				}
-			}
-		}
-		else {
-			//  This is okay; for older Java code without extended dates
-		}
+		hec_dss_jni_updateHecTime(env, cls, j_timeSeriesContainer, "startHecTime", tss);
 
 		fid = (*env)->GetFieldID(env, cls, "startTime", "I");
 		if (fid) {
@@ -237,32 +200,8 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1ztsRetrieve(
 			}
 		}
 
-		fid = (*env)->GetFieldID(env, cls, "endHecTime", "Lhec/heclib/util/HecTime;");
-		if ((*env)->ExceptionOccurred(env)) {
-			(*env)->ExceptionClear(env);
-			fid = 0;
-		}
-		if (fid) {
-			hecTime = (*env)->GetObjectField(env, j_timeSeriesContainer, fid);
-			if (hecTime) {
-				cls2 = (*env)->GetObjectClass(env, hecTime);
-				if (cls2) {
-					fid2 = (*env)->GetFieldID(env, cls2, "_julian", "I");
-					if (fid2) {
-						jnumber = (jint)tss->endJulianDate;
-						(*env)->SetIntField(env, hecTime, fid2, jnumber);
-					}
-					fid2 = (*env)->GetFieldID(env, cls2, "_secondsSinceMidnight", "I");
-					if (fid2) {
-						jnumber = (jint)tss->endTimeSeconds;
-						(*env)->SetIntField(env, hecTime, fid2, jnumber);
-					}
-				}
-			}
-		}
-		else {
-			//  This is okay; for older Java code without extended dates
-		}
+		hec_dss_jni_updateHecTime(env, cls, j_timeSeriesContainer, "endHecTime", tss);
+
 
 		fid = (*env)->GetFieldID(env, cls, "endTime", "I");
 		if (fid) {
@@ -286,7 +225,6 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1ztsRetrieve(
 		hec_dss_jni_setStringField(env, cls, j_timeSeriesContainer, "type", tss->type);
 
 		//  Data related
-		
 
 		if (tss->numberValues > 0) {
 			//  Quality

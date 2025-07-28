@@ -115,3 +115,29 @@ void hec_dss_jni_setIntField(JNIEnv* env, jclass cls, jobject obj, const char* n
 		(*env)->SetIntField(env, obj, fid, value);
 	}
 }
+
+/// <summary>
+/// Updates a HecTime _julian and _secondsSinceMidnight integer properties
+/// </summary>
+/// <param name="env"></param>
+/// <param name="tscClass">TimeSeriesContainer class</param>
+/// <param name="tscObject">TimeSeriesContainer object</param>
+/// <param name="name">name of HecTime field in TimeSeriesContainer</param>
+/// <param name="tss">zStructTimeSeries that has details to save into the HecTime instance</param>
+void hec_dss_jni_updateHecTime(JNIEnv* env, jclass tscClass, jobject tscObject, const char* name, zStructTimeSeries* tss) {
+	jfieldID fid = (*env)->GetFieldID(env, tscClass, name, "Lhec/heclib/util/HecTime;");
+	if ((*env)->ExceptionOccurred(env)) {
+		fprintf(stderr, "Error finding object name '%s' in hec_dss_jni_updateHecTime\n", name);
+		(*env)->ExceptionClear(env);
+		return;
+	}
+		jobject hecTime = (*env)->GetObjectField(env, tscObject, fid);
+		if (hecTime) {
+			jclass hecTimeClass = (*env)->GetObjectClass(env, hecTime);
+			if (hecTimeClass) {
+				hec_dss_jni_setIntField(env, hecTimeClass, hecTime, "_julian", tss->startJulianDate);
+				hec_dss_jni_setIntField(env, hecTimeClass, hecTime, "_secondsSinceMidnight", tss->startTimeSeconds);
+			}
+		}
+}
+

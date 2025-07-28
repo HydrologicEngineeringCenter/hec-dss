@@ -1,6 +1,6 @@
 #pragma once
 #include <jni.h>
-
+#include "heclib.h"
 /*
 
  *  Java Type       JNI Type         Signature     C Type (under the hood)
@@ -86,8 +86,8 @@ void hec_dss_jni_getStringField(JNIEnv* env, jclass cls, jobject obj, const char
 /// <param name="default">default value if a error occures</param>
 int hec_dss_jni_getBooleanField(JNIEnv* env, jclass cls, jobject obj, const char* name, int defaultValue);
 
-
-
 void hec_dss_jni_setBooleanField(JNIEnv* env, jclass cls, jobject obj, const char* name, int value);
 
 void hec_dss_jni_setIntField(JNIEnv* env, jclass cls, jobject obj, const char* name, int value);
+
+void hec_dss_jni_updateHecTime(JNIEnv* env, jclass tscClass, jobject tscObject, const char* name, zStructTimeSeries* tss);
