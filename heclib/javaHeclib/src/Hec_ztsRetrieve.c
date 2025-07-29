@@ -93,7 +93,7 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1ztsRetrieve(
 		return -1;
 	}
 	
-	tss->boolRetrieveAllTimes = hec_dss_jni_getBooleanField(env,cls,obj,"retrieveAllTimes",0);
+	tss->boolRetrieveAllTimes = hec_dss_jni_getBooleanField(env,cls,j_timeSeriesContainer,"retrieveAllTimes",0);
 
 	if (zmessageLevel((long long*)ifltab, MESS_METHOD_JNI_ID, MESS_LEVEL_INTERNAL_DIAG_1)) {
 		zmessageDebugInt((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "Hec_ztsRetrieve; Retrieve all times set to: ", tss->boolRetrieveAllTimes);

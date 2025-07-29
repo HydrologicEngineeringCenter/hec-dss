@@ -164,7 +164,7 @@ void hec_dss_jni_setIntTimeField(JNIEnv* env, jclass tscClass, jobject tscObj,
 		}
 
 		// Set the field value
-		(*env)->SetIntField(env, tscClass, fid, (jint)value);
+		(*env)->SetIntField(env, tscObj, fid, (jint)value);
 
 	}
 }
