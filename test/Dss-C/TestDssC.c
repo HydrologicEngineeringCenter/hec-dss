@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <errno.h>
 #if defined(__linux__) || defined(__APPLE__) || defined(__sparc)
 #include <unistd.h>
 #else
@@ -2032,7 +2033,6 @@ zStructTimeSeries* create_test_data_mark_twain(const char* pathname) {
 
 
 int test_data_shift_during_save() {
-	return 0;
 	const char* pathname = "/Salt/Mark Twain Lake/Elev//1Hour/Comp/";
 	zStructTimeSeries* markTwain = create_test_data_mark_twain(pathname);
 
