@@ -845,45 +845,33 @@ int ztsRegStoreBlock(long long *ifltab, zStructTimeSeries *tss, const char *path
 			&& dataType == DATA_TYPE_RTS
 			&& tss->floatValues
 			&& tss->doubleValues == NULL) {
+			int oldINT_HEAD_valueSize = internalHeader[INT_HEAD_valueSize];
+			int oldINT_HEAD_valueElementSize = internalHeader[INT_HEAD_valueElementSize];
+
+			internalHeader[INT_HEAD_valueSize] = 2;
+			internalHeader[INT_HEAD_valueElementSize] = 2;
 			// Support writing floats into a double record (calling ztsStore recursively) 
-
-			zStructTimeSeries* tsClone = zstructTsClone(tss, pathname);
-
-			long divisor = (SECS_IN_1_DAY / tsClone->timeIntervalSeconds);
-			if (tsClone->timeIntervalSeconds > SECS_IN_1_DAY) {
-				divisor = 1;
-			}
-			
-			tsClone->startJulianDate = julianBlockDate + (blockStartPosition / divisor);
-
-
-			tsClone->startTimeSeconds = (blockStartPosition + 1) * tsClone->timeIntervalSeconds % SECS_IN_1_DAY;
-			if (tss->timeIntervalSeconds >= SECS_IN_1_DAY) { 
-
-				incrementTime(intervalSeconds, 0, julianFirstValue,
-					secondsFirstValue - intervalSeconds + tss->timeOffsetSeconds,
-					&tsClone->startJulianDate, &tsClone->startTimeSeconds);
-			}
-
-			free(tsClone->floatValues);
-			tsClone->floatValues = NULL;
-
-			tsClone->doubleValues = calloc(numberToStore, sizeof(double));
-			tsClone->allocated[zSTRUCT_TS_doubleValues] = 1;
-			tsClone->dataType = DATA_TYPE_RTD;
-			tsClone->numberValues = numberToStore;
-			if (tsClone->doubleValues) {
-				convertDataArray((void*)&values[ipos], (void*)tsClone->doubleValues, numberToStore, 1, 2);
-
-				status = ztsStore(ifltab, tsClone, storageFlag);
-				zstructFree(tsClone);
-			}
-			else
-			{
+			double* dblValues = (double*)calloc(numberToStore, sizeof(double));
+			if (!dblValues) {
 				if (zmessageLevel(ifltab, MESS_METHOD_TS_WRITE_ID, MESS_LEVEL_INTERNAL_DIAG_1)) {
 					zmessageDebug(ifltab, DSS_FUNCTION_ztsRegStoreBlock_ID, "Memory Error storing ", pathname);
 				}
 			}
+			convertDataArray((void*)&values[ipos], (void*)dblValues, numberToStore, 1, 2);
+			status = ztsWriteBlock(ifltab, tss, pathname,
+				&ival, 0, numberToStore,
+				(int*)dblValues, 2,
+				quality, qualityElementSize,
+				notes, inoteElementSize,
+				cnotesToStore, cnotesToStoreLen,
+				profileDepths, profileDepthsSize,
+				internalHeader,
+				userHeader, userHeaderNumber,
+				0, numberInBlock,
+				DATA_TYPE_RTD);
+			free(dblValues);
+			internalHeader[INT_HEAD_valueSize] = oldINT_HEAD_valueSize;
+			internalHeader[INT_HEAD_valueElementSize] = oldINT_HEAD_valueElementSize;
 		}
 		else {
 			status = ztsWriteBlock(ifltab, tss, pathname,
