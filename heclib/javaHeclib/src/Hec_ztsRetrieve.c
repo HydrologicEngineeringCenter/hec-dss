@@ -181,43 +181,24 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1ztsRetrieve(
 			zmessageDebugInt((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "ztsRetrieve.  julianBaseDate: ", tss->julianBaseDate);
 		}
 
-		hec_dss_jni_updateHecTime(env, cls, j_timeSeriesContainer, "startHecTime", tss);
+		hec_dss_jni_updateHecTime(env, cls, j_timeSeriesContainer, "startHecTime", tss->startJulianDate,tss->startTimeSeconds);
 
-		fid = (*env)->GetFieldID(env, cls, "startTime", "I");
-		if (fid) {
-			idate = tss->startJulianDate - tss->julianBaseDate;
-			itime = tss->startTimeSeconds;
-			if (tss->timeGranularitySeconds == MINUTE_GRANULARITY) {
-				itime /= SECS_IN_1_MINUTE;
-				jnumber = (jint)((idate * MINS_IN_1_DAY) + itime);
-			}
-			else {
-				jnumber = (jint)((idate * SECS_IN_1_DAY) + itime);
-			}
-			(*env)->SetIntField(env, j_timeSeriesContainer, fid, jnumber);
-			if (zmessageLevel((long long*)ifltab, MESS_METHOD_JNI_ID, MESS_LEVEL_INTERNAL_DIAG_1)) {
-				zmessageDebugInt((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "ztsRetrieve.  startTime: ", (int)jnumber);
-			}
+		idate = tss->startJulianDate - tss->julianBaseDate;
+		itime = tss->startTimeSeconds;
+		hec_dss_jni_setIntTimeField(env,cls,j_timeSeriesContainer,"startTime",idate, itime, tss->timeGranularitySeconds);
+
+		if (zmessageLevel((long long*)ifltab, MESS_METHOD_JNI_ID, MESS_LEVEL_INTERNAL_DIAG_1)) {
+			zmessageDebugInt((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "ztsRetrieve.  startTime: ", (int)jnumber);
 		}
 
-		hec_dss_jni_updateHecTime(env, cls, j_timeSeriesContainer, "endHecTime", tss);
+		hec_dss_jni_updateHecTime(env, cls, j_timeSeriesContainer, "endHecTime", tss->endJulianDate,tss->endTimeSeconds);
 
+		idate = tss->endJulianDate - tss->julianBaseDate;
+		itime = tss->endTimeSeconds;
+		hec_dss_jni_setIntTimeField(env, cls, j_timeSeriesContainer, "endTime", idate, itime, tss->timeGranularitySeconds);
 
-		fid = (*env)->GetFieldID(env, cls, "endTime", "I");
-		if (fid) {
-			idate = tss->endJulianDate - tss->julianBaseDate;
-			itime = tss->endTimeSeconds;
-			if (tss->timeGranularitySeconds == MINUTE_GRANULARITY) {
-				itime /= SECS_IN_1_MINUTE;
-				jnumber = (jint)((idate * MINS_IN_1_DAY) + itime);
-			}
-			else {
-				jnumber = (jint)((idate * SECS_IN_1_DAY) + itime);
-			}
-			(*env)->SetIntField(env, j_timeSeriesContainer, fid, jnumber);
-			if (zmessageLevel((long long*)ifltab, MESS_METHOD_JNI_ID, MESS_LEVEL_INTERNAL_DIAG_1)) {
-				zmessageDebugInt((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "ztsRetrieve.  endTime: ", (int)jnumber);
-			}
+		if (zmessageLevel((long long*)ifltab, MESS_METHOD_JNI_ID, MESS_LEVEL_INTERNAL_DIAG_1)) {
+			zmessageDebugInt((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "ztsRetrieve.  endTime: ", (int)jnumber);
 		}
 
 		// Set the units and type 
@@ -242,10 +223,8 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1ztsRetrieve(
 					}
 				}
 				else if (size > 1) {
-					fid = (*env)->GetFieldID (env, cls, "sizeEachQuality7", "I");
-					if (fid) {
-						(*env)->SetIntField(env, j_timeSeriesContainer, fid, size);
-					}				
+					hec_dss_jni_setIntField(env, cls, j_timeSeriesContainer, "sizeEachQuality7", size);
+
 					intArrayClass = (*env)->FindClass(env, "[I");
 					doubleIntDim = (*env)->NewObjectArray(env, jnumber, intArrayClass, 0);				
 					for (i=0; i<tss->numberValues; i++) {
@@ -283,13 +262,8 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1ztsRetrieve(
 					}
 				}
 				else if (size > 1) {
-					fid = (*env)->GetFieldID (env, cls, "sizeEachNote", "I");
-					if ((*env)->ExceptionOccurred(env)) {
-							(*env)->ExceptionClear(env);			
-					}
-					else if (fid) {
-						(*env)->SetIntField(env, j_timeSeriesContainer, fid, size);
-					}				
+					hec_dss_jni_setIntField(env, cls, j_timeSeriesContainer, "sizeEachNote", size);
+					
 					intArrayClass = (*env)->FindClass(env, "[I");
 					doubleIntDim = (*env)->NewObjectArray(env, jnumber, intArrayClass, 0);				
 					for (i=0; i<tss->numberValues; i++) {
@@ -379,14 +353,8 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1ztsRetrieve(
 				if (zmessageLevel((long long*)ifltab, MESS_METHOD_JNI_ID, MESS_LEVEL_INTERNAL_DIAG_1)) {		
 					zmessageDebugInt((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "ztsRetrieve.  Data is profile data, number depths: ", tss->profileDepthsNumber);
 				}
-				fid = (*env)->GetFieldID (env, cls, "numberDepths", "I");
-				if ((*env)->ExceptionOccurred(env)) {
-						(*env)->ExceptionClear(env);			
-				}
-				else if (fid) {
-					jnumber = (jint)tss->profileDepthsNumber;
-					(*env)->SetIntField(env, j_timeSeriesContainer, fid, jnumber);
-				}
+				hec_dss_jni_setIntField(env, cls, j_timeSeriesContainer, "numberDepths", tss->profileDepthsNumber);
+				
 				if (!tss->doubleProfileDepths && !tss->floatProfileDepths) {
 					//   No profile data?
 					return -1;
@@ -463,16 +431,7 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1ztsRetrieve(
 		}
 
 		//  Precision
-		fid = (*env)->GetFieldID (env, cls, "precision", "I");
-		if ((*env)->ExceptionOccurred(env)) {
-			(*env)->ExceptionClear(env);
-		}
-		else { 
-			if (fid) {
-				jnumber = (jint)tss->precision;
-				(*env)->SetIntField(env, j_timeSeriesContainer, fid, jnumber);
-			}
-		}
+		hec_dss_jni_setIntField(env, cls, j_timeSeriesContainer, "precision", tss->precision);
 
 		//  Time zone
 		hec_dss_jni_setStringField(env, cls, j_timeSeriesContainer, "timeZoneID", tss->timeZoneName);
@@ -517,24 +476,11 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1ztsRetrieve(
 		}
 
 		//  Last write time
-		fid = (*env)->GetFieldID (env, cls, "lastWriteTimeMillis", "J");
-		if ((*env)->ExceptionOccurred(env)) {
-			(*env)->ExceptionClear(env);			
-		}
-		else if (fid) {
-			jlongNumber = (jlong)tss->lastWrittenTime;
-			(*env)->SetLongField(env, j_timeSeriesContainer, fid, jlongNumber);
-		}
-
+		hec_dss_jni_setLongField(env, cls, j_timeSeriesContainer, "lastWriteTimeMillis", tss->lastWrittenTime);
+		
 		//  File last write time
-		fid = (*env)->GetFieldID (env, cls, "fileLastWriteTimeMillis", "J");
-		if ((*env)->ExceptionOccurred(env)) {
-			(*env)->ExceptionClear(env);			
-		}
-		else if (fid) {
-			jlongNumber = (jlong)tss->fileLastWrittenTime;
-			(*env)->SetLongField(env, j_timeSeriesContainer, fid, jlongNumber);
-		}
+		hec_dss_jni_setLongField(env, cls, j_timeSeriesContainer, "fileLastWriteTimeMillis", tss->fileLastWrittenTime);
+		
 
 		if (tss->locationStruct) {						
 			Hec_zlocationFromStruct(env, obj, j_timeSeriesContainer, tss->locationStruct);

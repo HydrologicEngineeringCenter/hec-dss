@@ -124,7 +124,8 @@ void hec_dss_jni_setIntField(JNIEnv* env, jclass cls, jobject obj, const char* n
 /// <param name="tscObject">TimeSeriesContainer object</param>
 /// <param name="name">name of HecTime field in TimeSeriesContainer</param>
 /// <param name="tss">zStructTimeSeries that has details to save into the HecTime instance</param>
-void hec_dss_jni_updateHecTime(JNIEnv* env, jclass tscClass, jobject tscObject, const char* name, zStructTimeSeries* tss) {
+void hec_dss_jni_updateHecTime(JNIEnv* env, jclass tscClass, jobject tscObject, 
+	                             const char* name, int julian, int seconds) {
 	jfieldID fid = (*env)->GetFieldID(env, tscClass, name, "Lhec/heclib/util/HecTime;");
 	if ((*env)->ExceptionOccurred(env)) {
 		fprintf(stderr, "Error finding object name '%s' in hec_dss_jni_updateHecTime\n", name);
@@ -135,9 +136,47 @@ void hec_dss_jni_updateHecTime(JNIEnv* env, jclass tscClass, jobject tscObject, 
 		if (hecTime) {
 			jclass hecTimeClass = (*env)->GetObjectClass(env, hecTime);
 			if (hecTimeClass) {
-				hec_dss_jni_setIntField(env, hecTimeClass, hecTime, "_julian", tss->startJulianDate);
-				hec_dss_jni_setIntField(env, hecTimeClass, hecTime, "_secondsSinceMidnight", tss->startTimeSeconds);
+				hec_dss_jni_setIntField(env, hecTimeClass, hecTime, "_julian", julian);
+				hec_dss_jni_setIntField(env, hecTimeClass, hecTime, "_secondsSinceMidnight", seconds);
 			}
 		}
 }
 
+void hec_dss_jni_setIntTimeField(JNIEnv* env, jclass tscClass, jobject tscObj,
+	const char* name, int idate, int itime, int timeGranularitySeconds) {
+	jfieldID fid = (*env)->GetFieldID(env, tscClass, name, "I");
+	if ((*env)->ExceptionOccurred(env)) { // field may not exist
+		fprintf(stderr, "Error finding field name '%s' in JNI setIntTimeField\n", name);
+		(*env)->ExceptionClear(env);
+		return;
+	}
+
+	if (fid) {
+		int value;
+
+		// Calculate the time value based on granularity
+		if (timeGranularitySeconds == MINUTE_GRANULARITY) {
+			itime /= SECS_IN_1_MINUTE;
+			value = (idate * MINS_IN_1_DAY) + itime;
+		}
+		else {
+			value = (idate * SECS_IN_1_DAY) + itime;
+		}
+
+		// Set the field value
+		(*env)->SetIntField(env, tscClass, fid, (jint)value);
+
+	}
+}
+	void hec_dss_jni_setLongField(JNIEnv * env, jclass cls, jobject obj, const char* name, long long value) {
+		jfieldID fid = (*env)->GetFieldID(env, cls, name, "J");
+		if ((*env)->ExceptionOccurred(env)) { // field may not exist
+			fprintf(stderr, "Error finding field name '%s' in hec_dss_jni_setLongField\n", name);
+			(*env)->ExceptionClear(env);
+			return;
+		}
+
+		if (fid) {
+			(*env)->SetLongField(env, obj, fid,(jlong) value);
+		}
+}

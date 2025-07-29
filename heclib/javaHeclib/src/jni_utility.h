@@ -90,4 +90,8 @@ void hec_dss_jni_setBooleanField(JNIEnv* env, jclass cls, jobject obj, const cha
 
 void hec_dss_jni_setIntField(JNIEnv* env, jclass cls, jobject obj, const char* name, int value);
 
-void hec_dss_jni_updateHecTime(JNIEnv* env, jclass tscClass, jobject tscObject, const char* name, zStructTimeSeries* tss);
+void hec_dss_jni_updateHecTime(JNIEnv* env, jclass tscClass, jobject tscObject, const char* name, int julian, int seconds);
+void hec_dss_jni_setIntTimeField(JNIEnv* env, jclass cls, jobject obj,
+  const char* name, int idate, int itime, int timeGranularitySeconds);
+
+void hec_dss_jni_setLongField(JNIEnv* env, jclass cls, jobject obj, const char* name, long long value);
