@@ -296,61 +296,6 @@ int ztsIrregStoreBlock(long long *ifltab, zStructTimeSeries *tss, const char *pa
 
 	long long *info;
 
-	zStructRecordBasics* rb = zstructRecordBasicsNew(pathname);
-	status = zgetRecordBasics(ifltab, rb);
-
-	int recordType = rb->recordType;
-	zstructFree(rb);
-	if (status == STATUS_RECORD_FOUND && recordType == DATA_TYPE_ITD
-		&& dataType == DATA_TYPE_ITS
-		&& tss->floatValues
-		&& tss->doubleValues == NULL) {
-		// Support writing floats into a double record (calling ztsStore recursively) 
-
-		zStructTimeSeries* tsClone = zstructTsClone(tss, pathname);
-
-		free(tsClone->floatValues);
-		tsClone->floatValues = NULL;
-		tsClone->doubleValues = calloc(numberToStore, sizeof(double));
-		int memoryError = 0;
-		if (tsClone->doubleValues) {
-			tsClone->allocated[zSTRUCT_TS_doubleValues] = 1;
-			tsClone->dataType = DATA_TYPE_ITD;
-			convertDataArray((void*)valuesToStore, (void*)tsClone->doubleValues, numberToStore, 1, 2);
-			tsClone->numberValues = numberToStore;
-			free(tsClone->times);
-			tsClone->times = calloc(numberToStore, sizeof(int));
-
-			if (tsClone->times) {
-				for (size_t i = 0; i < numberToStore; i++)
-				{
-					if (blockSize == 5) {
-						tsClone->times[i] = timesToStore[i] + julianStartBlockDate * 1440;
-					}
-					else {
-						tsClone->times[i] = (julianStartBlockDate * (86400 / tsClone->timeGranularitySeconds)) + (timesToStore[i] / tsClone->timeGranularitySeconds);
-					}
-				}
-				status = ztsStore(ifltab, tsClone, storageFlag);
-			}
-			else {
-				memoryError = 1;
-				status = STATUS_NOT_OKAY;
-			}
-			zstructFree(tsClone);
-		}
-		else {
-			memoryError = 1;
-			status = STATUS_NOT_OKAY;
-		}
-		if (memoryError) {
-			if (zmessageLevel(ifltab, MESS_METHOD_TS_WRITE_ID, MESS_LEVEL_INTERNAL_DIAG_1)) {
-				zmessageDebug(ifltab, DSS_FUNCTION_ztsIrregStoreBlock_ID, "Memory Error storing ", pathname);
-			}
-		}
-		return status;
-	}
-
 
 	if (zmessageLevel(ifltab, MESS_METHOD_TS_WRITE_ID, MESS_LEVEL_USER_DIAG)) {
 		zmessageDebug(ifltab, DSS_FUNCTION_ztsIrregStoreBlock_ID, "Enter, Pathname: ", pathname);

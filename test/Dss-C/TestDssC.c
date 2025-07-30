@@ -18,7 +18,7 @@
 int runTheTests();
 int renameTest();
 int test_mixed_record_types();
-int test_data_shift_during_save();
+int test_data_shift_during_save(int regular);
 
 
 int skip_dss6(void){
@@ -210,7 +210,11 @@ int runTheTests() {
 	int status;
 
 
-	status = test_data_shift_during_save();
+	status = test_data_shift_during_save(0);
+	if (status != STATUS_OKAY)
+		return status;
+
+	status = test_data_shift_during_save(1);
 	if (status != STATUS_OKAY)
 		return status;
 
@@ -2019,7 +2023,7 @@ double* make_doubles_with_dates(int size) {
 	return a;
 }
 
-zStructTimeSeries* create_test_data_mark_twain(const char* pathname) {
+zStructTimeSeries* create_test_data_mark_twain(const char* pathname, int regular) {
 
 	const char* type = "INST-VAL";
 	const char* units = "ft";
@@ -2027,15 +2031,33 @@ zStructTimeSeries* create_test_data_mark_twain(const char* pathname) {
 	const char* startTime = "2400";
 	int size = 735;
 	double* doubleValues = make_doubles_with_dates(size);
-	zStructTimeSeries* tss = zstructTsNewRegDoubles(pathname, doubleValues,size,startDate,startTime,units,type);
+	zStructTimeSeries* tss;
+	if (regular) {
+		tss = zstructTsNewRegDoubles(pathname, doubleValues, size, startDate, startTime, units, type);
+	}
+	else
+	{
+		int* times = (int*)malloc(size * sizeof(int));
+		int julian = dateToJulian(startDate);
+		for (size_t i = 0; i < size; i++)
+		{
+			times[i] = i * 60 + julian;
+		}
+		tss = zstructTsNewIrregDoubles(pathname, doubleValues, size, times, 60, startDate, units, type);
+		tss->allocated[zSTRUCT_TS_times] = 1;
+	}
 	return tss;
+
 }
 
+int test_data_shift_during_save(int regular) {
 
-int test_data_shift_during_save() {
-	
-	const char* pathname = "/Salt/Mark Twain Lake/Elev//1Hour/Comp/";
-	zStructTimeSeries* markTwain = create_test_data_mark_twain(pathname);
+	const char* regularPathname = "/Salt/Mark Twain Lake/Elev//1Hour/Comp/";
+	const char* irregularPathname = "/Salt/Mark Twain Lake/Elev//IR-Month/Comp/";
+
+	const char* pathname = regular ? regularPathname : irregularPathname;
+
+	zStructTimeSeries* markTwain = create_test_data_mark_twain(pathname, regular);
 
 	long long ifltab[250];
 	const char* dssFilename = "working_mark_twain.dss";
