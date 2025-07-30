@@ -477,20 +477,61 @@ int ztsStoreIrreg7(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 			kpos = currentPosition * tss->inoteElementSize;
 			npos = tss->cnotesLengthTotal - lengthCNotesRemaining;
 
-			status = ztsIrregStoreBlock(ifltab, tss, path,
-				buffer, bufferControl,
-				numberToStore, itimes,
-				&values[ipos], valueSize, valueElementSize,
-				&tss->quality[jpos], tss->qualityElementSize,
-				&tss->inotes[kpos], tss->inoteElementSize,
-				&tss->cnotes[npos], lengthCNotesRemaining, &lengthCNotesRemaining,
-				profileDepths, profileDepthsSize, profileDepthsNumber,
-				internalHeader,
-				tss->userHeader, tss->userHeaderNumber,
-				julianBlockDate, julianNextBlockDate, blockSize,
-				boolFromStartOfBlock, boolToEndOfBlock,
-				storageFlag, boolReadBlock, dataType);
+			zStructRecordBasics* rb = zstructRecordBasicsNew(path);
+			status = zgetRecordBasics(ifltab, rb);
+			int recordType = rb->recordType;
+			zstructFree(rb);
 
+			if (status == STATUS_RECORD_FOUND && recordType == DATA_TYPE_ITD
+				&& dataType == DATA_TYPE_ITS
+				&& tss->floatValues
+				&& tss->doubleValues == NULL) {
+				// Support writing floats into a double record
+				double* dblValues = (double*)calloc(numberToStore, sizeof(double));
+				if (!dblValues) {
+					if (zmessageLevel(ifltab, MESS_METHOD_TS_WRITE_ID, MESS_LEVEL_INTERNAL_DIAG_1)) {
+						zmessageDebug(ifltab, DSS_FUNCTION_ztsRegStoreBlock_ID, "Memory Error storing ", path);
+					}
+				}
+				int oldINT_HEAD_valueSize = internalHeader[INT_HEAD_valueSize];
+				int oldINT_HEAD_valueElementSize = internalHeader[INT_HEAD_valueElementSize];
+
+				internalHeader[INT_HEAD_valueSize] = 2;
+				internalHeader[INT_HEAD_valueElementSize] = 2;
+
+				convertDataArray((void*)&values[ipos], (void*)dblValues, numberToStore, 1, 2);
+				status = ztsIrregStoreBlock(ifltab, tss, path,
+					buffer, bufferControl,
+					numberToStore, itimes,
+					(int*)dblValues, 2, 2,
+					&tss->quality[jpos], tss->qualityElementSize,
+					&tss->inotes[kpos], tss->inoteElementSize,
+					&tss->cnotes[npos], lengthCNotesRemaining, &lengthCNotesRemaining,
+					profileDepths, profileDepthsSize, profileDepthsNumber,
+					internalHeader,
+					tss->userHeader, tss->userHeaderNumber,
+					julianBlockDate, julianNextBlockDate, blockSize,
+					boolFromStartOfBlock, boolToEndOfBlock,
+					storageFlag, boolReadBlock, DATA_TYPE_ITD);
+				free(dblValues);
+				internalHeader[INT_HEAD_valueSize] = oldINT_HEAD_valueSize;
+				internalHeader[INT_HEAD_valueElementSize] = oldINT_HEAD_valueElementSize;
+			}
+			else {
+				status = ztsIrregStoreBlock(ifltab, tss, path,
+					buffer, bufferControl,
+					numberToStore, itimes,
+					&values[ipos], valueSize, valueElementSize,
+					&tss->quality[jpos], tss->qualityElementSize,
+					&tss->inotes[kpos], tss->inoteElementSize,
+					&tss->cnotes[npos], lengthCNotesRemaining, &lengthCNotesRemaining,
+					profileDepths, profileDepthsSize, profileDepthsNumber,
+					internalHeader,
+					tss->userHeader, tss->userHeaderNumber,
+					julianBlockDate, julianNextBlockDate, blockSize,
+					boolFromStartOfBlock, boolToEndOfBlock,
+					storageFlag, boolReadBlock, dataType);
+			}
 			if (itimes) {
 				free(itimes);
 				itimes = 0;

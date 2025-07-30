@@ -850,7 +850,7 @@ int ztsRegStoreBlock(long long *ifltab, zStructTimeSeries *tss, const char *path
 
 			internalHeader[INT_HEAD_valueSize] = 2;
 			internalHeader[INT_HEAD_valueElementSize] = 2;
-			// Support writing floats into a double record (calling ztsStore recursively) 
+			// Support writing floats into a double record 
 			double* dblValues = (double*)calloc(numberToStore, sizeof(double));
 			if (!dblValues) {
 				if (zmessageLevel(ifltab, MESS_METHOD_TS_WRITE_ID, MESS_LEVEL_INTERNAL_DIAG_1)) {
