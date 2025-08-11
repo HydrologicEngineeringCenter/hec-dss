@@ -181,7 +181,6 @@
     <ClCompile Include="src\Hec_m2ihm.c" />
     <ClCompile Include="src\Hec_makedsscatalog.c" />
     <ClCompile Include="src\Hec_nopers.c" />
-    <ClCompile Include="src\Hec_obsolete.c" />
     <ClCompile Include="src\Hec_openf.c" />
     <ClCompile Include="src\Hec_readf.c" />
     <ClCompile Include="src\Hec_zaliasAdd.c" />
