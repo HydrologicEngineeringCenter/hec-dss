@@ -117,7 +117,6 @@
 					<File RelativePath=".\src\DssInterface\v6and7\zplistInterface.f"/>
 					<File RelativePath=".\src\DssInterface\v6and7\zputInfoInterface.f"/>
 					<File RelativePath=".\src\DssInterface\v6and7\zqueryInterface.f"/>
-					<File RelativePath=".\src\DssInterface\v6and7\zreadInterface.f"/>
 					<File RelativePath=".\src\DssInterface\v6and7\zrecAddInterface.f"/>
 					<File RelativePath=".\src\DssInterface\v6and7\zrenameInterface.f"/>
 					<File RelativePath=".\src\DssInterface\v6and7\zrinfoInterface.f"/>
