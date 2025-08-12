@@ -17,8 +17,6 @@ void zcatalogfile7_(long long *ifltab, const char *catalogFilename, int *boolSor
 	size_t lencatalogFilename, size_t lenpathWithWildChars);
 
 
-void zloadcache6_(long long *ifltab, int* istat);
-
 void ztsregstorefull_(long long *ifltab, const char *path,
 				const char *startDate, const char *startTime,
 				int *numberValues,
@@ -242,7 +240,6 @@ void  zdebug7_(int *ival, long long *ival8, int *ival4a, int *ival4b,
 	size_t cdval_len, size_t crvala_len, size_t crvalb_len, size_t cstrng_len);
 void zgetrw6_ (int *iadd, int *record, int *word);
 void zgtrec6_(long long *ifltab, int *arrayVals, int *numberWords, int *iadd, int *flag);
-void zloadcache_(long long *ifltab, int *istat);
 void zndata6_(long long *ifltab,int *ifpos, int *juls, int *isecs, char *cpath, int *npath, int *juld, int *isecd, int *idtype, int *istat, size_t cstrng_len);
 void znextts_(long long *ifltab, const char *cpath, char *cnext, int *lforward, int *istat, size_t cpath_len, size_t cnext_len);
 void zread_(long long *ifltab, const char *cpath, int *npathname, int *header, int *nheader,

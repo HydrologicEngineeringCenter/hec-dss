@@ -288,15 +288,6 @@ int testAdHoc2()
 	status = hec_dss_zopen(ifltab7, fileName7);
 	if (status) return status;
 
-	//zloadcache6_(ifltab7, &status);
-	//zckpat6_(ifltab7, &status);
-	//zset("MLVL", "", 15);
-	//zcklnk6_(ifltab7, &status);
-	//zckpnb6_(ifltab7, &status);
-
-
-	//zcheckFile(ifltab7);
-
 	path = mallocAndCopy("//Sayers Stor-flow/STORAGE-FLOW///TABLE/");
 
 	status = zcopyRecord(ifltab7, ifltab6, path, path);

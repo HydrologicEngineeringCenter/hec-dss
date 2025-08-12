@@ -26,15 +26,6 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1zerrorCheck
 	return (jint)status;
 }
 
-JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1zerror
-(JNIEnv *env, jobject obj)
-{
-	int status;
-	status = zerrorCheck();
-	if (status < 3) status = 0;
-	return (jint)status;
-}
-
 
 JNIEXPORT void JNICALL Java_hec_heclib_util_Heclib_Hec_1zerrorClear
     (JNIEnv *env, jobject obj)
