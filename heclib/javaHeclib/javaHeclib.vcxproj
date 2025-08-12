@@ -212,7 +212,6 @@
     <ClCompile Include="src\Hec_zcofil.c" />
     <ClCompile Include="src\Hec_zcolist.c" />
     <ClCompile Include="src\Hec_zconvertVersion.c" />
-    <ClCompile Include="src\Hec_zcopyFile.c" />
     <ClCompile Include="src\Hec_zcorec.c" />
     <ClCompile Include="src\Hec_zdblook.c" />
     <ClCompile Include="src\Hec_zdbmod.c" />
@@ -242,7 +241,6 @@
     <ClCompile Include="src\Hec_zirbeg.c" />
     <ClCompile Include="src\Hec_zlastWriteTime.c" />
     <ClCompile Include="src\Hec_zlastWriteTimeFile.c" />
-    <ClCompile Include="src\Hec_zloadcache.c" />
     <ClCompile Include="src\Hec_zlocationFromStruct.c" />
     <ClCompile Include="src\Hec_zlocationRetrieve.c" />
     <ClCompile Include="src\Hec_zlocationStore.c" />

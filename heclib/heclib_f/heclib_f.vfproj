@@ -335,7 +335,6 @@
 			<File RelativePath=".\src\zircpy6.f"/>
 			<File RelativePath=".\src\zirdbl6.f"/>
 			<File RelativePath=".\src\zirdow6.f"/>
-			<File RelativePath=".\src\zloadcache6.f"/>
 			<File RelativePath=".\src\zlockrd.f"/>
 			<File RelativePath=".\src\zmatca6.f"/>
 			<File RelativePath=".\src\zmaxpart6.f"/>

@@ -144,7 +144,7 @@
     <ClCompile Include="src\Internal\zinit.c" />
     <ClCompile Include="src\Internal\zinitIfltab.c" />
     <ClCompile Include="src\Internal\zisaCollection.c" />
-    <ClCompile Include="src\Internal\zloadCache.c" />
+    <ClCompile Include="src\Internal\copyFile.c" />
     <ClCompile Include="src\Internal\zlocationUpdatePerm.c" />
     <ClCompile Include="src\Internal\zlockActive.c" />
     <ClCompile Include="src\Internal\zlockingOld.c" />

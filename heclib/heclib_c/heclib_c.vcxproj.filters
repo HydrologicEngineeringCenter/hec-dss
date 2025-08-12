@@ -663,7 +663,7 @@
     <ClCompile Include="src\Internal\zisaCollection.c">
       <Filter>src\Internal</Filter>
     </ClCompile>
-    <ClCompile Include="src\Internal\zloadCache.c">
+    <ClCompile Include="src\Internal\copyFile.c">
       <Filter>src\Internal</Filter>
     </ClCompile>
     <ClCompile Include="src\Internal\zlocationUpdatePerm.c">
