@@ -278,10 +278,6 @@ void zrrtsx_(long long *ifltab, const char *cpath, const char *cdate, const char
 	int *nvals, float *svalues, int *jqual, int *lqual, int *lqread, char *cunits, char *ctype,
 	int *iuhead, int *kuhead, int *nuhead, int *iofset, int *jcomp, int *istat,
 	size_t cpath_len, size_t cdate_len, size_t ctime_len, size_t cunits_len, size_t ctype_len);
-void zrrtsxd_(long long *ifltab, const char *cpath, const char *cdate, const char *ctime,
-	int *nvals, double *dvalues, int *jqual, int *lqual, int *lqread, char *cunits, char *ctype,
-	int *iuhead, int *kuhead, int *nuhead, int *iofset, int *jcomp, int *istat,
-	size_t cpath_len, size_t cdate_len, size_t ctime_len, size_t cunits_len, size_t ctype_len);
 void zrtxts_(long long *ifltab, const char *cpath, char *cstring, int *kstring, int *nstring,
 	int *iuhead, int *kuhead, int *nuhead, int *istat, size_t cpath_len, size_t cstring_len);
 void zset_(const char *cflg, const char *cstr, int *numb, size_t cflg_len, size_t cstr_len);

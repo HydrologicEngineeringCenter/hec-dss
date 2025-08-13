@@ -238,7 +238,6 @@
     <ClCompile Include="src\Hec_zrrts.c" />
     <ClCompile Include="src\Hec_zrrtsc.c" />
     <ClCompile Include="src\Hec_zrrtsx.c" />
-    <ClCompile Include="src\Hec_zrrtsxd.c" />
     <ClCompile Include="src\Hec_zrtxts.c" />
     <ClCompile Include="src\Hec_zset.c" />
     <ClCompile Include="src\Hec_zsetCatalogSortAddresses.c" />

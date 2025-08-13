@@ -107,8 +107,7 @@
 					<File RelativePath=".\src\DssInterface\v6and7\zdeletInterface.f"/>
 					<File RelativePath=".\src\DssInterface\v6and7\zdssVersion.f"/>
 					<File RelativePath=".\src\DssInterface\v6and7\zdtypeInterface.f"/>
-					<File RelativePath=".\src\DssInterface\v6and7\zgetInfoInterface.f">
-					</File>
+					<File RelativePath=".\src\DssInterface\v6and7\zgetInfoInterface.f"/>
 					<File RelativePath=".\src\DssInterface\v6and7\zgintlInterface.f"/>
 					<File RelativePath=".\src\DssInterface\v6and7\zinqirInterface.f"/>
 					<File RelativePath=".\src\DssInterface\v6and7\zirbegInterface.f"/>
@@ -133,7 +132,6 @@
 					<File RelativePath=".\src\DssInterface\v6and7\zrrtsd.f"/>
 					<File RelativePath=".\src\DssInterface\v6and7\zrrtsiInterface.f"/>
 					<File RelativePath=".\src\DssInterface\v6and7\zrrtsx.f"/>
-					<File RelativePath=".\src\DssInterface\v6and7\zrrtsxd.f"/>
 					<File RelativePath=".\src\DssInterface\v6and7\zrtxtaInterface.f"/>
 					<File RelativePath=".\src\DssInterface\v6and7\zrtxtsInterface.f"/>
 					<File RelativePath=".\src\DssInterface\v6and7\zsetfiInterface.f"/>
@@ -160,8 +158,7 @@
 				<File RelativePath=".\src\DssInterface\zbegdt7.f"/>
 				<File RelativePath=".\src\DssInterface\zdswap.f"/>
 				<File RelativePath=".\src\DssInterface\zdtype.f"/>
-				<File RelativePath=".\src\DssInterface\zincbk7.f">
-				</File>
+				<File RelativePath=".\src\DssInterface\zincbk7.f"/>
 				<File RelativePath=".\src\DssInterface\znextts.f"/>
 				<File RelativePath=".\src\DssInterface\zofset.f"/>
 				<File RelativePath=".\src\DssInterface\zrinfo7.f"/>

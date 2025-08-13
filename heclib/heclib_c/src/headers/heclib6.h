@@ -280,15 +280,6 @@ VOID zrrtsx (int* ifltab, const char* pathname, const char* startDate,
 			 size_t lenPathname, size_t lenStartDate, size_t lenStartTime,
 			 size_t lenUnits, size_t lenType);
 
-VOID zrrtsxd (int* ifltab, const char* pathname, const char* startDate,
-			 const char* startTime, int* numberVals, double* values,
-			 int* flags, int* readFlags, int* flagsRead,
-             char* units, char* type,
-			 int* userHeader, int* userHeaderMax, int* lenUserHeader,
-			 int* offset, int* compression, int* status,
-			 size_t lenPathname, size_t lenStartDate, size_t lenStartTime,
-			 size_t lenUnits, size_t lenType);
-
               // Note: zrtext passes in a file name instead of a unit number
                //        and there is no LCCNTL argument!
 VOID zrtext (int *ifltab, const char* cpath, const char* fileName,
