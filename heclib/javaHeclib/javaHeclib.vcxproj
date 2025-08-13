@@ -174,7 +174,6 @@
     <ClCompile Include="src\Hec_zgridStore.c" />
     <ClCompile Include="src\Hec_zinquire.c" />
     <ClCompile Include="src\Hec_zmessage.c" />
-    <ClCompile Include="src\Hec_zreadRawRecord.c" />
     <ClCompile Include="src\Hec_zwriteRawRecord.c" />
     <ClCompile Include="src\Hec_zarrayRetrieve.c" />
     <ClCompile Include="src\Hec_zarrayStore.c" />
