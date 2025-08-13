@@ -198,7 +198,6 @@
     <ClCompile Include="src\Hec_zfileAccessInfo.c" />
     <ClCompile Include="src\Hec_zfilst.c" />
     <ClCompile Include="src\Hec_zflush.c" />
-    <ClCompile Include="src\Hec_zfname.c" />
     <ClCompile Include="src\Hec_zget.c" />
     <ClCompile Include="src\Hec_zgetCatalogSortAddresses.c" />
     <ClCompile Include="src\Hec_zgetDssVersion.c" />

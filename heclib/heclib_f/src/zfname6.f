@@ -1,12 +1,3 @@
-      SUBROUTINE zfname (CIN, COUT, NNAME, LEXIST)
-      CHARACTER CIN*(*), COUT*(*)
-      INTEGER NNAME
-      LOGICAL LEXIST
-      CALL zfname6 (CIN, COUT, NNAME, LEXIST)
-      return
-      end
-      
-      
       SUBROUTINE zfname6 (CIN, COUT, NNAME, LEXIST)
 C
 C

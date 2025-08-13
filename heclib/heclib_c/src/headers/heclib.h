@@ -63,8 +63,6 @@ void deletefile_(const char* filename, int *status, size_t lenFilename);
 //  boolean boolEndOfRecord indicates if more of same message is coming (false)
 //  or this is the last part of the message and should be written (true)
 
-void zfname(const char *dssFilenameIn, char *dssFilenameOut, int *nname, int *exists, size_t lenDssFilenameIn, size_t sizeDssFilenameOut);
-
 //  CHANGE ME to zmissingDouble() and zmissingFloat()
 double zmissingFlagDouble();
 float zmissingFlag();

@@ -139,19 +139,6 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1zerrorGet
 }
 
 
-
-JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1zfileError
-    (JNIEnv *env, jobject obj, jintArray j_ifltab)
-{
-    int *ifltab;
-	int ierr;
-
-    ifltab = (*env)->GetIntArrayElements (env, j_ifltab, 0);
-    ierr = zfileError((long long*)ifltab);   
-    (*env)->ReleaseIntArrayElements (env, j_ifltab, ifltab, 0);
-	return (jint)ierr;
-}
-
 JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1zerrorCode
     (JNIEnv *env, jobject obj, jintArray j_ifltab)
 {

@@ -441,9 +441,6 @@
     <ClCompile Include="src\DssInterface\zerrorDecode_.c">
       <Filter>src\DssInterface</Filter>
     </ClCompile>
-    <ClCompile Include="src\DssInterface\zfname.c">
-      <Filter>src\DssInterface</Filter>
-    </ClCompile>
     <ClCompile Include="src\DssInterface\zget_.c">
       <Filter>src\DssInterface</Filter>
     </ClCompile>
