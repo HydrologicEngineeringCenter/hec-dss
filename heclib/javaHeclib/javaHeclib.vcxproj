@@ -175,11 +175,9 @@
     <ClCompile Include="src\Hec_zinquire.c" />
     <ClCompile Include="src\Hec_zmessage.c" />
     <ClCompile Include="src\Hec_zreadRawRecord.c" />
-    <ClCompile Include="src\Hec_systim.c" />
     <ClCompile Include="src\Hec_zwriteRawRecord.c" />
     <ClCompile Include="src\Hec_zarrayRetrieve.c" />
     <ClCompile Include="src\Hec_zarrayStore.c" />
-    <ClCompile Include="src\Hec_zbegdt.c" />
     <ClCompile Include="src\Hec_zcatalog.c" />
     <ClCompile Include="src\Hec_zcatalogFile.c" />
     <ClCompile Include="src\Hec_zcheck.c" />
@@ -193,11 +191,9 @@
     <ClCompile Include="src\Hec_zcolist.c" />
     <ClCompile Include="src\Hec_zconvertVersion.c" />
     <ClCompile Include="src\Hec_zcorec.c" />
-    <ClCompile Include="src\Hec_zdblook.c" />
     <ClCompile Include="src\Hec_zdbmod.c" />
     <ClCompile Include="src\Hec_zdcinf.c" />
     <ClCompile Include="src\Hec_zdebug1.c" />
-    <ClCompile Include="src\Hec_zdebug7.c" />
     <ClCompile Include="src\Hec_zdelet.c" />
     <ClCompile Include="src\Hec_zdtype.c" />
     <ClCompile Include="src\Hec_zerror.c" />

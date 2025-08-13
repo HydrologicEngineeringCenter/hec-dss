@@ -435,9 +435,6 @@
     <ClCompile Include="src\DssInterface\zclose_.c">
       <Filter>src\DssInterface</Filter>
     </ClCompile>
-    <ClCompile Include="src\DssInterface\zdebugout7.c">
-      <Filter>src\DssInterface</Filter>
-    </ClCompile>
     <ClCompile Include="src\DssInterface\zdelete_.c">
       <Filter>src\DssInterface</Filter>
     </ClCompile>

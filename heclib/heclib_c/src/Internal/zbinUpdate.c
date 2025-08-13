@@ -276,7 +276,6 @@ int zbinUpdate(long long *ifltab, const char* pathname, long long infoAddress,
 				break;
 			}
 			else {
-				//zdebugout7 (ifltab, pathnameBin, (long long)0, 20);
 				i8toi4(pathnameBin[icount+zdssBinKeys.kbinPathLen], &pathnameLength, &pathnameSize);
 				icount += zdssBinKeys.kbinSize + pathnameSize;
 				if (icount >= (isize-1)) {

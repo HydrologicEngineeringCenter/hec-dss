@@ -97,7 +97,8 @@
 					<File RelativePath=".\src\DssInterface\v6and7\fortranwrite2.f"/>
 					<File RelativePath=".\src\DssInterface\v6and7\fortranwriteLC.f"/>
 					<File RelativePath=".\src\DssInterface\v6and7\sortfilesfort.f"/>
-					<File RelativePath=".\src\DssInterface\v6and7\zbegdtInterface.f"/>
+					<File RelativePath=".\src\DssInterface\v6and7\zbegdtInterface.f">
+					</File>
 					<File RelativePath=".\src\DssInterface\v6and7\zcatalogFileInterface.f"/>
 					<File RelativePath=".\src\DssInterface\v6and7\zcatlg.f"/>
 					<File RelativePath=".\src\DssInterface\v6and7\zcheckInterface.f"/>
@@ -158,9 +159,8 @@
 				</Filter>
 				<File RelativePath=".\src\DssInterface\checks.f"/>
 				<File RelativePath=".\src\DssInterface\zbegdt7.f"/>
-				<File RelativePath=".\src\DssInterface\zdebug7.f"/>
-				<File RelativePath=".\src\DssInterface\zdebugout7.f"/>
-				<File RelativePath=".\src\DssInterface\zdswap.f"/>
+				<File RelativePath=".\src\DssInterface\zdswap.f">
+				</File>
 				<File RelativePath=".\src\DssInterface\zdtype.f"/>
 				<File RelativePath=".\src\DssInterface\zincbk7.f"/>
 				<File RelativePath=".\src\DssInterface\znextts.f"/>
@@ -231,8 +231,10 @@
 				<File RelativePath=".\src\Support\intgrc.f"/>
 				<File RelativePath=".\src\Support\iscan.f"/>
 				<File RelativePath=".\src\Support\iymdjl.f"/>
-				<File RelativePath=".\src\Support\jliymd.f"/>
-				<File RelativePath=".\src\Support\juldat.f"/>
+				<File RelativePath=".\src\Support\jliymd.f">
+				</File>
+				<File RelativePath=".\src\Support\juldat.f">
+				</File>
 				<File RelativePath=".\src\Support\lbtest.f"/>
 				<File RelativePath=".\src\Support\lcompar.f"/>
 				<File RelativePath=".\src\Support\leqner.f"/>
@@ -240,12 +242,14 @@
 				<File RelativePath=".\src\Support\lflnb.f"/>
 				<File RelativePath=".\src\Support\lisfil.f"/>
 				<File RelativePath=".\src\Support\lisnum.f"/>
-				<File RelativePath=".\src\Support\m2ihm.f"/>
+				<File RelativePath=".\src\Support\m2ihm.f">
+				</File>
 				<File RelativePath=".\src\Support\makedsscatalog.f"/>
 				<File RelativePath=".\src\Support\match.f"/>
 				<File RelativePath=".\src\Support\nindx.f"/>
 				<File RelativePath=".\src\Support\nindxr.f"/>
-				<File RelativePath=".\src\Support\nopers.f"/>
+				<File RelativePath=".\src\Support\nopers.f">
+				</File>
 				<File RelativePath=".\src\Support\nscan.f"/>
 				<File RelativePath=".\src\Support\parseq.f"/>
 				<File RelativePath=".\src\Support\parsli.f"/>
@@ -272,7 +276,8 @@
 			<File RelativePath=".\src\Support\remove_user_header_param.f"/>
 			<File RelativePath=".\src\zabort6.f"/>
 			<File RelativePath=".\src\zbdump6.f"/>
-			<File RelativePath=".\src\zbegdt6.f"/>
+			<File RelativePath=".\src\zbegdt6.f">
+			</File>
 			<File RelativePath=".\src\zcaout6.f"/>
 			<File RelativePath=".\src\zcat6.f"/>
 			<File RelativePath=".\src\zcatalogFile6.f"/>
@@ -297,7 +302,6 @@
 			<File RelativePath=".\src\zcorec6.f"/>
 			<File RelativePath=".\src\zcut6.f"/>
 			<File RelativePath=".\src\zcutsz6.f"/>
-			<File RelativePath=".\src\zdblook6.f"/>
 			<File RelativePath=".\src\zdbmod6.f"/>
 			<File RelativePath=".\src\zdcinf.f"/>
 			<File RelativePath=".\src\zdebug.f"/>

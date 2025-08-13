@@ -65,7 +65,6 @@
     <ClCompile Include="src\DssInterface\v6and7\zwritex.c" />
     <ClCompile Include="src\DssInterface\zcheckfilever_.c" />
     <ClCompile Include="src\DssInterface\zclose_.c" />
-    <ClCompile Include="src\DssInterface\zdebugout7.c" />
     <ClCompile Include="src\DssInterface\zdelete_.c" />
     <ClCompile Include="src\DssInterface\zerrorDecode_.c" />
     <ClCompile Include="src\DssInterface\zfname.c" />

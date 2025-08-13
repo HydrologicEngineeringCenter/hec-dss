@@ -229,14 +229,9 @@ void zundel_(long long *ifltab, const char *pathname, int *numberPathname,
 void zcopyfile_ (long long *ifltabFrom, long long *ifltabTo, int *istat);
 void zcopyrecord_(long long *ifltabFrom, long long *ifltabTo, const char *pathnameFrom,
 				 const char *pathnameTo, int *status, size_t pathnameFromLen, size_t pathnameToLen);
-void zdblook6_ (long long *ifltab, int *address, int *length);
-void zdebugout7_(long long *ifltab, long long *iarray, long long *address, int *len);
 void zdbmod6_ (long long *ifltab, int *address, int *value,
 	const char *characterValue, int *useCharacterValue, size_t characterValueLen);
 void  zdebug1_(int *ival, long long *ival8, char *crval, char *cstrng, int *ibytes, size_t crval_len, size_t cstrng_len);
-void  zdebug7_(int *ival, long long *ival8, int *ival4a, int *ival4b,
-	char *cdval, char *crvala, char *crvalb, char *cstrng, int *ibytes,
-	size_t cdval_len, size_t crvala_len, size_t crvalb_len, size_t cstrng_len);
 void zgetrw6_ (int *iadd, int *record, int *word);
 void zgtrec6_(long long *ifltab, int *arrayVals, int *numberWords, int *iadd, int *flag);
 void zndata6_(long long *ifltab,int *ifpos, int *juls, int *isecs, char *cpath, int *npath, int *juld, int *isecd, int *idtype, int *istat, size_t cstrng_len);
