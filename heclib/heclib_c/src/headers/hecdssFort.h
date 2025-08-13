@@ -231,7 +231,6 @@ void zcopyrecord_(long long *ifltabFrom, long long *ifltabTo, const char *pathna
 				 const char *pathnameTo, int *status, size_t pathnameFromLen, size_t pathnameToLen);
 void zdbmod6_ (long long *ifltab, int *address, int *value,
 	const char *characterValue, int *useCharacterValue, size_t characterValueLen);
-void  zdebug1_(int *ival, long long *ival8, char *crval, char *cstrng, int *ibytes, size_t crval_len, size_t cstrng_len);
 void zgetrw6_ (int *iadd, int *record, int *word);
 void zgtrec6_(long long *ifltab, int *arrayVals, int *numberWords, int *iadd, int *flag);
 void zndata6_(long long *ifltab,int *ifpos, int *juls, int *isecs, char *cpath, int *npath, int *juld, int *isecd, int *idtype, int *istat, size_t cstrng_len);

@@ -128,9 +128,6 @@ VOID zdblook  (int *ifltab, int *address, int *length);
 VOID zdbmod  (int *ifltab, int *address, int *value, const char *characterValue, int *useCharacterValue,
 			   size_t len_characterValue);
 
-VOID zdebug1  (int *ival, long long *ival8, char *creal, char *cstrng, int *ibytes,
-			   size_t len_creal, size_t len_cstrng);
-
 VOID zdelet  (int *ifltab, const char *pathname, int *npath, int *status,
 			   size_t len_pathname);
 
