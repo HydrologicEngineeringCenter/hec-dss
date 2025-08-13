@@ -344,7 +344,7 @@ subroutine deleteTimeSeriesRecords( &
         call juldat(recordJul, 4, cd, nd)
         call zfpn(ca, na, cb, nb, cc, nc, cd, 9, ce, ne, cf, nf, recordPathname, npath)
         call zdelete(ifltab, recordPathname, status)
-        call zincbk(1, recordJul, yr, mo, da)
+        call zincbk6(1, recordJul, yr, mo, da)
     end do
     if (deleteLocationRecordAlso) then
     end if
