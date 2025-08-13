@@ -210,7 +210,6 @@
 				<File RelativePath=".\src\Support\findlm.f"/>
 				<File RelativePath=".\src\Support\flush.f"/>
 				<File RelativePath=".\src\Support\gethol.f"/>
-				<File RelativePath=".\src\Support\getime.f"/>
 				<File RelativePath=".\src\Support\hol2ch.f"/>
 				<File RelativePath=".\src\Support\holchr.f"/>
 				<File RelativePath=".\src\Support\ibits.f"/>

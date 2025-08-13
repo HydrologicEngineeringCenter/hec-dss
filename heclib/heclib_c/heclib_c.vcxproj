@@ -299,7 +299,6 @@
     <ClCompile Include="src\Public\ztextStructPrint.c" />
     <ClCompile Include="src\Public\ztsGetDateRange.c" />
     <ClCompile Include="src\Public\ztsGetDateTimeRange.c" />
-    <ClCompile Include="src\Public\ztsGetEPartFromInterval.c" />
     <ClCompile Include="src\Public\ztsGetInterval.c" />
     <ClCompile Include="src\Public\ztsOffset.c" />
     <ClCompile Include="src\Public\ztsOffsetAdjustToOffset.c" />

@@ -1128,9 +1128,6 @@
     <ClCompile Include="src\Public\ztsGetDateTimeRange.c">
       <Filter>src\Public</Filter>
     </ClCompile>
-    <ClCompile Include="src\Public\ztsGetEPartFromInterval.c">
-      <Filter>src\Public</Filter>
-    </ClCompile>
     <ClCompile Include="src\Public\ztsGetInterval.c">
       <Filter>src\Public</Filter>
     </ClCompile>

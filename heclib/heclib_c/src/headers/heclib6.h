@@ -25,9 +25,6 @@ extern "C" {
 
 	VOID chrlnb_ (char *cstring, int *len, size_t strlen);
 	VOID chrhol_ (const char *cstring, int *start, int *length, int *hol, int *start2, size_t stringLen);
-	VOID getime_ (const char *line, const int *beg, const int *len,
-				  int *juls, int *istime, int *jule, int *ietime, int *status,
-				  size_t line_length);
 	VOID holchr_ (int *hol, int *start, int *length, char *str, int *start2, size_t stringLen);
 	INT idaywk_(int *jul);
 	INT ihm2m_(char *ctime, size_t ctimeLen);
