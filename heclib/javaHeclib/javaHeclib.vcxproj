@@ -205,9 +205,7 @@
     <ClCompile Include="src\Hec_zgetMessageLevel.c" />
     <ClCompile Include="src\Hec_zgetProgress.c" />
     <ClCompile Include="src\Hec_zgetrw.c" />
-    <ClCompile Include="src\Hec_zgpnp.c" />
     <ClCompile Include="src\Hec_zgtrec.c" />
-    <ClCompile Include="src\Hec_zincbk.c" />
     <ClCompile Include="src\Hec_zinqir.c" />
     <ClCompile Include="src\Hec_zirbeg.c" />
     <ClCompile Include="src\Hec_zlastWriteTime.c" />

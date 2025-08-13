@@ -132,12 +132,7 @@ VOID zgetrw (int *address, int *record, int *word);
 
 VOID zgintl_ (int*, char*, int*, int*, size_t);
 
-VOID zgpnp_ (const char*, char*, char*, char*, char*, char*, char*, int*,
-                size_t, size_t, size_t, size_t, size_t, size_t, size_t);
-
 VOID zgtrec (int *ifltab, int *arrayVals, int *numberWords, int *address, int* flag);
-
-VOID zincbk_ (int*, int*, int*, int*, int*);
 
 VOID zinqir (int *, const char *, char *, int *, size_t, size_t);
 
