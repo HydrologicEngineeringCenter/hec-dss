@@ -120,11 +120,6 @@ VOID zcut    (int *ifltab, const char *pathname, int *ldelete, int *buffer,
 VOID zcutsz  (int *ifltab, const char *pathname, int *size, int *status,
 			   size_t len_pathname);
 
-VOID zdcinf (int *method, float *baseValue, int *baseSet, int *deltaSize,
-			  int *precision, int *status);
-
-VOID zdblook  (int *ifltab, int *address, int *length);
-
 VOID zdbmod  (int *ifltab, int *address, int *value, const char *characterValue, int *useCharacterValue,
 			   size_t len_characterValue);
 

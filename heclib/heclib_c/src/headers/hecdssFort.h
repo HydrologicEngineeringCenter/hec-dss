@@ -195,9 +195,6 @@ void zcolist6_ (long long *ifltab, int *filePos, char *pathname,
 void zcorec6_(long long *ifltabFrom, long long *ifltabTo, const char *pathnameFrom,  const char *pathnameTo,
 	int *ibuff1, int *kbuff1, int *ibuff2, int *kbuff2, int *boolDuplcate, int *istat, size_t pathnameFromLen, size_t pathnameToLen);
 
-void zdcinf_ (int *method, float *baseValue, int *baseSet, int *deltaSize,
-			 int *precision, int *status);
-
 void zfilst6_(long long *ifltab);
 
 void zmaxpart6_(long long *ifltab, int *maxParts);

@@ -158,8 +158,10 @@
 				</Filter>
 				<File RelativePath=".\src\DssInterface\checks.f"/>
 				<File RelativePath=".\src\DssInterface\zbegdt7.f"/>
-				<File RelativePath=".\src\DssInterface\zdswap.f"/>
-				<File RelativePath=".\src\DssInterface\zdtype.f"/>
+				<File RelativePath=".\src\DssInterface\zdswap.f">
+				</File>
+				<File RelativePath=".\src\DssInterface\zdtype.f">
+				</File>
 				<File RelativePath=".\src\DssInterface\zincbk7.f"/>
 				<File RelativePath=".\src\DssInterface\znextts.f"/>
 				<File RelativePath=".\src\DssInterface\zofset.f"/>
@@ -292,7 +294,6 @@
 			<File RelativePath=".\src\zcut6.f"/>
 			<File RelativePath=".\src\zcutsz6.f"/>
 			<File RelativePath=".\src\zdbmod6.f"/>
-			<File RelativePath=".\src\zdcinf.f"/>
 			<File RelativePath=".\src\zdebug.f"/>
 			<File RelativePath=".\src\zdelet6.f"/>
 			<File RelativePath=".\src\zdswap6.f"/>
