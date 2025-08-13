@@ -231,7 +231,6 @@ void zdbmod6_ (long long *ifltab, int *address, int *value,
 void zgetrw6_ (int *iadd, int *record, int *word);
 void zgtrec6_(long long *ifltab, int *arrayVals, int *numberWords, int *iadd, int *flag);
 void zndata6_(long long *ifltab,int *ifpos, int *juls, int *isecs, char *cpath, int *npath, int *juld, int *isecd, int *idtype, int *istat, size_t cstrng_len);
-void znextts_(long long *ifltab, const char *cpath, char *cnext, int *lforward, int *istat, size_t cpath_len, size_t cnext_len);
 void zread_(long long *ifltab, const char *cpath, int *npathname, int *header, int *nheader,
              int *data, int *ndata, int *plan, int *exists, size_t cpathLen);
 void zrecadd_ (long long *ifltab, const char *cpath, long long *recAdds, int *status, size_t cpathLen);

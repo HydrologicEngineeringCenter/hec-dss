@@ -215,9 +215,7 @@
     <ClCompile Include="src\Hec_zlocationStore.c" />
     <ClCompile Include="src\Hec_zlocationToStruct.c" />
     <ClCompile Include="src\Hec_zmaxpart.c" />
-    <ClCompile Include="src\Hec_zmessageGroups.c" />
     <ClCompile Include="src\Hec_zndata.c" />
-    <ClCompile Include="src\Hec_znextts.c" />
     <ClCompile Include="src\Hec_zofset.c" />
     <ClCompile Include="src\Hec_zopen.c" />
     <ClCompile Include="src\Hec_zpath.c" />

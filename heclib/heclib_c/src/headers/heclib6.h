@@ -143,10 +143,6 @@ VOID zndata (int* ifltab, int* ifpos, int* juls, int* isecs,
 			 const char* cpath, int* npath, int* juld, int* isecd,
 			 int* idtype, int* istat, size_t sizeof_cpath);
 
-VOID znextts (int *ifltab, const char *pathname, char *nextPath,
-               int *lforward, int *status, size_t len_pathname, size_t len_nextPath);
-
-
 VOID zofset_ (int*, int*, int*, int*, int*);
 
 
