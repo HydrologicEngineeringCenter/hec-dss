@@ -163,13 +163,6 @@
     <ClCompile Include="src\Hec_fortranFlush.c" />
     <ClCompile Include="src\Hec_fortranOpen.c" />
     <ClCompile Include="src\Hec_fortranWrite.c" />
-    <ClCompile Include="src\Hec_getProcessName.c" />
-    <ClCompile Include="src\Hec_holString.c" />
-    <ClCompile Include="src\Hec_i4toi8.c" />
-    <ClCompile Include="src\Hec_idaywk.c" />
-    <ClCompile Include="src\Hec_ihm2m.c" />
-    <ClCompile Include="src\Hec_inctim.c" />
-    <ClCompile Include="src\Hec_isUnitConnected.c" />
     <ClCompile Include="src\Hec_iymdjl.c" />
     <ClCompile Include="src\Hec_jliymd.c" />
     <ClCompile Include="src\Hec_juldat.c" />

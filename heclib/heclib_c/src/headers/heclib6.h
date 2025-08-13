@@ -30,7 +30,6 @@ extern "C" {
 	INT ihm2m_(char *ctime, size_t ctimeLen);
 	INT inctim_(int *interval, int *minFlag, int *nperiods, int *juls, int *istime,
 		int *jule, int *ietime);
-	INT isunitconnected (int *unit);
 	INT iymdjl_ (int *year, int *month, int *day);
 	INT jliymd_ (int *julian, int *year, int *month, int *day);
 	INT juldat_ (int *julian, int *style, char *date, int *date_len, size_t size);
