@@ -145,7 +145,6 @@ void fortranrewind_(int *fortranUnit);
 int fortranread_(int *fortranUnit, char *string, int *lenString, int *ISTAT, size_t lengthString);
 void flush_(int *fortranUnit);
 
-void getcurrentrec_(int *recNumber);
 
 void zset6_(const char* parameter, const char* charVal, int *integerValue, size_t lenparameter, size_t lencharVal);
 

@@ -259,7 +259,6 @@
 				<File RelativePath=".\src\Support\systim.f"/>
 				<File RelativePath=".\src\Support\tempname.f"/>
 				<File RelativePath=".\src\Support\when.f"/>
-				<File RelativePath=".\src\Support\wind.f"/>
 				<File RelativePath=".\src\Support\xdoubc.f"/>
 				<File RelativePath=".\src\Support\xreal.f"/>
 				<File RelativePath=".\src\Support\xrealc.f"/>
@@ -268,7 +267,6 @@
 			</Filter>
 			<File RelativePath=".\src\dssCopyStatus.f"/>
 			<File RelativePath=".\src\Support\get_user_header_param.f"/>
-			<File RelativePath=".\src\getCurrentRec.f"/>
 			<File RelativePath=".\src\Support\remove_user_header_param.f"/>
 			<File RelativePath=".\src\zabort6.f"/>
 			<File RelativePath=".\src\zbdump6.f"/>

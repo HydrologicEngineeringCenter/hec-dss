@@ -162,9 +162,7 @@
     <ClCompile Include="src\Hec_fortranClose.c" />
     <ClCompile Include="src\Hec_fortranFlush.c" />
     <ClCompile Include="src\Hec_fortranOpen.c" />
-    <ClCompile Include="src\Hec_fortranWind.c" />
     <ClCompile Include="src\Hec_fortranWrite.c" />
-    <ClCompile Include="src\Hec_getCurrentRec.c" />
     <ClCompile Include="src\Hec_getEPartFromInterval.c" />
     <ClCompile Include="src\Hec_getime.c" />
     <ClCompile Include="src\Hec_getProcessName.c" />
