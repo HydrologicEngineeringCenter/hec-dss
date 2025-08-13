@@ -158,7 +158,6 @@
   <ItemGroup>
     <ClCompile Include="src\C_CatalogToJava.c" />
     <ClCompile Include="src\Hec_closescratchdsscatalog.c" />
-    <ClCompile Include="src\Hec_datjul.c" />
     <ClCompile Include="src\Hec_dssCopyStatus.c" />
     <ClCompile Include="src\Hec_fortranClose.c" />
     <ClCompile Include="src\Hec_fortranFlush.c" />
