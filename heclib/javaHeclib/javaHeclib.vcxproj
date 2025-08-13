@@ -163,14 +163,7 @@
     <ClCompile Include="src\Hec_fortranFlush.c" />
     <ClCompile Include="src\Hec_fortranOpen.c" />
     <ClCompile Include="src\Hec_fortranWrite.c" />
-    <ClCompile Include="src\Hec_iymdjl.c" />
-    <ClCompile Include="src\Hec_jliymd.c" />
-    <ClCompile Include="src\Hec_juldat.c" />
-    <ClCompile Include="src\Hec_m2ihm.c" />
     <ClCompile Include="src\Hec_makedsscatalog.c" />
-    <ClCompile Include="src\Hec_nopers.c" />
-    <ClCompile Include="src\Hec_openf.c" />
-    <ClCompile Include="src\Hec_readf.c" />
     <ClCompile Include="src\Hec_zaliasAdd.c" />
     <ClCompile Include="src\Hec_zaliasGetPrimary.c" />
     <ClCompile Include="src\Hec_zaliasList.c" />
@@ -182,7 +175,6 @@
     <ClCompile Include="src\Hec_zinquire.c" />
     <ClCompile Include="src\Hec_zmessage.c" />
     <ClCompile Include="src\Hec_zreadRawRecord.c" />
-    <ClCompile Include="src\Hec_StringHol.c" />
     <ClCompile Include="src\Hec_systim.c" />
     <ClCompile Include="src\Hec_zwriteRawRecord.c" />
     <ClCompile Include="src\Hec_zarrayRetrieve.c" />
