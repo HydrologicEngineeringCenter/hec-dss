@@ -259,7 +259,7 @@ C
         !-----------------------------------------!
         call datjul (cdate, ijuls, iistat)
         iistat = 1
-        call zgintl (iintvl, cpart(5), inodata, iistat)
+        call zgintl6 (iintvl, cpart(5), inodata, iistat)
         iistat = inctim (iintvl, 0, nvals, ijuls, 0, ijule, ietime)
         !--------------------------------------------------------------!
         ! get the beginng date of the first record for the time series !

@@ -202,11 +202,9 @@
     <ClCompile Include="src\Hec_zgetCatalogSortAddresses.c" />
     <ClCompile Include="src\Hec_zgetDssVersion.c" />
     <ClCompile Include="src\Hec_zgetFileVersion.c" />
-    <ClCompile Include="src\Hec_zgetInterval.c" />
     <ClCompile Include="src\Hec_zgetMessageLevel.c" />
     <ClCompile Include="src\Hec_zgetProgress.c" />
     <ClCompile Include="src\Hec_zgetrw.c" />
-    <ClCompile Include="src\Hec_zgintl.c" />
     <ClCompile Include="src\Hec_zgpnp.c" />
     <ClCompile Include="src\Hec_zgtrec.c" />
     <ClCompile Include="src\Hec_zincbk.c" />
