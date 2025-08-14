@@ -143,12 +143,16 @@
 					<File RelativePath=".\src\DssInterface\v6and7\zspd.f"/>
 					<File RelativePath=".\src\DssInterface\v6and7\zspdd.f"/>
 					<File RelativePath=".\src\DssInterface\v6and7\zspdiInterface.f"/>
-					<File RelativePath=".\src\DssInterface\v6and7\zsrts.f"/>
-					<File RelativePath=".\src\DssInterface\v6and7\zsrtscInterface.f"/>
-					<File RelativePath=".\src\DssInterface\v6and7\zsrtsd.f"/>
-					<File RelativePath=".\src\DssInterface\v6and7\zsrtsiInterface.f"/>
-					<File RelativePath=".\src\DssInterface\v6and7\zsrtsx.f"/>
-					<File RelativePath=".\src\DssInterface\v6and7\zsrtsxd.f"/>
+					<File RelativePath=".\src\DssInterface\v6and7\zsrts.f">
+					</File>
+					<File RelativePath=".\src\DssInterface\v6and7\zsrtscInterface.f">
+					</File>
+					<File RelativePath=".\src\DssInterface\v6and7\zsrtsd.f">
+					</File>
+					<File RelativePath=".\src\DssInterface\v6and7\zsrtsiInterface.f">
+					</File>
+					<File RelativePath=".\src\DssInterface\v6and7\zsrtsx.f">
+					</File>
 					<File RelativePath=".\src\DssInterface\v6and7\ztsinfoInterface.f"/>
 					<File RelativePath=".\src\DssInterface\v6and7\ztssrchInterface.f"/>
 					<File RelativePath=".\src\DssInterface\v6and7\zwritx.f"/>
@@ -164,7 +168,8 @@
 				<File RelativePath=".\src\DssInterface\zritsc7.f"/>
 				<File RelativePath=".\src\DssInterface\zrrtsc.f"/>
 				<File RelativePath=".\src\DssInterface\zsitsc.f"/>
-				<File RelativePath=".\src\DssInterface\zsrtsc.f"/>
+				<File RelativePath=".\src\DssInterface\zsrtsc.f">
+				</File>
 				<File RelativePath=".\src\DssInterface\ztstqp.f"/>
 			</Filter>
 			<Filter Name="Support">
@@ -393,8 +398,10 @@
 			<File RelativePath=".\src\zsqprm6.f"/>
 			<File RelativePath=".\src\zsqueeze6.f"/>
 			<File RelativePath=".\src\zsrtpa6.f"/>
-			<File RelativePath=".\src\zsrtsc6.f"/>
-			<File RelativePath=".\src\zsrtsi6.f"/>
+			<File RelativePath=".\src\zsrtsc6.f">
+			</File>
+			<File RelativePath=".\src\zsrtsi6.f">
+			</File>
 			<File RelativePath=".\src\zstags6.f"/>
 			<File RelativePath=".\src\zstext6.f"/>
 			<File RelativePath=".\src\zstfh.f"/>
