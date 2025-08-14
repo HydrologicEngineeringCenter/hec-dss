@@ -214,8 +214,8 @@
 				<File RelativePath=".\src\Support\ihm2m.f"/>
 				<File RelativePath=".\src\Support\ihm2s.f"/>
 				<File RelativePath=".\src\Support\ihms2s.f"/>
-				<File RelativePath=".\src\Support\inctim.f"/>
-				<File RelativePath=".\src\Support\inctim2.f"/>
+				<File RelativePath=".\src\Support\inctim.f">
+				</File>
 				<File RelativePath=".\src\Support\indexr.f"/>
 				<File RelativePath=".\src\Support\int8to4.f"/>
 				<File RelativePath=".\src\Support\intchr.f"/>

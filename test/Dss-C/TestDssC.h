@@ -71,7 +71,6 @@ int testDelete(const char *dssFilename7, const char *dssFilename6);
 int runTests(long long* ifltab);
 int testCatalog();
 int testIO_Interface(long long *ifltab7, long long *ifltab6);
-int inctim2_(int *interval, int *nperiods, int *juls, int *issecs, int *jule, int *iesecs);
 int testDateFunctions();
 int Bulletin_17C_SSP_Issue();
 int writeDoubleArray();
