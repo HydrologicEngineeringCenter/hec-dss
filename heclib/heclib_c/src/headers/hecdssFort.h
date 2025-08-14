@@ -321,6 +321,9 @@ void zsrtsx_(long long *ifltab, const char *cpath, const char *cdate, const char
 	int *iuhead, int *nuhead, int *iplan, int *jcomp, float *basev, int *lbasev,
 	int *ldhigh, int *nprec, int *istat,
 	size_t cpath_len, size_t cdate_len, size_t ctime_len, size_t cunits_len, size_t ctype_len);
+void zstxta_(long long* ifltab, const char* cpath, const char* carray, int* narray,
+	int* iuhead, int* nuhead, int* istat, size_t cpath_len, size_t carray_len);
+
 void ztsinfo_(long long *ifltab, const char *cpath, int *juls, int *istime,
 	int *jule, int *ietime, char *cunits, char *ctype, int *lqual, int *ldouble, int *lfound,
 	size_t cpath_len, size_t cunits_len, size_t ctype_len);

@@ -250,7 +250,6 @@
     <ClCompile Include="src\Hec_zsqueeze.c" />
     <ClCompile Include="src\Hec_zsrtsc.c" />
     <ClCompile Include="src\Hec_zstfh.c" />
-    <ClCompile Include="src\Hec_zstxta.c" />
     <ClCompile Include="src\Hec_ztextRetrieve.c" />
     <ClCompile Include="src\Hec_ztextStore.c" />
     <ClCompile Include="src\Hec_ztinRetrieve.c" />
