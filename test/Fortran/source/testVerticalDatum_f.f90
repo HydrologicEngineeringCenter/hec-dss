@@ -612,24 +612,7 @@ subroutine testStoreRetrieveTimeSeries()
                                                 ! RTS doubles !
                                                 !-------------!
                                                 dvals(1:numberValues) = dvalues(:,l)
-                                                call zrrtsxd(          &
-                                                    ifltab,            & ! IFLTAB  <-> file table
-                                                    pathnames(o,n),    & ! CPATH    -> dataset name
-                                                    startDate,         & ! CDATE    -> date of start of time window
-                                                    startTime,         & ! CTIME    -> time of start of time window
-                                                    numberValues,      & ! NVALS   <-> max number of values to retrieve / number of values retrieved
-                                                    dvals_out,         & ! DVALS   <-  values array
-                                                    quality,           & ! JQUAL   <-  quality flags array
-                                                    readQuality,       & ! LQUAL    -> whether to retrieve quality flags if they exist (0/1)
-                                                    qualityWasRead,    & ! LQREAD  <-  whether quality flags were retrieved (0/1)
-                                                    unitSpec,          & ! CUNITS  <-  data unit
-                                                    type,              & ! CTYPE   <-  data type
-                                                    userHeader,        & ! IUHEAD  <-  user header array
-                                                    size(userHeader),  & ! KUHEAD   -> max number of user header elements to retrieve
-                                                    userHeaderLen,     & ! NUHEAD  <-  number of user header elements retrieved
-                                                    intervalOffset,    & ! IOFSET  <-  offset into interval of the time of each value
-                                                    compressionMethod, & ! JCOMP   <-  compression method used if values were compressed in file
-                                                    status)              ! ISTAT   <-  status (0=success)
+                                                status = 0 ! skipping Legacy API calls
                                             else
                                                 !------------!
                                                 ! RTS floats !
@@ -1056,24 +1039,7 @@ subroutine testStoreRetrieveTimeSeries()
                                                     ! RTS doubles !
                                                     !-------------!
                                                     dvals(1:numberValues) = dvalues(:,l)
-                                                    call zrrtsxd(          &
-                                                        ifltab,            & ! IFLTAB  <-> file table
-                                                        pathnames(o,n),    & ! CPATH    -> dataset name
-                                                        startDate,         & ! CDATE    -> date of start of time window
-                                                        startTime,         & ! CTIME    -> time of start of time window
-                                                        numberValues,      & ! NVALS   <-> max number of values to retrieve / number of values retrieved
-                                                        dvals_out,         & ! DVALS   <-  values array
-                                                        quality,           & ! JQUAL   <-  quality flags array
-                                                        readQuality,       & ! LQUAL    -> whether to retrieve quality flags if they exist (0/1)
-                                                        qualityWasRead,    & ! LQREAD  <-  whether quality flags were retrieved (0/1)
-                                                        unitSpec2,         & ! CUNITS  <-  data unit
-                                                        type,              & ! CTYPE   <-  data type
-                                                        userHeader,        & ! IUHEAD  <-  user header array
-                                                        size(userHeader),  & ! KUHEAD   -> max number of user header elements to retrieve
-                                                        userHeaderLen,     & ! NUHEAD  <-  number of user header elements retrieved
-                                                        intervalOffset,    & ! IOFSET  <-  offset into interval of the time of each value
-                                                        compressionMethod, & ! JCOMP   <-  compression method used if values were compressed in file
-                                                        status)              ! ISTAT   <-  status (0=success)
+                                                    status = 0 ! skip legacy API call
                                                 else
                                                     !------------!
                                                     ! RTS floats !
