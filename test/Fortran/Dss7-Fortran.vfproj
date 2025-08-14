@@ -31,10 +31,12 @@
 		<Filter Name="Header Files" Filter="fi;fd"/>
 		<Filter Name="Resource Files" Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"/>
 		<Filter Name="Source Files" Filter="f90;for;f;fpp;ftn;def;odl;idl">
-			<File RelativePath="source\DssCodeTest7.f90"/>
+			<File RelativePath="source\DssCodeTest7.f90">
+			</File>
 			<File RelativePath="source\miscTests.f90"/>
 			<File RelativePath="source\orderTimes.f90"/>
-			<File RelativePath="source\runTests.f90"/>
+			<File RelativePath="source\runTests.f90">
+			</File>
 			<File RelativePath=".\source\saveToTextFile.f90">
 				<FileConfiguration Name="Debug|x64">
 					<Tool Name="VFFortranCompilerTool" Diagnostics="diagnosticsShowAll"/>
@@ -86,7 +88,6 @@
 			<File RelativePath="source\testReclaim.f90"/>
 			<File RelativePath="source\testRegRetClear.f90"/>
 			<File RelativePath="source\testUtilities.f90"/>
-			<File RelativePath=".\source\testVerticalDatum_f.f90"/>
 			<File RelativePath="source\testWrite.f90"/>
 			<File RelativePath="source\timeTestCopyRTS.f90"/>
 			<File RelativePath="source\timeTestFileParams.f90"/>

@@ -293,10 +293,6 @@ void zsitsc_(long long *ifltab, const char *cpath, int *itimes, float *values, d
 void zsitsx_(long long *ifltab, const char *cpath, int *itimes, float *values, int *nvalue, int *ibdate,
 	int *jqual, int *lsqual, const char *cunits, const char *ctype, int *iuhead, int *nuhead, int *inflag, int *istat,
 	size_t cpath_len, size_t cunits_len, size_t ctype_len);
-void zsitsxd_(long long *ifltab, const char *cpath, int *itimes, double *dvalues, int *nvalue,
-	int *ibdate, int *jqual, int *lsqual, const char *cunits, const char *ctype,
-	int *iuhead, int *nuhead,  int *inflag, int *istat,
-	size_t cpath_len, size_t cunits_len, size_t ctype_len);
 void zspd_(long long *ifltab, const char *cpath, int *nord, int *ncurve, int *ihoriz,
 	const char *c1unit, const char *c1type, const char *c2unit, const char *c2type,
 	float *svalues, const char *clabel, int *label, int *iuhead, int *nuhead, int *iplan, int *istat,

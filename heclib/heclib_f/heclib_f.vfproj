@@ -140,7 +140,6 @@
 					<File RelativePath=".\src\DssInterface\v6and7\zsitscInterface.f"/>
 					<File RelativePath=".\src\DssInterface\v6and7\zsitsiInterface.f"/>
 					<File RelativePath=".\src\DssInterface\v6and7\zsitsx.f"/>
-					<File RelativePath=".\src\DssInterface\v6and7\zsitsxd.f"/>
 					<File RelativePath=".\src\DssInterface\v6and7\zspd.f"/>
 					<File RelativePath=".\src\DssInterface\v6and7\zspdd.f"/>
 					<File RelativePath=".\src\DssInterface\v6and7\zspdiInterface.f"/>
@@ -214,8 +213,7 @@
 				<File RelativePath=".\src\Support\ihm2m.f"/>
 				<File RelativePath=".\src\Support\ihm2s.f"/>
 				<File RelativePath=".\src\Support\ihms2s.f"/>
-				<File RelativePath=".\src\Support\inctim.f">
-				</File>
+				<File RelativePath=".\src\Support\inctim.f"/>
 				<File RelativePath=".\src\Support\indexr.f"/>
 				<File RelativePath=".\src\Support\int8to4.f"/>
 				<File RelativePath=".\src\Support\intchr.f"/>
