@@ -174,7 +174,6 @@
     <ClCompile Include="src\Hec_zgridStore.c" />
     <ClCompile Include="src\Hec_zinquire.c" />
     <ClCompile Include="src\Hec_zmessage.c" />
-    <ClCompile Include="src\Hec_zwriteRawRecord.c" />
     <ClCompile Include="src\Hec_zarrayRetrieve.c" />
     <ClCompile Include="src\Hec_zarrayStore.c" />
     <ClCompile Include="src\Hec_zcatalog.c" />
@@ -255,13 +254,11 @@
     <ClCompile Include="src\Hec_ztinRetrieve.c" />
     <ClCompile Include="src\Hec_ztinStore.c" />
     <ClCompile Include="src\Hec_ztsends.c" />
-    <ClCompile Include="src\Hec_ztsGetStandardInterval.c" />
     <ClCompile Include="src\Hec_ztsinfo.c" />
     <ClCompile Include="src\Hec_ztsrange.c" />
     <ClCompile Include="src\Hec_ztsRetrieve.c" />
     <ClCompile Include="src\Hec_ztsStore.c" />
     <ClCompile Include="src\Hec_zundel.c" />
-    <ClCompile Include="src\Hec_zupath.c" />
     <ClCompile Include="src\Hec_zustfh.c" />
     <ClCompile Include="src\Hec_zwhatChanged.c" />
     <ClCompile Include="src\Hec_zwhatChangedCompare.c" />
