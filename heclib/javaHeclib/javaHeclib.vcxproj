@@ -158,7 +158,6 @@
   <ItemGroup>
     <ClCompile Include="src\C_CatalogToJava.c" />
     <ClCompile Include="src\Hec_closescratchdsscatalog.c" />
-    <ClCompile Include="src\Hec_dssCopyStatus.c" />
     <ClCompile Include="src\Hec_fortranClose.c" />
     <ClCompile Include="src\Hec_fortranFlush.c" />
     <ClCompile Include="src\Hec_fortranOpen.c" />
@@ -201,8 +200,6 @@
     <ClCompile Include="src\Hec_zgetDssVersion.c" />
     <ClCompile Include="src\Hec_zgetFileVersion.c" />
     <ClCompile Include="src\Hec_zgetMessageLevel.c" />
-    <ClCompile Include="src\Hec_zgetProgress.c" />
-    <ClCompile Include="src\Hec_zgetrw.c" />
     <ClCompile Include="src\Hec_zgtrec.c" />
     <ClCompile Include="src\Hec_zinqir.c" />
     <ClCompile Include="src\Hec_zirbeg.c" />

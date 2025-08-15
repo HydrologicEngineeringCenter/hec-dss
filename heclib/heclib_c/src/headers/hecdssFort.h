@@ -207,8 +207,6 @@ void zquery6_ (const char *request, char *returnVal, int *returnNumb, size_t len
 void zrdpat_(const int *icunit, int *ipos, int *inumb, char *tag,
               char *path, int *npath, int *lend, size_t lenTag, size_t lenPath);
 
-void dsscopystatus_(int *numberRecs, int *numberPaths, int *currentRec,
-		           int *currentPath);
 ///////////////////////////////////////
 
 void zgetversion_(int *ifltab, int *version);
@@ -228,7 +226,6 @@ void zcopyrecord_(long long *ifltabFrom, long long *ifltabTo, const char *pathna
 				 const char *pathnameTo, int *status, size_t pathnameFromLen, size_t pathnameToLen);
 void zdbmod6_ (long long *ifltab, int *address, int *value,
 	const char *characterValue, int *useCharacterValue, size_t characterValueLen);
-void zgetrw6_ (int *iadd, int *record, int *word);
 void zgtrec6_(long long *ifltab, int *arrayVals, int *numberWords, int *iadd, int *flag);
 void zndata6_(long long *ifltab,int *ifpos, int *juls, int *isecs, char *cpath, int *npath, int *juld, int *isecd, int *idtype, int *istat, size_t cstrng_len);
 void zread_(long long *ifltab, const char *cpath, int *npathname, int *header, int *nheader,
