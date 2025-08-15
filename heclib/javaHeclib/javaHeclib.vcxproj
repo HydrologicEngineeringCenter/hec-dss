@@ -240,7 +240,6 @@
     <ClCompile Include="src\Hec_zsetInterrupt.c" />
     <ClCompile Include="src\Hec_zsetMessageLevel.c" />
     <ClCompile Include="src\Hec_zsitsc.c" />
-    <ClCompile Include="src\Hec_zsitsx.c" />
     <ClCompile Include="src\Hec_zspd.c" />
     <ClCompile Include="src\Hec_zspdd.c" />
     <ClCompile Include="src\Hec_zsqueeze.c" />

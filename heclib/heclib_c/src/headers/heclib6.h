@@ -367,13 +367,6 @@ VOID zsitsc6_ (long long *ifltab, const char* pathname, const int* timeArray,
 			 size_t lenTimezoneName);
 
 
-VOID zsitsx (int* ifltab, const char* pathname, const int* timeArray,
-			 const float* valuesArray, int* numberValues,
-             int* baseDate, int* flags, int* storeFlags,
-			 const char* units, const char* type,
-			 int* userHeader, int* lenUserHeader,
-			 int* inflag, int* status,
-             size_t lenPathname, size_t lenUnits, size_t lenType);
 
 
 VOID zsrst (int *ifltab, const char *cpath, const char *cloc,
