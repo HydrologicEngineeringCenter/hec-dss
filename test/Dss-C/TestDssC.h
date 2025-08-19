@@ -8,7 +8,6 @@
 int testLargeCopy();
 int test_normalize_f_part();
 int test_vertical_datums_c();
-int test_vertical_datums_f_();
 int test_stringCat();
 int testAdHoc();
 int testMultiUser(char* filename, int version, int numberDatasets, int accessMode /*2=multi, 3=single, 4=exclusive*/);
@@ -71,7 +70,6 @@ int testDelete(const char *dssFilename7, const char *dssFilename6);
 int runTests(long long* ifltab);
 int testCatalog();
 int testIO_Interface(long long *ifltab7, long long *ifltab6);
-int inctim2_(int *interval, int *nperiods, int *juls, int *issecs, int *jule, int *iesecs);
 int testDateFunctions();
 int Bulletin_17C_SSP_Issue();
 int writeDoubleArray();

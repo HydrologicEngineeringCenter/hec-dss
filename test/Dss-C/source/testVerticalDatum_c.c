@@ -436,79 +436,11 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                         verticalDatumInfo* pVdi = extractVerticalDatumInfoFromUserHeader(userHeader2, userHeaderNumber);
                         zset("VDTM", pVdi ? pVdi->nativeDatum : "UNSET", 0);
                         printf("\t\t\tStoring time series for %d with native vertical datum of %s ", year, pVdi ? pVdi->nativeDatum : "UNSET");
-                        printf("using %s.\n", api == OLD_API ? tsType == REGULAR ? "zsrtsxd" : "zsitsxd" : "ztsStore");
+                        printf("using %s.\n", api == OLD_API ? "skipping legacy API (ztsStore)" : "ztsStore");
                         printf("\t\t\t\tShould %s.\n", xmlIndex == 0 || nativeDatum == UNSET ? "succeed" : "fail");
                         free(pVdi);
                         if (api == OLD_API) {
-                            compressionType = 0;
-                            if (tsType == REGULAR) {
-                                zsrtsxd_(
-                                    ifltab,                         // <-> file table
-                                    pathnames[api][tsType],         //  -> dataset name
-                                    startDate[yearIndex],           //  -> date of first value
-                                    startTime,                      //  -> time of first value
-                                    &numberValues,                  //  -> number of values to store
-                                    values,                         //  -> values to store
-                                    quality,                        //  -> quality flags to store
-                                    &storeFlags,                    //  -> whether to store quality flags (0/1)
-                                    unit,                           //  -> data unit
-                                    dataType,                       //  -> data type
-                                    userHeader2,                    //  -> user header array
-                                    &userHeaderNumber,              //  -> number of header array elements to store
-                                    &storeFlag,                     //  -> data storage method 0=replace all)
-                                    &compressionType,               //  -> data compression type to use (0=file default)
-                                    &compressionBaseVal,            //  -> data compression base value for delta method
-                                    &compressionBase,               //  -> whether to use base value for delta method data compression (0/1)
-                                    &compressionHigh,               //  -> whether to use 2 bytes per compressed value for delta method (0=let software decide)
-                                    &compressionPrec,               //  -> base 10 exponent of compressed values for delta method
-                                    &status,                        // <-  status (0=success)
-                                    strlen(pathnames[api][tsType]), //  -> fortran-required length of dataset name parameter
-                                    strlen(startDate[yearIndex]),   //  -> fortran-required length of date of first value parameter
-                                    strlen(startTime),              //  -> fortran-required length of time of first value parameter
-                                    strlen(unit),                   //  -> fortran-required length of data unit parameter
-                                    strlen(dataType));              //  -> fortran-required length of data type parameter
-                                if (xmlIndex == 0 || nativeDatum == UNSET) {
-                                    assert(status == 0);
-                                    printf("\t\t\t\tSucceeded.\n");
-                                }
-                                else {
-                                    assert(status == 13);
-                                    printf("\t\t\t\tFailed.\n");
-                                }
-                            }
-                            else {
-                                startJul = dateToJulian(startDate[yearIndex]);
-                                for (int i = 0; i < numberValues; ++i) {
-                                    times[i] -= startJul * MINS_IN_1_DAY;
-                                }
-                                zsitsxd_(
-                                    ifltab,                         // <-> file table
-                                    pathnames[api][tsType],         //  -> dataset name
-                                    times,                          //  -> times relative to base date
-                                    values,                         //  -> values to store
-                                    &numberValues,                  //  -> number of values to store
-                                    &startJul,                      //  -> base date for times
-                                    quality,                        //  -> quality flags to store
-                                    &storeFlags,                    //  -> whether to store quality flags (0/1)
-                                    unit,                           //  -> data unit
-                                    dataType,                       //  -> data type
-                                    userHeader2,                    //  -> user header array
-                                    &userHeaderNumber,              //  -> number of user header array elements to store
-                                    &storeFlag,                     //  -> data storage method (0=merge)
-                                    &status,                        // <-  status (0=success)
-                                    strlen(pathnames[api][tsType]), //  -> fortran-required size of dataset name parameter
-                                    strlen(unit),                   //  -> fortran-required size of data unit parameter
-                                    strlen(dataType));              //  -> fortran-required size of data type parameter
-                                if (xmlIndex == 0 || nativeDatum == UNSET) {
-                                    assert(status == 0);
-                                    printf("\t\t\t\tSucceeded.\n");
-                                }
-                                else {
-                                    assert(status == 13);
-                                    printf("\t\t\t\tFailed.\n");
-                                }
-                            }
-                            free(userHeader2);
+                          continue;
                         }
                         else {
                             //-------------------------------------//
@@ -574,90 +506,10 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                 for (int year = 2021; year <= 2022; ++year) {
                     int yearIndex = year - 2021;
                     printf("\t\t\tRetrieving time series for year %d ", year);
-                    printf("with %s\n", api == NEW_API ? "ztsRetrieve" : tsType == REGULAR ? "zrrtsxd" : "zritsxd");
+                    printf("with %s\n", api == NEW_API ? "ztsRetrieve" :  "skipping.. legacy API");
                     maxValueCount = 365;
                     if (api == OLD_API) {
-                        numberValues = numberValues;
-                        memset(values, 0, numberValues * sizeof(double));
-                        if (tsType == REGULAR) {
-                            zrrtsxd_(
-                                ifltab,                          // <-> file table
-                                pathnames[api][tsType],          //  -> dataset name
-                                startDate[yearIndex],            //  -> date of start of time window
-                                "0001",                          //  -> time of start of time window
-                                &numberValues,                   // <-> max number of values to retrieve / number of values retrieved
-                                values,                          // <-  values array
-                                quality,                         // <-  quality flags array
-                                &readFlags,                      //  -> whether to retrieve quality flags if they exist (0/1)
-                                &readFlags,                      // <-  whether quality flags were retrieved (0/1)
-                                unit2,                           // <-  data unit
-                                dataType2,                       // <-  data type
-                                userHeader,                      // <-  user header array
-                                &userHeaderSize,                 //  -> max number of user header elements to retrieve
-                                &userHeaderNumber,               // <-  number of user header elements retrieved
-                                &offsetMinutes,                  // <-  offset into interval of the time of each value
-                                &compressionType,                // <-  compression method used if values were compressed in file
-                                &status,                         // <-  status (0=success)
-                                strlen(pathnames[api][tsType]),  //  -> fortran-required size of dataset name parameter
-                                strlen(startDate[yearIndex]),    //  -> fortran-required size of time window start date parameter
-                                strlen("0001"),                  //  -> fortran-required size of time window start time parameter
-                                sizeof(unit2),                   //  -> fortran-required size of unit parameter
-                                sizeof(dataType2));              //  -> fortran-required size of data type parameter
-                            assert(status == STATUS_OKAY);
-                            //-----------------------------------------------------------------//
-                            // create the times array from:                                    //
-                            //  - the beginning time of the interval containing the start time //
-                            //  - the index into the array                                     //
-                            //  - the interval size in minutes                                 //
-                            //  - the offset                                                   //
-                            //-----------------------------------------------------------------//
-                            for (int i = 0; i < numberValues; ++i) {
-                                times[i] = jan_01_2021_0000 + offsetMinutes + i * MINS_IN_1_DAY;
-                            }
-                        }
-                        else {
-                            startJul     = dateToJulian(startDate[yearIndex]);
-                            startMinutes = 1;
-                            endJul       = dateToJulian(endDate[yearIndex]);
-                            endMinutes   = MINS_IN_1_DAY;
-                            zritsxd_(
-                                ifltab,                         // <-> file table
-                                pathnames[api][tsType],         //  -> dataset name
-                                &startJul,                      //  -> days since 31Dec1899 of start of time window
-                                &startMinutes,                  //  -> minutes into day of start of time window
-                                &endJul,                        //  -> days since 31Dec1899 of end of time window
-                                &endMinutes,                    //  -> minutes into day of end of time window
-                                times,                          // <-  times array as minutes offset from base date
-                                values,                         // <-  values array
-                                &maxValueCount,                 //  -> max number of values to return
-                                &numberValues,                  // <-  number of values returned
-                                &basedate,                      // <-  days since 31Dec1899 of time of first value
-                                quality,                        // <-  quality flags array
-                                &readFlags,                     //  -> whether to retrieve quality flags if they exist (0/1)
-                                &readFlags,                     // <-  whether quality flags were retrieved (0/1)
-                                unit2,                          // <-  data unit
-                                dataType2,                      // <-  data type
-                                userHeader,                     // <-  user header array
-                                &userHeaderSize,                //  -> max number of user header elements to retrieve
-                                &userHeaderNumber,              // <-  number of user header elements retrieved
-                                &readFlag,                      //  -> read method (0=time window, 1=tw+prev, 2=tw+next 3=tw+prev+next)
-                                &status,                        // <-  status (0=success)
-                                strlen(pathnames[api][tsType]), //  -> fortran-required size of dataset name parameter
-                                sizeof(unit2),                  //  -> fortran-required size of unit parameter
-                                sizeof(dataType2));             //  -> fortran-required size of data type parameter
-                            assert(status == STATUS_OKAY);
-                            //-----------------------------------------------------------------//
-                            // add the base date (in minutes) to each value in the times array //
-                            //-----------------------------------------------------------------//
-                            for (int i = 0; i < numberValues; ++i) {
-                                times[i] += basedate * MINS_IN_1_DAY;
-                            }
-                        }
-                        headerBuf = userHeaderToString(userHeader, userHeaderNumber);
-                        assert(headerBuf != NULL);
-                        assert(strlen(headerBuf) > 0);
-                        dv = values;
-                        t = times;
+                      continue;
                     }
                     else {
                         //----------------------------------------//
@@ -767,90 +619,10 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                 // Use with caution!
                 //
                 printf("\t\t\tRetrieving time series that crosses record boundaries ");
-                printf("with %s\n", api == NEW_API ? "ztsRetrieve" : tsType == REGULAR ? "zrrtsxd" : "zritsxd");
+                printf("with %s\n", api == NEW_API ? "ztsRetrieve" : "skipping legay API");
                 maxValueCount = 21; // 21Dec -- 10Jan
                 if (api == OLD_API) {
-                    numberValues = maxValueCount;
-                    memset(values, 0, numberValues * sizeof(double));
-                    if (tsType == REGULAR) {
-                        zrrtsxd_(
-                            ifltab,                         // <-> file table
-                            pathnames[api][tsType],         //  -> dataset name
-                            "21Dec2021",                    //  -> date of start of time window
-                            "0001",                         //  -> time of start of time window
-                            &numberValues,                  // <-> max number of values to retrieve / number of values retrieved
-                            values,                         // <-  values array
-                            quality,                        // <-  quality flags array
-                            &readFlags,                     //  -> whether to retrieve quality flags if they exist (0/1)
-                            &readFlags,                     // <-  whether quality flags were retrieved (0/1)
-                            unit2,                          // <-  data unit
-                            dataType2,                      // <-  data type
-                            userHeader,                     // <-  user header array
-                            &userHeaderSize,                //  -> max number of user header elements to retrieve
-                            &userHeaderNumber,              // <-  number of user header elements retrieved
-                            &offsetMinutes,                 // <-  offset into interval of the time of each value
-                            &compressionType,               // <-  compression method used if values were compressed in file
-                            &status,                        // <-  status (0=success)
-                            strlen(pathnames[api][tsType]), //  -> fortran-required size of dataset name parameter
-                            strlen("21Dec2021"),            //  -> fortran-required size of time window start date parameter
-                            strlen("0001"),                 //  -> fortran-required size of time window start time parameter
-                            sizeof(unit2),                  //  -> fortran-required size of unit parameter
-                            sizeof(dataType2));             //  -> fortran-required size of data type parameter
-                        assert(status == STATUS_OKAY);
-                        //-----------------------------------------------------------------//
-                        // create the times array from:                                    //
-                        //  - the beginning time of the interval containing the start time //
-                        //  - the index into the array                                     //
-                        //  - the interval size in minutes                                 //
-                        //  - the offset                                                   //
-                        //-----------------------------------------------------------------//
-                        for (int i = 0; i < numberValues; ++i) {
-                            times[i] = dec_21_2021_0000 + offsetMinutes + i * MINS_IN_1_DAY;
-                        }
-                    }
-                    else {
-                        startJul     = dateToJulian("21Dec2021");
-                        startMinutes = 1;
-                        endJul       = dateToJulian("10Jan2022");
-                        endMinutes = MINS_IN_1_DAY;
-                        zritsxd_(
-                            ifltab,                         // <-> file table
-                            pathnames[api][tsType],         //  -> dataset name
-                            &startJul,                      //  -> days since 31Dec1899 of start of time window
-                            &startMinutes,                  //  -> minutes into day of start of time window
-                            &endJul,                        //  -> days since 31Dec1899 of end of time window
-                            &endMinutes,                    //  -> minutes into day of end of time window
-                            times,                          // <-  times array as minutes offset from base date
-                            values,                         // <-  values array
-                            &maxValueCount,                 //  -> max number of values to return
-                            &numberValues,                  // <-  number of values returned
-                            &basedate,                      // <-  days since 31Dec1899 of time of first value
-                            quality,                        // <-  quality flags
-                            &readFlags,                     //  -> whether to retrieve quality flags if they exist (0/1)
-                            &readFlags,                     // <-  whether quality flags were retrieved (0/1)
-                            unit2,                          // <-  data unit
-                            dataType2,                      // <-  data type
-                            userHeader,                     // <-  user header array
-                            &userHeaderSize,                //  -> max number of user header elements to retrieve
-                            &userHeaderNumber,              // <-  number of user header elements retrieved
-                            &readFlag,                      //  -> read method (0=time window, 1=tw+prev, 2=tw+next 3=tw+prev+next)
-                            &status,                        // <-  status (0=success)
-                            strlen(pathnames[api][tsType]), //  -> fortran-required size of dataset name parameter
-                            sizeof(unit2),                  //  -> fortran-required size of unit parameter
-                            sizeof(dataType2));             //  -> fortran-required size of data type parameter
-                        assert(status == STATUS_OKAY);
-                        //-----------------------------------------------------------------//
-                        // add the base date (in minutes) to each value in the times array //
-                        //-----------------------------------------------------------------//
-                        for (int i = 0; i < numberValues; ++i) {
-                            times[i] += basedate * MINS_IN_1_DAY;
-                        }
-                    }
-                    headerBuf = userHeaderToString(userHeader, userHeaderNumber);
-                    assert(headerBuf != NULL);
-                    assert(strlen(headerBuf) > 0);
-                    dv = values;
-                    t = times;
+                  continue;
                 }
                 else {
                     tss = zstructTsNewTimes(
@@ -948,63 +720,10 @@ void testV6TimeSeiresWithMultipleVerticalDatums() {
                 //     No values stored.
                 //
                 printf("\t\t\tStoring time series that crosses record boundaries ");
-                printf("with %s\n", api == NEW_API ? "ztsStore" : tsType == REGULAR ? "zsrtsxd" : "zsitsxd");
+                printf("with %s\n", api == NEW_API ? "ztsStore" : "skippping legacy API (ztsStore)");
                 printf("\t\t\t\tShould fail.\n");
                 if (api == OLD_API) {
-                    compressionType = 0;
-                    userHeaderNumber = 0;
-                    numberValues = maxValueCount;
-                    if (tsType == REGULAR) {
-                        zsrtsxd_(
-                            ifltab,                         // <-> file table
-                            pathnames[api][tsType],         //  -> dataset name
-                            "21Dec2021",                    //  -> date of first value
-                            startTime,                      //  -> time of first value
-                            &numberValues,                  //  -> number of values to store
-                            values,                         //  -> values to store
-                            quality,                        //  -> quality flags to store
-                            &storeFlags,                    //  -> whether to store quality flags (0/1)
-                            unit,                           //  -> data unit
-                            dataType,                       //  -> data type
-                            userHeader2,                    //  -> user header array
-                            &userHeaderNumber,              //  -> number of header array elements to store
-                            &storeFlag,                     //  -> data storage method 0=replace all)
-                            &compressionType,               //  -> data compression type to use (0=file default)
-                            &compressionBaseVal,            //  -> data compression base value for delta method
-                            &compressionBase,               //  -> whether to use base value for delta method data compression (0/1)
-                            &compressionHigh,               //  -> whether to use 2 bytes per compressed value for delta method (0=let software decide)
-                            &compressionPrec,               //  -> base 10 exponent of compressed values for delta method
-                            &status,                        // <-  status (0=success)
-                            strlen(pathnames[api][tsType]), //  -> fortran-required length of dataset name parameter
-                            strlen("21Dec2021"),            //  -> fortran-required length of date of first value parameter
-                            strlen(startTime),              //  -> fortran-required length of time of first value parameter
-                            strlen(unit),                   //  -> fortran-required length of data unit parameter
-                            strlen(dataType));              //  -> fortran-required length of data type parameter
-                    }
-                    else {
-                        startJul = dateToJulian("21Dec2021");
-                        for (int i = 0; i < numberValues; ++i) {
-                            times[i] -= startJul * MINS_IN_1_DAY;
-                        }
-                        zsitsxd_(
-                            ifltab,                         // <-> file table
-                            pathnames[api][tsType],         //  -> dataset name
-                            times,                          //  -> times relative to base date
-                            values,                         //  -> values to store
-                            &numberValues,                  //  -> number of values to store
-                            &startJul,                      //  -> base date for times
-                            quality,                        //  -> quality flags to store
-                            &storeFlags,                    //  -> whether to store quality flags (0/1)
-                            unit,                           //  -> data unit
-                            dataType,                       //  -> data type
-                            userHeader2,                    //  -> user header array
-                            &userHeaderNumber,              //  -> number of user header array elements to store
-                            &storeFlag,                     //  -> data storage method (0=merge)
-                            &status,                        // <-  status (0=success)
-                            strlen(pathnames[api][tsType]), //  -> fortran-required size of dataset name parameter
-                            strlen(unit),                   //  -> fortran-required size of data unit parameter
-                            strlen(dataType));              //  -> fortran-required size of data type parameter
-                    }
+                  continue;
                 }
                 else {
                     //-------------------------------------//

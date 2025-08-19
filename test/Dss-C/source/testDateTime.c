@@ -343,7 +343,7 @@ int testDateTime()
 				number = incNumber;
 				julianStart2 = julianStart;
 				secondsStart2 = secondsStart;
-				inctim2_(&intervalSeconds, &number, &julianStart2, &secondsStart2, &julianEnd2, &secondsEnd2);
+				incrementTime(intervalSeconds, number, julianStart2, secondsStart2, &julianEnd2, &secondsEnd2);
 				julianToDate(julianEnd2, style, cdate, sizeof(cdate));
 				secondsToTimeString(secondsEnd2, 0, 2, ctime, sizeof(ctime));
 				if (DEBUG) printf("Loc 300b, date = %s,  time = %s,  julian = %d\n", cdate, ctime, julianEnd);
@@ -368,7 +368,7 @@ int testDateTime()
 					return status;	
 				}
 
-				inctim2_(&intervalSeconds, &number, &julianStart2, &secondsStart2, &julianEnd2, &secondsEnd2);
+				incrementTime(intervalSeconds, number, julianStart2, secondsStart2, &julianEnd2, &secondsEnd2);
 				julianToDate(julianEnd2, style, cdate, sizeof(cdate));
 				secondsToTimeString(secondsEnd2, 0, 2, ctime, sizeof(ctime));
 				if (DEBUG) printf("Loc 301b, date = %s,  time = %s,  julian = %d\n", cdate, ctime, julianEnd);
@@ -393,7 +393,7 @@ int testDateTime()
 				}
 
 				number = incNumber;
-				inctim2_(&intervalSeconds, &number, &julianStart2, &secondsStart2, &julianEnd2, &secondsEnd2);
+				incrementTime(intervalSeconds, number, julianStart2, secondsStart2, &julianEnd2, &secondsEnd2);
 				julianToDate(julianEnd2, style, cdate, sizeof(cdate));
 				secondsToTimeString(secondsEnd2, 0, 2, ctime, sizeof(ctime));
 				if (DEBUG) printf("Loc 302b, date = %s,  time = %s,  julian = %d\n", cdate, ctime, julianEnd);

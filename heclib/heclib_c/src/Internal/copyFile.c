@@ -8,7 +8,7 @@
 #include "hecdssInternal.h"
 
 /**
-*  Function:	zloadCache, copyFile
+*  Function:	copyFile
 *
 *  Use:			Private (Internal)
 *
@@ -17,7 +17,6 @@
 *					Optionally, the file can be copied to another file at the same time.
 *
 *  Declaration: int copyFile(long long *ifltab, int handleTo);
-*				int zloadCache (long long *ifltab)
 *
 *  Parameters:	long long ifltab
 *					An integer array dimensioned to int*8 [250] that contains file specific information.
@@ -87,23 +86,5 @@ int copyFile(long long *ifltab, int handleTo)
 	return istat;
 }
 
-int zloadCache (long long *ifltab)
-{
-	return copyFile(ifltab, 0);
-}
 
-void zloadcache7_(long long *ifltab, int *istat)
-{
-	*istat = zloadCache(ifltab);
-}
-
-void zloadcache_(long long *ifltab, int *istat)
-{
-	if (zgetVersion(ifltab) == 6) {
-		zloadcache6_(ifltab, istat);
-	}
-	else {
-		*istat = zloadCache(ifltab);
-	}
-}
 

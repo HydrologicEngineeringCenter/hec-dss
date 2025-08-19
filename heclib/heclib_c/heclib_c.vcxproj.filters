@@ -435,16 +435,10 @@
     <ClCompile Include="src\DssInterface\zclose_.c">
       <Filter>src\DssInterface</Filter>
     </ClCompile>
-    <ClCompile Include="src\DssInterface\zdebugout7.c">
-      <Filter>src\DssInterface</Filter>
-    </ClCompile>
     <ClCompile Include="src\DssInterface\zdelete_.c">
       <Filter>src\DssInterface</Filter>
     </ClCompile>
     <ClCompile Include="src\DssInterface\zerrorDecode_.c">
-      <Filter>src\DssInterface</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\zfname.c">
       <Filter>src\DssInterface</Filter>
     </ClCompile>
     <ClCompile Include="src\DssInterface\zget_.c">
@@ -663,7 +657,7 @@
     <ClCompile Include="src\Internal\zisaCollection.c">
       <Filter>src\Internal</Filter>
     </ClCompile>
-    <ClCompile Include="src\Internal\zloadCache.c">
+    <ClCompile Include="src\Internal\copyFile.c">
       <Filter>src\Internal</Filter>
     </ClCompile>
     <ClCompile Include="src\Internal\zlocationUpdatePerm.c">
@@ -1126,9 +1120,6 @@
       <Filter>src\Public</Filter>
     </ClCompile>
     <ClCompile Include="src\Public\ztsGetDateTimeRange.c">
-      <Filter>src\Public</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Public\ztsGetEPartFromInterval.c">
       <Filter>src\Public</Filter>
     </ClCompile>
     <ClCompile Include="src\Public\ztsGetInterval.c">

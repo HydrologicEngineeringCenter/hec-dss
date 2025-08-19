@@ -65,10 +65,8 @@
     <ClCompile Include="src\DssInterface\v6and7\zwritex.c" />
     <ClCompile Include="src\DssInterface\zcheckfilever_.c" />
     <ClCompile Include="src\DssInterface\zclose_.c" />
-    <ClCompile Include="src\DssInterface\zdebugout7.c" />
     <ClCompile Include="src\DssInterface\zdelete_.c" />
     <ClCompile Include="src\DssInterface\zerrorDecode_.c" />
-    <ClCompile Include="src\DssInterface\zfname.c" />
     <ClCompile Include="src\DssInterface\zgetinterval_.c" />
     <ClCompile Include="src\DssInterface\zgetVersion_.c" />
     <ClCompile Include="src\DssInterface\zget_.c" />
@@ -144,7 +142,7 @@
     <ClCompile Include="src\Internal\zinit.c" />
     <ClCompile Include="src\Internal\zinitIfltab.c" />
     <ClCompile Include="src\Internal\zisaCollection.c" />
-    <ClCompile Include="src\Internal\zloadCache.c" />
+    <ClCompile Include="src\Internal\copyFile.c" />
     <ClCompile Include="src\Internal\zlocationUpdatePerm.c" />
     <ClCompile Include="src\Internal\zlockActive.c" />
     <ClCompile Include="src\Internal\zlockingOld.c" />
@@ -299,7 +297,6 @@
     <ClCompile Include="src\Public\ztextStructPrint.c" />
     <ClCompile Include="src\Public\ztsGetDateRange.c" />
     <ClCompile Include="src\Public\ztsGetDateTimeRange.c" />
-    <ClCompile Include="src\Public\ztsGetEPartFromInterval.c" />
     <ClCompile Include="src\Public\ztsGetInterval.c" />
     <ClCompile Include="src\Public\ztsOffset.c" />
     <ClCompile Include="src\Public\ztsOffsetAdjustToOffset.c" />

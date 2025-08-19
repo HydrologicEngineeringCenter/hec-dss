@@ -423,6 +423,7 @@ int Export(char* dssFileName, char* path, int metaDataOnly)
 	}
 
 	zstructFree(rs);
+	zclose(ifltab);
 	return 0;
 }
 

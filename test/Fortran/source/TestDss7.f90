@@ -17,18 +17,11 @@
     !use modVerticalDatumInfo
     implicit none
 
-    integer status, messageUnit,test_vertical_datums_f
+    integer status, messageUnit
     status = 0
     messageUnit = 6
  
  
-
-!    call workbench()
-!    call exit()
-    status = test_vertical_datums_f()
-    
-     if(status.ne.0) call exit(status)
-    
 
     call deletefile('c7t1.dss',status)
     call deletefile('c7t2.dss',status)

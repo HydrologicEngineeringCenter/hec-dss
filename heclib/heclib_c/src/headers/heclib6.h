@@ -25,15 +25,11 @@ extern "C" {
 
 	VOID chrlnb_ (char *cstring, int *len, size_t strlen);
 	VOID chrhol_ (const char *cstring, int *start, int *length, int *hol, int *start2, size_t stringLen);
-	VOID getime_ (const char *line, const int *beg, const int *len,
-				  int *juls, int *istime, int *jule, int *ietime, int *status,
-				  size_t line_length);
 	VOID holchr_ (int *hol, int *start, int *length, char *str, int *start2, size_t stringLen);
 	INT idaywk_(int *jul);
 	INT ihm2m_(char *ctime, size_t ctimeLen);
 	INT inctim_(int *interval, int *minFlag, int *nperiods, int *juls, int *istime,
 		int *jule, int *ietime);
-	INT isunitconnected (int *unit);
 	INT iymdjl_ (int *year, int *month, int *day);
 	INT jliymd_ (int *julian, int *year, int *month, int *day);
 	INT juldat_ (int *julian, int *style, char *date, int *date_len, size_t size);
@@ -124,16 +120,8 @@ VOID zcut    (int *ifltab, const char *pathname, int *ldelete, int *buffer,
 VOID zcutsz  (int *ifltab, const char *pathname, int *size, int *status,
 			   size_t len_pathname);
 
-VOID zdcinf (int *method, float *baseValue, int *baseSet, int *deltaSize,
-			  int *precision, int *status);
-
-VOID zdblook  (int *ifltab, int *address, int *length);
-
 VOID zdbmod  (int *ifltab, int *address, int *value, const char *characterValue, int *useCharacterValue,
 			   size_t len_characterValue);
-
-VOID zdebug1  (int *ival, long long *ival8, char *creal, char *cstrng, int *ibytes,
-			   size_t len_creal, size_t len_cstrng);
 
 VOID zdelet  (int *ifltab, const char *pathname, int *npath, int *status,
 			   size_t len_pathname);
@@ -144,12 +132,7 @@ VOID zgetrw (int *address, int *record, int *word);
 
 VOID zgintl_ (int*, char*, int*, int*, size_t);
 
-VOID zgpnp_ (const char*, char*, char*, char*, char*, char*, char*, int*,
-                size_t, size_t, size_t, size_t, size_t, size_t, size_t);
-
 VOID zgtrec (int *ifltab, int *arrayVals, int *numberWords, int *address, int* flag);
-
-VOID zincbk_ (int*, int*, int*, int*, int*);
 
 VOID zinqir (int *, const char *, char *, int *, size_t, size_t);
 
@@ -159,10 +142,6 @@ VOID zirbeg_ (int*, const char*, int*, int*, int*,
 VOID zndata (int* ifltab, int* ifpos, int* juls, int* isecs,
 			 const char* cpath, int* npath, int* juld, int* isecd,
 			 int* idtype, int* istat, size_t sizeof_cpath);
-
-VOID znextts (int *ifltab, const char *pathname, char *nextPath,
-               int *lforward, int *status, size_t len_pathname, size_t len_nextPath);
-
 
 VOID zofset_ (int*, int*, int*, int*, int*);
 
@@ -301,15 +280,6 @@ VOID zrrtsx (int* ifltab, const char* pathname, const char* startDate,
 			 size_t lenPathname, size_t lenStartDate, size_t lenStartTime,
 			 size_t lenUnits, size_t lenType);
 
-VOID zrrtsxd (int* ifltab, const char* pathname, const char* startDate,
-			 const char* startTime, int* numberVals, double* values,
-			 int* flags, int* readFlags, int* flagsRead,
-             char* units, char* type,
-			 int* userHeader, int* userHeaderMax, int* lenUserHeader,
-			 int* offset, int* compression, int* status,
-			 size_t lenPathname, size_t lenStartDate, size_t lenStartTime,
-			 size_t lenUnits, size_t lenType);
-
               // Note: zrtext passes in a file name instead of a unit number
                //        and there is no LCCNTL argument!
 VOID zrtext (int *ifltab, const char* cpath, const char* fileName,
@@ -397,21 +367,7 @@ VOID zsitsc6_ (long long *ifltab, const char* pathname, const int* timeArray,
 			 size_t lenTimezoneName);
 
 
-VOID zsitsx (int* ifltab, const char* pathname, const int* timeArray,
-			 const float* valuesArray, int* numberValues,
-             int* baseDate, int* flags, int* storeFlags,
-			 const char* units, const char* type,
-			 int* userHeader, int* lenUserHeader,
-			 int* inflag, int* status,
-             size_t lenPathname, size_t lenUnits, size_t lenType);
 
-VOID zsitsxd (int* ifltab, const char* pathname, const int* timeArray,
-			 const double* valuesArray, int* numberValues,
-             int* baseDate, int* flags, int* storeFlags,
-			 const char* units, const char* type,
-			 int* userHeader, int* lenUserHeader,
-			 int* inflag, int* status,
-             size_t lenPathname, size_t lenUnits, size_t lenType);
 
 VOID zsrst (int *ifltab, const char *cpath, const char *cloc,
             const char *catim, const char *chparm, const char *chunit,

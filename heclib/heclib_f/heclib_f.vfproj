@@ -109,7 +109,6 @@
 					<File RelativePath=".\src\DssInterface\v6and7\zdtypeInterface.f"/>
 					<File RelativePath=".\src\DssInterface\v6and7\zgetInfoInterface.f"/>
 					<File RelativePath=".\src\DssInterface\v6and7\zgintlInterface.f"/>
-					<File RelativePath=".\src\DssInterface\v6and7\zincbkInterface.f"/>
 					<File RelativePath=".\src\DssInterface\v6and7\zinqirInterface.f"/>
 					<File RelativePath=".\src\DssInterface\v6and7\zirbegInterface.f"/>
 					<File RelativePath=".\src\DssInterface\v6and7\znexttsInterface.f"/>
@@ -117,7 +116,6 @@
 					<File RelativePath=".\src\DssInterface\v6and7\zplistInterface.f"/>
 					<File RelativePath=".\src\DssInterface\v6and7\zputInfoInterface.f"/>
 					<File RelativePath=".\src\DssInterface\v6and7\zqueryInterface.f"/>
-					<File RelativePath=".\src\DssInterface\v6and7\zreadInterface.f"/>
 					<File RelativePath=".\src\DssInterface\v6and7\zrecAddInterface.f"/>
 					<File RelativePath=".\src\DssInterface\v6and7\zrenameInterface.f"/>
 					<File RelativePath=".\src\DssInterface\v6and7\zrinfoInterface.f"/>
@@ -134,7 +132,6 @@
 					<File RelativePath=".\src\DssInterface\v6and7\zrrtsd.f"/>
 					<File RelativePath=".\src\DssInterface\v6and7\zrrtsiInterface.f"/>
 					<File RelativePath=".\src\DssInterface\v6and7\zrrtsx.f"/>
-					<File RelativePath=".\src\DssInterface\v6and7\zrrtsxd.f"/>
 					<File RelativePath=".\src\DssInterface\v6and7\zrtxtaInterface.f"/>
 					<File RelativePath=".\src\DssInterface\v6and7\zrtxtsInterface.f"/>
 					<File RelativePath=".\src\DssInterface\v6and7\zsetfiInterface.f"/>
@@ -143,7 +140,6 @@
 					<File RelativePath=".\src\DssInterface\v6and7\zsitscInterface.f"/>
 					<File RelativePath=".\src\DssInterface\v6and7\zsitsiInterface.f"/>
 					<File RelativePath=".\src\DssInterface\v6and7\zsitsx.f"/>
-					<File RelativePath=".\src\DssInterface\v6and7\zsitsxd.f"/>
 					<File RelativePath=".\src\DssInterface\v6and7\zspd.f"/>
 					<File RelativePath=".\src\DssInterface\v6and7\zspdd.f"/>
 					<File RelativePath=".\src\DssInterface\v6and7\zspdiInterface.f"/>
@@ -152,15 +148,12 @@
 					<File RelativePath=".\src\DssInterface\v6and7\zsrtsd.f"/>
 					<File RelativePath=".\src\DssInterface\v6and7\zsrtsiInterface.f"/>
 					<File RelativePath=".\src\DssInterface\v6and7\zsrtsx.f"/>
-					<File RelativePath=".\src\DssInterface\v6and7\zsrtsxd.f"/>
 					<File RelativePath=".\src\DssInterface\v6and7\ztsinfoInterface.f"/>
 					<File RelativePath=".\src\DssInterface\v6and7\ztssrchInterface.f"/>
 					<File RelativePath=".\src\DssInterface\v6and7\zwritx.f"/>
 				</Filter>
 				<File RelativePath=".\src\DssInterface\checks.f"/>
 				<File RelativePath=".\src\DssInterface\zbegdt7.f"/>
-				<File RelativePath=".\src\DssInterface\zdebug7.f"/>
-				<File RelativePath=".\src\DssInterface\zdebugout7.f"/>
 				<File RelativePath=".\src\DssInterface\zdswap.f"/>
 				<File RelativePath=".\src\DssInterface\zdtype.f"/>
 				<File RelativePath=".\src\DssInterface\zincbk7.f"/>
@@ -211,7 +204,6 @@
 				<File RelativePath=".\src\Support\findlm.f"/>
 				<File RelativePath=".\src\Support\flush.f"/>
 				<File RelativePath=".\src\Support\gethol.f"/>
-				<File RelativePath=".\src\Support\getime.f"/>
 				<File RelativePath=".\src\Support\hol2ch.f"/>
 				<File RelativePath=".\src\Support\holchr.f"/>
 				<File RelativePath=".\src\Support\ibits.f"/>
@@ -221,14 +213,12 @@
 				<File RelativePath=".\src\Support\ihm2s.f"/>
 				<File RelativePath=".\src\Support\ihms2s.f"/>
 				<File RelativePath=".\src\Support\inctim.f"/>
-				<File RelativePath=".\src\Support\inctim2.f"/>
 				<File RelativePath=".\src\Support\indexr.f"/>
 				<File RelativePath=".\src\Support\int8to4.f"/>
 				<File RelativePath=".\src\Support\intchr.f"/>
 				<File RelativePath=".\src\Support\intgr.f"/>
 				<File RelativePath=".\src\Support\intgrc.f"/>
 				<File RelativePath=".\src\Support\iscan.f"/>
-				<File RelativePath=".\src\Support\isunitconnected.f"/>
 				<File RelativePath=".\src\Support\iymdjl.f"/>
 				<File RelativePath=".\src\Support\jliymd.f"/>
 				<File RelativePath=".\src\Support\juldat.f"/>
@@ -260,16 +250,13 @@
 				<File RelativePath=".\src\Support\systim.f"/>
 				<File RelativePath=".\src\Support\tempname.f"/>
 				<File RelativePath=".\src\Support\when.f"/>
-				<File RelativePath=".\src\Support\wind.f"/>
 				<File RelativePath=".\src\Support\xdoubc.f"/>
 				<File RelativePath=".\src\Support\xreal.f"/>
 				<File RelativePath=".\src\Support\xrealc.f"/>
 				<File RelativePath=".\src\Support\xreald.f"/>
 				<File RelativePath=".\src\Support\ymddat.f"/>
 			</Filter>
-			<File RelativePath=".\src\dssCopyStatus.f"/>
 			<File RelativePath=".\src\Support\get_user_header_param.f"/>
-			<File RelativePath=".\src\getCurrentRec.f"/>
 			<File RelativePath=".\src\Support\remove_user_header_param.f"/>
 			<File RelativePath=".\src\zabort6.f"/>
 			<File RelativePath=".\src\zbdump6.f"/>
@@ -298,11 +285,8 @@
 			<File RelativePath=".\src\zcorec6.f"/>
 			<File RelativePath=".\src\zcut6.f"/>
 			<File RelativePath=".\src\zcutsz6.f"/>
-			<File RelativePath=".\src\zdblook6.f"/>
 			<File RelativePath=".\src\zdbmod6.f"/>
-			<File RelativePath=".\src\zdcinf.f"/>
 			<File RelativePath=".\src\zdebug.f"/>
-			<File RelativePath=".\src\zdebug1.f"/>
 			<File RelativePath=".\src\zdelet6.f"/>
 			<File RelativePath=".\src\zdswap6.f"/>
 			<File RelativePath=".\src\zdtype6.f"/>
@@ -335,7 +319,6 @@
 			<File RelativePath=".\src\zircpy6.f"/>
 			<File RelativePath=".\src\zirdbl6.f"/>
 			<File RelativePath=".\src\zirdow6.f"/>
-			<File RelativePath=".\src\zloadcache6.f"/>
 			<File RelativePath=".\src\zlockrd.f"/>
 			<File RelativePath=".\src\zmatca6.f"/>
 			<File RelativePath=".\src\zmaxpart6.f"/>
