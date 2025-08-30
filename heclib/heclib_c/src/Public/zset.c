@@ -77,7 +77,7 @@
 *
 **/
 
-int zset7(const char* parameter, const char* charVal, int integerValue)
+int zset(const char* parameter, const char* charVal, int integerValue)
 {
 	char cparm[5];
 	char messageString[20];

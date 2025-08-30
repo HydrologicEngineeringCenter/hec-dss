@@ -15,6 +15,7 @@
     <ClCompile Include="src\Dss6\deleteFile.c" />
     <ClCompile Include="src\Dss6\filesize.c" />
     <ClCompile Include="src\Dss6\flushf.c" />
+    <ClCompile Include="src\Dss6\fortran_stubs.c" />
     <ClCompile Include="src\Dss6\isonlocaldrive.c" />
     <ClCompile Include="src\Dss6\lockdss.c" />
     <ClCompile Include="src\Dss6\openf.c" />
@@ -54,7 +55,6 @@
     <ClCompile Include="src\DssInterface\v6and7\zreadc.c" />
     <ClCompile Include="src\DssInterface\v6and7\zreadx.c" />
     <ClCompile Include="src\DssInterface\v6and7\zrecordAddresses.c" />
-    <ClCompile Include="src\DssInterface\v6and7\zset.c" />
     <ClCompile Include="src\DssInterface\v6and7\zsqueeze.c" />
     <ClCompile Include="src\DssInterface\v6and7\ztsGetSizes.c" />
     <ClCompile Include="src\DssInterface\v6and7\ztsOtherStuff.c" />
@@ -258,7 +258,7 @@
     <ClCompile Include="src\Public\zpdStore.c" />
     <ClCompile Include="src\Public\zquery.c" />
     <ClCompile Include="src\Public\zrename.c" />
-    <ClCompile Include="src\Public\zset7.c" />
+    <ClCompile Include="src\Public\zset.c" />
     <ClCompile Include="src\Public\zsetCollectionSequence.c" />
     <ClCompile Include="src\Public\zsetFile.c" />
     <ClCompile Include="src\Public\zspatialGridRetrieve.c" />

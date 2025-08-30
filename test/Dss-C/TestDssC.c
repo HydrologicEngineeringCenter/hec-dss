@@ -22,11 +22,7 @@ int test_data_shift_during_save(int regular);
 
 
 int skip_dss6(void){
-	#if defined(__linux__) || defined(__APPLE__) 
 	  return 1;
-	#else
-	  return 0;
-	#endif
 }
 
 
@@ -249,13 +245,14 @@ int runTheTests() {
 	if (status != STATUS_OKAY)
 		return status;
 
-	printf("test issue DSS-178\n");
-	if (bigEndian()) zset("disa", "", -1);
-	status = testDss178();
-	zset("disa", "", 0);
-	if (status != STATUS_OKAY)
-		return status;
-
+	if (!skip_dss6()) { // converts from v7 to v6 
+		printf("test issue DSS-178\n");
+		if (bigEndian()) zset("disa", "", -1);
+		status = testDss178();
+		zset("disa", "", 0);
+		if (status != STATUS_OKAY)
+			return status;
+	}
 	printf("test text tables issue 135\n");
 	status = testTextTableIssue135();
 	if (status != STATUS_OKAY)
@@ -293,11 +290,12 @@ int runTheTests() {
 	if (status != STATUS_OKAY)
 		return status;
 
-	printf("\ntest copy large record\n");
-	status = testLargeCopy();
-	if (status != STATUS_OKAY)
-		return status;
-
+	if (!skip_dss6()) {
+		printf("\ntest copy large record\n");
+		status = testLargeCopy();
+		if (status != STATUS_OKAY)
+			return status;
+	}
 	printf("\ntest miscellaneous stuff\n");
 	status = miscTests();
 	if (status != STATUS_OKAY)
@@ -1530,6 +1528,8 @@ int testTsStoreRules() {
 	int status = -1;
 	zset("MLVL", "", 1);
 	for (int dssVer = 6; dssVer <= 7; ++dssVer) {
+		if (skip_dss6())
+			dssVer = 7;
 		printf("DSS Version %d\n", dssVer);
 		long long ifltab[250] = { 0 };
 		char* dssFilename = strdup("testCwms1424_v?.dss");

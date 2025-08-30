@@ -449,12 +449,12 @@ int test_normalize_f_part() {
 		tssStore = zstructTsNewRegDoubles(pathname, dvalues, numberValues, startDate, startTime, unit, type);
 		status = ztsStore(ifltab, tssStore, 0);
 		assert(status != 0);
-		zset7("clear", "", 0);
+		zset("clear", "", 0);
 		tssRetrieve = zstructTsNewTimes(pathname, startDate, startTime, endDate, endTime);
 		printf("Retrieving from %s\n", pathname);
 		status = ztsRetrieve(ifltab, tssRetrieve, 0, 0, 0);
 		assert(status != 0);
-		zset7("clear", "", 0);
+		zset("clear", "", 0);
 		zstructFree(tssStore);
 		zstructFree(tssRetrieve);
 	}

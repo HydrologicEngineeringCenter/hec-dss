@@ -25,8 +25,7 @@ int test_vertical_datums_c() {
     testVerticalDatumInfoSerialization();
     testZsetZquery();
     testStoreRetrieveTimeSeries();
-   
-   // testV6TimeSeiresWithMultipleVerticalDatums();
+    testV6TimeSeiresWithMultipleVerticalDatums();
     testStoreRetrievePairedData();
     testCopyRecordWithVdi();
     return 0;

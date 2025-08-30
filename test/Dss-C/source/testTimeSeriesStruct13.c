@@ -148,7 +148,7 @@ int testztsStruct13(long long *ifltab)
 		zswitchInts(tss1->userHeader, 6);
 	}
 
-	//zset7("MLVL", "", 13);
+	//zset("MLVL", "", 13);
 	status = ztsStore(ifltab, tss1, 0);
 	if (zcheckStatus(ifltab, status, 1, "Fail in testztsStruct13 Loc 1, store status ")) return status;
 

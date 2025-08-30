@@ -12,7 +12,7 @@ int runTests(long long* ifltab)
 
 	int status;
 
-	zset7("clear", "", 0);
+	zset("clear", "", 0);
 	status = testInternalIO(ifltab);
 	if (status != STATUS_OKAY) return status;
 
