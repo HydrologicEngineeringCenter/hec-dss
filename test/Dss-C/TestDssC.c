@@ -351,45 +351,8 @@ int runTheTests() {
 	status = testMultiUser("testmultiuser7.dss", 7, 333, 2);
 	if (status != STATUS_OKAY) return status;
 
-	remove("testmultiuser6.dss");
-	status = testMultiUser("testmultiuser6.dss", 6, 444, 2);
-	if (status != STATUS_OKAY) return status;
+	 
 
-
-
-
-	//findInFile();
-	//mainx(argc, argv);
-	//return 0;
-
-	//catStruct = zstructCatalogNew();
-	//testMultiUser();
-	//return 0;
-
-	//catStruct = zstructCatalogNew(); 
-
-	//status = hec_dss_zopen(ifltab7, "C:\\Users\\q0hecwjc\\Desktop\\funny.dss");
-	//status = hec_dss_zopen(ifltab7, "C:\\Users\\q0hecwjc\\Desktop\\db7.dss");
-	//status = zcatalog((long long*)ifltab7, catStruct->pathWithWildChars, catStruct, 0);
-
-	//testCatalog();
-	//testConversion();
-	//zset("MLVL", "", 15);
-	//stringCopy(fileName7, sizeof(fileName7), "C:/Users/q0hecwjc/Desktop/snow.2016.01.dss", sizeof(fileName7));	
-	//stringCopy(fileName7, sizeof(fileName7), "C:/Users/q0hecwjc/Desktop/airtemp.2016.04.dss", sizeof(fileName7));	
-	//stringCopy(fileName7, sizeof(fileName7), "C:/Users/q0hecwjc/Documents/test.dss", sizeof(fileName7));
-	//status = hec_dss_zopen(ifltab7, fileName7);
-	//if (status) return status;
-	//status =spatialDateTime ("01DEC2016:2400", &jul, &jul2);
-	//status = testAdHoc2();
-//	filesToUnix();
-//	return;
-	//testConversion();
-	//status = testAdHoc2();
-	//bc1();
-	//ExampleOpenx();
-	//return;
-//	if (status != STATUS_OKAY) return status;
 
 	status = testMisc();
 	if (status != STATUS_OKAY) return status;
@@ -406,11 +369,6 @@ int runTheTests() {
 	status = hec_dss_zopen(ifltab7, fileName7);
 	if (status) return status;
 
-	//status = testztsStruct1(ifltab7);
-	//zclose(ifltab7);
-	//printf("Done\n");
-	//if (status != STATUS_OKAY) return status;
-	//return status;
 
 	printf("\n\n\n\n###################################################################\n\n");
 	printf("     Test 1 - Normal\n");

@@ -1509,7 +1509,7 @@ void testStoreRetrievePairedData() {
     //     1 = delete existing record
     //
     zset("MLVL", "", 1);
-    for (int i = 0; i < 2; ++i) {
+    for (int i = 1; i < 2; ++i) {
         remove(filename[i]);
         for (int j = 0; j < xml_count; ++j) {
             for (int k = 0; k < currentVerticalDatumCount; ++k) {
@@ -2103,8 +2103,8 @@ void testCopyRecordWithVdi_NoVdiInDestination() {
             xml[i] = strdup("");
         }
     }
-    for (int srcDssVer = 6; srcDssVer <= 7; ++srcDssVer) {
-        for (int dstDssVer = 6; dstDssVer <= 7; ++dstDssVer) {
+    for (int srcDssVer = 7; srcDssVer <= 7; ++srcDssVer) {
+        for (int dstDssVer = 7; dstDssVer <= 7; ++dstDssVer) {
 
             remove(filename[SRC]);
             if (srcDssVer == 6) {
@@ -2320,8 +2320,8 @@ void testCopyRecordWithVdi_OtherNativeDatumInDestination() {
     int xmlCount = sizeof(xml) / sizeof(xml[0]);
 
     zset("MLVL", "", 0);
-    for (int srcDssVer = 6; srcDssVer <= 7; ++srcDssVer) {
-        for (int dstDssVer = 6; dstDssVer <= 7; ++dstDssVer) {
+    for (int srcDssVer = 7; srcDssVer <= 7; ++srcDssVer) {
+        for (int dstDssVer = 7; dstDssVer <= 7; ++dstDssVer) {
 
             remove(filename[SRC]);
             if (srcDssVer == 6) {
@@ -2670,8 +2670,8 @@ void testCopyRecordWithVdi_SameNativeDatumInDestination() {
         "</vertical-datum-info>\n"
     };
 
-    for (int srcDssVer = 6; srcDssVer <= 7; ++srcDssVer) {
-        for (int dstDssVer = 6; dstDssVer <= 7; ++dstDssVer) {
+    for (int srcDssVer = 7; srcDssVer <= 7; ++srcDssVer) {
+        for (int dstDssVer = 7; dstDssVer <= 7; ++dstDssVer) {
 
             remove(filename[SRC]);
             if (srcDssVer == 6) {

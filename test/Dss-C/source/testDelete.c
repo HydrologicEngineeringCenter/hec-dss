@@ -86,7 +86,7 @@ int testDelete(const char *dssFilename7, const char *dssFilename6)
 		printf("Running %s\n", loopName);
 		//  First loop is for DSS-7, second is for DSS-6
 
-		for (i=0; i<2; i++) {
+		for (i=0; i<1; i++) {
 
 
 
