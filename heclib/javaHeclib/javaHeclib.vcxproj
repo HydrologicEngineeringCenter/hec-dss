@@ -77,7 +77,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>heclib_f.lib;heclib_c.lib;zlibstatic.lib</AdditionalDependencies>
+      <AdditionalDependencies>heclib_c.lib;zlibstatic.lib</AdditionalDependencies>
       <OutputFile>$(ProjectDir)$(Platform)\$(Configuration)\javaHeclib.dll</OutputFile>
       <AdditionalLibraryDirectories>..\heclib_c\$(PlatformName)\$(ConfigurationName);..\heclib_f\$(PlatformName)\$(ConfigurationName);..\..\lib\$(PlatformName);$(IFORT_COMPILER_LIB)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>MSVCRT</IgnoreSpecificDefaultLibraries>
@@ -162,7 +162,6 @@
     <ClCompile Include="src\Hec_fortranFlush.c" />
     <ClCompile Include="src\Hec_fortranOpen.c" />
     <ClCompile Include="src\Hec_fortranWrite.c" />
-    <ClCompile Include="src\Hec_makedsscatalog.c" />
     <ClCompile Include="src\Hec_zaliasAdd.c" />
     <ClCompile Include="src\Hec_zaliasGetPrimary.c" />
     <ClCompile Include="src\Hec_zaliasList.c" />
