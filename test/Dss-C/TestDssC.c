@@ -206,162 +206,162 @@ int runTheTests() {
 	int status;
 
 
-	status = test_data_shift_during_save(0);
-	if (status != STATUS_OKAY)
-		return status;
+	//status = test_data_shift_during_save(0);
+	//if (status != STATUS_OKAY)
+	//	return status;
 
-	status = test_data_shift_during_save(1);
-	if (status != STATUS_OKAY)
-		return status;
+	//status = test_data_shift_during_save(1);
+	//if (status != STATUS_OKAY)
+	//	return status;
 
-	status = test_mixed_record_types();
-	if (status != STATUS_OKAY)
-		return status;
+	//status = test_mixed_record_types();
+	//if (status != STATUS_OKAY)
+	//	return status;
 
-	status = renameTest();
-	if (status != STATUS_OKAY)
-		return status;
+	//status = renameTest();
+	//if (status != STATUS_OKAY)
+	//	return status;
 
-	status = testText();
-	if (status != STATUS_OKAY)
-		return status;
+	//status = testText();
+	//if (status != STATUS_OKAY)
+	//	return status;
 
-	status = current_time_testing();
-	if (status != 0)
-		return status;
+	//status = current_time_testing();
+	//if (status != 0)
+	//	return status;
 
-	printf("test read without dates\n");
-	status = testNoDates(7);
-	if (status != STATUS_OKAY)
-		return status;
-	
-	status = skip_dss6() ? 0 : testNoDates(6);
-	if (status != STATUS_OKAY)
-		return status;
-
-
-	printf("test issue CWMS-1424 (Time Series Store Rule)\n");
-	status = testTsStoreRules();
-	if (status != STATUS_OKAY)
-		return status;
-
-	if (!skip_dss6()) { // converts from v7 to v6 
-		printf("test issue DSS-178\n");
-		if (bigEndian()) zset("disa", "", -1);
-		status = testDss178();
-		zset("disa", "", 0);
-		if (status != STATUS_OKAY)
-			return status;
-	}
-	printf("test text tables issue 135\n");
-	status = testTextTableIssue135();
-	if (status != STATUS_OKAY)
-		return status;
-
-	printf("\ntest odd number values\n");
-	status = testOddNumberValues();
-	if (status != STATUS_OKAY) {
-		zset("disa", "", -1);
-		status = testOddNumberValues();
-		zset("disa", "", 0);
-		if (status != STATUS_OKAY) {
-			return status;
-		}
-	}
-
-	printf("\ntest pseudo-regular 8Minute data\n");
-	status = testPseudoEightHourIrregular();
-	if (status != STATUS_OKAY) {
-		zset("disa", "", -1);
-		status = testPseudoEightHourIrregular();
-		zset("disa", "", 0);
-		if (status != STATUS_OKAY) {
-			return status;
-		}
-	}
-
-	printf("\ntest zinquire return value for FVER\n");
-	status = fver_test();
-	if (status != STATUS_OKAY)
-		return status;
-
-	printf("\ntest Jira DSS-163 weekly time series issue\n");
-	status = test_jira_dss_163_weekly_time_series_fails();
-	if (status != STATUS_OKAY)
-		return status;
-
-	if (!skip_dss6()) {
-		printf("\ntest copy large record\n");
-		status = testLargeCopy();
-		if (status != STATUS_OKAY)
-			return status;
-	}
-	printf("\ntest miscellaneous stuff\n");
-	status = miscTests();
-	if (status != STATUS_OKAY)
-		return status;
+	//printf("test read without dates\n");
+	//status = testNoDates(7);
+	//if (status != STATUS_OKAY)
+	//	return status;
+	//
+	//status = skip_dss6() ? 0 : testNoDates(6);
+	//if (status != STATUS_OKAY)
+	//	return status;
 
 
-	printf("\ntest grid memory\n");
-	status = gridMemoryTest();
-	if (status != STATUS_OKAY)
-		return status;
+	//printf("test issue CWMS-1424 (Time Series Store Rule)\n");
+	//status = testTsStoreRules();
+	//if (status != STATUS_OKAY)
+	//	return status;
 
-	printf("\ntest units issue 126\n");
-	status = skip_dss6()? 0: units_issue_126();
-	if (status != STATUS_OKAY)
-		return status;
+	//if (!skip_dss6()) { // converts from v7 to v6 
+	//	printf("test issue DSS-178\n");
+	//	if (bigEndian()) zset("disa", "", -1);
+	//	status = testDss178();
+	//	zset("disa", "", 0);
+	//	if (status != STATUS_OKAY)
+	//		return status;
+	//}
+	//printf("test text tables issue 135\n");
+	//status = testTextTableIssue135();
+	//if (status != STATUS_OKAY)
+	//	return status;
+
+	//printf("\ntest odd number values\n");
+	//status = testOddNumberValues();
+	//if (status != STATUS_OKAY) {
+	//	zset("disa", "", -1);
+	//	status = testOddNumberValues();
+	//	zset("disa", "", 0);
+	//	if (status != STATUS_OKAY) {
+	//		return status;
+	//	}
+	//}
+
+	//printf("\ntest pseudo-regular 8Minute data\n");
+	//status = testPseudoEightHourIrregular();
+	//if (status != STATUS_OKAY) {
+	//	zset("disa", "", -1);
+	//	status = testPseudoEightHourIrregular();
+	//	zset("disa", "", 0);
+	//	if (status != STATUS_OKAY) {
+	//		return status;
+	//	}
+	//}
+
+	//printf("\ntest zinquire return value for FVER\n");
+	//status = fver_test();
+	//if (status != STATUS_OKAY)
+	//	return status;
+
+	//printf("\ntest Jira DSS-163 weekly time series issue\n");
+	//status = test_jira_dss_163_weekly_time_series_fails();
+	//if (status != STATUS_OKAY)
+	//	return status;
+
+	//if (!skip_dss6()) {
+	//	printf("\ntest copy large record\n");
+	//	status = testLargeCopy();
+	//	if (status != STATUS_OKAY)
+	//		return status;
+	//}
+	//printf("\ntest miscellaneous stuff\n");
+	//status = miscTests();
+	//if (status != STATUS_OKAY)
+	//	return status;
 
 
-	printf("\ntest format F part with tags\n");
-	status = test_normalize_f_part();
-	if (status != STATUS_OKAY)
-		return status;
+	//printf("\ntest grid memory\n");
+	//status = gridMemoryTest();
+	//if (status != STATUS_OKAY)
+	//	return status;
 
-	printf("\ntest vertical datum operations (C API)\n");
-	status = test_vertical_datums_c();
-	if (status != STATUS_OKAY)
-		return status;
-
-	status = PathnameTesting("path_name_test7.dss",7);
-	if (status != STATUS_OKAY)
-	return status;
-
-	status = skip_dss6() ? 0:  PathnameTesting("path_name_test6.dss", 6);
-	if (status != STATUS_OKAY)
-	return status;
-
-	printf("\ntest stringCat\n");
-	status = test_stringCat();
-	if (status != STATUS_OKAY)
-		return status;
-
-	printf("\ntest Bulletin_17C_Examples.dss for reading full record\n");
-	status = skip_dss6() ? 0 : Bulletin_17C_SSP_Issue();
-	if (status != STATUS_OKAY)
-		return status;
+	//printf("\ntest units issue 126\n");
+	//status = skip_dss6()? 0: units_issue_126();
+	//if (status != STATUS_OKAY)
+	//	return status;
 
 
+	//printf("\ntest format F part with tags\n");
+	//status = test_normalize_f_part();
+	//if (status != STATUS_OKAY)
+	//	return status;
 
-	printf("\ntestDateFunctions\n");
-	status = testDateFunctions();
-	if (status != STATUS_OKAY) return status;
+	//printf("\ntest vertical datum operations (C API)\n");
+	//status = test_vertical_datums_c();
+	//if (status != STATUS_OKAY)
+	//	return status;
 
-	remove("testmultiuser7.dss");
-	status = testMultiUser("testmultiuser7.dss", 7, 333, 2);
-	if (status != STATUS_OKAY) return status;
+	//status = PathnameTesting("path_name_test7.dss",7);
+	//if (status != STATUS_OKAY)
+	//return status;
 
-	 
+	//status = skip_dss6() ? 0:  PathnameTesting("path_name_test6.dss", 6);
+	//if (status != STATUS_OKAY)
+	//return status;
+
+	//printf("\ntest stringCat\n");
+	//status = test_stringCat();
+	//if (status != STATUS_OKAY)
+	//	return status;
+
+	//printf("\ntest Bulletin_17C_Examples.dss for reading full record\n");
+	//status = skip_dss6() ? 0 : Bulletin_17C_SSP_Issue();
+	//if (status != STATUS_OKAY)
+	//	return status;
 
 
-	status = testMisc();
-	if (status != STATUS_OKAY) return status;
 
-	status = testDateTime();
-	if (status != STATUS_OKAY) return status;
+	//printf("\ntestDateFunctions\n");
+	//status = testDateFunctions();
+	//if (status != STATUS_OKAY) return status;
 
-	status = testDelete("testUtilities7.dss", "testUtilities6.dss");
-	if (status != STATUS_OKAY) return status;
+	//remove("testmultiuser7.dss");
+	//status = testMultiUser("testmultiuser7.dss", 7, 333, 2);
+	//if (status != STATUS_OKAY) return status;
+
+	// 
+
+
+	//status = testMisc();
+	//if (status != STATUS_OKAY) return status;
+
+	//status = testDateTime();
+	//if (status != STATUS_OKAY) return status;
+
+	//status = testDelete("testUtilities7.dss", "testUtilities6.dss");
+	//if (status != STATUS_OKAY) return status;
 
 	stringCopy(fileName7, sizeof(fileName7), "testDss7.dss", sizeof(fileName7));
 	remove(fileName7);

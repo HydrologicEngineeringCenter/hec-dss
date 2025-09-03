@@ -148,13 +148,15 @@ int testCatalog()
 	
 	
 	//  Version 6 code on vers 7 file
+	// Removing the following, let Java can handle this in the future.
+	/*
 	printf("\nreading catalog with legacy(v6) filter  'B=SACRAMENTO, F=OBS' ");
 	stringCopy(pathWithWild, sizeof(pathWithWild), "B=SACRAMENTO, F=OBS", _TRUNCATE);
 	printf("\n%s", pathWithWild);
 	filePos = 0;
 	count = 0;
 	while (filePos >= 0) {
-		zplist_ (ifltab, pathWithWild, &filePos, pathname,
+		zplist7_ (ifltab, pathWithWild, &filePos, pathname,
                &nPathname, &status, strlen(pathWithWild), sizeof(pathname));
 		if (status != STATUS_OKAY) {
 			if (filePos < 0) break;
@@ -163,6 +165,8 @@ int testCatalog()
 		//printf(" %d,  -->%s<--\n", count, pathname);
 		count++;
 	}
+
+	*/
 
 	//  
 	//  Test "What has changed?"
