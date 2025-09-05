@@ -157,11 +157,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\C_CatalogToJava.c" />
-    <ClCompile Include="src\Hec_closescratchdsscatalog.c" />
-    <ClCompile Include="src\Hec_fortranClose.c" />
-    <ClCompile Include="src\Hec_fortranFlush.c" />
-    <ClCompile Include="src\Hec_fortranOpen.c" />
-    <ClCompile Include="src\Hec_fortranWrite.c" />
+    <ClCompile Include="src\Hec_CloseLogFile.c" />
+    <ClCompile Include="src\Hec_FlushLogFile.c" />
+    <ClCompile Include="src\Hec_OpenLogFile.c" />
     <ClCompile Include="src\Hec_zaliasAdd.c" />
     <ClCompile Include="src\Hec_zaliasGetPrimary.c" />
     <ClCompile Include="src\Hec_zaliasList.c" />
@@ -201,7 +199,6 @@
     <ClCompile Include="src\Hec_zgetMessageLevel.c" />
     <ClCompile Include="src\Hec_zgtrec.c" />
     <ClCompile Include="src\Hec_zinqir.c" />
-    <ClCompile Include="src\Hec_zirbeg.c" />
     <ClCompile Include="src\Hec_zlastWriteTime.c" />
     <ClCompile Include="src\Hec_zlastWriteTimeFile.c" />
     <ClCompile Include="src\Hec_zlocationFromStruct.c" />
@@ -209,10 +206,7 @@
     <ClCompile Include="src\Hec_zlocationStore.c" />
     <ClCompile Include="src\Hec_zlocationToStruct.c" />
     <ClCompile Include="src\Hec_zmaxpart.c" />
-    <ClCompile Include="src\Hec_zndata.c" />
-    <ClCompile Include="src\Hec_zofset.c" />
     <ClCompile Include="src\Hec_zopen.c" />
-    <ClCompile Include="src\Hec_zpath.c" />
     <ClCompile Include="src\Hec_zpathnameListJava.c" />
     <ClCompile Include="src\Hec_zpdRetrieve.c" />
     <ClCompile Include="src\Hec_zpdStore.c" />

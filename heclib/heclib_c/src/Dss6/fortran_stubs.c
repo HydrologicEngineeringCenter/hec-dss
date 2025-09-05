@@ -11,6 +11,26 @@ void dss_stub_called(const char* caller) {
 #define DSS_STUB_CALLED() dss_stub_called(__func__)
 
 
+void zdbmod6_(long long* ifltab, int* address, int* value,
+	const char* characterValue, int* useCharacterValue, size_t characterValueLen) {
+	DSS_STUB_CALLED();
+}
+
+int zckmul6_(long long* ifltab) {
+	DSS_STUB_CALLED();
+}
+
+void zcorec6_(long long* ifltabFrom, long long* ifltabTo, const char* pathnameFrom, const char* pathnameTo,
+	int* ibuff1, int* kbuff1, int* ibuff2, int* kbuff2, int* boolDuplcate, int* istat, size_t pathnameFromLen, size_t pathnameToLen) {
+	DSS_STUB_CALLED();
+}
+
+void zfilst6_(long long* ifltab) {
+	DSS_STUB_CALLED();
+}
+
+
+
 int zcopyrecord6_(long long* ifltabFrom, long long* ifltabTo, const char* pathnameFrom, const char* pathnameTo,
 	int* status, size_t pathnameFromLen, size_t pathnameToLen) {
 	DSS_STUB_CALLED();

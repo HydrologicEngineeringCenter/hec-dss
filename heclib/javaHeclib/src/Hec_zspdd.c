@@ -137,9 +137,7 @@ JNIEXPORT void JNICALL Java_hec_heclib_util_Heclib_Hec_1zspdd
 	else {
 	}
 
-	//  Set precision.  First, get it from the common block
-	zgettimezone6_(&itemp, ctemp, &iprec, sizeof(ctemp));
-	//iprec =-1;
+	iprec = 0; // was  set in Fortran common block to zero (not reachable without DSS 6/Fortran)
 	if (iprec < 0) {
 		pds->xprecision = -1;
 		pds->yprecision = -1;
