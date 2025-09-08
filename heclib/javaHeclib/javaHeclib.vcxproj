@@ -207,7 +207,6 @@
     <ClCompile Include="src\Hec_zlocationToStruct.c" />
     <ClCompile Include="src\Hec_zmaxpart.c" />
     <ClCompile Include="src\Hec_zopen.c" />
-    <ClCompile Include="src\Hec_zpathnameListJava.c" />
     <ClCompile Include="src\Hec_zpdRetrieve.c" />
     <ClCompile Include="src\Hec_zpdStore.c" />
     <ClCompile Include="src\Hec_zplist.c" />
