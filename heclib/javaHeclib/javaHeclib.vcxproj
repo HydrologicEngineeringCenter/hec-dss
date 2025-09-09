@@ -213,7 +213,6 @@
     <ClCompile Include="src\Hec_zquery.c" />
     <ClCompile Include="src\Hec_zreadx.c" />
     <ClCompile Include="src\Hec_zreadxBytes.c" />
-    <ClCompile Include="src\Hec_zrecadd.c" />
     <ClCompile Include="src\Hec_zrecInfo.c" />
     <ClCompile Include="src\Hec_zrenam.c" />
     <ClCompile Include="src\Hec_zrinfo.c" />
