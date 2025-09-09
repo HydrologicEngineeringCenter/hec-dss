@@ -211,7 +211,6 @@
     <ClCompile Include="src\Hec_zpdStore.c" />
     <ClCompile Include="src\Hec_zplist.c" />
     <ClCompile Include="src\Hec_zquery.c" />
-    <ClCompile Include="src\Hec_zrdpat.c" />
     <ClCompile Include="src\Hec_zreadx.c" />
     <ClCompile Include="src\Hec_zreadxBytes.c" />
     <ClCompile Include="src\Hec_zrecadd.c" />
