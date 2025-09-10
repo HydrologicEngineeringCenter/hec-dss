@@ -219,7 +219,6 @@
     <ClCompile Include="src\Hec_zritsc.c" />
     <ClCompile Include="src\Hec_zritsx.c" />
     <ClCompile Include="src\Hec_zritsxd.c" />
-    <ClCompile Include="src\Hec_zrpd.c" />
     <ClCompile Include="src\Hec_zrpdd.c" />
     <ClCompile Include="src\Hec_zrrts.c" />
     <ClCompile Include="src\Hec_zrrtsc.c" />
