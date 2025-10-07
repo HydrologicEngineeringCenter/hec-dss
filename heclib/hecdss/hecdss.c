@@ -938,7 +938,9 @@ HECDSS_API int hec_dss_arrayRetrieve(dss_file* dss, const char* pathname,
 HECDSS_API int hec_dss_textStore(dss_file* dss, const char* pathname, const char* text, int length) {
 
   zStructText* txt = zstructTextNew(pathname);
-  txt->textString = text;
+
+  txt->textString = mallocAndCopy(text);
+  txt->allocated[zSTRUCT_TX_textString] = 1;
   txt->numberTextChars = length;
 
   int status = ztextStore(dss->ifltab, txt);
