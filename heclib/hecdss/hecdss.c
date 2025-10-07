@@ -6,7 +6,7 @@
 #include "zdssKeys.h"
 
 HECDSS_API const char* hec_dss_api_version() {
-  return "0.2.0";
+  return "0.2.1";
 }
 
 
@@ -933,3 +933,34 @@ HECDSS_API int hec_dss_arrayRetrieve(dss_file* dss, const char* pathname,
 
   return status;
 }
+
+
+HECDSS_API int hec_dss_textStore(dss_file* dss, const char* pathname, const char* text, int length) {
+
+  zStructText* txt = zstructTextNew(pathname);
+  txt->textString = text;
+  txt->numberTextChars = length;
+
+  int status = ztextStore(dss->ifltab, txt);
+
+  zstructFree(txt);
+  return status;
+}
+
+HECDSS_API int hec_dss_textRetrieve(dss_file* dss, const char* pathname, char* buffer, const int bufferLength) {
+
+  zStructText* txt = zstructTextNew(pathname);
+  int status = ztextRetrieve(dss->ifltab, txt);
+
+  if (status == 0) {
+    if (txt->numberTextChars > bufferLength) {
+      status = HEC_DSS_BUFFER_TOO_SMALL;
+    }
+    strncpy(buffer, txt->textString, MIN(bufferLength, txt->numberTextChars));
+  }
+
+  zstructFree(txt);
+  return status;
+
+}
+
