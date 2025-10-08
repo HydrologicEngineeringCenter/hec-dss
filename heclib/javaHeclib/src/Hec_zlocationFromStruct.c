@@ -126,13 +126,13 @@ int Hec_zlocationFromStruct(JNIEnv* env, jobject obj, jobject j_dataContainer, z
 	}
 
 	/**
-		 * verticalDatum  can be one of the following:
-		 * <ul>
-		 * <li>0 - unset</li>
-		 * <li>1 - NAVD88</li>
-		 * <li>2 - NGVD29</li>
-		 * <li>3 - Local (other)</li>
-		 */
+	 * verticalDatum  can be one of the following:
+	 * <ul>
+	 * <li>0 - unset</li>
+	 * <li>1 - NAVD88</li>
+	 * <li>2 - NGVD29</li>
+	 * <li>3 - Local (other)</li>
+	 */
 	fid = (*env)->GetFieldID(env, cls, "verticalDatum", "I");
 	if (fid) {
 		j_int = (jint)locationStruct->verticalDatum;
@@ -140,13 +140,13 @@ int Hec_zlocationFromStruct(JNIEnv* env, jobject obj, jobject j_dataContainer, z
 	}
 
 	/**
-		 * verticalDatum  can be one of the following:
-		 * <ul>
-		 * <li>0 - unset</li>
-		 * <li>1 - NAVD88</li>
-		 * <li>2 - NGVD29</li>
-		 * <li>3 - Local (other)</li>
-		 */
+	 * verticalDatum  can be one of the following:
+	 * <ul>
+	 * <li>0 - unset</li>
+	 * <li>1 - NAVD88</li>
+	 * <li>2 - NGVD29</li>
+	 * <li>3 - Local (other)</li>
+	 */
 	fid = (*env)->GetFieldID(env, cls, "verticalDatum", "I");
 	if (fid) {
 		j_int = (jint)locationStruct->verticalDatum;
@@ -154,10 +154,10 @@ int Hec_zlocationFromStruct(JNIEnv* env, jobject obj, jobject j_dataContainer, z
 	}
 
 	/**
-		 * Time zone name at the location
-		 * NOT the time zone of the data
-		 * (data may GMT and location PST)
-		 */
+	 * Time zone name at the location
+	 * NOT the time zone of the data
+	 * (data may GMT and location PST)
+	 */
 	fid = (*env)->GetFieldID(env, cls, "locationTimezone", "Ljava/lang/String;");
 	if ((*env)->ExceptionOccurred(env)) {
 		(*env)->ExceptionClear(env);
@@ -299,6 +299,10 @@ int Hec_zlocationFromStruct(JNIEnv* env, jobject obj, jobject j_dataContainer, z
 								oldLen = newLen;
 							}
 						}
+					}
+					int combined_len = combined ? strlen(combined) : 0;
+					if (combined_len > 0 && combined[combined_len - 1] == ';') {
+						combined[combined_len - 1] = '\0';
 					}
 					jstr = (*env)->NewStringUTF(env, (const char*)combined);
 					(*env)->SetObjectField(env, j_dataContainer, fid, jstr);
