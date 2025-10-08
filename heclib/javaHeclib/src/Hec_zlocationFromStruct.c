@@ -17,7 +17,7 @@
 // returns a string without leading/trailing whitespace
 char *trim(char *str) {
 	char *cp1 = str;
-	while (isspace((unsigned char)*cp)) {
+	while (isspace((unsigned char)*cp1)) {
 		++cp1;
 	}
 	if (!*cp1) {
