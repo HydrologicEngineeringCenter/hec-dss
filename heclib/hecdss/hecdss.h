@@ -28,6 +28,9 @@
 // public declaration
 typedef struct dss_file dss_file;
 
+#define HEC_DSS_BUFFER_TOO_SMALL 1
+
+
 /// <summary>
 /// Returns a version string of this API
 /// </summary>
@@ -614,4 +617,26 @@ HECDSS_API int hec_dss_arrayRetrieve(dss_file* dss, const char* pathname,
   int* intValues, const int intValuesLength,
   float* floatValues, const int floatValuesLength,
   double* doubleValues, const int doubleValuesLength);
+
+
+
+/// <summary>
+/// Saves a text record (ASCII)
+/// </summary>
+/// <param name="dss">dss_file pointer</param>
+/// <param name="pathname">pathname for record</param>
+/// <param name="text">text to store</param>
+/// <param name="length">length of text to store</param>
+/// <returns></returns>
+HECDSS_API int hec_dss_textStore(dss_file* dss, const char* pathname, const char* text, int length);
+
+/// <summary>
+///  reads a text record (ASCII)
+/// </summary>
+/// <param name="dss">dss_file pointer</param>
+/// <param name="pathname">pathname for record</param>
+/// <param name="buffer">(output) text to be received</param>
+/// <param name="bufferLength">length of text(char)</param>
+/// <returns>zero on sucess, HEC_DSS_BUFFER_TOO_SMALL if there was more text than the bufferLength</returns>
+HECDSS_API int hec_dss_textRetrieve(dss_file* dss, const char* pathname, char* buffer, const int bufferLength);
 
