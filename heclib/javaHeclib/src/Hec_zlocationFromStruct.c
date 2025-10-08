@@ -181,7 +181,7 @@ int Hec_zlocationFromStruct(JNIEnv *env, jobject obj, jobject j_dataContainer, z
 			//----------------------------//
 			// set up the data structures //
 			//----------------------------//
-			typedef struct si_elem_s {char *key; char *comparison char *value;} si_elem;
+			typedef struct si_elem_s {char *key; char *comparison; char *value;} si_elem;
 			si_elem *existing_si = NULL;
 			si_elem *location_si = NULL;
 			int existing_elem_count = 0;
