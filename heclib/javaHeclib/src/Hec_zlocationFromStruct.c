@@ -300,6 +300,10 @@ int Hec_zlocationFromStruct(JNIEnv *env, jobject obj, jobject j_dataContainer, z
 							}
 						}
 					}
+					int combined_len = combined ? strlen(combined) : 0;
+					if (combined_len >0 && combined[combined_len - 1] == ';') {
+						combined[combined_len - 1] = '\0';
+					}
 					jstr = (*env)->NewStringUTF(env, (const char*)combined);			
 					(*env)->SetObjectField (env, j_dataContainer, fid, jstr);
 					//----------//
