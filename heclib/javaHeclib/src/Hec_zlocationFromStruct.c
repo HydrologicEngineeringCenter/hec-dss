@@ -17,14 +17,14 @@
 // returns a string without leading/trailing whitespace
 char *trim(char *str) {
 	char *cp1 = str;
-	while (isspace(unsigned char)*cp) {
+	while (isspace((unsigned char)*cp)) {
 		++cp1;
 	}
 	if (!*cp1) {
 		return cp1;
 	}
 	char *cp2 = cp1 + strlen(cp1) - 1;
-	while (cp2 > cp1 && isspace((unsigned char)*cp2) {
+	while (cp2 > cp1 && isspace((unsigned char)*cp2)) {
 		*cp2-- = '\0';
 	}
 	return cp1;
