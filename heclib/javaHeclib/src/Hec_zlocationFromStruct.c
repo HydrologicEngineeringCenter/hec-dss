@@ -1,4 +1,5 @@
 #include <jni.h>
+#include <ctype.h>
 #include <string.h>
 #include <stdbool.h>
 
@@ -10,8 +11,24 @@
 #endif
 
 /*
-*	Takes information from a location struct and puts in a Java DataContainer
-*/
+ *	Takes information from a location struct and puts in a Java DataContainer
+ */
+
+// returns a string without leading/trailing whitespace
+char *trim(char *str) {
+	char *cp1 = str;
+	while (isspace((unsigned char)*cp1)) {
+		++cp1;
+	}
+	if (!*cp1) {
+		return cp1;
+	}
+	char *cp2 = cp1 + strlen(cp1) - 1;
+	while (cp2 > cp1 && isspace((unsigned char)*cp2)) {
+		*cp2-- = '\0';
+	}
+	return cp1;
+}
 
 int Hec_zlocationFromStruct(JNIEnv *env, jobject obj, jobject j_dataContainer, zStructLocation *locationStruct)
 {
@@ -24,21 +41,21 @@ int Hec_zlocationFromStruct(JNIEnv *env, jobject obj, jobject j_dataContainer, z
 
 	cls = (*env)->GetObjectClass (env, j_dataContainer);
 
-	 /* Longitude, Easting or decimal degrees (negative for Western Hemisphere) */ 
+	/* Longitude, Easting or decimal degrees (negative for Western Hemisphere) */ 
 	fid = (*env)->GetFieldID (env, cls, "xOrdinate", "D");
 	if (fid) {
 		j_double = (jdouble)locationStruct->xOrdinate;
 		(*env)->SetDoubleField(env, j_dataContainer, fid, j_double);
 	}
 	
-	 /* Longitude, Easting or decimal degrees (negative for Western Hemisphere) */ 
+	/* Latitude, Northing or decimal degrees (negative for Southern Hemisphere) */ 
 	fid = (*env)->GetFieldID (env, cls, "yOrdinate", "D");
 	if (fid) {
 		j_double = (jdouble)locationStruct->yOrdinate;
 		(*env)->SetDoubleField(env, j_dataContainer, fid, j_double);
 	}
 	
-	  /* Elevation */
+	/* Elevation */
 	fid = (*env)->GetFieldID (env, cls, "zOrdinate", "D");
 	if (fid) {
 		j_double = (jdouble)locationStruct->zOrdinate;
@@ -81,7 +98,7 @@ int Hec_zlocationFromStruct(JNIEnv *env, jobject obj, jobject j_dataContainer, z
 		(*env)->SetIntField(env, j_dataContainer, fid, j_int);
 	}
 
-	 /**
+	/**
 	 * horizontalDatum  can be one of the following:
 	 * <li>0 - unset</li>
 	 * <li>1 - NAD83</li>
@@ -96,7 +113,7 @@ int Hec_zlocationFromStruct(JNIEnv *env, jobject obj, jobject j_dataContainer, z
 		(*env)->SetIntField(env, j_dataContainer, fid, j_int);
 	}
 
-	 /**
+	/**
 	 * Vertical Units can be one of the following:
 	 * <li>0 - unspecified</li>
 	 * <li>1 - feet</li>
@@ -108,7 +125,7 @@ int Hec_zlocationFromStruct(JNIEnv *env, jobject obj, jobject j_dataContainer, z
 		(*env)->SetIntField(env, j_dataContainer, fid, j_int);
 	}
 
-	 /**
+	/**
      * verticalDatum  can be one of the following:
      * <ul>
      * <li>0 - unset</li>
@@ -122,7 +139,7 @@ int Hec_zlocationFromStruct(JNIEnv *env, jobject obj, jobject j_dataContainer, z
 		(*env)->SetIntField(env, j_dataContainer, fid, j_int);
 	}
 
-	 /**
+	/**
      * verticalDatum  can be one of the following:
      * <ul>
      * <li>0 - unset</li>
@@ -164,7 +181,7 @@ int Hec_zlocationFromStruct(JNIEnv *env, jobject obj, jobject j_dataContainer, z
 			//----------------------------//
 			// set up the data structures //
 			//----------------------------//
-			typedef struct si_elem_s {char *key; char *value;} si_elem;
+			typedef struct si_elem_s {char *key; char *comparison; char *value;} si_elem;
 			si_elem *existing_si = NULL;
 			si_elem *location_si = NULL;
 			int existing_elem_count = 0;
@@ -195,6 +212,7 @@ int Hec_zlocationFromStruct(JNIEnv *env, jobject obj, jobject j_dataContainer, z
 							existing_si[i].value = NULL;
 						}
 						cp = strtok_r(NULL, ";", &saveptr);
+						existing_si[i].comparison = trim(existing_si[i].key);
 					}
 				}
 				free(buf);
@@ -221,6 +239,7 @@ int Hec_zlocationFromStruct(JNIEnv *env, jobject obj, jobject j_dataContainer, z
 							location_si[i].value = NULL;
 						}
 						cp = strtok_r(NULL, ";", &saveptr);
+						location_si[i].comparison = trim(location_si[i].key);
 					}
 				}
 				free(buf);
@@ -255,7 +274,7 @@ int Hec_zlocationFromStruct(JNIEnv *env, jobject obj, jobject j_dataContainer, z
 					for (int i = 0; i < location_elem_count; ++i) {
 						inExisting = false;
 						for (int j = 0; j < existing_elem_count; ++j) {
-							if (!strcmp(location_si[i].key, existing_si[j].key)) {
+							if (!strcmp(location_si[i].comparison, existing_si[j].comparison)) {
 								inExisting = true;
 								break;
 							}
