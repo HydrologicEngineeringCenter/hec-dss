@@ -212,7 +212,7 @@ int Hec_zlocationFromStruct(JNIEnv *env, jobject obj, jobject j_dataContainer, z
 							existing_si[i].value = NULL;
 						}
 						cp = strtok_r(NULL, ";", &saveptr);
-						existing_si[i].comparison = trim(existing_si[i].key)
+						existing_si[i].comparison = trim(existing_si[i].key);
 					}
 				}
 				free(buf);
@@ -239,7 +239,7 @@ int Hec_zlocationFromStruct(JNIEnv *env, jobject obj, jobject j_dataContainer, z
 							location_si[i].value = NULL;
 						}
 						cp = strtok_r(NULL, ";", &saveptr);
-						location_si[i].comparison = trim(location_si[i].key)
+						location_si[i].comparison = trim(location_si[i].key);
 					}
 				}
 				free(buf);
