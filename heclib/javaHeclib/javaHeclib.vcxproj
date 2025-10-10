@@ -215,17 +215,13 @@
     <ClCompile Include="src\Hec_zrecInfo.c" />
     <ClCompile Include="src\Hec_zrenam.c" />
     <ClCompile Include="src\Hec_zrinfo.c" />
-    <ClCompile Include="src\Hec_zrpdd.c" />
     <ClCompile Include="src\Hec_zset.c" />
     <ClCompile Include="src\Hec_zsetCatalogSortAddresses.c" />
     <ClCompile Include="src\Hec_zsetfi.c" />
     <ClCompile Include="src\Hec_zsetMessageLevel.c" />
     <ClCompile Include="src\Hec_zsitsc.c" />
-    <ClCompile Include="src\Hec_zspd.c" />
-    <ClCompile Include="src\Hec_zspdd.c" />
     <ClCompile Include="src\Hec_zsqueeze.c" />
     <ClCompile Include="src\Hec_zsrtsc.c" />
-    <ClCompile Include="src\Hec_zstfh.c" />
     <ClCompile Include="src\Hec_ztextRetrieve.c" />
     <ClCompile Include="src\Hec_ztextStore.c" />
     <ClCompile Include="src\Hec_ztinRetrieve.c" />
@@ -236,7 +232,6 @@
     <ClCompile Include="src\Hec_ztsRetrieve.c" />
     <ClCompile Include="src\Hec_ztsStore.c" />
     <ClCompile Include="src\Hec_zundel.c" />
-    <ClCompile Include="src\Hec_zustfh.c" />
     <ClCompile Include="src\Hec_zwhatChanged.c" />
     <ClCompile Include="src\Hec_zwhatChangedCompare.c" />
     <ClCompile Include="src\Hec_zwhatChangedSetStart.c" />
