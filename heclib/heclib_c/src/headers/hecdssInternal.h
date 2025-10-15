@@ -40,7 +40,7 @@
 #define DSS_VERSION "7-IW"
 
 
-#define DSS_VERSION_DATE "08 October 2025"
+#define DSS_VERSION_DATE "15 October 2025"
 
 const char *ztypeName(int recordType, int boolAbbreviation);
 void zreada(long long *ifltab, const char *path, int *npath,
