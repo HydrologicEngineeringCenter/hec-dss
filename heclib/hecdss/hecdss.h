@@ -28,7 +28,7 @@
 // public declaration
 typedef struct dss_file dss_file;
 
-#define HEC_DSS_BUFFER_TOO_SMALL 1
+#define HEC_DSS_BUFFER_TOO_SMALL -17
 
 
 /// <summary>
