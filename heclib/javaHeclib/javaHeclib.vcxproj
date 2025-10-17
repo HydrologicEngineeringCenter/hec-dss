@@ -79,7 +79,7 @@
     <Link>
       <AdditionalDependencies>heclib_c.lib;zlibstatic.lib</AdditionalDependencies>
       <OutputFile>$(ProjectDir)$(Platform)\$(Configuration)\javaHeclib.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\heclib_c\$(PlatformName)\$(ConfigurationName);..\heclib_f\$(PlatformName)\$(ConfigurationName);..\..\lib\$(PlatformName);$(IFORT_COMPILER_LIB)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\heclib_c\$(PlatformName)\$(ConfigurationName);..\..\lib\$(PlatformName)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>MSVCRT</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
@@ -123,7 +123,7 @@
     <Link>
       <AdditionalDependencies>heclib_f.lib;heclib_c.lib;zlibstatic.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(ProjectDir)$(Platform)\$(Configuration)\javaHeclib.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\heclib_c\$(PlatformName)\$(ConfigurationName);..\heclib_f\$(PlatformName)\$(ConfigurationName);..\..\lib\$(PlatformName);$(IFORT_COMPILER_LIB)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\heclib_c\$(PlatformName)\$(ConfigurationName);..\..\lib\$(PlatformName)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>
