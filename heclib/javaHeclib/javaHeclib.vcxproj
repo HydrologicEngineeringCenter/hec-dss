@@ -219,9 +219,7 @@
     <ClCompile Include="src\Hec_zsetCatalogSortAddresses.c" />
     <ClCompile Include="src\Hec_zsetfi.c" />
     <ClCompile Include="src\Hec_zsetMessageLevel.c" />
-    <ClCompile Include="src\Hec_zsitsc.c" />
     <ClCompile Include="src\Hec_zsqueeze.c" />
-    <ClCompile Include="src\Hec_zsrtsc.c" />
     <ClCompile Include="src\Hec_ztextRetrieve.c" />
     <ClCompile Include="src\Hec_ztextStore.c" />
     <ClCompile Include="src\Hec_ztinRetrieve.c" />
@@ -235,7 +233,6 @@
     <ClCompile Include="src\Hec_zwhatChanged.c" />
     <ClCompile Include="src\Hec_zwhatChangedCompare.c" />
     <ClCompile Include="src\Hec_zwhatChangedSetStart.c" />
-    <ClCompile Include="src\Hec_zwritx.c" />
     <ClCompile Include="src\Hec_zwritxBytes.c" />
     <ClCompile Include="src\JavaCatalogToC.c" />
     <ClCompile Include="src\jni_utility.c" />
