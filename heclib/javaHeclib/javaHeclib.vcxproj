@@ -121,7 +121,7 @@
       <PreprocessorDefinitions>WIN32;_WINDOWS;_USRDLL;JAVAHECLIB_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>heclib_f.lib;heclib_c.lib;zlibstatic.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>heclib_c.lib;zlibstatic.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(ProjectDir)$(Platform)\$(Configuration)\javaHeclib.dll</OutputFile>
       <AdditionalLibraryDirectories>..\heclib_c\$(PlatformName)\$(ConfigurationName);..\..\lib\$(PlatformName)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
