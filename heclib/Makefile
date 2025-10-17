@@ -17,13 +17,11 @@ ifeq ($(UNAME_S),Darwin)
 endif
 all:
 	(cd heclib_c; $(MAKE) )
-	(cd heclib_f; $(MAKE) )		
 	(mkdir -p Output)
 	( rm -f Output/heclib.a)
 	# make sure our heclib.a artifact is a fully formed static archive
 	(mkdir hec_c; cd hec_c; ar x ../heclib_c/Output/libhec_c.a)
-	(mkdir hec_f; cd hec_f; ar x ../heclib_f/Output/libhec_f.a)
-	($(AR) -rsc Output/heclib.a hec_c/*.o hec_f/*.o )  
+	($(AR) -rsc Output/heclib.a hec_c/*.o )  
 	(cd javaHeclib; $(MAKE) )
 	ls -la ./javaHeclib/Output/*javaHeclib.*
 	(cd hecdss; $(MAKE) )
@@ -39,11 +37,9 @@ all:
 clean:
 	( rm -f Output/*.a)
 	(cd heclib_c; $(MAKE) -f Makefile clean)
-	(cd heclib_f; $(MAKE) -f Makefile clean)
 	(cd javaHeclib; $(MAKE) -f Makefile clean)
 
 
 test:
 	( cd ../test/C; mkdir -p Output; ./unix_test)
 	( cd ../test/Dss-C; mkdir -p Output; $(MAKE) clean test )
-	( cd ../test/Fortran; mkdir -p Output; $(MAKE) -fMakefile.$(Make_OS) clean test )

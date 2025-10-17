@@ -7,7 +7,7 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1FlushLogFile
 (JNIEnv* env, jobject obj) {
 
 	if (zdssVals.messageHandle <= 0) {
-		return;
+		return -1;
 	}
 	flushFile(zdssVals.messageHandle);
 
