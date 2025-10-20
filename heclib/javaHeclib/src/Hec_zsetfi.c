@@ -23,8 +23,7 @@ JNIEXPORT void JNICALL Java_hec_heclib_util_Heclib_Hec_1zsetfi
 		zmessageDebug((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "Enter Heclib_Hec_zsetfi, parameter: ", parameter);
 	}
 
-    zsetfi_ ((long long*)ifltab, parameter, alpha, &number, status,
-             strlen(parameter), strlen(alpha));
+     *status = zsetFile((long long*)ifltab, parameter, alpha, number);
 
     (*env)->ReleaseIntArrayElements (env, j_ifltab, ifltab, 0);
     (*env)->ReleaseStringUTFChars (env, j_parameter, parameter);

@@ -393,9 +393,6 @@
     <ClCompile Include="src\DssInterface\v6and7\zrecordAddresses.c">
       <Filter>src\DssInterface\v6andv7</Filter>
     </ClCompile>
-    <ClCompile Include="src\DssInterface\v6and7\zset.c">
-      <Filter>src\DssInterface\v6andv7</Filter>
-    </ClCompile>
     <ClCompile Include="src\DssInterface\v6and7\zsqueeze.c">
       <Filter>src\DssInterface\v6andv7</Filter>
     </ClCompile>
@@ -1005,7 +1002,7 @@
     <ClCompile Include="src\Public\zrename.c">
       <Filter>src\Public</Filter>
     </ClCompile>
-    <ClCompile Include="src\Public\zset7.c">
+    <ClCompile Include="src\Public\zset.c">
       <Filter>src\Public</Filter>
     </ClCompile>
     <ClCompile Include="src\Public\zsetCollectionSequence.c">
@@ -1299,6 +1296,9 @@
     <ClCompile Include="src\Internal\isDpartEmpty.c" />
     <ClCompile Include="src\Utilities\checks.c" />
     <ClCompile Include="src\Internal\isTsPattern.c" />
+    <ClCompile Include="src\Dss6\fortran_stubs.c">
+      <Filter>src\Dss6</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\headers\zlib\zconf.h">

@@ -26,8 +26,8 @@ int testLargeCopy() {
 	const char *src_filename = NULL;
 	const char *dst_filename = NULL;
 
-	for (int src_ver = 6; src_ver <= 7; ++src_ver) {
-		for (int dst_ver = 6; dst_ver <= 7; ++dst_ver) {
+	for (int src_ver = 7; src_ver <= 7; ++src_ver) {
+		for (int dst_ver = 7; dst_ver <= 7; ++dst_ver) {
 			if (src_ver == 7 && dst_ver == 6) {
 				char command[500];
 				sprintf(command, "%s %s %s", COPY_CMD, dst_filename7, src_filename7);

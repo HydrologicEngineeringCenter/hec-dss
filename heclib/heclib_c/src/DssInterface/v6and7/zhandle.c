@@ -31,16 +31,11 @@
 
 int zhandle(long long *ifltab)
 {
-	int ihandle;
-	char cval[2];
-
 	if (zgetVersion(ifltab) == 7) {
 		return (int)ifltab[zdssKeys.khandle];
 	}
-	else {
-		zinqir6_(ifltab, "UNIT", cval, &ihandle, (size_t)4, sizeof(cval));
-		return ihandle;
-	}
+	return 0; 
+	
 }
 
 

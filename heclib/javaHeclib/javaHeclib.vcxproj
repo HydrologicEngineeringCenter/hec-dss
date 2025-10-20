@@ -77,9 +77,9 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>heclib_f.lib;heclib_c.lib;zlibstatic.lib</AdditionalDependencies>
+      <AdditionalDependencies>heclib_c.lib;zlibstatic.lib</AdditionalDependencies>
       <OutputFile>$(ProjectDir)$(Platform)\$(Configuration)\javaHeclib.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\heclib_c\$(PlatformName)\$(ConfigurationName);..\heclib_f\$(PlatformName)\$(ConfigurationName);..\..\lib\$(PlatformName);$(IFORT_COMPILER_LIB)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\heclib_c\$(PlatformName)\$(ConfigurationName);..\..\lib\$(PlatformName)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>MSVCRT</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
@@ -121,9 +121,9 @@
       <PreprocessorDefinitions>WIN32;_WINDOWS;_USRDLL;JAVAHECLIB_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>heclib_f.lib;heclib_c.lib;zlibstatic.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>heclib_c.lib;zlibstatic.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(ProjectDir)$(Platform)\$(Configuration)\javaHeclib.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\heclib_c\$(PlatformName)\$(ConfigurationName);..\heclib_f\$(PlatformName)\$(ConfigurationName);..\..\lib\$(PlatformName);$(IFORT_COMPILER_LIB)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\heclib_c\$(PlatformName)\$(ConfigurationName);..\..\lib\$(PlatformName)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>
@@ -157,12 +157,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\C_CatalogToJava.c" />
-    <ClCompile Include="src\Hec_closescratchdsscatalog.c" />
-    <ClCompile Include="src\Hec_fortranClose.c" />
-    <ClCompile Include="src\Hec_fortranFlush.c" />
-    <ClCompile Include="src\Hec_fortranOpen.c" />
-    <ClCompile Include="src\Hec_fortranWrite.c" />
-    <ClCompile Include="src\Hec_makedsscatalog.c" />
+    <ClCompile Include="src\Hec_CloseLogFile.c" />
+    <ClCompile Include="src\Hec_FlushLogFile.c" />
+    <ClCompile Include="src\Hec_OpenLogFile.c" />
     <ClCompile Include="src\Hec_zaliasAdd.c" />
     <ClCompile Include="src\Hec_zaliasGetPrimary.c" />
     <ClCompile Include="src\Hec_zaliasList.c" />
@@ -202,7 +199,6 @@
     <ClCompile Include="src\Hec_zgetMessageLevel.c" />
     <ClCompile Include="src\Hec_zgtrec.c" />
     <ClCompile Include="src\Hec_zinqir.c" />
-    <ClCompile Include="src\Hec_zirbeg.c" />
     <ClCompile Include="src\Hec_zlastWriteTime.c" />
     <ClCompile Include="src\Hec_zlastWriteTimeFile.c" />
     <ClCompile Include="src\Hec_zlocationFromStruct.c" />
@@ -210,41 +206,20 @@
     <ClCompile Include="src\Hec_zlocationStore.c" />
     <ClCompile Include="src\Hec_zlocationToStruct.c" />
     <ClCompile Include="src\Hec_zmaxpart.c" />
-    <ClCompile Include="src\Hec_zndata.c" />
-    <ClCompile Include="src\Hec_zofset.c" />
     <ClCompile Include="src\Hec_zopen.c" />
-    <ClCompile Include="src\Hec_zpath.c" />
-    <ClCompile Include="src\Hec_zpathnameListJava.c" />
     <ClCompile Include="src\Hec_zpdRetrieve.c" />
     <ClCompile Include="src\Hec_zpdStore.c" />
-    <ClCompile Include="src\Hec_zplist.c" />
     <ClCompile Include="src\Hec_zquery.c" />
-    <ClCompile Include="src\Hec_zrdpat.c" />
     <ClCompile Include="src\Hec_zreadx.c" />
     <ClCompile Include="src\Hec_zreadxBytes.c" />
-    <ClCompile Include="src\Hec_zrecadd.c" />
     <ClCompile Include="src\Hec_zrecInfo.c" />
     <ClCompile Include="src\Hec_zrenam.c" />
     <ClCompile Include="src\Hec_zrinfo.c" />
-    <ClCompile Include="src\Hec_zritsc.c" />
-    <ClCompile Include="src\Hec_zritsx.c" />
-    <ClCompile Include="src\Hec_zritsxd.c" />
-    <ClCompile Include="src\Hec_zrpd.c" />
-    <ClCompile Include="src\Hec_zrpdd.c" />
-    <ClCompile Include="src\Hec_zrrts.c" />
-    <ClCompile Include="src\Hec_zrrtsc.c" />
-    <ClCompile Include="src\Hec_zrrtsx.c" />
     <ClCompile Include="src\Hec_zset.c" />
     <ClCompile Include="src\Hec_zsetCatalogSortAddresses.c" />
     <ClCompile Include="src\Hec_zsetfi.c" />
-    <ClCompile Include="src\Hec_zsetInterrupt.c" />
     <ClCompile Include="src\Hec_zsetMessageLevel.c" />
-    <ClCompile Include="src\Hec_zsitsc.c" />
-    <ClCompile Include="src\Hec_zspd.c" />
-    <ClCompile Include="src\Hec_zspdd.c" />
     <ClCompile Include="src\Hec_zsqueeze.c" />
-    <ClCompile Include="src\Hec_zsrtsc.c" />
-    <ClCompile Include="src\Hec_zstfh.c" />
     <ClCompile Include="src\Hec_ztextRetrieve.c" />
     <ClCompile Include="src\Hec_ztextStore.c" />
     <ClCompile Include="src\Hec_ztinRetrieve.c" />
@@ -255,11 +230,9 @@
     <ClCompile Include="src\Hec_ztsRetrieve.c" />
     <ClCompile Include="src\Hec_ztsStore.c" />
     <ClCompile Include="src\Hec_zundel.c" />
-    <ClCompile Include="src\Hec_zustfh.c" />
     <ClCompile Include="src\Hec_zwhatChanged.c" />
     <ClCompile Include="src\Hec_zwhatChangedCompare.c" />
     <ClCompile Include="src\Hec_zwhatChangedSetStart.c" />
-    <ClCompile Include="src\Hec_zwritx.c" />
     <ClCompile Include="src\Hec_zwritxBytes.c" />
     <ClCompile Include="src\JavaCatalogToC.c" />
     <ClCompile Include="src\jni_utility.c" />

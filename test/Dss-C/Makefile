@@ -10,23 +10,20 @@ ifeq ($(UNAME_S),Linux)
 	CFLAGS=$(BITS) -fPIC -g -std=gnu99 -I../../heclib/heclib_c/src/headers -I. $(CWARNING)  -D__linux__ -fcommon
 	FWARNINGS=-Werror -Warray-bounds -Wc-binding-type -Wcharacter-truncation
 	FDEBUG=-fcheck=all,no-recursion
-	FFLAGS=-c $(BITS) -g -cpp -fPIC $(FWARNINGS) $(FDEBUG) -I../../heclib/heclib_f/src/headers
-	LDFLAGS = -lz -lrt -lgfortran -lm
+	LDFLAGS = -lz -lrt -lm
 	MAKE=make
         F90=gfortran
 endif
 ifeq ($(UNAME_S),SunOS)
 	CFLAGS=-m64 -I../../heclib/heclib_c/src/headers -I. -mt -xcode=pic32 -xstrconst -xc99=all -xCC -g -xs 
-	LDFLAGS = -m64 -lz -lrt -lm -lfsu -g -xs -lsunmath
+	LDFLAGS = -m64 -lz -lrt -lm -g -xs -lsunmath
 	MAKE=gmake
-	F90=f95
 endif
 ifeq ($(UNAME_S),Darwin)
-    LDFLAGS=-L${GFORTRAN_PATH} -lz -lgfortran -lm -lc
+    LDFLAGS=-lz -lm -lc
 	CWARNING=-Werror=implicit-function-declaration
     CFLAGS=-m64 -dynamiclib -fPIC -g -std=gnu99 -I../../heclib/heclib_c/src/headers -I. $(CWARNING)
     MAKE=make
-    F90=gfortran
 endif
 
 TARGET := Dss-C
@@ -35,13 +32,13 @@ SRC_DIRS := .
 CC=cc
 HLIBS=../../heclib/Output/heclib.a
 
-SRCS := $(shell find $(SRC_DIRS) -name '*.c' -o -name '*.f90' )
+SRCS := $(shell find $(SRC_DIRS) -name '*.c' )
 
 OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
 
 $(BUILD_DIR)/$(TARGET): $(OBJS) $(HLIBS)
 	mkdir -p $(BUILD_DIR)
-	$(F90)  -o $@ $^ $(HLIBS) $(HLIBS)  $(HLIBS) $(LDFLAGS)
+	$(CC)  -o $@ $^ $(HLIBS) $(HLIBS) $(LDFLAGS)
 
 test:$(BUILD_DIR)/$(TARGET)
 	mkdir -p $(BUILD_DIR)

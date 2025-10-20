@@ -1400,7 +1400,7 @@ return status;
 
 	//tss1 = zstructTsNew(cpath);
 	tss1 = zstructTsNewTimes(cpath, "31Dec2015", "1200", "01Jan2017", "1200");
-	zset7("mlvl", "", 15);
+	zset("mlvl", "", 15);
 	status = ztsRetrieve((long long*)ifltab, tss1, 0, 2, 1);
 	if (status < 0) {
 		return status;

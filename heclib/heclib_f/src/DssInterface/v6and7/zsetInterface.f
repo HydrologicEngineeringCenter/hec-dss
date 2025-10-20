@@ -27,7 +27,7 @@ C
       ENDIF
 C
       CALL zset6(CPARAM, CALPHA, INUMB)
-      CALL zset7(CPARAM, CALPHA, INUMB)
+      CALL zset_(CPARAM, CALPHA, INUMB)
 C
       RETURN
       END

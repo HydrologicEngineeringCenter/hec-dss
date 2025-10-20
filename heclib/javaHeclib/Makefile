@@ -26,7 +26,7 @@ BUILD_DIR := ./Output
 SRC_DIRS := ./src
 INC_DIRS=-Isrc -I../heclib_c/src/headers -I${JAVA_HOME}/include -I${JAVA_HOME}/include/linux
 INC_DIRS_MACOS=-Isrc -I../heclib_c/src/headers -I${JAVA_HOME}/include -I${JAVA_HOME}/include/darwin
-HLIBS=../heclib_f/Output/libhec_f.a ../heclib_c/Output/libhec_c.a 
+HLIBS=../heclib_c/Output/libhec_c.a 
 
 SRCS := $(shell find $(SRC_DIRS) -name '*.c' )
 

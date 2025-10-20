@@ -21,16 +21,7 @@ int hec_dss_zopen(long long *ifltab, const char *dssFilename)
 		zmessageDebug(ifltab, DSS_FUNCTION_zopen_ID, "Entering zopenExtended for file: ", dssFilename);
 		zmessageDebugInt(ifltab, DSS_FUNCTION_zopen_ID, "Dss file version ", version);
 	 }
-	//  Check for a specific version set for the next new file
-	if (version == 0) {
-		//  File does not exist
-		zquery_("DSSV",  creturn, &version, (size_t)4, sizeof(creturn));
-		//  If set, reset to zero
-		if (version) {
-			zero = 0;
-			zset_("DSSV", creturn, &zero, (size_t)4, sizeof(creturn));
-		}
-	}
+
 
 	if (version == 6) {
 		// DSS 6 on Linux/MacOS is not supported..
