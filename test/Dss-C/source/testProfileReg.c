@@ -331,7 +331,6 @@ int testProfileReg(long long *ifltab)
 	tss3->unitsProfileDepths = "feet";
 	tss3->unitsProfileValues = "deg F";
 	ztsProcessTimes(ifltab, tss3, 1);
-	//zset("mlvl", " ", 15);
 
 	//  read before into data
 	tssOut2 = zstructTsNewTimes(pathname2, startDate, startTime, endDate, endTime);
