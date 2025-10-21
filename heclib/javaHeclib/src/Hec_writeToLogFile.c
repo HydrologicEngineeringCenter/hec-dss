@@ -3,7 +3,7 @@
 #include "heclib.h"
 
 
-JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1WritetoLogFile
+JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1writeToLogFile
 (JNIEnv* env, jobject obj, jstring j_message) {
 
   long long ifltab[250];

@@ -157,10 +157,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\C_CatalogToJava.c" />
-    <ClCompile Include="src\Hec_CloseLogFile.c" />
-    <ClCompile Include="src\Hec_FlushLogFile.c" />
+    <ClCompile Include="src\Hec_closeLogFile.c" />
+    <ClCompile Include="src\Hec_flushLogFile.c" />
     <ClCompile Include="src\Hec_openLogFile.c" />
-    <ClCompile Include="src\Hec_WriteToLogFile.c" />
+    <ClCompile Include="src\Hec_writeToLogFile.c" />
     <ClCompile Include="src\Hec_zaliasAdd.c" />
     <ClCompile Include="src\Hec_zaliasGetPrimary.c" />
     <ClCompile Include="src\Hec_zaliasList.c" />
