@@ -206,6 +206,10 @@ int runTheTests() {
 	int status;
 
 
+	status = gridPreCompressionTest();
+  if (status != STATUS_OKAY)
+			return status;
+	return 0;
 	status = test_data_shift_during_save(0);
 	if (status != STATUS_OKAY)
 		return status;

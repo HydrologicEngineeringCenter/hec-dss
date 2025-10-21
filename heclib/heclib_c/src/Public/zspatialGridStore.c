@@ -42,8 +42,16 @@
 *
 */
 
-
-int zspatialGridStore(long long *ifltab, zStructSpatialGrid *gridStruct) {
+int zspatialGridStore(long long* ifltab, zStructSpatialGrid* gridStruct) {
+	return zspatialGridStore_extended(ifltab, gridStruct,0);
+}
+/// <summary>
+/// </summary>
+/// <param name="ifltab"></param>
+/// <param name="gridStruct"></param>
+/// <param name="preCompressedSize">when 0 data is not precompressed, otherwise size of precompressed data using (compression method)</param>
+/// <returns></returns>
+int zspatialGridStore_extended(long long *ifltab, zStructSpatialGrid *gridStruct, int preCompressedSize) {
 
 	int status;
 	size_t count;
@@ -215,73 +223,82 @@ int zspatialGridStore(long long *ifltab, zStructSpatialGrid *gridStruct) {
 		convertDataArray((int *)(gridStruct->_meanDataValue), &ztransfer->values1[2], 1, 1, 1);
 		convertDataArray((int *)(gridStruct->_rangeLimitTable), &ztransfer->values1[3], gridStruct->_numberOfRanges, 1, 1);
 		convertDataArray((int *)(&gridStruct->_numberEqualOrExceedingRangeLimit[0]), &ztransfer->values1[gridStruct->_numberOfRanges + 3], gridStruct->_numberOfRanges, 1, 1);
-		int dataSize = (gridStruct->_numberOfCellsX * gridStruct->_numberOfCellsY);
-		int numLongs = ((dataSize - 1) / 2) + 1;
-		int *dataValues = calloc(numLongs, 8);
-		memcpy(dataValues, gridStruct->_data, dataSize * 4);
-		switch (gridStruct->_compressionMethod) {
-		case NO_COMPRESSION:
-			gridStruct->_sizeofCompressedElements = dataSize * 4;
+		if (preCompressedSize) {
+			gridStruct->_sizeofCompressedElements = preCompressedSize;
 			internalHeader[INT_HEAD_grid_sizeofCompressedElements] = gridStruct->_sizeofCompressedElements;
-			ztransfer->values3Number = numLongs * 2;
-			ztransfer->values3 = (int *)dataValues;
+			ztransfer->values3Number = numberIntsInBytes(preCompressedSize);
+			ztransfer->values3 = (int*)gridStruct->_data;
+		}
+		else {
+			int dataSize = (gridStruct->_numberOfCellsX * gridStruct->_numberOfCellsY);
+			int numLongs = ((dataSize - 1) / 2) + 1;
+			int* dataValues = calloc(numLongs, 8);
+			memcpy(dataValues, gridStruct->_data, dataSize * 4);
+			switch (gridStruct->_compressionMethod) {
+			case NO_COMPRESSION:
+				gridStruct->_sizeofCompressedElements = dataSize * 4;
+				internalHeader[INT_HEAD_grid_sizeofCompressedElements] = gridStruct->_sizeofCompressedElements;
+				ztransfer->values3Number = numLongs * 2;
+				ztransfer->values3 = (int*)dataValues;
+				if (bigEndian()) {
+					zswitchInts(ztransfer->values3, ztransfer->values3Number);
+				}
+
+
+				break;
+			case ZLIB_COMPRESSION:
+#if 0
+			{
+				printf("XXX: Before Values: ");
+				for (int i = 0; i < numLongs * 2; i++)
+					printf("%x,", dataValues[i]);
+				printf("\n");
+			}
+#endif
 			if (bigEndian()) {
-				zswitchInts(ztransfer->values3, ztransfer->values3Number);
+				zswap((long long*)dataValues, numLongs * 2);
+				zswitchInts(dataValues, numLongs * 2);
 			}
 
 
-			break;
-		case ZLIB_COMPRESSION:
+
+			bufsize = compress_zlib(dataValues, numLongs * 2 * 4, &buffer);
+			/*if (compress_zfp(gridStruct->data, gridStruct->_numberOfCellsX, gridStruct->_numberOfCellsY, (float)1.0e-6, &buffer, &bufsize, 0)) */
+			if (bufsize <= 0) {
+				free(dataValues);
+				zstructFree(ztransfer);
+				return zerrorProcessing(ifltab, DSS_FUNCTION_zspatialGridStore_ID, zdssErrorCodes.WRITE_ERROR,
+					0, 0, zdssErrorSeverity.WRITE_ERROR, "", "gridStruct error in zlib compression");
+			}
 #if 0
-		{
-			printf("XXX: Before Values: ");
-			for (int i = 0; i < numLongs * 2; i++)
-				printf("%x,", dataValues[i]);
-			printf("\n");
-		}
+			{
+				char* cdata = buffer;
+				printf("XXX: Compressed Buffer: ");
+				for (int i = 0; i < bufsize; i++)
+					printf("%x,", (int)cdata[i]);
+				printf("\n");
+				printf("XXX: Values: ");
+				for (int i = 0; i < numLongs * 2; i++)
+					printf("%x,", dataValues[i]);
+				printf("\n");
+			}
 #endif
-		if (bigEndian()) {
-			zswap((long long *)dataValues, numLongs * 2);
-			zswitchInts(dataValues, numLongs * 2);
-		}
-
-
-
-		bufsize = compress_zlib(dataValues, numLongs * 2 * 4, &buffer);
-		/*if (compress_zfp(gridStruct->data, gridStruct->_numberOfCellsX, gridStruct->_numberOfCellsY, (float)1.0e-6, &buffer, &bufsize, 0)) */
-		if (bufsize <= 0) {
+			gridStruct->_sizeofCompressedElements = bufsize;
+			internalHeader[INT_HEAD_grid_sizeofCompressedElements] = gridStruct->_sizeofCompressedElements;
+			ztransfer->values3Number = numberIntsInBytes(bufsize);
+			ztransfer->values3 = (int*)calloc((size_t)ztransfer->values3Number + 2, 4);
+			charInt((void*)buffer, (void*)ztransfer->values3, bufsize, (ztransfer->values3Number * 4), 1, 1, 0);
+			free(buffer);
 			free(dataValues);
-			zstructFree(ztransfer);
-			return zerrorProcessing(ifltab, DSS_FUNCTION_zspatialGridStore_ID, zdssErrorCodes.WRITE_ERROR,
-				0, 0, zdssErrorSeverity.WRITE_ERROR, "", "gridStruct error in zlib compression");
-		}
-#if 0
-		{
-			char *cdata = buffer;
-			printf("XXX: Compressed Buffer: ");
-			for (int i = 0; i < bufsize; i++)
-				printf("%x,", (int)cdata[i]);
-			printf("\n");
-			printf("XXX: Values: ");
-			for (int i = 0; i < numLongs * 2; i++)
-				printf("%x,", dataValues[i]);
-			printf("\n");
-		}
-#endif
-		gridStruct->_sizeofCompressedElements = bufsize;
-		internalHeader[INT_HEAD_grid_sizeofCompressedElements] = gridStruct->_sizeofCompressedElements;
-		ztransfer->values3Number = numberIntsInBytes(bufsize);
-		ztransfer->values3 = (int *)calloc((size_t)ztransfer->values3Number + 2, 4);
-		charInt((void *)buffer, (void *)ztransfer->values3, bufsize, (ztransfer->values3Number * 4), 1, 1, 0);
-		free(buffer);
-		free(dataValues);
-		break;
-		default:
-			zstructFree(ztransfer);
-			return zerrorProcessing(ifltab, DSS_FUNCTION_zspatialGridStore_ID, zdssErrorCodes.WRITE_ERROR,
-				0, 0, zdssErrorSeverity.WRITE_ERROR, "", "gridStruct: Unsupported Compression");
+			break;
+			default:
+				zstructFree(ztransfer);
+				return zerrorProcessing(ifltab, DSS_FUNCTION_zspatialGridStore_ID, zdssErrorCodes.WRITE_ERROR,
+					0, 0, zdssErrorSeverity.WRITE_ERROR, "", "gridStruct: Unsupported Compression");
 
+			}
 		}
+
 		if (bigEndian()) {
 			zswitchInts(ztransfer->values1, ztransfer->values1Number);
 		}
@@ -325,7 +342,12 @@ int zspatialGridStore(long long *ifltab, zStructSpatialGrid *gridStruct) {
 	}
 	//  Transfer struct is ready to go.   Write it!
 	status = zwrite(ifltab, ztransfer);
+
+	if (preCompressedSize > 0) {
+		ztransfer->values3 = 0;
+	}
 	zstructFree(ztransfer);
+	
 
 	if (zmessageLevel(ifltab, MESS_METHOD_WRITE_ID, MESS_LEVEL_USER_DIAG)) {
 		zmessageDebugInt(ifltab, DSS_FUNCTION_zspatialGridStore_ID, "Exit; status:  ", status);

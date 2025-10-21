@@ -131,6 +131,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="preCompressionGridTest.c" />
     <ClCompile Include="source\Bulletin_17C_SSP_Issue.c" />
     <ClCompile Include="source\mixed_record_types.c" />
     <ClCompile Include="source\PathnameTesting.c" />
