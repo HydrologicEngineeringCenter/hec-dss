@@ -765,6 +765,7 @@ HECDSS_API int hec_dss_gridStore(dss_file* dss, const char* pathname,
   const int numberOfRanges, const int srsDefinitionType,
   const int timeZoneRawOffset, int isInterval,
   const int isTimeStamped,
+  const int compressionSize,
   const char* dataUnits,
   const char* dataSource,
   const char* srsName,
@@ -817,7 +818,7 @@ HECDSS_API int hec_dss_gridStore(dss_file* dss, const char* pathname,
   gridStruct->_data = data;
 
   
-  int status = zspatialGridStore(dss->ifltab, gridStruct);
+  int status = zspatialGridStore_extended(dss->ifltab, gridStruct, compressionSize);
   // set NULL address to prevent zstructFree from freeing items below (they are owned by caller)
   gridStruct->_numberEqualOrExceedingRangeLimit = NULL;
   gridStruct->_rangeLimitTable = NULL;
