@@ -9,6 +9,8 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1FlushLogFile
 	if (zdssVals.messageHandle <= 0) {
 		return -1;
 	}
-	flushFile(zdssVals.messageHandle);
+	int status = flushFile(zdssVals.messageHandle);
+
+	return status;
 
 }

@@ -59,7 +59,6 @@ void zmessageDebug(long long *ifltab, int functionID, const char *message1, cons
 	getCurrentTimeString(mess, sizeof(mess));
 
 	stringCat(mess, sizeof(mess), dmess, _TRUNCATE);
-	if (zgetVersion(ifltab) == 6) stringCat(mess, sizeof(mess), "Version 6; ", _TRUNCATE);
 	stringCat(mess, sizeof(mess), zgetFunctionName(functionID), _TRUNCATE);
 	stringCat(mess, sizeof(mess), semicolon, _TRUNCATE);
 	stringCat(mess, sizeof(mess), blank, _TRUNCATE);

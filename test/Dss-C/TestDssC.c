@@ -206,6 +206,11 @@ int runTheTests() {
 	int status;
 
 
+
+	status = test_logging();
+	if (status != STATUS_OKAY)
+		return status;
+
 	status = test_data_shift_during_save(0);
 	if (status != STATUS_OKAY)
 		return status;
