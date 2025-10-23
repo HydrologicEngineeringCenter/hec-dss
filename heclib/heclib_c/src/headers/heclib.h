@@ -22,8 +22,6 @@
 #define UNDEFINED_DOUBLE -(double)FLT_MAX
 
 
-int fortranopen_(int *unit, char *filename, size_t lenFilename);
-int fortranclose_(int *unit);
 int zckmul6_ (long long *ifltab);
 void zpseudorts6_(const char *CFROMPATH, char *CTOPATH, int *INTL, int *IACTION, int *ISTATUS, size_t lenFrom, size_t lenTo);
 void zstfh_ (const char *clabels, const char *citems, int *numberItems,

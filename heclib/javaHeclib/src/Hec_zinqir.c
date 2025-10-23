@@ -34,11 +34,9 @@ JNIEXPORT void JNICALL Java_hec_heclib_util_Heclib_Hec_1zinqir
 	if (!param) return;
 	if (!number) return;
 
-//	printf("Enter Java_hec_heclib_util_Heclib_Hec_1zinqir,  param %s\n ", param);
-
-
+	int dss_version = zgetVersion((long long*)ifltab);
 	len = (int)strnlen_hec(param, 4);
-	if ((zgetVersion((long long*)ifltab) == 0) && (len == 4) && (!zstringCompare(param, "vers", 4))) {
+	if ((dss_version == 0) && (len == 4) && (!zstringCompare(param, "vers", 4))) {
 		number[0] = 7;
 		cls = (*env)->GetObjectClass(env, j_alpha);
 		fid = (*env)->GetFieldID(env, cls, "string", "Ljava/lang/String;");
@@ -59,7 +57,7 @@ JNIEXPORT void JNICALL Java_hec_heclib_util_Heclib_Hec_1zinqir
 		}
 		alpha[299] = '\0';
 
-		if ((zgetVersion((long long*)ifltab) == 7) || (!strcmp(param, "vers"))) {
+		if ((dss_version == 7) || (!strcmp(param, "vers"))) {
 			zinquireChar ((long long*)ifltab, param, alpha, sizeof(alpha)-1, number);
 			/* Set the alpha return */
 			cls = (*env)->GetObjectClass (env, j_alpha);
@@ -74,7 +72,7 @@ JNIEXPORT void JNICALL Java_hec_heclib_util_Heclib_Hec_1zinqir
 				zmessageDebugInt((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "Hec_zinqir return; number: ", number[0]);
 			}
 		}
-		else if ((zgetVersion((long long*)ifltab) == 6) || (strcmp(param, "vers"))) {
+		else if ((dss_version == 6) || (strcmp(param, "vers"))) {
 			zinqir_((long long*)ifltab, param, alpha, number, strlen(param), sizeof(alpha) - 1);
 			/* Set the alpha return */
 			cls = (*env)->GetObjectClass(env, j_alpha);
