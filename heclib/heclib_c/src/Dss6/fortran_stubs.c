@@ -57,9 +57,6 @@ void zclose6_(long long* ifltab) {
 	DSS_STUB_CALLED();
 }
 
-void zquery_(const char* arg1, char* arg2, int* arg3, size_t arg4, size_t arg5) {
-	DSS_STUB_CALLED();
-}
 
 void zopen6int_(long long* ifltab, const char* dssFilename, int* status, size_t strlenDssFilename) {
 	DSS_STUB_CALLED();

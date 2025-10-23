@@ -37,7 +37,6 @@
     <ClCompile Include="src\DssInterface\timeStringToSeconds_.c" />
     <ClCompile Include="src\DssInterface\v6and7\zcheck.c" />
     <ClCompile Include="src\DssInterface\v6and7\zclose.c" />
-    <ClCompile Include="src\DssInterface\v6and7\zconvertVersion.c" />
     <ClCompile Include="src\DssInterface\v6and7\zcopyRecord.c" />
     <ClCompile Include="src\DssInterface\v6and7\zdataType.c" />
     <ClCompile Include="src\DssInterface\v6and7\zdelete.c" />
@@ -71,8 +70,6 @@
     <ClCompile Include="src\DssInterface\zgetVersion_.c" />
     <ClCompile Include="src\DssInterface\zget_.c" />
     <ClCompile Include="src\DssInterface\zirbeg7_.c" />
-    <ClCompile Include="src\DssInterface\zopenExtended_.c" />
-    <ClCompile Include="src\DssInterface\zopen_.c" />
     <ClCompile Include="src\DssInterface\zpathnameFormFortran_.c" />
     <ClCompile Include="src\DssInterface\zpathnameGetPart_.c" />
     <ClCompile Include="src\DssInterface\zpdStore_.c" />

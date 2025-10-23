@@ -2,8 +2,7 @@
  This project (hecdss) contains code for a shared object/dll, providing an API to work with DSS files.
 
  Only DSS version 7 files are supported.  DSS version 6 files should be converted to DSS version 7
- using HEC-DSSVue https://www.hec.usace.army.mil/software/hec-dssvue/.  If you don't have any gridded data 
- is is ok to convert from DSS version 6 to DSS version 7 using the method hec_dss_convertToVersion7(...) in this libraray.
+ using HEC-DSSVue https://www.hec.usace.army.mil/software/hec-dssvue/.  
 
 
  This API is designed with perspective that the calling/client code is in charge of managing memory.
@@ -593,15 +592,6 @@ HECDSS_API int hec_dss_dateToJulian(const char* date);
 /// <param name="day"></param>
 /// <returns></returns>
 HECDSS_API void hec_dss_julianToYearMonthDay(const int julian, int* year, int* month, int* day);
-
-/// <summary>
-/// Converts from DSS 6 to DSS7
-/// Warning: DSS6 grids will not be converted. (Java libraries are necessary for version 6 grids)
-/// </summary>
-/// <param name="dssFilename"></param>
-/// <param name="filenameVersion6"></param>
-/// <returns></returns>
-HECDSS_API int hec_dss_convertToVersion7(const char* filenameVersion6, const char* filenameVersion7);
 
 
 HECDSS_API int hec_dss_arrayStore(dss_file* dss, const char* pathname,

@@ -852,24 +852,6 @@ HECDSS_API void hec_dss_julianToYearMonthDay(const int julian, int* year, int* m
   julianToYearMonthDay(julian, year, month, day);
 }
 
-HECDSS_API int hec_dss_convertToVersion7(const char* filenameVersion6, const char* filenameVersion7) {
-    long long ifltab[250];
-    int status = hec_dss_zopen(ifltab, filenameVersion6);
-    if (status != 0)
-      return status;
-    int version = zgetVersion(ifltab);
-    if (version != 6) {
-      char msg[256];
-      sprintf(msg, "conversion is only supported from version 6 to version 7.\nversion input was %d", version);
-      hec_dss_log_error(msg);
-      zclose(ifltab);
-      return -67;
-    }
-    zclose(ifltab);
-    status = zconvertVersion(filenameVersion6, filenameVersion7);
-    return status;
-
-}
 
 HECDSS_API int hec_dss_arrayStore(dss_file* dss, const char* pathname, 
                                   int* intValues,const int intValuesLength,

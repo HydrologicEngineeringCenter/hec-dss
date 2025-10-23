@@ -51,7 +51,6 @@ int zsqueeze(const char *dssFilename);
 
 //  Utility Functions
 int zcopyFile(long long *ifltab, long long *ifltabTo, int statusWanted);
-int zconvertVersion(const char* fileNameFrom, const char* fileNameTo);
 int zcopyRecord (long long *ifltabFrom, long long *ifltabTo, const char *pathnameFrom, const char *pathnameTo);
 int zduplicateRecord (long long *ifltab, const char *pathnameFrom, const char *pathnameTo);
 
