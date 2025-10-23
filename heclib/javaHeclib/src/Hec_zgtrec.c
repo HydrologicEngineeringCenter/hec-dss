@@ -12,7 +12,6 @@ JNIEXPORT void JNICALL Java_hec_heclib_util_Heclib_Hec_1zgtrec
 	int		*arrayVals;
 	int		flag;
 	long long  nada=0;
-	int		iadd;
 	
 
   ifltab		= (*env)->GetIntArrayElements (env, j_ifltab, 0);

@@ -11,7 +11,6 @@ JNIEXPORT void JNICALL Java_hec_heclib_util_Heclib_Hec_1zget
 	int		numberWords;  //  8 byte words!
 	long	*arrayVals;
 	int		flag;
-	int		iadd;
 	
 
   ifltab		= (*env)->GetIntArrayElements (env, j_ifltab, 0);

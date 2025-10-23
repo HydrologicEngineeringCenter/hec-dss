@@ -3,7 +3,7 @@
 #include "heclib.h"
 
 
-JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1OpenLogFile
+JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1openLogFile
 (JNIEnv* env, jobject obj, jstring j_filename) {
 
   char* filename;
@@ -13,7 +13,7 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1OpenLogFile
     return STATUS_NOT_OKAY;
   }
 
-  int status = zopenLog(filename);
+  int status = zopenLog(filename); 
 
   (*env)->ReleaseStringUTFChars(env, j_filename, filename);
 

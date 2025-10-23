@@ -5,6 +5,7 @@
 #include "heclib.h"
 #include "hecdss7.h"
 
+int test_logging();
 int testLargeCopy();
 int test_normalize_f_part();
 int test_vertical_datums_c();
