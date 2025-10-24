@@ -24,11 +24,13 @@ jobs:
         with:
           repository: HydrologicEngineeringCenter/dss-test-data
           path: dss-test-data
-
       - uses: actions/setup-java@v3
         with:
           distribution: 'adopt'
           java-version: '${{matrix.jdk}}'
+      - name: Setup Visual Studio CL
+        if: ${{matrix.platform == 'windows-latest'}}
+        uses: ilammy/msvc-dev-cmd@v1.13.0
       - name: Setup cmake
         uses: jwlawson/actions-setup-cmake@v2.0.2
         with:
