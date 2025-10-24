@@ -10,3 +10,4 @@ add_custom_target(
 
 
 add_test(NAME Dss-C COMMAND Dss-C test WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/test")
+set_property(TEST Dss-C PROPERTY ENVIRONMENT_MODIFICATION "PATH=path_list_append:$<TARGET_RUNTIME_DLL_DIRS:Dss-C>")
