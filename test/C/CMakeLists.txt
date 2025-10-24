@@ -5,6 +5,7 @@ add_library(getopt OBJECT getopt.c)
 add_executable(ts_write ts_write.c $<TARGET_OBJECTS:getopt>)
 target_link_libraries(ts_write heclib)
 add_test(NAME ts_write COMMAND ts_write)
+set_property(TEST ts_write PROPERTY ENVIRONMENT_MODIFICATION PATH=path_list_append:$<TARGET_RUNTIME_DLL_DIRS:ts_write>)
 
 add_executable(ts_write_irregular ts_write_irregular.c $<TARGET_OBJECTS:getopt>)
 target_link_libraries(ts_write_irregular heclib)
