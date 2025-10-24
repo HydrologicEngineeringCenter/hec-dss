@@ -22,7 +22,7 @@ JNIEXPORT void JNICALL Java_hec_heclib_util_Heclib_Hec_1zcheck
 	numberData = (*env)->GetIntArrayElements (env, j_numberData,  0);
     exists = (*env)->GetIntArrayElements (env, j_exists,  0);   
 
-    zcheck7_ ((long long*)ifltab, path, &npath, numberHeader, numberData, exists, strlen(path));
+    zcheck7((long long*)ifltab, path, &npath, numberHeader, numberData, exists);
 
     (*env)->ReleaseIntArrayElements (env, j_ifltab, ifltab, 0);
     (*env)->ReleaseStringUTFChars (env, j_pathname, path);

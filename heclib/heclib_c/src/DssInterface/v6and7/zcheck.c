@@ -85,19 +85,12 @@ int zcheck(long long *ifltab, const char* pathname)
 }
 
 
-//  Fortran compatible interface, for DSS-6 calls also
-void zcheck7_(long long *ifltab, const char* pathname, int *numberPathname,
-			 int *numberHeader, int *numberData, int *lfound, size_t lenPathname)
+void zcheck7(long long *ifltab, const char* pathname, int *numberPathname,
+			 int *numberHeader, int *numberData, int *lfound)
 {
-	char *cpath;
 	long long *info;
-	int status;
 
-
-	cpath = stringFortToC(pathname, lenPathname);
-
-	status = zreadInfo(ifltab, cpath, 0);
-	free(cpath);
+	int status = zreadInfo(ifltab, pathname, 0);
 	if (zisError(status)) {
 		*lfound = 0;
 		return;
