@@ -17,19 +17,14 @@ JNIEXPORT jlong JNICALL Java_hec_heclib_util_Heclib_Hec_1zinquire
 			jstring j_param)
 {
 
-    int *ifltab;
-    const char *param;   
-	long long answer;
-
 	if (!j_ifltab) return -1;
 	if (!j_param) return -1;
 	
-	param = (*env)->GetStringUTFChars(env, j_param, 0);
+	const char* param = (*env)->GetStringUTFChars(env, j_param, 0);
 
-    ifltab = (*env)->GetIntArrayElements(env, j_ifltab, 0);
+  int* ifltab = (*env)->GetIntArrayElements(env, j_ifltab, 0);
     
-//	printf("Enter Java_hec_heclib_util_Heclib_Hec_1zinquire,  param %s\n ", param);
-	answer = zinquire ((long long*)ifltab, param);
+	long long answer = zinquire ((long long*)ifltab, param);
 
 	
 	if (zmessageLevel((long long*)ifltab, MESS_METHOD_JNI_ID, MESS_LEVEL_INTERNAL_DIAG_1)) {

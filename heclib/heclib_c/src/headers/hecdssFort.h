@@ -202,8 +202,6 @@ void zmaxpart6_(long long *ifltab, int *maxParts);
 void zplist6_ (long long *ifltab, const char *instr, int *filePos, char *pathname,
                int *nPathname, int *status, size_t len_instr, size_t sizeof_pathname);
 
-void zquery6_ (const char *request, char *returnVal, int *returnNumb, size_t len_request, size_t sizeof_returnVal);
-
 void zrdpat_(const int *icunit, int *ipos, int *inumb, char *tag,
               char *path, int *npath, int *lend, size_t lenTag, size_t lenPath);
 

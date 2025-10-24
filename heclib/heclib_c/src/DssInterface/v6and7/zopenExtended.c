@@ -19,7 +19,6 @@ int zopenExtended(long long *ifltab, const char *dssFilename, int fileVersion,
 			 int access, int maxExpectedPathnames, int hashSize, int binSize)
 {
 	int version;
-	int status;
 
 	version = zgetFileVersion(dssFilename);
 
@@ -28,12 +27,6 @@ int zopenExtended(long long *ifltab, const char *dssFilename, int fileVersion,
 		zmessageDebugInt(ifltab, DSS_FUNCTION_zopen_ID, "Dss file version ", version);
 	 }
 
-	if ((version == 6) || ((version == 0) && (fileVersion == 6))) {
-		zopen6_(ifltab, dssFilename, &status, strlen(dssFilename));
-		return status;
-	}
-	else {
-		return zopenInternal(ifltab, dssFilename, access, maxExpectedPathnames, hashSize, binSize, 0);
-	}
+	return zopenInternal(ifltab, dssFilename, access, maxExpectedPathnames, hashSize, binSize, 0);
 }
 

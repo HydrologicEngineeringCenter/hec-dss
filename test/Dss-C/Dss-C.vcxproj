@@ -155,7 +155,6 @@
     <ClCompile Include="source\testArrayWriteRead.c" />
     <ClCompile Include="source\testBufferedIO.c" />
     <ClCompile Include="source\testCatalog.c" />
-    <ClCompile Include="source\testConversion.c" />
     <ClCompile Include="source\testDateTime.c" />
     <ClCompile Include="source\testDelete.c" />
     <ClCompile Include="source\testExpandedTimes.c" />

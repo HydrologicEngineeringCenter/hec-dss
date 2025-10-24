@@ -24,7 +24,7 @@ int testRecordInfo6(const char *filename) {
 
 	stringCopy(pathname, sizeof(pathname), "/A/B/C/01JAN2019/1DAY/F/", sizeof(pathname));
 	len = strlen(filename);
-	zopen_(ifltab2, filename, &status, len);
+	status = hec_dss_zopen(ifltab2, filename);
 
 	recordSize = (zStructRecordSize*)zstructRecordSizeNew(pathname);
 	status = zgetRecordSize(ifltab2, recordSize);
@@ -53,7 +53,7 @@ int testRecordInfo7(const char* filename) {
 
 	stringCopy(pathname, sizeof(pathname), "/a/b/c/01Jan2020/1Day/f/", sizeof(pathname));
 	len = strlen(filename);
-	zopen_(ifltab2, filename, &status, len);
+	status = hec_dss_zopen(ifltab2, filename);
 
 	recordSize = (zStructRecordSize*)zstructRecordSizeNew(pathname);
 	status = zgetRecordSize(ifltab2, recordSize);

@@ -78,10 +78,6 @@ int testTin(long long *ifltab)
 		return 0;
 	}
 	return 0;   //  Needs to be updated by Tom E.
-	//zset("mlvl", "", 10);
-	//_unlink("a6.dss");
-	//status = zconvertVersion("sample7.dss", "a6.dss");
-	//return status;
 
 	tinStructStore = zstructSpatialTinNew("/a/b/c/01jan2001:1200/01jan2001:1300/f/");
 

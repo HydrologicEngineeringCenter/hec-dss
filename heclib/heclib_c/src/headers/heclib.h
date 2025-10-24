@@ -22,8 +22,6 @@
 #define UNDEFINED_DOUBLE -(double)FLT_MAX
 
 
-int fortranopen_(int *unit, char *filename, size_t lenFilename);
-int fortranclose_(int *unit);
 int zckmul6_ (long long *ifltab);
 void zpseudorts6_(const char *CFROMPATH, char *CTOPATH, int *INTL, int *IACTION, int *ISTATUS, size_t lenFrom, size_t lenTo);
 void zstfh_ (const char *clabels, const char *citems, int *numberItems,
@@ -53,7 +51,6 @@ int zsqueeze(const char *dssFilename);
 
 //  Utility Functions
 int zcopyFile(long long *ifltab, long long *ifltabTo, int statusWanted);
-int zconvertVersion(const char* fileNameFrom, const char* fileNameTo);
 int zcopyRecord (long long *ifltabFrom, long long *ifltabTo, const char *pathnameFrom, const char *pathnameTo);
 int zduplicateRecord (long long *ifltab, const char *pathnameFrom, const char *pathnameTo);
 

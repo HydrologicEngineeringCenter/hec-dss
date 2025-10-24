@@ -149,6 +149,7 @@ int zfileError(long long *ifltab);
 int zerrorCode(long long *ifltab);
 int zisError(int status);
 int zcheckFile(long long *ifltab);
+void zcheck7(long long* ifltab, const char* pathname, int* numberPathname, int* numberHeader, int* numberData, int* lfound);
 int zerror(hec_zdssLastError *errorStruct);
 
 //  Alias functions

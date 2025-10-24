@@ -339,9 +339,6 @@
     <ClCompile Include="src\DssInterface\v6and7\zclose.c">
       <Filter>src\DssInterface\v6andv7</Filter>
     </ClCompile>
-    <ClCompile Include="src\DssInterface\v6and7\zconvertVersion.c">
-      <Filter>src\DssInterface\v6andv7</Filter>
-    </ClCompile>
     <ClCompile Include="src\DssInterface\v6and7\zcopyRecord.c">
       <Filter>src\DssInterface\v6andv7</Filter>
     </ClCompile>
@@ -448,12 +445,6 @@
       <Filter>src\DssInterface</Filter>
     </ClCompile>
     <ClCompile Include="src\DssInterface\zirbeg7_.c">
-      <Filter>src\DssInterface</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\zopen_.c">
-      <Filter>src\DssInterface</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\zopenExtended_.c">
       <Filter>src\DssInterface</Filter>
     </ClCompile>
     <ClCompile Include="src\DssInterface\zpathnameFormFortran_.c">

@@ -29,7 +29,7 @@ int testztsStructBill()
 	stringCopy(pathname, sizeof(pathname), "/EF RUSSIAN/COYOTE/STOR-RES EOP/01MAR2006/1HOUR//", sizeof(pathname));
 	stringCopy(filename, sizeof(filename), "sample7.dss", sizeof(filename));
 	len = strlen(filename);
-	zopen_(ifltab2, filename, &status, len);
+	status = hec_dss_zopen(ifltab2, filename);
 
 	recordSize = (zStructRecordSize *)zstructRecordSizeNew(pathname);
 	status = zgetRecordSize(ifltab2, recordSize);
@@ -46,15 +46,14 @@ int testztsStructBill()
 	stringCopy(pathname, sizeof(pathname), "//BELLE MEADE/FLOW/01MAR2014/15MIN/U0R0/", sizeof(pathname));
 	stringCopy(filename, sizeof(filename), "s6.dss", sizeof(filename));
 	len = strlen(filename);
-	zopen_(ifltab, filename, &status, len);
-	//zset("MLVL", "", 15);
+	status = hec_dss_zopen(ifltab, filename);
 	tss2 = zstructTsNew(pathname); 
 	status = ztsRetrieve(ifltab, tss2, -1, 1, 0);
 
 	stringCopy(pathname, sizeof(pathname), "//BELLE MEADE/FLOW/16MAR2014 - 20MAR2014/15MIN/U0R0/", sizeof(pathname));
 	stringCopy(filename, sizeof(filename), "s7.dss", sizeof(filename));
 	len = strlen(filename);
-	zopen_(ifltab2, filename, &status, len);
+	status = hec_dss_zopen(ifltab2, filename);
 	tss1 = zstructTsNew(pathname); 
 	status = ztsRetrieve(ifltab2, tss1, -1, 1, 0);
 	testReadInfo(ifltab2, (const char *)pathname);
