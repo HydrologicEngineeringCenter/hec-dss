@@ -8,15 +8,15 @@
 //  issue would be a temporary situation where the progress
 //  would not be communicated to the processes, we won't worry about it.
 
-struct {
+struct zProgress{
 	 int handle;
 	 int interrupt;
 	 int totalNumber;
 	 int currentNumber;
 	 int numberErrors;
 	 int maxErrors;
-} zprogress;
+};
+
+extern struct zProgress zprogress;
 
 void zresetProgress(int handle, long long total);
-
-

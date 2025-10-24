@@ -16,7 +16,7 @@ void readProgramName(long long* ifltab, zStructTimeSeries* tss, int status)
 {
 
 	return; // may be causing Solaris issue (return for now)
-
+/*
 	if (zgetVersion(ifltab) != 6) {
 		return;
 	}
@@ -28,4 +28,5 @@ void readProgramName(long long* ifltab, zStructTimeSeries* tss, int status)
 		zgetinfo6_(ifltab, tss->pathname, ibuff, &istat, strlen(tss->pathname));
 		charLong(&ibuff[8], tss->programName, zdssVals.numberProgram, zdssVals.numberProgram, 0, 0);
 	}
+		*/
 }
