@@ -1,0 +1,41 @@
+name: Ubuntu
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [ubuntu-latest, macos-13, windows-latest]
+        jdk: [8]
+    runs-on: ${{matrix.platform}}
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+
+      - name: Checkout tools repo
+        uses: actions/checkout@v3
+        with:
+          repository: HydrologicEngineeringCenter/dss-test-data
+          path: dss-test-data
+
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'adopt'
+          java-version: '${{matrix.jdk}}'
+      - name: Setup cmake
+        uses: jwlawson/actions-setup-cmake@v2.0.2
+        with:
+            cmake-version: '3.16.x'
+      - name: Configure
+        run: cmake -B build
+      - name: Build
+        run: cmake --build build
+      - name: test
+        run: ctest --test-dir build
