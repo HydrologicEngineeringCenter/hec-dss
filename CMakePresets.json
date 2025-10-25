@@ -1,0 +1,22 @@
+{
+  "version": 10,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 23,
+    "patch": 0
+  },
+  "$comment": "An example CMakePresets.json file",  
+  "configurePresets": [
+    {
+      "name": "windows-default",
+      "displayName": "Windows-default configuration",
+      "description": "This build is only available on Windows",
+      "generator": "Visual Studio 17 2022",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      }
+    }
+    ]
+}
