@@ -2,7 +2,7 @@
   "version": 10,
   "cmakeMinimumRequired": {
     "major": 3,
-    "minor": 23,
+    "minor": 16,
     "patch": 0
   },
   "$comment": "An example CMakePresets.json file",  
