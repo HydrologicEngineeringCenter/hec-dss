@@ -24,12 +24,9 @@ int CheckPathnames(char* dssFileName)
 		return status;
 	}
 
-	if (zgetVersion(ifltab) == 6) {
-		zcklnk6_(ifltab, &status);
-	}
-	else {
-		status = zcheckPathnames(ifltab);
-	}
+	
+	status = zcheckPathnames(ifltab);
+	
 	zclose(ifltab);
 	return status;
 }
@@ -88,12 +85,8 @@ int CheckLinks(char* dssFileName)
 		return status;
 	}
 
-	if (zgetVersion(ifltab) == 6) {
-		zcklnk6_(ifltab, &status);
-	}
-	else {
-		status = zcheckLinks(ifltab);
-	}
+	status = zcheckLinks(ifltab);
+	
 	zclose(ifltab);
 	return status;
 }

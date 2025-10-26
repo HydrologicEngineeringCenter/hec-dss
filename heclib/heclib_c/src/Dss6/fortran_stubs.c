@@ -1,25 +1,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-//#include "heclib6.h"
-//#include "hecdssFort.h"
-
 void dss_stub_called(const char* caller) {
 	printf("\nWARNING: DSS Stub called from %s.", caller);
 }
 
 #define DSS_STUB_CALLED() dss_stub_called(__func__)
-
- 
-
-void zcorec6_(long long* ifltabFrom, long long* ifltabTo, const char* pathnameFrom, const char* pathnameTo,
-	int* ibuff1, int* kbuff1, int* ibuff2, int* kbuff2, int* boolDuplcate, int* istat, size_t pathnameFromLen, size_t pathnameToLen) {
-	DSS_STUB_CALLED();
-}
-
-void zfilst6_(long long* ifltab) {
-	DSS_STUB_CALLED();
-}
 
 
 
@@ -29,9 +15,6 @@ int zcopyrecord6_(long long* ifltabFrom, long long* ifltabTo, const char* pathna
 
 }
 
-void zcklnk6_(long long* ifltab, int* nerrors) {
-	DSS_STUB_CALLED();
-}
 
 void zstxta_(long long* ifltab, const char* cpath, const char* carray, int* narray, int* iuhead, int* nuhead, int* istat, size_t cpath_len, size_t carray_len) {
 	DSS_STUB_CALLED();
