@@ -45,3 +45,15 @@
 
 # Special cases
 *.pyc                binary
+
+##### Language
+# C/C++
+*.c text
+*.cc text
+*.cxx text
+*.cpp text
+*.c++ text
+*.hpp text
+*.h text
+*.h++ text
+*.hh text
