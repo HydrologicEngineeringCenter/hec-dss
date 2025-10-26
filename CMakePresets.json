@@ -30,6 +30,7 @@
     {
       "name": "windows-default",
       "configurePreset": "windows-default",
+      "configuration": "Debug",
       "output": {"outputOnFailure": true},
       "execution": {"noTestsAction": "error", "stopOnFailure": true}
     }
