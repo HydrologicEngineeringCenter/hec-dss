@@ -13,7 +13,8 @@
       "description": "This build is only available on Windows",
       "binaryDir": "${sourceDir}/build",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug"
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CTEST_CONFIGURATION_TYPE": "Debug"
       },
       "generator": "Visual Studio 17 2022",
       "condition": {
@@ -27,7 +28,7 @@
     {
       "name": "windows-default",
       "configurePreset": "windows-default",
-      "configuration": "Debug"
+      "configuration": "Debug",
     }
   ],
   "testPresets": [

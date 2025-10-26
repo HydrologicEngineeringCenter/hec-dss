@@ -30,9 +30,9 @@ jobs:
           java-version: '${{matrix.jdk}}'
       - name: Setup Visual Studio CL
         if: ${{matrix.platform == 'windows-latest'}}
-        uses: ilammy/msvc-dev-cmd@v1.13.0
+        uses: ilammy/msvc-dev-cmd@0b201ec74fa43914dc39ae48a89fd1d8cb592756
       - name: Setup cmake
-        uses: jwlawson/actions-setup-cmake@v2.0.2
+        uses: jwlawson/actions-setup-cmake@802fa1a2c4e212495c05bf94dba2704a92a472be
         with:
             cmake-version: '3.31.x'
       - name: Configure
