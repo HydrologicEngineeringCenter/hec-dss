@@ -11,6 +11,10 @@
       "name": "windows-default",
       "displayName": "Windows-default configuration",
       "description": "This build is only available on Windows",
+      "binaryDir": "${sourceDir}/build",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      },
       "generator": "Visual Studio 17 2022",
       "condition": {
         "type": "equals",
