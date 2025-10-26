@@ -34,13 +34,8 @@ int createDssFile(const char* filename, int version) {
 
   remove(filename);
   long long ifltab[250] = { 0 };
-  int status = 0;
-  if (version == 7) {
-    status = hec_dss_zopen(ifltab, filename);
-  }
-  else if (version == 6) {
-    status = zopen6(ifltab, filename);
-  }
+  int status = hec_dss_zopen(ifltab, filename);
+   
   if (status != 0)
     return status;
 

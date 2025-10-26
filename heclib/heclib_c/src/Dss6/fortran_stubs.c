@@ -28,18 +28,6 @@ void zrinfo_(long long* ifltab, const char* pathname, int* lfound, int* itype, c
 	DSS_STUB_CALLED();
 }
 
-void zclose6_(long long* ifltab) {
-	DSS_STUB_CALLED();
-}
-
-
-void zopen6int_(long long* ifltab, const char* dssFilename, int* status, size_t strlenDssFilename) {
-	DSS_STUB_CALLED();
-}
-
-void zset_(const char* cflg, const char* cstr, int* numb, size_t cflg_len, size_t cstr_len) {
-	DSS_STUB_CALLED();
-}
 
 void zckpnb6_(long long* ifltab, int* nerrors) {
 	DSS_STUB_CALLED();

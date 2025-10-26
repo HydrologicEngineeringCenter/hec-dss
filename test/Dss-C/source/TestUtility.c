@@ -179,14 +179,10 @@ int ReadTimeSeries(char* dssFileName)
 }
 int WriteTimeSeries2(long long ifltab[250], int timeSeriesCount, int timeSeriesLength);
 
-int WriteTimeSeries(char* dssFileName, int version, int timeSeriesCount, int timeSeriesLength)
+int WriteTimeSeries(char* dssFileName,int timeSeriesCount, int timeSeriesLength)
 {
 	long long ifltab[250];
-	int status;
-	if (version == 6)
-		status = zopen6(ifltab, dssFileName);
-	else
-		status = hec_dss_zopen(ifltab, dssFileName);
+	int	status = hec_dss_zopen(ifltab, dssFileName);
 
 	if (status != STATUS_OKAY) return status;
 
@@ -219,22 +215,14 @@ int WriteTimeSeries2(long long ifltab[250],int timeSeriesCount, int timeSeriesLe
 	return status; 
 }
 
-int Workout(char* exe, char* version, char* timeSeriesCount,char* timeSeriesLength, char* dssFileName) {
+int Workout(char* exe, char* timeSeriesCount,char* timeSeriesLength, char* dssFileName) {
 	int status = 0;
-	int ver = atoi(version);
 	int count = atoi(timeSeriesCount);
 	int length = atoi(timeSeriesLength);
-	//zsetMessageLevel(MESS_METHOD_LOCKING_ID, MESS_LEVEL_INTERNAL_DIAG_1);
-	if (!(ver == 6 || ver == 7))
-	{
-		usage(exe);
-		return -1;
-	}
-	//zset("program", "dss-c.exe", 0); not working...?
 	
 	char* fn = dssFileName;
 	printf("\nstarting workout with file: %s", fn);
-	status = WriteTimeSeries(fn, ver, count, length);
+	status = WriteTimeSeries(fn, count, length);
 	if (status != 0)
 		return status;
 	status = ReadTimeSeries(fn);

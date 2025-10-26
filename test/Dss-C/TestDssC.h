@@ -77,7 +77,7 @@ int UnitPaddingIssue();
 void decodeError(int errorCode);
 int Lock(char* dssFileName, int sleepSeconds);
 int CheckLocking(char* dssFileName);
-int Workout(char* exe, char* version, char* timeSeriesCount,char* timeSeriesLength, char* dssFileName);
+int Workout(char* exe, char* timeSeriesCount,char* timeSeriesLength, char* dssFileName);
 int CheckLinks(char* dssFileName);
 int CheckPathnames(char* dssFileName);
 int PrintCatalog(char* dssFileName,int printRecordType);
@@ -85,7 +85,7 @@ int Zqueeze(char* dssFileName);
 int CheckFile(char* dssFileName);
 void usage(char* exeName);
 int Export(char* dssFileName, char* path, int metaDataOnly);
-int PathnameTesting(char* dssFileName, int dssVersion);
+int PathnameTesting(char* dssFileName);
 int PrintHashTable(const char* dssFilename);
 int ImportProfile(const char* csvFilename, const char* dssFilename, const char* path, const char* date,
 	const char* time, const char* units, const char* datatype);

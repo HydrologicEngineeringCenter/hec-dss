@@ -76,15 +76,7 @@ int testMultiUser(char *filename, int version, int numberDatasets, int accessMod
 
 
 	//  Open the file
-	if (version == 6) {
-		if (accessMode == 2) {
-			zset("MULT", "ON", 1);
-		}
-		status = zopen6(ifltab, filename);
-	}
-	else {
-		status = zopenInternal(ifltab, filename, accessMode, 0, 0, 0, 0);
-	}
+	status = zopenInternal(ifltab, filename, accessMode, 0, 0, 0, 0);
 
 	if (status != STATUS_OKAY) return status;
 

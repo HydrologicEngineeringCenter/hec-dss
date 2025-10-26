@@ -274,507 +274,7 @@ void testZsetZquery() {
     zquery("VDOW", "", 0, &intVal);
     assert(intVal == FALSE);
 }
-void testV6TimeSeiresWithMultipleVerticalDatums() {
-    long long ifltab[250] = {0};
-    int status;
-    zStructTimeSeries* tss = NULL;
-    verticalDatumInfo vdi;
-    int OLD_API = 0;
-    int NEW_API = 1;
-    int REGULAR = 0;
-    int IRREGULAR = 1;
-    int NGVD29 = 0;
-    int NAVD88 = 1;
-    int UNSET = 2;
-    int nativeDatum;
-    char* errmsg;
-    char* filename = "v6_mult_vert_datum_ts.dss";
-    char* pathnames[2][2] = { {"//TESTTSLOC/ELEV//1DAY/MULTVERTICALDATUMS-OLD/", "//TESTTSLOC/ELEV//IR-YEAR/MULTVERTICALDATUMS-OLD/"},
-                              {"//TESTTSLOC/ELEV//1DAY/MULTVERTICALDATUMS-NEW/", "//TESTTSLOC/ELEV//IR-YEAR/MULTVERTICALDATUMS-NEW/"} };
-    int maxValueCount = 365;
-    int numberValues = maxValueCount;
-    char* startDate[2] = { "01Jan2021", "01Jan2022" };
-    char* endDate[2] = { "31Dec2021", "31Dec2022" };
-    char* startTime = "01:00";
-    int startJul;
-    int startMinutes;
-    int endJul;
-    int endMinutes;
-    int jan_01_2021 = 44195;
-    int jan_01_2021_0000 = 63642240; // 01Jan2021 00:00
-    int jan_01_2021_0100 = 63642300; // 01Jan2021 01:00
-    int dec_21_2021_0000 = 64152000; // 21Dec2021 00:00
-    int jan_01_2022_0001 = 64167841; // 01Jan2022 00:01
-    double* values = (double *)malloc(numberValues * sizeof(double));
-    double* dv = NULL;
-    int* times = (int*)malloc(numberValues * sizeof(int));
-    int* t = NULL;
-    char* unit = "ft";
-    char unit2[16];
-    char* dataType = "INST-VAL";
-    char dataType2[16];
-    char* compressed = NULL;
-    char* headerBuf = NULL;
-    int   len = 0;
-    int messageLevel;
-    char alpha[PARAMETER_NAME_SIZE];
-    double expectedValue;
-    int basedate;
-    int* quality = (int*)malloc(numberValues * sizeof(int));
-    int storeFlags = TRUE;
-    int readFlags = TRUE;
-    int userHeaderSize = 500;
-    int* userHeader = (int*)malloc(userHeaderSize * sizeof(int));
-    int* userHeader2 = NULL;
-    int userHeaderNumber;
-    int storeFlag = 0;
-    int readFlag = 0;
-    int offsetMinutes;
-    int compressionType;
-    int compressionBase = FALSE;
-    float compressionBaseVal = 0.f;
-    int compressionHigh = FALSE;
-    int compressionPrec = 0;
 
-    char* xml[] = {
-        // NGVD-29
-        "<vertical-datum-info unit=\"ft\">\n"
-        "  <native-datum>NGVD-29</native-datum>\n"
-        "  <elevation>615.0</elevation>\n"
-        "  <offset estimate=\"true\">\n"
-        "    <to-datum>NAVD-88</to-datum>\n"
-        "    <value>0.5</value>\n"
-        "  </offset>\n"
-        "</vertical-datum-info>\n",
-        // NAVD-88
-        "<vertical-datum-info unit=\"ft\">\n"
-        "  <native-datum>NAVD-88</native-datum>\n"
-        "  <elevation>615.5</elevation>\n"
-        "  <offset estimate=\"true\">\n"
-        "    <to-datum>NGVD-29</to-datum>\n"
-        "    <value>-0.5</value>\n"
-        "  </offset>\n"
-        "</vertical-datum-info>\n",
-        // UNSET
-        ""
-    };
-
-    int xmlCount = sizeof(xml) / sizeof(xml[0]);
-
-    remove(filename);
-    strcpy(unit2, unit);
-    strcpy(dataType2, dataType);
-    zquery("MLVL", alpha, sizeof(alpha) - 1, &messageLevel);
-    zset("MLVL", "", 1);
-    status = zopen6(ifltab, filename);
-    assert(status == 0);
-    for (int api = OLD_API; api <= NEW_API; ++api) {
-        printf("\nUsing %s for retrieving time series\n", api == OLD_API ? "OLD API" : "NEW API");
-        for (int workingVerticalDatum = IVERTICAL_DATUM_UNSET; workingVerticalDatum <= IVERTICAL_DATUM_NGVD29; ++workingVerticalDatum) {
-            switch (workingVerticalDatum) {
-            case IVERTICAL_DATUM_UNSET:
-                printf("\tWorking vertical datum is %s\n", CVERTICAL_DATUM_UNSET);
-                break;
-            case IVERTICAL_DATUM_NGVD29:
-                printf("\tWorking vertical datum is %s\n", CVERTICAL_DATUM_NGVD29);
-                break;
-            case IVERTICAL_DATUM_NAVD88:
-                printf("\tWorking vertical datum is %s\n", CVERTICAL_DATUM_NAVD88);
-                break;
-            }
-            for (int tsType = REGULAR; tsType <= IRREGULAR; ++tsType) {
-                printf("\t\tTesting %s time series\n", tsType == REGULAR ? "REGULAR" : "IRREGULAR");
-                //--------------------------------------------------//
-                // store two consecutive records with different VDI //
-                //--------------------------------------------------//
-                for (int year = 2021; year <= 2022; ++year) {
-                    int yearIndex = year - 2021;
-                    for (int xmlIndex = 0; xmlIndex < xmlCount; ++xmlIndex) {
-                        numberValues = 365; // 1 non-leap year of 1Day values
-                        //--------------------------------------//
-                        // get the VDI and make the data arrays //
-                        //--------------------------------------//
-                        errmsg = stringToVerticalDatumInfo(&vdi, xml[yearIndex]);
-                        for (int i = 0; i < numberValues; ++i) {
-                            values[i] = (double)(i + 1) - (errmsg == NULL ? vdi.offsetToNgvd29 : 0);
-                            times[i] = jan_01_2021_0100 + (365 * yearIndex + i) * MINS_IN_1_DAY;
-                            quality[i] = 3;
-                        }
-                        //-------------------------------------------------//
-                        // assign native vertical datum info to the record //
-                        //-------------------------------------------------//
-                        nativeDatum = (yearIndex + xmlIndex) % xmlCount;
-                        if (strlen(xml[nativeDatum]) > 0) {
-                            errmsg = gzipAndEncode(&compressed, xml[(yearIndex + xmlIndex) % xmlCount]);
-                            assert(errmsg == NULL);
-                            len = VERTICAL_DATUM_INFO_USER_HEADER_PARAM_LEN + strlen(compressed) + 2;
-                            headerBuf = (char*)malloc(len + 1);
-                            assert(headerBuf != NULL);
-                            memset(headerBuf, 0, len + 1);
-                            status = insertIntoDelimitedString(
-                                &headerBuf,
-                                len + 1,
-                                VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
-                                compressed,
-                                ":",
-                                FALSE,
-                                ';');
-                            assert(status == 0);
-                            free(compressed);
-                            userHeader2 = stringToUserHeader(headerBuf, &userHeaderNumber);
-                            free(headerBuf);
-                            headerBuf = NULL;
-                        }
-                        else {
-                            userHeader2 = malloc(sizeof(int));
-                            userHeader2[0] = 0;
-                            userHeaderNumber = 0;
-                        }
-                        //----------------------------------------------------------------//
-                        // set the default vertical datum to the native datum of the data //
-                        //----------------------------------------------------------------//
-                        verticalDatumInfo* pVdi = extractVerticalDatumInfoFromUserHeader(userHeader2, userHeaderNumber);
-                        zset("VDTM", pVdi ? pVdi->nativeDatum : "UNSET", 0);
-                        printf("\t\t\tStoring time series for %d with native vertical datum of %s ", year, pVdi ? pVdi->nativeDatum : "UNSET");
-                        printf("using %s.\n", api == OLD_API ? "skipping legacy API (ztsStore)" : "ztsStore");
-                        printf("\t\t\t\tShould %s.\n", xmlIndex == 0 || nativeDatum == UNSET ? "succeed" : "fail");
-                        free(pVdi);
-                        if (api == OLD_API) {
-                          continue;
-                        }
-                        else {
-                            //-------------------------------------//
-                            // create a TSS for the storing record //
-                            //-------------------------------------//
-                            if (tsType == REGULAR) {
-                                tss = zstructTsNewRegDoubles(
-                                    pathnames[api][tsType],     // dataset name
-                                    values,                     // values
-                                    numberValues,               // number of values
-                                    startDate[yearIndex],       // start date
-                                    startTime,                  // start time
-                                    unit,                       // data unit
-                                    dataType);                  // data type
-                            }
-                            else {
-                                tss = zstructTsNewIrregDoubles(
-                                    pathnames[api][tsType],     // dataset name
-                                    values,                     // values
-                                    numberValues,               // number of values
-                                    times,                      // times
-                                    SECS_IN_1_MINUTE,             // time granularity in seconds
-                                    NULL,                       // base date (if other than 01Jan1900)
-                                    unit,                       // data unit
-                                    dataType);                  // data type
-                            }
-                            tss->quality = quality;
-                            tss->qualityElementSize = 1;
-                            tss->allocated[zSTRUCT_TS_quality] = FALSE; // will free memory separately
-                            //------------------------------------------//
-                            // assign vertical datum info to the record //
-                            //------------------------------------------//
-                            tss->userHeader = userHeader2;
-                            tss->userHeaderNumber = userHeaderNumber;
-                            tss->allocated[zSTRUCT_userHeader] = TRUE;
-                            //-----------------------//
-                            // store the time series //
-                            //-----------------------//
-                            status = ztsStore(
-                                ifltab,        // file table
-                                tss,           // time series struct
-                                0);            // storage flag (0=reg:replace all, irr:merge)
-                            if (xmlIndex == 0 || nativeDatum == UNSET) {
-                                assert(status == 0);
-                                printf("\t\t\t\tSucceeded.\n");
-                            }
-                            else {
-                                assert(status == 13);
-                                printf("\t\t\t\tFailed.\n");
-                            }
-                            zstructFree(tss);
-                        }
-                        userHeader2 = NULL;
-                    }
-                }
-                //-----------------------------------------------//
-                // set the default vertical datum for retrieving //
-                //-----------------------------------------------//
-                zset("VDTM", "", workingVerticalDatum);
-                //-----------------------------------------------------//
-                // read the consecutive records just stored and verify //
-                //-----------------------------------------------------//
-                for (int year = 2021; year <= 2022; ++year) {
-                    int yearIndex = year - 2021;
-                    printf("\t\t\tRetrieving time series for year %d ", year);
-                    printf("with %s\n", api == NEW_API ? "ztsRetrieve" :  "skipping.. legacy API");
-                    maxValueCount = 365;
-                    if (api == OLD_API) {
-                      continue;
-                    }
-                    else {
-                        //----------------------------------------//
-                        // create a TSS for retrieving the record //
-                        //----------------------------------------//
-                        tss = zstructTsNewTimes(
-                            pathnames[api][tsType],
-                            startDate[yearIndex],
-                            "0001",
-                            endDate[yearIndex],
-                            "2400");
-                        assert(tss != NULL);
-                        //--------------------------//
-                        // retrieve the time series //
-                        //--------------------------//
-                        status = ztsRetrieve(
-                            ifltab,           // file table
-                            tss,              // time series struct
-                            0,                // retrieve flag (0=adhere to time window and [for reg] create times array)
-                            0,                // retrieve doubles flag (0=as stored, 1=floats, 2=doubles)
-                            1);               // retrieve quality flag (0/1)
-                        assert(status == STATUS_OKAY);
-                        headerBuf = userHeaderToString(tss->userHeader, tss->userHeaderNumber);
-                        assert(headerBuf != NULL);
-                        assert(strlen(headerBuf) > 0);
-                        dv = tss->doubleValues;
-                        t = tss->times;
-                    }
-                    char* currentVerticalDatum = extractFromDelimitedString(
-                        &headerBuf,
-                        VERTICAL_DATUM_USER_HEADER_PARAM,
-                        ":",
-                        FALSE,
-                        FALSE,
-                        ';');
-                    switch (workingVerticalDatum) {
-                    case IVERTICAL_DATUM_UNSET:
-                        assert(currentVerticalDatum == NULL);
-                        currentVerticalDatum = vdi.nativeDatum;
-                        break;
-                    case IVERTICAL_DATUM_NGVD29:
-                        assert(!strcmp(currentVerticalDatum, CVERTICAL_DATUM_NGVD29));
-                        break;
-                    case IVERTICAL_DATUM_NAVD88:
-                        assert(!strcmp(currentVerticalDatum, CVERTICAL_DATUM_NAVD88));
-                        break;
-                    }
-                    printf("\t\t\t\tValues were retrieved with native datum of %s and current datum of %s\n", vdi.nativeDatum, currentVerticalDatum);
-                    if (currentVerticalDatum != vdi.nativeDatum) {
-                        free(currentVerticalDatum);
-                    }
-                    //--------------------------------------------//
-                    // get the vertical datum info for the record //
-                    //--------------------------------------------//
-                    char* compressedVdi = extractFromDelimitedString(
-                        &headerBuf,
-                        VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
-                        ":",
-                        FALSE,
-                        FALSE,
-                        ';');
-                    assert(compressedVdi != NULL);
-                    char* vdiStr = '\0';
-                    errmsg = decodeAndGunzip(&vdiStr, compressedVdi);
-                    assert(errmsg == NULL);
-                    free(compressedVdi);
-                    errmsg = stringToVerticalDatumInfo(&vdi, vdiStr);
-                    assert(errmsg == NULL);
-                    free(vdiStr);
-                    free(headerBuf);
-                    //----------------------------------------------------//
-                    // verify the data values for the record              //
-                    //                                                    //
-                    // when there is no working vertical datum the values //
-                    // should be in the record's native vertical datum -  //
-                    // otherwise they should be in the working vertical   //
-                    // datum                                              //
-                    //----------------------------------------------------//
-                    for (int i = 0; i < numberValues; i+= 30) {
-                        switch (workingVerticalDatum) {
-                        case IVERTICAL_DATUM_UNSET:
-                            expectedValue = (i % 365) + 1 - vdi.offsetToNgvd29;
-                            break;
-                        case IVERTICAL_DATUM_NGVD29:
-                            expectedValue = (i % 365) + 1;
-                            break;
-                        case IVERTICAL_DATUM_NAVD88:
-                            expectedValue = (i % 365) + 1.5;
-                            break;
-                        }
-                        assert(dv[i] == expectedValue);
-                    }
-                    if (api == NEW_API) {
-                        zstructFree(tss);
-                    }
-                }
-                //-----------------------------------------------------//
-                // read a dataset that crosses record boundaries       //
-                //                                                     //
-                // when there is no working vertical datum the library //
-                // should write a warning message out to the message   //
-                // unit similar to the one shown below, but retrieve   //
-                // the values                                          //
-                //-----------------------------------------------------//
-                //
-                // *****DSS*** zrrtsi6:  WARNING  - Elevation values are in multiple native vertical datums
-                // Use with caution!
-                //
-                printf("\t\t\tRetrieving time series that crosses record boundaries ");
-                printf("with %s\n", api == NEW_API ? "ztsRetrieve" : "skipping legay API");
-                maxValueCount = 21; // 21Dec -- 10Jan
-                if (api == OLD_API) {
-                  continue;
-                }
-                else {
-                    tss = zstructTsNewTimes(
-                        pathnames[api][tsType],  // dataset name
-                        "21Dec2021",             // start date
-                        "0001",                  // start time
-                        "10Jan2022",             // end date
-                        "2400");                 // end time
-                    assert(tss != NULL);
-                    status = ztsRetrieve(
-                        ifltab,              // file table
-                        tss,                 // time series struct
-                        0,                   // retrieve flag (0=adhere to time window and [for reg] create times array)
-                        0,                   // retrieve doubles flag (0=as stored, 1=floats, 2=doubles)
-                        1);                  // retrieve quality flag (0/1)
-                    assert(status == STATUS_OKAY);
-                    headerBuf = userHeaderToString(tss->userHeader, tss->userHeaderNumber);
-                    assert(headerBuf != NULL);
-                    assert(strlen(headerBuf) > 0);
-                    dv = tss->doubleValues;
-                    t = tss->times;
-                    numberValues = tss->numberValues;
-                }
-                //----------------------------------------------------//
-                // verify the cross-boundary data values              //
-                //                                                    //
-                // when there is no working vertical datum the values //
-                // from each record will be in the native vertical    //
-                // datum for that record - otherwise they should all  //
-                // be in the working vertical datum                   //
-                //----------------------------------------------------//
-                char* currentVerticalDatum = extractFromDelimitedString(
-                    &headerBuf,
-                    VERTICAL_DATUM_USER_HEADER_PARAM,
-                    ":",
-                    FALSE,
-                    FALSE,
-                    ';');
-                char* compressedVdi = extractFromDelimitedString(
-                    &headerBuf,
-                    VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
-                    ":",
-                    FALSE,
-                    FALSE,
-                    ';');
-                assert(compressedVdi != NULL);
-                char* vdiStr = '\0';
-                errmsg = decodeAndGunzip(&vdiStr, compressedVdi);
-                assert(errmsg == NULL);
-                free(compressedVdi);
-                errmsg = stringToVerticalDatumInfo(&vdi, vdiStr);
-                assert(errmsg == NULL);
-                free(vdiStr);
-                free(headerBuf);
-                printf(
-                    "\t\t\t\tValues were retrieved with native datum of %s and current datum of %s\n",
-                    vdi.nativeDatum,
-                    currentVerticalDatum ? currentVerticalDatum : vdi.nativeDatum);
-                free(currentVerticalDatum);
-                for (int i = 0; i < numberValues; ++i) {
-                    switch (workingVerticalDatum) {
-                    case IVERTICAL_DATUM_UNSET:
-                        if (t[i] < jan_01_2022_0001) {
-                            expectedValue = ((t[i] / MINS_IN_1_DAY - 1) - jan_01_2021) % 365 + 1;
-                        }
-                        else {
-                            expectedValue = ((t[i] / MINS_IN_1_DAY - 1) - jan_01_2021) % 365 + 1.5;
-                        }
-                        break;
-                    case IVERTICAL_DATUM_NGVD29:
-                        expectedValue = ((t[i] / MINS_IN_1_DAY - 1) - jan_01_2021) % 365 + 1;
-                        break;
-                    case IVERTICAL_DATUM_NAVD88:
-                        expectedValue = ((t[i] / MINS_IN_1_DAY - 1) - jan_01_2021) % 365 + 1.5;
-                        break;
-                    }
-                    assert(dv[i] == expectedValue);
-                }
-                if (api == NEW_API) {
-                    memcpy(values, tss->doubleValues, maxValueCount * sizeof(double));
-                    memcpy(times, tss->times , maxValueCount * sizeof(int));
-                    zstructFree(tss);
-                }
-                //-------------------------------------------------//
-                // store a dataset that crosses record boundaries  //
-                //                                                 //
-                // this should always fail becuase the two records //
-                // have different native vertical datums and the   //
-                // following error message should be output        //
-                //-------------------------------------------------//
-                //
-                // *****DSS*** zsrtsi6:  ERROR - VERTICAL DATUM CONFLICT
-                //     Elevation values in file are in multiple native vertical datums.
-                //
-                //     No values stored.
-                //
-                printf("\t\t\tStoring time series that crosses record boundaries ");
-                printf("with %s\n", api == NEW_API ? "ztsStore" : "skippping legacy API (ztsStore)");
-                printf("\t\t\t\tShould fail.\n");
-                if (api == OLD_API) {
-                  continue;
-                }
-                else {
-                    //-------------------------------------//
-                    // create a TSS for the storing record //
-                    //-------------------------------------//
-                    if (tsType == REGULAR) {
-                        tss = zstructTsNewRegDoubles(
-                            pathnames[api][tsType],     // dataset name
-                            values,                     // values
-                            numberValues,               // number of values
-                            "21Dec2021",                // start date
-                            startTime,                  // start time
-                            unit,                       // data unit
-                            dataType);                  // data type
-                    }
-                    else {
-                        tss = zstructTsNewIrregDoubles(
-                            pathnames[api][tsType],     // dataset name
-                            values,                     // values
-                            numberValues,               // number of values
-                            times,                      // times
-                            SECS_IN_1_MINUTE,             // time granularity in seconds
-                            NULL,                       // base date (if other than 01Jan1900)
-                            unit,                       // data unit
-                            dataType);                  // data type
-                    }
-                    tss->quality = quality;
-                    tss->qualityElementSize = 1;
-                    tss->allocated[zSTRUCT_TS_quality] = FALSE; // will free memory separately
-                    //-----------------------//
-                    // store the time series //
-                    //-----------------------//
-                    status = ztsStore(
-                        ifltab,        // file table
-                        tss,           // time series struct
-                        0);            // storage flag (0=reg:replace all, irr:merge)
-                    zstructFree(tss);
-                }
-                printf("\t\t\t\t%s\n", status == 0 ? "Succeeded." : "Failed.");
-                assert(status == 13);
-            }
-        }
-    }
-    zclose(ifltab);
-    remove(filename);
-    zset("MLVL", "", messageLevel);
-    free(values);
-    free(times);
-    free(userHeader);
-    free(quality);
-}
 
 void deleteTimeSeriesRecords(
         long long *ifltab, 
@@ -1019,53 +519,12 @@ void testStoreRetrieveTimeSeries() {
                                             //-------//
                                             // DSS 6 //
                                             //-------//
-                                            status = zopen6(ifltab, filename[i]);
-                                            assert(status == STATUS_OKAY);
-                                            //----------------------------------------------------------------------------//
-                                            // get whether data exists in file and native datum in file for this pathname //
-                                            //----------------------------------------------------------------------------//
-                                            tss = zstructTsNewTimes(
-                                                pathnames[n][o],
-                                                startDate,
-                                                startTime,
-                                                endDate,
-                                                endTime);
-                                            assert(tss != NULL);
-                                            zset("VDTM", CVERTICAL_DATUM_UNSET, 0);
-                                            status = ztsRetrieve(
-                                                ifltab,
-                                                tss,
-                                                n == 0 ? -1 : 0, // trim regular time series
-                                                0,
-                                                1);
-                                            dataInFile = status == STATUS_OKAY && tss->numberValues > 0;
-                                            if (status == STATUS_OKAY) {
-                                                headerBuf = userHeaderToString(tss->userHeader, tss->userHeaderNumber);
-                                                if (headerBuf != NULL) {
-                                                    char* compressedVdi = extractFromDelimitedString(
-                                                        &headerBuf,
-                                                        VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
-                                                        ":",
-                                                        TRUE,
-                                                        FALSE,
-                                                        ';');
-                                                    if (compressedVdi) {
-                                                        errmsg = stringToVerticalDatumInfo(&vdiInFile, compressedVdi);
-                                                        assert(errmsg == NULL);
-                                                        strcpy(nativeDatumInFile, vdiInFile.nativeDatum);
-                                                        free(compressedVdi);
-                                                    }
-                                                    free(headerBuf);
-                                                }
-                                                headerBuf = NULL;
-                                            }
-                                            zstructFree(tss);
                                         }
                                         else {
                                             //-------//
                                             // DSS 7 //
                                             //-------//
-                                            status = zopen7(ifltab, filename[i]);
+                                            status = hec_dss_zopen(ifltab, filename[i]);
                                             assert(status == STATUS_OKAY);
                                             //----------------------------------------------------------------------------//
                                             // get whether data exists in file and native datum in file for this pathname //
@@ -1305,12 +764,8 @@ void testStoreRetrieveTimeSeries() {
                                             //--------------------------------------------------------//
                                             // retrieve the time series in the default vertical datum //
                                             //--------------------------------------------------------//
-                                            if (i == 0) {
-                                                status = zopen6(ifltab, filename[i]);
-                                            }
-                                            else {
-                                                status = zopen7(ifltab, filename[i]);
-                                            }
+                                            
+                                            status = hec_dss_zopen(ifltab, filename[i]);
                                             assert(status == STATUS_OKAY);
                                             tss = zstructTsNewTimes(
                                                 pathnames[n][o],
@@ -1531,43 +986,12 @@ void testStoreRetrievePairedData() {
                                         if (i == 0) {
                                             //-------//
                                             // DSS 6 //
-                                            //-------//
-                                            status = zopen6(ifltab, filename[i]);
-                                            assert(status == STATUS_OKAY);
-                                            //----------------------------------------------------------------------------//
-                                            // get whether data exists in file and native datum in file for this pathname //
-                                            //----------------------------------------------------------------------------//
-                                            pds = zstructPdNew(pathnames[n][o]);
-                                            assert(pds != NULL);
-                                            zset("VDTM", CVERTICAL_DATUM_UNSET, 0);
-                                            status = zpdRetrieve(ifltab, pds, 0);
-                                            dataInFile = status == STATUS_OKAY && pds->numberOrdinates > 0;
-                                            if (status == STATUS_OKAY) {
-                                                headerBuf = userHeaderToString(pds->userHeader, pds->userHeaderNumber);
-                                                if (headerBuf != NULL) {
-                                                    char* compressedVdi = extractFromDelimitedString(
-                                                        &headerBuf,
-                                                        VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
-                                                        ":",
-                                                        TRUE,
-                                                        FALSE,
-                                                        ';');
-                                                    if (compressedVdi) {
-                                                        errmsg = stringToVerticalDatumInfo(&vdiInFile, compressedVdi);
-                                                        assert(errmsg == NULL);
-                                                        free(compressedVdi);
-                                                    }
-                                                    free(headerBuf);
-                                                }
-                                                headerBuf = NULL;
-                                            }
-                                            zstructFree(pds);
                                         }
                                         else {
                                             //-------//
                                             // DSS 7 //
                                             //-------//
-                                            status = zopen7(ifltab, filename[i]);
+                                            status = hec_dss_zopen(ifltab, filename[i]);
                                             assert(status == STATUS_OKAY);
                                             //----------------------------------------------------------------------------//
                                             // get whether data exists in file and native datum in file for this pathname //
@@ -1787,12 +1211,7 @@ void testStoreRetrievePairedData() {
                                             //--------------------------------------------------------//
                                             // retrieve the paired data in the default vertical datum //
                                             //--------------------------------------------------------//
-                                            if (i == 0) {
-                                                status = zopen6(ifltab, filename[i]);
-                                            }
-                                            else {
-                                                status = zopen7(ifltab, filename[i]);
-                                            }
+                                            status = hec_dss_zopen(ifltab, filename[i]);
                                             assert(status == STATUS_OKAY);
                                             pds = zstructPdNew(pathnames[n][o]);
                                             assert(pds != NULL);
@@ -2106,26 +1525,16 @@ void testCopyRecordWithVdi_NoVdiInDestination() {
         for (int dstDssVer = 7; dstDssVer <= 7; ++dstDssVer) {
 
             remove(filename[SRC]);
-            if (srcDssVer == 6) {
-                status = zopen6(ifltab[SRC], filename[SRC]);
-            }
-            else {
-                status = zopen7(ifltab[SRC], filename[SRC]);
-            }
+
+            status = hec_dss_zopen(ifltab[SRC], filename[SRC]);
             assert(status == STATUS_OKAY);
             dssver = (int)zgetVersion(ifltab[SRC]);
 
             remove(filename[DST]);
-            if (dstDssVer == 6) {
-                status = zopen6(ifltab[DST], filename[DST]);
-            }
-            else {
-                status = zopen7(ifltab[DST], filename[DST]);
-            }
+       
+            status = hec_dss_zopen(ifltab[DST], filename[DST]);
             assert(status == STATUS_OKAY);
 
-            // pVdi = malloc(sizeof(verticalDatumInfo));
-            // assert(pVdi != NULL);
 
             for (int i = 0; i < xmlCount; ++i) {
                 printf("\n-------------------------------\n%3d\n-------------------------------\n", i);
@@ -2323,22 +1732,15 @@ void testCopyRecordWithVdi_OtherNativeDatumInDestination() {
         for (int dstDssVer = 7; dstDssVer <= 7; ++dstDssVer) {
 
             remove(filename[SRC]);
-            if (srcDssVer == 6) {
-                status = zopen6(ifltab[SRC], filename[SRC]);
-            }
-            else {
-                status = zopen7(ifltab[SRC], filename[SRC]);
-            }
+
+            status = hec_dss_zopen(ifltab[SRC], filename[SRC]);
             assert(status == STATUS_OKAY);
             dssver = (int)zgetVersion(ifltab[SRC]);
 
             remove(filename[DST]);
-            if (dstDssVer == 6) {
-                status = zopen6(ifltab[DST], filename[DST]);
-            }
-            else {
-                status = zopen7(ifltab[DST], filename[DST]);
-            }
+            
+            status = hec_dss_zopen(ifltab[DST], filename[DST]);
+            
             assert(status == STATUS_OKAY);
 
             for (int i = 0; i < xmlCount; ++i) {
@@ -2673,22 +2075,15 @@ void testCopyRecordWithVdi_SameNativeDatumInDestination() {
         for (int dstDssVer = 7; dstDssVer <= 7; ++dstDssVer) {
 
             remove(filename[SRC]);
-            if (srcDssVer == 6) {
-                status = zopen6(ifltab[SRC], filename[SRC]);
-            }
-            else {
-                status = zopen7(ifltab[SRC], filename[SRC]);
-            }
+         
+            status = hec_dss_zopen(ifltab[SRC], filename[SRC]);
+            
             assert(status == STATUS_OKAY);
             dssver = (int)zgetVersion(ifltab[SRC]);
 
             remove(filename[DST]);
-            if (dstDssVer == 6) {
-                status = zopen6(ifltab[DST], filename[DST]);
-            }
-            else {
-                status = zopen7(ifltab[DST], filename[DST]);
-            }
+     
+            status = hec_dss_zopen(ifltab[DST], filename[DST]);
             assert(status == STATUS_OKAY);
 
             stringToVerticalDatumInfo(&vdi, xml);

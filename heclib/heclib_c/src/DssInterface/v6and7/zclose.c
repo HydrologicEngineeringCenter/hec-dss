@@ -4,13 +4,9 @@
 
 int zclose(long long *ifltab)
 {
-	if (zgetVersion(ifltab) == 6) {
-		zclose6_(ifltab);
-		return 0;
-	}
-	else {
-		return zcloseInternal(ifltab, 0);
-	}
+	 
+	return zcloseInternal(ifltab, 0);
+	
 }
 
 
