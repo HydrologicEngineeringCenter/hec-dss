@@ -205,14 +205,12 @@ src/headers/zStructSpatialGrid.h
 src/DssInterface/ztsStoreStuff.c
 src/DssInterface/zgetVersion_.c
 src/DssInterface/zritsi7_.c
-src/DssInterface/zopenExtended_.c
 src/DssInterface/zundelete_.c
 src/DssInterface/ztextRetrieveUnit_.c
 src/DssInterface/zgetinterval_.c
 src/DssInterface/ztsRetrieveIrregArgs.c
 src/DssInterface/ztsRetrieveRegArgs.c
 src/DssInterface/zclose_.c
-src/DssInterface/zopen_.c
 src/DssInterface/ztextStoreUnit_.c
 src/DssInterface/timeStringToSeconds_.c
 src/DssInterface/ztsStoreRegArgs.c
@@ -253,7 +251,6 @@ src/DssInterface/v6and7/zdelete.c
 src/DssInterface/v6and7/zread.c
 src/DssInterface/v6and7/zdataType.c
 src/DssInterface/v6and7/zwrite.c
-src/DssInterface/v6and7/zconvertVersion.c
 src/DssInterface/v6and7/zputInfo.c
 src/DssInterface/v6and7/zundelete.c
 src/DssInterface/v6and7/zgetRecordSize.c

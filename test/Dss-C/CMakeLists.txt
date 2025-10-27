@@ -37,7 +37,6 @@ source/compareProfiles.c
 source/testZtsProcessTimes.c
 source/testTimeSeriesStruct11.c
 source/compareTss.c
-source/testConversion.c
 source/testTimeSeriesStruct14.c
 source/profileExcel.c
 source/testVerticalDatum_c.c
