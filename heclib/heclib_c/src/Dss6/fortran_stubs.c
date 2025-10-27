@@ -13,10 +13,6 @@ void zrinfo_(long long* ifltab, const char* pathname, int* lfound, int* itype, c
 }
 
 
-void zinqir6_(long long* ifltab, const char* cflg, char* calpha, int* inumb, size_t cflg_len, size_t calpha_len) {
-	DSS_STUB_CALLED();
-}
-
 void zset6_(const char* parameter, const char* charVal, int* integerValue, size_t lenparameter, size_t lencharVal) {
 	DSS_STUB_CALLED();
 }

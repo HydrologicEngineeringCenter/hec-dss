@@ -49,33 +49,6 @@ int zreadc (long long *ifltab, const char* pathname,
 		zmessageDebug(ifltab, DSS_FUNCTION_zread_ID, " Pathname: ",pathname);
 	}
 
-
-	if (zgetVersion(ifltab) == 6) {
-		*values3Number = 0;
-		*values2Number = 0;
-		*numberValues = 0;
-		*logicalNumberValues = 0;
-		*totalAllocatedSize = 0;
-		*totalExpandedSize = 0;
-		stringCToFort(path, sizeof(path),  pathname);
-		zero = 0;
-		zreadx6_(ifltab, path,
-				 internalHeader, &internalHeaderArraySize, internalHeaderNumber,
-				 header2, &header2ArraySize, header2Number,
-				 userHeader, &userHeaderArraySize, userHeaderNumber,
-				 values1, &values1Size, values1Number,
-				 &zero, &recordFound, strlen(pathname));
-		if (recordFound) {
-			//  Get the data type
-			zinqir6_(ifltab, "TYPE", messageString, dataType, (size_t)4, (size_t)20);
-			return STATUS_RECORD_FOUND;
-		}
-		else {
-			//  Check for error
-			return STATUS_RECORD_NOT_FOUND;
-		}
-	}
-	else {
 		ztransfer = zstructTransferNew(pathname, 0);
 		if (!ztransfer) {
 			//  error out
@@ -117,37 +90,9 @@ int zreadc (long long *ifltab, const char* pathname,
 			*dataType = ztransfer->dataType;
 		}
 		zstructFree(ztransfer);
-	}
 
 	return status;
 }
 
 
-//  Fortran callable
-void zreadc_(long long *ifltab, const char* pathname,
-			 int *internalHeader, int *internalHeaderArraySize , int *internalHeaderNumber,
-			 int *header2, int *header2ArraySize, int *header2Number,
-			 int *values3, int *values3ArraySize, int *values3Number,
-			 int *userHeader, int *userHeaderArraySize, int *userHeaderNumber,
-			 int *values1, int *values1Size, int *values1Number,
-			 int *values2, int *values2Size, int *values2Number,
-			 int *numberValues, int *logicalNumberValues,
-			 int *totalAllocatedSize, int *totalExpandedSize, int *dataType,
-			 int *status, size_t pathnameLen)
-{
-
-	char path[MAX_PATHNAME_LENGTH];
-
-	copyAndTrim(path, sizeof(path), pathname, pathnameLen);
-
-	*status = zreadc(ifltab, pathname,
-			 internalHeader, *internalHeaderArraySize , internalHeaderNumber,
-			 header2, *header2ArraySize, header2Number,
-			 values3, *values3ArraySize, values3Number,
-			 userHeader, *userHeaderArraySize, userHeaderNumber,
-			 values1, *values1Size, values1Number,
-			 values2, *values2Size, values2Number,
-			 numberValues, logicalNumberValues,
-			 totalAllocatedSize, totalExpandedSize, dataType);
-}
 
