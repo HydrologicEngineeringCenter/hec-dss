@@ -3,7 +3,6 @@
 #include "hecdss.h"
 #include "heclib.h"
 
-#include "zdssKeys.h"
 
 HECDSS_API const char* hec_dss_api_version() {
   return "0.2.1";
@@ -947,4 +946,3 @@ HECDSS_API int hec_dss_textRetrieve(dss_file* dss, const char* pathname, char* b
   return status;
 
 }
-

@@ -153,3 +153,4 @@ heclib/Output/**
 /hecdss.zip
 test/VB/.vs/*
 /heclib/javaHeclib/.idea
+dss-test-data

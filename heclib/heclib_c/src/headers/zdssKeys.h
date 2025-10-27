@@ -5,7 +5,7 @@
 //  run-time items, such as the handle, etc.
 //  There are 3 integrity keys to help identify if the array
 //  becomes corrupt (from something overwriting it in memory)
-struct {
+ struct dssKeys {
 	   int kaddTableHash;
 	   int kaddInfoLastPath;    //
 	   int kaddLast;
@@ -83,12 +83,13 @@ struct {
 	   int ktableHash;	  //  Points to the table hash of the last pathname checked
 	   int kwritingNow;  //  Used for inter function processes
 	   int kwritesSinceFlush;
-} zdssKeys;
+};
+extern struct dssKeys zdssKeys;
 
 
 //  zdssFileKeys are positions in the file header (permanent section) for
 //  file related items, such as addresses, sizes and use information
-struct {
+struct dssFileKeys {
 	   int kdss;
 	   int kfileHeaderSize;
 	   int kversion;
@@ -188,13 +189,14 @@ struct {
 	   int kreserved3;
 	   int kreserved4;	   
 	   int kendFileHeader;
-} zdssFileKeys;
+};
+extern struct dssFileKeys zdssFileKeys;
 
 
 //  zdssInfoKeys are positions in the record header (info section) for
 //  information and addresses for the record.  (This does not include
 //  information about the data, that is in the data's "internal header")
-struct {
+struct dssInfoKeys {
 	   int kinfoFlag;
 	   int kinfoStatus;
 	   int kinfoPathnameLength;
@@ -225,11 +227,12 @@ struct {
 	   int kinfoAliasesBinAddress;
 	   int kinfoReserved;
 	   int kinfoPathname;
-} zdssInfoKeys;
+};
+extern struct dssInfoKeys zdssInfoKeys;
 
 //  zdssBinKeys are positions for each pathname in a pathname bin
 //  essentially the address to the record's header (info) area
-struct {
+struct dssBinKeys{
 	int kbinHash;
 	int kbinStatus;
 	int kbinPathLen;
@@ -239,9 +242,8 @@ struct {
 	int kbinDates;
 	int kbinPath;
 	int kbinSize;
-} zdssBinKeys;
-
+};
+extern struct dssBinKeys zdssBinKeys;
 
 
 #endif //  ZDSSKEYS_H
-

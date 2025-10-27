@@ -2,7 +2,10 @@
 #include "zprogress.h"
 #include "hecdssInternal.h"
 
-
+/**
+ * Instance of zProgress struct
+ */
+struct zProgress zprogress;
 /**
 *  Function:	zgetProgress
 *
@@ -42,4 +45,3 @@ int zgetProgress(int handle)
 	}
 	return zprogress.currentNumber;
 }
-

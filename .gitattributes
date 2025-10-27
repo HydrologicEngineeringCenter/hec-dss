@@ -1,0 +1,59 @@
+# Auto-detect text files, commit as LF, checkout as LF
+# Useful for sharing the repository between Windows and cygwin
+*                    text=auto eol=lf
+
+# Override line endings for specific file types
+# Linux shell scripts should always be LF
+*.sh                 text crlf=input eol=lf diff=bash
+*.script             text crlf=input eol=lf
+# Python scripts use #! line, which shell need to interpret
+*.py                 text eol=lf diff=python
+*.pym                text eol=lf diff=python
+
+# Windows scripts (if any) should always be CRLF
+*.{cmd,[cC][mM][dD]} text crlf eol=crlf
+*.{bat,[bB][aA][tT]} text crlf eol=crlf
+*.{ps1,[pP][sS][1]}  text crlf eol=crlf
+
+*.sln                text crlf eol=crlf
+
+# Files that aren't particular
+*.txt                text
+*.xml                text
+*.xsl                text
+*.xsd                text
+*.jsp                text
+*.jspx               text
+*.htm                text diff=html
+*.html               text diff=html
+*.xhtml              text diff=html
+*.css                text diff=css
+*.php                text diff=php
+*.java               text diff=java
+*.pl                 text diff=perl
+*.pm                 text diff=perl
+
+# Don't touch images
+*.ico                binary
+*.gif                binary
+*.png                binary
+*.jpg                binary
+*.jpeg               binary
+
+# Except SVG
+*.svg                text
+
+# Special cases
+*.pyc                binary
+
+##### Language
+# C/C++
+*.c text
+*.cc text
+*.cxx text
+*.cpp text
+*.c++ text
+*.hpp text
+*.h text
+*.h++ text
+*.hh text
