@@ -76,7 +76,6 @@ src/Internal/ztsStoreReg7.c
 src/Internal/zflushToDisk.c
 src/Internal/zcharTo8Byte.c
 src/Internal/zDssKeys.c
-src/Internal/zCopyRecord6Dynamic.c
 src/Internal/zprintKeys.c
 src/Internal/zerrorSave.c
 src/Internal/isTsPattern.c

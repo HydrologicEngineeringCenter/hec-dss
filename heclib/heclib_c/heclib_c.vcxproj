@@ -116,6 +116,7 @@
     <ClCompile Include="src\Internal\zcompareRecordStatus.c" />
     <ClCompile Include="src\Internal\zcopyRecordInternal.c" />
     <ClCompile Include="src\Internal\zdeleteInternal.c" />
+    <ClCompile Include="src\Internal\zDssKeys.c" />
     <ClCompile Include="src\Internal\zerrorDecode.c" />
     <ClCompile Include="src\Internal\zerrorEncode.c" />
     <ClCompile Include="src\Internal\zerrorEncodeHigh.c" />

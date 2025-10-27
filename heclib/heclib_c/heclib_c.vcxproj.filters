@@ -1287,6 +1287,7 @@
     <ClCompile Include="src\Dss6\fortran_stubs.c">
       <Filter>src\Dss6</Filter>
     </ClCompile>
+    <ClCompile Include="src\Internal\zDssKeys.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\headers\zlib\zconf.h">
