@@ -57,11 +57,6 @@ int zcheckHashTable(long long *ifltab)
 	long long *info;
 
 
-	if (zgetVersion(ifltab) == 6) {
-		zckpnb6_ (ifltab, &status);
-		return status;
-	}
-
 	if (zmessageLevel(ifltab, MESS_METHOD_CHECK_ID, MESS_LEVEL_INTERNAL_DIAG_1)) {
 		zmessageDebugInt(ifltab, DSS_FUNCTION_zcheckHashTable_ID, "Enter, Handle: ", zhandle(ifltab));
 	}

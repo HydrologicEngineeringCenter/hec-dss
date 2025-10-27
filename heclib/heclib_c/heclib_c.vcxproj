@@ -114,7 +114,6 @@
     <ClCompile Include="src\Internal\zcloseInternal.c" />
     <ClCompile Include="src\Internal\zcollectionsPath.c" />
     <ClCompile Include="src\Internal\zcompareRecordStatus.c" />
-    <ClCompile Include="src\Internal\zCopyRecord6Dynamic.c" />
     <ClCompile Include="src\Internal\zcopyRecordInternal.c" />
     <ClCompile Include="src\Internal\zdeleteInternal.c" />
     <ClCompile Include="src\Internal\zerrorDecode.c" />

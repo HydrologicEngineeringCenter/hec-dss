@@ -9,45 +9,17 @@ void dss_stub_called(const char* caller) {
 
 
 
-int zcopyrecord6_(long long* ifltabFrom, long long* ifltabTo, const char* pathnameFrom, const char* pathnameTo,
+void zcopyrecord6_(long long* ifltabFrom, long long* ifltabTo, const char* pathnameFrom, const char* pathnameTo,
 	int* status, size_t pathnameFromLen, size_t pathnameToLen) {
 	DSS_STUB_CALLED();
 
 }
 
 
-void zstxta_(long long* ifltab, const char* cpath, const char* carray, int* narray, int* iuhead, int* nuhead, int* istat, size_t cpath_len, size_t carray_len) {
-	DSS_STUB_CALLED();
-}
-
-void zplist_(long long* ifltab, const char* instr, int* filePos, char* pathname, int* nPathname, int* istatus, size_t len_instr, size_t sizeof_pathname) {
-	DSS_STUB_CALLED();
-}
-
 void zrinfo_(long long* ifltab, const char* pathname, int* lfound, int* itype, char* typeString, int* ldoubles, int* lquality, int* iprecision, char* tag, char* lastWrittenDate, char* lastWrittenTime, char* programName, int* version, int* numberData, int* spaceAllocated, int* compression, int* lpassworded, size_t len_pathname, size_t size_typeString, size_t size_tag, size_t size_lastWrittenDate, size_t size_lastWrittenTime, size_t size_programName) {
 	DSS_STUB_CALLED();
 }
 
-
-void zckpnb6_(long long* ifltab, int* nerrors) {
-	DSS_STUB_CALLED();
-}
-
-void zckpat6_(long long* ifltab, int* nerrors) {
-	DSS_STUB_CALLED();
-}
-
-void zcopyfile6_(long long* ifltabFrom, long long* ifltabTo, int* istat) {
-	DSS_STUB_CALLED();
-}
-
-void zcheck_(long long* ifltab, const char* pathname, int* pathnameLen, int* numberHeader, int* numberData, int* exists, size_t lenPathname) {
-	DSS_STUB_CALLED();
-}
-
-void zrtxts_(long long* ifltab, const char* cpath, char* cstring, int* kstring, int* nstring, int* iuhead, int* kuhead, int* nuhead, int* istat, size_t cpath_len, size_t cstring_len) {
-	DSS_STUB_CALLED();
-}
 
 void zinqir_(long long* ifltab, const char* cflg, char* calpha, int* inumb, size_t cflg_len, size_t calpha_len) {
 	DSS_STUB_CALLED();

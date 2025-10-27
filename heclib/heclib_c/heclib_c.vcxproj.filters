@@ -1281,9 +1281,6 @@
     <ClCompile Include="src\Utilities\normalizeFPart.c">
       <Filter>src\Utilities</Filter>
     </ClCompile>
-    <ClCompile Include="src\Internal\zCopyRecord6Dynamic.c">
-      <Filter>src\Internal</Filter>
-    </ClCompile>
     <ClCompile Include="src\Internal\isDpartEmpty.c" />
     <ClCompile Include="src\Utilities\checks.c" />
     <ClCompile Include="src\Internal\isTsPattern.c" />

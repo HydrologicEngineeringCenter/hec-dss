@@ -457,24 +457,6 @@ int testCatalog()
 	}
 
 
-	//  Version 6 code
-	stringCopy(pathWithWild, sizeof(pathWithWild), "B=SACRAMENTO, F=OBS", _TRUNCATE);
-	filePos = 0;
-	count = 0;
-	stringFill(pathname, ' ', sizeof(pathname));
-	while (filePos >= 0) {
-		zplist_ (ifltab, pathWithWild, &filePos, pathname,
-               &nPathname, &status, strlen(pathWithWild), sizeof(pathname));
-		if (status == 1) break;
-		if (status != STATUS_OKAY) {
-			if (zcheckStatus(ifltab, status, 1, "Fail in testCatalog Loc 48, zcatalog status ")) return status; 
-		}
-		pathname[nPathname] = '\0';
-		//printf(" %d,  -->%s<--\n", count, pathname);
-		count++;
-	}
-
-
 	zclose(ifltab);
 	}
 	printf("Catalog testing complete\n");
