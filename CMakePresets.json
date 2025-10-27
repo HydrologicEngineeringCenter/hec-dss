@@ -28,7 +28,7 @@
     {
       "name": "windows-default",
       "configurePreset": "windows-default",
-      "configuration": "Debug",
+      "configuration": "Debug"
     }
   ],
   "testPresets": [
