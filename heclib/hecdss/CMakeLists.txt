@@ -1,6 +1,6 @@
 
 
-add_library(hecdss SHARED hecdss.c hecdss.h)
+add_library(hecdss SHARED)
 
 if( ${CMAKE_C_COMPILER_ID} MATCHES GNU)    
     target_compile_options(hecdss PRIVATE -fPIC -std=gnu99)
@@ -13,3 +13,5 @@ else()
 endif()
 
 target_link_libraries(hecdss heclib)
+target_sources(hecdss PRIVATE hecdss.c)
+target_sources(hecdss PUBLIC hecdss.h)
