@@ -29,10 +29,6 @@ void zinqir6_(long long* ifltab, const char* cflg, char* calpha, int* inumb, siz
 	DSS_STUB_CALLED();
 }
 
-void zdtype6_(long long* ifltab, const char* pathname, int* ndata, int* found, const char* cdtype, int* dataType, size_t lenpathname, size_t lencdtype) {
-	DSS_STUB_CALLED();
-}
-
 void zset6_(const char* parameter, const char* charVal, int* integerValue, size_t lenparameter, size_t lencharVal) {
 	DSS_STUB_CALLED();
 }
