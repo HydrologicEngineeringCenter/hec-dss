@@ -1,0 +1,21 @@
+cmake_minimum_required(VERSION 3.16)
+project(heclib LANGUAGES C)
+
+if(MSVC)
+    set(CMAKE_EXE_LINKER_FLAGS /NODEFAULTLIB:MSVCRTD,LIBCMT)
+endif()
+
+find_package(JNI QUIET)
+add_subdirectory(deps)
+add_subdirectory(heclib)
+
+find_package(Git QUIET)
+if(DSS_TEST_DATA_DIR)
+    option(RUN_TESTS "Run Tests, requires initializing a git submodule." ON)
+    if(RUN_TESTS)
+        enable_testing()
+        add_subdirectory(test)
+    endif()
+else()
+    message(STATUS "Dss Test Data could not be retrieved.")
+endif()

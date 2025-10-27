@@ -1,0 +1,43 @@
+name: HEC DSS Build and Test
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [ubuntu-latest, macos-13, windows-latest]
+        jdk: [8]
+    runs-on: ${{matrix.platform}}
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+
+      - name: Checkout tools repo
+        uses: actions/checkout@v3
+        with:
+          repository: HydrologicEngineeringCenter/dss-test-data
+          path: dss-test-data
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'adopt'
+          java-version: '${{matrix.jdk}}'
+      - name: Setup Visual Studio CL
+        if: ${{matrix.platform == 'windows-latest'}}
+        uses: ilammy/msvc-dev-cmd@0b201ec74fa43914dc39ae48a89fd1d8cb592756
+      - name: Setup cmake
+        uses: jwlawson/actions-setup-cmake@802fa1a2c4e212495c05bf94dba2704a92a472be
+        with:
+            cmake-version: '3.31.x'
+      - name: Configure
+        run: cmake -B build
+      - name: Build
+        run: cmake --build build
+      - name: test
+        run: ctest --test-dir build -C Debug

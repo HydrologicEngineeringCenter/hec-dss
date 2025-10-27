@@ -1,6 +1,10 @@
 #ifndef _MSC_VER
 #include <unistd.h>
+#else
+#include <Windows.h>
 #endif
+
+
 
 #include <stdio.h>
 #include <string.h>
