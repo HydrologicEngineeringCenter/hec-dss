@@ -309,9 +309,6 @@
     <ClCompile Include="src\Dss6\writf.c">
       <Filter>src\Dss6</Filter>
     </ClCompile>
-    <ClCompile Include="src\Dss6\zcatalog6Internal.c">
-      <Filter>src\Dss6</Filter>
-    </ClCompile>
     <ClCompile Include="src\Dss6\zgetRecordBasics6.c">
       <Filter>src\Dss6</Filter>
     </ClCompile>

@@ -278,10 +278,7 @@ int zcopyRecord(long long *ifltabFrom, long long *ifltabTo, const char *pathname
 				return zerrorUpdate(ifltabTo, status, DSS_FUNCTION_zcopyRecord_ID);
 			}
 		}
-		else {
-			//  All others
-		//	zcopyrecord6_(ifltabFrom, ifltabTo, pathnameFrom, pathnameTo, &status, pathnameFromLen, pathnameToLen);
-		}
+		
 	}
 	return status;
 }

@@ -8,22 +8,10 @@ void dss_stub_called(const char* caller) {
 #define DSS_STUB_CALLED() dss_stub_called(__func__)
 
 
-
-void zcopyrecord6_(long long* ifltabFrom, long long* ifltabTo, const char* pathnameFrom, const char* pathnameTo,
-	int* status, size_t pathnameFromLen, size_t pathnameToLen) {
-	DSS_STUB_CALLED();
-
-}
-
-
 void zrinfo_(long long* ifltab, const char* pathname, int* lfound, int* itype, char* typeString, int* ldoubles, int* lquality, int* iprecision, char* tag, char* lastWrittenDate, char* lastWrittenTime, char* programName, int* version, int* numberData, int* spaceAllocated, int* compression, int* lpassworded, size_t len_pathname, size_t size_typeString, size_t size_tag, size_t size_lastWrittenDate, size_t size_lastWrittenTime, size_t size_programName) {
 	DSS_STUB_CALLED();
 }
 
-
-void zinqir_(long long* ifltab, const char* cflg, char* calpha, int* inumb, size_t cflg_len, size_t calpha_len) {
-	DSS_STUB_CALLED();
-}
 
 void zinqir6_(long long* ifltab, const char* cflg, char* calpha, int* inumb, size_t cflg_len, size_t calpha_len) {
 	DSS_STUB_CALLED();

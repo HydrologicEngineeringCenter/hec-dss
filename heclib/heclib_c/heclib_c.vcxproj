@@ -24,7 +24,6 @@
     <ClCompile Include="src\Dss6\seekf.c" />
     <ClCompile Include="src\Dss6\waits.c" />
     <ClCompile Include="src\Dss6\writf.c" />
-    <ClCompile Include="src\Dss6\zcatalog6Internal.c" />
     <ClCompile Include="src\Dss6\zgetRecordBasics6.c" />
     <ClCompile Include="src\Dss6\zgetRecordSize6.c" />
     <ClCompile Include="src\Dss6\ztsGetSizes6.c" />
