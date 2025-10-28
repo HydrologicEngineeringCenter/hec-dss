@@ -157,12 +157,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\C_CatalogToJava.c" />
+    <ClCompile Include="src\Hec_closeLogFile.c" />
     <ClCompile Include="src\Hec_closescratchdsscatalog.c" />
-    <ClCompile Include="src\Hec_fortranClose.c" />
-    <ClCompile Include="src\Hec_fortranFlush.c" />
-    <ClCompile Include="src\Hec_fortranOpen.c" />
-    <ClCompile Include="src\Hec_fortranWrite.c" />
+    <ClCompile Include="src\Hec_flushLogFile.c" />
     <ClCompile Include="src\Hec_makedsscatalog.c" />
+    <ClCompile Include="src\Hec_openLogFile.c" />
+    <ClCompile Include="src\Hec_writeToLogFile.c" />
     <ClCompile Include="src\Hec_zaliasAdd.c" />
     <ClCompile Include="src\Hec_zaliasGetPrimary.c" />
     <ClCompile Include="src\Hec_zaliasList.c" />
