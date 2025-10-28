@@ -28,7 +28,6 @@ src/Hec_zcolist.c
 src/jni_utility.h
 src/Hec_ztextStore.c
 src/Hec_zdbmod.c
-src/Hec_zrinfo.c
 src/Hec_zwhatChangedSetStart.c
 src/Hec_zpdStore.c
 src/Hec_zundel.c

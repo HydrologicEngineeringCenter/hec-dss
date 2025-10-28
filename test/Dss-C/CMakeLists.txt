@@ -54,7 +54,6 @@ source/TestPairedData3.c
 source/testLocation.c
 source/testCatalog.c
 source/testTimeSeriesStruct3.c
-source/testRecordInfo.c
 source/testNormalizeFPart.c
 source/comparePDs.c
 source/current_time_testing.c
