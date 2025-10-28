@@ -44,7 +44,6 @@
     <ClCompile Include="src\DssInterface\v6and7\zopen.c" />
     <ClCompile Include="src\DssInterface\v6and7\zopenExtended.c" />
     <ClCompile Include="src\DssInterface\v6and7\zpdRetrieve6.c" />
-    <ClCompile Include="src\DssInterface\v6and7\zpdStore6.c" />
     <ClCompile Include="src\DssInterface\v6and7\zputInfo.c" />
     <ClCompile Include="src\DssInterface\v6and7\zread.c" />
     <ClCompile Include="src\DssInterface\v6and7\zreada.c" />

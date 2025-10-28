@@ -239,7 +239,6 @@ src/DssInterface/v6and7/zopen.c
 src/DssInterface/v6and7/zwritec.c
 src/DssInterface/v6and7/ztsOtherStuff.c
 src/DssInterface/v6and7/zreadx.c
-src/DssInterface/v6and7/zpdStore6.c
 src/DssInterface/v6and7/zgetInfo.c
 src/DssInterface/v6and7/zreada.c
 src/DssInterface/v6and7/zwritex.c

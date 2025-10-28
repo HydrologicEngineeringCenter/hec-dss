@@ -360,9 +360,6 @@
     <ClCompile Include="src\DssInterface\v6and7\zpdRetrieve6.c">
       <Filter>src\DssInterface\v6andv7</Filter>
     </ClCompile>
-    <ClCompile Include="src\DssInterface\v6and7\zpdStore6.c">
-      <Filter>src\DssInterface\v6andv7</Filter>
-    </ClCompile>
     <ClCompile Include="src\DssInterface\v6and7\zputInfo.c">
       <Filter>src\DssInterface\v6andv7</Filter>
     </ClCompile>

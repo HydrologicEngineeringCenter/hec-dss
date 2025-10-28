@@ -8,10 +8,6 @@ void dss_stub_called(const char* caller) {
 #define DSS_STUB_CALLED() dss_stub_called(__func__)
 
 
-void zrinfo_(long long* ifltab, const char* pathname, int* lfound, int* itype, char* typeString, int* ldoubles, int* lquality, int* iprecision, char* tag, char* lastWrittenDate, char* lastWrittenTime, char* programName, int* version, int* numberData, int* spaceAllocated, int* compression, int* lpassworded, size_t len_pathname, size_t size_typeString, size_t size_tag, size_t size_lastWrittenDate, size_t size_lastWrittenTime, size_t size_programName) {
-	DSS_STUB_CALLED();
-}
-
 
 void zset6_(const char* parameter, const char* charVal, int* integerValue, size_t lenparameter, size_t lencharVal) {
 	DSS_STUB_CALLED();
