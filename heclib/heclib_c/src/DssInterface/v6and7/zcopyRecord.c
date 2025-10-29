@@ -18,10 +18,10 @@
 *
 *  Parameters:
 *				long long ifltabFrom
-*					The ifltabFrom of the DSS file being copied from.  Maybe either version 6 or 7.
+*					The ifltabFrom of the DSS file being copied from.  
 *
 *				long long *ifltabTo
-*					The ifltabFrom of the DSS file being copied to.  This can either be a version 6 or 7 file.
+*					The ifltabTo of the DSS file being copied to.  
 *
 *				const char *pathnameFrom
 *					The pathname to copy.  Must be a full valid pathname; a single record, not a dataset
@@ -199,17 +199,8 @@ int zcopyRecord(long long *ifltabFrom, long long *ifltabTo, const char *pathname
 						pathnameTo, "Allocating ts location pathname");
 				}
 			}
-			if (versFileTo == 6 && elevCopy) {
-				//-----------------------------------//
-				// always allow record copy to DSS 6 //
-				//-----------------------------------//
-				zquery("VDOW", "", 0, &vdiOverwrite);
-				zset("VDOW", "", 1);
-			}
+			
 			status = ztsStore(ifltabTo, tss, 0);
-			if (versFileTo == 6) {
-				zset("VDOW", "", vdiOverwrite);
-			}
 			zstructFree(tss);
 			if (zisError(status)) {
 				return zerrorUpdate(ifltabTo, status, DSS_FUNCTION_zcopyRecord_ID);
@@ -251,17 +242,7 @@ int zcopyRecord(long long *ifltabFrom, long long *ifltabTo, const char *pathname
 						pathnameTo, "Allocating paired data location pathname");
 				}
 			}
-			if (versFileTo == 6 && elevCopy) {
-				//-----------------------------------//
-				// always allow record copy to DSS 6 //
-				//-----------------------------------//
-				zquery("VDOW", "", 0, &vdiOverwrite);
-				zset("VDOW", "", 1);
-			}
 			status = zpdStore(ifltabTo, pds, 0);
-			if (versFileTo == 6) {
-				zset("VDOW", "", vdiOverwrite);
-			}
 			zstructFree(pds);
 			if (zisError(status)) {
 				return zerrorUpdate(ifltabTo, status, DSS_FUNCTION_zcopyRecord_ID);
@@ -297,10 +278,7 @@ int zcopyRecord(long long *ifltabFrom, long long *ifltabTo, const char *pathname
 				return zerrorUpdate(ifltabTo, status, DSS_FUNCTION_zcopyRecord_ID);
 			}
 		}
-		else {
-			//  All others
-			zcopyrecord6_(ifltabFrom, ifltabTo, pathnameFrom, pathnameTo, &status, pathnameFromLen, pathnameToLen);
-		}
+		
 	}
 	return status;
 }

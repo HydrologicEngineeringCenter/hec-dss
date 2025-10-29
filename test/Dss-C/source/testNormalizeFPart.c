@@ -421,7 +421,7 @@ int test_normalize_f_part() {
 	char* type = "INST-VAL";
 
 	remove(filename);
-	status = zopen7(ifltab, filename);
+	status = hec_dss_zopen(ifltab, filename);
 	//--------------------------------------------------------//
 	// test storing/retrieveing pathnames with normal F-parts //
 	//--------------------------------------------------------//

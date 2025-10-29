@@ -68,36 +68,10 @@ int testztsStructBill()
 int testReadInfo(long long *ifltab, const char *pathname)
 {
 
-    int  status[1];
-	int  type[1];
-	int  ldoubles[1];
-	int  lquality[1];
-	int  precision[1];
-	int  version[1];
-	int  numberData[1];
-	int  spaceUsed[1];
-	int  compression[1];
-	int  password[4];
-
-
-	char ctype[51];
-
-	char tag[9];
-	char lwdate[13];
-	char lwtime[13];
-	char progName[9];
-
-
-   
-
-	zrinfo_ (ifltab, pathname, (int *)status, (int *)type,
-			ctype, (int *)ldoubles, (int *)lquality, (int *)precision, 
-			tag, lwdate, lwtime, progName, 
-			(int *)version, (int *)numberData, (int *)spaceUsed, 
-			(int *)compression, (int *)password, strlen (pathname),
-			sizeof (ctype) -1, sizeof (tag) -1, sizeof (lwdate) -1, 
-			sizeof (lwtime) -1, sizeof (progName) -1);
-
+	zStructRecordBasics *recordBasics = zstructRecordBasicsNew(pathname);
+    zgetRecordBasics(ifltab, recordBasics);
+	zstructFree(recordBasics);
+	
 	return 0;
 }
 

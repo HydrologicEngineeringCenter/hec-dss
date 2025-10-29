@@ -371,15 +371,7 @@ int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 
 	version = zgetVersion(ifltab);
 	if (version == 6) {
-		if (intervalType == 0)
-		{
-			status = ztsRetrieveReg6(ifltab, tss,
-									retrieveFlag, retrieveDoublesFlag, boolRetrieveQualityNotes);
-		}
-		else {
-			status = ztsRetrieveIrreg6(ifltab, tss,
-									retrieveFlag, retrieveDoublesFlag, boolRetrieveQualityNotes);
-		}
+		
 	}
 	else {
 		//--------------------------------------//

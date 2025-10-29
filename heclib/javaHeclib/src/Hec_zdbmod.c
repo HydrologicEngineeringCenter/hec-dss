@@ -31,13 +31,7 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1zdbmod
 	useCharacterValue = (int) j_useCharacterValue;
 	fileHeader		  = (long long *)ifltab[zdssKeys.kfileHeader];
 
-	if (zgetVersion(ifltab) == 6) {
-		address = (int)laddress;
-		value = (int)lvalue;
-		zdbmod6_ (ifltab, &address, &value, characterValue, &useCharacterValue, strlen(characterValue));
-		return (jint)0;
-	}
-	else {
+ 
 		status =  zlockActive(ifltab, LOCKING_LEVEL_LOW, LOCKING_LOCK_ON, LOCKING_FLUSH_ON);
 		if (zisError(status)) {
 			status = zerrorUpdate(ifltab, status, DSS_FUNCTION_javaNativeInterface_ID);
@@ -64,7 +58,6 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1zdbmod
 		if (zisError(status)) {
 			status = zerrorUpdate(ifltab, status, DSS_FUNCTION_javaNativeInterface_ID);
 		}
-	}
 
     /* Release */
     (*env)->ReleaseIntArrayElements (env, j_ifltab, (int *)ifltab, 0);   

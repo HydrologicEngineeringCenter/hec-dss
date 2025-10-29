@@ -57,7 +57,7 @@ int testReclaim(const char *dssFilename)
 
 
 	remove(dssFilename);
-	status = zopen7(ifltab, dssFilename);
+	status = hec_dss_zopen(ifltab, dssFilename);
 	sprintf(message, "Fail in %s, zopen Loc 1", loopName);
 	if (zcheckStatus(ifltab, status, 1, message)) return status;
 	zsetFile(ifltab, "recl", "", RECLAIM_ALL);

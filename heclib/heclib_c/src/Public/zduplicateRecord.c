@@ -45,36 +45,15 @@
 
 int zduplicateRecord(long long *ifltab, const char *pathnameFrom, const char *pathnameTo)
 {
-	int vers;
-	int istatus[1];
-	int status;
-	int ldup;
-	int *IBUFF1, KBUFF1, *IBUFF2, KBUFF2;
-
 	if (pathnameIsElevTsOrPd(pathnameFrom) && pathnameIsElevTsOrPd(pathnameTo)) {
 		// force zcopyRecord if elevation time series or paired data to get VDI
 		return zcopyRecord(ifltab, ifltab, pathnameFrom, pathnameTo);
 	}
-	vers = zgetVersion(ifltab);
-	if (vers == 6) {
-		ldup = 1;
-		KBUFF1 = 10000;
-		KBUFF2 = 3000;
-		IBUFF1 = calloc(KBUFF1, 4);
-		IBUFF2 = calloc(KBUFF2, 4);
-		zcorec6_(ifltab, ifltab, pathnameFrom, pathnameTo,
-			IBUFF1, &KBUFF1, IBUFF2, &KBUFF2, &ldup, istatus,
-			strlen(pathnameFrom), strlen(pathnameTo));
-		free(IBUFF1);
-		free(IBUFF2);
-		return istatus[0];
-	}
-	else {
-		status = zreadInfo(ifltab, pathnameFrom, 0);
+
+		int status = zreadInfo(ifltab, pathnameFrom, 0);
 		if (status == 0) {
 			status = zcopyRecordInternal(ifltab, ifltab, pathnameTo, 1);
 		}
 		return status;
-	}
 }
 

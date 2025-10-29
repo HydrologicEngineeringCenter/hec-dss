@@ -94,14 +94,14 @@ int testDelete(const char *dssFilename7, const char *dssFilename6)
 			if (i==0) {
 				printf("Testing with DSS-7\n");
 				remove(dssFilename7);
-				status = zopen7(ifltab, dssFilename7);
+				status = hec_dss_zopen(ifltab, dssFilename7);
 				sprintf(message, "Fail in %s, zopen Loc 1", loopName);
 				if (zcheckStatus(ifltab, status, 1, message)) return status;
 			}
 			else {			
 				printf("Testing with DSS-6\n");
 				remove(dssFilename6);
-				status = zopen6(ifltab, dssFilename6);
+				status = hec_dss_zopen(ifltab, dssFilename6);
 				sprintf(message, "Fail in %s, zopen Loc 2", loopName);
 				if (zcheckStatus(ifltab, status, 1, message)) return status;
 			}

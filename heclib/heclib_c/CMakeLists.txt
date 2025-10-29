@@ -76,7 +76,6 @@ src/Internal/ztsStoreReg7.c
 src/Internal/zflushToDisk.c
 src/Internal/zcharTo8Byte.c
 src/Internal/zDssKeys.c
-src/Internal/zCopyRecord6Dynamic.c
 src/Internal/zprintKeys.c
 src/Internal/zerrorSave.c
 src/Internal/isTsPattern.c
@@ -132,7 +131,6 @@ src/Dss6/zgetRecordBasics6.c
 src/Dss6/flushf.c
 src/Dss6/ztsGetSizes6.c
 src/Dss6/writf.c
-src/Dss6/zcatalog6Internal.c
 src/Dss6/ztsStoreReg6.c
 src/Dss6/waits.c
 src/Dss6/deleteFile.c
@@ -141,12 +139,10 @@ src/Dss6/seekf.c
 src/Dss6/openf.c
 src/Dss6/zgetRecordSize6.c
 src/Dss6/filesize.c
-src/Dss6/ztsRetrieveReg6.c
 src/Dss6/closf.c
 src/Dss6/isonlocaldrive.c
 src/Dss6/lockdss.c
 src/Dss6/fortran_stubs.c
-src/Dss6/ztsRetrieveIrreg6.c
 src/Dss6/readf.c
 src/Dss6/readProgramName.c
 src/System/zfileSize.c
@@ -243,7 +239,6 @@ src/DssInterface/v6and7/zopen.c
 src/DssInterface/v6and7/zwritec.c
 src/DssInterface/v6and7/ztsOtherStuff.c
 src/DssInterface/v6and7/zreadx.c
-src/DssInterface/v6and7/zpdStore6.c
 src/DssInterface/v6and7/zgetInfo.c
 src/DssInterface/v6and7/zreada.c
 src/DssInterface/v6and7/zwritex.c

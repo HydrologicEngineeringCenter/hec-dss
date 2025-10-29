@@ -44,7 +44,6 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1ztsRetrieve(
 	jobjectArray doubleIntDim;
 	jobjectArray stringArray;
 	jint jnumber;
-	jlong jlongNumber;
 
 	int i, j;
 	int status;

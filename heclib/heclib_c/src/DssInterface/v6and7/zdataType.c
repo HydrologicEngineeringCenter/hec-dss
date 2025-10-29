@@ -71,11 +71,6 @@ int zdataType (long long *ifltab, const char* pathname)
 		zmessageDebug(ifltab, DSS_FUNCTION_zreadInfo_ID, " Pathname: ",pathname);
 	}
 
-	if (zgetVersion(ifltab) == 6) {
-		dataType = zdataType6(ifltab, pathname);
-		return dataType;
-	}
-
 
 	status = zcheck(ifltab, pathname);
 	if (zisError(status)) {
@@ -105,23 +100,6 @@ int zdataType (long long *ifltab, const char* pathname)
 		zmessageDebugInt(ifltab, DSS_FUNCTION_zreadInfo_ID, "zdataType, Data Type: ", dataType);
 	}
 	return dataType;
-}
-
-int zdataType6(long long *ifltab, const char* pathname)
-{
-	int ndata;
-	int lfound;
-	int dataType;
-	char cdtype[10];
-	char cpath[MAX_PATHNAME_SIZE];
-
-	stringCToFort(cpath, sizeof(cpath), pathname);
-	zdtype6_(ifltab, cpath, &ndata, &lfound, cdtype, &dataType,
-		strlen(pathname), sizeof(cdtype));
-
-	if (lfound) return dataType;
-	return STATUS_RECORD_NOT_FOUND;
-
 }
 
 

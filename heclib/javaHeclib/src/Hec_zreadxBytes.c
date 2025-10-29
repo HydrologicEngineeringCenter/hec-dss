@@ -64,15 +64,7 @@ JNIEXPORT void JNICALL Java_hec_heclib_util_Heclib_Hec_1zreadxBytes
 
 	/*  Determine if this is was read on a big endian machine
 	and the bytes in the words need to be swapped */
-	//strncpy(query, "SWAP", 4);
-	//query[4] = '\0';
-	//zinqir_ ((long long*)ifltab, query, alpha, numb,
-    //         strlen(query), sizeof(alpha)-1);
-//	if (numb[0] != 0) {
-//		for (i=0; i<*ndata; i++) {
-			//zswap_(data[i], data[i]);
-//		}
-//	}
+	
 
     /* Release */
     (*env)->ReleaseIntArrayElements (env, j_ifltab, ifltab, 0);

@@ -43,19 +43,13 @@ int testLargeCopy() {
 				remove(dst_filename);
 			}
 			memset(ifltab, 0, sizeof(ifltab));
-			if (src_ver == 6) {
-				status = zopen6(ifltab[0], src_filename);
-			}
-			else {
-				status = zopen7(ifltab[0], src_filename);
-			}
+			
+			status = hec_dss_zopen(ifltab[0], src_filename);
+			
 			assert(status == 0);
-			if (dst_ver == 6) {
-				status = zopen6(ifltab[1], dst_filename);
-			}
-			else {
-				status = zopen7(ifltab[1], dst_filename);
-			}
+			
+			status = hec_dss_zopen(ifltab[1], dst_filename);
+			
 			assert(status == 0);
 
 			status = zcopyFile(ifltab[0], ifltab[1], REC_STATUS_VALID);

@@ -7,11 +7,8 @@ int testNoDates(int version)
 	deleteFile(dssFileName);
 
 	long long ifltab[250];
-	int status;
-	if (version == 6)
-		status = zopen6(ifltab, dssFileName);
-	else
-		status = hec_dss_zopen(ifltab, dssFileName);
+	
+	int	status = hec_dss_zopen(ifltab, dssFileName);
 
 	if (status != STATUS_OKAY) return status;
 

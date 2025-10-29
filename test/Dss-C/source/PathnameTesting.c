@@ -5,9 +5,8 @@
 * 
 * args:
 *   dssFileName -  dss file to be created (existing file will be overwritten)
-*  dssVersion   - verions of dss file (6 or 7) 
 */
-int PathnameTesting(char* dssFileName, int dssVersion)
+int PathnameTesting(char* dssFileName)
 {
 	long long ifltab[250];
 	zStructTimeSeries* tss1;
@@ -16,15 +15,8 @@ int PathnameTesting(char* dssFileName, int dssVersion)
 	memset(ifltab,0,sizeof(ifltab));
 	deleteFile(dssFileName);
 	
-	printf("\n reading %s,   version = %d\n",dssFileName,dssVersion);
-	if (dssVersion == 7)
-		status = hec_dss_zopen(ifltab, dssFileName);
-	else if (dssVersion == 6)
-		status = zopen6(ifltab, dssFileName);
-	else {
-		printf("\n invalid DSS version %d PathnameTesting failed", dssVersion);
-		return -1;
-	}
+	printf("\n reading %s\n",dssFileName);
+	status = hec_dss_zopen(ifltab, dssFileName);
 	if (status != STATUS_OKAY) return status;
 
 	//  Write a regular interval data set.  Gen up the data

@@ -24,12 +24,9 @@
     <ClCompile Include="src\Dss6\seekf.c" />
     <ClCompile Include="src\Dss6\waits.c" />
     <ClCompile Include="src\Dss6\writf.c" />
-    <ClCompile Include="src\Dss6\zcatalog6Internal.c" />
     <ClCompile Include="src\Dss6\zgetRecordBasics6.c" />
     <ClCompile Include="src\Dss6\zgetRecordSize6.c" />
     <ClCompile Include="src\Dss6\ztsGetSizes6.c" />
-    <ClCompile Include="src\Dss6\ztsRetrieveIrreg6.c" />
-    <ClCompile Include="src\Dss6\ztsRetrieveReg6.c" />
     <ClCompile Include="src\Dss6\ztsStoreIrreg6.c" />
     <ClCompile Include="src\Dss6\ztsStoreReg6.c" />
     <ClCompile Include="src\DssInterface\missingFlag_.c" />
@@ -47,7 +44,6 @@
     <ClCompile Include="src\DssInterface\v6and7\zopen.c" />
     <ClCompile Include="src\DssInterface\v6and7\zopenExtended.c" />
     <ClCompile Include="src\DssInterface\v6and7\zpdRetrieve6.c" />
-    <ClCompile Include="src\DssInterface\v6and7\zpdStore6.c" />
     <ClCompile Include="src\DssInterface\v6and7\zputInfo.c" />
     <ClCompile Include="src\DssInterface\v6and7\zread.c" />
     <ClCompile Include="src\DssInterface\v6and7\zreada.c" />
@@ -114,9 +110,9 @@
     <ClCompile Include="src\Internal\zcloseInternal.c" />
     <ClCompile Include="src\Internal\zcollectionsPath.c" />
     <ClCompile Include="src\Internal\zcompareRecordStatus.c" />
-    <ClCompile Include="src\Internal\zCopyRecord6Dynamic.c" />
     <ClCompile Include="src\Internal\zcopyRecordInternal.c" />
     <ClCompile Include="src\Internal\zdeleteInternal.c" />
+    <ClCompile Include="src\Internal\zDssKeys.c" />
     <ClCompile Include="src\Internal\zerrorDecode.c" />
     <ClCompile Include="src\Internal\zerrorEncode.c" />
     <ClCompile Include="src\Internal\zerrorEncodeHigh.c" />

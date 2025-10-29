@@ -309,9 +309,6 @@
     <ClCompile Include="src\Dss6\writf.c">
       <Filter>src\Dss6</Filter>
     </ClCompile>
-    <ClCompile Include="src\Dss6\zcatalog6Internal.c">
-      <Filter>src\Dss6</Filter>
-    </ClCompile>
     <ClCompile Include="src\Dss6\zgetRecordBasics6.c">
       <Filter>src\Dss6</Filter>
     </ClCompile>
@@ -319,12 +316,6 @@
       <Filter>src\Dss6</Filter>
     </ClCompile>
     <ClCompile Include="src\Dss6\ztsGetSizes6.c">
-      <Filter>src\Dss6</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Dss6\ztsRetrieveIrreg6.c">
-      <Filter>src\Dss6</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Dss6\ztsRetrieveReg6.c">
       <Filter>src\Dss6</Filter>
     </ClCompile>
     <ClCompile Include="src\Dss6\ztsStoreIrreg6.c">
@@ -367,9 +358,6 @@
       <Filter>src\DssInterface\v6andv7</Filter>
     </ClCompile>
     <ClCompile Include="src\DssInterface\v6and7\zpdRetrieve6.c">
-      <Filter>src\DssInterface\v6andv7</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\v6and7\zpdStore6.c">
       <Filter>src\DssInterface\v6andv7</Filter>
     </ClCompile>
     <ClCompile Include="src\DssInterface\v6and7\zputInfo.c">
@@ -1281,15 +1269,13 @@
     <ClCompile Include="src\Utilities\normalizeFPart.c">
       <Filter>src\Utilities</Filter>
     </ClCompile>
-    <ClCompile Include="src\Internal\zCopyRecord6Dynamic.c">
-      <Filter>src\Internal</Filter>
-    </ClCompile>
     <ClCompile Include="src\Internal\isDpartEmpty.c" />
     <ClCompile Include="src\Utilities\checks.c" />
     <ClCompile Include="src\Internal\isTsPattern.c" />
     <ClCompile Include="src\Dss6\fortran_stubs.c">
       <Filter>src\Dss6</Filter>
     </ClCompile>
+    <ClCompile Include="src\Internal\zDssKeys.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\headers\zlib\zconf.h">

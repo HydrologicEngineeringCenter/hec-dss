@@ -62,11 +62,6 @@ int zcheckPathnames(long long *ifltab)
 	char pathname[MAX_PATHNAME_LENGTH];
 
 
-	if (zgetVersion(ifltab) == 6) {
-		zckpat6_ (ifltab, &status);
-		return status;
-	}
-
 	if (zmessageLevel(ifltab, MESS_METHOD_CHECK_ID, MESS_LEVEL_INTERNAL_DIAG_1)) {
 		zmessageDebugInt(ifltab, DSS_FUNCTION_zcheckPathnames_ID, "Enter, Handle: ", zhandle(ifltab));
 	}

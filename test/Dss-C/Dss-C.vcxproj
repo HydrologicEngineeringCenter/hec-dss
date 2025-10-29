@@ -193,7 +193,6 @@
     <ClCompile Include="source\testztsStructBill.c" />
     <ClCompile Include="source\test_stringCat.c" />
     <ClCompile Include="TestDssC.c" />
-    <ClCompile Include="source\testRecordInfo.c" />
     <ClCompile Include="test_logging.c" />
   </ItemGroup>
   <ItemGroup>

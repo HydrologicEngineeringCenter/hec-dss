@@ -77,7 +77,6 @@ void usage(char* exeName)
 	printf("\ncheck-lock , check locking");
 	printf("\nfile.dss DSS file");
 	printf("\nworkout, performs reads/writes on file.dss, can be used with multiple instances");
-	printf("\nversion, dss version (6 or 7)");
 	printf("\nexport file.dss path metaDataOnly(0|1)  # writes the contents of a DSS record to the console");
 	printf("\nimport-profile input.csv output.dss path date time units datatype");
 
@@ -96,7 +95,7 @@ void usage(char* exeName)
 	printf("\n%s zcheckLinks myfile.dss", exeName);;
 	printf("\n%s zcheckPathnames myfile.dss", exeName);
 	printf("\n%s export myfile.dss /SHG/EFRUSSIAN20/PRECIPITATION/01OCT2004:2400/02OCT2004:0100/GAGEINTERP/ 1", exeName);
-	printf("\n%s pathnameTesting file.dss 7", exeName);
+	printf("\n%s pathnameTesting file.dss", exeName);
 	printf("\n%s import-profile input.csv output.dss //location1/id-depth//10Second/ADCIRC-run12/ 2022-05-04 10:12:30 feet INST-VAL", exeName);
 	printf("\n");
 
@@ -152,9 +151,9 @@ int main(int argc, char* argv[])
 		status = CheckPathnames(argv[2]);
 	}
 
-	else if (argc == 6 && strcmp(argv[1], "workout") == 0)
+	else if (argc == 5 && strcmp(argv[1], "workout") == 0)
 	{// example:  workout 7 test.dss
-		status = Workout(argv[0], argv[2], argv[3], argv[4], argv[5]);
+		status = Workout(argv[0], argv[2], argv[3], argv[4]);
 	}
 	else if (argc == 3 && strcmp(argv[1], "check-lock") == 0)
 	{// example:  check-lock test.dss
@@ -170,11 +169,8 @@ int main(int argc, char* argv[])
 		if (argc == 5) metaDataOnly = strcmp(argv[4], "1") ? 0 : 1;
 		status = Export(argv[2], argv[3], metaDataOnly);
 	}
-	else if (argc == 3 && strcmp(argv[1], "recordinfo") == 0) {
-		testRecordInfo6(argv[2]);
-	}
-	else if (argc == 4 && strcmp(argv[1], "pathnameTesting") == 0) {
-		status = PathnameTesting(argv[2], atoi(argv[3]));
+	else if (argc == 3 && strcmp(argv[1], "pathnameTesting") == 0) {
+		status = PathnameTesting(argv[2]);
 	}
 	else if (argc == 9 && strcmp(argv[1], "import-profile") == 0) {
 		//int ImportProfile(const char* csvFilename, const char* dssFilename, const char* path, const char* date, const char* time, const char* units, const char* datatype);
@@ -315,11 +311,7 @@ int runTheTests() {
 	if (status != STATUS_OKAY)
 		return status;
 
-	status = PathnameTesting("path_name_test7.dss",7);
-	if (status != STATUS_OKAY)
-	return status;
-
-	status = skip_dss6() ? 0:  PathnameTesting("path_name_test6.dss", 6);
+	status = PathnameTesting("path_name_test7.dss");
 	if (status != STATUS_OKAY)
 	return status;
 
@@ -342,8 +334,6 @@ int runTheTests() {
 	remove("testmultiuser7.dss");
 	status = testMultiUser("testmultiuser7.dss", 7, 333, 2);
 	if (status != STATUS_OKAY) return status;
-
-	 
 
 
 	status = testMisc();
@@ -381,28 +371,12 @@ int runTheTests() {
 	status = testReclaim(fileName7a);
 	if (status != STATUS_OKAY) return status;
 
-	stringCopy(fileName6, sizeof(fileName6), "testDss6.dss", sizeof(fileName6));
-	remove(fileName6);
-	if( !skip_dss6()){
-		status = zopen6(ifltab6, fileName6);
-		if (status != STATUS_OKAY) return status;
-	}
 	status = hec_dss_zopen(ifltab7, fileName7);
 	if (status) return status;
-	status = skip_dss6()? 0: testIO_Interface(ifltab7, ifltab6);
-	if (status != STATUS_OKAY) return status;
-
-	printf("\n\n\n\n###################################################################\n\n");
-	printf("     Test 2 - DSS-6\n");
-	printf("\n###################################################################\n\n");
-
-	status = skip_dss6()? 0:  runTests(ifltab6);
-	if (status != STATUS_OKAY) return status;
-	printf("\n\n\n#####################  Completion\n\n\n");
-
+	
 	status = zcatalogFile(ifltab7, "dss7.txt", 0, (const char*)0);
 	if (status < 1) {
-		printf("\n\nCatalog FAILED, status = %d\n", status);
+		printf("\n\nversion = %d Catalog FAILED, status = %d\n", zgetVersion(ifltab7),status);
 		return status;
 	}
 
@@ -664,7 +638,7 @@ int units_issue_126()
 
 	long long ifltab[250];
 	memset(ifltab, 0, sizeof(ifltab));
-	int status = zopen6(ifltab, dssFileName);
+	int status = hec_dss_zopen(ifltab, dssFileName);
 	if (status) return status;
 
 	ztsStore(ifltab, tss1, 0);
@@ -1451,10 +1425,8 @@ int testTsStoreRules() {
 	// do the tests //
 	//--------------//
 	int status = -1;
+	int dssVer = 7;
 	zset("MLVL", "", 1);
-	for (int dssVer = 6; dssVer <= 7; ++dssVer) {
-		if (skip_dss6())
-			dssVer = 7;
 		printf("DSS Version %d\n", dssVer);
 		long long ifltab[250] = { 0 };
 		char* dssFilename = strdup("testCwms1424_v?.dss");
@@ -1462,7 +1434,7 @@ int testTsStoreRules() {
 			if (*cp == '?') *cp = '0' + dssVer;
 		}
 		remove(dssFilename);
-		status = dssVer == 6 ? zopen6(ifltab, dssFilename) : zopen7(ifltab, dssFilename);
+		status = hec_dss_zopen(ifltab, dssFilename);
 		assert(status == STATUS_OKAY);
 		zStructTimeSeries * tss = NULL;
 		{
@@ -1813,7 +1785,7 @@ int testTsStoreRules() {
 		}
 		zclose(ifltab);
 		free(dssFilename);
-	}
+	
 	//----------//
 	// clean up //
 	//----------//

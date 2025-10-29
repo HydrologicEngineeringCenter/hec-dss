@@ -52,15 +52,7 @@ JNIEXPORT void JNICALL Java_hec_heclib_util_Heclib_Hec_1zwritxBytes
 
 	/*  Determine if this is is to be written on a big endian machine
 	and the bytes in the words need to be swapped */
-	//strncpy(query, "SWAP", 4);
-	//query[4] = '\0';
-/*	zinqir_ ((long long*)ifltab, query, alpha, numb,
-             strlen(query), sizeof(alpha)-1);
-	if (numb[0] != 0) {
-		for (i=0; i<ndata; i++) {
-			zswap_(data[i], data[i]);
-		}
-	} */
+	
 
     zwritex_ ((long long*)ifltab, pathname, &npathname,
              intheader, &nintheader,
@@ -68,22 +60,7 @@ JNIEXPORT void JNICALL Java_hec_heclib_util_Heclib_Hec_1zwritxBytes
              userheader, &nuserheader,
              (int *)data, &ndata, &type, &plan,
              status, exists, strlen (pathname));
-////////////////
-	////////////////  fix me
-	/*
-	zwritx_ ((long long*)ifltab, pathname, &npathname,
-             intheader, &nintheader,
-             compheader, &ncompheader,
-             userheader, &nuserheader,
-             data, &ndata, &type, &plan,
-             status, exists, strlen (pathname));
-*/
-	/*  Swap back */
-	//if (numb[0] != 0) {
-	//	for (i=0; i<ndata; i++) {
-//			zswap_(data[i], data[i]);
-	//	}
-//	}
+
 
     /* Release */
     (*env)->ReleaseIntArrayElements (env, j_ifltab, ifltab, 0);

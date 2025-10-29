@@ -147,11 +147,6 @@ int zcatalogInternal (long long *ifltab, const char *pathWithWild, zStructCatalo
 	}
 
 
-	if (zgetVersion(ifltab) == 6) {
-		return zcatalog6Internal (ifltab, pathWithWild, catStruct, catalogHandle, ifortUnit,
-			numberWanted, boolCollection, boolForSort);
-	}
-
 	//  Check for correct DSS Version
 	if (zgetVersion(ifltab) < 0) {
 		return zerrorProcessing(ifltab, DSS_FUNCTION_zcatalog_ID, zdssErrorCodes.NOT_OPENED,

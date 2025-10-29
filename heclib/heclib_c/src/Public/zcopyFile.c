@@ -83,11 +83,6 @@ int zcopyFile(long long *ifltabFrom, long long *ifltabTo, int statusWanted)
 	char fullFilename[256];
 
 
-	if (zgetVersion(ifltabFrom) == 6) {
-		zcopyfile6_(ifltabFrom, ifltabTo, &status);
-		return status;
-	}
-
 	if (zgetVersion(ifltabFrom) == 0) {
 		return zerrorProcessing(ifltabFrom, DSS_FUNCTION_zcopyFile_ID, zdssErrorCodes.NOT_OPENED,
 									0, 0, zdssErrorSeverity.INVALID_ARGUMENT, "", "");
@@ -252,11 +247,6 @@ void zcopyfile_(long long *ifltabFrom, long long *ifltabTo, int *status)
 
 	if (versFileFrom == 7) {
 		*status = zcopyFile(ifltabFrom, ifltabTo, 0);
-	}
-	else if (versFileFrom == 6) {
-		zcopyfile6_(ifltabFrom, ifltabTo, status);
-	}
-	else {
 	}
 }
 
