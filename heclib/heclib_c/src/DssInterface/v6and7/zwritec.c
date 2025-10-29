@@ -25,25 +25,6 @@ int zwritec(long long *ifltab, const char* pathname,
 	char path[MAX_PATHNAME_LENGTH];
 
 
-	if (zgetVersion(ifltab) == 6) {
-		len = (int)strlen(pathname);
-		stringCToFort(path, sizeof(path),  pathname);
-		zero = 0;
-
-/*     SUBROUTINE zwritex6 ( IFLTAB, CPATH, NPATH, IIHEAD, NIHEAD,
-     * ICHEAD, NCHEAD, IUHEAD, NUHEAD, IDATA, NDATA, JTYPE,
-     * IPLAN, ISTAT, LFOUND)
-*/
-		zwritex6_(ifltab, path, &len,
-				 internalHeader, &internalHeaderNumber,
-				 header2, &header2Number,
-				 userHeader, &userHeaderNumber,
-				 values1, &values1Number, &dataType,
-				 &zero, &status, &recordFound, strlen(pathname));
-
-	}
-	else {
-
 		ztransfer = zstructTransferNew(pathname, 0);
 		if (!ztransfer) {
 			//  error out
@@ -73,7 +54,7 @@ int zwritec(long long *ifltab, const char* pathname,
 		status = zwrite(ifltab, ztransfer);
 
 		zstructFree(ztransfer);
-	}
+	
 
 	return status;
 }

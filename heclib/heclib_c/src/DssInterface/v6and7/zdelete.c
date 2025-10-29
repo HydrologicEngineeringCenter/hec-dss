@@ -34,30 +34,10 @@ int zdelete(long long *ifltab, const char* pathname)
 			0, 0, zdssErrorSeverity.INVALID_ARGUMENT, "", "pathname is null");
 	}
 
-	if (zgetVersion(ifltab) == 6) {
-		len = (int)strlen(pathname);
-		zdelet6_(ifltab, pathname, &len, &boolfound, strlen(pathname));
-		if (boolfound) {
-			return STATUS_RECORD_FOUND;
-		}
-		else {
-			return STATUS_RECORD_NOT_FOUND;
-		}
-	}
-	else {
-		return zdeleteInternal(ifltab, pathname, 0);
-	}
+	return zdeleteInternal(ifltab, pathname, 0);
 }
 
-void zdelet7_(long long *ifltab, const char* pathname, int *numberPathname,
-	int *found, size_t lenPathname)
-{
-	char *cpath;
 
-	cpath = stringFortToC(pathname, lenPathname);
-	*found = zdelete(ifltab, cpath);
-	free(cpath);
-}
 
 
 

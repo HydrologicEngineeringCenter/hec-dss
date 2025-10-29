@@ -39,23 +39,14 @@
 
 int zundelete(long long *ifltab, const char* pathname)
 {
-	int len;
-	int status;
-
 
 	if (!pathname) {
 		return zerrorProcessing(ifltab, DSS_FUNCTION_zundelete_ID, zdssErrorCodes.NULL_PATHNAME,
 			0, 0, zdssErrorSeverity.INVALID_ARGUMENT, "", "pathname is null");
 	}
 
-	if (zgetVersion(ifltab) == 6) {
-		len = (int)strlen(pathname);
-		zundel6_(ifltab, pathname, &len, &status, strlen(pathname));
-	}
-	else {
-		//  zdeleteInternal also does undeletes
-		status =  zdeleteInternal(ifltab, pathname, 1);
-	}
+	//  zdeleteInternal also does undeletes
+	int status =  zdeleteInternal(ifltab, pathname, 1);
 	return status;
 }
 

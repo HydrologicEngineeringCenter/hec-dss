@@ -9,42 +9,6 @@ void dss_stub_called(const char* caller) {
 
 
 
-void zset6_(const char* parameter, const char* charVal, int* integerValue, size_t lenparameter, size_t lencharVal) {
-	DSS_STUB_CALLED();
-}
-
-void zreadx6_(long long* ifltab, const char* path, int* internalHeader, int* internalHeaderArraySize, int* internalHeaderNumber, int* header2, int* header2ArraySize, int* header2Number, int* userHeader, int* userHeaderArraySize, int* userHeaderNumber, int* values, int* valuesSize, int* valuesNumber, int* readPlan, int* recordFound, size_t pathLen) {
-	DSS_STUB_CALLED();
-}
-
-void zgetrecsize6_(long long* ifltab, const char* pathname, int* nihead, int* nchead, int* nuhead, int* ndata, int* istatus, size_t pathLen) {
-	DSS_STUB_CALLED();
-}
-
-void zcheck6_(long long* ifltab, const char* pathname, int* numberPathname, int* numberHeader, int* numberData, int* lfound, size_t lenPathname) {
-	DSS_STUB_CALLED();
-}
-
-void ztsends6_(int* ifltab, const char* cpath, int* searchOption, int* startJulian, int* startMinutes, int* endJulian, int* endMinutes, int* exists, size_t len_cpath) {
-	DSS_STUB_CALLED();
-}
-
-void zdelet6_(long long* ifltab, const char* pathname, int* numberPathname, int* boolfound, size_t lenPathname) {
-	DSS_STUB_CALLED();
-}
-
-void zwritex6_(long long* ifltab, const char* path, int* npath, int* internalHeader, int* internalHeaderNumber, int* header2, int* header2Number, int* userHeader, int* userHeaderNumber, int* values, int* valuesNumber, int* dataType, int* plan, int* status, int* recordFound, size_t pathLen) {
-	DSS_STUB_CALLED();
-}
-
-void zsqueeze6_(const char* dssFilename, int* status, size_t lenDssFilename) {
-	DSS_STUB_CALLED();
-}
-
-void zundel6_(long long* ifltab, const char* pathname, int* numberPathname, int* status, size_t lenPathname) {
-	DSS_STUB_CALLED();
-}
-
 void zrenam6_(long long* ifltab, const char* oldPathname, int* len_oldPathname, const char* newPathname, int* len_newPathname, int* status, size_t length_oldPathname, size_t length_newPathname) {
 	DSS_STUB_CALLED();
 }

@@ -399,9 +399,6 @@
     <ClCompile Include="src\DssInterface\v6and7\zwritec.c">
       <Filter>src\DssInterface\v6andv7</Filter>
     </ClCompile>
-    <ClCompile Include="src\DssInterface\v6and7\zwritex.c">
-      <Filter>src\DssInterface\v6andv7</Filter>
-    </ClCompile>
     <ClCompile Include="src\DssInterface\missingFlag_.c">
       <Filter>src\DssInterface</Filter>
     </ClCompile>
@@ -415,9 +412,6 @@
       <Filter>src\DssInterface</Filter>
     </ClCompile>
     <ClCompile Include="src\DssInterface\zclose_.c">
-      <Filter>src\DssInterface</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\zdelete_.c">
       <Filter>src\DssInterface</Filter>
     </ClCompile>
     <ClCompile Include="src\DssInterface\zerrorDecode_.c">
@@ -502,9 +496,6 @@
       <Filter>src\DssInterface</Filter>
     </ClCompile>
     <ClCompile Include="src\DssInterface\ztsStoreStuff.c">
-      <Filter>src\DssInterface</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\zundelete_.c">
       <Filter>src\DssInterface</Filter>
     </ClCompile>
     <ClCompile Include="src\Internal\charInt.c">

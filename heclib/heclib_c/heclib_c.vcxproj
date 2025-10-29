@@ -57,10 +57,8 @@
     <ClCompile Include="src\DssInterface\v6and7\zwrite.c" />
     <ClCompile Include="src\DssInterface\v6and7\zwritea.c" />
     <ClCompile Include="src\DssInterface\v6and7\zwritec.c" />
-    <ClCompile Include="src\DssInterface\v6and7\zwritex.c" />
     <ClCompile Include="src\DssInterface\zcheckfilever_.c" />
     <ClCompile Include="src\DssInterface\zclose_.c" />
-    <ClCompile Include="src\DssInterface\zdelete_.c" />
     <ClCompile Include="src\DssInterface\zerrorDecode_.c" />
     <ClCompile Include="src\DssInterface\zgetinterval_.c" />
     <ClCompile Include="src\DssInterface\zgetVersion_.c" />
@@ -89,7 +87,6 @@
     <ClCompile Include="src\DssInterface\ztsStoreIrregArgs.c" />
     <ClCompile Include="src\DssInterface\ztsStoreRegArgs.c" />
     <ClCompile Include="src\DssInterface\ztsStoreStuff.c" />
-    <ClCompile Include="src\DssInterface\zundelete_.c" />
     <ClCompile Include="src\Internal\isDpartEmpty.c" />
     <ClCompile Include="src\Internal\charInt.c" />
     <ClCompile Include="src\Internal\charLong.c" />
