@@ -183,7 +183,6 @@
     <ClCompile Include="src\Hec_zckpnb.c" />
     <ClCompile Include="src\Hec_zclose.c" />
     <ClCompile Include="src\Hec_zcofil.c" />
-    <ClCompile Include="src\Hec_zcolist.c" />
     <ClCompile Include="src\Hec_zcorec.c" />
     <ClCompile Include="src\Hec_zdbmod.c" />
     <ClCompile Include="src\Hec_zdelet.c" />

@@ -5,11 +5,8 @@
 JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1squeezeDSS
   (JNIEnv *env, jobject obj, jstring j_filename) {
 
-    char *filename;
-    int   status;
-
-    filename = (char *) (*env)->GetStringUTFChars (env, j_filename, 0); 
-	zsqueeze_ (filename, &status, strlen(filename));  
+   char* filename = (char *) (*env)->GetStringUTFChars (env, j_filename, 0); 
+	 int status = zsqueeze(filename);
 	(*env)->ReleaseStringUTFChars (env, j_filename, filename);
-    return status;
+  return status;
 }

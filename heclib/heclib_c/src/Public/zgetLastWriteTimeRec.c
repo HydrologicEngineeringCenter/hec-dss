@@ -40,17 +40,10 @@
 *
 *
 */
-long long zgetLastWriteTime6(long long *ifltab, const char *pathname);
-
 long long zgetLastWriteTimeRec (long long *ifltab, const char *pathname)
 {
 	int status;
 	long long *info;
-
-	//  Check for correct DSS Version
-	if (zgetVersion(ifltab) == 6) {
-		return zgetLastWriteTime6(ifltab,pathname);
-	}
 
 	if (zgetVersion(ifltab) != 7) {
 		return zerrorProcessing(ifltab, DSS_FUNCTION_zreadInfo_ID, zdssErrorCodes.INCOMPATIBLE_VERSION,
@@ -73,33 +66,4 @@ long long zgetLastWriteTimeRec (long long *ifltab, const char *pathname)
 	return info[zdssInfoKeys.kinfoLastWriteTime];
 }
 
-//  Interface to version 6 (Fortran code)
-long long zgetLastWriteTime6(long long *ifltab, const char *pathname)
-{
-	char cpath[MAX_PATHNAME_SIZE];
-	int ibuff[20];
-	int istat;
-	long long millis;
-
-
-	copyAndTrim(cpath, MAX_PATHNAME_LENGTH, pathname, strlen(pathname));
-	zgetinfo6_(ifltab, cpath, ibuff, &istat, strlen(pathname));
-
-	if (istat != 0) {
-		return 0;
-	}
-	if (ibuff[6] == 0) {
-		return 0;
-	}
-
-	//  Seconds since Jan 01, 1970
-	millis = (long long)(ibuff[6] - JULIAN_01JAN1970) * SECS_IN_1_DAY;
-
-	//  Add seconds after midnight
-	millis += (long long)ibuff[7];
-
-	//  Make into milliseconds
-	millis *= 1000L;
-	return millis;
-}
 

@@ -56,9 +56,6 @@ int zgetRecordBasics(long long *ifltab, zStructRecordBasics *recordBasics)
 	if (version == 7) {
 		return zgetRecordBasics7(ifltab, recordBasics);
 	}
-	else if (version == 6) {
-		return zgetRecordBasics6(ifltab, recordBasics);
-	}
 	else  if (version > 0) {
 		return zerrorProcessing(ifltab, DSS_FUNCTION_zreadInfo_ID, zdssErrorCodes.INCOMPATIBLE_VERSION,
 			version, 0, zdssErrorSeverity.WARNING, recordBasics->pathname, "");

@@ -235,6 +235,7 @@ src/DssInterface/v6and7/ztsOtherStuff.c
 src/DssInterface/v6and7/zreadx.c
 src/DssInterface/v6and7/zgetInfo.c
 src/DssInterface/v6and7/zreada.c
+src/DssInterface/v6and7/zwritex.c
 src/DssInterface/v6and7/zdelete.c
 src/DssInterface/v6and7/zread.c
 src/DssInterface/v6and7/zdataType.c

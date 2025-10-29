@@ -23,7 +23,6 @@ src/Hec_openLogFile.c
 src/Hec_zpdRetrieve.c
 src/C_CatalogToJava.c
 src/Hec_zfileAccessInfo.c
-src/Hec_zcolist.c
 src/jni_utility.h
 src/Hec_ztextStore.c
 src/Hec_zdbmod.c
