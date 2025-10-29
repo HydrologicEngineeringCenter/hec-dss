@@ -8,27 +8,6 @@ void dss_stub_called(const char* caller) {
 #define DSS_STUB_CALLED() dss_stub_called(__func__)
 
 
-
-void zrenam6_(long long* ifltab, const char* oldPathname, int* len_oldPathname, const char* newPathname, int* len_newPathname, int* status, size_t length_oldPathname, size_t length_newPathname) {
-	DSS_STUB_CALLED();
-}
-
-void zread6_(long long* ifltab, const char* path, int* npath, int* userHeader, int* userHeaderNumber, int* values, int* valuesNumber, int* readFlag, int* recordFound, size_t pathLen) {
-	DSS_STUB_CALLED();
-}
-
-void zwrite6_(long long* ifltab, const char* path, int* npath, int* userHeader, int* userHeaderNumber, int* values, int* valuesNumber, int* flag, int* recordFound, size_t pathLen) {
-	DSS_STUB_CALLED();
-}
-
-void zquery6_(const char* request, char* returnVal, int* returnNumb, size_t len_request, size_t sizeof_returnVal) {
-	DSS_STUB_CALLED();
-}
-
-void zdtype_(long long* ifltab, const char* arg1, int* arg2, int* arg3, char* arg4, int* arg5, size_t arg6, size_t arg7) {
-	DSS_STUB_CALLED();
-}
-
 void zrrtsi6_(long long* ifltab, const char* pathname, const char* startDate, const char* startTime, int* maxVals, int* numberVals, int* getDoubles, int* doublesRead, float* floatValues, double* doubleValues, int* flags, int* readFlags, int* flagsRead, char* units, char* type, int* userHeader, int* maxUserHead, int* numberUserHead, int* offset, int* compression, double* coordinates, int* coordinateDescription, int* coordinatesUsed, int* status, size_t lenPathname, size_t lenStartDate, size_t lenStartTime, size_t lenUnits, size_t lenType) {
 	DSS_STUB_CALLED();
 }

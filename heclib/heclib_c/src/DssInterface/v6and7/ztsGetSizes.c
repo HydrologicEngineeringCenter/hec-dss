@@ -50,16 +50,10 @@
 
 int ztsGetSizes(long long *ifltab, zStructTimeSeries *tss, zStructRecordSize *timeSeriesRecordSizes)
 {
-	int status;
 
 	//  get sizes internal returns number in block, not number
 	//  in time window.  Report back number in time window, if set
-	if (zgetVersion(ifltab) == 6) {
-		status = ztsGetSizes6(ifltab, tss, timeSeriesRecordSizes);
-	}
-	else {
-		status = ztsGetSizesInternal (ifltab, tss->timeWindow,  timeSeriesRecordSizes);
-	}
+	int	status = ztsGetSizesInternal (ifltab, tss->timeWindow,  timeSeriesRecordSizes);
 
 	if (status >= 0) {
 		return STATUS_OKAY;
@@ -68,61 +62,4 @@ int ztsGetSizes(long long *ifltab, zStructTimeSeries *tss, zStructRecordSize *ti
 }
 
 
-void ztsgetsizes_(long long *ifltab, const char *pathname,
-						const char *startDate, const char *startTime,
-						const char *endDate, const char *endTime,
-						int *numberValues, int *valueSize,
-						int *qualityElementSize, int *inoteElementSize,
-						int *totalLengthCnotesInRecords, int *userHeaderNumber, int *status,
-						size_t pathLen, size_t startDateLen, size_t startTimeLen,
-						size_t endDateLen, size_t endTimeLen)
-{
-
-	char *path;
-	char *sDate;
-	char *sTime;
-	char *eDate;
-	char *eTime;
-
-	zStructRecordSize timeSeriesRecordSizes;
-	zStructTimeSeries *tss;
-
-	path = stringFortToC(pathname, pathLen);
-	sDate = stringFortToC(startDate, startDateLen);
-	sTime = stringFortToC(startTime, startTimeLen);
-	eDate = stringFortToC(endDate, endDateLen);
-	eTime = stringFortToC(endTime, endTimeLen);
-
-	timeSeriesRecordSizes.pathname = path;
-
-	tss = zstructTsNewTimes(path, sDate, sTime, eDate, eTime);
-	if (!tss) {
-		*status = zerrorProcessing(ifltab, DSS_FUNCTION_internalUtility_ID,
-										zdssErrorCodes.CANNOT_ALLOCATE_MEMORY, 0, 0,
-										zdssErrorSeverity.MEMORY_ERROR,
-										path, "Allocating time series struct in ztsgetsizes_");
-		return;
-	}
-	if (tss->startJulianDate != UNDEFINED_TIME) {
-		ztsProcessTimes(ifltab, tss, 1);
-	}
-
-	timeSeriesRecordSizes.pathname = path;
-	*status = ztsGetSizes (ifltab, tss, &timeSeriesRecordSizes);
-	if (*status == 0) {
-		*numberValues = timeSeriesRecordSizes.numberValues;
-		*valueSize = timeSeriesRecordSizes.tsValueSize;
-		*qualityElementSize = timeSeriesRecordSizes.tsQualityElementSize;
-		*inoteElementSize = timeSeriesRecordSizes.tsInotesElementSize;
-		*totalLengthCnotesInRecords = timeSeriesRecordSizes.tsCnotesLength;
-		*userHeaderNumber = timeSeriesRecordSizes.userHeaderNumber;
-	}
-
-	free(path);
-	free(sDate);
-	free(sTime);
-	free(eDate);
-	free(eTime);
-	zstructFree(tss);
-}
 

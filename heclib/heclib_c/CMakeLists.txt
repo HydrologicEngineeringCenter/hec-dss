@@ -129,7 +129,6 @@ src/Internal/zcheckAccessReset.c
 src/Internal/zcopyRecordInternal.c
 src/Dss6/zgetRecordBasics6.c
 src/Dss6/flushf.c
-src/Dss6/ztsGetSizes6.c
 src/Dss6/writf.c
 src/Dss6/ztsStoreReg6.c
 src/Dss6/waits.c

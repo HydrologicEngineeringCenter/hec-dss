@@ -96,16 +96,6 @@ int zrename(long long *ifltab, const char* oldPathname, const char* newPathname)
 			0, 0, zdssErrorSeverity.INVALID_ARGUMENT, "", "pathnameTo is null");
 	}
 
-	//  Check for correct DSS Version
-	if (zgetVersion(ifltab) != 7) {
-		len1 = (int)strlen(oldPathname);
-		len2 = (int)strlen(newPathname);
-		zrenam6_(ifltab, oldPathname, &len1, newPathname, &len2, &status,
-			strlen(oldPathname), strlen(newPathname));
-		if (status) return STATUS_OKAY;
-		return STATUS_NOT_OKAY;
-	}
-
 	//  Messages and debug
 	if (zmessageLevel(ifltab, MESS_METHOD_UTILITY_ID, MESS_LEVEL_USER_DIAG)) {
 		zmessageDebugInt(ifltab, DSS_FUNCTION_zrename_ID, "Enter,  handle: ", zhandle(ifltab));

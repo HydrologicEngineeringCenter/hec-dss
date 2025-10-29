@@ -26,7 +26,6 @@
     <ClCompile Include="src\Dss6\writf.c" />
     <ClCompile Include="src\Dss6\zgetRecordBasics6.c" />
     <ClCompile Include="src\Dss6\zgetRecordSize6.c" />
-    <ClCompile Include="src\Dss6\ztsGetSizes6.c" />
     <ClCompile Include="src\Dss6\ztsStoreIrreg6.c" />
     <ClCompile Include="src\Dss6\ztsStoreReg6.c" />
     <ClCompile Include="src\DssInterface\missingFlag_.c" />

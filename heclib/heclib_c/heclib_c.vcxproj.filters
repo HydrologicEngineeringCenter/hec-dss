@@ -315,9 +315,6 @@
     <ClCompile Include="src\Dss6\zgetRecordSize6.c">
       <Filter>src\Dss6</Filter>
     </ClCompile>
-    <ClCompile Include="src\Dss6\ztsGetSizes6.c">
-      <Filter>src\Dss6</Filter>
-    </ClCompile>
     <ClCompile Include="src\Dss6\ztsStoreIrreg6.c">
       <Filter>src\Dss6</Filter>
     </ClCompile>
