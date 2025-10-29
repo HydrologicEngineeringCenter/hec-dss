@@ -14,7 +14,6 @@ int fortranwritelc_(int* fortranUnit, const char* message, int* boolEndOfRecord,
 }
 
 
-
 void chrlnb_(char* cstring, int* len, size_t strlen) {
 	DSS_STUB_CALLED();
 }
@@ -24,14 +23,6 @@ void ztsinfo_(long long* ifltab, const char* cpath, int* juls, int* istime, int*
 	DSS_STUB_CALLED();
 }
 
-
-void zmaxpart6_(long long* ifltab, int* maxParts) {
-	DSS_STUB_CALLED();
-}
-
-void zplist6_(long long* ifltab, const char* instr, int* filePos, char* pathname, int* nPathname, int* status, size_t len_instr, size_t sizeof_pathname) {
-	DSS_STUB_CALLED();
-}
 
 void ztsrange_(long long* ifltab, const char* cpath, int* searchOption, char* firstPath, char* lastPath, int* numberFound, size_t len_cpath, size_t len_firstPath, size_t len_lastPath) {
 	DSS_STUB_CALLED();

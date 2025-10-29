@@ -95,20 +95,6 @@ int ztsGetFirstLastPathnames(long long *ifltab, const char *pathnameSeed,
 	if (zmessageLevel(ifltab, MESS_METHOD_TS_READ_ID, MESS_LEVEL_INTERNAL_DIAG_1)) {
 		zmessageDebug(ifltab, DSS_FUNCTION_other_ID, "Enter ztsGetFirstLastPathnames, Pathname: ",pathnameSeed);
 	}
-	if (zgetVersion(ifltab) == 6) {
-		stringFill (firstPath, ' ', sizeofFirstPath);
-		stringFill (lastPath, ' ', sizeofLastPath);
-		ztsrange_(ifltab, pathnameSeed, &searchRange, firstPath, lastPath, &number,
-			strlen(pathnameSeed), sizeofFirstPath, sizeofLastPath);
-		if (number > 0) {
-			stringLastNonBlank (firstPath, sizeofFirstPath);
-			stringLastNonBlank (lastPath, sizeofLastPath);
-			return STATUS_RECORD_FOUND;
-		}
-		if (number == 0) return STATUS_RECORD_NOT_FOUND;
-		return number;
-	}
-
 	//  Clean the pathname and place into a char array that we can change
 	zpathnameClean(path, sizeof(path), pathnameSeed);
 
