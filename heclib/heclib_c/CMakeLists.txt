@@ -127,7 +127,6 @@ src/Internal/zgetRecordBasics7.c
 src/Internal/zlockActive.c
 src/Internal/zcheckAccessReset.c
 src/Internal/zcopyRecordInternal.c
-src/Dss6/zgetRecordBasics6.c
 src/Dss6/flushf.c
 src/Dss6/writf.c
 src/Dss6/ztsStoreReg6.c
@@ -136,7 +135,6 @@ src/Dss6/deleteFile.c
 src/Dss6/ztsStoreIrreg6.c
 src/Dss6/seekf.c
 src/Dss6/openf.c
-src/Dss6/zgetRecordSize6.c
 src/Dss6/filesize.c
 src/Dss6/closf.c
 src/Dss6/isonlocaldrive.c
@@ -221,7 +219,6 @@ src/DssInterface/zget_.c
 src/DssInterface/zsits7_.c
 src/DssInterface/zpathnameFormFortran_.c
 src/DssInterface/ztsinfo7_.c
-src/DssInterface/v6and7/zpdRetrieve6.c
 src/DssInterface/v6and7/zrecordAddresses.c
 src/DssInterface/v6and7/zopenExtended.c
 src/DssInterface/v6and7/zreadc.c

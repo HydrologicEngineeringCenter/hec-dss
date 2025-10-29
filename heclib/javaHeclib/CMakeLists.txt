@@ -21,7 +21,6 @@ src/Hec_zckpat.c
 src/Hec_zaliasAdd.c
 src/Hec_openLogFile.c
 src/Hec_zpdRetrieve.c
-src/Hec_zdtype.c
 src/C_CatalogToJava.c
 src/Hec_zfileAccessInfo.c
 src/Hec_zcolist.c

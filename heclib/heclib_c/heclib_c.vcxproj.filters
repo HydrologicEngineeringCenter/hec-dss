@@ -309,12 +309,6 @@
     <ClCompile Include="src\Dss6\writf.c">
       <Filter>src\Dss6</Filter>
     </ClCompile>
-    <ClCompile Include="src\Dss6\zgetRecordBasics6.c">
-      <Filter>src\Dss6</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Dss6\zgetRecordSize6.c">
-      <Filter>src\Dss6</Filter>
-    </ClCompile>
     <ClCompile Include="src\Dss6\ztsStoreIrreg6.c">
       <Filter>src\Dss6</Filter>
     </ClCompile>
@@ -352,9 +346,6 @@
       <Filter>src\DssInterface\v6andv7</Filter>
     </ClCompile>
     <ClCompile Include="src\DssInterface\v6and7\zopenExtended.c">
-      <Filter>src\DssInterface\v6andv7</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\v6and7\zpdRetrieve6.c">
       <Filter>src\DssInterface\v6andv7</Filter>
     </ClCompile>
     <ClCompile Include="src\DssInterface\v6and7\zputInfo.c">

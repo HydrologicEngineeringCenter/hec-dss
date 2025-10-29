@@ -187,7 +187,6 @@
     <ClCompile Include="src\Hec_zcorec.c" />
     <ClCompile Include="src\Hec_zdbmod.c" />
     <ClCompile Include="src\Hec_zdelet.c" />
-    <ClCompile Include="src\Hec_zdtype.c" />
     <ClCompile Include="src\Hec_zerror.c" />
     <ClCompile Include="src\Hec_zfileAccessInfo.c" />
     <ClCompile Include="src\Hec_zfilst.c" />

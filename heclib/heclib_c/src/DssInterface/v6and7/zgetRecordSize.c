@@ -55,9 +55,6 @@ int zgetRecordSize(long long *ifltab, zStructRecordSize *recordSize)
 	if (version == 7) {
 		return zgetRecordSize7(ifltab, recordSize);
 	}
-	else if (version == 6) {
-		return zgetRecordSize6(ifltab, recordSize);
-	}
 	else  if (version > 0) {
 		return zerrorProcessing(ifltab, DSS_FUNCTION_zreadInfo_ID, zdssErrorCodes.INCOMPATIBLE_VERSION,
 			version, 0, zdssErrorSeverity.WARNING, recordSize->pathname, "");

@@ -24,8 +24,6 @@
     <ClCompile Include="src\Dss6\seekf.c" />
     <ClCompile Include="src\Dss6\waits.c" />
     <ClCompile Include="src\Dss6\writf.c" />
-    <ClCompile Include="src\Dss6\zgetRecordBasics6.c" />
-    <ClCompile Include="src\Dss6\zgetRecordSize6.c" />
     <ClCompile Include="src\Dss6\ztsStoreIrreg6.c" />
     <ClCompile Include="src\Dss6\ztsStoreReg6.c" />
     <ClCompile Include="src\DssInterface\missingFlag_.c" />
@@ -42,7 +40,6 @@
     <ClCompile Include="src\DssInterface\v6and7\zhandle.c" />
     <ClCompile Include="src\DssInterface\v6and7\zopen.c" />
     <ClCompile Include="src\DssInterface\v6and7\zopenExtended.c" />
-    <ClCompile Include="src\DssInterface\v6and7\zpdRetrieve6.c" />
     <ClCompile Include="src\DssInterface\v6and7\zputInfo.c" />
     <ClCompile Include="src\DssInterface\v6and7\zread.c" />
     <ClCompile Include="src\DssInterface\v6and7\zreada.c" />

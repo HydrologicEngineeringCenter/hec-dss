@@ -8,18 +8,6 @@ void dss_stub_called(const char* caller) {
 #define DSS_STUB_CALLED() dss_stub_called(__func__)
 
 
-void zrrtsi6_(long long* ifltab, const char* pathname, const char* startDate, const char* startTime, int* maxVals, int* numberVals, int* getDoubles, int* doublesRead, float* floatValues, double* doubleValues, int* flags, int* readFlags, int* flagsRead, char* units, char* type, int* userHeader, int* maxUserHead, int* numberUserHead, int* offset, int* compression, double* coordinates, int* coordinateDescription, int* coordinatesUsed, int* status, size_t lenPathname, size_t lenStartDate, size_t lenStartTime, size_t lenUnits, size_t lenType) {
-	DSS_STUB_CALLED();
-}
-
-void zgettz_(char* ctzone, int* itzone, size_t size_ctzone) {
-	DSS_STUB_CALLED();
-}
-
-void zritsi6_(long long* ifltab, const char* path, int* startJulian, int* startTimeMinutes, int* endJulian, int* endTimeMinutes, int* boolGetDoubles, int* boolDoublesRead, int* timeArray, float* singles, double* doubles, int* maxNumberValues, int* numberRead, int* julianBaseDate, int* quality, int* boolGetQuality, int* boolQualityRead, char* units, char* type, int* userHeader, int* userHeaderArraySize, int* userHeaderNumber, double coordinates[], int coordinateDescription[], int* boolCoordinatesRead, int* readFlag, int* status, size_t pathLen, size_t unitsLen, size_t typeLen) {
-	DSS_STUB_CALLED();
-}
-
 void zrecordinfo6_(long long* ifltab, const char* pathname, int* idataType, int* iversion, int* numberVals, int* logicalNumberVals, int* numberVals1, int* numberInternalHead, int* numberUserHead, int* isizeAllocated, int* lastWriteSecs, int* iprecisionTS, int* ioffset, int* ivalSize, int* iqualSize, int* numberCurvesPD, int* numberOrdinatesPD, int* ipdValueSize, int* iaxisFlagPD, int* lboolLabelsPD, int* iprecisionPD, int* istatus, size_t lenPathname) {
 	DSS_STUB_CALLED();
 }
