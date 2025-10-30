@@ -23,7 +23,3 @@ void ztsinfo_(long long* ifltab, const char* cpath, int* juls, int* istime, int*
 	DSS_STUB_CALLED();
 }
 
-
-void ztsrange_(long long* ifltab, const char* cpath, int* searchOption, char* firstPath, char* lastPath, int* numberFound, size_t len_cpath, size_t len_firstPath, size_t len_lastPath) {
-	DSS_STUB_CALLED();
-}

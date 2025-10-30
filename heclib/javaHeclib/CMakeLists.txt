@@ -63,7 +63,6 @@ src/Hec_zgetCatalogSortAddresses.c
 src/Hec_zdelet.c
 src/Hec_zgetDssVersion.c
 src/Hec_zlocationStore.c
-src/Hec_ztsrange.c
 src/Hec_zcheckFile.c
 src/Hec_zcatalogFile.c
 src/Hec_zgetMessageLevel.c
