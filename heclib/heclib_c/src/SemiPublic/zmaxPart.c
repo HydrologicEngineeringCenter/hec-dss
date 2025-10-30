@@ -48,16 +48,8 @@ void zmaxPart7(long long *ifltab, int *maxParts)
 
 void zmaxPart(long long *ifltab, int *maxParts)
 {
-	if (zgetVersion(ifltab) == 7) {
-		zmaxPart7 (ifltab, maxParts);
-	}
-	else {
-		zmaxpart6_ (ifltab, maxParts);
-	}
+	zmaxPart7 (ifltab, maxParts);
 }
 
-void zmaxpart_(long long *ifltab, int *maxParts)
-{
-	zmaxPart(ifltab, maxParts);
-}
+
 

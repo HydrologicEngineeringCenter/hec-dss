@@ -42,46 +42,19 @@
 int zcheck(long long *ifltab, const char* pathname)
 {
 	int status;
-	int npath;
-	int nhead;
-	int ndata;
-	int boolFound;
-	char *path;
 
-	if (zgetVersion(ifltab) == 6) {
-		npath = (int)strlen(pathname);
-		zcheck6_(ifltab, pathname, &npath, &nhead, &ndata, &boolFound, npath);
-		if (boolFound) {
-			return STATUS_RECORD_FOUND;
-		}
-		else {
-			path = ztsPathCompatible(6, pathname, (size_t)npath);
-			if (path) {
-				zcheck6_(ifltab, pathname, &npath, &nhead, &ndata, &boolFound, npath);
-				free(path);
-			}
-			if (boolFound) {
-				return STATUS_RECORD_FOUND;
-			}
-			else {
-				return STATUS_RECORD_NOT_FOUND;
-			}
+	status = zcheckInternal(ifltab, pathname, 0);
+	if (status == STATUS_RECORD_NOT_FOUND) {
+		//  Is this minute interval time series, where the e parts
+		//  are not the same in DSS version 6, as they are in version 7?
+		//  Look for "MIN/" (and replace with "Minute/"
+		char* path = ztsPathCompatible(7, pathname, strlen(pathname));
+		if (path) {
+			status = zcheckInternal(ifltab, path, 0);
+			free(path);
 		}
 	}
-	else {
-		status = zcheckInternal(ifltab, pathname, 0);
-		if (status == STATUS_RECORD_NOT_FOUND) {
-			//  Is this minute interval time series, where the e parts
-			//  are not the same in DSS version 6, as they are in version 7?
-			//  Look for "MIN/" (and replace with "Minute/"
-			path = ztsPathCompatible(7, pathname, strlen(pathname));
-			if (path) {
-				status = zcheckInternal(ifltab, path, 0);
-				free(path);
-			}
-		}
-		return status;
-	}
+	return status;
 }
 
 
@@ -113,15 +86,5 @@ void zcheck7(long long *ifltab, const char* pathname, int *numberPathname,
 	}
 }
 
-int zcheckrecord_(long long *ifltab, const char* pathname, int *statusWanted, int *istat, size_t lenPathname)
-{
-	char *cpath;
-	int status;
-
-	cpath = stringFortToC(pathname, lenPathname);
-	status = zcheckInternal(ifltab, cpath, *statusWanted);
-	free(cpath);
-	return status;
-}
 
 

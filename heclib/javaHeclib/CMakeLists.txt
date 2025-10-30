@@ -21,10 +21,8 @@ src/Hec_zckpat.c
 src/Hec_zaliasAdd.c
 src/Hec_openLogFile.c
 src/Hec_zpdRetrieve.c
-src/Hec_zdtype.c
 src/C_CatalogToJava.c
 src/Hec_zfileAccessInfo.c
-src/Hec_zcolist.c
 src/jni_utility.h
 src/Hec_ztextStore.c
 src/Hec_zdbmod.c
@@ -65,7 +63,6 @@ src/Hec_zgetCatalogSortAddresses.c
 src/Hec_zdelet.c
 src/Hec_zgetDssVersion.c
 src/Hec_zlocationStore.c
-src/Hec_ztsrange.c
 src/Hec_zcheckFile.c
 src/Hec_zcatalogFile.c
 src/Hec_zgetMessageLevel.c

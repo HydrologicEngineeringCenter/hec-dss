@@ -17,21 +17,17 @@ void ztsends_(long long *ifltab, const char* pathname, int *isearch,
 	int startSeconds;
 	int endSeconds;
 
-	if (zgetVersion(ifltab) == 6) {
-		ztsends6_((int *)ifltab, pathname, isearch, juls, istime, jule, ietime,
-			boolFound, lenPathname);
+	
+	status = ztsGetDateTimeRange(ifltab, pathname, 1, juls, &startSeconds, jule, &endSeconds);
+	if (status == STATUS_RECORD_FOUND) {
+		*boolFound = 1;
+		*istime = startSeconds / SECS_IN_1_MINUTE;
+		*ietime = endSeconds / SECS_IN_1_MINUTE;
 	}
 	else {
-		status = ztsGetDateTimeRange(ifltab, pathname, 1, juls, &startSeconds, jule, &endSeconds);
-		if (status == STATUS_RECORD_FOUND) {
-			*boolFound = 1;
-			*istime = startSeconds / SECS_IN_1_MINUTE;
-			*ietime = endSeconds / SECS_IN_1_MINUTE;
-		}
-		else {
-			*boolFound = 0;
-		}
+		*boolFound = 0;
 	}
+	
 
 }
 

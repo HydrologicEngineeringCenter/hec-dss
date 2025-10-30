@@ -220,10 +220,6 @@ int zpdRetrieve(long long *ifltab, zStructPairedData *pds, int retrieveSizeFlag)
 		return zerrorProcessing(ifltab, DSS_FUNCTION_zpdRetrieve_ID, zdssErrorCodes.NULL_PATHNAME,
 			0, 0, zdssErrorSeverity.INVALID_ARGUMENT, "", "zStructPairedData pathname is null");
 	}
-	//  Check for correct DSS Version
-	if (zgetVersion(ifltab) != 7) {
-		return zpdRetrieve6(ifltab, pds, retrieveSizeFlag);
-	}
 
 	//  Messages and debug
 	if (zmessageLevel(ifltab, MESS_METHOD_READ_ID, MESS_LEVEL_USER_DIAG)) {

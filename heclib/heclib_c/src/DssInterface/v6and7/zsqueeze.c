@@ -88,43 +88,14 @@ int zsqueeze(const char *dssFilename)
 			0, 0, zdssErrorSeverity.INVALID_ARGUMENT, "", "");
 	}
 
-
-   version = zgetFileVersion(tempDssFilename);
-   if (version != 7) {
-	   //  Let version 6 function deal with
-	   zsqueeze6_(tempDssFilename, &status, strlen(tempDssFilename));
-
-   }
-   else {
-	   status = zopenInternal(ifltab, tempDssFilename, 0, 0, 0, 0, 0);
-	   if (zisError(status)) {
-		   printf("File is in use and cannot be squeezed, name: %s\n", tempDssFilename);
-		   return status;
-		}
-	   status = zsqueeze7(ifltab, 0, 1);
-	   zclose(ifltab);
-   }
+	status = zopenInternal(ifltab, tempDssFilename, 0, 0, 0, 0, 0);
+	if (zisError(status)) {
+		printf("File is in use and cannot be squeezed, name: %s\n", tempDssFilename);
+		return status;
+	}
+	status = zsqueeze7(ifltab, 0, 1);
+	zclose(ifltab);
    return status;
-
-}
-
-void zsqueeze_(const char *dssFilename, int *istatus, size_t fileNameLength)
-{
-	char *filename;
-
-	filename = stringFortToC(dssFilename, fileNameLength);
-	*istatus = zsqueeze(filename);
-	free(filename);
-
-}
-
-void zsqueeze7_(const char *dssFilename, int *istatus, size_t fileNameLength)
-{
-	char *filename;
-
-	filename = stringFortToC(dssFilename, fileNameLength);
-	*istatus = zsqueeze(filename);
-	free(filename);
 
 }
 
