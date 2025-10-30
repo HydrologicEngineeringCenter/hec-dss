@@ -6,7 +6,7 @@
 
 
 //  C Callable
-//  Accesses both DSS-6 and DSS-7 files.
+//  Accesses DSS-7 files.
 //  Uses version 6 argument list.
 
 
@@ -62,8 +62,9 @@ void zwritex(long long *ifltab, const char *path, int *npath,
 	ztransfer->dataType = *dataType;
 
 	*status = zwrite(ifltab, ztransfer);
-	if (data)
+	if (data) {
 		free(data);
+	}
 
 	if (*status == STATUS_RECORD_FOUND) {
 		*recordFound = 1;
