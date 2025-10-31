@@ -6,7 +6,7 @@
 JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1openLogFile
 (JNIEnv* env, jobject obj, jstring j_filename) {
 
-  const char* filename = (char*)(*env)->GetStringUTFChars(env, j_filename, 0);
+  const char* filename = (*env)->GetStringUTFChars(env, j_filename, 0);
   if (filename == NULL) {
     return STATUS_NOT_OKAY;
   }
