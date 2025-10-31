@@ -15,7 +15,6 @@
     <ClCompile Include="src\Dss6\deleteFile.c" />
     <ClCompile Include="src\Dss6\filesize.c" />
     <ClCompile Include="src\Dss6\flushf.c" />
-    <ClCompile Include="src\Dss6\fortran_stubs.c" />
     <ClCompile Include="src\Dss6\isonlocaldrive.c" />
     <ClCompile Include="src\Dss6\lockdss.c" />
     <ClCompile Include="src\Dss6\openf.c" />

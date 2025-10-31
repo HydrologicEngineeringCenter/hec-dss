@@ -43,8 +43,7 @@
 *					If the pathnames are not to be written to a file, then this should be zero.
 *
 *				int fortranUnit
-*					A Fortran unit number connected to a file opened by the calling function.
-*					If the pathnames are not to be written to a file, then this should be zero.
+*					ignored
 *
 *				int numberWanted
 *					The number of pathnames to limit the list to.  To retrieve all pathnames, set this to 0.
@@ -409,10 +408,6 @@ int zcatalogInternal (long long *ifltab, const char *pathWithWild, zStructCatalo
 								perror("Attempting to write pathname ");
 							}
 							status = writeBytes(catalogHandle, "\n", (size_t)1);
-						}
-						if (ifortUnit > 0) {
-							one = 1;
-							status = fortranwritelc_(&ifortUnit, pathname, &one, (size_t)numberChars);
 						}
 						if (zmessageLevel(ifltab, MESS_METHOD_CATALOG_ID, MESS_LEVEL_INTERNAL_DIAG_2)) {
 							zmessageDebug(ifltab, DSS_FUNCTION_zcatalog_ID, "Pathname: ", pathname);

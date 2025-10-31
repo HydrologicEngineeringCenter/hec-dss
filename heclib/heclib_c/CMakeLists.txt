@@ -139,7 +139,6 @@ src/Dss6/filesize.c
 src/Dss6/closf.c
 src/Dss6/isonlocaldrive.c
 src/Dss6/lockdss.c
-src/Dss6/fortran_stubs.c
 src/Dss6/readf.c
 src/Dss6/readProgramName.c
 src/System/zfileSize.c
