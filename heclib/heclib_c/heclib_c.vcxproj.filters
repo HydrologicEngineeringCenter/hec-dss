@@ -1246,6 +1246,9 @@
     <ClCompile Include="src\Utilities\checks.c" />
     <ClCompile Include="src\Internal\isTsPattern.c" />
     <ClCompile Include="src\Internal\zDssKeys.c" />
+    <ClCompile Include="src\DssInterface\v6and7\zwritex.c">
+      <Filter>src\DssInterface\v6andv7</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\headers\zlib\zconf.h">
