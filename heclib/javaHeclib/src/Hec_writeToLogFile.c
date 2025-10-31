@@ -8,7 +8,7 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1writeToLogFile
 
   long long ifltab[250];
 
-  char* message = (char*)(*env)->GetStringUTFChars(env, j_message, 0);
+  const char* message = (*env)->GetStringUTFChars(env, j_message, 0);
   if (message == NULL) {
     return STATUS_NOT_OKAY;
   }

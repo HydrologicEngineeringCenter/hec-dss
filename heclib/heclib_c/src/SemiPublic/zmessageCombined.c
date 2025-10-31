@@ -54,7 +54,7 @@
 int zmessHandle(long long *ifltab, int *messHandle);
 
 
-//  Message wtih new line
+//  Message with new line
 void zmessageLen(long long *ifltab, const char *message, size_t length)
 {
 	int handle;
