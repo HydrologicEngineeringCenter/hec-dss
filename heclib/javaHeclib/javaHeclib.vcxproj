@@ -222,7 +222,6 @@
     <ClCompile Include="src\Hec_ztinRetrieve.c" />
     <ClCompile Include="src\Hec_ztinStore.c" />
     <ClCompile Include="src\Hec_ztsends.c" />
-    <ClCompile Include="src\Hec_ztsinfo.c" />
     <ClCompile Include="src\Hec_ztsRetrieve.c" />
     <ClCompile Include="src\Hec_ztsStore.c" />
     <ClCompile Include="src\Hec_zundel.c" />

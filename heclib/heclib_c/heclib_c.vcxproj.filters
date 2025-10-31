@@ -459,9 +459,6 @@
     <ClCompile Include="src\DssInterface\ztsends_.c">
       <Filter>src\DssInterface</Filter>
     </ClCompile>
-    <ClCompile Include="src\DssInterface\ztsinfo7_.c">
-      <Filter>src\DssInterface</Filter>
-    </ClCompile>
     <ClCompile Include="src\DssInterface\ztsIrregRetrieveFull_.c">
       <Filter>src\DssInterface</Filter>
     </ClCompile>

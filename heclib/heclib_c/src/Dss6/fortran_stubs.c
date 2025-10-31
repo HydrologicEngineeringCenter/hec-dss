@@ -19,7 +19,3 @@ void chrlnb_(char* cstring, int* len, size_t strlen) {
 }
 
 
-void ztsinfo_(long long* ifltab, const char* cpath, int* juls, int* istime, int* jule, int* ietime, char* cunits, char* ctype, int* lqual, int* ldouble, int* lfound, size_t cpath_len, size_t cunits_len, size_t ctype_len) {
-	DSS_STUB_CALLED();
-}
-

@@ -218,7 +218,6 @@ src/DssInterface/ztssrch7_.c
 src/DssInterface/zget_.c
 src/DssInterface/zsits7_.c
 src/DssInterface/zpathnameFormFortran_.c
-src/DssInterface/ztsinfo7_.c
 src/DssInterface/v6and7/zrecordAddresses.c
 src/DssInterface/v6and7/zopenExtended.c
 src/DssInterface/v6and7/zreadc.c

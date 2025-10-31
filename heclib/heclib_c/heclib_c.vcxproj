@@ -74,7 +74,6 @@
     <ClCompile Include="src\DssInterface\ztextstorearray_.c" />
     <ClCompile Include="src\DssInterface\ztextStoreUnit_.c" />
     <ClCompile Include="src\DssInterface\ztsends_.c" />
-    <ClCompile Include="src\DssInterface\ztsinfo7_.c" />
     <ClCompile Include="src\DssInterface\ztsIrregRetrieveFull_.c" />
     <ClCompile Include="src\DssInterface\ztsIrregStoreFull_.c" />
     <ClCompile Include="src\DssInterface\ztsRetrieveIrregArgs.c" />
