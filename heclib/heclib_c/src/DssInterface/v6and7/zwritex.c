@@ -5,15 +5,6 @@
 #include "hecdssInternal.h"
 
 
-//  C Callable
-//  Accesses DSS-7 files.
-//  Uses version 6 argument list.
-
-
-//      SUBROUTINE zwritex6 ( IFLTAB, CPATH, NPATH, IIHEAD, NIHEAD,
-//     * ICHEAD, NCHEAD, IUHEAD, NUHEAD, IDATA, NDATA, JTYPE,
-//     * IPLAN, ISTAT, LFOUND)
-
 void zwritex(long long *ifltab, const char *path, int *npath,
 			 int *internalHeader, int *internalHeaderNumber,
 			 int *header2, int *header2Number,
@@ -25,8 +16,6 @@ void zwritex(long long *ifltab, const char *path, int *npath,
 {
 	int* data = 0;
 	zStructTransfer* ztransfer;
-	char pathname[MAX_PATHNAME_LENGTH];
-
 	
 	ztransfer = zstructTransferNew(path, 0);
 	if (!ztransfer) {
@@ -77,28 +66,4 @@ void zwritex(long long *ifltab, const char *path, int *npath,
 
 }
 
-
-
-//  Fortran compatible
-void zwritex_(long long *ifltab, const char *path, int *npath,
-			 int *internalHeader, int *internalHeaderNumber,
-			 int *header2, int *header2Number,
-			 int *userHeader, int *userHeaderNumber,
-			 int *values, int *valuesNumber, int *dataType,
-			 int *plan, int *status, int *recordFound,
-			 size_t pathLen)
-{
-	char *pathname;
-
-	pathname = stringFortToC(path, pathLen);
-
-	zwritex (ifltab, pathname, npath,
-			 internalHeader, internalHeaderNumber,
-			 header2, header2Number,
-			 userHeader, userHeaderNumber,
-			 values, valuesNumber,
-			 dataType, plan,
-			 status, recordFound);
-	free(pathname);
-}
 

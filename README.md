@@ -5,11 +5,13 @@ This is the HEC-DSS library source tree.  DSS is a database optimized for timese
 Documentation:  https://www.hec.usace.army.mil/software/hec-dss/documentation.aspx
 
 
-Branches:
+Branches and versions
 
-main - dss 7 only
-master - dss 7 and dss 6 
-
+|Version labels| branch | description |
+|--|--|--|
+|7-IW,7-IX,... | master |dss 7 and dss 6|
+|7-JA,7-JB     | main |dss 7 only |
+|varies        |dotnet-1.2.x|old .net support (managed extensions) |
 
 Windows Dependencies
 

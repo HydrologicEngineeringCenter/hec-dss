@@ -38,7 +38,6 @@ src/Hec_zwritxBytes.c
 src/Hec_zarrayRetrieve.c
 src/Hec_zsqueeze.c
 src/Hec_zcheck.c
-src/Hec_ztsinfo.c
 src/Hec_ztsRetrieve.c
 src/Hec_zwhatChangedCompare.c
 src/Hec_zopen.c

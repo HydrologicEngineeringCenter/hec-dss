@@ -447,9 +447,6 @@
     <ClCompile Include="src\DssInterface\ztextRetrieveString_.c">
       <Filter>src\DssInterface</Filter>
     </ClCompile>
-    <ClCompile Include="src\DssInterface\ztextRetrieveUnit_.c">
-      <Filter>src\DssInterface</Filter>
-    </ClCompile>
     <ClCompile Include="src\DssInterface\ztextstorearray_.c">
       <Filter>src\DssInterface</Filter>
     </ClCompile>
@@ -457,9 +454,6 @@
       <Filter>src\DssInterface</Filter>
     </ClCompile>
     <ClCompile Include="src\DssInterface\ztsends_.c">
-      <Filter>src\DssInterface</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\ztsinfo7_.c">
       <Filter>src\DssInterface</Filter>
     </ClCompile>
     <ClCompile Include="src\DssInterface\ztsIrregRetrieveFull_.c">
@@ -1251,10 +1245,10 @@
     <ClCompile Include="src\Internal\isDpartEmpty.c" />
     <ClCompile Include="src\Utilities\checks.c" />
     <ClCompile Include="src\Internal\isTsPattern.c" />
-    <ClCompile Include="src\Dss6\fortran_stubs.c">
-      <Filter>src\Dss6</Filter>
-    </ClCompile>
     <ClCompile Include="src\Internal\zDssKeys.c" />
+    <ClCompile Include="src\DssInterface\v6and7\zwritex.c">
+      <Filter>src\DssInterface\v6andv7</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\headers\zlib\zconf.h">

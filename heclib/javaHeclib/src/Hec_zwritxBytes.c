@@ -29,11 +29,6 @@ JNIEXPORT void JNICALL Java_hec_heclib_util_Heclib_Hec_1zwritxBytes
 
     const char *pathname;
 
-	//char query[5];
-	//char alpha[4];
-	//int numb[1];
-	//int i;
-
     ifltab      = (*env)->GetIntArrayElements (env, j_ifltab, 0);
     pathname    = (*env)->GetStringUTFChars (env, j_pathname, 0);
     npathname   = (int) j_npathname;
@@ -54,12 +49,12 @@ JNIEXPORT void JNICALL Java_hec_heclib_util_Heclib_Hec_1zwritxBytes
 	and the bytes in the words need to be swapped */
 	
 
-    zwritex_ ((long long*)ifltab, pathname, &npathname,
+    zwritex((long long*)ifltab, pathname, &npathname,
              intheader, &nintheader,
              compheader, &ncompheader,
              userheader, &nuserheader,
              (int *)data, &ndata, &type, &plan,
-             status, exists, strlen (pathname));
+             status, exists);
 
 
     /* Release */
