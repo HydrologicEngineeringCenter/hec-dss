@@ -14,8 +14,4 @@ int fortranwritelc_(int* fortranUnit, const char* message, int* boolEndOfRecord,
 }
 
 
-void chrlnb_(char* cstring, int* len, size_t strlen) {
-	DSS_STUB_CALLED();
-}
-
 

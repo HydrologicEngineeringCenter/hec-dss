@@ -447,9 +447,6 @@
     <ClCompile Include="src\DssInterface\ztextRetrieveString_.c">
       <Filter>src\DssInterface</Filter>
     </ClCompile>
-    <ClCompile Include="src\DssInterface\ztextRetrieveUnit_.c">
-      <Filter>src\DssInterface</Filter>
-    </ClCompile>
     <ClCompile Include="src\DssInterface\ztextstorearray_.c">
       <Filter>src\DssInterface</Filter>
     </ClCompile>

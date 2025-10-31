@@ -70,7 +70,6 @@
     <ClCompile Include="src\DssInterface\zspdi7_.c" />
     <ClCompile Include="src\DssInterface\ztextRetrieveArray_.c" />
     <ClCompile Include="src\DssInterface\ztextRetrieveString_.c" />
-    <ClCompile Include="src\DssInterface\ztextRetrieveUnit_.c" />
     <ClCompile Include="src\DssInterface\ztextstorearray_.c" />
     <ClCompile Include="src\DssInterface\ztextStoreUnit_.c" />
     <ClCompile Include="src\DssInterface\ztsends_.c" />

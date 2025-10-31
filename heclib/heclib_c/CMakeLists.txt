@@ -198,7 +198,6 @@ src/headers/zStructSpatialGrid.h
 src/DssInterface/ztsStoreStuff.c
 src/DssInterface/zgetVersion_.c
 src/DssInterface/zritsi7_.c
-src/DssInterface/ztextRetrieveUnit_.c
 src/DssInterface/zgetinterval_.c
 src/DssInterface/ztsRetrieveIrregArgs.c
 src/DssInterface/ztsRetrieveRegArgs.c
