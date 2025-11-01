@@ -90,19 +90,31 @@
 #define DATA_TYPE_SG   431
 
 #define DATA_TYPE_400  "Gridded - Undefined grid with time"
+#define DATA_TYPE_ABBR_400  "GUT"
 #define DATA_TYPE_401  "Gridded - Undefined grid"
+#define DATA_TYPE_ABBR_401  "GU"
 #define DATA_TYPE_410  "Gridded - HRAP grid with time reference"
+#define DATA_TYPE_ABBR_410  "GHT"
 #define DATA_TYPE_411  "Gridded - HRAP grid"
+#define DATA_TYPE_ABBR_411  "GH"
 #define DATA_TYPE_420  "Gridded - Albers with time reference"
+#define DATA_TYPE_ABBR_420  "GAT"
 #define DATA_TYPE_421  "Gridded - Albers"
+#define DATA_TYPE_ABBR_421  "GA"
 #define DATA_TYPE_430  "Gridded - Specified Grid with time reference"
+#define DATA_TYPE_ABBR_430  "GST"
 #define DATA_TYPE_431  "Gridded - Specified Grid"
+#define DATA_TYPE_ABBR_431  "GS"
 #define DATA_TYPE_450  "Spatial - TIN"
+#define DATA_TYPE_ABBR_450  "TIN"
 
 #define DATA_TYPE_600 "Generic File"
+#define DATA_TYPE_ABBR_600 "FILE"
 #define DATA_TYPE_610 "Image"
+#define DATA_TYPE_ABBR_610 "IMAGE"
 
 #define DATA_TYPE_UNDEFINED  "Undefined data type"
+#define DATA_TYPE_ABBR_UNDEFINED  "UDF"
 
 
 
