@@ -93,14 +93,52 @@ const char *ztypeName(int recordType, int boolAbbreviation)
 		if (boolAbbreviation) return DATA_TYPE_ABBR_310;
 		return DATA_TYPE_310;
 	}
+	else if (recordType == DATA_TYPE_UGT) {
+		if (boolAbbreviation) return DATA_TYPE_ABBR_400;
+		return DATA_TYPE_400;
+	}
+	else if (recordType == DATA_TYPE_UG) {
+		if (boolAbbreviation) return DATA_TYPE_ABBR_401;
+		return DATA_TYPE_401;
+	}
+	else if (recordType == DATA_TYPE_HGT) {
+		if (boolAbbreviation) return DATA_TYPE_ABBR_410;
+		return DATA_TYPE_410;
+	}
+	else if (recordType == DATA_TYPE_HG) {
+		if (boolAbbreviation) return DATA_TYPE_ABBR_411;
+		return DATA_TYPE_411;
+	}
+	else if (recordType == DATA_TYPE_AGT) {
+		if (boolAbbreviation) return DATA_TYPE_ABBR_420;
+		return DATA_TYPE_420;
+	}
+	else if (recordType == DATA_TYPE_AG) {
+		if (boolAbbreviation) return DATA_TYPE_ABBR_421;
+		return DATA_TYPE_421;
+	}
+	else if (recordType == DATA_TYPE_SGT) {
+		if (boolAbbreviation) return DATA_TYPE_ABBR_430;
+		return DATA_TYPE_430;
+	}
+	else if (recordType == DATA_TYPE_SG) {
+		if (boolAbbreviation) return DATA_TYPE_ABBR_431;
+		return DATA_TYPE_431;
+	}
 	else if (recordType == DATA_TYPE_SPATIAL_TIN) {
-		//if (boolAbbreviation) return DATA_TYPE_450;
+		if (boolAbbreviation) return DATA_TYPE_ABBR_450;
 		return DATA_TYPE_450;
 	}
-
-
-
-	if (boolAbbreviation) return "UDF";
+	else if (recordType == DATA_TYPE_FILE) {
+		if (boolAbbreviation) return DATA_TYPE_ABBR_600;
+		return DATA_TYPE_600;
+	}
+	else if (recordType == DATA_TYPE_IMAGE) {
+		if (boolAbbreviation) return DATA_TYPE_ABBR_610;
+		return DATA_TYPE_610;
+	}
+	
+	if (boolAbbreviation) return DATA_TYPE_ABBR_UNDEFINED;
 	return DATA_TYPE_UNDEFINED;
 }
 
