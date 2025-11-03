@@ -12,14 +12,6 @@ echo %build_number%
 
 dssVersion.exe heclib\heclib_c\src\headers\hecdssInternal.h %build_number% > heclib\javaheclib\version_build.h
 
-cd heclib\heclib_f
-:: debug
-nmake -f Makefile.win  DEBUG=1 clean
-nmake -f Makefile.win  DEBUG=1 
-
-:: release
-nmake -f Makefile.win  clean
-nmake -f Makefile.win  
 
 cd %~dp0
 msbuild dss.sln /p:Configuration=Release /p:Platform=x64
