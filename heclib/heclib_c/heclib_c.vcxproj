@@ -15,7 +15,6 @@
     <ClCompile Include="src\Dss6\deleteFile.c" />
     <ClCompile Include="src\Dss6\filesize.c" />
     <ClCompile Include="src\Dss6\flushf.c" />
-    <ClCompile Include="src\Dss6\fortran_stubs.c" />
     <ClCompile Include="src\Dss6\isonlocaldrive.c" />
     <ClCompile Include="src\Dss6\lockdss.c" />
     <ClCompile Include="src\Dss6\openf.c" />
@@ -53,6 +52,7 @@
     <ClCompile Include="src\DssInterface\v6and7\zwrite.c" />
     <ClCompile Include="src\DssInterface\v6and7\zwritea.c" />
     <ClCompile Include="src\DssInterface\v6and7\zwritec.c" />
+    <ClCompile Include="src\DssInterface\v6and7\zwritex.c" />
     <ClCompile Include="src\DssInterface\zcheckfilever_.c" />
     <ClCompile Include="src\DssInterface\zclose_.c" />
     <ClCompile Include="src\DssInterface\zerrorDecode_.c" />
@@ -70,11 +70,9 @@
     <ClCompile Include="src\DssInterface\zspdi7_.c" />
     <ClCompile Include="src\DssInterface\ztextRetrieveArray_.c" />
     <ClCompile Include="src\DssInterface\ztextRetrieveString_.c" />
-    <ClCompile Include="src\DssInterface\ztextRetrieveUnit_.c" />
     <ClCompile Include="src\DssInterface\ztextstorearray_.c" />
     <ClCompile Include="src\DssInterface\ztextStoreUnit_.c" />
     <ClCompile Include="src\DssInterface\ztsends_.c" />
-    <ClCompile Include="src\DssInterface\ztsinfo7_.c" />
     <ClCompile Include="src\DssInterface\ztsIrregRetrieveFull_.c" />
     <ClCompile Include="src\DssInterface\ztsIrregStoreFull_.c" />
     <ClCompile Include="src\DssInterface\ztsRetrieveIrregArgs.c" />

@@ -139,7 +139,6 @@ src/Dss6/filesize.c
 src/Dss6/closf.c
 src/Dss6/isonlocaldrive.c
 src/Dss6/lockdss.c
-src/Dss6/fortran_stubs.c
 src/Dss6/readf.c
 src/Dss6/readProgramName.c
 src/System/zfileSize.c
@@ -198,7 +197,6 @@ src/headers/zStructSpatialGrid.h
 src/DssInterface/ztsStoreStuff.c
 src/DssInterface/zgetVersion_.c
 src/DssInterface/zritsi7_.c
-src/DssInterface/ztextRetrieveUnit_.c
 src/DssInterface/zgetinterval_.c
 src/DssInterface/ztsRetrieveIrregArgs.c
 src/DssInterface/ztsRetrieveRegArgs.c
@@ -218,7 +216,6 @@ src/DssInterface/ztssrch7_.c
 src/DssInterface/zget_.c
 src/DssInterface/zsits7_.c
 src/DssInterface/zpathnameFormFortran_.c
-src/DssInterface/ztsinfo7_.c
 src/DssInterface/v6and7/zrecordAddresses.c
 src/DssInterface/v6and7/zopenExtended.c
 src/DssInterface/v6and7/zreadc.c

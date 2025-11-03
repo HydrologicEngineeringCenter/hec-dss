@@ -49,6 +49,7 @@ int zopenLog(const char *logFileName)
 		zinit();
 	 }
 
+
 	status = zopenDisk(logFileName, &handle, 10, 0);
 	if (status || (handle < 1)) {
 		return status;
