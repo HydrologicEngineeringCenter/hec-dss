@@ -75,7 +75,7 @@
 struct hec_zmessageAvail zmessageAvail;
 struct hec_zmessaging zmessaging;
 struct hec_zfunctionmap zfunctionmap;
-struct hec_zdssVals zdssVals;
+struct hec_zdssVals zdssVals = { 0 };
 void zinit()
 {
 	int i;
@@ -112,7 +112,7 @@ void zinit()
 	zdssVals.integrityKey = DSS_INTEGRITY_KEY;
 	//  For our old Fortran friends, still supported.
 	zdssVals.fortranMessageUnit = fortranMessageUnit;
-	zdssVals.messageHandle = messageHandle;
+	zdssVals.messageHandle = zdssVals.messageHandle > 0 ? zdssVals.messageHandle : messageHandle;
 	//  Any major error is saved here (for all files in session)
 	zdssVals.globalErrorFlag = 0;   //  Same as severity. 0 = no errors
 	zdssVals.globalErrorMess[0] = '\0';
