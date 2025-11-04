@@ -13,7 +13,7 @@ jobs:
       fail-fast: false
       matrix:
         platform: [ubuntu-latest, macos-15, windows-latest]
-        jdk: [8]
+        jdk: [11]
     runs-on: ${{matrix.platform}}
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
