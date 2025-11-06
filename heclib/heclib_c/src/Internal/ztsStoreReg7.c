@@ -59,7 +59,7 @@ int ztsStoreReg7(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 {
 	int status;
 	int *values;
-	int valueSize;
+	int valueSize = 0;
 	int *profileDepths;
 	int profileDepthsSize;
 	int julianBlockDate;
@@ -85,7 +85,7 @@ int ztsStoreReg7(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 
 	int internalHeader[INT_HEAD_SIZE];
 	int internalHeaderArraySize  = INT_HEAD_SIZE;
-	int valueElementSize;
+	int valueElementSize = 0;
 	int profileDepthsNumber;
 	int boolReadBlock;
 

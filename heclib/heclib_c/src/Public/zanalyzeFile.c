@@ -62,7 +62,7 @@ int zanalyzeFile(long long *ifltab)
 	int countTotal;
 	int numberValid;
 	int numberDeleted;
-	int numberZeros;
+	int numberZeros = 0;
 	long long binAddress;
 	long long *pathnameBin;
 	long long infoAddress;
