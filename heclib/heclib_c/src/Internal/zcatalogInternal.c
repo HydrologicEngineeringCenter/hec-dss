@@ -141,8 +141,10 @@ int zcatalogInternal (long long *ifltab, const char *pathWithWild, zStructCatalo
 		else {
 			zmessageDebug(ifltab, DSS_FUNCTION_zcatalog_ID, "No Pathname with wild chars:  ", "");
 		}
-		zmessageDebugInt(ifltab, DSS_FUNCTION_zcatalog_ID, "lastWriteTimeSearchFlag: ", catStruct->lastWriteTimeSearchFlag);
-		zmessageDebugLong(ifltab, DSS_FUNCTION_zcatalog_ID, "lastWriteTimeSearch:  ", catStruct->lastWriteTimeSearch);
+		if (catStruct) {
+			zmessageDebugInt(ifltab, DSS_FUNCTION_zcatalog_ID, "lastWriteTimeSearchFlag: ", catStruct->lastWriteTimeSearchFlag);
+			zmessageDebugLong(ifltab, DSS_FUNCTION_zcatalog_ID, "lastWriteTimeSearch:  ", catStruct->lastWriteTimeSearch);
+		}
 	}
 
 
