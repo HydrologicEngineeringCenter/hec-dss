@@ -93,7 +93,7 @@
  {
 	 int ihandle;
 	 int status;
-	 int status2;
+	 int status2 = 0;
 	 int fileExists;
 	 int permission;
 	 int size;

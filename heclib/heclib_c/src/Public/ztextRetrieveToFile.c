@@ -89,6 +89,7 @@ int ztextRetrieveToFile(long long *ifltab, const char *pathname, const char *fil
 	}
 #endif
 	if (status != 0) {
+		fclose(textFileFP);
 		return zerrorProcessing(ifltab, DSS_FUNCTION_ztextRetrieve_ID,
 					zdssErrorCodes.UNABLE_TO_WRITE_FILE, status, 0,
 					zdssErrorSeverity.WARNING, pathname, filename);

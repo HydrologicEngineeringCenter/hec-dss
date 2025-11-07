@@ -41,7 +41,7 @@
 int copyFile(long long *ifltab, int handleTo)
 {
 
-	int istat;
+	int istat = 0;
 	int ihandle;
 	int numberReads;
 	int numberInts;

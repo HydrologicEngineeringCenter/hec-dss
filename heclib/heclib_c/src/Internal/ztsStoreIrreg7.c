@@ -61,7 +61,7 @@ int ztsStoreIrreg7(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 {
 	int status;
 	int *values;
-	int valueSize;
+	int valueSize = 0;
 	int *profileDepths;
 	int profileDepthsSize;
 
@@ -77,7 +77,7 @@ int ztsStoreIrreg7(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 	int timeBaseToEnd;
 	int time;
 	int dataType;
-	int valueElementSize;
+	int valueElementSize = 0;
 	int profileDepthsNumber;
 	int timeGranularity;
 

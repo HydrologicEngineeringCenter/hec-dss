@@ -130,12 +130,15 @@ HECDSS_API int hec_dss_open(const char* filename, dss_file** dss)
     log_handle = stdout;
 
     int status = hec_dss_zopen(f->ifltab,filename);
-    if (status != 0)
+    if (status != 0) {
+      free(f);
       return status;
+    }
     int version = zgetVersion(f->ifltab);
     if (version != 7) {
         hec_dss_log_error("version is not supported.\nOnly version 7 DSS files are supported");
         zclose(f->ifltab);
+        free(f);
         return -700;
     }
     *dss = f;
