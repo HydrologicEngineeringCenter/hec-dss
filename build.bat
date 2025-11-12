@@ -20,9 +20,6 @@ if NOT %ERRORLEVEL% == 0  exit /b -1
 msbuild dss.sln /p:Configuration=Debug /p:Platform=x64
 if NOT %ERRORLEVEL% == 0  exit /b -1
 
-cd %~dp0\test\Fortran
-call build.bat
-
 cd %~dp0
 del heclib.zip
 del javaHeclib.zip
