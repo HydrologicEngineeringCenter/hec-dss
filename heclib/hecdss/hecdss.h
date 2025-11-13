@@ -31,6 +31,36 @@ typedef struct dss_file dss_file;
 
 
 /// <summary>
+/// Logs a message using DSS.
+/// log to stdout, or to an opened log file.
+/// </summary>
+/// <param name="message">message to write</param>
+/// <returns>zero on success</returns>
+HECDSS_API int hec_dss_log_message(const char* message);
+
+
+/// <summary>
+/// opens a log file. future messages will be written to this file until 
+/// hec_dss_close_log_file is called.
+/// </summary>
+/// <param name="filename">filename to open</param>
+/// <returns>zero on success</returns>
+HECDSS_API int hec_dss_open_log_file(const char* filename);
+
+
+/// <summary>
+/// closes the current log file , and switch logging to stdout
+/// </summary>
+HECDSS_API void hec_dss_close_log_file();
+
+
+/// <summary>
+/// flush the log file
+/// </summary>
+/// <returns>non zero on error</returns>
+HECDSS_API int hec_dss_flush_log_file();
+
+/// <summary>
 /// Returns a version string of this API
 /// </summary>
 /// <returns></returns>

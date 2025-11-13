@@ -5,7 +5,7 @@
 
 
 HECDSS_API const char* hec_dss_api_version() {
-  return "0.2.1";
+  return "0.2.2";
 }
 
 
@@ -44,25 +44,35 @@ struct dss_file {
 };
 
 
-FILE* log_handle;
-enum log_levels { LOG_NONE, LOG_ERROR, LOG_WARNING };
-enum log_levels log_level = LOG_WARNING;
-
-HECDSS_API int hec_dss_log_error(const char* message) {
-  if (log_handle == NULL)
-    log_handle = stdout;
-
-  if (log_level > LOG_NONE)
-    fprintf(log_handle, "\nError: %s", message);
-  return 0;
+HECDSS_API int hec_dss_open_log_file(const char* filename) {
+  return zopenLog(filename);
 }
-HECDSS_API int hec_dss_log_warning(const char* message) {
-  if (log_handle == NULL)
-    log_handle = stdout;
-  if (log_level > LOG_ERROR)
-    fprintf(log_handle, "\nWarning: %s", message);
-  return 0;
+
+
+HECDSS_API void hec_dss_close_log_file() {
+  zcloseLog();
 }
+
+HECDSS_API int hec_dss_flush_log_file() {
+  if (zdssVals.messageHandle <= 0) {
+    return STATUS_NOT_OKAY;
+  }
+  return flushFile(zdssVals.messageHandle);
+}
+
+
+
+HECDSS_API int hec_dss_log_message(const char* message) {
+
+  if (message == NULL) {
+    return STATUS_NOT_OKAY;
+  }
+
+  long long ifltab[250] = {0}; 
+  zmessageLen(ifltab, message, strlen(message));
+  return STATUS_OKAY;
+}
+
 
 
 HECDSS_API int hec_dss_CONSTANT_MAX_PATH_SIZE() {
@@ -127,8 +137,6 @@ HECDSS_API int hec_dss_open(const char* filename, dss_file** dss)
     if (f == NULL)
         return -1;
 
-    log_handle = stdout;
-
     int status = hec_dss_zopen(f->ifltab,filename);
     if (status != 0) {
       free(f);
@@ -136,7 +144,7 @@ HECDSS_API int hec_dss_open(const char* filename, dss_file** dss)
     }
     int version = zgetVersion(f->ifltab);
     if (version != 7) {
-        hec_dss_log_error("version is not supported.\nOnly version 7 DSS files are supported");
+        hec_dss_log_message("version is not supported.\nOnly version 7 DSS files are supported");
         zclose(f->ifltab);
         free(f);
         return -700;
@@ -320,8 +328,8 @@ HECDSS_API int hec_dss_tsRetrieve(dss_file* dss, const char *pathname,
          ) 
     {
       if (!isDpartEmpty(pathname)) {
-        hec_dss_log_warning("The D-part of the path will be ignored.");
-        hec_dss_log_warning("Since a time-window was not provided requesting all time.");
+        hec_dss_log_message("The D-part of the path will be ignored.");
+        hec_dss_log_message("Since a time-window was not provided requesting all time.");
       }
 
       tss->boolRetrieveAllTimes = 1;
@@ -374,7 +382,7 @@ HECDSS_API int hec_dss_tsStoreRegular(dss_file* dss, const char* pathname,
     float* values = hec_dss_double_array_to_float(valueArray, valueArraySize);
     if (values == NULL)
     {
-      hec_dss_log_error("Error allocating memory in hec_dss_tsStoreRegular ");
+      hec_dss_log_message("Error allocating memory in hec_dss_tsStoreRegular ");
       return -1;
     }
       
@@ -409,7 +417,7 @@ HECDSS_API int hec_dss_tsStoreIregular(dss_file* dss, const char* pathname,
   if (saveAsFloat) {
     float* values = hec_dss_double_array_to_float(valueArray, valueArraySize);
     if (values == NULL) {
-      hec_dss_log_error("Error allocating memory in hec_dss_tsStoreIregular ");
+      hec_dss_log_message("Error allocating memory in hec_dss_tsStoreIregular ");
       return -1;
     }
 
@@ -557,8 +565,8 @@ HECDSS_API int hec_dss_recordType(dss_file* dss, const char* pathname) {
   int status = zgetRecordBasics(dss->ifltab, recordBasics);
   if (status != 0)
   {
-    hec_dss_log_error("Error reading record type from path: ");
-    hec_dss_log_error(pathname); // TODO strcat
+    hec_dss_log_message("Error reading record type from path: ");
+    hec_dss_log_message(pathname); // TODO strcat
 
     zstructFree(recordBasics);
     return -1;
@@ -585,12 +593,12 @@ HECDSS_API int hec_dss_pdRetrieve(dss_file* dss, const char* pathname,
 
   if (pds->numberOrdinates != doubleOrdinatesLength && status == 0)
   {
-    hec_dss_log_error("in hec_dss_pdRetrieve the doubleOrdinatesLength argument does not match what was read from disk.");
+    hec_dss_log_message("in hec_dss_pdRetrieve the doubleOrdinatesLength argument does not match what was read from disk.");
     status = -1;
   }
   if (pds->numberCurves * pds->numberOrdinates != doubleValuesLength && status == 0)
   {
-    hec_dss_log_error("in hec_dss_pdRetrieve the doubleValuesLength argument does not match what was read from disk.");
+    hec_dss_log_message("in hec_dss_pdRetrieve the doubleValuesLength argument does not match what was read from disk.");
     status = -1;
   }
 
