@@ -128,7 +128,6 @@ src/Internal/zlockActive.c
 src/Internal/zcheckAccessReset.c
 src/Internal/zcopyRecordInternal.c
 src/Dss6/flushf.c
-src/Dss6/writf.c
 src/Dss6/ztsStoreReg6.c
 src/Dss6/waits.c
 src/Dss6/deleteFile.c
@@ -183,7 +182,6 @@ src/headers/hecdssFort.h
 src/headers/zStructRecordAddresses.h
 src/headers/zStructText.h
 src/headers/zStructTsTimeWindow.h
-src/headers/heclib6.h
 src/headers/zdataTypeDescriptions.h
 src/headers/zdssMessagesFort.h
 src/headers/zdssVals.h
@@ -228,7 +226,6 @@ src/DssInterface/v6and7/zcheck.c
 src/DssInterface/v6and7/zclose.c
 src/DssInterface/v6and7/zopen.c
 src/DssInterface/v6and7/zwritec.c
-src/DssInterface/v6and7/ztsOtherStuff.c
 src/DssInterface/v6and7/zreadx.c
 src/DssInterface/v6and7/zgetInfo.c
 src/DssInterface/v6and7/zreada.c
@@ -247,7 +244,6 @@ src/DssInterface/ztsIrregStoreFull_.c
 src/DssInterface/ztextRetrieveString_.c
 src/DssInterface/zpathnameGetPart_.c
 src/DssInterface/ztsStoreIrregArgs.c
-src/DssInterface/zirbeg7_.c
 src/DssInterface/ztextRetrieveArray_.c
 src/DssInterface/missingFlag_.c
 src/SemiPublic/zsetInterrupt.c
@@ -262,7 +258,6 @@ src/SemiPublic/zcompareDataSets.c
 src/SemiPublic/zerrorSpecifics.c
 src/SemiPublic/zcheckLinks.c
 src/SemiPublic/zmessageCombined.c
-src/SemiPublic/zplist7.c
 src/SemiPublic/zcheckHashTable.c
 src/SemiPublic/zstructGetType.c
 src/SemiPublic/ztsGetFirstLastRecordTimes.c

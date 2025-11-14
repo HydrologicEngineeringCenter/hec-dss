@@ -1,5 +1,4 @@
 #include "heclib.h"
-#include "heclib6.h"
 #include "hecdssInternal.h"
 
 

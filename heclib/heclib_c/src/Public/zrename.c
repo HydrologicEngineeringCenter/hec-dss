@@ -4,7 +4,6 @@
 #include <stdlib.h>
 
 #include "heclib7.h"
-#include "heclib6.h"
 #include "zdssKeys.h"
 #include "zdssLocking.h"
 #include "zdssMessages.h"
@@ -77,8 +76,6 @@ int zrename(long long *ifltab, const char* oldPathname, const char* newPathname)
 	int i;
 	int atEOF;
 	int len;
-	int len1;
-	int len2;
 	int positions[7];
 	int start;
 	int end;

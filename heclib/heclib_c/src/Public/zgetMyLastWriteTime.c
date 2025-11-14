@@ -1,6 +1,5 @@
 #include <string.h>
 
-#include "heclib6.h"
 #include "zdssKeys.h"
 #include "hecdss7.h"
 #include "hecdssInternal.h"
