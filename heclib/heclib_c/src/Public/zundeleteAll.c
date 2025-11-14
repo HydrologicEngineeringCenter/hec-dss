@@ -38,12 +38,6 @@ int zundeleteAll(long long *ifltab)
 	int i;
 
 
-	if (zgetVersion(ifltab) == 6) {
-		i = 0;
-		zudall6_(ifltab, &i);
-		return 0;
-	}
-
 	if (zmessageLevel(ifltab, MESS_METHOD_UTILITY_ID, MESS_LEVEL_INTERNAL_DIAG_1)) {
 		zmessageDebugInt(ifltab, DSS_FUNCTION_zundelete_ID, "Enter, Handle: ", zhandle(ifltab));
 	}
