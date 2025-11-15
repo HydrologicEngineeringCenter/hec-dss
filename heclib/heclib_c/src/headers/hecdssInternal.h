@@ -43,10 +43,7 @@
 #define DSS_VERSION_DATE "13 November 2025"
 
 const char *ztypeName(int recordType, int boolAbbreviation);
-void zreada(long long *ifltab, const char *path, int *npath,
-			int *userHeader, int *userHeaderNumber,
-			int *values, int *valuesNumber,
-			int *readFlag, int *recordFound);
+
 int zreadc (long long *ifltab, const char* pathname,
 			 int *internalHeader, int internalHeaderArraySize , int *internalHeaderNumber,
 			 int *header2, int header2ArraySize, int *header2Number,

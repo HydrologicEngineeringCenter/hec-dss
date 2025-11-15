@@ -25,9 +25,6 @@
 
 int zdelete(long long *ifltab, const char* pathname)
 {
-	int len;
-	int boolfound;
-
 
 	if (!pathname) {
 		return zerrorProcessing(ifltab, DSS_FUNCTION_zdelete_ID, zdssErrorCodes.NULL_PATHNAME,

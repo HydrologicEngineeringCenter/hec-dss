@@ -24,8 +24,6 @@ int testAlias(long long *ifltab)
 	int status;
 	int zero = 0;
 	int count;
-	int len;
-	char messageString[100];
 
 	char* pathnameList;
 	int pathnameListLength;

@@ -289,24 +289,9 @@ int zreadInfo(long long *ifltab, const char *pathname, int statusWanted);
 
 int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 				int retrieveFlag, int retrieveDoublesFlag, int boolRetrieveQualityNotes);
-int ztsRetrieveReg6(long long *ifltab, zStructTimeSeries *tss,
-					int retrieveFlag, int retrieveDoublesFlag, int boolRetrieveQualityNotes);
-int ztsRetrieveIrreg6(long long *ifltab, zStructTimeSeries *tss,
-					int retrieveFlag, int retrieveDoublesFlag, int boolRetrieveQualityNotes);
 void readProgramName(long long* ifltab, zStructTimeSeries* tss, int status);
 int ztsRetrieveIrreg7(long long *ifltab, zStructTimeSeries *tss,
 					int retrieveFlag, int retrieveDoublesFlag, int boolRetrieveQualityNotes);
-
-int  ztsRetrieveRegArgs(long long *ifltab, const char *pathname,
-						const char *startDate, const char *startTime, int *timeOffsetSeconds,
-						int maxNumberValues, int *numberRead,
-						int values[], int sizeEachValueRequested, int *sizeEachValueRead,
-						int quality[], int qualityElementSizeRequested, int *qualityElementSizeRead,
-						int notes[], int inoteElementSizeRequested, int *sizeEachNoteRead,
-						char *cnotes, int totalSizeCNotes, int *totalNumberCnotesRead,
-						int userHeader[], int userHeaderArraySize, int *userHeaderNumber,
-						char *units, int sizeOfUnits, char *type, int sizeOfType,
-						int *precisionValues, char *timeZoneName, int sizeOfTimeZoneName);
 
 zStructText* zstructTextNew(const char* pathname);
 zStructText* zstructTextStringNew(const char* pathname, char *text);

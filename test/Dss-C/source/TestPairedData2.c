@@ -9,9 +9,6 @@ int TestPairedData2(long long *ifltab)
 	zStructPairedData *pds1, *pds2, *pds3, *pds4, *pds5, *pds6;
 	zStructRecordSize *recordSize;
 	double dordinates[500], dvalues[500];
-	char label[20], labels[100];
-	int labelLength;
-	int len;
 	char pathname[100];
 
 	int status, i, j;

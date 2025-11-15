@@ -30,8 +30,6 @@ int testCatalog()
 	char catFilename[_MAX_PATH] = {0};
 	char pathWithWild[100] = {0};
 	char pathname[200] = {0};
-	int filePos;
-	int nPathname;
 	int count;
 	int i;
 	int permission;

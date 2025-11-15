@@ -75,8 +75,6 @@ int ztsGetFirstLastRecordTimes(long long *ifltab, const char *pathname,
 	int dataType;
 	int catSort;
 	int status;
-	char cdum[5];
-	int idum1, idum2, found;
 	long long *info;
 
 	*firstJulian = 0;

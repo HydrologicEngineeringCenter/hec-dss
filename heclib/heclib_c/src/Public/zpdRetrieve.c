@@ -703,10 +703,7 @@ int zpdRetrieve(long long *ifltab, zStructPairedData *pds, int retrieveSizeFlag)
 
 		int indElev = FALSE;
 		int depElev = FALSE;
-		char cvertical_datum[CVERTICAL_DATUM_SIZE];
 		int  ivertical_datum = IVERTICAL_DATUM_UNSET;
-		int  ivertical_datum2;
-		verticalDatumInfo _vdi;
 		verticalDatumInfo *vdi = NULL;
 		char errmsg[1024];
 		int elevParam = pathnameIsElevPd(pds->pathname); // returns 0, 1, 2, or 3

@@ -14,11 +14,7 @@
 int zwrite(long long *ifltab, zStructTransfer* ztransfer)
 
 {
-	int zero;
-	int recordFound;
 	int status;
-	int len;
-	char pathname[MAX_PATHNAME_LENGTH];
 
 	int *buffer=0; long long bufferControl[4] ={0,0,0,0};
 

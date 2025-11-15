@@ -17,7 +17,6 @@ void zwritea(long long *ifltab, const char *path, int *npath,
 
 {
 	zStructTransfer* ztransfer;
-	char pathname[MAX_PATHNAME_LENGTH];
 
 	ztransfer = zstructTransferNew(path, 0);
 	if (!ztransfer) {

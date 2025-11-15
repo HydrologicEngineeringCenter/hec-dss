@@ -402,10 +402,6 @@ int ztsStore(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 		float  *origFloatVals = NULL;
 		double *tmpDoubleVals = NULL;
 		double *origDoubleVals = NULL;
-		char startDate[10];
-		char startTime[5];
-		char endDate[10];
-		char endTime[5];
 		if (pathnameIsElevTs(tss->pathname) && (tss->floatValues || tss->doubleValues)) {
 			//-----------------------//
 			// get the current datum //
