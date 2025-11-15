@@ -16,8 +16,6 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1zdbmod
 	long long laddress;
 	long long lvalue;
 	int i;
-    int address;
-	int value;
 	int nlongwords;
 	int status;
 	long long charArray[10];

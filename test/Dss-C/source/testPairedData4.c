@@ -35,14 +35,12 @@ int testPairedData4(long long *ifltab)
 	int one = 1;
 	int two = 2;
 	int userHeaderNumber;
-	int loop;
 	// LARGE_INTEGER StartingTime, EndingTime, ElapsedMicroseconds;
 	// LARGE_INTEGER Frequency;
 
 	// DWORD value = MAX_PATH;
 	// TCHAR  buff[MAX_PATH];
 	// DWORD dw;
-	char cbuff[40];
 
 	nrows = 1000000;
 	ncols = 1;

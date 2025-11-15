@@ -161,7 +161,6 @@
     <ClCompile Include="source\testExpandedTimesIrreg.c" />
     <ClCompile Include="source\testExpandedTimesIrreg2.c" />
     <ClCompile Include="source\testInternalIO.c" />
-    <ClCompile Include="source\testIO_Interface.c" />
     <ClCompile Include="source\testLocation.c" />
     <ClCompile Include="source\testMisc.c" />
     <ClCompile Include="source\testMultiUser.c" />

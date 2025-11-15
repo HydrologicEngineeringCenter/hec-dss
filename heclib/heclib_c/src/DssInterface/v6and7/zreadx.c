@@ -24,10 +24,7 @@ void zreadx(long long *ifltab, const char *pathname,
 			 int *readPlan, int *recordFound)
 
 {
-	int status;
 	zStructTransfer* ztransfer;
-	char path[MAX_PATHNAME_LENGTH];
-
 
 
 	if (zmessageLevel(ifltab, MESS_METHOD_READ_ID, MESS_LEVEL_INTERNAL_DIAG_1)) {
@@ -54,7 +51,7 @@ void zreadx(long long *ifltab, const char *pathname,
 	ztransfer->values1 = values;
 	ztransfer->values1Mode = *valuesSize;
 
-	status = zread(ifltab, ztransfer);
+	int status = zread(ifltab, ztransfer);
 
 	if (status == STATUS_RECORD_FOUND) {
 		*recordFound = 1;

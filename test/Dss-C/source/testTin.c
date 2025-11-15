@@ -54,12 +54,8 @@ int testTin(long long *ifltab)
 
 	int DEBUG=0;
 	int status=0;
-	int i;
-	int count;
-	char *labels;
 	int* connectTo;
 	zStructSpatialTin *tinStructStore;
-	zStructSpatialTin *tinStructRetrieve;
 	
 	// Building a SHG-type grid as a TIN.
 	// Origin is at 283,000 m east, 1,785,000 m north or center of cell (141, 892)
@@ -71,7 +67,6 @@ int testTin(long long *ifltab)
 	// maximum data value = 5 mm precip
 	float maxVal = 5;
 	int done = 0, nodeIndex = -1;
-	char* labelForShow;
 
 
 	if (zgetVersion(ifltab) != 7) {		

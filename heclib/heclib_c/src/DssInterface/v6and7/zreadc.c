@@ -35,10 +35,6 @@ int zreadc (long long *ifltab, const char* pathname,
 {
 
 	int status;
-	int recordFound;
-	int zero;
-	char messageString[70];
-	char path[MAX_PATHNAME_LENGTH];
 	zStructTransfer* ztransfer;
 
 	int *buffer=0; long long bufferControl[4] ={0,0,0,0};

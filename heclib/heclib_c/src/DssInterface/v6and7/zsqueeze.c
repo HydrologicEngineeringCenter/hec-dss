@@ -48,12 +48,8 @@
 
 int zsqueeze(const char *dssFilename)
 {
-
-
 	char tempDssFilename[_MAX_PATH] = {0};
 	long long ifltab[600] = {0};
-	int version;
-	int status;
 
 
 #ifdef _MSC_VER
@@ -87,7 +83,7 @@ int zsqueeze(const char *dssFilename)
 			0, 0, zdssErrorSeverity.INVALID_ARGUMENT, "", "");
 	}
 
-	status = zopenInternal(ifltab, tempDssFilename, 0, 0, 0, 0, 0);
+	int status = zopenInternal(ifltab, tempDssFilename, 0, 0, 0, 0, 0);
 	if (zisError(status)) {
 		printf("File is in use and cannot be squeezed, name: %s\n", tempDssFilename);
 		return status;

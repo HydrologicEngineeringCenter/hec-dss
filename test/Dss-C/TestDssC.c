@@ -193,7 +193,6 @@ int runTheTests() {
 	long long ifltab6[250] = { 0 };
 	char fileName7[80];
 	char fileName7a[80];
-	char fileName6[80];
 	int status;
 
 
@@ -691,7 +690,6 @@ int test_jira_dss_163_weekly_time_series_fails()
 	zStructTimeSeries* tss1;
 	zStructTimeSeries* tss2;
 	ztsTimeWindow* tw;
-	int msgLevel;
 	double dvalues[52];
 	for (int i = 0; i < NUM_VALUES; ++i) {
 		dvalues[i] = 1000. + i;
@@ -700,7 +698,7 @@ int test_jira_dss_163_weekly_time_series_fails()
 	memset(ifltab, 0, sizeof(ifltab));
 	memset(fpart, 0, sizeof(fpart));
 
-	unlink(filename);
+	deleteFile(filename);
 	int status = hec_dss_zopen(ifltab, filename);
 
 
@@ -934,7 +932,7 @@ int fver_test() {
 			status = -1;
 		}
 
-		number = zinquire(ifltab, "FVER");
+		number = (int)zinquire(ifltab, "FVER");
 		if (number != expected) {
 			printf("Expected return from zinquire(ifltab, \"FVER\") to equal %d, but got %d\n", expected, number);
 			status = -1;
@@ -1169,12 +1167,12 @@ int testTextTableIssue135() {
 	ts->numberColumns = numberColumns;
 	ts->numberRows = numberRows;
 	for (int i = 0; i < numberColumns; ++i) {
-		ts->numberLabelChars += strlen(labelData[i]) + 1;
+		ts->numberLabelChars += (int)strlen(labelData[i]) + 1;
 	}
 	numberLabelChars = ts->numberLabelChars;
 	for (int i = 0; i < numberRows; ++i) {
 		for (int j = 0; j < numberColumns; ++j) {
-			ts->numberTableChars += strlen(tableData[i][j]) + 1;
+			ts->numberTableChars += (int)strlen(tableData[i][j]) + 1;
 		}
 	}
 	numberTableChars = ts->numberTableChars;
@@ -1936,7 +1934,7 @@ zStructTimeSeries* create_test_data_mark_twain(const char* pathname, int regular
 	{
 		int* times = (int*)malloc(size * sizeof(int));
 		int julian = dateToJulian(startDate);
-		for (size_t i = 0; i < size; i++)
+		for (int i = 0; i < size; i++)
 		{
 			times[i] = i * 60 + julian;
 		}

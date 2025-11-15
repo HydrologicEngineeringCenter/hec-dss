@@ -10,8 +10,6 @@ int TestPairedData3(long long *ifltab)
 	zStructPairedData *pds1, *pds2, *pds3, *pds4, *pds5;
 	float fordinates[500], fvalues[10][500];
 	float *temp;
-	char label[20], labels[100];
-	int labelLength;
 	char pathname[100];
 	int numberValues;
 	int status, i, j;

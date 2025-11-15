@@ -88,8 +88,6 @@ int zcatInternalSort(long long *ifltab, const char *pathWithWild, zStructCatalog
 	int numberPathnames;
 	int status;
 	int sortListStatus;
-	int zero;
-	int one;
 	int icount;
 	long long* sortAddresses;
 	long long *fileHeader;

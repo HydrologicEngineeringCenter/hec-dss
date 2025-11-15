@@ -24,7 +24,6 @@ int testTimeSeries5(long long *ifltab)
 	char ctime[12];
 	char cstartDate[13];
 	char cstartTime[12];
-	char cdum[1];
 
 	jul = 40000;
 	min = 0;

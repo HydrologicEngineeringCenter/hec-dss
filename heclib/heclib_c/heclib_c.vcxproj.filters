@@ -351,9 +351,6 @@
     <ClCompile Include="src\DssInterface\v6and7\zread.c">
       <Filter>src\DssInterface\v6andv7</Filter>
     </ClCompile>
-    <ClCompile Include="src\DssInterface\v6and7\zreada.c">
-      <Filter>src\DssInterface\v6andv7</Filter>
-    </ClCompile>
     <ClCompile Include="src\DssInterface\v6and7\zreadc.c">
       <Filter>src\DssInterface\v6andv7</Filter>
     </ClCompile>
@@ -394,9 +391,6 @@
       <Filter>src\DssInterface</Filter>
     </ClCompile>
     <ClCompile Include="src\DssInterface\zclose_.c">
-      <Filter>src\DssInterface</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\zerrorDecode_.c">
       <Filter>src\DssInterface</Filter>
     </ClCompile>
     <ClCompile Include="src\DssInterface\zget_.c">
@@ -454,9 +448,6 @@
       <Filter>src\DssInterface</Filter>
     </ClCompile>
     <ClCompile Include="src\DssInterface\ztsRetrieveIrregArgs.c">
-      <Filter>src\DssInterface</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\ztsRetrieveRegArgs.c">
       <Filter>src\DssInterface</Filter>
     </ClCompile>
     <ClCompile Include="src\DssInterface\ztssrch7_.c">

@@ -17,10 +17,8 @@
 long long zinquire(long long *ifltab, const char *request)
 {
 	int len;
-	int number;
 	char requestlc[5];
 	char ctemp[9];
-	char creturn[2];
 	long long longNumber;
 	long long *info;
 	long long *fileHeader;

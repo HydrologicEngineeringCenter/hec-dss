@@ -18,12 +18,7 @@ int zwritec(long long *ifltab, const char* pathname,
 			int totalAllocatedSize, int totalExpandedSize, int dataType)
 {
 	int status;
-	int recordFound;
-	int zero;
-	int len;
 	zStructTransfer* ztransfer;
-	char path[MAX_PATHNAME_LENGTH];
-
 
 		ztransfer = zstructTransferNew(pathname, 0);
 		if (!ztransfer) {

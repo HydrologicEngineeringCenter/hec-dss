@@ -96,7 +96,6 @@ int zcatalogInternal (long long *ifltab, const char *pathWithWild, zStructCatalo
 	int pathnameSize;
 	int dataType;
 	int catSort;
-	int one;
 	int i;
 	int statusWanted;
 	int partMax[6];

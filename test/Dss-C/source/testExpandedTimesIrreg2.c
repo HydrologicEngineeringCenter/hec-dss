@@ -18,13 +18,9 @@ int testExpandedTimesIrreg2(long long *ifltab)
 	//int itimes[200000];
 	int *itimes;
 	int i;
-	int j;
 	int status;
-	int julian;
-	int mins;
 	int zero = 0;
 	char *cnull=0;
-	char cdate[20];
 	int isize;
 
 

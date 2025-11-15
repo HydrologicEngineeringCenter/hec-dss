@@ -11,7 +11,7 @@
 int Bulletin_17C_SSP_Issue()
 {
 	long long ifltab[250];
-	int i, status, rval;
+	int status, rval;
 	char cdate[13], ctime[10];
 	zStructTimeSeries *tss;
 	int retrieveFlag = 0;
