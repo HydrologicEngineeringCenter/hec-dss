@@ -1,5 +1,4 @@
 #include "heclib7.h"
-#include "heclib6.h"
 #include "zdssKeys.h"
 #include "zdssVals.h"
 #include "zprogress.h"

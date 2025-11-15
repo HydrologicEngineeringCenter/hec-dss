@@ -306,9 +306,6 @@
     <ClCompile Include="src\Dss6\waits.c">
       <Filter>src\Dss6</Filter>
     </ClCompile>
-    <ClCompile Include="src\Dss6\writf.c">
-      <Filter>src\Dss6</Filter>
-    </ClCompile>
     <ClCompile Include="src\Dss6\ztsStoreIrreg6.c">
       <Filter>src\Dss6</Filter>
     </ClCompile>
@@ -372,9 +369,6 @@
     <ClCompile Include="src\DssInterface\v6and7\ztsGetSizes.c">
       <Filter>src\DssInterface\v6andv7</Filter>
     </ClCompile>
-    <ClCompile Include="src\DssInterface\v6and7\ztsOtherStuff.c">
-      <Filter>src\DssInterface\v6andv7</Filter>
-    </ClCompile>
     <ClCompile Include="src\DssInterface\v6and7\zundelete.c">
       <Filter>src\DssInterface\v6andv7</Filter>
     </ClCompile>
@@ -412,9 +406,6 @@
       <Filter>src\DssInterface</Filter>
     </ClCompile>
     <ClCompile Include="src\DssInterface\zgetVersion_.c">
-      <Filter>src\DssInterface</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\zirbeg7_.c">
       <Filter>src\DssInterface</Filter>
     </ClCompile>
     <ClCompile Include="src\DssInterface\zpathnameFormFortran_.c">
@@ -1155,9 +1146,6 @@
     <ClCompile Include="src\SemiPublic\zmessageCombined.c">
       <Filter>src\SemiPublic</Filter>
     </ClCompile>
-    <ClCompile Include="src\SemiPublic\zplist7.c">
-      <Filter>src\SemiPublic</Filter>
-    </ClCompile>
     <ClCompile Include="src\SemiPublic\zresetProgress.c">
       <Filter>src\SemiPublic</Filter>
     </ClCompile>
@@ -1267,9 +1255,6 @@
       <Filter>src\headers</Filter>
     </ClInclude>
     <ClInclude Include="src\headers\heclib.h">
-      <Filter>src\headers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\headers\heclib6.h">
       <Filter>src\headers</Filter>
     </ClInclude>
     <ClInclude Include="src\headers\heclib7.h">

@@ -348,9 +348,6 @@ int zsetCatalogSortAddresses(long long* ifltab, long long* sortAddresses, int so
 int zfindString(const char *fullString, int fullStringLength, const char *stringToFind, int stringToFindLength);
 int getLastInt(const char *cline);
 int zwalkBins(long long *ifltab, int catalogHandle, int statusWanted);
-//  Depreciated
-void zplist7 (long long *ifltab, const char *instr, int *filePos, char *pathname,
-               int *nPathname, int *istatus, int len_instr, size_t sizeof_pathname);
 
 //  Miscellaneous DSS
 int zdeleteInternal(long long *ifltab, const char *pathname, int boolUndelete);

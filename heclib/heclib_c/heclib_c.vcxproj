@@ -22,7 +22,6 @@
     <ClCompile Include="src\Dss6\readProgramName.c" />
     <ClCompile Include="src\Dss6\seekf.c" />
     <ClCompile Include="src\Dss6\waits.c" />
-    <ClCompile Include="src\Dss6\writf.c" />
     <ClCompile Include="src\Dss6\ztsStoreIrreg6.c" />
     <ClCompile Include="src\Dss6\ztsStoreReg6.c" />
     <ClCompile Include="src\DssInterface\missingFlag_.c" />
@@ -47,7 +46,6 @@
     <ClCompile Include="src\DssInterface\v6and7\zrecordAddresses.c" />
     <ClCompile Include="src\DssInterface\v6and7\zsqueeze.c" />
     <ClCompile Include="src\DssInterface\v6and7\ztsGetSizes.c" />
-    <ClCompile Include="src\DssInterface\v6and7\ztsOtherStuff.c" />
     <ClCompile Include="src\DssInterface\v6and7\zundelete.c" />
     <ClCompile Include="src\DssInterface\v6and7\zwrite.c" />
     <ClCompile Include="src\DssInterface\v6and7\zwritea.c" />
@@ -59,7 +57,6 @@
     <ClCompile Include="src\DssInterface\zgetinterval_.c" />
     <ClCompile Include="src\DssInterface\zgetVersion_.c" />
     <ClCompile Include="src\DssInterface\zget_.c" />
-    <ClCompile Include="src\DssInterface\zirbeg7_.c" />
     <ClCompile Include="src\DssInterface\zpathnameFormFortran_.c" />
     <ClCompile Include="src\DssInterface\zpathnameGetPart_.c" />
     <ClCompile Include="src\DssInterface\zpdStore_.c" />
@@ -309,7 +306,6 @@
     <ClCompile Include="src\SemiPublic\zlocationStructValid.c" />
     <ClCompile Include="src\SemiPublic\zmaxPart.c" />
     <ClCompile Include="src\SemiPublic\zmessageCombined.c" />
-    <ClCompile Include="src\SemiPublic\zplist7.c" />
     <ClCompile Include="src\SemiPublic\zresetProgress.c" />
     <ClCompile Include="src\SemiPublic\zsetInterrupt.c" />
     <ClCompile Include="src\SemiPublic\zstructGetType.c" />
@@ -424,7 +420,6 @@
     <ClInclude Include="src\headers\hecdssFort.h" />
     <ClInclude Include="src\headers\hecdssInternal.h" />
     <ClInclude Include="src\headers\heclib.h" />
-    <ClInclude Include="src\headers\heclib6.h" />
     <ClInclude Include="src\headers\heclib7.h" />
     <ClInclude Include="src\headers\heclibDate.h" />
     <ClInclude Include="src\headers\normalizeFPart.h" />

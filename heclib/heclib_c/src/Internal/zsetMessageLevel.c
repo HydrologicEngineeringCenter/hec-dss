@@ -7,7 +7,6 @@
 #include "zdssLocking.h"
 #include "zdssMessages.h"
 #include "zdssVals.h"
-#include "heclib6.h"
 #include "hecdss7.h"
 #include "hecdssInternal.h"
 

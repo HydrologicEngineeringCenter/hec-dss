@@ -5,7 +5,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "heclib6.h"
 #include "hecdss7.h"
 #include "heclib.h"
 #include "zdssMessages.h"

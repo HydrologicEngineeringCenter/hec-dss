@@ -4,7 +4,6 @@
 #include <float.h>
 
 #include "heclib7.h"
-#include "heclib6.h"
 #include "hecdssFort.h"
 #include "hecdssInternal.h"
 #include "zdataTypeDescriptions.h"
