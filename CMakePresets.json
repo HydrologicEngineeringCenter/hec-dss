@@ -1,11 +1,10 @@
 {
-  "version": 10,
+  "version": 9,
   "cmakeMinimumRequired": {
     "major": 3,
     "minor": 16,
     "patch": 0
   },
-  "$comment": "An example CMakePresets.json file",  
   "configurePresets": [
     {
       "name": "windows-default",

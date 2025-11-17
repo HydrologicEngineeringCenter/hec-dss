@@ -11,7 +11,7 @@ if(JNI_FOUND)
         message(STATUS "generic options")
     endif()
     target_include_directories(javaHeclib PUBLIC src/headers ${JNI_INCLUDE_DIRS})
-    target_link_libraries(javaHeclib PRIVATE heclib ${JNI_LIBRARIES})
+    target_link_libraries(javaHeclib PRIVATE heclib)
 
     target_sources(javaHeclib PRIVATE
 src/Hec_zrecInfo.c
