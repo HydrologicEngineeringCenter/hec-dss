@@ -11,7 +11,6 @@
 int findInFile()
 {
 
-	char name[256];
 	char filename[256];
 	long long longVal;
 	int status;

@@ -60,25 +60,6 @@ int stringCopy(char *destination, size_t sizeOfDestination, const char* source, 
 #endif
 	}
 
-	void filesizen_(char *filename, int32_t *nbytes, int32_t *status, size_t filename_len) {
-
-		char *fname = NULL;
-		int32_t i;
-
-		fname = (char *)malloc(filename_len + 1);
-		stringCopy(fname, (filename_len + 1), filename, filename_len);
-		fname[filename_len] = '\0';
-		for (i = filename_len - 1; i >= 0; --i) {
-			if (fname[i] != ' ') break;
-			fname[i] = '\0';
-		}
-		int64_t filesize;
-		filesizen64_(fname, &filesize, status, filename_len);
-		if (!*status) {
-			*nbytes = (int)(filesize <= LONG_MAX ? filesize : -1);
-		}
-		free(fname);
-	}
 
 	//-----------------//
 	// handle versions //

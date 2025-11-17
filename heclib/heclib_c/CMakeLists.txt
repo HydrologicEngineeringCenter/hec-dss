@@ -197,7 +197,6 @@ src/DssInterface/zgetVersion_.c
 src/DssInterface/zritsi7_.c
 src/DssInterface/zgetinterval_.c
 src/DssInterface/ztsRetrieveIrregArgs.c
-src/DssInterface/ztsRetrieveRegArgs.c
 src/DssInterface/zclose_.c
 src/DssInterface/ztextStoreUnit_.c
 src/DssInterface/timeStringToSeconds_.c
@@ -228,7 +227,6 @@ src/DssInterface/v6and7/zopen.c
 src/DssInterface/v6and7/zwritec.c
 src/DssInterface/v6and7/zreadx.c
 src/DssInterface/v6and7/zgetInfo.c
-src/DssInterface/v6and7/zreada.c
 src/DssInterface/v6and7/zwritex.c
 src/DssInterface/v6and7/zdelete.c
 src/DssInterface/v6and7/zread.c
@@ -238,7 +236,6 @@ src/DssInterface/v6and7/zputInfo.c
 src/DssInterface/v6and7/zundelete.c
 src/DssInterface/v6and7/zgetRecordSize.c
 src/DssInterface/v6and7/zwritea.c
-src/DssInterface/zerrorDecode_.c
 src/DssInterface/ztextstorearray_.c
 src/DssInterface/ztsIrregStoreFull_.c
 src/DssInterface/ztextRetrieveString_.c

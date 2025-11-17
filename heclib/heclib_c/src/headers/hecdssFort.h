@@ -91,10 +91,6 @@ void zopen_ (long long *ifltab, const char *dssFilename, int *status, size_t str
 void zopen6_(long long *ifltab, const char *dssFilename, int *status, size_t strlenDssFilename);
 void zopen7_(long long *ifltab, const char *dssFilename, int *status, size_t strlenDssFilename);
 
-void zreada_(long long *ifltab, const char *path, int *npath,
-			int *userHeader, int *userHeaderNumber,
-			int *values, int *valuesNumber,
-			int *readFlag, int *recordFound, size_t pathLen);
 
 void zreadc_(long long *ifltab, const char* pathname,
 			 int *internalHeader, int *internalHeaderArraySize , int *internalHeaderNumber,

@@ -31,12 +31,8 @@ int testMultiUser(char *filename, int version, int numberDatasets, int accessMod
 	int npaths;
 	zStructTransfer* ztransfer;
 	char pathname[MAX_PATHNAME_LENGTH];
-	char cbuff1[20], cbuff2[20];
-	//char apart[20];
 
 	
-	long long timePerOp;
-	double secs;
 	const char *apart = "testmultiuser";
 
 	//////////////////////////////////////////////

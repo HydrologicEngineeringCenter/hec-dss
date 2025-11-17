@@ -20,16 +20,8 @@
 int zread(long long *ifltab, zStructTransfer* ztransfer)
 
 {
-	int zero;
-	int recordFound;
-	int nihead, nchead, nuhead, ndata, istatus;
-	int internalHeaderArraySize;
-	int header2ArraySize;
-	int userHeaderArraySize;
-	int valuesSize;
-	int len;
-	int *buffer=0; long long bufferControl[4] ={0,0,0,0};
-	char pathname[MAX_PATHNAME_LENGTH];
+	int *buffer=0; 
+	long long bufferControl[4] ={0,0,0,0};
 
 
 	if (!ztransfer) {

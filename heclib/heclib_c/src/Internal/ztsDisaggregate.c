@@ -219,7 +219,7 @@ int ztsDisaggregate(long long *ifltab, int numberToRead, int numberStored,
 		zmessageDebugInt(ifltab, DSS_FUNCTION_ztsDisaggregate_ID, "numberStored: ", numberStored);
 	}
 
-	int filever = zinquire(ifltab, "fver");
+	int filever = (int)zinquire(ifltab, "fver");
 	int ztsDisaggregateVersion;
 	zquery("disa", "", 0, &ztsDisaggregateVersion);
 	if (ztsDisaggregateVersion < 0 || (ztsDisaggregateVersion == 0 && filever < DSSVER_7_HA)) {

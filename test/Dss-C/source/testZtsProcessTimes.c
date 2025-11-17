@@ -29,7 +29,6 @@ int testZtsProcessTimes(long long *ifltab)
 	//   /A/B/C/01JAN2010/1DAY/F/  with start date, number values  store
 	//
 	//   Ditto with irregular interval (~1Day)
-	zStructTimeSeries *tss2;
 	//   /A/B/C/01JAN2010/1DAY/F/  (no start date, end date)
 	clearztw(&timeWindow2);
 

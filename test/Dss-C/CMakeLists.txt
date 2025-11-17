@@ -77,7 +77,6 @@ source/test_stringCat.c
 source/miscTests.c
 source/testSqueeze.c
 source/testWriteRead.c
-source/testIO_Interface.c
 source/testNoDates.c
 source/testProfileReg.c
 )

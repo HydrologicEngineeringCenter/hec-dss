@@ -40,7 +40,6 @@
     <ClCompile Include="src\DssInterface\v6and7\zopenExtended.c" />
     <ClCompile Include="src\DssInterface\v6and7\zputInfo.c" />
     <ClCompile Include="src\DssInterface\v6and7\zread.c" />
-    <ClCompile Include="src\DssInterface\v6and7\zreada.c" />
     <ClCompile Include="src\DssInterface\v6and7\zreadc.c" />
     <ClCompile Include="src\DssInterface\v6and7\zreadx.c" />
     <ClCompile Include="src\DssInterface\v6and7\zrecordAddresses.c" />
@@ -53,7 +52,6 @@
     <ClCompile Include="src\DssInterface\v6and7\zwritex.c" />
     <ClCompile Include="src\DssInterface\zcheckfilever_.c" />
     <ClCompile Include="src\DssInterface\zclose_.c" />
-    <ClCompile Include="src\DssInterface\zerrorDecode_.c" />
     <ClCompile Include="src\DssInterface\zgetinterval_.c" />
     <ClCompile Include="src\DssInterface\zgetVersion_.c" />
     <ClCompile Include="src\DssInterface\zget_.c" />
@@ -73,7 +71,6 @@
     <ClCompile Include="src\DssInterface\ztsIrregRetrieveFull_.c" />
     <ClCompile Include="src\DssInterface\ztsIrregStoreFull_.c" />
     <ClCompile Include="src\DssInterface\ztsRetrieveIrregArgs.c" />
-    <ClCompile Include="src\DssInterface\ztsRetrieveRegArgs.c" />
     <ClCompile Include="src\DssInterface\ztssrch7_.c" />
     <ClCompile Include="src\DssInterface\ztsStoreIrregArgs.c" />
     <ClCompile Include="src\DssInterface\ztsStoreRegArgs.c" />
