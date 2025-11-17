@@ -5,6 +5,8 @@
 #include "heclib.h"
 #include "hecdss7.h"
 
+
+int gridPreCompressionTest();
 int test_logging();
 int testLargeCopy();
 int test_normalize_f_part();

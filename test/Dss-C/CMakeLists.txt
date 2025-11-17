@@ -39,6 +39,7 @@ source/testTimeSeriesStruct11.c
 source/compareTss.c
 source/testTimeSeriesStruct14.c
 source/profileExcel.c
+source/preCompressionGridTest.c
 source/testVerticalDatum_c.c
 source/testText.c
 source/testTimeSeriesStruct1.c
