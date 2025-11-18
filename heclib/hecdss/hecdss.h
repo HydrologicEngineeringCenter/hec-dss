@@ -544,6 +544,7 @@ HECDSS_API int hec_dss_gridRetrieve(dss_file* dss, const char* pathname, int boo
 /// <param name="timeZoneRawOffset"></param>
 /// <param name="isInterval"></param>
 /// <param name="isTimeStamped"></param>
+/// <param name="compressionSize">size of pre-compressed data (other wise set to zero)</param>
 /// <param name="dataUnits"></param>
 /// <param name="dataSource"></param>
 /// <param name="srsName"></param>
@@ -567,6 +568,7 @@ HECDSS_API int hec_dss_gridStore(dss_file* dss, const char* pathname,
   const int numberOfRanges, const int srsDefinitionType,
   const int timeZoneRawOffset, int isInterval,
   const int isTimeStamped,
+  const int compressionSize,
   const char* dataUnits,
   const char* dataSource,
   const char* srsName,
