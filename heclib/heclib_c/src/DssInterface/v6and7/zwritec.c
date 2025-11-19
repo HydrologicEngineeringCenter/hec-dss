@@ -54,33 +54,3 @@ int zwritec(long long *ifltab, const char* pathname,
 	return status;
 }
 
-
-//  Fortran callable
-void zwritec_(long long *ifltab, const char* path,
-			 int *internalHeader, int *internalHeaderNumber,
-			 int *header2, int *header2Number,
-			 int *values3, int *values3Number,
-			 int *userHeader, int *userHeaderNumber,
-			 int *values1, int *values1Number,
-			 int *values2, int *values2Number,
-			 int *numberValues, int *logicalNumberValues,
-			 int *totalAllocatedSize, int *totalExpandedSize, int *dataType,
-			 int *status, size_t pathLen)
-{
-
-	char *pathname;
-
-	pathname = stringFortToC(path, pathLen);
-
-	*status = zwritec(ifltab, pathname,
-			 internalHeader, *internalHeaderNumber,
-			 header2, *header2Number,
-			 values3, *values3Number,
-			 userHeader, *userHeaderNumber,
-			 values1, *values1Number,
-			 values2, *values2Number,
-			 *numberValues, *logicalNumberValues,
-			 *totalAllocatedSize, *totalExpandedSize,* dataType);
-	free(pathname);
-}
-

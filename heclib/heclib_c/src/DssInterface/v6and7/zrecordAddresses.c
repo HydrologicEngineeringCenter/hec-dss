@@ -24,21 +24,6 @@ int zrecordAddresses(long long *ifltab, const char* pathname, long long *address
 	int status;
 	long long *fileHeader;
 
-	/*
-	public void setInternals(long internals[])
-	{
-		tableHash = internals[0];
-		hashCode = internals[1];
-		hashAddress = internals[2];
-		binLength = internals[3];
-		binAddress = internals[4];
-		infoLength = internals[5];
-		infoAddress = internals[6];
-		dataLength = internals[7];
-		dataAddress = internals[8];
-		allocatedSpace = internals[9];
-	}
-	*/
 
 	fileHeader = (long long *)ifltab[zdssKeys.kfileHeader];
 	status = zcheck(ifltab, pathname);
@@ -79,17 +64,3 @@ int zrecordAddresses(long long *ifltab, const char* pathname, long long *address
 	}
 	return status;
 }
-
-//   CALL zrecadd7(IFLTAB, CPATH, ILADD, ISTAT)
-//  Fortran compatible interface
-
-void zrecadd7_(long long *ifltab, const char* pathname, long long *addresses,
-			 int *status, size_t lenPathname)
-{
-	char *path;
-
-	path = stringFortToC(pathname, lenPathname);
-	*status = zrecordAddresses(ifltab, path, addresses);
-	free(path);
-}
-

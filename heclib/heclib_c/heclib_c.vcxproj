@@ -11,19 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Dss6\closf.c" />
     <ClCompile Include="src\Dss6\deleteFile.c" />
-    <ClCompile Include="src\Dss6\filesize.c" />
-    <ClCompile Include="src\Dss6\flushf.c" />
-    <ClCompile Include="src\Dss6\isonlocaldrive.c" />
-    <ClCompile Include="src\Dss6\lockdss.c" />
-    <ClCompile Include="src\Dss6\openf.c" />
-    <ClCompile Include="src\Dss6\readf.c" />
-    <ClCompile Include="src\Dss6\readProgramName.c" />
-    <ClCompile Include="src\Dss6\seekf.c" />
-    <ClCompile Include="src\Dss6\waits.c" />
-    <ClCompile Include="src\Dss6\ztsStoreIrreg6.c" />
-    <ClCompile Include="src\Dss6\ztsStoreReg6.c" />
     <ClCompile Include="src\DssInterface\missingFlag_.c" />
     <ClCompile Include="src\DssInterface\secondsToTimeString_.c" />
     <ClCompile Include="src\DssInterface\timeStringToSeconds_.c" />
@@ -50,7 +38,6 @@
     <ClCompile Include="src\DssInterface\v6and7\zwritea.c" />
     <ClCompile Include="src\DssInterface\v6and7\zwritec.c" />
     <ClCompile Include="src\DssInterface\v6and7\zwritex.c" />
-    <ClCompile Include="src\DssInterface\zcheckfilever_.c" />
     <ClCompile Include="src\DssInterface\zclose_.c" />
     <ClCompile Include="src\DssInterface\zgetinterval_.c" />
     <ClCompile Include="src\DssInterface\zgetVersion_.c" />
@@ -473,12 +460,12 @@
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>false</WholeProgramOptimization>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">

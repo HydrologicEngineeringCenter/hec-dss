@@ -273,43 +273,7 @@
     <ClCompile Include="src\Utilities\zmissingFlag.c">
       <Filter>src\Utilities</Filter>
     </ClCompile>
-    <ClCompile Include="src\Dss6\closf.c">
-      <Filter>src\Dss6</Filter>
-    </ClCompile>
     <ClCompile Include="src\Dss6\deleteFile.c">
-      <Filter>src\Dss6</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Dss6\filesize.c">
-      <Filter>src\Dss6</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Dss6\flushf.c">
-      <Filter>src\Dss6</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Dss6\isonlocaldrive.c">
-      <Filter>src\Dss6</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Dss6\lockdss.c">
-      <Filter>src\Dss6</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Dss6\openf.c">
-      <Filter>src\Dss6</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Dss6\readf.c">
-      <Filter>src\Dss6</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Dss6\readProgramName.c">
-      <Filter>src\Dss6</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Dss6\seekf.c">
-      <Filter>src\Dss6</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Dss6\waits.c">
-      <Filter>src\Dss6</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Dss6\ztsStoreIrreg6.c">
-      <Filter>src\Dss6</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Dss6\ztsStoreReg6.c">
       <Filter>src\Dss6</Filter>
     </ClCompile>
     <ClCompile Include="src\DssInterface\v6and7\zcheck.c">
@@ -385,9 +349,6 @@
       <Filter>src\DssInterface</Filter>
     </ClCompile>
     <ClCompile Include="src\DssInterface\timeStringToSeconds_.c">
-      <Filter>src\DssInterface</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\zcheckfilever_.c">
       <Filter>src\DssInterface</Filter>
     </ClCompile>
     <ClCompile Include="src\DssInterface\zclose_.c">

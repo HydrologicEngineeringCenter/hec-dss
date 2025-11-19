@@ -242,8 +242,6 @@ void PrintTable(long long ifltab[250]) {
   }
 
 
-void lockdss_(int* ihandle, int* mode, int* position, int* nbytes, int* istat);
-
 /* lock dss file  */
 int Lock(char* dssFileName, int sleepSeconds) {
 	long long ifltab[250];
@@ -255,27 +253,7 @@ int Lock(char* dssFileName, int sleepSeconds) {
 
 	printf("\nattempting to lock file %s", dssFileName);
 
-	if (zgetVersion(ifltab) == 6) {
-		// dss v6
-		int handle = (int)zinquire(ifltab, "UNIT");
-		int mode = 2; // lock don't wait.
-		int position = 8704;
-		int nbytes = 4;
-		lockdss_(&handle, &mode, &position,&nbytes , &status); // during write
-		
-		//lockdss_(int* ihandle(3), int* mode(2), int* position(8704), int* nbytes(4), int* istat) // during write
-		//lockdss_(int* ihandle(3),  mode(2), int* position(8704), int* nbytes(4), int* istat) // during write
-		//_spawn/ fork , threads
-		//#!bash
-		// ./Dss-C  lock file1.dss &
-		//  rval = timeout ./Dss-C 
-		// rval tells if we could write (that is bad if we can)
-		//status = WriteTimeSeries2(ifltab, 11, 1234567);
-	}
-	else
-	{ // dss v7
-		status = zlockActive(ifltab, LOCKING_LEVEL_HIGH, LOCKING_LOCK_ON, LOCKING_FLUSH_ON);
-	}
+	status = zlockActive(ifltab, LOCKING_LEVEL_HIGH, LOCKING_LOCK_ON, LOCKING_FLUSH_ON);
 	printf("\nstatus = %d", status);
 	if (status != 0)
 	{
@@ -310,30 +288,6 @@ int CheckLocking(char* dssFileName) {
 	status = hec_dss_zopen(ifltab, dssFileName);
 	PrintTable(ifltab);
 
-	if (zgetVersion(ifltab) == 6) {
-		// dss v6
-		int handle = (int)zinquire(ifltab, "UNIT");
-		int mode = 3; // check lock status
-		int position = 8704;
-		int nbytes = 4;
-		lockdss_(&handle, &mode, &position, &nbytes, &status); 
-		printf("\nlock status = %d", status);
-	/*	printf("\nifltab[KMULT]= %ld", ifltab[26]);
-		printf("\nifltab[KREADO]= %ld", ifltab[35]);
-			int* ifltab6 = ifltab;
-			printf("\nifltab6[KMULT]= %d", ifltab6[26]);
-			printf("\nifltab6[KREADO]= %d", ifltab6[35]);
-			*/
-			/*
-Kmult=          26
- KREADO=          35
- IFLTAB(KMULT)           3
- IFLTAB(KREADO)           0
-			*/
-	}
-	else
-	{// dss 7
-
 		int lockFlagTest = 3;
 		int readAccess = 0;
 		int writeAccess = 1;
@@ -344,7 +298,6 @@ Kmult=          26
 		printf("\nwriteAccess = %d\n", status);
 		int handle = (int)ifltab[zdssKeys.khandle];
 		testLock(ifltab, handle);
-	}
 	zclose(ifltab);
 	return status;
 }

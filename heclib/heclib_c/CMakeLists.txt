@@ -127,19 +127,7 @@ src/Internal/zgetRecordBasics7.c
 src/Internal/zlockActive.c
 src/Internal/zcheckAccessReset.c
 src/Internal/zcopyRecordInternal.c
-src/Dss6/flushf.c
-src/Dss6/ztsStoreReg6.c
-src/Dss6/waits.c
 src/Dss6/deleteFile.c
-src/Dss6/ztsStoreIrreg6.c
-src/Dss6/seekf.c
-src/Dss6/openf.c
-src/Dss6/filesize.c
-src/Dss6/closf.c
-src/Dss6/isonlocaldrive.c
-src/Dss6/lockdss.c
-src/Dss6/readf.c
-src/Dss6/readProgramName.c
 src/System/zfileSize.c
 src/System/readBytes.c
 src/System/zlockdss.c
@@ -205,7 +193,6 @@ src/DssInterface/zspdi7_.c
 src/DssInterface/zrpdi7_.c
 src/DssInterface/zpdStore_.c
 src/DssInterface/secondsToTimeString_.c
-src/DssInterface/zcheckfilever_.c
 src/DssInterface/ztsends_.c
 src/DssInterface/zquery7_.c
 src/DssInterface/ztsIrregRetrieveFull_.c
