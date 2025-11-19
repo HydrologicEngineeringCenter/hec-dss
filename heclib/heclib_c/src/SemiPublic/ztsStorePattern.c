@@ -65,7 +65,6 @@
 *					The double array containing the data to store if storing double.  If storing floats, this must be zero.
 *
 
-	In DSS Version 6, irregular data is stored as: time1 from base, value1, time2 from base, value2...
 	In DSS Version 7, irregular data is stored as: time1 from base, time2 from base, ... value1, value2...
 *
 *
@@ -82,7 +81,6 @@ int ztsStorePattern(long long *ifltab, zStructTimeSeries *tss)
 {
 
 	int status;
-	int version;
 	int i;
 	zStructTransfer* ztransfer;
 
@@ -123,22 +121,13 @@ int ztsStorePattern(long long *ifltab, zStructTimeSeries *tss)
 	}
 	ztransfer->internalHeader = internalHeader;
 
-	version = zgetVersion(ifltab);
 	ztransfer->numberValues = tss->numberValues;
 
-	if (version == 6) {
-	//	tss->numberValues = ztransfer->values1Number;
-		ztransfer->internalHeaderNumber = 5;
-		ztransfer->internalHeader[0] = tss->timeOffsetSeconds / SECS_IN_1_MINUTE;
-		stringCToFort((char *)&ztransfer->internalHeader[1], 8, tss->units);
-		stringCToFort((char *)&ztransfer->internalHeader[3], 8, tss->type);
-	}
-	else {
+
 		internalHeader[INT_HEAD_timeGranularity] = tss->timeGranularitySeconds;
 		internalHeader[INT_HEAD_precision] = tss->precision;
 		internalHeader[INT_HEAD_timeOffset] = tss->timeOffsetSeconds;
 		ztransfer->internalHeaderNumber = ztsInternalHeaderPack(tss, ztransfer->internalHeader);
-	}
 
 	if (tss->timeWindow->intervalSeconds > 0) {
 		if (tss->floatValues) {

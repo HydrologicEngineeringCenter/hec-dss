@@ -117,16 +117,3 @@ int zaliasNumber(long long *ifltab, const char* pathname)
 
 	return numberAliases;
 }
-
-
-//  Fortran compatible interface
-
-void zaliasnumber_(long long *ifltab, const char* pathname,
-			  int *number, size_t lenPathname)
-{
-	char *path;
-	path = stringFortToC(pathname, lenPathname);
-	*number = zaliasNumber(ifltab, path);
-	free(path);
-}
-

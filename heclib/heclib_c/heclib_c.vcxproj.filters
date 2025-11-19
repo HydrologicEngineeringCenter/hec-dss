@@ -237,9 +237,6 @@
     <ClCompile Include="src\Utilities\stringCopy.c">
       <Filter>src\Utilities</Filter>
     </ClCompile>
-    <ClCompile Include="src\Utilities\stringCToFort.c">
-      <Filter>src\Utilities</Filter>
-    </ClCompile>
     <ClCompile Include="src\Utilities\stringFill.c">
       <Filter>src\Utilities</Filter>
     </ClCompile>
@@ -345,9 +342,6 @@
     <ClCompile Include="src\DssInterface\missingFlag_.c">
       <Filter>src\DssInterface</Filter>
     </ClCompile>
-    <ClCompile Include="src\DssInterface\secondsToTimeString_.c">
-      <Filter>src\DssInterface</Filter>
-    </ClCompile>
     <ClCompile Include="src\DssInterface\timeStringToSeconds_.c">
       <Filter>src\DssInterface</Filter>
     </ClCompile>
@@ -357,70 +351,19 @@
     <ClCompile Include="src\DssInterface\zget_.c">
       <Filter>src\DssInterface</Filter>
     </ClCompile>
-    <ClCompile Include="src\DssInterface\zgetinterval_.c">
-      <Filter>src\DssInterface</Filter>
-    </ClCompile>
     <ClCompile Include="src\DssInterface\zgetVersion_.c">
-      <Filter>src\DssInterface</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\zpathnameFormFortran_.c">
-      <Filter>src\DssInterface</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\zpathnameGetPart_.c">
-      <Filter>src\DssInterface</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\zpdStore_.c">
-      <Filter>src\DssInterface</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\zquery7_.c">
-      <Filter>src\DssInterface</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\zritsi7_.c">
-      <Filter>src\DssInterface</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\zrpdi7_.c">
-      <Filter>src\DssInterface</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\zsits7_.c">
-      <Filter>src\DssInterface</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\zspdi7_.c">
-      <Filter>src\DssInterface</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\ztextRetrieveArray_.c">
-      <Filter>src\DssInterface</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\ztextRetrieveString_.c">
-      <Filter>src\DssInterface</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\ztextstorearray_.c">
-      <Filter>src\DssInterface</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\ztextStoreUnit_.c">
       <Filter>src\DssInterface</Filter>
     </ClCompile>
     <ClCompile Include="src\DssInterface\ztsends_.c">
       <Filter>src\DssInterface</Filter>
     </ClCompile>
-    <ClCompile Include="src\DssInterface\ztsIrregRetrieveFull_.c">
-      <Filter>src\DssInterface</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\ztsIrregStoreFull_.c">
-      <Filter>src\DssInterface</Filter>
-    </ClCompile>
     <ClCompile Include="src\DssInterface\ztsRetrieveIrregArgs.c">
-      <Filter>src\DssInterface</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\ztssrch7_.c">
       <Filter>src\DssInterface</Filter>
     </ClCompile>
     <ClCompile Include="src\DssInterface\ztsStoreIrregArgs.c">
       <Filter>src\DssInterface</Filter>
     </ClCompile>
     <ClCompile Include="src\DssInterface\ztsStoreRegArgs.c">
-      <Filter>src\DssInterface</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DssInterface\ztsStoreStuff.c">
       <Filter>src\DssInterface</Filter>
     </ClCompile>
     <ClCompile Include="src\Internal\charInt.c">

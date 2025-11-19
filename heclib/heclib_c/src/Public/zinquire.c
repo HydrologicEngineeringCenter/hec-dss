@@ -271,16 +271,3 @@ long long zinquire(long long *ifltab, const char *request)
 	return longNumber;
 }
 
-long long zinquire_ (long long *ifltab, const char *parameter, size_t lenParameter)
-{
-	long long longNumber;
-	char *param;
-
-	param = stringFortToC(parameter, lenParameter);
-
-	longNumber = zinquire(ifltab, param);
-
-	free(param);
-	return longNumber;
-}
-

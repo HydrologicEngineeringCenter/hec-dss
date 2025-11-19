@@ -37,12 +37,3 @@ void minutesToHourMin(int minutes, char *hoursMins, size_t lenHoursMins)
 
 	hoursMins[4] = '\0';
 }
-
-void minutestohourmin_(int *minutes, char *hoursMins, size_t lenHoursMins)
-{
-	char tString[5];
-
-	minutesToHourMin(*minutes, tString, sizeof(tString));
-	stringCToFort(hoursMins, lenHoursMins, tString);
-}
-

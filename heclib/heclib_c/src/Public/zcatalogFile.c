@@ -143,23 +143,3 @@ int zcatalogFile(long long *ifltab, const char *catalogFilename, int boolSorted,
 }
 
 
-void zcatalogfile7_(long long *ifltab, const char *catalogFilename, int *boolSorted, const char *pathWithWildChars, int *status,
-	size_t lencatalogFilename, size_t lenpathWithWildChars)
-{
-	char *filename;
-	char *path;
-
-	filename = stringFortToC(catalogFilename, lencatalogFilename);
-
-	if (pathWithWildChars) {
-		path = stringFortToC(pathWithWildChars, lenpathWithWildChars);
-		*status = zcatalogFile(ifltab, filename, *boolSorted, path);
-		free(path);
-	}
-	else {
-		*status = zcatalogFile(ifltab, filename, *boolSorted, (const char *)0);
-	}
-
-	free(filename);
-}
-

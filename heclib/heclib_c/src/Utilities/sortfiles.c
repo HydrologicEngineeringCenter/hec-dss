@@ -1950,20 +1950,3 @@ int sortfiles(char *unsortedIn, char *sortedOut)
 	return sortfilesGnu (3, filenames);
 }
 
-void sortfilesinterface_ (char *file1, char *file2, int *status, size_t len1, size_t len2)
-{
-	/* Interface for call to sortfiles */
-
-	char *unsortedIn;
-	char *sortedOut;
-
-	unsortedIn = stringFortToC(file1, len1) ;
-	sortedOut = stringFortToC(file2, len2) ;
-
-	*status = sortfiles (unsortedIn, sortedOut);
-
-	free(unsortedIn);
-	free(sortedOut);
-
-}
-

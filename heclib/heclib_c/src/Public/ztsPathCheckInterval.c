@@ -60,16 +60,3 @@ int ztsPathCheckInterval(long long *ifltab, char *pathname, size_t sizeofPathnam
 	}
 	return istat;
 }
-
-
-//  Fortran interface
-void ztspathcheckinterval_ (long long *ifltab, char *pathname, size_t sizeofPathname)
-{
-	char *path;
-
-	path = stringFortToC(pathname, sizeofPathname);
-	ztsPathCheckInterval(ifltab, path, sizeof(path));
-	stringCToFort(pathname, sizeofPathname, path);
-	free(path);
-}
-

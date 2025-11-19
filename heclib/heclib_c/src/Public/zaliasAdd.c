@@ -224,24 +224,3 @@ int zaliasAdd(long long *ifltab, const char* primayPathname, const char* aliasPa
 	return status;
 }
 
-
-//  Fortran compatible interface
-
-void zaliasadd_(long long *ifltab, const char* primayPathname, const char* aliasPathname,
-			  int *istat, size_t lenPrimayPathname, size_t lenAliasPathname)
-{
-
-	//  This is for where pathnames might not be null terminated.
-
-	char *primaryPath;
-	char *aliasPath;
-
-	primaryPath = stringFortToC(primayPathname, lenPrimayPathname);
-	aliasPath = stringFortToC(aliasPathname, lenAliasPathname);
-
-	*istat = zaliasAdd(ifltab, primaryPath, aliasPath);
-
-	free(primaryPath);
-	free(aliasPath);
-}
-

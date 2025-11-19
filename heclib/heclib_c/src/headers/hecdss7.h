@@ -318,7 +318,6 @@ int ztsInternalHeaderPack(zStructTimeSeries *tss, int *internalHeader);
 int ztsInternalHeaderUnpack(zStructTimeSeries *tss, int *internalHeader, int lengthInternalHeader);
 int copyAndTrim(char *tostring, size_t maxToLen, const char *fromString, size_t fromStringLen);
 void convertDataArray(int *dataIn, int *dataOut, int number, int dataInElementLength, int dataOutElementLength);
-void stringCToFort(char *fortString, size_t maxFortLen, const char *cfromString);
 
 
 
