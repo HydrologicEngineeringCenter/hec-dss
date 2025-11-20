@@ -144,7 +144,7 @@ int ztsInternalHeaderUnpack(zStructTimeSeries *tss, int *internalHeader, int int
 int mallocAndAssignString(char** destination, char* source, int* ipos, zStructTimeSeries* tss, int allocatedPosition) {
 
 	
-	int len = strlen_hec(&source[*ipos],CHAR_ARRAY_SIZE-1);
+	int len = strnlen_hec(&source[*ipos],CHAR_ARRAY_SIZE-1);
 	if (!tss->allocated[allocatedPosition]) {
 		if (len > 0 && trimLength(&source[*ipos])) {
 			*destination = mallocAndCopyTrim(&source[*ipos]);
