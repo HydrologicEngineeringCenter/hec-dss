@@ -154,25 +154,3 @@ int zaliasGetPrimary(long long *ifltab, const char* aliasPathname, char* primayP
 	}
 	return status;
 }
-
-
-//  Fortran compatible interface
-
-void zaliasgetprimary_(long long *ifltab, const char* aliasPathname, char* primayPathname,
-					   int *istat, size_t lenAliasPathname, size_t maxLenPrimayPathname)
-{
-	char *aliasPath;
-	char primaryPath[MAX_PATHNAME_SIZE];
-
-	aliasPath = stringFortToC(aliasPathname, lenAliasPathname);
-
-	*istat = zaliasGetPrimary(ifltab, aliasPath, primaryPath, MAX_PATHNAME_SIZE);
-
-	free(aliasPath);
-	if (*istat == STATUS_RECORD_FOUND) {
-		stringCToFort(primayPathname, maxLenPrimayPathname, primaryPath);
-	}
-	else {
-	}
-}
-

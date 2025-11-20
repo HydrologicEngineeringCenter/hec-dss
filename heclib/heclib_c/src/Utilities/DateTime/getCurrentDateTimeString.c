@@ -81,16 +81,3 @@ void getCurrentDateTimeString (char *dateString, size_t sizeofDateString, int st
 	secondsToTimeString(secondsPastMidnight, mills, 3, timeString, sizeofTimeString);
 
 }
-
-void getcurrentdatetimestring_(char *dateString, int *sizeofDateString, int *style,
-							   char *timeString, int *sizeofTimeString, size_t lenDate, size_t lenTime)
-{
-	char date[30];
-	char time[15];
-
-	getCurrentDateTimeString (date, sizeof(date), *style, time, sizeof(time));
-
-	stringCToFort(dateString, (size_t)*sizeofDateString, date);
-	stringCToFort(timeString, (size_t)*sizeofTimeString, time);
-}
-

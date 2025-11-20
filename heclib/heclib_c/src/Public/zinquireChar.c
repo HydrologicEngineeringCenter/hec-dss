@@ -158,31 +158,3 @@ int zinquireChar(long long *ifltab, const char *request, char *creturn, size_t c
 	return number[0];
 
 }
-
-int zinquirechar_ (long long *ifltab, const char *parameter, char *charVal, int *lenCharValIn, int *integerVal,
-					size_t lenParameter, size_t lenCharVal2)
-{
-	int istat;
-	int lenCharVal;
-	char *param;
-	char *cval;
-
-	lenCharVal = *lenCharValIn;
-	param = stringFortToC(parameter, lenParameter);
-	cval = (char *)calloc((size_t)lenCharVal + 1, CHAR_SIZE);
-
-	istat = zinquireChar(ifltab, parameter, cval, (size_t)lenCharVal, integerVal);
-	if (istat == -1) {
-		*integerVal = -1;
-		if (lenCharVal > 1) {
-			stringFill(charVal, ' ', lenCharVal);
-		}
-	}
-	else {
-		stringCToFort(charVal, (size_t)lenCharVal,  cval);
-	}
-	free(param);
-	free(cval);
-	return istat;
-}
-

@@ -61,12 +61,3 @@ int zgetInfo7(long long *ifltab, const char *pathname, int *ibuff)
 	return 0;
 }
 
-//  Fortran compatible interface
-void zgetinfo7_ (long long *ifltab, const char *pathname, int *ibuff, int *status, size_t lenPathname)
-{
-	char *path;
-	path = stringFortToC(pathname, lenPathname);
-	*status = zgetInfo7(ifltab, path, ibuff);
-	free(path);
-}
-

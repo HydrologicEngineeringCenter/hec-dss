@@ -67,14 +67,3 @@ int zputInfo (long long *ifltab, const char *pathname, int *ibuff)
 	}
 	return status;
 }
-
-//  Fortran compatible interface
-void zputinfo7_ (long long *ifltab, const char *pathname, int *ibuff, int *status, size_t lenPathname)
-{
-	char *path;
-
-	path = stringFortToC(pathname, lenPathname);
-	*status = zputInfo (ifltab, path, ibuff);
-	free(path);
-}
-

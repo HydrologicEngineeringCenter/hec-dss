@@ -217,7 +217,6 @@
 *					The name of the program that last wrote this record.
 *
 
-	In DSS Version 6, irregular data is stored as: time1 from base, value1, time2 from base, value2...
 	In DSS Version 7, irregular data is stored as: time1 from base, time2 from base, ... value1, value2...
 *
 *
@@ -234,7 +233,6 @@ int ztsRetrievePattern(long long *ifltab, zStructTimeSeries *tss, int retrieveDo
 {
 
 	int status;
-	int version;
 	int julian;
 	int seconds;
 	long long *info;
@@ -275,25 +273,12 @@ int ztsRetrievePattern(long long *ifltab, zStructTimeSeries *tss, int retrieveDo
 		return status;
 	}
 
-	version = zgetVersion(ifltab);
-	if (version == 6) {
-		tss->numberValues = ztransfer->values1Number;
-		if (ztransfer->internalHeaderNumber >= 5) {
-			tss->timeOffsetSeconds = ztransfer->internalHeader[0] * SECS_IN_1_MINUTE;
-			tss->units = stringFortToC((const char *)&ztransfer->internalHeader[1], 8);
-			tss->type  = stringFortToC((const char *)&ztransfer->internalHeader[3], 8);
-			tss->allocated[zSTRUCT_TS_units] = 1;
-			tss->allocated[zSTRUCT_TS_type] = 1;
-		}
-	}
-	else {
 		tss->numberValues = ztransfer->numberValues;
 		ztsInternalHeaderUnpack(tss, ztransfer->internalHeader, ztransfer->internalHeaderNumber);
 		info = (long long *)ifltab[zdssKeys.kinfo];
 		tss->lastWrittenTime = info[zdssInfoKeys.kinfoLastWriteTime];
 		tss->fileLastWrittenTime = ztransfer->fileLastWrittenTime;
 		charLong(&info[zdssInfoKeys.kinfoProgram], tss->programName, zdssVals.numberProgram, zdssVals.numberProgram, 0, 1);
-	}
 
 
 	tss->dataType = ztransfer->dataType;

@@ -283,13 +283,10 @@ int ztsStoreRegArgs(long long *ifltab, const char *pathname,
 			int storageFlag);
 
 
-int zsetLocation(zStructLocation *locationStruct,
-				 int *values3, int sizeValues3);
 int zreadInfo(long long *ifltab, const char *pathname, int statusWanted);
 
 int ztsRetrieve(long long *ifltab, zStructTimeSeries *tss,
 				int retrieveFlag, int retrieveDoublesFlag, int boolRetrieveQualityNotes);
-void readProgramName(long long* ifltab, zStructTimeSeries* tss, int status);
 int ztsRetrieveIrreg7(long long *ifltab, zStructTimeSeries *tss,
 					int retrieveFlag, int retrieveDoublesFlag, int boolRetrieveQualityNotes);
 
@@ -321,7 +318,6 @@ int ztsInternalHeaderPack(zStructTimeSeries *tss, int *internalHeader);
 int ztsInternalHeaderUnpack(zStructTimeSeries *tss, int *internalHeader, int lengthInternalHeader);
 int copyAndTrim(char *tostring, size_t maxToLen, const char *fromString, size_t fromStringLen);
 void convertDataArray(int *dataIn, int *dataOut, int number, int dataInElementLength, int dataOutElementLength);
-void stringCToFort(char *fortString, size_t maxFortLen, const char *cfromString);
 
 
 

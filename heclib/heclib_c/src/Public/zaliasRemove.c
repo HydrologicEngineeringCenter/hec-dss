@@ -285,16 +285,3 @@ int zaliasRemove(long long *ifltab, const char* aliasPathname)
 	}
 	return status;
 }
-
-
-//  Fortran compatible interface
-
-void zaliasremove_(long long *ifltab, const char* pathname,
-			  int *istat, size_t lenPathname)
-{
-	char *path;
-	path = stringFortToC(pathname, lenPathname);
-	*istat = zaliasRemove(ifltab, path);
-	free(path);
-}
-

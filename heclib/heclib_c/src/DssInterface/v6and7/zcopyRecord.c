@@ -282,19 +282,3 @@ int zcopyRecord(long long *ifltabFrom, long long *ifltabTo, const char *pathname
 	}
 	return status;
 }
-
-void zcopyrecord_ (long long *ifltabFrom, long long *ifltabTo, const char *pathnameFrom, const char *pathnameTo, int *status,
-					size_t pathnameFromLen, size_t pathnameToLen)
-{
-	char *pathFrom;
-	char *pathTo;
-
-	pathFrom = stringFortToC(pathnameFrom, pathnameFromLen);
-	pathTo = stringFortToC(pathnameTo, pathnameToLen);
-
-	*status = zcopyRecord(ifltabFrom, ifltabTo, pathFrom, pathTo);
-
-	free(pathFrom);
-	free(pathTo);
-}
-

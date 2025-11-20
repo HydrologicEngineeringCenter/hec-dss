@@ -194,15 +194,3 @@ int zaliasRemoveAll(long long *ifltab, const char* pathname)
 	return numberAliases;
 }
 
-
-//  Fortran compatible interface
-
-void zaliasremoveall_(long long *ifltab, const char* pathname,
-			  int *istat, size_t lenPathname)
-{
-	char *path;
-	path = stringFortToC(pathname, lenPathname);
-	*istat = zaliasRemoveAll(ifltab, path);
-	free(path);
-}
-

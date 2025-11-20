@@ -400,29 +400,3 @@ int zrename(long long *ifltab, const char* oldPathname, const char* newPathname)
 	return status;
 }
 
-
-//  Fortran compatible interface
-
-void zrenam7_(long long *ifltab, const char* oldPathname, int *nOldPathname,
-			  const char* newPathname, int *nNewPathname,
-			  int *lfound, size_t lenOldPathname, size_t lenNewPathname)
-{
-	char *coldPath;
-	char *cnewPath;
-	int istat;
-
-
-	coldPath = stringFortToC(oldPathname, lenOldPathname);
-	cnewPath = stringFortToC(newPathname, lenNewPathname);
-
-	istat = zrename(ifltab, coldPath, cnewPath);
-	if (istat == STATUS_OKAY) {
-		*lfound = 1;
-	}
-	else {
-		*lfound = 0;
-	}
-	free(coldPath);
-	free(cnewPath);
-}
-
