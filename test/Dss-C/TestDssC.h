@@ -5,7 +5,7 @@
 #include "heclib.h"
 #include "hecdss7.h"
 
-
+int saveWithEmptyBlocks();
 int gridPreCompressionTest();
 int test_logging();
 int testLargeCopy();

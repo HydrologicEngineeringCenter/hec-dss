@@ -569,6 +569,11 @@ int ztsRetrieveReg7(long long *ifltab, zStructTimeSeries *tss,
 
 
 		if (status == STATUS_RECORD_FOUND) {
+			// if we don't have units, lets keep trying other time-series records for units..
+			if (foundOne && tss->units == NULL && !boolProfileRecord) {
+				ztsInternalHeaderUnpack(tss, internalHeader, internalHeaderNumber);
+			}
+
 			if (!foundOne) {
 				if (boolProfileRecord) {
 					//  Profile data - do we need to convert?
@@ -634,7 +639,7 @@ int ztsRetrieveReg7(long long *ifltab, zStructTimeSeries *tss,
 				tss->fileLastWrittenTime = fileHeader[zdssFileKeys.klastWriteTime];
 				charLong(&info[zdssInfoKeys.kinfoProgram], tss->programName, 0, zdssVals.numberProgram, 0, 1);
 				foundOne = 1;
-			}
+			} 
 			totalNumberCnotesRead += lengthCNotes;
 		}
 

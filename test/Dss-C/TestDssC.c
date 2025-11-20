@@ -195,6 +195,11 @@ int runTheTests() {
 	char fileName7a[80];
 	int status;
 
+	status = saveWithEmptyBlocks();
+	if (status != STATUS_OKAY)
+		return status;
+
+
 	status = gridPreCompressionTest();
 	if (status != STATUS_OKAY)
 		return status;

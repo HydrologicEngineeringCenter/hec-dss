@@ -21,7 +21,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
-        <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -34,7 +34,7 @@
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
-        <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -148,6 +148,7 @@
     <ClCompile Include="source\testNoDates.c" />
     <ClCompile Include="source\testNormalizeFPart.c" />
     <ClCompile Include="source\current_time_testing.c" />
+    <ClCompile Include="source\testSaveTimeSeriesEmptyBlocks.c" />
     <ClCompile Include="source\testText.c" />
     <ClCompile Include="source\TestUtility.c" />
     <ClCompile Include="source\SampleTimeSeries3.c" />

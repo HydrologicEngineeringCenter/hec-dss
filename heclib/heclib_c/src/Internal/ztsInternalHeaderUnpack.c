@@ -65,9 +65,13 @@
 *
 **/
 
+int mallocAndAssignString(char** destination, char* source, int* ipos, zStructTimeSeries* tss, int allocatedPosition);
+
+
+#define CHAR_ARRAY_SIZE 200
 int ztsInternalHeaderUnpack(zStructTimeSeries *tss, int *internalHeader, int internalHeaderNumber)
 {
-	char carray[200];
+	char carray[CHAR_ARRAY_SIZE];
 	int ipos;
 	int len;
 
@@ -106,62 +110,51 @@ int ztsInternalHeaderUnpack(zStructTimeSeries *tss, int *internalHeader, int int
 
 	ipos = 0;
 
-	len = (int)strlen(&carray[ipos]);
-	if (len) {
-		if (internalHeader[INT_HEAD_profileDepthsNumber] == 0) {
-			if (trimLength(&carray[ipos])) {
-				tss->units = mallocAndCopyTrim(&carray[ipos]);
-				if (!tss->units) {
-					return STATUS_NOT_OKAY;
-				}
-				tss->allocated[zSTRUCT_TS_units] = 1;
-			}
-			ipos += len + 1;
-		}
-		else {
-			if (trimLength(&carray[ipos])) {
-				tss->unitsProfileDepths = mallocAndCopyTrim(&carray[ipos]);
-				if (!tss->unitsProfileDepths) {
-					return STATUS_NOT_OKAY;
-				}
-				tss->allocated[zSTRUCT_TS_profileUnitsDepths] = 1;
-			}
-			ipos += len + 1;
+	int status;
+	// units
+  if (internalHeader[INT_HEAD_profileDepthsNumber] == 0) { // Regular time series
+		status = mallocAndAssignString(&tss->units, carray, &ipos, tss, zSTRUCT_TS_units);
+		if (status != STATUS_OKAY) return status;
+	}
+	else {
+		status = mallocAndAssignString(&tss->unitsProfileDepths, carray, &ipos, tss, zSTRUCT_TS_profileUnitsDepths);
+		if (status != STATUS_OKAY) return status;
 
-			len = (int)strlen(&carray[ipos]);
-			if (trimLength(&carray[ipos])) {
-				tss->unitsProfileValues = mallocAndCopyTrim(&carray[ipos]);
-				if (!tss->unitsProfileValues) {
-					return STATUS_NOT_OKAY;
-				}
-				tss->allocated[zSTRUCT_TS_profileUnitsValues] = 1;
-			}
-			ipos += len + 1;
-		}
+		status = mallocAndAssignString(&tss->unitsProfileValues, carray, &ipos, tss, zSTRUCT_TS_profileUnitsValues);
+		if (status != STATUS_OKAY) return status;
 	}
 
-	len = (int)strlen(&carray[ipos]);
-	if (len) {
-		if (trimLength(&carray[ipos])) {
-			tss->type = mallocAndCopyTrim(&carray[ipos]);
-			if (!tss->type) {
-				return STATUS_NOT_OKAY;
-			}
-			tss->allocated[zSTRUCT_TS_type] = 1;
-		}
-		ipos += len + 1;
-	}
+	//  type
+	status = mallocAndAssignString(&tss->type, carray, &ipos, tss, zSTRUCT_TS_type);
+	if (status != STATUS_OKAY) return status;
 
-	len = (int)strlen(&carray[ipos]);
-	if (len) {
-		if (trimLength(&carray[ipos])) {
-			tss->timeZoneName = mallocAndCopyTrim(&carray[ipos]);
-			if (!tss->timeZoneName) {
-				return STATUS_NOT_OKAY;
-			}
-			tss->allocated[zSTRUCT_timeZoneName] = 1;
-		}
-	}
+	// time zone
+	status = mallocAndAssignString(&tss->timeZoneName, carray, &ipos, tss, zSTRUCT_timeZoneName);
+	if (status != STATUS_OKAY) return status;
+
 	return STATUS_OKAY;
+
+
 }
 
+
+//  mallocAndAssignString assigns a string to the destination if not already assigned
+//  Increments ipos to the next string position
+//  allocatedPosition is the position in the tss->allocated array to set if malloc occurs
+int mallocAndAssignString(char** destination, char* source, int* ipos, zStructTimeSeries* tss, int allocatedPosition) {
+
+	
+	int len = strnlen_hec(&source[*ipos],CHAR_ARRAY_SIZE-1);
+	if (!tss->allocated[allocatedPosition]) {
+		if (len > 0 && trimLength(&source[*ipos])) {
+			*destination = mallocAndCopyTrim(&source[*ipos]);
+			if (!*destination) {
+				return STATUS_NOT_OKAY;
+			}
+			tss->allocated[allocatedPosition] = 1;
+		}
+	}
+	*ipos += len + 1;  // Move past this string and its null terminator
+
+	return STATUS_OKAY;
+}
