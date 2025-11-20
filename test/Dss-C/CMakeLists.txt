@@ -35,6 +35,7 @@ source/testMisc.c
 source/findInFile.c
 source/compareProfiles.c
 source/testZtsProcessTimes.c
+source/testSaveTimeSeriesEmptyBlocks.c
 source/testTimeSeriesStruct11.c
 source/compareTss.c
 source/testTimeSeriesStruct14.c
