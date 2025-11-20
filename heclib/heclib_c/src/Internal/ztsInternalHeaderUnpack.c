@@ -68,9 +68,10 @@
 int mallocAndAssignString(char** destination, char* source, int* ipos, zStructTimeSeries* tss, int allocatedPosition);
 
 
+#define CHAR_ARRAY_SIZE 200
 int ztsInternalHeaderUnpack(zStructTimeSeries *tss, int *internalHeader, int internalHeaderNumber)
 {
-	char carray[200];
+	char carray[CHAR_ARRAY_SIZE];
 	int ipos;
 	int len;
 
@@ -137,9 +138,13 @@ int ztsInternalHeaderUnpack(zStructTimeSeries *tss, int *internalHeader, int int
 }
 
 
+//  mallocAndAssignString assigns a string to the destination if not already assigned
+//  Increments ipos to the next string position
+//  allocatedPosition is the position in the tss->allocated array to set if malloc occurs
 int mallocAndAssignString(char** destination, char* source, int* ipos, zStructTimeSeries* tss, int allocatedPosition) {
 
-	int len = (int)strlen(&source[*ipos]);
+	
+	int len = strlen_hec(&source[*ipos],CHAR_ARRAY_SIZE-1);
 	if (!tss->allocated[allocatedPosition]) {
 		if (len > 0 && trimLength(&source[*ipos])) {
 			*destination = mallocAndCopyTrim(&source[*ipos]);
