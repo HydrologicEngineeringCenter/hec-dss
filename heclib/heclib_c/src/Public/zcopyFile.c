@@ -232,11 +232,6 @@ int zcopyFile(long long *ifltabFrom, long long *ifltabTo, int statusWanted)
 
 
 
-void zcopyfile7_(long long *ifltabFrom, long long *ifltabTo, int *status)
-{
-	*status = zcopyFile(ifltabFrom, ifltabTo, 0);
-}
-
 void zcopyfile_(long long *ifltabFrom, long long *ifltabTo, int *status)
 {
 	int versFileFrom;

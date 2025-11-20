@@ -55,32 +55,6 @@ double zmissingFlagDouble()
 	return UNDEFINED_DOUBLE;
 }
 
-float zmissingfloat_()
-{
-	//return (float)-901.0;
-	return UNDEFINED_FLOAT;
-}
-
-double zmissingdouble_()
-{
-	//return (double)-901.0;
-	return UNDEFINED_DOUBLE;
-}
-
-int lismissingf_(float *value) {
-	if (*value == -901.0) return 1;
-	if (*value == -902.0) return 1;
-	if (*value == UNDEFINED_FLOAT) return 1;
-	return 0;
-}
-
-int lismissingd_(double *value) {
-	if (*value == -901.0) return 1;
-	if (*value == -902.0) return 1;
-	if (*value == UNDEFINED_DOUBLE) return 1;
-	return 0;
-}
-
 
 void zsetMissingFloat(float *value)
 {

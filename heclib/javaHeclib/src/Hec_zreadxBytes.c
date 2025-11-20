@@ -30,10 +30,6 @@ JNIEXPORT void JNICALL Java_hec_heclib_util_Heclib_Hec_1zreadxBytes
 
     const char *pathname;
 
-	//char query[5];
-	//char alpha[4];
-	//int numb[1];
-	//int i;
 
 	jint capacity=40;
 	(*env)->EnsureLocalCapacity(env, capacity);
@@ -55,12 +51,12 @@ JNIEXPORT void JNICALL Java_hec_heclib_util_Heclib_Hec_1zreadxBytes
     plan        = (int) j_plan;
     exists      = (*env)->GetIntArrayElements (env, j_exists, 0);
 	
-    zreadx_ ((long long*)ifltab, pathname,
+    zreadx ((long long*)ifltab, pathname,
              intheader, &kintheader, nintheader,
              compheader, &kcompheader, ncompheader,
              userheader, &kuserheader, nuserheader,
               (int *)data, &kdata, ndata,
-             &plan, exists, strlen (pathname));
+             &plan, exists);
 
 	/*  Determine if this is was read on a big endian machine
 	and the bytes in the words need to be swapped */

@@ -6,6 +6,7 @@
 #include "math.h"
 #include "zdssKeys.h"
 #include "heclib.h"
+#include <stdlib.h>
 #include "hecdss7.h"
 #include "hecdssInternal.h"
 #include "zStructAllocation.h"

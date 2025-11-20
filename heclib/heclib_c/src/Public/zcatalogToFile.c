@@ -85,8 +85,3 @@ int zcatalogToFile(long long *ifltab, int catalogHandle, int fortranUnit, int bo
 	return numberPaths;
 }
 
-void zcatalogtofile_(long long *ifltab, int *fortranUnit, int *boolSorted, int *numberPaths)
-{
-	*numberPaths = zcatalogToFile(ifltab, 0, *fortranUnit,  *boolSorted);
-}
-

@@ -99,9 +99,3 @@
 	return status;
 }
 
-
-void zcheckmultiuser_(long long *ifltab)
-{
-	zcheckMultiUser(ifltab);
-}
-

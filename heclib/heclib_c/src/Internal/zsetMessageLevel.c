@@ -208,9 +208,3 @@ void zsetMessageLevelFile(long long *ifltab, int level)
 	 }
 	ifltab[zdssKeys.kmessLevel] = level;
 }
-
-void zsetmessagelevel_(int *group, int *level)
-{
-	zsetMessageLevel(*group, *level);
-}
-

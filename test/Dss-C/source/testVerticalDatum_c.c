@@ -2,6 +2,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <heclib.h>
+#include <stdlib.h>
 #include <verticalDatum.h>
 #include <math.h>
 
