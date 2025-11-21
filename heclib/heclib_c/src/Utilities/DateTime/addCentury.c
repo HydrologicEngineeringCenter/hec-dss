@@ -36,8 +36,4 @@ int addCentury (int year)
 	return year;
 
 }
-void addcentury_(int *year)
-{
-	*year = addCentury(*year);
-}
 

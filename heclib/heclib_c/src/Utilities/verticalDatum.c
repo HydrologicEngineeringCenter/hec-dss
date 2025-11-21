@@ -107,16 +107,7 @@ char* doubleToChar(double d, char* buf) {
     }
     return buf;
 }
-//
-// Fortran wrapper for unitIsFeet
-//
-int unitisfeet_(const char* unit, size_t lenUnit) {
-    char* cUnit = (char*)mallocAndInit(lenUnit + 1);
-    F2C(unit, cUnit, lenUnit, lenUnit + 1);
-    int isFeet = unitIsFeet(cUnit);
-    free(cUnit);
-    return isFeet ? 1 : 0;
-}
+
 //
 // See verticalDatum.h for documentation
 //
@@ -128,16 +119,7 @@ int unitIsFeet(const char* unit) {
     }
     return FALSE;
 }
-//
-// Fortran wrapper for unitIsMeters
-//
-int unitismeters_(const char* unit, size_t lenUnit) {
-    char* cUnit = (char*)mallocAndInit(lenUnit + 1);
-    F2C(unit, cUnit, lenUnit, lenUnit + 1);
-    int isMeters = unitIsMeters(cUnit);
-    free(cUnit);
-    return isMeters ? 1 : 0;
-}
+
 //
 // See verticalDatum.h for documentation
 //
@@ -149,24 +131,7 @@ int unitIsMeters(const char* unit) {
     }
     return FALSE;
 }
-//
-// Fortran interface to getOffset
-//
-void getoffset_(
-    double*     offset,
-    const char* offsetUnit,
-    const char* dataUnit,
-    size_t      lenOffsetUnit,
-    size_t      lenDataUnit) {
 
-    char* cOffsetUnit = (char*)mallocAndInit(lenOffsetUnit + 1);
-    char* cDataUnit = (char*)mallocAndInit(lenDataUnit + 1);
-    F2C(offsetUnit, cOffsetUnit, lenOffsetUnit, lenOffsetUnit + 1);
-    F2C(dataUnit, cDataUnit, lenDataUnit, lenDataUnit + 1);
-    *offset = getOffset(*offset, cOffsetUnit, cDataUnit);
-    free(cOffsetUnit);
-    free(cDataUnit);
-}
 //
 // See verticalDatum.h for documentation
 //
@@ -316,23 +281,7 @@ int insertIntoDelimitedString(
     }
     return 0;
 }
-//
-// Fortran interface for stringToUserHeader
-//
-void stringtouserheader_(
-    const char* str,
-    int*        userHeader,
-    int*        userHeaderCapacity,
-    int*        userHeaderNumber,
-    size_t      lenStr) {
 
-    char* cStr = (char*)malloc(lenStr + 1);
-    F2C(str, cStr, lenStr, lenStr + 1);
-    int* _userHeader = stringToUserHeader(cStr, userHeaderNumber);
-    memcpy(userHeader, _userHeader, MIN(*userHeaderCapacity, *userHeaderNumber) * sizeof(int));
-    free(cStr);
-    free(_userHeader);
-}
 //
 // See verticalDatum.h for documentation
 //
@@ -355,19 +304,7 @@ int* stringToUserHeader(const char* str, int* userHeaderNumber) {
     *userHeaderNumber = numInts;
     return userHeader;
 }
-//
-// Fortran interface for stringToUserHeader
-//
-void userheadertostring_(
-    char*      str,
-    const int* userHeader,
-    const int* userHeaderNumber,
-    size_t     lenStr) {
 
-    char* cStr = userHeaderToString(userHeader, *userHeaderNumber);
-    C2F(cStr, str, lenStr);
-    free(cStr);
-}
 //
 // See verticalDatum.h for documentation
 //
@@ -584,25 +521,7 @@ char* findTextBetween(textBoundaryInfo* tbi, const char* buf, const char* after,
     tbi->offsetNonBlank = tbi->firstNonBlank - buf;
     return NULL;
 }
-//
-// Fortran interface for decodeAndGunzip
-//
-void decodeandgunzip_(
-    char*       results,
-    char*       errMsg,
-    const char* inputBuf,
-    size_t      lenResults,
-    size_t      lenErrMsg,
-    size_t      lenInputBuf) {
 
-    char* cInputBuf = (char*)malloc(lenInputBuf + 1);
-    F2C(inputBuf, cInputBuf, lenInputBuf, lenInputBuf + 1);
-    char* cResults = NULL;
-    char* cErrMsg = decodeAndGunzip(&cResults, cInputBuf);
-    C2F(cResults, results, lenResults);
-    C2F(cErrMsg, errMsg, lenErrMsg);
-    free(cInputBuf);
-}
 //
 // See verticalDatum.h for documentation
 //
@@ -657,25 +576,7 @@ char* decodeAndGunzip(char** results, const char* inputBuf) {
     free(decodedBuf);
     return NULL;
 }
-//
-// Fortran interface for gzipAndEncode
-//
-void gzipandencode_(
-    char*       results,
-    char*       errMsg,
-    const char* inputBuf,
-    size_t      lenResults,
-    size_t      lenErrMsg,
-    size_t      lenInputBuf) {
 
-    char* cInputBuf = (char*)malloc(lenInputBuf + 1);
-    F2C(inputBuf, cInputBuf, lenInputBuf, lenInputBuf + 1);
-    char* cResults = NULL;
-    char* cErrMsg = gzipAndEncode(&cResults, cInputBuf);
-    C2F(cResults, results, lenResults);
-    C2F(cErrMsg, errMsg, lenErrMsg);
-    free(cInputBuf);
-}
 //
 // See verticalDatum.h for documentation
 //
@@ -894,48 +795,6 @@ void initializeVerticalDatumInfo(verticalDatumInfo* vdi) {
     }
 }
 //
-// Fortran interface to stringToVerticalDatumInfo
-//
-void stringtoverticaldatuminfo_(
-    const char* inputStr,
-    char*       errorMessage,
-    char*       nativeDatum,
-    char*       unit,
-    double*     offsetNgvd29,
-    int32_t*    offsetNgvd29IsEstimate,
-    double*     offsetNavd88,
-    int32_t*    offsetNavd88IsEstimate,
-    size_t      lenInputStr,
-    size_t      lenErrorMessage,
-    size_t      lenNativeDatum,
-    size_t      lenUnit) {
-    char* cInputStr = (char*)mallocAndInit(lenInputStr + 1);
-    F2C(inputStr, cInputStr, lenInputStr, lenInputStr + 1);
-    char* cErrMsg;
-    verticalDatumInfo vdi;
-
-    cErrMsg = stringToVerticalDatumInfo(&vdi, cInputStr);
-    if (cErrMsg) {
-        C2F(cErrMsg, errorMessage, lenErrorMessage);
-        C2F(CVERTICAL_DATUM_UNSET, nativeDatum, lenNativeDatum);
-        C2F(" ", unit, lenUnit);
-        *offsetNgvd29 = UNDEFINED_VERTICAL_DATUM_VALUE;
-        *offsetNgvd29IsEstimate = -1;
-        *offsetNavd88 = UNDEFINED_VERTICAL_DATUM_VALUE;
-        *offsetNavd88IsEstimate = -1;
-    }
-    else {
-        C2F(" ", errorMessage, lenErrorMessage);
-        C2F(vdi.nativeDatum, nativeDatum, lenNativeDatum);
-        C2F(vdi.unit, unit, lenUnit);
-        *offsetNgvd29 = vdi.offsetToNgvd29;
-        *offsetNgvd29IsEstimate = vdi.offsetToNgvd29IsEstimate;
-        *offsetNavd88 = vdi.offsetToNavd88;
-        *offsetNavd88IsEstimate = vdi.offsetToNavd88IsEstimate;
-    }
-    free(cInputStr);
-}
-//
 // See verticalDatum.h for documentation
 //
 char* stringToVerticalDatumInfo(verticalDatumInfo* vdi, const char* inputStr) {
@@ -1144,38 +1003,7 @@ char* stringToVerticalDatumInfo(verticalDatumInfo* vdi, const char* inputStr) {
     free(xml);
     return NULL;
 }
-//
-// Fortran interface for verticalDatumInfoToString
-//
-void verticaldatuminfotostring_(
-    char*          outputStr,
-    char*          errorMessage,
-    const char*    nativeDatum,
-    const char*    unit,
-    const double*  offsetNgvd29,
-    const int32_t* offsetNgvd29IsEstimate,
-    const double*  offsetNavd88,
-    const int32_t* offsetNavd88IsEstimate,
-    const int32_t* generateCompressed,
-    size_t         lenErrorMessage,
-    size_t         lenOutputStr,
-    size_t         lenNativeDatum,
-    size_t         lenUnit) {
 
-    char* cErrMsg;
-    char* cResults;
-    verticalDatumInfo vdi;
-    F2C(nativeDatum, vdi.nativeDatum, lenNativeDatum, sizeof(vdi.nativeDatum));
-    F2C(unit, vdi.unit, lenUnit, sizeof(vdi.unit));
-    vdi.offsetToNgvd29 = *offsetNgvd29;
-    vdi.offsetToNgvd29IsEstimate = *offsetNgvd29IsEstimate;
-    vdi.offsetToNavd88 = *offsetNavd88;
-    vdi.offsetToNavd88IsEstimate = *offsetNavd88IsEstimate;
-    cErrMsg = verticalDatumInfoToString(&cResults, &vdi, *generateCompressed);
-    C2F(cErrMsg, errorMessage, lenErrorMessage);
-    C2F(cResults, outputStr, lenOutputStr);
-    free(cResults);
-}
 //
 // See verticalDatum.h for documentation
 //
@@ -1255,118 +1083,7 @@ verticalDatumInfo* extractVerticalDatumInfoFromUserHeader(const int* userHeader,
     }
     return vdi;
 }
-/**
- * Fortran callable routine to return any vertical datum info in a DSS record user header
- *
- * @param nativeDatum              Receives the native datum
- * @param unit                     Receives the VDI unit
- * @param offsetToNavd88           Receives the offset from the native datum to NAVD-88
- * @param offsetToNavd88IsEstimate Receives whether the offsetToNavd88 value is estmated (0/1)
- * @param offsetToNgvd29           Receives the offset from the native datum to NGVD-29
- * @param offsetToNgvd29IsEstimate Receives whether the offsetToNgvd29 value is estmated (0/1)
- * @param userHeader               The user header integer array to retrieve the VDI from
- * @param userHeaderSize           The number of integers in the user header
- * @param lenNativeDatum           The hidden parameter passed from Fortran for the size of the nativeDatum character parameter
- * @param lenUnit                  The hidden parameter passed from Fortran for the size of the unit character parameter
- */
-void extractverticaldatuminfofromuserheader_(
-        char*      nativeDatum,
-        char*      unit,
-        double*    offsetToNavd88,
-        int*       offsetToNavd88IsEstimate,
-        double*    offsetToNgvd29,
-        int*       offsetToNgvd29IsEstimate,
-        const int* userHeader,
-        const int* userHeaderSize,
-        size_t     lenNativeDatum,
-        size_t     lenUnit) {
-    C2F(" ", nativeDatum, lenNativeDatum);
-    C2F(" ", unit,        lenUnit);
-    *offsetToNgvd29           = UNDEFINED_VERTICAL_DATUM_VALUE;
-    *offsetToNgvd29IsEstimate = TRUE;
-    *offsetToNavd88           = UNDEFINED_VERTICAL_DATUM_VALUE;
-    *offsetToNavd88IsEstimate = TRUE;
-    verticalDatumInfo* tmpVdi = extractVerticalDatumInfoFromUserHeader(userHeader, *userHeaderSize);
-    if (tmpVdi) {
-        C2F(tmpVdi->nativeDatum, nativeDatum, lenNativeDatum);
-        C2F(tmpVdi->unit,        unit,        lenUnit);
-        *offsetToNgvd29           = tmpVdi->offsetToNgvd29;
-        *offsetToNgvd29IsEstimate = tmpVdi->offsetToNgvd29IsEstimate;
-        *offsetToNavd88           = tmpVdi->offsetToNavd88;
-        *offsetToNavd88IsEstimate = tmpVdi->offsetToNavd88IsEstimate;
-        free(tmpVdi);
-    }
-}
-/**
- * Fortran callable routine to return any vertical datum info in a DSS 7 location record for a pathname
- *
- * @param nativeDatum              Receives the native datum
- * @param unit                     Receives the VDI unit
- * @param offsetToNavd88           Receives the offset from the native datum to NAVD-88
- * @param offsetToNavd88IsEstimate Receives whether the offsetToNavd88 value is estmated (0/1)
- * @param offsetToNgvd29           Receives the offset from the native datum to NGVD-29
- * @param offsetToNgvd29IsEstimate Receives whether the offsetToNgvd29 value is estmated (0/1)
- * @param fileTable                The file table (ifltab) of the open DSS 7 file
- * @pathname                       The pathname to retrieve the location record for
- * @param lenNativeDatum           The hidden parameter passed from Fortran for the size of the nativeDatum character parameter
- * @param lenUnit                  The hidden parameter passed from Fortran for the size of the unit character parameter
- * @param lenPathname              The hidden parameter passed from Fortran for the size of the pathname character parameter
- */
-void getlocationverticaldatuminfo_(
-        char*      nativeDatum,
-        char*      unit,
-        double*    offsetToNavd88,
-        int*       offsetToNavd88IsEstimate,
-        double*    offsetToNgvd29,
-        int*       offsetToNgvd29IsEstimate,
-        long long* fileTable,
-        char*      pathname,
-        size_t     lenNativeDatum,
-        size_t     lenUnit,
-        size_t     lenPathname) {
 
-    char* cPathname = (char*)mallocAndInit(lenPathname+1);
-    verticalDatumInfo vdi;
-    memset(&vdi, 0, sizeof(vdi));
-
-    F2C(pathname, cPathname, lenPathname, lenPathname+1);
-    zStructLocation* ls = zstructLocationNew(cPathname);
-    free(cPathname);
-    if (ls) {
-        zlocationRetrieve(fileTable, ls);
-        if (ls->supplemental) {
-            char* compressedVdi = extractFromDelimitedString(
-                &ls->supplemental,
-                VERTICAL_DATUM_INFO_USER_HEADER_PARAM,
-                ":",
-                TRUE,
-                FALSE,
-                ';');
-            if (compressedVdi) {
-                stringToVerticalDatumInfo(&vdi, compressedVdi);
-                strcpy(nativeDatum, vdi.nativeDatum);
-                free(compressedVdi);
-            }
-        }
-        zstructFree(ls);
-    }
-    if (strlen(vdi.nativeDatum) > 0) {
-        C2F(vdi.nativeDatum, nativeDatum, lenNativeDatum);
-        C2F(vdi.unit,        unit,        lenUnit);
-        *offsetToNgvd29           = vdi.offsetToNgvd29;
-        *offsetToNgvd29IsEstimate = vdi.offsetToNgvd29IsEstimate;
-        *offsetToNavd88           = vdi.offsetToNavd88;
-        *offsetToNavd88IsEstimate = vdi.offsetToNavd88IsEstimate;
-    }
-    else {
-        C2F(" ", nativeDatum, lenNativeDatum);
-        C2F(" ", unit,        lenUnit);
-        *offsetToNgvd29           = UNDEFINED_VERTICAL_DATUM_VALUE;
-        *offsetToNgvd29IsEstimate = TRUE;
-        *offsetToNavd88           = UNDEFINED_VERTICAL_DATUM_VALUE;
-        *offsetToNavd88IsEstimate = TRUE;
-    }
-}
 //
 // See verticalDatum.h for documentation
 //
@@ -1494,21 +1211,7 @@ int	getCurrentVerticalDatum(
     }
     return iverticalDatum;
 }
-//
-// Fortran interface for normalizeVdiInUserHeader
-//
-void normalizevdiinuserheader_(
-    int*   userHeader,
-    int*   userHeaderNumber,
-    int*   userHeaderSize,
-    char*  errorMesage,
-    size_t lenErrorMessage) {
 
-    char* cErrMsg = normalizeVdiInUserHeader(userHeader, userHeaderNumber, *userHeaderSize);
-    if (cErrMsg) {
-        C2F(cErrMsg, errorMesage, lenErrorMessage);
-    }
-}
 //
 // See verticalDatum.h for documentation
 //
@@ -1602,57 +1305,6 @@ char* normalizeVdiInUserHeader(int* userHeader, int* userHeaderNumber, int userH
     free(headerString);
     free(newHeader);
     return NULL;
-}
-//
-// Fortran wrapper for processStorageVdis
-//
-void processstoragevdis_(
-    double*        offsetToUse,
-    char*          errorMessage,
-    const char*    fileVdiStr,
-    const char*    dataVdiStr,
-    const char*    currentDatum,
-    const int32_t* fileContainsData,
-    const char*    dataUnit,
-    size_t         lenErrorMessage,
-    size_t         lenFileVdiStr,
-    size_t         lenDataVdiStr,
-    size_t         lenCurrentDatum,
-    size_t         lenDataUnit) {
-
-    char* cFileVdiStr = (char*)malloc(lenFileVdiStr + 1);
-    char* cDataVdiStr = (char*)malloc(lenDataVdiStr + 1);
-    char* cCurrentDatum = (char*)malloc(lenCurrentDatum + 1);
-    char* cDataUnit = (char*)malloc(lenDataUnit + 1);
-    F2C(fileVdiStr, cFileVdiStr, lenFileVdiStr, lenFileVdiStr + 1);
-    F2C(dataVdiStr, cDataVdiStr, lenDataVdiStr, lenDataVdiStr + 1);
-    F2C(currentDatum, cCurrentDatum, lenCurrentDatum, lenCurrentDatum + 1);
-    F2C(dataUnit, cDataUnit, lenDataUnit, lenDataUnit + 1);
-
-    verticalDatumInfo fileVdi;
-    stringToVerticalDatumInfo(&fileVdi, cFileVdiStr);
-    verticalDatumInfo dataVdi;
-    stringToVerticalDatumInfo(&dataVdi, cDataVdiStr);
-    char* cp = NULL;
-    verticalDatumInfoToString(&cp, &dataVdi, FALSE);
-    free(cp);
-    char* cErrorMessage = processStorageVdis(offsetToUse, &fileVdi, &dataVdi, cCurrentDatum, *fileContainsData, cDataUnit);
-    if (cErrorMessage) {
-        C2F(cErrorMessage, errorMessage, lenErrorMessage);
-        free(cErrorMessage);
-    }
-    else {
-        C2F("", errorMessage, lenErrorMessage);
-    }
-    if (cFileVdiStr)
-        free(cFileVdiStr);
-    if (cDataVdiStr)
-        free(cDataVdiStr);
-    if (cCurrentDatum)
-        free(cCurrentDatum);
-    if (cDataUnit)
-        free(cDataUnit);
-
 }
 //
 // See verticalDatum.h for documentation
@@ -1988,12 +1640,6 @@ int pathnameIsElevTs(const char* pathname) {
     }
     return isElevTs;
 }
-void pathnameiselevts_(const char* pathname, int* result, size_t pathnameLen) {
-    char* cPathname = mallocAndInit(pathnameLen + 1);
-    F2C(pathname, cPathname, pathnameLen, pathnameLen + 1);
-    *result = pathnameIsElevTs(cPathname);
-    free(cPathname);
-}
 //
 // See verticalDatum.h for documentation
 //
@@ -2016,21 +1662,9 @@ int pathnameIsElevPd(const char* pathname) {
     }
     return result;
 }
-void pathnameiselevpd_(const char* pathname, int* result, size_t pathnameLen) {
-    char* cPathname = mallocAndInit(pathnameLen + 1);
-    F2C(pathname, cPathname, pathnameLen, pathnameLen + 1);
-    *result = pathnameIsElevPd(cPathname);
-    free(cPathname);
-}
 //
 // See verticalDatum.h for documentation
 //
 int pathnameIsElevTsOrPd(const char* pathname) {
     return pathnameIsElevTs(pathname) || pathnameIsElevPd(pathname);
-}
-void pathnameiselevtsorpd_(const char* pathname, int* result, size_t pathnameLen) {
-    char* cPathname = mallocAndInit(pathnameLen + 1);
-    F2C(pathname, cPathname, pathnameLen, pathnameLen + 1);
-    *result = pathnameIsElevTsOrPd(cPathname);
-    free(cPathname);
 }

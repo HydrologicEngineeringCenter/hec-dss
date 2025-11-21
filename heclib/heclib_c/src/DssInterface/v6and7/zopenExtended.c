@@ -1,6 +1,5 @@
 #include <string.h>
 
-#include "hecdssFort.h"
 #include "hecdss7.h"
 #include "hecdssInternal.h"
 #include "zerrorCodes.h"

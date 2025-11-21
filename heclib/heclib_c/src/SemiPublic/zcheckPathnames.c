@@ -214,8 +214,4 @@ int zcheckPathnames(long long *ifltab)
 	return numberErrors;
 }
 
-void zcheckpathnames_(long long *ifltab, int *numberErrors)
-{
-	*numberErrors = zcheckPathnames(ifltab);
-}
 

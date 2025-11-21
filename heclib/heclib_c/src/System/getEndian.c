@@ -37,8 +37,3 @@ int bigEndian()
     return (c[0] != 1);
 }
 
-void bigendian_(int *iend)
-{
-	*iend = bigEndian();
-}
-

@@ -56,10 +56,7 @@ char *zgetInternalPathRb(zStructRecordBasics *zstruct)
 {
 	return zstruct->pathname;
 }
-char *zgetInternalPathRa(zStructRecordAddresses *zstruct)
-{
-	return '\0';
-}
+
 char *zgetInternalPathLo(zStructLocation *zstruct)
 {
 	return zstruct->pathname;

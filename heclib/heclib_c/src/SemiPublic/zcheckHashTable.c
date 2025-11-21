@@ -194,8 +194,3 @@ int zcheckHashTable(long long *ifltab)
 	return (numberNotFound + numberErrors);
 }
 
-void zcheckhashtable_(long long *ifltab, int *numberNotFound)
-{
-	*numberNotFound = zcheckHashTable(ifltab);
-}
-

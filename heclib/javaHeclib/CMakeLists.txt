@@ -90,7 +90,6 @@ src/Hec_zaliasGetPrimary.c
 src/Hec_zinquire.c
 src/Hec_zckpnb.c
 src/Hec_zsetfi.c
-src/Hec_zreadx.c
  )
 else()
     message(STATUS "No JNI JDK Found. Not building Java Heclib.")

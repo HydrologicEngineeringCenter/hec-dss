@@ -166,7 +166,6 @@ src/headers/zerrorCodes.h
 src/headers/hecdss7.h
 src/headers/zStructLocation.h
 src/headers/heclibDate.h
-src/headers/hecdssFort.h
 src/headers/zStructRecordAddresses.h
 src/headers/zStructText.h
 src/headers/zStructTsTimeWindow.h
@@ -180,13 +179,8 @@ src/headers/verticalDatum.h
 src/headers/zStructRecordBasics.h
 src/headers/zcontrol.h
 src/headers/zStructSpatialGrid.h
-src/DssInterface/zgetVersion_.c
 src/DssInterface/ztsRetrieveIrregArgs.c
-src/DssInterface/zclose_.c
-src/DssInterface/timeStringToSeconds_.c
 src/DssInterface/ztsStoreRegArgs.c
-src/DssInterface/ztsends_.c
-src/DssInterface/zget_.c
 src/DssInterface/v6and7/zrecordAddresses.c
 src/DssInterface/v6and7/zopenExtended.c
 src/DssInterface/v6and7/zreadc.c
@@ -200,7 +194,6 @@ src/DssInterface/v6and7/zclose.c
 src/DssInterface/v6and7/zopen.c
 src/DssInterface/v6and7/zwritec.c
 src/DssInterface/v6and7/zreadx.c
-src/DssInterface/v6and7/zgetInfo.c
 src/DssInterface/v6and7/zwritex.c
 src/DssInterface/v6and7/zdelete.c
 src/DssInterface/v6and7/zread.c
@@ -209,9 +202,7 @@ src/DssInterface/v6and7/zwrite.c
 src/DssInterface/v6and7/zputInfo.c
 src/DssInterface/v6and7/zundelete.c
 src/DssInterface/v6and7/zgetRecordSize.c
-src/DssInterface/v6and7/zwritea.c
 src/DssInterface/ztsStoreIrregArgs.c
-src/DssInterface/missingFlag_.c
 src/SemiPublic/zsetInterrupt.c
 src/SemiPublic/zlocationStructValid.c
 src/SemiPublic/zcheckPathnames.c
@@ -335,7 +326,6 @@ src/Public/ztsOffset.c
 src/Public/zpathnamePartLengths.c
 src/Public/zwhatChangedCompare.c
 src/Utilities/stringCat.c
-src/Utilities/stringLastNonBlank.c
 src/Utilities/numberIntsInBytes.c
 src/Utilities/convertDataLength.c
 src/Utilities/copyLines.c

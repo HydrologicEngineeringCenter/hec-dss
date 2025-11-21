@@ -24,16 +24,6 @@
 *
 **/
 
-void upcase_(char* string, size_t len) {
-
-	//	printf("\nupcase_(%s,%d)", string, len);
-	int i = 0;
-	while (i < len && string[i] != '\0' ) {
-		string[i] = toupper(string[i]);
-		i++;
-	}
-}
-
 void upperCase(char *string)
 {
 	int i;

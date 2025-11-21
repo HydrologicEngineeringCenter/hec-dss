@@ -150,8 +150,4 @@ void zmessageLong(long long *ifltab, const char *message, long long number)
 }
 
 
-void zmessage_(long long *ifltab, const char *message, size_t len)
-{
-	zmessageLength(ifltab, message, len);
-}
 

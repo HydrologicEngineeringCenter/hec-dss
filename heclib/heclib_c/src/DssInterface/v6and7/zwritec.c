@@ -1,7 +1,6 @@
 #include <string.h>
 
 #include "heclib7.h"
-#include "hecdssFort.h"
 #include "hecdssInternal.h"
 
 

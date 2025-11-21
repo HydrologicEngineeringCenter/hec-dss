@@ -81,8 +81,3 @@ void zprintFileInfo(long long *ifltab)
 	zmessage(ifltab, messageString);
 }
 
-void zprintfileinfo_(long long *ifltab)
-{
-	zprintFileInfo(ifltab);
-}
-

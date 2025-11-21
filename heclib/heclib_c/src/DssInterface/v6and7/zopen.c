@@ -13,7 +13,7 @@ int hec_dss_zopen(long long *ifltab, const char *dssFilename)
 
 	int version = zgetFileVersion(dssFilename);
 	if (zmessageLevel(ifltab, MESS_METHOD_OPEN_ID, MESS_LEVEL_INTERNAL_DIAG_1)) {
-		zmessageDebug(ifltab, DSS_FUNCTION_zopen_ID, "Entering zopenExtended for file: ", dssFilename);
+		zmessageDebug(ifltab, DSS_FUNCTION_zopen_ID, "Entering hec_dss_zopen for file: ", dssFilename);
 		zmessageDebugInt(ifltab, DSS_FUNCTION_zopen_ID, "Dss file version ", version);
 	 }
 

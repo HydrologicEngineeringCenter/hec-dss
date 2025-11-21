@@ -186,22 +186,3 @@ int zsetFile(long long *ifltab, const char* parameter, const char* charVal, int 
 	return 0;
 }
 
-//  Fortran compatible interface
-void zsetfi7_(long long *ifltab, const char* parameter, const char* charVal, int *integerVal,
-			  int *status, size_t lenParam, size_t lenCharVal)
-{
-	char param[5];
-	char cval[41];
-
-	stringCopy(param, sizeof(param), parameter, lenParam);
-	if (lenParam > 4)
-		lenParam = 4;
-	param[(int)lenParam] = '\0';
-	stringCopy(cval, sizeof(cval), charVal, lenCharVal);
-	if (lenCharVal > 40)
-		lenCharVal = 40;
-	cval[(int)lenCharVal] = '\0';
-
-	*status = zsetFile(ifltab, param, cval, *integerVal);
-}
-

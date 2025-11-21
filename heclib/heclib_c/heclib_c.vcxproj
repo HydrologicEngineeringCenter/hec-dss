@@ -12,14 +12,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Dss6\deleteFile.c" />
-    <ClCompile Include="src\DssInterface\missingFlag_.c" />
-    <ClCompile Include="src\DssInterface\timeStringToSeconds_.c" />
     <ClCompile Include="src\DssInterface\v6and7\zcheck.c" />
     <ClCompile Include="src\DssInterface\v6and7\zclose.c" />
     <ClCompile Include="src\DssInterface\v6and7\zcopyRecord.c" />
     <ClCompile Include="src\DssInterface\v6and7\zdataType.c" />
     <ClCompile Include="src\DssInterface\v6and7\zdelete.c" />
-    <ClCompile Include="src\DssInterface\v6and7\zgetInfo.c" />
     <ClCompile Include="src\DssInterface\v6and7\zgetRecordBasics.c" />
     <ClCompile Include="src\DssInterface\v6and7\zgetRecordSize.c" />
     <ClCompile Include="src\DssInterface\v6and7\zhandle.c" />
@@ -34,12 +31,8 @@
     <ClCompile Include="src\DssInterface\v6and7\ztsGetSizes.c" />
     <ClCompile Include="src\DssInterface\v6and7\zundelete.c" />
     <ClCompile Include="src\DssInterface\v6and7\zwrite.c" />
-    <ClCompile Include="src\DssInterface\v6and7\zwritea.c" />
     <ClCompile Include="src\DssInterface\v6and7\zwritec.c" />
     <ClCompile Include="src\DssInterface\v6and7\zwritex.c" />
-    <ClCompile Include="src\DssInterface\zclose_.c" />
-    <ClCompile Include="src\DssInterface\zgetVersion_.c" />
-    <ClCompile Include="src\DssInterface\zget_.c" />
     <ClCompile Include="src\DssInterface\ztsends_.c" />
     <ClCompile Include="src\DssInterface\ztsRetrieveIrregArgs.c" />
     <ClCompile Include="src\DssInterface\ztsStoreIrregArgs.c" />
@@ -368,7 +361,6 @@
     <ClCompile Include="src\Utilities\stringFill.c" />
     <ClCompile Include="src\Utilities\stringFortToC.c" />
     <ClCompile Include="src\Utilities\stringHeaderUtility.c" />
-    <ClCompile Include="src\Utilities\stringLastNonBlank.c" />
     <ClCompile Include="src\Utilities\strnlen_hec.c" />
     <ClCompile Include="src\Utilities\toFixedFields.c" />
     <ClCompile Include="src\Utilities\trimLength.c" />
@@ -382,7 +374,6 @@
   <ItemGroup>
     <ClInclude Include="src\headers\checks.h" />
     <ClInclude Include="src\headers\hecdss7.h" />
-    <ClInclude Include="src\headers\hecdssFort.h" />
     <ClInclude Include="src\headers\hecdssInternal.h" />
     <ClInclude Include="src\headers\heclib.h" />
     <ClInclude Include="src\headers\heclib7.h" />
@@ -441,12 +432,12 @@
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>false</WholeProgramOptimization>
-        <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
-        <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">

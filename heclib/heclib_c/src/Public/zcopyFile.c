@@ -8,7 +8,6 @@
 #include "zdssLocking.h"
 #include "zprogress.h"
 #include "hecdssInternal.h"
-#include "hecdssFort.h"
 #include "heclib.h"
 
 
@@ -18,10 +17,9 @@
 *
 *  Use:			Public
 *
-*  Description:	Copies (merges) one DSS file into another.  File being copied to can be version 6 or 7.
-*					If the versions are different, zcopyFile will perform the appropriate conversion.
+*  Description:	Copies (merges) one DSS file into another.  
 *
-*  Declaration: int zcopyFile(long long *ifltabFrom, long long *ifltabTo, int handleIfDamaged, int statusWanted);
+*  Declaration: int zcopyFile(long long *ifltabFrom, long long *ifltabTo, int statusWanted);
 *
 *  Parameters:
 *				long long ifltabFrom
@@ -230,23 +228,4 @@ int zcopyFile(long long *ifltabFrom, long long *ifltabTo, int statusWanted)
 	}
 }
 
-
-
-void zcopyfile7_(long long *ifltabFrom, long long *ifltabTo, int *status)
-{
-	*status = zcopyFile(ifltabFrom, ifltabTo, 0);
-}
-
-void zcopyfile_(long long *ifltabFrom, long long *ifltabTo, int *status)
-{
-	int versFileFrom;
-	int versFileTo;
-
-	versFileFrom = zgetVersion(ifltabFrom);
-	versFileTo   = zgetVersion(ifltabTo);
-
-	if (versFileFrom == 7) {
-		*status = zcopyFile(ifltabFrom, ifltabTo, 0);
-	}
-}
 

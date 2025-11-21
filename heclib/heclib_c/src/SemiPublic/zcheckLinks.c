@@ -178,8 +178,3 @@ int zcheckLinks(long long *ifltab)
 	return numberNotFound;
 }
 
-void zchecklinks_(long long *ifltab, int *numberNotFound)
-{
-	*numberNotFound = zcheckLinks(ifltab);
-}
-

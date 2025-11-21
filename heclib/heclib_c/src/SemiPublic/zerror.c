@@ -55,16 +55,3 @@ int zerrorCode(long long *ifltab)
 	return (int)ifltab[zdssKeys.kerrorCode];
 }
 
-
-
-
-int zfileerror_(long long *ifltab)
-{
-	return (int)ifltab[zdssKeys.kerrorCondition];
-}
-
-void zerrorcode_(long long *ifltab, int *errorCode)
-{
-	*errorCode = zerrorCode(ifltab);
-}
-

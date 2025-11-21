@@ -73,7 +73,7 @@
 *					zquery("erro",  calpha, sizeof(calpha), ierror); //  The severity of any error in any DSS file / routine, or zero if no error.
 *
 *					It is wise to check for an error after a DSS function:
-*						status = zwritea(ifltab, ....);
+*						status = zwrite(ifltab, ....);
 *						if ((status != STATUS_OKAY) || (zfileError(ifltab) != 0)) {
 *							if (status != STATUS_OKAY) return status;
 *							return zerrorCode(ifltab);
@@ -451,10 +451,6 @@ int zerror(hec_zdssLastError *errorStruct)
 	return zdssLastError.severity;
 }
 
-int zerrorcheck_()
-{
-	return zdssLastError.severity;
-}
 int zerrorCheck()
 {
 	return zdssLastError.severity;

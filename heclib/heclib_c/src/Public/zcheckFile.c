@@ -99,8 +99,3 @@ int zcheckFile(long long *ifltab)
 	return istat;
 }
 
-void zcheckfile_(long long *ifltab, int *errors)
-{
-	*errors = zcheckFile(ifltab);
-}
-
