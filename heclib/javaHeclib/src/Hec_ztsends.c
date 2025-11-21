@@ -8,36 +8,34 @@ JNIEXPORT void JNICALL Java_hec_heclib_util_Heclib_Hec_1ztsends
      jint j_searchOption, jintArray j_startJulian, jintArray j_startMinutes,
      jintArray j_endJulian, jintArray j_endMinutes, jintArray j_exists)
 {
-    int *ifltab;
-    const char *path;
-    int  searchOption;
-    int *startJulian;
-    int *startMinutes;
-    int *endJulian;
-    int *endMinutes;
-    int *exists;
 
-
-    ifltab = (*env)->GetIntArrayElements (env, j_ifltab,  0);
-    path = (const char *) (*env)->GetStringUTFChars (env, j_pathname,  0);
-    searchOption = (int) j_searchOption;
-    startJulian  = (*env)->GetIntArrayElements (env, j_startJulian,  0);
-    startMinutes = (*env)->GetIntArrayElements (env, j_startMinutes, 0);
-    endJulian    = (*env)->GetIntArrayElements (env, j_endJulian,    0);
-    endMinutes   = (*env)->GetIntArrayElements (env, j_endMinutes,   0);
-    exists       = (*env)->GetIntArrayElements (env, j_exists     ,  0);
+    int* ifltab = (*env)->GetIntArrayElements (env, j_ifltab,  0);
+    const char* path = (const char *) (*env)->GetStringUTFChars (env, j_pathname,  0);
+    int searchOption = (int) j_searchOption; // ignored
+    int* startJulian  = (*env)->GetIntArrayElements (env, j_startJulian,  0);
+    int* startMinutes = (*env)->GetIntArrayElements (env, j_startMinutes, 0);
+    int* endJulian    = (*env)->GetIntArrayElements (env, j_endJulian,    0);
+    int* endMinutes   = (*env)->GetIntArrayElements (env, j_endMinutes,   0);
+    int* exists       = (*env)->GetIntArrayElements (env, j_exists     ,  0);
 
 	if (zmessageLevel((long long*)ifltab, MESS_METHOD_JNI_ID, MESS_LEVEL_INTERNAL_DIAG_1)) {		
 		zmessageDebug((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "Enter Hec_ztsends; Pathname: ", path);
 		zmessageDebugInt((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "searchOption: ", searchOption);
 	}
 
-    ztsends_ ((long long*)ifltab, path, &searchOption, startJulian,
-              startMinutes, endJulian, endMinutes,
-              exists,
-              strlen(path));
+	int startSeconds;
+	int endSeconds;
 
-	if (*exists != 0) *exists = 1;
+	
+	int status = ztsGetDateTimeRange((long long*)ifltab, path, 1, startJulian, &startSeconds, endJulian, &endSeconds);
+	if (status == STATUS_RECORD_FOUND) {
+		*exists = 1;
+		*startMinutes = startSeconds / SECS_IN_1_MINUTE;
+		*endMinutes = endSeconds / SECS_IN_1_MINUTE;
+	}
+	else {
+		*exists = 0;
+	}
 
 	if (zmessageLevel((long long*)ifltab, MESS_METHOD_JNI_ID, MESS_LEVEL_INTERNAL_DIAG_1)) {				
 		zmessageDebugInt((long long*)ifltab, DSS_FUNCTION_javaNativeInterface_ID, "Hec_ztsends, startJulian: ", startJulian[0]);

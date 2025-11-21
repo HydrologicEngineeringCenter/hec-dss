@@ -10,7 +10,7 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1zcofil
     int* ifltabFrom   = (*env)->GetIntArrayElements (env, j_ifltabFrom, 0);
 	int* ifltabTo     = (*env)->GetIntArrayElements (env, j_ifltabTo, 0);     
 
-	int istat = zcopyfile((long long*)ifltabFrom, (long long*)ifltabTo, 0);
+	int istat = zcopyFile((long long*)ifltabFrom, (long long*)ifltabTo, 0);
  
     /* Release */
     (*env)->ReleaseIntArrayElements (env, j_ifltabFrom, ifltabFrom, 0);

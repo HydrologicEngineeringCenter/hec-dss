@@ -181,7 +181,6 @@ src/headers/zcontrol.h
 src/headers/zStructSpatialGrid.h
 src/DssInterface/ztsRetrieveIrregArgs.c
 src/DssInterface/ztsStoreRegArgs.c
-src/DssInterface/ztsends_.c
 src/DssInterface/v6and7/zrecordAddresses.c
 src/DssInterface/v6and7/zopenExtended.c
 src/DssInterface/v6and7/zreadc.c
