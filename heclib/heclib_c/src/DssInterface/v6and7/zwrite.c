@@ -1,7 +1,7 @@
 #include <string.h>
 
 #include "heclib7.h"
-#include "hecdssFort.h"
+#include <stdlib.h>
 #include "hecdssInternal.h"
 #include "verticalDatum.h" // for userHeaderToString and stringToUserHeader
 

@@ -374,7 +374,6 @@
   <ItemGroup>
     <ClInclude Include="src\headers\checks.h" />
     <ClInclude Include="src\headers\hecdss7.h" />
-    <ClInclude Include="src\headers\hecdssFort.h" />
     <ClInclude Include="src\headers\hecdssInternal.h" />
     <ClInclude Include="src\headers\heclib.h" />
     <ClInclude Include="src\headers\heclib7.h" />

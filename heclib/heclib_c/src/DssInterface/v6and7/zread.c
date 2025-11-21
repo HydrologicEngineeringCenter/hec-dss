@@ -2,7 +2,6 @@
 #include <stdlib.h>
 
 #include "heclib7.h"
-#include "hecdssFort.h"
 #include "hecdssInternal.h"
 #include "zdssMessages.h"
 #include "zerrorCodes.h"

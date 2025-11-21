@@ -1119,9 +1119,6 @@
     <ClInclude Include="src\headers\hecdss7.h">
       <Filter>src\headers</Filter>
     </ClInclude>
-    <ClInclude Include="src\headers\hecdssFort.h">
-      <Filter>src\headers</Filter>
-    </ClInclude>
     <ClInclude Include="src\headers\hecdssInternal.h">
       <Filter>src\headers</Filter>
     </ClInclude>

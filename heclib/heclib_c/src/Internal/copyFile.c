@@ -2,7 +2,6 @@
 #include <stdio.h>
 
 #include "heclib7.h"
-#include "hecdssFort.h"
 #include "zdssKeys.h"
 #include "zprogress.h"
 #include "hecdssInternal.h"
