@@ -80,11 +80,6 @@ void zwritex(long long *ifltab, const char *path, int *npath,
 			 int *dataType, int *plan,
 			 int *status, int *recordFound);
 
-void zwritea(long long *ifltab, const char *path, int *npath,
-			int *userHeader, int *userHeaderNumber,
-			int *values, int *valuesNumber,
-			int *flag, int *recordFound);
-
 
 
 int zcatalog6Internal(long long *ifltab, const char *pathWithWild, zStructCatalog *catStruct,
@@ -382,7 +377,6 @@ void convertDataType(int *dataIn, int *dataOut, int dataInElementLength, int dat
 void convertDataArray(int *dataIn, int *dataOut, int number, int dataInElementLength, int dataOutElementLength);
 void fillArray(int *valueIn, int valueInElementLength, int *arrayOut,  int arrayOutElementLength, int numberOut);
 void stringFill (char *string, char cval, size_t len);
-int stringLastNonBlank (char *string, size_t stringSize);
 void zeroFill (char *string, size_t len);
 void zsetInterrupt(int handle);
 char *zgetInternalPath(void *zstruct);

@@ -3,7 +3,6 @@
 
 #include "heclib7.h"
 #include "zdssKeys.h"
-#include "hecdssFort.h"
 #include "hecdssInternal.h"
 
 
@@ -14,7 +13,6 @@
 //  For compatibility purposes.
 
 //  Use of zread is preferred.
-
 
 void zreadx(long long *ifltab, const char *pathname,
 			 int *internalHeader, int *internalHeaderArraySize , int *internalHeaderNumber,
@@ -77,24 +75,4 @@ void zreadx(long long *ifltab, const char *pathname,
 
 }
 
-
-//  Fortran compatible
-void zreadx_(long long *ifltab, const char *pathname,
-			 int *internalHeader, int *internalHeaderArraySize , int *internalHeaderNumber,
-			 int *header2, int *header2ArraySize, int *header2Number,
-			 int *userHeader, int *userHeaderArraySize, int *userHeaderNumber,
-			 int *values, int *valuesSize, int *valuesNumber,
-			 int *readPlan, int *recordFound, size_t pathLen)
-{
-	char path[MAX_PATHNAME_LENGTH];
-
-	copyAndTrim(path, sizeof(path), pathname, pathLen);
-
-	zreadx(ifltab, pathname,
-			 internalHeader, internalHeaderArraySize , internalHeaderNumber,
-			 header2, header2ArraySize, header2Number,
-			 userHeader, userHeaderArraySize, userHeaderNumber,
-			 values, valuesSize, valuesNumber,
-			 readPlan, recordFound);
-}
 

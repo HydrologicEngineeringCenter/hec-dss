@@ -80,8 +80,4 @@ int zundeleteAll(long long *ifltab)
 }
 
 
-int zudall_(long long *ifltab)
-{
-	return zundeleteAll(ifltab);
-}
 

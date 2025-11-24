@@ -74,8 +74,3 @@ void getCurrentDateTime (int *julian, int *secondsPastMidnight, int *millsPastSe
 
 }
 
-void getcurrentdatetime_(int *julian, int *secondsPastMidnight, int *millsPastSecond)
-{
-	getCurrentDateTime(julian, secondsPastMidnight, millsPastSecond);
-}
-

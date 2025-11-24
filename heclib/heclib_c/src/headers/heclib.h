@@ -4,7 +4,7 @@
 #include <float.h>
 
 #include "heclib7.h"
-#include "hecdssFort.h"
+#include <stdlib.h>
 #include "hecdssInternal.h"
 #include "zdataTypeDescriptions.h"
 
@@ -52,7 +52,6 @@ int zcopyRecord (long long *ifltabFrom, long long *ifltabTo, const char *pathnam
 int zduplicateRecord (long long *ifltab, const char *pathnameFrom, const char *pathnameTo);
 
 int deleteFile(const char* filename);
-void deletefile_(const char* filename, int *status, size_t lenFilename);
 
 //  boolean boolEndOfRecord indicates if more of same message is coming (false)
 //  or this is the last part of the message and should be written (true)
