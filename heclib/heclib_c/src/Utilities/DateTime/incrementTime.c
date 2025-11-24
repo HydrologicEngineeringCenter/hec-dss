@@ -214,13 +214,13 @@ int incrementTime(int intervalSeconds, int numberPeriods,
 			day = 15;
 		}
 	}
-	else if (abs(intervalMinutes - MINS_IN_1_MONTH) <= 2 * MINS_IN_1_DAY) {
+	else if (llabs(intervalMinutes - MINS_IN_1_MONTH) <= 2 * MINS_IN_1_DAY) {
 		//  Monthly
 		month += numberPeriods;
 		//  Day is always end of month for standard
 		day = 28;
 	}
-	else if (abs(intervalMinutes > MINS_IN_1_YEAR) <= MINS_IN_1_DAY) {
+	else if (llabs(intervalMinutes - MINS_IN_1_YEAR) <= MINS_IN_1_DAY) {
 		//  Yearly
 		year += numberPeriods;
 		//  Always new year's eve for standard
