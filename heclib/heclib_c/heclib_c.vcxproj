@@ -40,7 +40,6 @@
     <ClCompile Include="src\Internal\charInt.c" />
     <ClCompile Include="src\Internal\charLong.c" />
     <ClCompile Include="src\Internal\isTsPattern.c" />
-    <ClCompile Include="src\Internal\powf_wrap.c" />
     <ClCompile Include="src\Internal\zbinNew.c" />
     <ClCompile Include="src\Internal\zbinUpdate.c" />
     <ClCompile Include="src\Internal\zcatalogInternal.c" />
