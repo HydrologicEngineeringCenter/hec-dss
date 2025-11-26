@@ -1,17 +1,27 @@
+add_library(heclib STATIC)
 
-add_library(heclib_c OBJECT ${C_SRC})
 
 if( ${CMAKE_C_COMPILER_ID} MATCHES GNU)    
-    target_compile_options(heclib_c PRIVATE -fPIC -std=gnu99)
+    target_compile_options(heclib PRIVATE -fPIC -std=gnu99)
 elseif(${CMAKE_C_COMPILER_ID} MATCHES SunPro)
-    target_compiler_options(heclib_c PRIVATE -m64 -xmemalign=2i -xcode=pic32 -c -Isrc/headers -mt -xcode=abs64 -xstrconst -xc99=all -xCC -g -xs)
+    target_compile_options(heclib PRIVATE -m64 -xmemalign=2i -xcode=pic32 -c -Isrc/headers -mt -xcode=abs64 -xstrconst -xc99=all -xCC -g -xs)
+elsif(MSVC)
+    target_compile_options(heclib PRIVATE /Wall /MP)
 else()
     message(STATUS "generic options")
 endif()
-target_include_directories(heclib_c PUBLIC src/headers)
-target_link_libraries(heclib_c PRIVATE ZLIB::ZLIBSTATIC)
+
+
+target_include_directories(heclib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/headers)
+
+if(MSVC)
+    target_link_libraries(heclib PUBLIC zlibstatic)
+else()
+    target_link_libraries(heclib PUBLIC ZLIB::ZLIBSTATIC)
+endif()
+
 # Keep all logic above this like, only include source references here (including headers)
-target_sources(heclib_c PUBLIC # most of this should really be private but for the sake of initial simplicity don't worry about it.
+target_sources(heclib PUBLIC # most of this should really be private but for the sake of initial simplicity don't worry about it.
 src/Internal/ztsIncrementBlock.c
 src/Internal/zhash.c
 src/Internal/zpdUnitsToHead.c

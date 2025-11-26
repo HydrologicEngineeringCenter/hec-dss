@@ -11,7 +11,7 @@ add_subdirectory(heclib)
 
 find_package(Git QUIET)
 if(DSS_TEST_DATA_DIR)
-    option(RUN_TESTS "Run Tests, requires initializing a git submodule." ON)
+    option(RUN_TESTS "Run Tests, requires dss-test-data git repo." ON)
     if(RUN_TESTS)
         enable_testing()
         add_subdirectory(test)
