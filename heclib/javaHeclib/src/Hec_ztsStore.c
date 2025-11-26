@@ -59,13 +59,10 @@ JNIEXPORT jint JNICALL Java_hec_heclib_util_Heclib_Hec_1ztsStore(
 	zStructTimeSeries *tss;
 
 	
-	int *ifltab;
-
-
 	jint capacity=40;
 	(*env)->EnsureLocalCapacity(env, capacity);
 
-	ifltab		= (*env)->GetIntArrayElements(env, j_ifltab, 0);	
+	int* ifltab		= (*env)->GetIntArrayElements(env, j_ifltab, 0);	
 	storageFlag = (int)j_storageFlag;
 
 	//  Get the pathname

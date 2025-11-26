@@ -130,6 +130,13 @@ int ztsStoreIrreg7(long long *ifltab, zStructTimeSeries *tss, int storageFlag)
 		return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStoreIrreg_ID, zdssErrorCodes.BOTH_NOTE_KINDS_USED,
 								0, 0, zdssErrorSeverity.WARNING, tss->pathname, "");
 	}
+	// times array is required
+	if (!tss->times) {
+		return zerrorProcessing(ifltab, DSS_FUNCTION_ztsStoreIrreg_ID, zdssErrorCodes.NULL_ARRAY,
+			0, 0, zdssErrorSeverity.WARNING, tss->pathname, "times array is null");
+	}
+
+
 	itimes = 0;
 
 	//  Initialize the internal header array
