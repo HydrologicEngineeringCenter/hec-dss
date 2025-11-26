@@ -33,7 +33,6 @@
     <ClCompile Include="src\DssInterface\v6and7\zwrite.c" />
     <ClCompile Include="src\DssInterface\v6and7\zwritec.c" />
     <ClCompile Include="src\DssInterface\v6and7\zwritex.c" />
-    <ClCompile Include="src\DssInterface\ztsends_.c" />
     <ClCompile Include="src\DssInterface\ztsRetrieveIrregArgs.c" />
     <ClCompile Include="src\DssInterface\ztsStoreIrregArgs.c" />
     <ClCompile Include="src\DssInterface\ztsStoreRegArgs.c" />

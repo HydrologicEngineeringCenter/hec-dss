@@ -10,7 +10,7 @@ JNIEXPORT void JNICALL Java_hec_heclib_util_Heclib_Hec_1ztsends
 {
 
     int* ifltab = (*env)->GetIntArrayElements (env, j_ifltab,  0);
-    const char* path = (const char *) (*env)->GetStringUTFChars (env, j_pathname,  0);
+    const char* path = (*env)->GetStringUTFChars (env, j_pathname,  0);
     int searchOption = (int) j_searchOption; // ignored
     int* startJulian  = (*env)->GetIntArrayElements (env, j_startJulian,  0);
     int* startMinutes = (*env)->GetIntArrayElements (env, j_startMinutes, 0);
@@ -25,7 +25,6 @@ JNIEXPORT void JNICALL Java_hec_heclib_util_Heclib_Hec_1ztsends
 
 	int startSeconds;
 	int endSeconds;
-
 	
 	int status = ztsGetDateTimeRange((long long*)ifltab, path, 1, startJulian, &startSeconds, endJulian, &endSeconds);
 	if (status == STATUS_RECORD_FOUND) {
