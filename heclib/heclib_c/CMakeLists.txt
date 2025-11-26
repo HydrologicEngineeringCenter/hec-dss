@@ -61,7 +61,6 @@ src/Internal/ztsIrregStoreBlock.c
 src/Internal/ztsRegRepeatCompress.c
 src/Internal/zreadInfo.c
 src/Internal/zinitIfltab.c
-src/Internal/powf_wrap.c
 src/Internal/zcatParsePath.c
 src/Internal/ztsGetSizesInternal.c
 src/Internal/zcheckInternal.c

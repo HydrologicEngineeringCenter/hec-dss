@@ -4,7 +4,7 @@ UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Linux)
 	FDEBUG=-fcheck=all,no-recursion
 	CFLAGS=-fPIC -g -std=gnu99 -Werror $(INC_DIRS) -D__linux__ -fcommon
-	LDFLAGS=-Wl,-z,defs,--wrap=powf -lz -lrt -lgfortran -lm
+	LDFLAGS=-Wl,-z,defs -lz -lrt -lgfortran -lm
 endif
 ifeq ($(UNAME_S),SunOS)
 	CC=cc

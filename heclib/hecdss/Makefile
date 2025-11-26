@@ -8,7 +8,7 @@ ifeq ($(UNAME_S),Linux)
 	ifeq ($(UNAME_M),aarch64)
 		LDFLAGS1=-Wl,-z,defs
 	else
-		LDFLAGS1=-Wl,-z,defs,--wrap=powf
+		LDFLAGS1=-Wl,-z,defs
 		BITS=-m64
 	endif
 	CFLAGS=$(BITS) -fPIC -g -std=gnu99 $(CWARNING) $(INC_DIRS) -D__linux__

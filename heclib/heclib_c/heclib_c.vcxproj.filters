@@ -345,9 +345,6 @@
     <ClCompile Include="src\Internal\charLong.c">
       <Filter>src\Internal</Filter>
     </ClCompile>
-    <ClCompile Include="src\Internal\powf_wrap.c">
-      <Filter>src\Internal</Filter>
-    </ClCompile>
     <ClCompile Include="src\Internal\zbinNew.c">
       <Filter>src\Internal</Filter>
     </ClCompile>
