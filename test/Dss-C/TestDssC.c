@@ -1600,6 +1600,7 @@ int testTsStoreRules() {
 					}
 					assert(tss->doubleValues[j] == expectedValues[j]);
 				}
+				zstructFree(tss);
 			}
 			free(oldValues);
 			free(newValues);
