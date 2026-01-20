@@ -1403,6 +1403,7 @@ int testTsStoreRules() {
 	double* expctedIrr0 = (double*)calloc(numData, sizeof(double));
 	double* expctedIrr1 = (double*)calloc(numData, sizeof(double));
 	int i = 0;
+	free(dataCopy);
 	dataCopy = strdup(data);
 	line = strtok_r(dataCopy, "\n", &saveptr1);
 	while (line) {
@@ -1807,6 +1808,7 @@ int testTsStoreRules() {
 	free(expctedReg4);
 	free(expctedIrr0);
 	free(expctedIrr1);
+	free(dataCopy);
 	return status;
 }
 
