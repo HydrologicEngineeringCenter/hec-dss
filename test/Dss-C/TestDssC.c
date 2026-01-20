@@ -1938,6 +1938,7 @@ zStructTimeSeries* create_test_data_mark_twain(const char* pathname, int regular
 	zStructTimeSeries* tss;
 	if (regular) {
 		tss = zstructTsNewRegDoubles(pathname, doubleValues, size, startDate, startTime, units, type);
+		tss->allocated[zSTRUCT_TS_doubleValues] = 1;
 	}
 	else
 	{
@@ -1948,6 +1949,7 @@ zStructTimeSeries* create_test_data_mark_twain(const char* pathname, int regular
 			times[i] = i * 60 + julian;
 		}
 		tss = zstructTsNewIrregDoubles(pathname, doubleValues, size, times, 60, startDate, units, type);
+		tss->allocated[zSTRUCT_TS_doubleValues] = 1;
 		tss->allocated[zSTRUCT_TS_times] = 1;
 	}
 	return tss;
@@ -1999,6 +2001,7 @@ int test_data_shift_during_save(int regular) {
 	zstructFree(tss);
 	zstructFree(tssWrite);
 	zstructFree(tssRead);
+	zstructFree(markTwain);
 	zclose(ifltab);
 	printf("Status = %d in test_data_shift_during_save",status);
 	return status;
