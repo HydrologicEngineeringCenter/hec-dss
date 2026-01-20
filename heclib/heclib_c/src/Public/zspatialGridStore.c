@@ -191,6 +191,7 @@ int zspatialGridStore_extended(long long* ifltab, zStructSpatialGrid* gridStruct
 
 	ztransfer->header2Number = numberIntsInBytes((int)total);
 	ztransfer->header2 = (int*)calloc(ztransfer->header2Number + 2, 4);
+	ztransfer->allocated[zSTRUCT_TRANS_header2] = 1;
 	ztransfer->header2Mode = 1;
 	//  Need to be sure to copy char into in array, not cast and assign to header
 	charInt(str, ztransfer->header2, (int)total, (ztransfer->header2Number * 4), 1, 1, 0);
@@ -199,6 +200,7 @@ int zspatialGridStore_extended(long long* ifltab, zStructSpatialGrid* gridStruct
 	//  Store floats: _cellSize,_xCoordOfGridCellZero,_yCoordOfGridCellZero,_nullValue
 	ztransfer->userHeaderNumber = (4 * 2) + 3;
 	ztransfer->userHeader = (int*)calloc(ztransfer->userHeaderNumber, 4);
+	ztransfer->allocated[zSTRUCT_userHeader] = 1;
 	ztransfer->userHeaderMode = 1;
 	memset(ztransfer->userHeader, 0, ztransfer->userHeaderNumber * 4);
 	memcpy(&ztransfer->userHeader[0], &gridStruct->_cellSize, 4);
@@ -217,6 +219,7 @@ int zspatialGridStore_extended(long long* ifltab, zStructSpatialGrid* gridStruct
 		//  Range Limits and min/max/mean values
 		ztransfer->values1Number = gridStruct->_numberOfRanges * 2 + 3;
 		ztransfer->values1 = (int*)calloc(ztransfer->values1Number, 4);
+		ztransfer->allocated[zSTRUCT_TRANS_values1] = 1;
 		ztransfer->values1Mode = 1;
 		convertDataArray((int*)(gridStruct->_minDataValue), &ztransfer->values1[0], 1, 1, 1);
 		convertDataArray((int*)(gridStruct->_maxDataValue), &ztransfer->values1[1], 1, 1, 1);
@@ -240,6 +243,7 @@ int zspatialGridStore_extended(long long* ifltab, zStructSpatialGrid* gridStruct
 				internalHeader[INT_HEAD_grid_sizeofCompressedElements] = gridStruct->_sizeofCompressedElements;
 				ztransfer->values3Number = numLongs * 2;
 				ztransfer->values3 = (int*)dataValues;
+				ztransfer->allocated[zSTRUCT_TRANS_values3] = 1;
 				if (bigEndian()) {
 					zswitchInts(ztransfer->values3, ztransfer->values3Number);
 				}
@@ -287,6 +291,7 @@ int zspatialGridStore_extended(long long* ifltab, zStructSpatialGrid* gridStruct
 			internalHeader[INT_HEAD_grid_sizeofCompressedElements] = gridStruct->_sizeofCompressedElements;
 			ztransfer->values3Number = numberIntsInBytes(bufsize);
 			ztransfer->values3 = (int*)calloc((size_t)ztransfer->values3Number + 2, 4);
+			ztransfer->allocated[zSTRUCT_TRANS_values3] = 1;
 			charInt((void*)buffer, (void*)ztransfer->values3, bufsize, (ztransfer->values3Number * 4), 1, 1, 0);
 			free(buffer);
 			free(dataValues);
@@ -333,6 +338,7 @@ int zspatialGridStore_extended(long long* ifltab, zStructSpatialGrid* gridStruct
 		}
 	}
 	ztransfer->internalHeader = internalHeader;
+	ztransfer->allocated[zSTRUCT_TRANS_internalHeader] = 1;
 	if (bigEndian()) {
 		zswitchInts(ztransfer->internalHeader, ztransfer->internalHeaderNumber);
 	}
