@@ -46,7 +46,9 @@ int check_values_compare(long long ifltab[], const char* path, int irregular) {
 
 	if (tss->numberValues != NUM_TS_VALUES) {
 		printf("Expected  %d numberValues, found %d \n", NUM_TS_VALUES, tss->numberValues);
+		zstructFree(tss);
 		rval = -1;
+		return rval;
 	}
 	for (size_t i = 0; i < NUM_TS_VALUES; i++)
 	{
@@ -72,6 +74,7 @@ int check_values_compare(long long ifltab[], const char* path, int irregular) {
 			rval = -2;
 		}
 	}
+	zstructFree(tss);
 	return rval;
 }
 
