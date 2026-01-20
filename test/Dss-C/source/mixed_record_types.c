@@ -145,7 +145,7 @@ int write_ts_mixed(long long* ifltab, char* path, int writeDoublesFirst) {
 
 int test_mixed_record_types() {
 
-	long long ifltab[250];
+	long long ifltab[250] = {0};
 	const char* dssFileName = "test_create_mixed_record_types.dss";
 	deleteFile(dssFileName);
 

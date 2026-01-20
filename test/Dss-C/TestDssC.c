@@ -1832,7 +1832,7 @@ int renameTest() {
 	const char* name1 = "//ATWOOD/FLOW-CUMULATIVE/01Sep2024/1Hour/backup/";
 	const char* name2 = "//ATWOOD/FLOW-CUMULATIVE/01Sep2024/1Hour/Backup/";
 
-	long long ifltab[250];
+	long long ifltab[250] = {0};
 	const char* dssFilename = "temp-dss-issue-206.dss";
 	deleteFile(dssFilename);
 
@@ -1966,7 +1966,7 @@ int test_data_shift_during_save(int regular) {
 
 	zStructTimeSeries* markTwain = create_test_data_mark_twain(pathname, regular);
 
-	long long ifltab[250];
+	long long ifltab[250] = {0};
 	const char* dssFilename = "working_mark_twain.dss";
 	deleteFile(dssFilename);
 
