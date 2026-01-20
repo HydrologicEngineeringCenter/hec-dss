@@ -35,6 +35,9 @@ jobs:
         uses: jwlawson/actions-setup-cmake@802fa1a2c4e212495c05bf94dba2704a92a472be
         with:
             cmake-version: '3.31.x'
+      - name: Install Valgrind (Ubuntu & macOS)
+        if: ${{matrix.platform != 'windows-latest'}}
+        uses: romen/checkout-valgrind@3a29b66c3e1fd0ff96ca0e8d1d2e5f4c8b9d8e7f
       - name: Configure
         run: cmake -B build
       - name: Build

@@ -15,6 +15,41 @@ if (MSVC)
 set_property(TEST Dss-C PROPERTY ENVIRONMENT_MODIFICATION "PATH=path_list_append:$<TARGET_RUNTIME_DLL_DIRS:Dss-C>")
 endif()
 
+# ====================================================================
+#  Valgrind 
+# ====================================================================
+if(BUILD_TESTING)
+    find_program(
+        VALGRIND_EXECUTABLE
+        NAMES valgrind
+        DOC "Path to the Valgrind executable"
+    )
+
+    if(VALGRIND_EXECUTABLE)
+        message(STATUS "Valgrind found: ${VALGRIND_EXECUTABLE}")
+
+        set(VALGRIND_OPTIONS
+            "--leak-check=full"
+            "--show-leak-kinds=all"
+            "--track-origins=yes"
+            "--error-exitcode=1"
+            "--log-file=valgrind-out.txt"
+        )
+
+        add_custom_target(
+            memcheck
+            COMMAND ${VALGRIND_EXECUTABLE} ${VALGRIND_OPTIONS} $<TARGET_FILE:Dss-C> test
+            WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/test
+            COMMENT "Running Valgrind memory check on tests..."
+            # This ensures your test executable is built before this target runs
+            DEPENDS Dss-C copy-test-data-dss-c
+        )
+
+    else()
+        message(WARNING "Valgrind not found. The 'memcheck' target will not be available.")
+    endif()
+endif()
+
 target_sources(Dss-C PRIVATE
 test_logging.c
 TestDssC.h
