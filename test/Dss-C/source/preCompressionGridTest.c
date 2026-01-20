@@ -50,6 +50,7 @@ int gridPreCompressionTest() {
 	status = zspatialGridRetrieve(ifltab, gridStructRetrieve2, 1);
 
 	gridStructRetrieve->pathname = old_pathname;
+	free(dataValues);
 	free(old_data);
 	zstructFree(gridStructRetrieve2);
 	zstructFree(gridStructRetrieve);
