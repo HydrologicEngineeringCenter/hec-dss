@@ -46,5 +46,5 @@ jobs:
         run: ctest --test-dir build -C Debug
       - name: Run Valgrind Memory Check
         if: ${{matrix.platform == 'ubuntu-latest'}}
-        run: cd ${{github.workspace}}/build/test/Dss-C/test && valgrind --error-exitcode=1 --leak-check=full ../DssTest test
+        run: cd ${{github.workspace}}/build/test/Dss-C/test && valgrind --error-exitcode=1 --leak-check=full ../Dss-C test
 
