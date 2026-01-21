@@ -1403,6 +1403,7 @@ int testTsStoreRules() {
 	double* expctedIrr0 = (double*)calloc(numData, sizeof(double));
 	double* expctedIrr1 = (double*)calloc(numData, sizeof(double));
 	int i = 0;
+	free(dataCopy);
 	dataCopy = strdup(data);
 	line = strtok_r(dataCopy, "\n", &saveptr1);
 	while (line) {
@@ -1599,6 +1600,7 @@ int testTsStoreRules() {
 					}
 					assert(tss->doubleValues[j] == expectedValues[j]);
 				}
+				zstructFree(tss);
 			}
 			free(oldValues);
 			free(newValues);
@@ -1807,6 +1809,7 @@ int testTsStoreRules() {
 	free(expctedReg4);
 	free(expctedIrr0);
 	free(expctedIrr1);
+	free(dataCopy);
 	return status;
 }
 
@@ -1829,7 +1832,7 @@ int renameTest() {
 	const char* name1 = "//ATWOOD/FLOW-CUMULATIVE/01Sep2024/1Hour/backup/";
 	const char* name2 = "//ATWOOD/FLOW-CUMULATIVE/01Sep2024/1Hour/Backup/";
 
-	long long ifltab[250];
+	long long ifltab[250] = {0};
 	const char* dssFilename = "temp-dss-issue-206.dss";
 	deleteFile(dssFilename);
 
@@ -1936,6 +1939,7 @@ zStructTimeSeries* create_test_data_mark_twain(const char* pathname, int regular
 	zStructTimeSeries* tss;
 	if (regular) {
 		tss = zstructTsNewRegDoubles(pathname, doubleValues, size, startDate, startTime, units, type);
+		tss->allocated[zSTRUCT_TS_doubleValues] = 1;
 	}
 	else
 	{
@@ -1946,6 +1950,7 @@ zStructTimeSeries* create_test_data_mark_twain(const char* pathname, int regular
 			times[i] = i * 60 + julian;
 		}
 		tss = zstructTsNewIrregDoubles(pathname, doubleValues, size, times, 60, startDate, units, type);
+		tss->allocated[zSTRUCT_TS_doubleValues] = 1;
 		tss->allocated[zSTRUCT_TS_times] = 1;
 	}
 	return tss;
@@ -1961,7 +1966,7 @@ int test_data_shift_during_save(int regular) {
 
 	zStructTimeSeries* markTwain = create_test_data_mark_twain(pathname, regular);
 
-	long long ifltab[250];
+	long long ifltab[250] = {0};
 	const char* dssFilename = "working_mark_twain.dss";
 	deleteFile(dssFilename);
 
@@ -1997,6 +2002,7 @@ int test_data_shift_during_save(int regular) {
 	zstructFree(tss);
 	zstructFree(tssWrite);
 	zstructFree(tssRead);
+	zstructFree(markTwain);
 	zclose(ifltab);
 	printf("Status = %d in test_data_shift_during_save",status);
 	return status;

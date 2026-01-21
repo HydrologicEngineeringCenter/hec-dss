@@ -8,7 +8,7 @@
 int test_logging() {
 
 	// log without ifltab reference.
-	long long ifltab[250];
+	long long ifltab[250] = {0};
 	const char* logFilename = "test_log{101}.txt";
 	deleteFile(logFilename);
 

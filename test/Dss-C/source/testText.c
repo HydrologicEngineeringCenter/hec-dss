@@ -23,6 +23,7 @@ int writeText(const char* filename, const char* path, char* text) {
   }
 
   zstructFree(t);
+  zclose(ifltab);
   return status;
 
 }

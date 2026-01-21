@@ -141,14 +141,17 @@ int zrename(long long *ifltab, const char* oldPathname, const char* newPathname)
 			status = zpathnameSetPart(tmpPath, MAX_PATHNAME_LENGTH, wierd_fpart, 6);
 			if (status != STATUS_OKAY) {
 				// error
+				free(newPath);
 				return status;
 			}
 			status = zrename(ifltab, oldPathname, tmpPath);
 			if (status != STATUS_OKAY) {
 				// error
+				free(newPath);
 				return status;
 			}
 			status = zrename(ifltab, tmpPath, newPathname);
+			free(newPath);
 			return status;
 		}
 	}
@@ -217,6 +220,12 @@ int zrename(long long *ifltab, const char* oldPathname, const char* newPathname)
 		end = positions[6];
 		len = (int)strlen(newPathname) + 12;
 		newPath = calloc(len, 1);
+		if (!newPath) {
+			return zerrorProcessing(ifltab, DSS_FUNCTION_zrename_ID,
+				zdssErrorCodes.CANNOT_ALLOCATE_MEMORY, 0, 0,
+				zdssErrorSeverity.MEMORY_ERROR,
+				newPathname, "Allocating space for modified pathname");
+		}
 		stringCopy(newPath, len, newPathname, positions[3]);
 		zpathnamePartPositions(oldPathname, strlen(oldPathname), positions, 7);
 		stringCat(newPath, len, &oldPathname[positions[3]], (positions[5] - positions[3]));

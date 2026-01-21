@@ -34,6 +34,7 @@ test/Dss-C/Output
 heclib-*.tar
 heclib/build.log
 build/**
+heclib/build/**
 heclib/.vs/
 heclib/Win32/
 heclib/heclib_c/Win32/

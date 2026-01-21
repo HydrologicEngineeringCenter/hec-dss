@@ -6,7 +6,7 @@ int testNoDates(int version)
 	char* dssFileName = "test_no_dates_12_values.dss";
 	deleteFile(dssFileName);
 
-	long long ifltab[250];
+	long long ifltab[250] = {0};
 	
 	int	status = hec_dss_zopen(ifltab, dssFileName);
 
