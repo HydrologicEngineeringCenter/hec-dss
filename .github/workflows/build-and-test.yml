@@ -44,3 +44,7 @@ jobs:
         run: cmake --build build
       - name: test
         run: ctest --test-dir build -C Debug
+      - name: Run Valgrind Memory Check
+        if: ${{matrix.platform == 'ubuntu-latest'}}
+        run: cmake --build ${{github.workspace}}/build --target memcheck
+
