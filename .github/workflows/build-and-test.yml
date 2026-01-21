@@ -37,10 +37,7 @@ jobs:
             cmake-version: '3.31.x'
       - name: Install Valgrind (Ubuntu)
         if: ${{matrix.platform == 'ubuntu-latest'}}
-        run: sudo apt-get update && sudo apt-get install -y valgrind
-      - name: Install Valgrind (macOS)
-        if: ${{matrix.platform == 'macos-15'}}
-        run: brew install valgrind
+        run: sudo apt-get install -y valgrind
       - name: Configure
         run: cmake -B build
       - name: Build
