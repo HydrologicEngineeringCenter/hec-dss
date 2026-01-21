@@ -35,9 +35,16 @@ jobs:
         uses: jwlawson/actions-setup-cmake@802fa1a2c4e212495c05bf94dba2704a92a472be
         with:
             cmake-version: '3.31.x'
+      - name: Install Valgrind (Ubuntu)
+        if: ${{matrix.platform == 'ubuntu-latest'}}
+        run: sudo apt-get install -y valgrind
       - name: Configure
         run: cmake -B build
       - name: Build
         run: cmake --build build
       - name: test
         run: ctest --test-dir build -C Debug
+      - name: Run Valgrind Memory Check
+        if: ${{matrix.platform == 'ubuntu-latest'}}
+        run: cd ${{github.workspace}}/build/test/Dss-C/test && valgrind --error-exitcode=1 --leak-check=full ../DssTest test
+
