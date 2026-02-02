@@ -384,7 +384,6 @@
     <ClInclude Include="src\headers\zdssKeys.h" />
     <ClInclude Include="src\headers\zdssLocking.h" />
     <ClInclude Include="src\headers\zdssMessages.h" />
-    <ClInclude Include="src\headers\zdssMessagesFort.h" />
     <ClInclude Include="src\headers\zdssRecordDiscriptions.h" />
     <ClInclude Include="src\headers\zdssVals.h" />
     <ClInclude Include="src\headers\zerrorCodes.h" />
