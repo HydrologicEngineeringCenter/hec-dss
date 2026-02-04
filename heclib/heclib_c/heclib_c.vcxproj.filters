@@ -1140,9 +1140,6 @@
     <ClInclude Include="src\headers\zdssMessages.h">
       <Filter>src\headers</Filter>
     </ClInclude>
-    <ClInclude Include="src\headers\zdssMessagesFort.h">
-      <Filter>src\headers</Filter>
-    </ClInclude>
     <ClInclude Include="src\headers\zdssRecordDiscriptions.h">
       <Filter>src\headers</Filter>
     </ClInclude>
