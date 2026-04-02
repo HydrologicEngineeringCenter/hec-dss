@@ -11,7 +11,7 @@ import hec.io.TimeSeriesContainer;
 //  An example where you are listening to a data set to
 //  determine if you need to refresh a plot
 //
-public class ExampleListener2 implements hec.event.HecDssListener
+public class ExampleListener2 implements hec.heclib.dss.HecDssListener
 {	
 	TimeSeriesContainer timeSeriesContainer;
 	TimeSeriesDataSet timeSeriesDataSet;
@@ -61,7 +61,7 @@ public class ExampleListener2 implements hec.event.HecDssListener
 	/ * */		
 	}
 
-	public void hecDssEventPerformed(hec.event.HecDssEventType source) 
+	public void hecDssEventPerformed(hec.heclib.dss.HecDssEventType source) 
 	{
 		//  If you want to know the change type:
 		//  int changeType = source.getChangeType();

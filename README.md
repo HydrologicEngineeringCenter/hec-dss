@@ -30,7 +30,6 @@ heclib.dll
 yum install -y \
      git \
      gcc \
-     gcc-gfortran \
      make \
      zlib-devel \
      java-devel \
@@ -43,12 +42,11 @@ export JAVA_HOME=/etc/alternatives/java_sdk_11_openjdk
 
 ```
 sudo apt-get install build-essential
-sudo apt-get install gfortran
 sudo apt-get install zlib1g-dev
 apt-get install default-jdk
 ```
 
-It has been reported the Centos binaries worked in ubunto,after installing the following:
+It has been reported the Centos binaries worked in ubuntu after installing the following:
 
 zlib, math, quadmath, and gfortran for pydsstools to work in Ubuntu.
 
@@ -94,14 +92,13 @@ export LD_LIBRARY_PATH=/usr/gcc/7/lib/sparcv9
 
 ### Windows
 
-For Windows we are using the intel compiler and Visual Studio 2022.
+For Windows we are using the Visual Studio 2022.
 
 
-The environment variables IFORT_COMPILER_LIB and JAVA_HOME need to be set.
+The environment variable JAVA_HOME needs to be set.
 example: 
 
 ```cmd
-set IFORT_COMPILER_LIB=C:\Program Files (x86)\Intel\oneAPI\compiler\2024.2\lib
 set JAVA_HOME=c:\bin\jdk1.8.0
 
 git clone https://github.com/HydrologicEngineeringCenter/hec-dss.git
@@ -137,3 +134,13 @@ The primary user interface for DSS files is HEC-DSSVue.
 https://www.hec.usace.army.mil/confluence/dssdocs/dssvueum/
 
 
+
+
+## Known Python libraries using DSS
+
+| Repo URL | Description | DSS versions supported |
+|---|---|---|
+| https://github.com/HydrologicEngineeringCenter/hec-dss-python | Official HEC Python bindings for reading/writing HEC-DSS using the HECLIB C library/DLL. | DSS-7 only |
+| https://github.com/gyanz/pydsstools | Community Python library for working with HEC-DSS data (e.g., time series, paired data, grids) and basic DSS operations. | DSS-6 and 7  |
+| https://github.com/CADWRDeltaModeling/pyhecdss | Python 3 interface to HECLIB (DSS-6) via SWIG for 64-bit Windows/Linux use. | DSS-6 |
+| https://github.com/nzahasan/pyheclib | Python interface for reading and writing HEC-DSS files (HECLIB wrapper). | DSS-6 |

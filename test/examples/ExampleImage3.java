@@ -5,7 +5,7 @@ import java.util.Observer;
 import java.util.Vector;
 
 import hec.heclib.dss.*;
-import hec.util.PhotoViewerInfo;
+import hec.io.PhotoViewerInfo;
 import hec.util.PhotoViewerJFrame;
 
 
