@@ -1,10 +1,10 @@
 
-import hec.event.HecDssEventType;
+import hec.heclib.dss.HecDssEventType;
 import hec.heclib.dss.*;
 
 //  An example listening for  "Flow" records changed in the file
 //
-public class ExampleListener1 implements hec.event.HecDssListener
+public class ExampleListener1 implements hec.heclib.dss.HecDssListener
 {	
 	HecDssCatalog catalog;
 
