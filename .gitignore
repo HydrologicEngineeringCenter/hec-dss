@@ -156,3 +156,4 @@ test/VB/.vs/*
 /heclib/javaHeclib/.idea
 dss-test-data
 /out/build/x64-debug
+/.claude/settings.local.json
