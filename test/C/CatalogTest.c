@@ -11,7 +11,7 @@
 int main(int argc, char* argv[])
 {
 	long long ifltab[250];
-	char filename[_MAX_PATH];
+	char filename[MAX_FILENAME_LENGTH];
 	char pathname[393];
 	char *tempname;
 	zStructCatalog *catStruct;

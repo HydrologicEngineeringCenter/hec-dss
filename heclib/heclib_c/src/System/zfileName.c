@@ -24,11 +24,11 @@
 *
 *  Declaration:  int zfileName (char *fullDssFilename, size_t sizeofFilename, const char *dssFileName, int *permission)
 *  Parameters:	char *fullDssFilename (output)
-*					A char array dimensioned to _MAX_PATH, which is returned with the full,
+*					A char array dimensioned to MAX_FILENAME_LENGTH, which is returned with the full,
 *					absolute DSS file name with drive, path and extension (".dss").
 *
 *				size_t sizeofFilename
-*					The size of fullDssFilename.  Should be _MAX_PATH.
+*					The size of fullDssFilename.  Should be MAX_FILENAME_LENGTH.
 *
 *				const char *dssFileName
 *					The input name of the DSS file to get the full path to.
@@ -66,7 +66,7 @@ struct stat buf;
 	 struct stat64 buf;
 #endif
 	int result;
-	char name[_MAX_PATH];
+	char name[MAX_FILENAME_LENGTH];
 	char *fullName;
 	char extension[5];
 	int foundExtension;
@@ -102,10 +102,10 @@ struct stat buf;
 		istart = 0;
 	 }
 
-	 stringCopy(name, _MAX_PATH, &dssFileName[istart], len);
+	 stringCopy(name, MAX_FILENAME_LENGTH, &dssFileName[istart], len);
 	 if (!foundExtension) {
 		 //  Add extension ".dss", if needed
-		 stringCat(name, _MAX_PATH, ".dss", 4);
+		 stringCat(name, MAX_FILENAME_LENGTH, ".dss", 4);
 	 }
 
 

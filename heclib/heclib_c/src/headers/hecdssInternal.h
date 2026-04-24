@@ -31,8 +31,6 @@
 
 
 #ifndef _MSC_VER
-#define _MAX_PATH 300
-#define _MAX_FNAME 100
 #define _snprintf_s(a,b,c,...) snprintf(a,b,__VA_ARGS__)
 #endif
 

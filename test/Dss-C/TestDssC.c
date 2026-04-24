@@ -326,6 +326,11 @@ int runTheTests() {
 	if (status != STATUS_OKAY)
 		return status;
 
+	printf("\ntest getFileFromPath\n");
+	status = test_getFileFromPath();
+	if (status != STATUS_OKAY)
+		return status;
+
 	printf("\ntest Bulletin_17C_Examples.dss for reading full record\n");
 	status = skip_dss6() ? 0 : Bulletin_17C_SSP_Issue();
 	if (status != STATUS_OKAY)
