@@ -22,10 +22,10 @@ int test_getFileFromPath(void)
 	result = getFileFromPath(buf, sizeof(buf), longPath);
 	if (result == NULL || strcmp(result, expected) != 0) {
 		printf("\nFAIL: getFileFromPath(%d-char path) -> \"%s\"",
-			(int)strlen(longPath), result ? result : "<NULL>");
+			(int)strnlen_hec(longPath,MAX_FILENAME_LENGTH), result ? result : "<NULL>");
 		return -1;
 	}
 
-	printf("\ntest_getFileFromPath: OK (%d-char input)", (int)strlen(longPath));
+	printf("\ntest_getFileFromPath: OK (%d-char input)", (int)strnlen_hec(longPath,MAX_FILENAME_LENGTH));
 	return 0;
 }

@@ -44,6 +44,6 @@
 	if ((p = strrchr(base, '/'))  != NULL) base = p + 1;
 	if ((p = strrchr(base, '\\')) != NULL) base = p + 1;
 
-	stringCopy(filename, sizeOfFilename, base, strlen(base));
+	stringCopy(filename, sizeOfFilename, base, strnlen_hec(base,MAX_FILENAME_LENGTH));
 	return filename;
 }
