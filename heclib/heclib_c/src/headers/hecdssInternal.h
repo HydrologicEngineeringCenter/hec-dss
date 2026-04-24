@@ -31,8 +31,6 @@
 
 
 #ifndef _MSC_VER
-#define _MAX_PATH 300
-#define _MAX_FNAME 100
 #define _snprintf_s(a,b,c,...) snprintf(a,b,__VA_ARGS__)
 #endif
 
@@ -40,7 +38,7 @@
 #define DSS_VERSION "7-JA"
 
 
-#define DSS_VERSION_DATE "26 November 2025"
+#define DSS_VERSION_DATE "24 April 2026"
 
 const char *ztypeName(int recordType, int boolAbbreviation);
 

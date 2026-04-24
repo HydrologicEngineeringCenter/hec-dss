@@ -1,13 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#ifdef _MSC_VER
-#include <tchar.h>
-#else
-#include <libgen.h>
-#endif
-
-
 #include "heclib7.h"
 
 /**
@@ -21,50 +14,36 @@
 *
 *  Parameters:
 *				char *filename:  The file name only (with extension)  This should be declared as
-*					char filename[_MAX_FNAME];
+*					char filename[MAX_FILENAME_LENGTH];
 *
-*				size_t sizeOfFilename:  The size of the char array filename.  (should be _MAX_FNAME)
+*				size_t sizeOfFilename:  The size of the char array filename.  (should be MAX_FILENAME_LENGTH)
 *
 *				const char *fullpath:  The path/file name to parse.
 *
 *
 *	Returns:	char *filename or NULL if invalid file name.
-*
-*
 *	Author:			Bill Charley
 *	Date:			2012
 *   Organization:	US Army Corps of Engineers, Hydrologic Engineering Center (USACE HEC)
 *					All Rights Reserved
 *
+*
 **/
 
- char *getFileFromPath (char *filename, size_t sizeOfFilename, char *fullpath)
+ char *getFileFromPath (char *filename, size_t sizeOfFilename, const char *fullpath)
  {
-#ifdef _MSC_VER
-   char drive[_MAX_DRIVE];
-   char dir[_MAX_DIR];
-   char *fname;
-   char ext[_MAX_EXT];
-   errno_t err;
-   size_t len;
+	const char *base;
+	const char *p;
 
-	err = _splitpath_s( fullpath, drive, _MAX_DRIVE, dir, _MAX_DIR, filename,
-                       sizeOfFilename, ext, (size_t)_MAX_EXT );
-	if (err) return NULL;
+	if (filename == NULL || fullpath == NULL || sizeOfFilename == 0) {
+		return NULL;
+	}
 
-	len = strnlen_hec(ext, _MAX_EXT);
-	stringCat(filename, _MAX_FNAME, ext, len);
-	fname = filename;
+	//  Accept either separator, or mixed separators, to handle both Unix and Windows paths. 
+	base = fullpath;
+	if ((p = strrchr(base, '/'))  != NULL) base = p + 1;
+	if ((p = strrchr(base, '\\')) != NULL) base = p + 1;
 
-#else
-	 char *fname;
-	 fname = basename(fullpath);
-	 if (fname) {
-		stringCopy(filename, sizeOfFilename, fname, strlen(fname));
-		fname = filename;
-	 }
-#endif
-
-	return fname;
+	stringCopy(filename, sizeOfFilename, base, strnlen_hec(base,MAX_FILENAME_LENGTH));
+	return filename;
 }
-

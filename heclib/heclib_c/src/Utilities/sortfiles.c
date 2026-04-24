@@ -1938,10 +1938,10 @@ sortfilesGnu (argc, argv)
 int sortfiles(char *unsortedIn, char *sortedOut)
 {
 	char *filenames[3];
-	char temp[_MAX_FNAME];
+	char temp[MAX_FILENAME_LENGTH];
 
-	stringCopy (temp, _MAX_FNAME, "-o" , _TRUNCATE);
-	stringCat(temp, _MAX_FNAME, sortedOut, strlen(sortedOut));
+	stringCopy (temp, MAX_FILENAME_LENGTH, "-o" , _TRUNCATE);
+	stringCat(temp, MAX_FILENAME_LENGTH, sortedOut, strlen(sortedOut));
 
 	filenames[0] = (char *) 0;
 	filenames[1] = (char *)&temp;

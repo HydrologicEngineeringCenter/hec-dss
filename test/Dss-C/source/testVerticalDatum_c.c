@@ -1284,7 +1284,7 @@ void retrieveAndCompareVdi(long long *ifltab, const char* pathname, const void *
     char startTime[16]; // only using 6, but keeping compiler happy
     char endDate[10];
     char endTime[16]; // only using 6, but keeping compiler happy
-    char filename[_MAX_PATH];
+    char filename[MAX_FILENAME_LENGTH];
     memset(filename, 0, sizeof(filename));
     int* structType = (int*)sourceData;
     int status;

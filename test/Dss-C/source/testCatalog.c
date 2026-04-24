@@ -26,9 +26,9 @@ int testCatalog()
 	zStructCatalog *catStruct;
 	zStructCatalog *catStruct2;
 	zStructTransfer* ztransfer;
-	char dssFilename[_MAX_PATH] = {0};
-	char filename[_MAX_PATH ] = {0};
-	char catFilename[_MAX_PATH] = {0};
+	char dssFilename[MAX_FILENAME_LENGTH] = {0};
+	char filename[MAX_FILENAME_LENGTH ] = {0};
+	char catFilename[MAX_FILENAME_LENGTH] = {0};
 	char pathWithWild[100] = {0};
 	char pathname[200] = {0};
 	int count;

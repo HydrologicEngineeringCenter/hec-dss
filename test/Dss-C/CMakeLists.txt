@@ -81,4 +81,5 @@ source/testSqueeze.c
 source/testWriteRead.c
 source/testNoDates.c
 source/testProfileReg.c
+source/test_getFileFromPath.c
 )
