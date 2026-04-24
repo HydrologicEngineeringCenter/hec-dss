@@ -27,9 +27,10 @@ all:
 	(cd hecdss; $(MAKE) )
 	cp ./javaHeclib/Output/*javaHeclib.* Output/
 	cp ./hecdss/libhecdss.* Output/
+	cp ./hecdss/hecdss.h Output/
 	(cd Output; zip javaHeclib.zip libjavaHeclib.*)
 	(cd Output; zip heclib.zip heclib.a )
-	(cd Output; zip hecdss.zip libhecdss.* )
+	(cd Output; zip hecdss.zip libhecdss.* hecdss.h )
 	(cd Output; tar -czvf javaHeclib.tar.gz libjavaHeclib.* )
 	ls -la Output/
 	
