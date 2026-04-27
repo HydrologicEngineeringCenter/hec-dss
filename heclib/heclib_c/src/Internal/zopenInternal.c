@@ -97,8 +97,8 @@
 	 int fileExists;
 	 int permission;
 	 int size;
-	 char fullDssFilename[_MAX_PATH];
-	 char filenameOnly[_MAX_FNAME];
+	 char fullDssFilename[MAX_FILENAME_LENGTH];
+	 char filenameOnly[MAX_FILENAME_LENGTH];
 	 char *filename;
 	 char fileVersion[9];
 	 char cdss[9];
@@ -138,7 +138,7 @@
 	 }
 
 	 //  Get the file's absolute path, append ".dss", if needed, and determine if it exists
-	 fileExists = zfileName (fullDssFilename, _MAX_PATH, dssFilename, &permission);
+	 fileExists = zfileName (fullDssFilename, MAX_FILENAME_LENGTH, dssFilename, &permission);
 	 if (fileExists < 0) {
 		 //  The only error is that the filename and path is not valid.
 		 //  The error is system dependent
@@ -208,7 +208,7 @@
 		if (status || (ihandle < 1)) {
 			//  If the file was just deleted, it may not have been removed from
 			//  Windows cache - retry
-			fileExists = zfileName (fullDssFilename, _MAX_PATH, dssFilename, &permission);
+			fileExists = zfileName (fullDssFilename, MAX_FILENAME_LENGTH, dssFilename, &permission);
 			if (!fileExists) {
 				status2 = zopenDisk(fullDssFilename, &ihandle, 10, 0);
 			}

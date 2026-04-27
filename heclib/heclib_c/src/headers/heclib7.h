@@ -14,7 +14,7 @@ void lowerCase(char *string);
 void upperCase(char *string);
 int longWithCommas(char *str, size_t strSize, long long number);
 
-char *getFileFromPath (char *filename, size_t sizeOfFilename, char *fullpath);
+char *getFileFromPath (char *filename, size_t sizeOfFilename, const char *fullpath);
 int stringCopy (char *destination, size_t sizeOfDestination, const char* source, size_t lenSource);
 size_t trimLength(const char *string);
 size_t trimLengthLen(const char *string, size_t len);

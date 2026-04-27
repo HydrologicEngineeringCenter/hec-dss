@@ -157,3 +157,4 @@ test/VB/.vs/*
 dss-test-data
 /out/build/x64-debug
 /.claude/**
+test/Dss-C/Dss-C/x64/Release/**

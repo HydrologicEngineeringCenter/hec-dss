@@ -48,12 +48,12 @@
 
 int zsqueeze(const char *dssFilename)
 {
-	char tempDssFilename[_MAX_PATH] = {0};
+	char tempDssFilename[MAX_FILENAME_LENGTH] = {0};
 	long long ifltab[600] = {0};
 
 
 #ifdef _MSC_VER
-	if (_fullpath(tempDssFilename, dssFilename, _MAX_PATH) == NULL) {
+	if (_fullpath(tempDssFilename, dssFilename, MAX_FILENAME_LENGTH) == NULL) {
 		printf("Illegal file name or cannot determine file name, name: %s\n", dssFilename);
 		ifltab[0] = 0;
 		return zerrorProcessing(ifltab, DSS_FUNCTION_zsqueeze_ID,

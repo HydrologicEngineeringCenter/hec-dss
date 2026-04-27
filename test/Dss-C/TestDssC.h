@@ -12,6 +12,7 @@ int testLargeCopy();
 int test_normalize_f_part();
 int test_vertical_datums_c();
 int test_stringCat();
+int test_getFileFromPath();
 int testMultiUser(char* filename, int version, int numberDatasets, int accessMode /*2=multi, 3=single, 4=exclusive*/);
 int testZtsProcessTimes(long long *ifltab);
 int testztsStruct1(long long *ifltab);
