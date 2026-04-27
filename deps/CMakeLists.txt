@@ -11,8 +11,6 @@ FetchContent_Declare(
     dss_test_data
     GIT_REPOSITORY https://github.com/HydrologicEngineeringCenter/dss-test-data.git
     GIT_TAG master
-    CONFIGURE_COMMAND ""
-    BUILD_COMMAND ""
 )
 
 FetchContent_MakeAvailable(dss_test_data)

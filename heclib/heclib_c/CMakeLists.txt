@@ -1,15 +1,6 @@
 add_library(heclib STATIC)
 
-if( ${CMAKE_C_COMPILER_ID} MATCHES GNU)    
-    target_compile_options(heclib PRIVATE -fPIC -std=gnu99)
-elseif(${CMAKE_C_COMPILER_ID} MATCHES SunPro)
-    target_compile_options(heclib PRIVATE -m64 -xmemalign=2i -xcode=pic32 -c -Isrc/headers -mt -xcode=abs64 -xstrconst -xc99=all -xCC -g -xs)
-elsif(MSVC)
-    target_compile_options(heclib PRIVATE /Wall /MP)
-else()
-    message(STATUS "generic options")
-endif()
-
+heclib_set_compile_options(heclib)
 
 target_include_directories(heclib PUBLIC src/headers)
 
