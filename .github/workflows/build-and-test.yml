@@ -7,37 +7,75 @@ on:
   workflow_dispatch:
 
 jobs:
-  
+
   build:
+    name: ${{matrix.classifier}}
     strategy:
       fail-fast: false
       matrix:
-        platform: [ubuntu-latest, macos-15, windows-latest]
-        jdk: [11]
+        # GitHub macOS runners are all arm64: darwin-aarch64 builds + tests natively;
+        # darwin-x86_64 is cross-built and its x86_64 tests run under Rosetta 2 (with an
+        # x64 JVM, also under Rosetta) so the published binary is functionally exercised,
+        # not just statically checked. classifier mirrors the published native naming.
+        include:
+          - {platform: ubuntu-latest,  classifier: linux-x86_64,   java_arch: x64}
+          - {platform: windows-latest, classifier: win-x86_64,     java_arch: x64}
+          - {platform: macos-15,       classifier: darwin-aarch64, java_arch: aarch64, cmake_args: "-DCMAKE_OSX_ARCHITECTURES=arm64"}
+          - {platform: macos-15,       classifier: darwin-x86_64,  java_arch: x64,     cmake_args: "-DCMAKE_OSX_ARCHITECTURES=x86_64"}
     runs-on: ${{matrix.platform}}
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Checkout test data
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: HydrologicEngineeringCenter/dss-test-data
           path: dss-test-data
-      - uses: actions/setup-java@v3
+      - uses: actions/setup-java@v4
         with:
-          distribution: 'adopt'
-          java-version: '${{matrix.jdk}}'
+          distribution: 'temurin'
+          java-version: '11'
+          architecture: ${{matrix.java_arch}}
       - name: Install Valgrind (Ubuntu)
         if: ${{matrix.platform == 'ubuntu-latest'}}
         run: sudo apt-get install -y valgrind
+      # Cross-built x86_64 binaries (and the x64 JVM) run on the arm64 runner via Rosetta.
+      - name: Install Rosetta (macOS x86_64)
+        if: ${{matrix.classifier == 'darwin-x86_64'}}
+        run: softwareupdate --install-rosetta --agree-to-license
+      # Release is the configuration that ships. Pass the classifier so the package name
+      # records the platform (CMakeLists derives the version from hec_dss_api_version()).
       - name: Configure
-        run: cmake -B build
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Release -DHECDSS_PACKAGE_CLASSIFIER=${{matrix.classifier}} ${{matrix.cmake_args}}
       - name: Build
-        run: cmake --build build
+        run: cmake --build build --config Release
+      - name: Put dumpbin on PATH (Windows)
+        if: ${{matrix.platform == 'windows-latest'}}
+        shell: pwsh
+        run: |
+          $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
+          $vs = & $vswhere -latest -property installationPath
+          $dumpbin = Get-ChildItem "$vs\VC\Tools\MSVC\*\bin\Hostx64\x64\dumpbin.exe" | Select-Object -First 1
+          if (-not $dumpbin) { throw "dumpbin.exe not found under $vs" }
+          Add-Content -Path $env:GITHUB_PATH -Value $dumpbin.DirectoryName
       - name: test
-        run: ctest --test-dir build -C Debug
+        run: ctest --test-dir build -C Release --output-on-failure
       - name: Run Valgrind Memory Check
         if: ${{matrix.platform == 'ubuntu-latest'}}
         run: cd ${{github.workspace}}/build/test/Dss-C/test && valgrind --error-exitcode=1 --leak-check=full ../Dss-C test
-
+      # Package from the same gated build -- the published zip is the tested binary.
+      - name: Package native
+        run: cpack --config build/CPackConfig.cmake -C Release -B build
+      - name: Upload native package
+        uses: actions/upload-artifact@v4
+        with:
+          name: hecdss-${{matrix.classifier}}
+          path: build/hecdss-*.zip
+          if-no-files-found: error
+      # Separate artifact: the JNI native a JVM loads (built because the JDK above is present).
+      - name: Upload JNI package
+        uses: actions/upload-artifact@v4
+        with:
+          name: javaHeclib-${{matrix.classifier}}
+          path: build/javaHeclib-*.zip
+          if-no-files-found: error
