@@ -1,8 +1,10 @@
 cmake_minimum_required(VERSION 3.16)
 project(heclib LANGUAGES C)
 
+# Statically link the MSVC runtime so the shipped DLL needs no VC++ redistributable
+# (VCRUNTIME140.dll); CMP0091 (NEW under the 3.16 minimum) applies it to every target.
 if(MSVC)
-    set(CMAKE_EXE_LINKER_FLAGS /NODEFAULTLIB:MSVCRTD,LIBCMT)
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 endif()
 
 function(heclib_set_compile_options target)
