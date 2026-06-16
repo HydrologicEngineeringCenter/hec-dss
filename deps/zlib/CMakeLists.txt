@@ -1,3 +1,5 @@
+# Statically linked, so drop zlib's own install rules (keeps libz out of the package).
+set(SKIP_INSTALL_ALL ON)
 FetchContent_MakeAvailable(zlib)
 # Bundle zlib statically (madler/zlib: `zlib` is shared, `zlibstatic` static) so the
 # shipped libhecdss doesn't depend on @rpath/libz.1.dylib, which fails to resolve off
