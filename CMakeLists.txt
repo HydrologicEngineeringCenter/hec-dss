@@ -1,8 +1,10 @@
 cmake_minimum_required(VERSION 3.16)
 project(heclib LANGUAGES C)
 
+# Statically link the MSVC runtime so the shipped DLL needs no VC++ redistributable
+# (VCRUNTIME140.dll); CMP0091 (NEW under the 3.16 minimum) applies it to every target.
 if(MSVC)
-    set(CMAKE_EXE_LINKER_FLAGS /NODEFAULTLIB:MSVCRTD,LIBCMT)
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 endif()
 
 function(heclib_set_compile_options target)
@@ -22,12 +24,23 @@ add_subdirectory(deps)
 add_subdirectory(heclib)
 
 find_package(Git QUIET)
+
+# Testing is always enabled so this check runs on every build, even without the optional
+# DSS test-data repo -- it needs only the built lib:
+#   self_contained -- the shipped native links nothing outside the OS baseline, so a
+#   regression to a shared zlib / VC++ runtime, or the macOS @rpath load failure, fails
+#   the build.
+enable_testing()
+add_test(
+    NAME self_contained
+    COMMAND ${CMAKE_COMMAND} -DLIB=$<TARGET_FILE:hecdss>
+            -P ${CMAKE_SOURCE_DIR}/cmake/verify_self_contained.cmake
+)
 if(DSS_TEST_DATA_DIR)
-    option(RUN_TESTS "Run Tests, requires dss-test-data git repo." ON)
+    option(RUN_TESTS "Run functional tests, requires dss-test-data git repo." ON)
     if(RUN_TESTS)
-        enable_testing()
         add_subdirectory(test)
     endif()
 else()
-    message(STATUS "Dss Test Data could not be retrieved.")
+    message(STATUS "Dss Test Data could not be retrieved -- functional tests skipped.")
 endif()

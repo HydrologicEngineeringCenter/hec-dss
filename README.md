@@ -15,13 +15,17 @@ Branches and versions
 
 Windows Dependencies
 
-heclib.dll 
-    libifcoremdd.dll
-    libifportMD.dll
-    libmmdd.dll
-    KERNEL32.dll
-    VCRUNTIME140D.dll
-    ucrtbased.dll
+This source tree builds two Windows natives:
+
+    hecdss.dll      C API native
+    javaHeclib.dll  JNI native loaded by the JVM
+
+Both are self-contained -- zlib and the MSVC runtime are linked statically, so
+neither needs a VC++ redistributable (no VCRUNTIME140.dll) nor any Fortran
+runtime. Each depends only on libraries Windows always provides: KERNEL32.dll
+and the Windows API-set DLLs (api-ms-* / ext-ms-*). The `self_contained` test
+fails the build if the C-API native ever links anything outside that OS
+baseline.
 
 
 
