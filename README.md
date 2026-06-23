@@ -10,7 +10,7 @@ Branches and versions
 |Version labels| branch | description |
 |--|--|--|
 |7-IW,7-IX,... | master |dss 7 and dss 6|
-|7-JA,7-JB     | main |dss 7 only |
+|7-JA,7-JB,...  | main |dss 7 only |
 |varies        |dotnet-1.2.x|old .net support (managed extensions) |
 
 Windows Dependencies
