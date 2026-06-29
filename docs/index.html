@@ -11,13 +11,15 @@
   .sub { color: #66757f; margin: 0 0 1.5rem; }
   .card { background: #fff; border: 1px solid #d7dde2; border-radius: 8px;
           padding: 1.25rem; margin-bottom: 1.25rem; }
+  label { display: block; margin-bottom: .35rem; font-size: .9rem; color: #66757f; }
   .row { display: flex; gap: .5rem; flex-wrap: wrap; }
   input { flex: 1 1 240px; min-width: 0; padding: .6rem .75rem; border: 1px solid #d7dde2;
           border-radius: 6px; font: 1.1rem monospace; }
   button { padding: .6rem 1.25rem; font-size: 1rem; font-weight: 600; color: #fff;
            background: #19527a; border: 0; border-radius: 6px; cursor: pointer; }
   .examples { margin-top: .75rem; font-size: .9rem; }
-  .examples a { color: #19527a; cursor: pointer; text-decoration: underline; margin-right: 1rem; }
+  button.link { padding: 0; font-size: .9rem; font-weight: 400; color: #19527a; background: none;
+                text-decoration: underline; margin-right: 1rem; }
   .summary { font-weight: 600; padding: .85rem 1rem; margin-bottom: 1rem;
              border-left: 5px solid #66757f; background: #f0f3f6; }
   .sev-info { border-color: #2a7ab0; } .sev-warn { border-color: #b07d00; } .sev-err { border-color: #b02a2a; }
@@ -35,16 +37,17 @@
   <p class="sub">Paste a packed DSS error code (e.g. <code>-200384800</code>) to decode it into plain English. Runs entirely in your browser &mdash; nothing is sent anywhere.</p>
 
   <div class="card">
+    <label for="codeInput">DSS error code</label>
     <div class="row">
       <input type="text" id="codeInput" placeholder="e.g. -200384800" autofocus
              onkeydown="if(event.key==='Enter') decode();">
-      <button onclick="decode()">Decode</button>
+      <button type="button" onclick="decode()">Decode</button>
     </div>
     <div class="examples">
       Try:
-      <a onclick="setExample('-200384800')">-200384800</a>
-      <a onclick="setExample('-200415200')">-200415200</a>
-      <a onclick="setExample('0')">0</a>
+      <button type="button" class="link" onclick="setExample('-200384800')">-200384800</button>
+      <button type="button" class="link" onclick="setExample('-200415200')">-200415200</button>
+      <button type="button" class="link" onclick="setExample('0')">0</button>
     </div>
   </div>
 
@@ -61,8 +64,8 @@
  * Decode arithmetic — mirrors heclib_c/src/Internal/zerrorDecode.c
  * ------------------------------------------------------------------------- */
 function decodeDssError(code) {
-  let n = Math.abs(parseInt(code, 10));
-  if (isNaN(n)) return null;
+  let n = Math.abs(Number.parseInt(code, 10));
+  if (Number.isNaN(n)) return null;
   const severity     = Math.floor(n / 100000000);
   const highFunction = Math.floor(n / 1000000) % 100;
   const lowFunction  = Math.floor(n / 10000) % 100;
@@ -216,7 +219,7 @@ function decode() {
   const out = document.getElementById("result");
   out.style.display = "block";
 
-  if (raw === "" || isNaN(parseInt(raw, 10))) {
+  if (raw === "" || Number.isNaN(Number.parseInt(raw, 10))) {
     out.innerHTML = '<p class="error">Please enter a numeric DSS error code.</p>';
     return;
   }
