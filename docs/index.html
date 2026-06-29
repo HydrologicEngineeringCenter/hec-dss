@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HEC-DSS Error Code Decoder</title>
+<style>
+  body { max-width: 760px; margin: 0 auto; padding: 2rem 1rem; background: #f4f6f8;
+         color: #1f2933; font: 16px/1.5 system-ui, Segoe UI, Roboto, sans-serif; }
+  h1 { font-size: 1.5rem; color: #19527a; margin: 0 0 .25rem; }
+  .sub { color: #66757f; margin: 0 0 1.5rem; }
+  .card { background: #fff; border: 1px solid #d7dde2; border-radius: 8px;
+          padding: 1.25rem; margin-bottom: 1.25rem; }
+  label { display: block; margin-bottom: .35rem; font-size: .9rem; color: #66757f; }
+  .row { display: flex; gap: .5rem; flex-wrap: wrap; }
+  input { flex: 1 1 240px; min-width: 0; padding: .6rem .75rem; border: 1px solid #d7dde2;
+          border-radius: 6px; font: 1.1rem monospace; }
+  button { padding: .6rem 1.25rem; font-size: 1rem; font-weight: 600; color: #fff;
+           background: #19527a; border: 0; border-radius: 6px; cursor: pointer; }
+  .examples { margin-top: .75rem; font-size: .9rem; }
+  button.link { padding: 0; font-size: .9rem; font-weight: 400; color: #19527a; background: none;
+                text-decoration: underline; margin-right: 1rem; }
+  .summary { font-weight: 600; padding: .85rem 1rem; margin-bottom: 1rem;
+             border-left: 5px solid #66757f; background: #f0f3f6; }
+  .sev-info { border-color: #2a7ab0; } .sev-warn { border-color: #b07d00; } .sev-err { border-color: #b02a2a; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { text-align: left; padding: .5rem .6rem; border-bottom: 1px solid #d7dde2; vertical-align: top; }
+  th { width: 9rem; color: #66757f; white-space: nowrap; }
+  code, .mono { font-family: monospace; }
+  .message { white-space: pre-wrap; }
+  .error { color: #b02a2a; font-weight: 600; }
+  .hint { color: #66757f; font-size: .85rem; margin-top: 1rem; }
+</style>
+</head>
+<body>
+  <h1>HEC-DSS Error Code Decoder</h1>
+  <p class="sub">Paste a packed DSS error code (e.g. <code>-200384800</code>) to decode it into plain English. Runs entirely in your browser &mdash; nothing is sent anywhere.</p>
+
+  <div class="card">
+    <label for="codeInput">DSS error code</label>
+    <div class="row">
+      <input type="text" id="codeInput" placeholder="e.g. -200384800" autofocus
+             onkeydown="if(event.key==='Enter') decode();">
+      <button type="button" onclick="decode()">Decode</button>
+    </div>
+    <div class="examples">
+      Try:
+      <button type="button" class="link" onclick="setExample('-200384800')">-200384800</button>
+      <button type="button" class="link" onclick="setExample('-200415200')">-200415200</button>
+      <button type="button" class="link" onclick="setExample('0')">0</button>
+    </div>
+  </div>
+
+  <div class="card" id="result" style="display:none;"></div>
+
+  <p class="hint">
+    The code packs five base-10 fields: <span class="mono">severity | highFunction | lowFunction | dssError | systemError</span>.
+    Messages may contain placeholders (<span class="mono">%d</span>, <span class="mono">%s</span>) whose runtime values are not stored in the code, so they cannot be filled in here.
+    System errors are shown as the raw OS error number.
+  </p>
+
+<script>
+/* -------------------------------------------------------------------------
+ * Decode arithmetic — mirrors heclib_c/src/Internal/zerrorDecode.c
+ * ------------------------------------------------------------------------- */
+function decodeDssError(code) {
+  let n = Math.abs(Number.parseInt(code, 10));
+  if (Number.isNaN(n)) return null;
+  const severity     = Math.floor(n / 100000000);
+  const highFunction = Math.floor(n / 1000000) % 100;
+  const lowFunction  = Math.floor(n / 10000) % 100;
+  const dssError     = Math.floor(n / 100) % 100;
+  const systemError  = n % 100;
+  return { severity, highFunction, lowFunction, dssError, systemError };
+}
+
+/* -------------------------------------------------------------------------
+ * Hand-maintained lookup tables.
+ * Source of truth:
+ *   - severity:   zdssErrorSeverity  (heclib_c/src/headers/zerrorCodes.h)
+ *   - functions:  DSS_FUNCTION_* ids (heclib_c/src/headers/zdssMessages.h)
+ *   - errors:     errorMess[]        (heclib_c/src/headers/zerrorCodes.h)
+ * Update these by hand if the C headers change.
+ * ------------------------------------------------------------------------- */
+const SEVERITY = {
+  0: "NONE",
+  1: "INFORMATION",
+  2: "WARNING",
+  3: "INVALID_ARGUMENT",
+  4: "WARNING_NO_WRITE_ACCESS",
+  5: "WARNING_NO_FILE_ACCESS",
+  6: "WRITE_ERROR",
+  7: "READ_ERROR",
+  8: "CORRUPT_FILE",
+  9: "MEMORY_ERROR"
+};
+
+const FUNCTIONS = {
+  0: "(none)",
+  1: "zopen", 2: "zclose", 3: "zset", 4: "zget", 5: "zput",
+  6: "zgetBuff", 7: "zputBuff", 8: "zmemoryGet", 9: "zmemoryFree",
+  10: "zreadDisk", 11: "zwriteDisk", 12: "zpermRead", 13: "zpermCreate",
+  14: "zpermWrite", 15: "zwriteEOF", 16: "zinit", 17: "zinitIfltab",
+  18: "zlocking", 19: "znewFileSize", 20: "zgetFileSpace", 21: "zcheckKeys",
+  22: "zflushToDisk", 23: "zhash", 24: "zcheck", 25: "zreadInfo",
+  26: "zcheckMultiUser", 27: "zreadInternal", 28: "zwriteInternal",
+  29: "zwriteNew", 30: "zwriteExisting", 31: "zbinNew", 32: "zbinUpdate",
+  33: "zsetFile", 34: "zquery", 35: "zdelete", 36: "undelete",
+  37: "zcopyFile", 38: "ztsStoreReg", 39: "ztsRegStoreBlock", 40: "ztsStore",
+  41: "ztsRetrieve", 42: "ztsRetrieveReg", 43: "ztsRegReadBlock",
+  44: "ztsWriteBlock", 45: "ztsTrim", 46: "ztsStoreIrreg",
+  47: "ztsIrregReadBlock", 48: "ztsIrregMergeBlocks", 49: "ztsRetrieveIrreg",
+  50: "ztsIrregStoreBlock", 51: "ztsProcessTimes", 52: "zcatalog",
+  53: "zpdStore", 54: "zpdRetrieve", 55: "zinquire", 56: "zsqueeze",
+  57: "ztextStore", 58: "ztextRetrieve", 59: "zcopyRecord", 60: "zrename",
+  61: "zduplicateRecord", 62: "zarrayRetrieve", 63: "zarrayStore",
+  64: "zbinaryStore", 65: "zbinaryRetrieve", 66: "zcheckHashTable",
+  67: "zcheckInfo", 68: "zcheckLinks", 69: "zcheckPathnameBins",
+  70: "zcheckPathnames", 71: "zspatialTinStore", 72: "zspatialTinRetrieve",
+  73: "zaliasAdd", 74: "zaliasRemove", 75: "zaliasUtil", 76: "zlocationStore",
+  77: "zlocationRetrieve", 78: "zread", 79: "zwrite", 80: "internal utility",
+  81: "ztsAggregate", 82: "ztsDisaggregate", 83: "zspatialGridStore",
+  84: "zspatialGridRetrieve", 85: "other", 86: "javaNativeInterface"
+};
+
+// Indexed by DSS error number; [NAME, English message template].
+// Numbering verified against the native zerrorDecode oracle (Heclib.getDssErrorName).
+// Note: errorMess[] in zerrorCodes.h lists codes 27/28 (KEY_VALUE / KEY3_LOCATION)
+// and 60/61 (NULL_PATHNAME / NULL_FILENAME) in the opposite order; the numbering
+// here follows the authoritative error-code enum, not the message-array order.
+const DSS_ERRORS = {
+  0:  ["STATUS_OKAY", "No error."],
+  1:  ["INVALID_FILE_VERSION", "Incompatible DSS file versions. This library is only compatible with version 7 DSS files; this file is version %s."],
+  2:  ["INCOMPATIBLE_VERSION", "Incompatible DSS version. This function is only compatible with version 7 DSS files; this file is version %d."],
+  3:  ["INCOMPATIBLE_VERSION_6", "Incompatible DSS version. This function is only compatible with version 6 DSS files; this file is version %d."],
+  4:  ["INVALID_FILE_NAME", "Invalid DSS file name."],
+  5:  ["NO_EXCLUSIVE_ACCESS", "Unable to exclusively access file."],
+  6:  ["UNABLE_TO_ACCESS_FILE", "Unable to access file."],
+  7:  ["UNABLE_TO_WRITE_FILE", "Unable to obtain write access to file."],
+  8:  ["UNABLE_TO_CREATE_FILE", "Unable to create file."],
+  9:  ["NO_WRITE_PERMISSION", "No write permission for file."],
+  10: ["NO_PERMISSION", "No permission to access file."],
+  11: ["WRITE_ON_READ_ONLY", "Write attempt on file without write access (read-only mode)."],
+  12: ["INVALID_DSS_FILE", "Not a DSS file. DSS Identifier ==>%s<==; should be ==>ZDSS<==."],
+  13: ["INVALID_ADDRESS", "Attempted to access an invalid address: %lld."],
+  14: ["INVALID_NUMBER_TO_READ", "An invalid number of data has been requested to be read: %lld."],
+  15: ["INVALID_NUMBER_TO_WRITE", "An invalid number of data has been requested to be written: %lld."],
+  16: ["WRITE_ERROR", "An error occurred during a write attempt, status: %d."],
+  17: ["READ_ERROR", "An error occurred during a read attempt, status: %d."],
+  18: ["READ_BEYOND_EOF", "Attempt to read beyond end of file by %d bytes."],
+  19: ["INVALID_FILE_HEADER", "The DSS file main header is damaged. End of perm flag does not match: %lld is not %lld. Squeeze the file to attempt recovery."],
+  20: ["TRUNCATED_FILE", "The DSS file is incomplete (truncated). Bytes read: %d from address %lld. Squeeze the file to attempt recovery."],
+  21: ["INVALID_HEADER_PARAMETER", "The DSS file main header is damaged. An invalid number was read from the file: %lld. Squeeze the file to attempt recovery."],
+  22: ["DAMAGED_FILE", "The DSS file is damaged. Status: %d, detected at address: %lld. Squeeze the file to attempt recovery."],
+  23: ["CLOSED_FILE", "The DSS file has been closed and must be reopened prior to use."],
+  24: ["EMPTY_FILE", "The DSS file has no records or data in it; it is an empty file."],
+  25: ["IFLTAB_CORRUPT", "The primary table in memory has become corrupt (probably due to a program memory error)."],
+  26: ["KEY_CORRUPT", "The primary table keys in memory no longer match, indicating that the table has become corrupt (probably due to a program memory error)."],
+  27: ["KEY_VALUE", "The value of key %d is ==>%lld<==. It should be ==>%lld<==."],
+  28: ["KEY3_LOCATION", "The location pointer for key 3 is outside bounds (> 500). It is ==>%d<==."],
+  29: ["CANNOT_LOCK_FILE", "Unable to lock file."],
+  30: ["CANNOT_LOCK_EXCLUSIVE", "Unable to lock file for exclusive access."],
+  31: ["CANNOT_LOCK_MULTI_USER", "Unable to lock file for multiple user access. Unable to obtain a lock after %d attempts."],
+  32: ["CANNOT_SQUEEZE", "Unable to squeeze file. %s"],
+  33: ["INVALID_BIN_STATUS", "Invalid status read in pathname bin: %d; possible corruption in file (squeeze to resolve)."],
+  34: ["CANNOT_ALLOCATE_MEMORY", "Cannot allocate memory, size requested: %d."],
+  35: ["INVALID_PARAMETER", "Invalid or unrecognized parameter: %s (ignored)."],
+  36: ["INVALID_NUMBER", "Invalid or unrecognized number: %d, for %s (ignored)."],
+  37: ["INCOMPATIBLE_CALL", "An invalid or incompatible call or function access has been made (unspecified error)."],
+  38: ["NON_EMPTY_FILE", "Cannot set parameter for a non-empty file. Parameter: %s, number of records in file: %d."],
+  39: ["BIN_SIZE_CONFLICT", "Bin space used is larger than bin size, error at address %lld. Space: %d, allocated: %d. %s"],
+  40: ["DIFFERENT_RECORD_TYPE", "Cannot write to a record with a different record type. Type being written: %d, type stored: %lld. %s"],
+  41: ["WRONG_RECORD_TYPE", "Wrong record type for this function. Type expected: %d, type stored: %lld. %s"],
+  42: ["NO_UNDELETE_WITH_RECLAIM", "Unable to undelete in a DSS file that uses space reclamation."],
+  43: ["ARRAY_SPACE_EXHAUSTED", "Array space is exhausted. Length allocated: %d, current position: %d. %s"],
+  44: ["BOTH_NOTE_KINDS_USED", "Cannot store both character notes and integer notes in same data set."],
+  45: ["NO_DATA_GIVEN", "No data given to store."],
+  46: ["NO_DATA_READ", "No data read. Pathname: %s"],
+  47: ["NO_TIME_WINDOW", "No time window given, or invalid date or time specified."],
+  48: ["INVALID_DATE_TIME", "Invalid date or time given."],
+  49: ["INVALID_INTERVAL", "Invalid time interval. Interval type: %d."],
+  50: ["TIMES_NOT_ASCENDING", "Times are not ascending. Irregular-interval data must have ordered ascending times."],
+  51: ["DIFFERENT_PROFILE_NUMBER", "Cannot store a different number of profile depths. Number asked to store: %d, number stored: %d."],
+  52: ["RECORD_DOES_NOT_EXIST", "Record does not exist."],
+  53: ["RECORD_ALREADY_EXISTS", "Record already exists."],
+  54: ["INVALID_PATHNAME", "Invalid pathname."],
+  55: ["INVALID_RECORD_HEADER", "Invalid internal header for this data type; data type: %d."],
+  56: ["ARRAY_TOO_SMALL", "Space needed is more than that allocated. Needed: %d, allocated: %d."],
+  57: ["NOT_OPENED", "HEC-DSS file has not been opened or ifltab is corrupted. This function requires the file to be opened."],
+  58: ["FILE_DOES_NOT_EXIST", "HEC-DSS file does not exist. It must exist for this function. File name: %s"],
+  59: ["FILE_EXISTS", "HEC-DSS file already exists. It should not exist for this function. File name: %s"],
+  60: ["NULL_PATHNAME", "NULL pathname. No pathname was provided, or a null pointer was given instead of a valid pathname."],
+  61: ["NULL_FILENAME", "NULL file name. No file name was provided, or a null pointer was given instead of a valid file name."],
+  62: ["NULL_ARGUMENT", "NULL argument passed. A null pointer was given instead of an argument."],
+  63: ["NULL_ARRAY", "NULL pointer / array. A null pointer was given instead of an expected array."],
+  64: ["VERTICAL_DATUM_ERROR", "Cannot perform vertical datum conversion."],
+  65: ["INVALID_F_PART_TAGS", "Cannot normalize F part tags. Error is %s."],
+  66: ["UNDEFINED_ERROR", "Undefined error."]
+};
+
+/* ------------------------------------------------------------------------- */
+function esc(s) {
+  return String(s).replace(/[&<>]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+}
+
+function severityClass(sev) {
+  if (sev <= 1) return "sev-info";
+  if (sev <= 5) return "sev-warn";
+  return "sev-err";
+}
+
+function setExample(v) {
+  document.getElementById("codeInput").value = v;
+  decode();
+}
+
+function decode() {
+  const raw = document.getElementById("codeInput").value.trim();
+  const out = document.getElementById("result");
+  out.style.display = "block";
+
+  if (raw === "" || Number.isNaN(Number.parseInt(raw, 10))) {
+    out.innerHTML = '<p class="error">Please enter a numeric DSS error code.</p>';
+    return;
+  }
+
+  const d = decodeDssError(raw);
+  const sevName = SEVERITY[d.severity] || "UNKNOWN (" + d.severity + ")";
+  const highName = FUNCTIONS[d.highFunction] || "unknown id " + d.highFunction;
+  const lowName  = FUNCTIONS[d.lowFunction]  || "unknown id " + d.lowFunction;
+  const errEntry = DSS_ERRORS[d.dssError] || ["UNKNOWN", "Unknown DSS error number " + d.dssError + "."];
+  const errName = errEntry[0];
+  const errMsg  = errEntry[1];
+
+  const where = d.lowFunction ? (" in " + lowName) : "";
+  const summary = sevName + where + ": " + errMsg;
+
+  let rows = "";
+  rows += "<tr><th>Severity</th><td><code>" + d.severity + "</code> &mdash; " + esc(sevName) + "</td></tr>";
+  if (d.highFunction) {
+    rows += "<tr><th>High function</th><td><code>" + d.highFunction + "</code> &mdash; " + esc(highName) + " <span class='hint'>(outer caller)</span></td></tr>";
+  }
+  rows += "<tr><th>Low function</th><td><code>" + d.lowFunction + "</code> &mdash; " + esc(lowName) + " <span class='hint'>(where error occurred)</span></td></tr>";
+  rows += "<tr><th>DSS error</th><td><code>" + d.dssError + "</code> &mdash; " + esc(errName) + "</td></tr>";
+  rows += "<tr><th>Message</th><td class='message'>" + esc(errMsg) + "</td></tr>";
+  rows += "<tr><th>System error</th><td><code>" + d.systemError + "</code>" +
+          (d.systemError ? " <span class='hint'>(raw OS error number)</span>" : " &mdash; none") + "</td></tr>";
+
+  out.innerHTML =
+    '<div class="summary ' + severityClass(d.severity) + '">' + esc(summary) + "</div>" +
+    "<table>" + rows + "</table>";
+}
+</script>
+</body>
+</html>
