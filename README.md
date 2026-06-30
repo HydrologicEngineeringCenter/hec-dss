@@ -5,6 +5,9 @@ This is the HEC-DSS library source tree.  DSS is a database optimized for timese
 Documentation:  https://www.hec.usace.army.mil/software/hec-dss/documentation.aspx
 
 
+DSS Error decoder:  https://hydrologicengineeringcenter.github.io/hec-dss/
+
+
 Branches and versions
 
 |Version labels| branch | description |
