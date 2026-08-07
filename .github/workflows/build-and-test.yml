@@ -36,9 +36,12 @@ jobs:
           distribution: 'temurin'
           java-version: '11'
           architecture: ${{matrix.java_arch}}
+      - name: Update Ubuntu
+        if: ${{matrix.platform == 'ubuntu-latest'}}
+        run: sudo apt-get update
       - name: Install Valgrind (Ubuntu)
         if: ${{matrix.platform == 'ubuntu-latest'}}
-        run: sudo apt-get install -y valgrind
+        run: sudo apt-get install -y valgrind 
       # Cross-built x86_64 binaries (and the x64 JVM) run on the arm64 runner via Rosetta.
       - name: Install Rosetta (macOS x86_64)
         if: ${{matrix.classifier == 'darwin-x86_64'}}
