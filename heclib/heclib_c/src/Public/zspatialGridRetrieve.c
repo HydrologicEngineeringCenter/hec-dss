@@ -1,5 +1,6 @@
 #include <string.h>
 #include <stdlib.h>
+#include <limits.h>
 
 #include "heclib.h"
 
@@ -154,6 +155,12 @@ int zspatialGridRetrieveVersion(long long *ifltab, const char *cpath, int* gridS
 *
 *
 */
+
+/*  returns 1 if grid size is ok else 0 */
+static int safeGridSize(int cellsX, int cellsY) {
+	if (cellsX <= 0 || cellsY <= 0) return 0;
+	return (long long)cellsX * cellsY < ((long long)INT_MAX / 4);
+}
 
 int zspatialGridRetrieve(long long *ifltab, zStructSpatialGrid *gridStruct, int boolRetrieveData) {
 
@@ -322,6 +329,12 @@ int zspatialGridRetrieve(long long *ifltab, zStructSpatialGrid *gridStruct, int 
 
 			// Actual Data 
 			if (ztransfer->values3 && (ztransfer->values3Number > 0)) {
+				if (!safeGridSize(gridStruct->_numberOfCellsX, gridStruct->_numberOfCellsY)) {
+					zstructFree(ztransfer);
+					return zerrorProcessing(ifltab, DSS_FUNCTION_zspatialGridRetrieve_ID,
+						zdssErrorCodes.CANNOT_ALLOCATE_MEMORY, 0, 0, zdssErrorSeverity.MEMORY_ERROR,
+						gridStruct->pathname, "gridStruct dimensions too large");
+				}
 				int dataSize = (gridStruct->_numberOfCellsX * gridStruct->_numberOfCellsY);
 				int numLongs = ((dataSize - 1) / 2) + 1;
 				switch (gridStruct->_compressionMethod) {
