@@ -1,6 +1,18 @@
 cmake_minimum_required(VERSION 3.16)
 project(heclib LANGUAGES C)
 
+# Opt-in ASAN/UBSan build for the hardening tests (test/hardening).  Default OFF.
+option(HECDSS_SANITIZE "Instrument the build with AddressSanitizer + UBSan (hardening tests)" OFF)
+if(HECDSS_SANITIZE)
+    if(MSVC)
+        add_compile_options(/fsanitize=address /Zi /Oy-)
+        add_link_options(/fsanitize=address)
+    else()
+        add_compile_options(-fsanitize=address,undefined -fno-omit-frame-pointer -g -O1)
+        add_link_options(-fsanitize=address,undefined)
+    endif()
+endif()
+
 # Statically link the MSVC runtime so the shipped DLL needs no VC++ redistributable
 # (VCRUNTIME140.dll); CMP0091 (NEW under the 3.16 minimum) applies it to every target.
 if(MSVC)
@@ -37,6 +49,8 @@ add_test(
             -P ${CMAKE_SOURCE_DIR}/cmake/verify_self_contained.cmake
 )
 add_subdirectory(test/consumer)
+# Hardening regression tests; most useful built with -DHECDSS_SANITIZE=ON.
+add_subdirectory(test/hardening)
 # javaHeclib only exists when a JDK was found; the load test also needs javac/java.
 if(TARGET javaHeclib AND Java_Development_FOUND)
     add_subdirectory(test/jni)

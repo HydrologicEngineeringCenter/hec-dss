@@ -1,5 +1,6 @@
 #include <string.h>
 #include <stdlib.h>
+#include <limits.h>
 
 #include "heclib.h"
 
@@ -154,6 +155,12 @@ int zspatialGridRetrieveVersion(long long *ifltab, const char *cpath, int* gridS
 *
 *
 */
+
+/*  returns 1 if grid size is ok else 0 */
+static int safeGridSize(int cellsX, int cellsY) {
+	if (cellsX <= 0 || cellsY <= 0) return 0;
+	return (long long)cellsX * cellsY < ((long long)INT_MAX / 4);
+}
 
 int zspatialGridRetrieve(long long *ifltab, zStructSpatialGrid *gridStruct, int boolRetrieveData) {
 
@@ -322,8 +329,14 @@ int zspatialGridRetrieve(long long *ifltab, zStructSpatialGrid *gridStruct, int 
 
 			// Actual Data 
 			if (ztransfer->values3 && (ztransfer->values3Number > 0)) {
+				if (!safeGridSize(gridStruct->_numberOfCellsX, gridStruct->_numberOfCellsY)) {
+					zstructFree(ztransfer);
+					return zerrorProcessing(ifltab, DSS_FUNCTION_zspatialGridRetrieve_ID,
+						zdssErrorCodes.CANNOT_ALLOCATE_MEMORY, 0, 0, zdssErrorSeverity.MEMORY_ERROR,
+						gridStruct->pathname, "gridStruct dimensions too large");
+				}
 				int dataSize = (gridStruct->_numberOfCellsX * gridStruct->_numberOfCellsY);
-				int numLongs = ((dataSize - 1) / 2) + 1;
+				int paddedCells = (((dataSize - 1) / 2) + 1) * 2;
 				switch (gridStruct->_compressionMethod) {
 				case NO_COMPRESSION:
 					if (bigEndian()) {
@@ -336,8 +349,8 @@ int zspatialGridRetrieve(long long *ifltab, zStructSpatialGrid *gridStruct, int 
 					buffer = (void *)calloc(ztransfer->values3Number + 2, 4);
 					charInt((void *)ztransfer->values3, buffer, ztransfer->values3Number * 4, ztransfer->values3Number * 4, 0, 0, 0);
 					// Uncompress data
-					values = (int *)calloc(numLongs * 2, 4);
-					ret = uncompress_zlib(buffer, gridStruct->_sizeofCompressedElements, values, numLongs * 2 * 4);
+					values = (int *)calloc(paddedCells, 4);
+					ret = uncompress_zlib(buffer, gridStruct->_sizeofCompressedElements, values, paddedCells * 4);
 					/*if (compress_zfp(gridStruct->data, gridStruct->_numberOfCellsX, gridStruct->_numberOfCellsY, (float)1.0e-6, &buffer, &(gridStruct->_sizeofCompressedElements), 1))*/
 					if (ret < 0) {
 						free(buffer);
@@ -349,15 +362,15 @@ int zspatialGridRetrieve(long long *ifltab, zStructSpatialGrid *gridStruct, int 
 					else {
 #if 0
 						printf("XXX: Values: ");
-						for (int i = 0; i < numLongs * 2; i++)
+						for (int i = 0; i < paddedCells; i++)
 							printf("%x,", values[i]);
 						printf("\n");
 #endif
 						gridStruct->_data = values;
 
 						if (bigEndian()) {
-							zswap(gridStruct->_data, numLongs * 2);
-							zswitchInts(gridStruct->_data, numLongs * 2);
+							zswap(gridStruct->_data, paddedCells);
+							zswitchInts(gridStruct->_data, paddedCells);
 						}
 #if 0
 						{
@@ -367,7 +380,7 @@ int zspatialGridRetrieve(long long *ifltab, zStructSpatialGrid *gridStruct, int 
 								printf("%x,", (int)cdata[i]);
 							printf("\n");
 							printf("XXX: Values: ");
-							for (int i = 0; i < numLongs * 2; i++)
+							for (int i = 0; i < paddedCells; i++)
 								printf("%x,", values[i]);
 							printf("\n");
 						}
