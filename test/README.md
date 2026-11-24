@@ -5,6 +5,7 @@ DSS is tested with Java, C, and FORTRAN code. Java testing is not discused here.
 .\C   		-- standalone C test/sample programs
 .\Dss-C         -- C code that tests many features of DSS
 .\Fortran       -- code that tests DSS from the FORTRAN language
+.\hardening     -- self-contained ASAN regression tests for parser bounds bugs
 
 # Input Data Setup required for the tests
 dss-test-data needs to be checked out inside the hec-dss repo.  Some of the testing requireds these files.
@@ -41,5 +42,14 @@ make test
 # Linux
 cd hec-dss/test/Fortran
 make test
+```
+
+
+# How can you run the hardening tests?
+```
+# Linux
+cmake -B build-asan -DHECDSS_SANITIZE=ON
+cmake --build build-asan -j
+ctest --test-dir build-asan -L hardening --output-on-failure
 ```
 
